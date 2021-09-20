@@ -30,9 +30,9 @@ android {
     flavorDimensions "version"
     productFlavors {
 
-        demo{
+        dev{
             dimension "version"
-            versionNameSuffix "-demo"
+            versionNameSuffix "-dev"
         }
         stage {
             dimension "version"

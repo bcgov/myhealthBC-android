@@ -5,7 +5,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSettingBinding
-
 import ca.bc.gov.bchealth.utils.viewBindings
 
 /**
