@@ -11,11 +11,11 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "ca.bc.gov.vaxcheck"
+        applicationId "ca.bc.gov.bchealth"
         minSdk 27
         targetSdk 31
-        versionCode 12
-        versionName "1.0.1"
+        versionCode 1
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

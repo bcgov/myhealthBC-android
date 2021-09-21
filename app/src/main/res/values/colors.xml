@@ -13,4 +13,5 @@
     <color name="status_green">#2E8540</color>
     <color name="status_blue">#38598A</color>
     <color name="ic_launcher_background">#1A5A95</color>
+    <color name="blue_link">#1A5A96</color>
 </resources>
