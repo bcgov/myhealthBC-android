@@ -27,6 +27,6 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         }
 
         binding.recMyCards.emptyView = binding.emptyState
-        //TODO:- Cards list either from db or dummy
+        // TODO:- Cards list either from db or dummy
     }
 }
