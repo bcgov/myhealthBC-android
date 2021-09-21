@@ -23,6 +23,14 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.txtPrivacyStatement.setOnClickListener {
+            // TODO: 21/09/21 being tracked on https://freshworks.atlassian.net/browse/VCBA-49
+        }
+        
+        binding.txtHelp.setOnClickListener {
+            // TODO: 21/09/21 being tracked on https://freshworks.atlassian.net/browse/VCBA-49
+        }
+        
     }
 
 }
