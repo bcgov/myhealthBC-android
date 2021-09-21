@@ -26,11 +26,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         binding.txtPrivacyStatement.setOnClickListener {
             // TODO: 21/09/21 being tracked on https://freshworks.atlassian.net/browse/VCBA-49
         }
-        
+
         binding.txtHelp.setOnClickListener {
             // TODO: 21/09/21 being tracked on https://freshworks.atlassian.net/browse/VCBA-49
         }
-        
+
     }
 
 }
