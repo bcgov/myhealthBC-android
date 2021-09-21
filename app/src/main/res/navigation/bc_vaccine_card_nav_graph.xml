@@ -3,16 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bc_vaccine_card_nav_graph"
-    app:startDestination="@id/onBoardingFragment">
+    app:startDestination="@id/myCardsFragment">
 
     <fragment
         android:id="@+id/onBoardingFragment"
         android:name="ca.bc.gov.bchealth.ui.onboarding.OnBoardingFragment"
         android:label="fragment_onboarding"
         tools:layout="@layout/fragment_onboarding" />
+
     <fragment
-        android:id="@+id/cardsFragment"
-        android:name="ca.bc.gov.bchealth.ui.cards.CardsFragment"
-        android:label="fragment_cards"
-        tools:layout="@layout/fragment_cards" />
+        android:id="@+id/myCardsFragment"
+        android:name="ca.bc.gov.bchealth.ui.mycards.MyCardsFragment"
+        android:label="MyCardsFragment"
+        tools:layout="@layout/fragment_my_cards">
+        <action
+            android:id="@+id/action_myCardsFragment_to_addCardOptionFragment"
+            app:destination="@id/addCardOptionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="ca.bc.gov.bchealth.ui.setting.SettingFragment"
+        android:label="SettingFragment"
+        tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/addCardOptionFragment"
+        android:name="ca.bc.gov.bchealth.ui.addcard.AddCardOptionFragment"
+        android:label="AddCardOptionFragment"
+        tools:layout="@layout/fragment_add_card_options" >
+        <action
+            android:id="@+id/action_addCardOptionFragment_to_onBoardingFragment"
+            app:destination="@id/onBoardingFragment" />
+    </fragment>
 </navigation>

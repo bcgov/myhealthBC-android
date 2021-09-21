@@ -1,9 +1,19 @@
 <resources>
     <string name="app_name">BC-Vaccine-Card-Android</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="allow">Allow</string>
     <string name="permission_required">Permission Required</string>
     <string name="allow_vaxwallet">Allow [VaxWallet] to use your camera for scanning QR codes to store your card.</string>
     <string name="skip_for_now">Skip for now</string>
+    
+    <string name="my_cards">My Cards</string>
+    <string name="setting">Setting</string>
+
+    <string name="no_cards_message">You don\'t have any vaccine card yet</string>
+    <string name="add_card">Add Card</string>
+
+    <string name="add_card_options_message">Scan, upload or get access to your proof of vaccination.</string>
+    <string name="scan_qr_code">Scan a vaccine card QR code</string>
+    <string name="use_image_of_qr">Use an image of your QR code</string>
+    <string name="enter_info_to_get_card">Enter info to get your card</string>
 </resources>

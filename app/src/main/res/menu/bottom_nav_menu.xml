@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/myCardsFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_my_cards"
+        android:title="@string/my_cards" />
+    <item
+        android:id="@+id/settingFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_setting"
+        android:title="@string/setting" />
+</menu>

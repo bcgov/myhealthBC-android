@@ -2,11 +2,10 @@ package ca.bc.gov.bchealth
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import ca.bc.gov.bchealth.ui.cards.CardsFragment
+import androidx.appcompat.app.AppCompatActivity
 
 /**
  * [SplashActivity]
