@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.settings.SettingsFragment">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/txt_setting"
+        style="?textAppearanceHeadline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_8_x"
+        android:text="@string/setting"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/txt_bc_camera_permission_message"
+        style="?textAppearanceHeadline4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:text="@string/settings_message"
+        android:textAlignment="textStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_setting" />
+
+    <View
+        android:id="@+id/line1"
+        android:layout_width="0dp"
+        android:layout_height="1.5dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/solid_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_bc_camera_permission_message" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/txt_privacy_statement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_2_x"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="@dimen/space_2_x"
+        android:text="@string/skip_for_now"
+        app:icon="@drawable/ic_check"
+        app:iconGravity="start"
+        app:iconPadding="@dimen/space_2_x"
+        app:iconTint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line1" />
+
+    <View
+        android:id="@+id/line2"
+        android:layout_width="0dp"
+        android:layout_height="1.5dp"
+        android:background="@drawable/solid_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="306dp" />
+
+    <View
+        android:id="@+id/line3"
+        android:layout_width="0dp"
+        android:layout_height="1.5dp"
+        android:background="@drawable/solid_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="364dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
