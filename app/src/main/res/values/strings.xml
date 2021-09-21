@@ -9,8 +9,6 @@
     <string name="my_cards">My Cards</string>
     <string name="setting">Setting</string>
     <string name="settings_message">BC Vaccine Card app is the official mobile application from the Government of British Columbia which allow you to store and organze the proof of vaccination of you and your family members.</string>
-    <string name="privacy_statement">Privacy Statement</string>
-    <string name="help">Help</string>
 
     <string name="no_cards_message">You don\'t have any vaccine card yet</string>
     <string name="add_card">Add Card</string>
@@ -19,4 +17,7 @@
     <string name="scan_qr_code">Scan a vaccine card QR code</string>
     <string name="use_image_of_qr">Use an image of your QR code</string>
     <string name="enter_info_to_get_card">Enter info to get your card</string>
+
+    <string name="privacy_statement">Privacy Statement</string>
+    <string name="help">Help</string>
 </resources>

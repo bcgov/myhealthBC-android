@@ -21,11 +21,6 @@
             app:destination="@id/addCardOptionFragment" />
     </fragment>
     <fragment
-        android:id="@+id/settingFragment"
-        android:name="ca.bc.gov.bchealth.ui.setting.SettingFragment"
-        android:label="SettingFragment"
-        tools:layout="@layout/fragment_setting" />
-    <fragment
         android:id="@+id/addCardOptionFragment"
         android:name="ca.bc.gov.bchealth.ui.addcard.AddCardOptionFragment"
         android:label="AddCardOptionFragment"
@@ -34,4 +29,9 @@
             android:id="@+id/action_addCardOptionFragment_to_onBoardingFragment"
             app:destination="@id/onBoardingFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="ca.bc.gov.bchealth.ui.setting.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
 </navigation>
