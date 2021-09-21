@@ -11,10 +11,10 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "ca.bc.gov.vaxcheck"
+        applicationId "ca.bc.gov.bchealth"
         minSdk 27
         targetSdk 31
-        versionCode 12
+        versionCode 1
         versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -90,6 +90,7 @@ dependencies {
 
     //Dagger Hilt
     implementation "com.google.dagger:hilt-android:$versions.hilt"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     kapt "com.google.dagger:hilt-compiler:$versions.hilt"
 

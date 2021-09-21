@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Spacing in multiple of 4px used for Margin or Padding-->
+    <dimen name="space_1_x">4dp</dimen>
+    <dimen name="space_2_x">8dp</dimen>
+    <dimen name="space_3_x">12dp</dimen>
+    <dimen name="space_4_x">16dp</dimen>
+    <dimen name="space_5_x">20dp</dimen>
+    <dimen name="space_6_x">24dp</dimen>
+    <dimen name="space_7_x">28dp</dimen>
+    <dimen name="space_8_x">32dp</dimen>
+    <dimen name="space_9_x">36dp</dimen>
+    <dimen name="space_10_x">40dp</dimen>
+
+</resources>

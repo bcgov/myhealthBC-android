@@ -9,7 +9,7 @@
     </style>
 
     <style name="BC_VAX.TextAppearance.MaterialComponents.Headline2" parent="TextAppearance.MaterialComponents.Headline2">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">24sp</item>
         <item name="fontFamily">@font/bc_sans_bold</item>
         <item name="android:textColor">@color/dark_blue</item>
         <item name="android:textStyle">bold</item>
@@ -26,6 +26,13 @@
         <item name="android:textSize">16sp</item>
         <item name="fontFamily">@font/bc_sans_regular</item>
         <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="BC_VAX.TextAppearance.MaterialComponents.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textSize">16sp</item>
+        <item name="fontFamily">@font/bc_sans_bold</item>
+        <item name="android:textColor">@color/blue_link</item>
+        <item name="android:linksClickable">true</item>
     </style>
 
     <style name="BC_VAX.TextAppearance.MaterialComponents.Body1" parent="TextAppearance.MaterialComponents.Body1">
