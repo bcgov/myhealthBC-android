@@ -17,12 +17,14 @@
     </style>
 
     <style name="BC_VAX.Widget.MaterialComponents.Button.TextButton.Icon" parent="Widget.MaterialComponents.Button.TextButton.Icon">
-        <item name="android:paddingStart">@dimen/space_4_x</item>
-        <item name="android:paddingEnd">@dimen/space_4_x</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:paddingTop">11dp</item>
-        <item name="android:paddingBottom">11dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="cornerRadius">4dp</item>
         <item name="android:textColor">@color/white</item>
+        <item name="rippleColor">@color/white</item>
         <item name="backgroundTint">@color/dark_blue</item>
         <item name="fontFamily">@font/bc_sans_bold</item>
         <item name="android:lineSpacingMultiplier">0.1</item>

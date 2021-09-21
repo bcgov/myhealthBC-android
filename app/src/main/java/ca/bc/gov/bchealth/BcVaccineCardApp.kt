@@ -9,5 +9,4 @@ import dagger.hilt.android.HiltAndroidApp
  * @author Pinakin Kansara
  */
 @HiltAndroidApp
-class BcVaccineCardApp : Application() {
-}
+class BcVaccineCardApp : Application()
