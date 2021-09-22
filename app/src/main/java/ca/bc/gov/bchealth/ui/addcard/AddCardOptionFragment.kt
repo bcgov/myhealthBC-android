@@ -23,7 +23,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnScanQrCode.setOnClickListener {
-            findNavController().navigate(R.id.action_addCardOptionFragment_to_onBoardingFragment)
+            findNavController().navigate(R.id.barcodeScannerFragment)
         }
 
         binding.btnImagePicker.setOnClickListener {
