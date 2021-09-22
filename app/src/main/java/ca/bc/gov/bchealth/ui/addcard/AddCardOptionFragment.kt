@@ -38,6 +38,5 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         binding.toolbar.imgAction.setOnClickListener {
             findNavController().popBackStack()
         }
-
     }
 }

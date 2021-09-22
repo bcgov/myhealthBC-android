@@ -8,11 +8,14 @@ import android.util.Size
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.camera.core.*
+import androidx.camera.core.Camera
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.Preview
+import androidx.camera.core.TorchState
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -21,15 +24,12 @@ import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.barcodeanalyzer.BarcodeAnalyzer
 import ca.bc.gov.bchealth.barcodeanalyzer.ScanningResultListener
+import ca.bc.gov.bchealth.data.local.entity.CardType
 import ca.bc.gov.bchealth.databinding.FragmentBarcodeScannerBinding
-import ca.bc.gov.bchealth.model.ImmunizationStatus
-import ca.bc.gov.bchealth.utils.readJsonFromAsset
+import ca.bc.gov.bchealth.ui.mycards.MyCardsViewModel
 import ca.bc.gov.bchealth.utils.viewBindings
-import ca.bc.gov.bchealth.viewmodel.BarcodeScanResultViewModel
-import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -54,9 +54,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
 
     private lateinit var camera: Camera
 
-    private val sharedViewModel: SharedViewModel by activityViewModels()
-
-    private val viewModel: BarcodeScanResultViewModel by viewModels()
+    private val myCardsViewModel: MyCardsViewModel by viewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -72,7 +70,6 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
         }
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -83,16 +80,11 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                 launch {
                     initCamera()
                 }
-                launch {
-                    collectImmunizationStatus()
-                }
-
             }
-
         }
     }
 
-    private suspend fun initCamera() {
+    private fun initCamera() {
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         checkCameraPermission()
@@ -102,33 +94,13 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
         }
     }
 
-    private suspend fun collectImmunizationStatus() {
-        viewModel.status.collect { status ->
-            when (status.second) {
-                ImmunizationStatus.FULLY_IMMUNIZED,
-                ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
-                    sharedViewModel.setStatus(status)
-                    findNavController().navigate(
-                        R.id.myCardsFragment
-                    )
-                }
-
-                ImmunizationStatus.INVALID_QR_CODE -> {
-                    onFailure()
-                }
-            }
-        }
-    }
-
     override fun onDestroyView() {
 
         if (::cameraExecutor.isInitialized) {
             cameraExecutor.shutdown()
-
         }
 
         super.onDestroyView()
-
     }
 
     /**
@@ -180,9 +152,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
             bindBarcodeScannerUseCase()
 
             enableFlashControl()
-
         }, ContextCompat.getMainExecutor(requireContext()))
-
     }
 
     private fun bindBarcodeScannerUseCase() {
@@ -211,7 +181,6 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
 
             imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this))
 
-
             cameraProvider.unbindAll()
 
             camera = cameraProvider.bindToLifecycle(
@@ -219,7 +188,6 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
             )
 
             preview.setSurfaceProvider(binding.scannerPreview.surfaceProvider)
-
         } else {
             showNoCameraAlertDialog()
         }
@@ -260,20 +228,21 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
 
     override fun onScanned(shcUri: String) {
 
-        //Since camera is constantly analysing
-        //Its good to clear analyzer to avoid duplicate dialogs
-        //When barcode is not supported
+        // Since camera is constantly analysing
+        // Its good to clear analyzer to avoid duplicate dialogs
+        // When barcode is not supported
         imageAnalysis.clearAnalyzer()
 
-        viewModel.processShcUri(shcUri, requireContext().readJsonFromAsset("jwks.json"))
+        myCardsViewModel.saveCard(shcUri, CardType.QR)
 
+        findNavController().navigate(R.id.myCardsFragment)
     }
 
     override fun onFailure() {
 
-        //Since camera is constantly analysing
-        //Its good to clear analyzer to avoid duplicate dialogs
-        //When barcode is not supported
+        // Since camera is constantly analysing
+        // Its good to clear analyzer to avoid duplicate dialogs
+        // When barcode is not supported
         imageAnalysis.clearAnalyzer()
 
         MaterialAlertDialogBuilder(requireContext())
@@ -282,7 +251,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
             .setMessage(getString(R.string.bc_invalid_barcode_message))
             .setPositiveButton(getString(R.string.scan_next)) { dialog, which ->
 
-                //Attach analyzer again to start analysis.
+                // Attach analyzer again to start analysis.
                 imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this))
 
                 dialog.dismiss()

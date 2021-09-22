@@ -10,8 +10,6 @@ import com.google.gson.Gson
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.impl.crypto.DefaultJwtSignatureValidator
 import io.jsonwebtoken.io.Decoders
-import org.bouncycastle.jce.ECNamedCurveTable
-import org.bouncycastle.jce.spec.ECNamedCurveSpec
 import java.math.BigInteger
 import java.security.KeyFactory
 import java.security.interfaces.ECPublicKey
@@ -20,6 +18,9 @@ import java.security.spec.ECPublicKeySpec
 import java.util.Base64
 import java.util.zip.DataFormatException
 import java.util.zip.Inflater
+import javax.inject.Inject
+import org.bouncycastle.jce.ECNamedCurveTable
+import org.bouncycastle.jce.spec.ECNamedCurveSpec
 
 /**
  * [SHCDecoder] Helper class to decode SMART HEALTH CARD record retrieved from QR.
@@ -30,7 +31,9 @@ import java.util.zip.Inflater
  *
  * @author Pinakin Kansara
  */
-class SHCDecoder {
+class SHCDecoder @Inject constructor(
+    private val jwks: String
+) {
 
     companion object {
         const val INVALID_PAYLOAD = 100
@@ -54,7 +57,7 @@ class SHCDecoder {
      * @param [shcUri] from barcode and [jwks] from json.
      * @return Immunization status from given SHCData or exception if signature or payload is not valid.
      */
-    fun getImmunizationStatus(shcUri: String, jwks: String): Pair<String, ImmunizationStatus> {
+    fun getImmunizationStatus(shcUri: String): Pair<String, ImmunizationStatus> {
 
         if (jwks.isBlank() || jwks.isEmpty()) {
             throw SHCDecoderException(INVALID_SIGNATURE_KEY, "JWKS should not be empty or blank")

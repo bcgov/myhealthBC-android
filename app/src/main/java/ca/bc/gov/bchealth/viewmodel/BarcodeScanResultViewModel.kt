@@ -5,12 +5,12 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.ImmunizationStatus
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * [BarcodeScanResultViewModel]
@@ -30,13 +30,11 @@ class BarcodeScanResultViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000)
     )
 
-
-    fun processShcUri(shcUri: String, jwks: String) = viewModelScope.launch {
+    fun processShcUri(shcUri: String) = viewModelScope.launch {
         try {
-            _status.emit(shcDecoder.getImmunizationStatus(shcUri, jwks))
+            _status.emit(shcDecoder.getImmunizationStatus(shcUri))
         } catch (e: Exception) {
             _status.emit(Pair("No name found", ImmunizationStatus.INVALID_QR_CODE))
         }
     }
-
 }

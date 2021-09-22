@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/space_3_x"
+    android:layout_marginBottom="@dimen/space_3_x"
+    android:layout_marginEnd="@dimen/space_3_x">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/txt_full_name"
+        style="?textAppearanceHeadline3"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/navy_blue"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="JEAN SMITH" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layout_vaccine_status"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/status_green"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_full_name">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txt_vaccine_status"
+            style="?textAppearanceHeadline4"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:drawablePadding="@dimen/space_1_x"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:drawableStartCompat="@drawable/ic_check_mark"
+            tools:text="VACCINATED" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layout_qr_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/status_green"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_vaccine_status">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txt_issue_date"
+            style="?textAppearanceBody1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textStyle="normal"
+            tools:text="Issued on August-31-2021, 13:51" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/img_qr_code"
+            android:layout_width="176dp"
+            android:layout_height="176dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/space_2_x"
+            android:layout_marginBottom="@dimen/space_2_x"
+            tools:src="@drawable/ic_check_mark" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
