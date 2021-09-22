@@ -4,8 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/layout_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/txt_add_card_options_message"
+        style="?textAppearanceHeadline4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
@@ -14,11 +23,11 @@
         android:text="@string/add_card_options_message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_scan_qr_code"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button.TextButton.Icon"
+        style="@style/BC_VAX.Widget.MaterialComponents.Button.TextButton.Icon_1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
@@ -26,16 +35,13 @@
         android:layout_marginEnd="@dimen/space_4_x"
         android:text="@string/scan_qr_code"
         app:icon="@drawable/ic_camera"
-        app:iconGravity="textStart"
-        app:iconPadding="12dp"
-        app:iconTint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_add_card_options_message" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_image_picker"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button.TextButton.Icon"
+        style="@style/BC_VAX.Widget.MaterialComponents.Button.TextButton.Icon_1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
@@ -43,16 +49,13 @@
         android:layout_marginEnd="@dimen/space_4_x"
         android:text="@string/use_image_of_qr"
         app:icon="@drawable/ic_arrow_to_top"
-        app:iconGravity="textStart"
-        app:iconPadding="12dp"
-        app:iconTint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_scan_qr_code" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_get_card"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button.TextButton.Icon"
+        style="@style/BC_VAX.Widget.MaterialComponents.Button.TextButton.Icon_1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
@@ -60,9 +63,6 @@
         android:layout_marginEnd="@dimen/space_4_x"
         android:text="@string/enter_info_to_get_card"
         app:icon="@drawable/ic_address_card"
-        app:iconGravity="textStart"
-        app:iconPadding="12dp"
-        app:iconTint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_image_picker" />

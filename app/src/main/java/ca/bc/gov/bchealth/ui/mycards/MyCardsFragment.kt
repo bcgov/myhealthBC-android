@@ -28,5 +28,9 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
         binding.recMyCards.emptyView = binding.emptyState
         // TODO:- Cards list either from db or dummy
+
+        binding.toolbar.imgAction.setOnClickListener {
+            findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
+        }
     }
 }
