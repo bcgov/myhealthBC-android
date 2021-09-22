@@ -33,5 +33,11 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         binding.btnGetCard.setOnClickListener {
             // TODO: Start Add Card with citizen detail flow.
         }
+
+        binding.toolbar.imgAction.setImageResource(R.drawable.ic_plus)
+        binding.toolbar.imgAction.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
     }
 }

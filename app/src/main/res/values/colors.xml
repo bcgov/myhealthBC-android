@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="grey">#4D38598A</color>
+    <color name="bc_gov_grey">#606060</color>
     <color name="blue">#888FB8</color>
     <color name="green">#368039</color>
     <color name="navy_blue">#082B55</color>
