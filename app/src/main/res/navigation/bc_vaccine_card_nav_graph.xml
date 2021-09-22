@@ -34,4 +34,8 @@
         android:name="ca.bc.gov.bchealth.ui.setting.SettingFragment"
         android:label="fragment_setting"
         tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/barcodeScannerFragment"
+        android:name="ca.bc.gov.bchealth.ui.scanner.BarcodeScannerFragment"
+        android:label="BarcodeScannerFragment" />
 </navigation>
