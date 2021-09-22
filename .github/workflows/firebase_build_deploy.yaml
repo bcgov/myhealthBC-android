@@ -1,0 +1,85 @@
+name: Build and deply to firebase
+on:
+  push:
+    branches:
+      - develop
+jobs:
+  clean_build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Clean build
+        run: ./gradlew clean build
+
+      - name: Upload dev debug apk
+        uses: actions/upload-artifact@v1
+        with:
+          name: dev-debug.apk
+          path: app/build/outputs/apk/dev/debug/app-dev-debug.apk
+
+      - name: Upload stage debug apk
+        uses: actions/upload-artifact@v1
+        with:
+          name: stage-debug.apk
+          path: app/build/outputs/apk/stage/debug/app-stage-debug.apk
+
+      - name: Upload prod debug apk
+        uses: actions/upload-artifact@v1
+        with:
+          name: prod-debug.apk
+          path: app/build/outputs/apk/prod/debug/app-prod-debug.apk
+
+  deploy_to_firebase:
+    needs: [ clean_build ]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Generate release apk
+        run: ./gradlew assembleRelease
+
+      - name: Sign apk
+        uses: r0adkll/sign-android-release@v1
+        # ID used to access action output
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/apk/prod/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Upload signed prod apk
+        uses: actions/upload-artifact@master
+        with:
+          name: prod-signed-release.apk
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+      - name: Upload mapping file
+        uses: actions/upload-artifact@master
+        with:
+          name: mapping.txt
+          path: app/build/outputs/mapping/prodRelease/mapping.txt
+
+      - name: upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          token: ${{secrets.FIREBASE_TOKEN}}
+          groups: freshworks.io
+          file: ${{steps.sign_app.outputs.signedReleaseFile}}
