@@ -1,5 +1,6 @@
 package ca.bc.gov.bchealth.ui.mycards
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
@@ -39,7 +40,7 @@ class MyCardsAdapter(
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
 
         val card = cards[position]
 
