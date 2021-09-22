@@ -18,6 +18,15 @@ android {
         versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                        "room.schemaLocation"  : "$projectDir/schemas".toString(),
+                        "room.incremental"     : "true",
+                        "room.expandProjection": "true"]
+            }
+        }
     }
 
     buildTypes {
@@ -30,7 +39,7 @@ android {
     flavorDimensions "version"
     productFlavors {
 
-        dev{
+        dev {
             dimension "version"
             versionNameSuffix "-dev"
         }
@@ -93,11 +102,18 @@ dependencies {
 
     kapt "com.google.dagger:hilt-compiler:$versions.hilt"
 
+    //ROOM
+    implementation "androidx.room:room-runtime:$versions.room"
+    kapt "androidx.room:room-compiler:$versions.room"
+    implementation "androidx.room:room-ktx:$versions.room"
+
     //Google BarcodeScanner
     //TODO:- we may replace it with dynamic model download library
     //implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:16.2.1'
     implementation "com.google.mlkit:barcode-scanning:$versions.barcode_scanning"
 
+    //QR Generator
+    implementation "androidmads.library.qrgenearator:QRGenearator:1.0.3"
 
     //Camerax
     //TODO: decide on usage of lifecycle, view and extensions lib
