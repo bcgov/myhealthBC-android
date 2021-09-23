@@ -68,4 +68,10 @@
         <item name="android:minHeight">@dimen/space_6_x</item>
     </style>
 
+    <style name="Widget.BC_VAX.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:paddingLeft">@dimen/space_2_x</item>
+        <item name="android:paddingRight">@dimen/space_2_x</item>
+        <item name="strokeColor">@color/dark_blue</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
 </resources>

@@ -24,9 +24,9 @@ class CardRepository @Inject constructor(
         healthCards.map { card ->
             if (card.type == CardType.QR) {
                 val data = shcDecoder.getImmunizationStatus(card.uri)
-                HealthCardDto(data.first, data.second, card.uri, card.type)
+                HealthCardDto(data.first, data.second, card.uri, card.type, false)
             } else {
-                HealthCardDto("", ImmunizationStatus.FULLY_IMMUNIZED, card.uri, card.type)
+                HealthCardDto("", ImmunizationStatus.FULLY_IMMUNIZED, card.uri, card.type, false)
             }
         }
     }
