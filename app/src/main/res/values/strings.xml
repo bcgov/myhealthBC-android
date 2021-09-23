@@ -33,4 +33,5 @@
     <string name="bc_invalid_barcode_title">Invalid QR Code</string>
     <string name="bc_invalid_barcode_message">Please scan an official BC Vaccine Card QR Code.</string>
     <string name="scan_next">Scan Next</string>
+    <string name="close">Close</string>
 </resources>

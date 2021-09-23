@@ -19,12 +19,15 @@
         <action
             android:id="@+id/action_myCardsFragment_to_addCardOptionFragment"
             app:destination="@id/addCardOptionFragment" />
+        <action
+            android:id="@+id/action_myCardsFragment_to_expandQRFragment"
+            app:destination="@id/expandQRFragment" />
     </fragment>
     <fragment
         android:id="@+id/addCardOptionFragment"
         android:name="ca.bc.gov.bchealth.ui.addcard.AddCardOptionFragment"
         android:label="AddCardOptionFragment"
-        tools:layout="@layout/fragment_add_card_options" >
+        tools:layout="@layout/fragment_add_card_options">
         <action
             android:id="@+id/action_addCardOptionFragment_to_onBoardingFragment"
             app:destination="@id/onBoardingFragment" />
@@ -38,4 +41,12 @@
         android:id="@+id/barcodeScannerFragment"
         android:name="ca.bc.gov.bchealth.ui.scanner.BarcodeScannerFragment"
         android:label="BarcodeScannerFragment" />
+    <dialog
+        android:id="@+id/expandQRFragment"
+        android:name="ca.bc.gov.bchealth.ui.mycards.ExpandQRFragment"
+        android:label="ExpandQRFragment">
+        <argument
+            android:name="qrData"
+            app:argType="string" />
+    </dialog>
 </navigation>

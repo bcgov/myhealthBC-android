@@ -46,8 +46,17 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.cards.collect { cards ->
-                    myCardsAdapter.cards = cards
-                    myCardsAdapter.notifyDataSetChanged()
+                    if (cards == null) {
+                        binding.progressBar.visibility = View.VISIBLE
+                    } else {
+                        binding.progressBar.visibility = View.INVISIBLE
+                        if (cards.isEmpty()) {
+                            binding.emptyState.visibility = View.VISIBLE
+                        } else {
+                            myCardsAdapter.cards = cards
+                            myCardsAdapter.notifyDataSetChanged()
+                        }
+                    }
                 }
             }
         }
@@ -55,7 +64,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
     private fun setUpMyCardsAdapter() {
         myCardsAdapter = MyCardsAdapter(emptyList())
-        binding.recMyCards.emptyView = binding.emptyState
+        // binding.recMyCards.emptyView = binding.emptyState
         binding.recMyCards.adapter = myCardsAdapter
         binding.recMyCards.layoutManager = LinearLayoutManager(requireContext())
     }

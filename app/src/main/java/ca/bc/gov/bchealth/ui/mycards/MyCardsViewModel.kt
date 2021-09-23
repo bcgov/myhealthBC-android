@@ -24,7 +24,7 @@ class MyCardsViewModel @Inject constructor(
     val cards = repository.cards.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(10000),
-        initialValue = emptyList()
+        initialValue = null
     )
 
     fun saveCard(uri: String, type: CardType) = viewModelScope.launch {

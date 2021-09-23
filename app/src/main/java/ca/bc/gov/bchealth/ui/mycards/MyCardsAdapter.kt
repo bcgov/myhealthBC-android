@@ -8,9 +8,11 @@ import android.view.ViewGroup
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.model.HealthCardDto
+import ca.bc.gov.bchealth.model.ImmunizationStatus
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
 
@@ -44,22 +46,83 @@ class MyCardsAdapter(
 
         val card = cards[position]
 
+        /*
+        * Default view settings
+        * */
         holder.txtFullName.text = card.name
         holder.txtStatus.text = card.status.name
+        when (card.status) {
+            ImmunizationStatus.FULLY_IMMUNIZED -> {
+                holder.layoutVaccineStatus
+                    .setBackgroundColor(
+                        holder.layoutVaccineStatus.context.getColor(R.color.status_green)
+                    )
+                holder.txtStatus
+                    .setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_check_mark, 0, 0, 0
+                    )
+            }
 
-        try {
-            holder.imgQrCode.setImageBitmap(getBarcode(card.uri))
-        } catch (e: Exception) {
+            ImmunizationStatus.PARTIALLY_IMMUNIZED ->
+                holder.layoutVaccineStatus
+                    .setBackgroundColor(
+                        holder.layoutVaccineStatus.context.getColor(R.color.status_blue)
+                    )
+
+            else ->
+                holder.layoutVaccineStatus
+                    .setBackgroundColor(holder.layoutVaccineStatus.context.getColor(R.color.grey))
+        }
+
+        /*
+        * Expand/Collapse logic
+        * */
+        if (card.isExpanded) {
+
+            holder.layoutQrCode.visibility = View.VISIBLE
+            try {
+                holder.imgQrCode.setImageBitmap(getBarcode(card.uri))
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            when (card.status) {
+                ImmunizationStatus.FULLY_IMMUNIZED -> {
+                    holder.layoutQrCode
+                        .setBackgroundColor(
+                            holder.layoutQrCode.context.getColor(R.color.status_green)
+                        )
+                }
+                ImmunizationStatus.PARTIALLY_IMMUNIZED ->
+                    holder.layoutQrCode
+                        .setBackgroundColor(
+                            holder.layoutQrCode.context.getColor(R.color.status_blue)
+                        )
+                else ->
+                    holder.layoutQrCode
+                        .setBackgroundColor(
+                            holder.layoutQrCode.context.getColor(R.color.grey)
+                        )
+            }
+
+            holder.layoutQrCode.setOnClickListener {
+                val action = MyCardsFragmentDirections
+                    .actionMyCardsFragmentToExpandQRFragment(card.uri)
+                holder.layoutQrCode.findNavController().navigate(action)
+            }
+        } else {
+            holder.layoutQrCode.visibility = View.GONE
         }
 
         holder.layoutVaccineStatus.setOnClickListener {
-            if (expandedPosition == position) {
-                holder.layoutQrCode.visibility = View.GONE
-                expandedPosition = -1
-            } else {
-                expandedPosition = position
-                holder.layoutQrCode.visibility = View.VISIBLE
+            if (expandedPosition != -1) {
+                cards[expandedPosition].isExpanded = false
+                notifyItemChanged(expandedPosition)
             }
+
+            card.isExpanded = true
+            notifyItemChanged(position)
+            expandedPosition = position
         }
     }
 
@@ -68,7 +131,7 @@ class MyCardsAdapter(
     }
 
     private fun getBarcode(data: String): Bitmap {
-        val qrcode = QRGEncoder(data, null, QRGContents.Type.TEXT, 400)
+        val qrcode = QRGEncoder(data, null, QRGContents.Type.TEXT, 1200)
         return qrcode.encodeAsBitmap()
     }
 }
