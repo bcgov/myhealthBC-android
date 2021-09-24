@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.addcard
 
 import android.content.Context
 import android.net.Uri
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.data.local.entity.CardType
@@ -13,8 +14,8 @@ import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 /**
  * [AddCardOptionViewModel]
@@ -27,18 +28,19 @@ class AddCardOptionViewModel @Inject constructor(
     private val repository: CardRepository
 ) : ViewModel() {
 
+    val uploadStatus = MutableLiveData<Boolean>()
+
     fun processUploadedImage(
         uri: Uri,
-        context: Context,
-        listener: AddCardOptionFragment.UploadResultListener
+        context: Context
     ) = viewModelScope.launch {
 
         var image: InputImage? = null
         try {
-            image = InputImage.fromFilePath(context, uri) // TODO: 24/09/21 yet to handle warning 
+            image = InputImage.fromFilePath(context, uri) // TODO: 24/09/21 yet to handle warning
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
-            listener.onFailure()
+            uploadStatus.value = false
             return@launch
         }
 
@@ -49,23 +51,23 @@ class AddCardOptionViewModel @Inject constructor(
                 barcodes.firstOrNull().let { barcode ->
 
                     if (barcode == null) {
-                        listener.onFailure()
+                        uploadStatus.value = false
                         return@let
                     }
 
                     if (barcode.format != Barcode.FORMAT_QR_CODE) {
-                        listener.onFailure()
+                        uploadStatus.value = false
                         return@let
                     }
 
                     val rawValue = barcode.rawValue
                     rawValue?.let {
-                        processShcUri(it, listener)
+                        processShcUri(it)
                     }
                 }
             }
             .addOnFailureListener {
-                listener.onFailure()
+                uploadStatus.value = false
             }
             .addOnCompleteListener {
                 println("Scan finished!")
@@ -73,8 +75,7 @@ class AddCardOptionViewModel @Inject constructor(
     }
 
     private fun processShcUri(
-        shcUri: String,
-        listener: AddCardOptionFragment.UploadResultListener
+        shcUri: String
     ) = viewModelScope.launch {
         try {
             val status = shcDecoder.getImmunizationStatus(shcUri)
@@ -82,15 +83,15 @@ class AddCardOptionViewModel @Inject constructor(
                 ImmunizationStatus.FULLY_IMMUNIZED,
                 ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
                     saveCard(shcUri)
-                    listener.onSuccess()
+                    uploadStatus.value = true
                 }
 
                 ImmunizationStatus.INVALID_QR_CODE -> {
-                    listener.onFailure()
+                    uploadStatus.value = false
                 }
             }
         } catch (e: Exception) {
-            listener.onFailure()
+            uploadStatus.value = false
         }
     }
 

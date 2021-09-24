@@ -2,8 +2,11 @@ package ca.bc.gov.bchealth.ui.onboarding
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -11,16 +14,12 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentOnboardingBinding
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
-import ca.bc.gov.bchealth.BuildConfig
-
 
 /**
  * [OnBoardingFragment]
@@ -47,13 +46,14 @@ class OnBoardingFragment : Fragment(R.layout.fragment_onboarding) {
             }
         }
 
-        if(PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(
+        if (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(
                 requireContext(),
-                Manifest.permission.CAMERA)){
+                Manifest.permission.CAMERA
+            )
+        ) {
             navigateToScanner()
         }
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -107,14 +107,14 @@ class OnBoardingFragment : Fragment(R.layout.fragment_onboarding) {
                         Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
                     intent.data = uri
                     startActivity(intent)
-                } catch (e: Exception){
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
             .show()
     }
 
-    private fun navigateToScanner (){
+    private fun navigateToScanner() {
         val navOptions = NavOptions.Builder()
             .setPopUpTo(R.id.onBoardingFragment, true)
             .build()

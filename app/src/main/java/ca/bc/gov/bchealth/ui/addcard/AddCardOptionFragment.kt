@@ -12,7 +12,6 @@ import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
-
 /**
  * [AddCardOptionFragment]
  *
@@ -35,18 +34,16 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         val action = registerForActivityResult(
             ActivityResultContracts.GetContent()
         ) {
-            viewModel.processUploadedImage(it, requireContext(), object : UploadResultListener {
-                override fun onSuccess() {
-                    println("Successfully imported image!")
-                    findNavController().popBackStack()
-                }
-
-                override fun onFailure() {
-                    println("Invalid image!")
-                    showError()
-                }
-            })
+            viewModel.processUploadedImage(it, requireContext())
         }
+
+        viewModel.uploadStatus.observe(viewLifecycleOwner, {
+            if (it) {
+                findNavController().popBackStack()
+            } else {
+                showError()
+            }
+        })
 
         binding.btnImagePicker.setOnClickListener {
             action.launch("image/*")
