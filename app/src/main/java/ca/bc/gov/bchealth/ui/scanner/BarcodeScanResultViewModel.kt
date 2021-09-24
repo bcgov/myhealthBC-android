@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.viewmodel
+package ca.bc.gov.bchealth.ui.scanner
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

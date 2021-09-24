@@ -38,11 +38,15 @@ class MyCardsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.my_card_list_item, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.my_card_list_item, parent, false)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        @SuppressLint("RecyclerView") position: Int
+    ) {
 
         val card = cards[position]
 
@@ -50,28 +54,38 @@ class MyCardsAdapter(
         * Default view settings
         * */
         holder.txtFullName.text = card.name
-        holder.txtStatus.text = card.status.name
         when (card.status) {
             ImmunizationStatus.FULLY_IMMUNIZED -> {
                 holder.layoutVaccineStatus
                     .setBackgroundColor(
                         holder.layoutVaccineStatus.context.getColor(R.color.status_green)
                     )
+                holder.txtStatus.text =
+                    holder.layoutVaccineStatus.context.resources
+                        .getString(R.string.vaccinated)
                 holder.txtStatus
                     .setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.ic_check_mark, 0, 0, 0
                     )
             }
 
-            ImmunizationStatus.PARTIALLY_IMMUNIZED ->
+            ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
                 holder.layoutVaccineStatus
                     .setBackgroundColor(
                         holder.layoutVaccineStatus.context.getColor(R.color.status_blue)
                     )
+                holder.txtStatus.text =
+                    holder.layoutVaccineStatus.context.resources
+                        .getString(R.string.partially_vaccinated)
+            }
 
-            else ->
+            else -> {
                 holder.layoutVaccineStatus
                     .setBackgroundColor(holder.layoutVaccineStatus.context.getColor(R.color.grey))
+                holder.txtStatus.text =
+                    holder.layoutVaccineStatus.context.resources
+                        .getString(R.string.no_record)
+            }
         }
 
         /*
