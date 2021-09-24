@@ -43,4 +43,7 @@
     <string name="no_app_found">No app found to open link!</string>
     <string name="present_for_scanning">Present For Scanning</string>
 
+    <string name="manage_cards">Manage Cards</string>
+    <string name="done">Done</string>
+
 </resources>

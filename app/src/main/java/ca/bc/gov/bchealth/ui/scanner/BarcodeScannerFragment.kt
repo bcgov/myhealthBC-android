@@ -20,7 +20,6 @@ import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.barcodeanalyzer.BarcodeAnalyzer
 import ca.bc.gov.bchealth.barcodeanalyzer.ScanningResultListener
-import ca.bc.gov.bchealth.data.local.entity.CardType
 import ca.bc.gov.bchealth.databinding.FragmentBarcodeScannerBinding
 import ca.bc.gov.bchealth.ui.mycards.MyCardsViewModel
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -178,9 +177,9 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
             // When barcode is not supported
             imageAnalysis.clearAnalyzer()
 
-            myCardsViewModel.saveCard(shcUri, CardType.QR)
+            myCardsViewModel.saveCard(shcUri)
 
-            findNavController().popBackStack(R.id.myCardsFragment, false)
+            findNavController().navigate(R.id.myCardsFragment)
         }
 
         override fun onFailure() {

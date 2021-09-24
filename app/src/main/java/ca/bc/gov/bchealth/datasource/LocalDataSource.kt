@@ -15,5 +15,9 @@ class LocalDataSource @Inject constructor(
 
     suspend fun insert(card: HealthCard) = dataBase.getHealthCardDao().insert(card)
 
+    suspend fun update(card: HealthCard) = dataBase.getHealthCardDao().update(card)
+
+    suspend fun unLink(card: HealthCard) = dataBase.getHealthCardDao().delete(card)
+
     fun getCards() = dataBase.getHealthCardDao().getCards()
 }

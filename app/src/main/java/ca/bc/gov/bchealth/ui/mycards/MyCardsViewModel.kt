@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.ui.mycards
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.bchealth.data.local.entity.CardType
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.repository.CardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +26,15 @@ class MyCardsViewModel @Inject constructor(
         initialValue = null
     )
 
-    fun saveCard(uri: String, type: CardType) = viewModelScope.launch {
-        repository.insertHealthCard(HealthCard(uri, type))
+    fun saveCard(uri: String) = viewModelScope.launch {
+        repository.insert(HealthCard(uri = uri))
+    }
+
+    fun updateCard(id: Int, uri: String) = viewModelScope.launch {
+        repository.updateHealthCard(HealthCard(id, uri))
+    }
+
+    fun unLink(id: Int, uri: String) = viewModelScope.launch {
+        repository.unLink(HealthCard(id, uri))
     }
 }

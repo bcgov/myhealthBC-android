@@ -1,5 +1,6 @@
 package ca.bc.gov.bchealth.utils
 
+import ca.bc.gov.bchealth.model.ImmunizationRecord
 import ca.bc.gov.bchealth.model.ImmunizationStatus
 import ca.bc.gov.bchealth.model.Jwks
 import ca.bc.gov.bchealth.model.JwksKey
@@ -57,7 +58,7 @@ class SHCDecoder @Inject constructor(
      * @param [shcUri] from barcode and [jwks] from json.
      * @return Immunization status from given SHCData or exception if signature or payload is not valid.
      */
-    fun getImmunizationStatus(shcUri: String): Pair<String, ImmunizationStatus> {
+    fun getImmunizationStatus(shcUri: String): ImmunizationRecord {
 
         if (jwks.isBlank() || jwks.isEmpty()) {
             throw SHCDecoderException(INVALID_SIGNATURE_KEY, "JWKS should not be empty or blank")
@@ -88,17 +89,17 @@ class SHCDecoder @Inject constructor(
      * @param shcData SHCData
      * @return [Pair] patient name & Immunization status
      */
-    private fun determineImmunizationStatus(shcData: SHCData): Pair<String, ImmunizationStatus> {
+    private fun determineImmunizationStatus(shcData: SHCData): ImmunizationRecord {
         val entries = shcData.payload.vc.credentialSubject.fhirBundle.entry
 
-        val names = entries.filter { entry ->
+        val record = entries.filter { entry ->
             entry.resource.resourceType.contains(PATIENT)
         }.map { entry ->
             val name = entry.resource.name?.firstOrNull()
             if (name != null) {
-                "${name.given.joinToString(" ")} ${name.family}"
+                Pair("${name.given.joinToString(" ")} ${name.family}", entry.resource.birthDate)
             } else {
-                "Name not found!"
+                Pair("Name not found!", entry.resource.birthDate)
             }
         }
 
@@ -134,7 +135,9 @@ class SHCDecoder @Inject constructor(
             }
         }
 
-        return Pair(names.first(), status)
+        return ImmunizationRecord(
+            record.first().first, record.first().second, status, shcData.payload.nbf
+        )
     }
 
     /**

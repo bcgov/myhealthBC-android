@@ -1,6 +1,7 @@
 package ca.bc.gov.bchealth.data.local.entity
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /**
@@ -8,9 +9,12 @@ import androidx.room.PrimaryKey
  *
  * @author Pinakin Kansara
  */
-@Entity(tableName = "health_card")
+@Entity(
+    tableName = "health_card",
+    indices = [Index(value = ["uri"], unique = true)]
+)
 data class HealthCard(
-    @PrimaryKey
-    val uri: String,
-    val type: CardType
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    var uri: String
 )

@@ -17,26 +17,26 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/txt_full_name"
             style="?textAppearanceHeadline3"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="@dimen/space_6_x"
             android:background="@color/navy_blue"
             android:gravity="center"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="16sp"
-            app:textAllCaps="true"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/img_unlink"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:textAllCaps="true"
             tools:text="JEAN SMITH" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/layout_vaccine_status"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="@dimen/space_6_x"
             android:background="@color/status_green"
             android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/txt_full_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_full_name">
 
@@ -85,5 +85,28 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/img_unlink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="@id/txt_full_name"
+            app:layout_constraintEnd_toStartOf="@id/ic_reorder"
+            app:layout_constraintStart_toEndOf="@id/txt_full_name"
+            app:layout_constraintTop_toTopOf="@id/txt_full_name"
+            app:srcCompat="@drawable/ic_un_link" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ic_reorder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintBottom_toBottomOf="@id/txt_full_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/img_unlink"
+            app:layout_constraintTop_toTopOf="@id/txt_full_name"
+            app:srcCompat="@drawable/ic_reorder" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
