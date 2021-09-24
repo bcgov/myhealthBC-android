@@ -5,7 +5,7 @@ on:
       - develop
 jobs:
   clean_build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Check out
