@@ -34,7 +34,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnAddCard.setOnClickListener {
-            findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
+            findNavController().navigate(R.id.addCardOptionFragment)
         }
 
         binding.toolbar.imgAction.setOnClickListener {
@@ -53,6 +53,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                         if (cards.isEmpty()) {
                             binding.emptyState.visibility = View.VISIBLE
                         } else {
+                            binding.emptyState.visibility = View.INVISIBLE
                             myCardsAdapter.cards = cards
                             myCardsAdapter.notifyDataSetChanged()
                         }

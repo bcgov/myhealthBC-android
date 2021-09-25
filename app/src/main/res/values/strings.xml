@@ -22,8 +22,8 @@
     <string name="help">Help</string>
     <string name="my_card">My Card</string>
 
-    <string name="bc_permission_required_title">Oops!</string>
-    <string name="bc_permission_message">This app requires camera permission. This permission is required in order to scan BC Vaccine Card QR codes.\nTo enable camera access go to settings to grant permissions.</string>
+    <string name="camera_permission_required_title">Camera permission required!</string>
+    <string name="camera_permission_message">Camera permission is required to scan BC Vaccine Card QR codes.</string>
     <string name="exit">Exit</string>
     <string name="btn_ok">OK</string>
 
@@ -32,6 +32,13 @@
 
     <string name="bc_invalid_barcode_title">Invalid QR Code</string>
     <string name="bc_invalid_barcode_message">Please scan an official BC Vaccine Card QR Code.</string>
+    <string name="bc_invalid_barcode_upload_message">Please upload an official BC Vaccine Card QR Code.</string>
     <string name="scan_next">Scan Next</string>
     <string name="close">Close</string>
+    <string name="grant">Grant</string>
+    <string name="not_now">Not now</string>
+    <string name="vaccinated">Vaccinated</string>
+    <string name="partially_vaccinated">Partially Vaccinated</string>
+    <string name="no_record">No Record</string>
+
 </resources>

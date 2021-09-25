@@ -1,13 +1,9 @@
 package ca.bc.gov.bchealth.ui.scanner
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Size
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -46,8 +42,6 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
 
     private lateinit var cameraExecutor: ExecutorService
 
-    private lateinit var requestPermission: ActivityResultLauncher<String>
-
     private lateinit var cameraProvider: ProcessCameraProvider
 
     private lateinit var imageAnalysis: ImageAnalysis
@@ -58,16 +52,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        requestPermission = registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-
-            if (isGranted) {
-                setUpCamera()
-            } else {
-                showRationalDialog()
-            }
-        }
+        setUpCamera()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -87,8 +72,6 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
     private fun initCamera() {
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        checkCameraPermission()
-
         binding.overlay.post {
             binding.overlay.setViewFinder()
         }
@@ -101,44 +84,6 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
         }
 
         super.onDestroyView()
-    }
-
-    /**
-     * Check if permission for required feature is Granted or not.
-     */
-    private fun checkCameraPermission() {
-
-        when {
-
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                setUpCamera()
-            }
-
-            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
-                showRationalDialog()
-            }
-
-            else -> {
-                requestPermission.launch(Manifest.permission.CAMERA)
-            }
-        }
-    }
-
-    private fun showRationalDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.bc_permission_required_title))
-            .setCancelable(false)
-            .setMessage(getString(R.string.bc_permission_message))
-            .setNegativeButton(getString(R.string.exit)) { dialog, which ->
-                if (!findNavController().popBackStack() || !findNavController().navigateUp()) {
-                    requireActivity().finish()
-                }
-                dialog.dismiss()
-            }
-            .show()
     }
 
     private fun setUpCamera() {
@@ -257,9 +202,5 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                     dialog.dismiss()
                 }
                 .show()
-        }
-
-        companion object {
-            const val ON_BOARDING_SHOWN = "ON_BOARDING_SHOWN"
         }
     }
