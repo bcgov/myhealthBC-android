@@ -1,6 +1,5 @@
 package ca.bc.gov.bchealth.ui.mycards
 
-import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
@@ -22,10 +21,10 @@ import com.google.android.material.textview.MaterialTextView
  * @author Pinakin Kansara
  */
 class MyCardsAdapter(
-    var cards: List<HealthCardDto>
+    var cards: MutableList<HealthCardDto>,
+    var canManage: Boolean = false,
+    val unLinkListener: (HealthCardDto) -> Unit
 ) : RecyclerView.Adapter<MyCardsAdapter.ViewHolder>() {
-
-    private var expandedPosition = -1
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtFullName: MaterialTextView = itemView.findViewById(R.id.txt_full_name)
@@ -34,6 +33,8 @@ class MyCardsAdapter(
         val layoutVaccineStatus: LinearLayoutCompat =
             itemView.findViewById(R.id.layout_vaccine_status)
         val imgQrCode: ShapeableImageView = itemView.findViewById(R.id.img_qr_code)
+        val imgUnLink: ShapeableImageView = itemView.findViewById(R.id.img_unlink)
+        val imgReorder: ShapeableImageView = itemView.findViewById(R.id.ic_reorder)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -43,100 +44,40 @@ class MyCardsAdapter(
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(
-        holder: ViewHolder,
-        @SuppressLint("RecyclerView") position: Int
-    ) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val card = cards[position]
 
-        /*
-        * Default view settings
-        * */
         holder.txtFullName.text = card.name
-        when (card.status) {
-            ImmunizationStatus.FULLY_IMMUNIZED -> {
-                holder.layoutVaccineStatus
-                    .setBackgroundColor(
-                        holder.layoutVaccineStatus.context.getColor(R.color.status_green)
-                    )
-                holder.txtStatus.text =
-                    holder.layoutVaccineStatus.context.resources
-                        .getString(R.string.vaccinated)
-                holder.txtStatus
-                    .setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_check_mark, 0, 0, 0
-                    )
-            }
+        setUiState(holder, card.status)
 
-            ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
-                holder.layoutVaccineStatus
-                    .setBackgroundColor(
-                        holder.layoutVaccineStatus.context.getColor(R.color.status_blue)
-                    )
-                holder.txtStatus.text =
-                    holder.layoutVaccineStatus.context.resources
-                        .getString(R.string.partially_vaccinated)
-            }
-
-            else -> {
-                holder.layoutVaccineStatus
-                    .setBackgroundColor(holder.layoutVaccineStatus.context.getColor(R.color.grey))
-                holder.txtStatus.text =
-                    holder.layoutVaccineStatus.context.resources
-                        .getString(R.string.no_record)
-            }
-        }
-
-        /*
-        * Expand/Collapse logic
-        * */
         if (card.isExpanded) {
-
             holder.layoutQrCode.visibility = View.VISIBLE
             try {
                 holder.imgQrCode.setImageBitmap(getBarcode(card.uri))
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
-            when (card.status) {
-                ImmunizationStatus.FULLY_IMMUNIZED -> {
-                    holder.layoutQrCode
-                        .setBackgroundColor(
-                            holder.layoutQrCode.context.getColor(R.color.status_green)
-                        )
-                }
-                ImmunizationStatus.PARTIALLY_IMMUNIZED ->
-                    holder.layoutQrCode
-                        .setBackgroundColor(
-                            holder.layoutQrCode.context.getColor(R.color.status_blue)
-                        )
-                else ->
-                    holder.layoutQrCode
-                        .setBackgroundColor(
-                            holder.layoutQrCode.context.getColor(R.color.grey)
-                        )
-            }
-
-            holder.layoutQrCode.setOnClickListener {
-                val action = MyCardsFragmentDirections
-                    .actionMyCardsFragmentToExpandQRFragment(card.uri)
-                holder.layoutQrCode.findNavController().navigate(action)
-            }
         } else {
             holder.layoutQrCode.visibility = View.GONE
         }
 
-        holder.layoutVaccineStatus.setOnClickListener {
-            if (expandedPosition != -1) {
-                cards[expandedPosition].isExpanded = false
-                notifyItemChanged(expandedPosition)
-            }
+        holder.layoutQrCode.setOnClickListener {
+            val action = MyCardsFragmentDirections
+                .actionMyCardsFragmentToExpandQRFragment(card.uri)
+            holder.layoutQrCode.findNavController().navigate(action)
+        }
 
+        holder.itemView.setOnClickListener {
+            cards.forEach { healthCard ->
+                healthCard.isExpanded = false
+            }
             card.isExpanded = true
-            notifyItemChanged(position)
-            expandedPosition = position
+            notifyDataSetChanged()
+        }
+
+        holder.imgUnLink.setOnClickListener {
+            unLinkListener(card)
         }
     }
 
@@ -144,8 +85,81 @@ class MyCardsAdapter(
         return cards.size
     }
 
+    private fun setUiState(holder: ViewHolder, status: ImmunizationStatus) {
+
+        val partiallyVaccinatedColor = holder.itemView.context.getColor(R.color.status_blue)
+        val fullyVaccinatedColor = holder.itemView.context.getColor(R.color.status_green)
+        val inValidColor = holder.itemView.context.getColor(R.color.grey)
+
+        var color = inValidColor
+        var statusText = ""
+        when (status) {
+
+            ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
+                color = partiallyVaccinatedColor
+                statusText = holder.itemView.context.resources
+                    .getString(R.string.partially_vaccinated)
+                holder.txtStatus
+                    .setCompoundDrawablesWithIntrinsicBounds(
+                        0, 0, 0, 0
+                    )
+            }
+
+            ImmunizationStatus.FULLY_IMMUNIZED -> {
+                color = fullyVaccinatedColor
+                statusText = holder.itemView.context.resources
+                    .getString(R.string.vaccinated)
+                holder.txtStatus
+                    .setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_check_mark, 0, 0, 0
+                    )
+            }
+
+            ImmunizationStatus.INVALID_QR_CODE -> {
+                color = inValidColor
+                statusText = holder.itemView.context.resources
+                    .getString(R.string.no_record)
+                holder.txtStatus
+                    .setCompoundDrawablesWithIntrinsicBounds(
+                        0, 0, 0, 0
+                    )
+            }
+        }
+
+        holder.txtStatus.text = statusText
+
+        holder.layoutVaccineStatus.setBackgroundColor(color)
+
+        holder.layoutQrCode.setBackgroundColor(color)
+
+        if (canManage) {
+            holder.imgReorder.visibility = View.VISIBLE
+            holder.imgUnLink.visibility = View.VISIBLE
+            cards.forEach { healthCard ->
+                healthCard.isExpanded = false
+            }
+        } else {
+            holder.imgReorder.visibility = View.GONE
+            holder.imgUnLink.visibility = View.GONE
+        }
+    }
+
     private fun getBarcode(data: String): Bitmap {
         val qrcode = QRGEncoder(data, null, QRGContents.Type.TEXT, 1200)
         return qrcode.encodeAsBitmap()
+    }
+
+    fun moveItem(from: Int, to: Int) {
+        if (from < to) {
+            for (i in from until to - 1) {
+                cards[i] = cards.set(i + 1, cards[i])
+            }
+        } else {
+            for (i in from..to + 1) {
+                cards[i] = cards.set(i - 1, cards[i])
+            }
+        }
+
+        notifyItemMoved(from, to)
     }
 }

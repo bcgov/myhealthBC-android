@@ -13,24 +13,45 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ca.bc.gov.bchealth.widget.RecyclerView
-        android:id="@+id/rec_my_cards"
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/space_3_x"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:itemCount="10"
-        tools:listitem="@layout/my_card_list_item" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_height="0dp">
+        <ca.bc.gov.bchealth.widget.RecyclerView
+            android:id="@+id/rec_my_cards"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/space_3_x"
+            tools:itemCount="10"
+            tools:listitem="@layout/my_card_list_item" />
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
+            android:paddingStart="@dimen/space_3_x"
+            android:minWidth="162dp"
+            android:paddingEnd="@dimen/space_3_x"
+            android:id="@+id/btn_manage_cards"
+            android:text="@string/manage_cards"
+            android:visibility="gone"
+            android:textSize="16sp"
+            android:layout_marginBottom="@dimen/space_3_x"
+            style="?materialButtonOutlinedStyle"
+            android:layout_height="wrap_content"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/empty_state"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:gravity="center_horizontal"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -82,9 +103,8 @@
         android:indeterminate="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.552" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

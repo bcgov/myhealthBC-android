@@ -11,6 +11,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class SHCPayload(
     val iss: String,
-    val nbf: Double,
+    val nbf: Long,
     val vc: Vc
 ) : Parcelable

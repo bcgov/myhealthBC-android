@@ -5,7 +5,6 @@ import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.bchealth.data.local.entity.CardType
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.model.ImmunizationStatus
 import ca.bc.gov.bchealth.repository.CardRepository
@@ -78,8 +77,7 @@ class AddCardOptionViewModel @Inject constructor(
         shcUri: String
     ) = viewModelScope.launch {
         try {
-            val status = shcDecoder.getImmunizationStatus(shcUri)
-            when (status.second) {
+            when (shcDecoder.getImmunizationStatus(shcUri).status) {
                 ImmunizationStatus.FULLY_IMMUNIZED,
                 ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
                     saveCard(shcUri)
@@ -96,6 +94,6 @@ class AddCardOptionViewModel @Inject constructor(
     }
 
     private fun saveCard(uri: String) = viewModelScope.launch {
-        repository.insertHealthCard(HealthCard(uri, CardType.QR))
+        repository.insertHealthCard(HealthCard(uri = uri))
     }
 }

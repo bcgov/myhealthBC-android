@@ -1,14 +1,13 @@
 package ca.bc.gov.bchealth.model
 
 /**
- * [HealthCardDto]
+ * [ImmunizationRecord]
  *
  * @author Pinakin Kansara
  */
-data class HealthCardDto(
-    val id: Int,
+data class ImmunizationRecord(
     val name: String,
+    val birthDate: String?,
     val status: ImmunizationStatus,
-    val uri: String,
-    var isExpanded: Boolean = false
+    val issueDate: Long
 )
