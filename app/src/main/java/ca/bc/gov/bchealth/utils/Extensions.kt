@@ -13,6 +13,5 @@ fun Context.readJsonFromAsset(fileName: String) =
 /*
 * For displaying Toast
 * */
-fun Context.toast(message: String)
-        = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-
+fun Context.toast(message: String) =
+    Toast.makeText(this, message, Toast.LENGTH_LONG).show()

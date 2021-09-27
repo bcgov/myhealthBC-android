@@ -17,7 +17,6 @@ import ca.bc.gov.bchealth.databinding.FragmentSettingBinding
 import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
 
-
 /**
  * [SettingFragment]
  *
@@ -56,7 +55,6 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-
             }
 
             override fun onServiceDisconnected(name: ComponentName) {}
