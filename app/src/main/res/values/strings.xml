@@ -8,7 +8,7 @@
 
     <string name="my_cards">My Cards</string>
     <string name="setting">Setting</string>
-    <string name="settings_message">BC Vaccine Card app is the official mobile application from the Government of British Columbia which allow you to store and organze the proof of vaccination of you and your family members.</string>
+    <string name="settings_message">BC Vaccine Card app is the official mobile application from the Government of British Columbia. It allows you to store and organize a proof of vaccination for you and your family members.</string>
 
     <string name="no_cards_message">You don\'t have any vaccine card yet</string>
     <string name="add_card">Add Card</string>
@@ -40,5 +40,6 @@
     <string name="vaccinated">Vaccinated</string>
     <string name="partially_vaccinated">Partially Vaccinated</string>
     <string name="no_record">No Record</string>
+    <string name="no_app_found">No app found to open link!</string>
 
 </resources>

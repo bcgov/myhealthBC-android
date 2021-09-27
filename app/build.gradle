@@ -137,6 +137,8 @@ dependencies {
 
     implementation "org.bouncycastle:bcprov-jdk15on:$versions.bouncycastle"
 
+    implementation "androidx.browser:browser:$versions.browser"
+
     // https://stackoverflow.com/questions/29402155/android-unit-test-not-mocked
     testImplementation 'org.json:json:20210307'
 
@@ -150,7 +152,4 @@ dependencies {
     androidTestImplementation "com.google.dagger:hilt-android-testing:$versions.hilt"
 
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$versions.hilt"
-
-    //DataStore
-    implementation "androidx.datastore:datastore-preferences:$versions.datastore"
 }
