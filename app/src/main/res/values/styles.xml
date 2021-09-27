@@ -45,6 +45,7 @@
         <item name="iconPadding">12dp</item>
         <item name="iconTint">@color/white</item>
         <item name="android:lineSpacingMultiplier">1.0</item>
+        <item name="android:letterSpacing">-0.01</item>
     </style>
 
     <style name="BC_VAX.Widget.MaterialComponents.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
@@ -69,6 +70,7 @@
     </style>
 
     <style name="Widget.BC_VAX.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:layout_height">48dp</item>
         <item name="android:paddingLeft">@dimen/space_2_x</item>
         <item name="android:paddingRight">@dimen/space_2_x</item>
         <item name="strokeColor">@color/dark_blue</item>

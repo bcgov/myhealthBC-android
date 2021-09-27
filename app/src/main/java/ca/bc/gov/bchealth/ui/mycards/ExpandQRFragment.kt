@@ -30,7 +30,7 @@ class ExpandQRFragment : DialogFragment(R.layout.fragment_expand_q_r) {
         val dialog: Dialog? = dialog
         if (dialog != null) {
             val width = ViewGroup.LayoutParams.MATCH_PARENT
-            val height = ViewGroup.LayoutParams.MATCH_PARENT
+            val height = ViewGroup.LayoutParams.WRAP_CONTENT
             dialog.window?.setLayout(width, height)
         }
     }
