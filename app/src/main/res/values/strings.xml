@@ -14,9 +14,9 @@
     <string name="add_card">Add Card</string>
 
     <string name="add_card_options_message">Scan, upload or get access to your proof of vaccination.</string>
-    <string name="scan_qr_code">Scan a vaccine card QR code</string>
-    <string name="use_image_of_qr">Use an image of your QR code</string>
-    <string name="enter_info_to_get_card">Enter info to get your card</string>
+    <string name="scan_qr_code">Scan a vaccine QR code</string>
+    <string name="use_image_of_qr">Upload your vaccine QR code</string>
+    <string name="enter_info_to_get_card">Access your vaccine QR code</string>
 
     <string name="privacy_statement">Privacy Statement</string>
     <string name="help">Help</string>
@@ -41,5 +41,6 @@
     <string name="partially_vaccinated">Partially Vaccinated</string>
     <string name="no_record">No Record</string>
     <string name="no_app_found">No app found to open link!</string>
+    <string name="present_for_scanning">Present For Scanning</string>
 
 </resources>

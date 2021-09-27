@@ -18,10 +18,18 @@
         tools:layout="@layout/fragment_my_cards">
         <action
             android:id="@+id/action_myCardsFragment_to_addCardOptionFragment"
-            app:destination="@id/addCardOptionFragment" />
+            app:destination="@id/addCardOptionFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_myCardsFragment_to_expandQRFragment"
-            app:destination="@id/expandQRFragment" />
+            app:destination="@id/expandQRFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/addCardOptionFragment"
@@ -30,7 +38,11 @@
         tools:layout="@layout/fragment_add_card_options">
         <action
             android:id="@+id/action_addCardOptionFragment_to_onBoardingFragment"
-            app:destination="@id/onBoardingFragment" />
+            app:destination="@id/onBoardingFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/settingFragment"

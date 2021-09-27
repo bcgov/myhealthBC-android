@@ -180,7 +180,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
 
             myCardsViewModel.saveCard(shcUri, CardType.QR)
 
-            findNavController().navigate(R.id.myCardsFragment)
+            findNavController().popBackStack(R.id.myCardsFragment, false)
         }
 
         override fun onFailure() {
