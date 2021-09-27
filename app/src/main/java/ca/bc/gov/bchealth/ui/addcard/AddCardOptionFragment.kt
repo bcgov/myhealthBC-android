@@ -54,6 +54,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         }
 
         binding.toolbar.imgAction.setImageResource(R.drawable.ic_plus)
+        binding.toolbar.imgAction.contentDescription = getString(R.string.close)
         binding.toolbar.imgAction.setOnClickListener {
             findNavController().popBackStack()
         }

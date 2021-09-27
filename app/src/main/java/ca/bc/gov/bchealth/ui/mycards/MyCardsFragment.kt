@@ -37,6 +37,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
             findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
         }
 
+        binding.toolbar.imgAction.contentDescription = getString(R.string.add_card)
         binding.toolbar.imgAction.setOnClickListener {
             findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
         }
