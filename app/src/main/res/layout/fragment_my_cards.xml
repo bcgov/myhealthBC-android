@@ -13,38 +13,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <ca.bc.gov.bchealth.widget.RecyclerView
+        android:id="@+id/rec_my_cards"
         android:layout_width="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/space_1_x"
+        android:layout_marginTop="@dimen/space_3_x"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toTopOf="@+id/btn_manage_cards"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_height="0dp">
-        <ca.bc.gov.bchealth.widget.RecyclerView
-            android:id="@+id/rec_my_cards"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="@dimen/space_3_x"
-            tools:itemCount="10"
-            tools:listitem="@layout/my_card_list_item" />
+        tools:itemCount="10"
+        tools:listitem="@layout/my_card_list_item" />
 
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="wrap_content"
-            android:paddingStart="@dimen/space_3_x"
-            android:minWidth="162dp"
-            android:paddingEnd="@dimen/space_3_x"
-            android:id="@+id/btn_manage_cards"
-            android:text="@string/manage_cards"
-            android:visibility="gone"
-            android:textSize="16sp"
-            android:layout_marginBottom="@dimen/space_3_x"
-            style="?materialButtonOutlinedStyle"
-            android:layout_height="wrap_content"/>
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_manage_cards"
+        style="?materialButtonOutlinedStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/space_1_x"
+        android:minWidth="162dp"
+        android:paddingStart="@dimen/space_3_x"
+        android:paddingEnd="@dimen/space_3_x"
+        android:text="@string/manage_cards"
+        android:textSize="16sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/empty_state"
@@ -65,7 +64,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_no_cards" />
+            app:srcCompat="@drawable/ic_group_5209" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/materialTextView"
@@ -104,7 +103,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-         />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

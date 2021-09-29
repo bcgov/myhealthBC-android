@@ -12,15 +12,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/txt_add_card_options_message"
-        style="?textAppearanceHeadline4"
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/img_add_card"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginTop="@dimen/space_4_x"
-        android:layout_marginEnd="@dimen/space_4_x"
-        android:text="@string/add_card_options_message"
+        android:layout_marginTop="@dimen/space_5_x"
+        android:src="@drawable/ic_group_5212"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
@@ -37,7 +34,7 @@
         app:icon="@drawable/ic_camera"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_add_card_options_message" />
+        app:layout_constraintTop_toBottomOf="@id/img_add_card" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_image_picker"

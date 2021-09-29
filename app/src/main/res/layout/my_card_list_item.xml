@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/space_3_x"
@@ -9,7 +10,7 @@
     app:cardCornerRadius="4dp"
     app:cardElevation="@dimen/space_1_x">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true">
@@ -18,17 +19,18 @@
             android:id="@+id/txt_full_name"
             style="?textAppearanceHeadline3"
             android:layout_width="0dp"
-            android:layout_height="@dimen/space_6_x"
+            android:layout_height="wrap_content"
             android:background="@color/navy_blue"
             android:gravity="center"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="16sp"
+            android:padding="@dimen/space_1_x"
             app:layout_constraintEnd_toStartOf="@id/img_unlink"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:textAllCaps="true"
-            tools:text="JEAN SMITH" />
+            tools:text="JEAN SMITH Here for testing the length " />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/layout_vaccine_status"
