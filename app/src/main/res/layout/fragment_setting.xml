@@ -79,6 +79,7 @@
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
+        android:contentDescription="@string/privacy_statement"
         app:layout_constraintBottom_toTopOf="@+id/line2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
