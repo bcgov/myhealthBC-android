@@ -58,6 +58,7 @@ class CardRepository @Inject constructor(
                 }
             }
         } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

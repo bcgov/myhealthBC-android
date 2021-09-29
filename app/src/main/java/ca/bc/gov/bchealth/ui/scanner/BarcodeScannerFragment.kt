@@ -27,7 +27,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * [BarcodeScannerFragment]
@@ -177,9 +179,12 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
             // When barcode is not supported
             imageAnalysis.clearAnalyzer()
 
-            myCardsViewModel.saveCard(shcUri)
-
-            findNavController().navigate(R.id.myCardsFragment)
+            lifecycleScope.launch {
+                withContext(Dispatchers.Main) {
+                    myCardsViewModel.saveCard(shcUri)
+                    findNavController().popBackStack(R.id.myCardsFragment, false)
+                }
+            }
         }
 
         override fun onFailure() {

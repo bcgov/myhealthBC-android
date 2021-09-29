@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_8_x"
-                android:src="@drawable/ic_logo"
+                android:src="@drawable/ic_group_5214"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -64,7 +64,7 @@
                 style="@style/BC_VAX.Widget.MaterialComponents.Button.TextButton.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_10_x"
+                android:layout_marginTop="@dimen/space_8_x"
                 android:text="@string/allow"
                 app:icon="@drawable/ic_check"
                 app:iconGravity="start"

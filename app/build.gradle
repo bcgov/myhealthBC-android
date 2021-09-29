@@ -11,7 +11,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "ca.bc.gov.bchealth"
+        applicationId "ca.bc.gov.myhealth"
         minSdk 27
         targetSdk 31
         versionCode 1
