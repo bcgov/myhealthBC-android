@@ -28,7 +28,7 @@ class MyCardsViewModel @Inject constructor(
         initialValue = null
     )
 
-    suspend fun saveCard(uri: String) = viewModelScope.launch {
+    fun saveCard(uri: String) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
             repository.insert(HealthCard(uri = uri))
         }
