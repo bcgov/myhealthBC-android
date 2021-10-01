@@ -62,7 +62,7 @@ class CardRepository @Inject constructor(
         }
     }
 
-    suspend fun insertHealthCard(card: HealthCard) = dataSource.insert(card)
     suspend fun updateHealthCard(card: HealthCard) = dataSource.update(card)
     suspend fun unLink(card: HealthCard) = dataSource.unLink(card)
+    suspend fun rearrangeHealthCards(cards: List<HealthCard>) = dataSource.rearrange(cards)
 }

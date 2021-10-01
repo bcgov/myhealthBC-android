@@ -26,6 +26,8 @@ class MyCardsAdapter(
     val unLinkListener: (HealthCardDto) -> Unit
 ) : RecyclerView.Adapter<MyCardsAdapter.ViewHolder>() {
 
+    var previouslyExpandedPosition: Int = 0
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtFullName: MaterialTextView = itemView.findViewById(R.id.txt_full_name)
         val txtStatus: MaterialTextView = itemView.findViewById(R.id.txt_vaccine_status)
@@ -49,6 +51,7 @@ class MyCardsAdapter(
         val card = cards[position]
 
         holder.txtFullName.text = card.name
+        cards[previouslyExpandedPosition].isExpanded = true
         setUiState(holder, card.status)
 
         if (card.isExpanded) {
@@ -69,11 +72,12 @@ class MyCardsAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            cards.forEach { healthCard ->
-                healthCard.isExpanded = false
-            }
-            card.isExpanded = true
-            notifyDataSetChanged()
+            cards[previouslyExpandedPosition].isExpanded = false
+            notifyItemChanged(previouslyExpandedPosition)
+
+            previouslyExpandedPosition = position
+            cards[position].isExpanded = true
+            notifyItemChanged(position)
         }
 
         holder.imgUnLink.setOnClickListener {

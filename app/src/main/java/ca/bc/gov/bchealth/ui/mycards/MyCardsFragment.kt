@@ -15,6 +15,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentMyCardsBinding
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Collections
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -64,8 +65,10 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 myCardsAdapter.canManage = false
                 isManageCard = false
                 helper.attachToRecyclerView(null)
+                viewModel.rearrange(myCardsAdapter.cards.toList())
             }
-            myCardsAdapter.notifyDataSetChanged()
+            // myCardsAdapter.notifyDataSetChanged()
+            myCardsAdapter.notifyItemRangeChanged(0, myCardsAdapter.itemCount)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -110,31 +113,16 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
         ): Boolean {
-            adapter.moveItem(viewHolder.adapterPosition, target.adapterPosition)
-            return true
+            Collections.swap(
+                myCardsAdapter.cards,
+                viewHolder.adapterPosition,
+                target.adapterPosition
+            )
+            adapter.notifyItemMoved(viewHolder.adapterPosition, target.adapterPosition)
+            return false
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        }
-
-        override fun onMoved(
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
-            fromPos: Int,
-            target: RecyclerView.ViewHolder,
-            toPos: Int,
-            x: Int,
-            y: Int
-        ) {
-            super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
-            val itemFromPosition = myCardsAdapter.cards[fromPos]
-            val itemToPosition = myCardsAdapter.cards[toPos]
-
-            // Insert Empty value temporary in order to avoid unique constraint crash
-            viewModel.updateCard(itemFromPosition.id, "")
-
-            viewModel.updateCard(itemToPosition.id, itemFromPosition.uri)
-            viewModel.updateCard(itemFromPosition.id, itemToPosition.uri)
         }
     }
 }
