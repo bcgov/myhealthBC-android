@@ -39,7 +39,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
 
         viewModel.uploadStatus.observe(viewLifecycleOwner, {
             if (it) {
-                findNavController().navigate(R.id.myCardsFragment)
+                findNavController().popBackStack(R.id.myCardsFragment, false)
             } else {
                 showError()
             }
@@ -69,10 +69,5 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                 dialog.dismiss()
             }
             .show()
-    }
-
-    interface UploadResultListener {
-        fun onSuccess()
-        fun onFailure()
     }
 }

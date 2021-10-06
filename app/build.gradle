@@ -139,6 +139,8 @@ dependencies {
 
     implementation "androidx.browser:browser:$versions.browser"
 
+    implementation "com.google.android.play:core-ktx:$versions.play"
+
     // https://stackoverflow.com/questions/29402155/android-unit-test-not-mocked
     testImplementation 'org.json:json:20210307'
 

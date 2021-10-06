@@ -5,10 +5,13 @@ import ca.bc.gov.bchealth.datasource.LocalDataSource
 import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.model.ImmunizationStatus
 import ca.bc.gov.bchealth.utils.SHCDecoder
+import java.text.SimpleDateFormat
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import java.util.Date
+import java.util.Locale
 
 /**
  * [CardRepository]
@@ -24,9 +27,15 @@ class CardRepository @Inject constructor(
         healthCards.map { card ->
             try {
                 val data = shcDecoder.getImmunizationStatus(card.uri)
-                HealthCardDto(card.id, data.name, data.status, card.uri)
+                HealthCardDto(
+                    card.id, data.name, data.status, card.uri,
+                    false, "Issued on " + getDateTime(data.issueDate)
+                )
             } catch (e: Exception) {
-                HealthCardDto(0, "", ImmunizationStatus.INVALID_QR_CODE, card.uri)
+                HealthCardDto(
+                    0, "", ImmunizationStatus.INVALID_QR_CODE, card.uri,
+                    false, ""
+                )
             }
         }
     }
@@ -52,8 +61,12 @@ class CardRepository @Inject constructor(
                     dataSource.insert(card)
                 } else {
                     record.forEach { healthCard ->
-                        healthCard.uri = card.uri
-                        dataSource.update(healthCard)
+                        if (shcDecoder.getImmunizationStatus(healthCard.uri).status
+                            == ImmunizationStatus.PARTIALLY_IMMUNIZED
+                        ) {
+                            healthCard.uri = card.uri
+                            dataSource.update(healthCard)
+                        }
                     }
                 }
             }
@@ -65,4 +78,15 @@ class CardRepository @Inject constructor(
     suspend fun updateHealthCard(card: HealthCard) = dataSource.update(card)
     suspend fun unLink(card: HealthCard) = dataSource.unLink(card)
     suspend fun rearrangeHealthCards(cards: List<HealthCard>) = dataSource.rearrange(cards)
+
+    private fun getDateTime(epochTime: Long): String? {
+        return try {
+            val date1 = Date(epochTime)
+            val format = SimpleDateFormat("MMMM-dd-y, HH:mm", Locale.ENGLISH)
+            format.format(date1)
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+            ""
+        }
+    }
 }
