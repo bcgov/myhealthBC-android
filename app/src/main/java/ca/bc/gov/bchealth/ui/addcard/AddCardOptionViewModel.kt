@@ -96,4 +96,8 @@ class AddCardOptionViewModel @Inject constructor(
     private fun saveCard(uri: String) = viewModelScope.launch {
         repository.insert(HealthCard(uri = uri))
     }
+
+    suspend fun getVaccineStatus() {
+        repository.getVaccineStatus()
+    }
 }

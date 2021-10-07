@@ -12,6 +12,8 @@ import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * [AddCardOptionFragment]
@@ -52,7 +54,9 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         }
 
         binding.btnGetCard.setOnClickListener {
-            context?.toast(getString(R.string.coming_soon))
+            GlobalScope.launch {
+                viewModel.getVaccineStatus()
+            }
         }
 
         binding.toolbar.apply {

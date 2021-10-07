@@ -4,12 +4,15 @@ import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.datasource.LocalDataSource
 import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.model.ImmunizationStatus
+import ca.bc.gov.bchealth.services.ImmunizationServices
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import ca.bc.gov.bchealth.utils.getDateTime
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import java.util.Date
+import java.util.Locale
 
 /**
  * [CardRepository]
@@ -18,7 +21,8 @@ import kotlinx.coroutines.flow.map
  */
 class CardRepository @Inject constructor(
     private val dataSource: LocalDataSource,
-    private val shcDecoder: SHCDecoder
+    private val shcDecoder: SHCDecoder,
+    private val immunizationServices: ImmunizationServices
 ) {
 
     val cards: Flow<List<HealthCardDto>> = dataSource.getCards().map { healthCards ->
@@ -76,4 +80,12 @@ class CardRepository @Inject constructor(
     suspend fun updateHealthCard(card: HealthCard) = dataSource.update(card)
     suspend fun unLink(card: HealthCard) = dataSource.unLink(card)
     suspend fun rearrangeHealthCards(cards: List<HealthCard>) = dataSource.rearrange(cards)
+
+    suspend fun getVaccineStatus() {
+        immunizationServices.getVaccineStatus(
+            "9000201422",
+            "1989-12-12",
+            "2021-05-15"
+        )
+    }
 }
