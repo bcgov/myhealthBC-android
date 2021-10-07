@@ -6,14 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.databinding.ItemMycardsCardsListBinding
 import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.model.ImmunizationStatus
-import com.google.android.material.imageview.ShapeableImageView
-import com.google.android.material.textview.MaterialTextView
 
 /**
  * [MyCardsAdapter]
@@ -22,62 +20,64 @@ import com.google.android.material.textview.MaterialTextView
  */
 class MyCardsAdapter(
     var cards: MutableList<HealthCardDto>,
-    var canManage: Boolean = false,
+    private var canManage: Boolean = false,
     val unLinkListener: (HealthCardDto) -> Unit
 ) : RecyclerView.Adapter<MyCardsAdapter.ViewHolder>() {
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val txtFullName: MaterialTextView = itemView.findViewById(R.id.txt_full_name)
-        val txtStatus: MaterialTextView = itemView.findViewById(R.id.txt_vaccine_status)
-        val layoutQrCode: LinearLayoutCompat = itemView.findViewById(R.id.layout_qr_code)
-        val layoutVaccineStatus: LinearLayoutCompat =
-            itemView.findViewById(R.id.layout_vaccine_status)
-        val imgQrCode: ShapeableImageView = itemView.findViewById(R.id.img_qr_code)
-        val imgUnLink: ShapeableImageView = itemView.findViewById(R.id.img_unlink)
-        val imgReorder: ShapeableImageView = itemView.findViewById(R.id.ic_reorder)
-    }
+    class ViewHolder(val binding: ItemMycardsCardsListBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view =
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.my_card_list_item, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(
+            ItemMycardsCardsListBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent, false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         val card = cards[position]
-
-        holder.txtFullName.text = card.name
+        holder.binding.txtFullName.text = card.name
+        holder.binding.txtIssueDate.text = holder.itemView.resources
+            .getString(R.string.issued_on).plus(" ").plus(card.issueDate)
         setUiState(holder, card.status)
 
-        if (card.isExpanded) {
-            holder.layoutQrCode.visibility = View.VISIBLE
-            try {
-                holder.imgQrCode.setImageBitmap(getBarcode(card.uri))
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        } else {
-            holder.layoutQrCode.visibility = View.GONE
-        }
-
-        holder.layoutQrCode.setOnClickListener {
-            val action = MyCardsFragmentDirections
-                .actionMyCardsFragmentToExpandQRFragment(card.uri)
-            holder.layoutQrCode.findNavController().navigate(action)
-        }
-
-        holder.itemView.setOnClickListener {
-            cards.forEach { healthCard ->
-                healthCard.isExpanded = false
-            }
-            card.isExpanded = true
-            notifyDataSetChanged()
-        }
-
-        holder.imgUnLink.setOnClickListener {
+        holder.binding.imgUnlink.setOnClickListener {
             unLinkListener(card)
+        }
+
+        if (canManage) {
+            holder.binding.imgUnlink.visibility = View.VISIBLE
+            holder.binding.icReorder.visibility = View.VISIBLE
+        } else {
+            if (card.isExpanded) {
+                holder.binding.layoutQrCode.visibility = View.VISIBLE
+                try {
+                    holder.binding.imgQrCode.setImageBitmap(getBarcode(card.uri))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            } else {
+                holder.binding.layoutQrCode.visibility = View.GONE
+            }
+
+            holder.binding.layoutQrCode.setOnClickListener {
+                val action = MyCardsFragmentDirections
+                    .actionMyCardsFragmentToExpandQRFragment(card.uri)
+                holder.binding.layoutQrCode.findNavController().navigate(action)
+            }
+
+            holder.itemView.setOnClickListener {
+                cards.forEach {
+                    it.isExpanded = false
+                }
+                cards[position].isExpanded = true
+                notifyItemRangeChanged(0, itemCount)
+            }
+
+            holder.binding.imgUnlink.visibility = View.GONE
+            holder.binding.icReorder.visibility = View.GONE
         }
     }
 
@@ -99,7 +99,7 @@ class MyCardsAdapter(
                 color = partiallyVaccinatedColor
                 statusText = holder.itemView.context.resources
                     .getString(R.string.partially_vaccinated)
-                holder.txtStatus
+                holder.binding.txtVaccineStatus
                     .setCompoundDrawablesWithIntrinsicBounds(
                         0, 0, 0, 0
                     )
@@ -109,7 +109,7 @@ class MyCardsAdapter(
                 color = fullyVaccinatedColor
                 statusText = holder.itemView.context.resources
                     .getString(R.string.vaccinated)
-                holder.txtStatus
+                holder.binding.txtVaccineStatus
                     .setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.ic_check_mark, 0, 0, 0
                     )
@@ -119,47 +119,22 @@ class MyCardsAdapter(
                 color = inValidColor
                 statusText = holder.itemView.context.resources
                     .getString(R.string.no_record)
-                holder.txtStatus
+                holder.binding.txtVaccineStatus
                     .setCompoundDrawablesWithIntrinsicBounds(
                         0, 0, 0, 0
                     )
             }
         }
 
-        holder.txtStatus.text = statusText
+        holder.binding.txtVaccineStatus.text = statusText
 
-        holder.layoutVaccineStatus.setBackgroundColor(color)
+        holder.binding.layoutVaccineStatus.setBackgroundColor(color)
 
-        holder.layoutQrCode.setBackgroundColor(color)
-
-        if (canManage) {
-            holder.imgReorder.visibility = View.VISIBLE
-            holder.imgUnLink.visibility = View.VISIBLE
-            cards.forEach { healthCard ->
-                healthCard.isExpanded = false
-            }
-        } else {
-            holder.imgReorder.visibility = View.GONE
-            holder.imgUnLink.visibility = View.GONE
-        }
+        holder.binding.layoutQrCode.setBackgroundColor(color)
     }
 
     private fun getBarcode(data: String): Bitmap {
         val qrcode = QRGEncoder(data, null, QRGContents.Type.TEXT, 1200)
         return qrcode.encodeAsBitmap()
-    }
-
-    fun moveItem(from: Int, to: Int) {
-        if (from < to) {
-            for (i in from until to - 1) {
-                cards[i] = cards.set(i + 1, cards[i])
-            }
-        } else {
-            for (i in from..to + 1) {
-                cards[i] = cards.set(i - 1, cards[i])
-            }
-        }
-
-        notifyItemMoved(from, to)
     }
 }

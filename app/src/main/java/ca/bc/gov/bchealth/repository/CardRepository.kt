@@ -5,6 +5,7 @@ import ca.bc.gov.bchealth.datasource.LocalDataSource
 import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.model.ImmunizationStatus
 import ca.bc.gov.bchealth.utils.SHCDecoder
+import ca.bc.gov.bchealth.utils.getDateTime
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -24,9 +25,15 @@ class CardRepository @Inject constructor(
         healthCards.map { card ->
             try {
                 val data = shcDecoder.getImmunizationStatus(card.uri)
-                HealthCardDto(card.id, data.name, data.status, card.uri)
+                HealthCardDto(
+                    card.id, data.name, data.status, card.uri,
+                    false, data.issueDate.getDateTime()
+                )
             } catch (e: Exception) {
-                HealthCardDto(0, "", ImmunizationStatus.INVALID_QR_CODE, card.uri)
+                HealthCardDto(
+                    0, "", ImmunizationStatus.INVALID_QR_CODE, card.uri,
+                    false
+                )
             }
         }
     }
@@ -52,8 +59,12 @@ class CardRepository @Inject constructor(
                     dataSource.insert(card)
                 } else {
                     record.forEach { healthCard ->
-                        healthCard.uri = card.uri
-                        dataSource.update(healthCard)
+                        if (shcDecoder.getImmunizationStatus(healthCard.uri).status
+                            == ImmunizationStatus.PARTIALLY_IMMUNIZED
+                        ) {
+                            healthCard.uri = card.uri
+                            dataSource.update(healthCard)
+                        }
                     }
                 }
             }
@@ -62,7 +73,7 @@ class CardRepository @Inject constructor(
         }
     }
 
-    suspend fun insertHealthCard(card: HealthCard) = dataSource.insert(card)
     suspend fun updateHealthCard(card: HealthCard) = dataSource.update(card)
     suspend fun unLink(card: HealthCard) = dataSource.unLink(card)
+    suspend fun rearrangeHealthCards(cards: List<HealthCard>) = dataSource.rearrange(cards)
 }

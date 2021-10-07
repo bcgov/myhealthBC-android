@@ -2,6 +2,9 @@ package ca.bc.gov.bchealth.utils
 
 import android.content.Context
 import android.widget.Toast
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
  * Helper function to read file from asset
@@ -15,3 +18,17 @@ fun Context.readJsonFromAsset(fileName: String) =
 * */
 fun Context.toast(message: String) =
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+
+/*
+* For converting epoch datetime format to human readable format
+* */
+fun Long.getDateTime(): String {
+    return try {
+        val date1 = Date(this)
+        val format = SimpleDateFormat("MMMM-dd-y, HH:mm", Locale.ENGLISH)
+        format.format(date1)
+    } catch (e: java.lang.Exception) {
+        e.printStackTrace()
+        ""
+    }
+}

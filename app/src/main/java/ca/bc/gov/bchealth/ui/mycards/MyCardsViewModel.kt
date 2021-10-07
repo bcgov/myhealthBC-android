@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.mycards
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
+import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.repository.CardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -40,5 +41,13 @@ class MyCardsViewModel @Inject constructor(
 
     fun unLink(id: Int, uri: String) = viewModelScope.launch {
         repository.unLink(HealthCard(id, uri))
+    }
+
+    fun rearrange(healthCardsDto: List<HealthCardDto>) = viewModelScope.launch {
+        val healthCards: MutableList<HealthCard> = mutableListOf()
+        healthCardsDto.forEach {
+            healthCards.add(HealthCard(uri = it.uri))
+        }
+        repository.rearrangeHealthCards(healthCards)
     }
 }

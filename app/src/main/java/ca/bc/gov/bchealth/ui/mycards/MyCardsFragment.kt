@@ -1,7 +1,9 @@
 package ca.bc.gov.bchealth.ui.mycards
 
 import android.os.Bundle
+import android.transition.Scene
 import android.view.View
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -13,8 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentMyCardsBinding
+import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.utils.viewBindings
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Collections
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -30,73 +35,162 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
     private val binding by viewBindings(FragmentMyCardsBinding::bind)
 
-    private lateinit var myCardsAdapter: MyCardsAdapter
+    private lateinit var sceneAddCard: Scene
 
-    private var isManageCard: Boolean = false
+    private lateinit var sceneMyCardsList: Scene
+
+    private lateinit var sceneManageCards: Scene
+
+    private lateinit var cardsListAdapter: MyCardsAdapter
+
+    private lateinit var manageCardsAdapter: MyCardsAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnAddCard.setOnClickListener {
-            findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
-        }
+        sceneAddCard = Scene.getSceneForLayout(
+            binding.sceneRoot,
+            R.layout.scene_mycards_add_card,
+            requireContext()
+        )
+        sceneMyCardsList = Scene.getSceneForLayout(
+            binding.sceneRoot,
+            R.layout.scene_mycards_cards_list,
+            requireContext()
+        )
+        sceneManageCards =
+            Scene.getSceneForLayout(
+                binding.sceneRoot,
+                R.layout.scene_mycards_manage_cards,
+                requireContext()
+            )
 
         binding.toolbar.imgAction.contentDescription = getString(R.string.add_card)
         binding.toolbar.imgAction.setOnClickListener {
             findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
         }
-        setUpMyCardsAdapter()
 
-        val callback = RecyclerDragCallBack(
-            myCardsAdapter,
-            ItemTouchHelper.UP.or(ItemTouchHelper.DOWN), 0
-        )
-        val helper = ItemTouchHelper(callback)
+        val cardsTemp: MutableList<HealthCardDto> = mutableListOf()
 
-        binding.btnManageCards.setOnClickListener {
-            if (!isManageCard) {
-                binding.btnManageCards.text = getString(R.string.done)
-                myCardsAdapter.canManage = true
-                isManageCard = true
-                helper.attachToRecyclerView(binding.recMyCards)
-            } else {
-                binding.btnManageCards.text = getString(R.string.manage_cards)
-                myCardsAdapter.canManage = false
-                isManageCard = false
-                helper.attachToRecyclerView(null)
-            }
-            myCardsAdapter.notifyDataSetChanged()
-        }
-
+        /*
+        * Scenes are dependent on cards
+        * */
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.cards.collect { cards ->
+
+                    cards?.toMutableList()?.let { it ->
+                        val newCards = cards.filter { it.id !in cardsTemp.map { item -> item.id } }
+
+                        cardsTemp.clear()
+                        cardsTemp.addAll(cards)
+
+                        if (newCards.isEmpty()) {
+                            cards.forEach {
+                                it.isExpanded = false
+                            }
+                            cards[0].isExpanded = true
+                        } else {
+                            cards.forEach {
+                                it.isExpanded = it.id == newCards[0].id
+                            }
+                        }
+                    }
+
+                    /*
+                    * control scenes and loader
+                    * */
                     if (cards == null) {
                         binding.progressBar.visibility = View.VISIBLE
                     } else {
                         binding.progressBar.visibility = View.GONE
                         if (cards.isNullOrEmpty()) {
-                            binding.btnManageCards.visibility = View.GONE
-                            binding.emptyState.visibility = View.VISIBLE
+                            /*
+                            * Add card scene
+                            * */
+                            sceneAddCard.enter()
+                            sceneAddCard.sceneRoot.findViewById<View>(R.id.btn_add_card)
+                                .setOnClickListener {
+                                    findNavController()
+                                        .navigate(
+                                            R.id.action_myCardsFragment_to_addCardOptionFragment
+                                        )
+                                }
                         } else {
-                            binding.btnManageCards.visibility = View.VISIBLE
-                            binding.emptyState.visibility = View.GONE
+                            enterCardsListScene(cards)
                         }
-                        myCardsAdapter.cards = cards.toMutableList()
-                        myCardsAdapter.notifyDataSetChanged()
                     }
                 }
             }
         }
     }
 
-    private fun setUpMyCardsAdapter() {
-        myCardsAdapter = MyCardsAdapter(mutableListOf()) { healthCard ->
-            viewModel.unLink(healthCard.id, healthCard.uri)
+    /*
+    * Cards List scene
+    * */
+    private fun enterCardsListScene(cards: List<HealthCardDto>) {
+        sceneMyCardsList.enter()
+
+        cardsListAdapter = MyCardsAdapter(cards.toMutableList()) { healthCard ->
+            confirmUnlinking(healthCard = healthCard)
         }
 
-        binding.recMyCards.adapter = myCardsAdapter
-        binding.recMyCards.layoutManager = LinearLayoutManager(requireContext())
+        val recyclerViewCardsList =
+            sceneMyCardsList.sceneRoot
+                .findViewById<RecyclerView>(R.id.rec_cards_list)
+
+        recyclerViewCardsList.adapter = cardsListAdapter
+
+        recyclerViewCardsList.layoutManager =
+            LinearLayoutManager(requireContext())
+
+        val btnManageCards = sceneManageCards.sceneRoot.findViewById<Button>(R.id.btn_manage_cards)
+        btnManageCards.text = getString(R.string.manage_cards)
+        btnManageCards.setOnClickListener {
+            enterManageCardsScene(cards)
+        }
+
+        cardsListAdapter.notifyItemRangeChanged(0, cardsListAdapter.itemCount)
+    }
+
+    /*
+    * Manage Cards scene
+    * */
+    private fun enterManageCardsScene(cards: List<HealthCardDto>) {
+        sceneManageCards.enter()
+
+        manageCardsAdapter = MyCardsAdapter(cards.toMutableList(), true) { healthCard ->
+            confirmUnlinking(healthCard = healthCard)
+        }
+
+        val recyclerViewManageCards =
+            sceneManageCards.sceneRoot
+                .findViewById<RecyclerView>(R.id.rec_manage_cards)
+
+        recyclerViewManageCards.adapter = manageCardsAdapter
+
+        recyclerViewManageCards.layoutManager =
+            LinearLayoutManager(requireContext())
+
+        val btnManageCards = sceneManageCards.sceneRoot.findViewById<Button>(R.id.btn_manage_cards)
+        btnManageCards.text = getString(R.string.done)
+        btnManageCards.setOnClickListener {
+            viewModel.rearrange(manageCardsAdapter.cards.toList())
+            enterCardsListScene(cards)
+        }
+
+        /*
+        * Add cards movement functionality
+        * */
+        val callback = RecyclerDragCallBack(
+            manageCardsAdapter,
+            ItemTouchHelper.UP.or(ItemTouchHelper.DOWN), 0
+        )
+        val helper = ItemTouchHelper(callback)
+
+        helper.attachToRecyclerView(recyclerViewManageCards)
+
+        manageCardsAdapter.notifyItemRangeChanged(0, manageCardsAdapter.itemCount)
     }
 
     inner class RecyclerDragCallBack(
@@ -110,31 +204,31 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
         ): Boolean {
-            adapter.moveItem(viewHolder.adapterPosition, target.adapterPosition)
-            return true
+            Collections.swap(
+                manageCardsAdapter.cards,
+                viewHolder.adapterPosition,
+                target.adapterPosition
+            )
+            adapter.notifyItemMoved(viewHolder.adapterPosition, target.adapterPosition)
+            return false
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         }
+    }
 
-        override fun onMoved(
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
-            fromPos: Int,
-            target: RecyclerView.ViewHolder,
-            toPos: Int,
-            x: Int,
-            y: Int
-        ) {
-            super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
-            val itemFromPosition = myCardsAdapter.cards[fromPos]
-            val itemToPosition = myCardsAdapter.cards[toPos]
-
-            // Insert Empty value temporary in order to avoid unique constraint crash
-            viewModel.updateCard(itemFromPosition.id, "")
-
-            viewModel.updateCard(itemToPosition.id, itemFromPosition.uri)
-            viewModel.updateCard(itemFromPosition.id, itemToPosition.uri)
-        }
+    private fun confirmUnlinking(healthCard: HealthCardDto) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.unlink_card))
+            .setCancelable(false)
+            .setMessage(getString(R.string.do_you_want_to_unlink))
+            .setPositiveButton(getString(R.string.unlink)) { dialog, _ ->
+                viewModel.unLink(healthCard.id, healthCard.uri)
+                dialog.dismiss()
+            }
+            .setNegativeButton(getString(R.string.not_now)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 }

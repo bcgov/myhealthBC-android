@@ -20,4 +20,6 @@ class LocalDataSource @Inject constructor(
     suspend fun unLink(card: HealthCard) = dataBase.getHealthCardDao().delete(card)
 
     fun getCards() = dataBase.getHealthCardDao().getCards()
+
+    suspend fun rearrange(cards: List<HealthCard>) = dataBase.getHealthCardDao().rearrange(cards)
 }

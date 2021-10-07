@@ -10,5 +10,6 @@ data class HealthCardDto(
     val name: String,
     val status: ImmunizationStatus,
     val uri: String,
-    var isExpanded: Boolean = false
+    var isExpanded: Boolean = false,
+    val issueDate: String = ""
 )
