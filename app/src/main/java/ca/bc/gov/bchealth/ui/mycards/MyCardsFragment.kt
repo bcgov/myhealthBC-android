@@ -41,9 +41,9 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
     private lateinit var sceneManageCards: Scene
 
-    private lateinit var cardsListAdapter: CardsListAdapter
+    private lateinit var cardsListAdapter: MyCardsAdapter
 
-    private lateinit var manageCardsAdapter: CardsListAdapter
+    private lateinit var manageCardsAdapter: MyCardsAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -131,7 +131,9 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
     private fun enterCardsListScene(cards: List<HealthCardDto>) {
         sceneMyCardsList.enter()
 
-        cardsListAdapter = CardsListAdapter(cards.toMutableList(), null)
+        cardsListAdapter = MyCardsAdapter(cards.toMutableList()) { healthCard ->
+            confirmUnlinking(healthCard = healthCard)
+        }
 
         val recyclerViewCardsList =
             sceneMyCardsList.sceneRoot
@@ -157,7 +159,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
     private fun enterManageCardsScene(cards: List<HealthCardDto>) {
         sceneManageCards.enter()
 
-        manageCardsAdapter = CardsListAdapter(cards.toMutableList()) { healthCard ->
+        manageCardsAdapter = MyCardsAdapter(cards.toMutableList(), true) { healthCard ->
             confirmUnlinking(healthCard = healthCard)
         }
 
@@ -192,7 +194,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
     }
 
     inner class RecyclerDragCallBack(
-        private val adapter: CardsListAdapter,
+        private val adapter: MyCardsAdapter,
         dragDirs: Int,
         swipeDirs: Int
     ) : ItemTouchHelper.SimpleCallback(dragDirs, swipeDirs) {

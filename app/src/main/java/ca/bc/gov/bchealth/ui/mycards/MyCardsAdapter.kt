@@ -14,14 +14,15 @@ import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.model.ImmunizationStatus
 
 /**
- * [CardsListAdapter]
+ * [MyCardsAdapter]
  *
- * @author amit metri
+ * @author Pinakin Kansara
  */
-class CardsListAdapter(
+class MyCardsAdapter(
     var cards: MutableList<HealthCardDto>,
-    private val unLinkListener: ((HealthCardDto) -> Unit?)?
-) : RecyclerView.Adapter<CardsListAdapter.ViewHolder>() {
+    private var canManage: Boolean = false,
+    val unLinkListener: (HealthCardDto) -> Unit
+) : RecyclerView.Adapter<MyCardsAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemMycardsCardsListBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -38,16 +39,18 @@ class CardsListAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val card = cards[position]
         holder.binding.txtFullName.text = card.name
-        holder.binding.txtIssueDate.text = card.issueDate
+        holder.binding.txtIssueDate.text = holder.itemView.resources
+            .getString(R.string.issued_on).plus(" ").plus(card.issueDate)
         setUiState(holder, card.status)
 
-        unLinkListener?.let {
-            holder.binding.imgUnlink.setOnClickListener {
-                it(card)
-            }
+        holder.binding.imgUnlink.setOnClickListener {
+            unLinkListener(card)
         }
 
-        if (unLinkListener == null) {
+        if (canManage) {
+            holder.binding.imgUnlink.visibility = View.VISIBLE
+            holder.binding.icReorder.visibility = View.VISIBLE
+        } else {
             if (card.isExpanded) {
                 holder.binding.layoutQrCode.visibility = View.VISIBLE
                 try {
@@ -75,9 +78,6 @@ class CardsListAdapter(
 
             holder.binding.imgUnlink.visibility = View.GONE
             holder.binding.icReorder.visibility = View.GONE
-        } else {
-            holder.binding.imgUnlink.visibility = View.VISIBLE
-            holder.binding.icReorder.visibility = View.VISIBLE
         }
     }
 

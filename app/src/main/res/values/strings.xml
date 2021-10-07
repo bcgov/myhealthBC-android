@@ -49,6 +49,7 @@
     <string name="do_you_want_to_unlink">Do you want to unlink this card?</string>
     <string name="unlink_card">Unlink Card</string>
     <string name="unlink">Unlink</string>
+    <string name="issued_on">Issued on</string>
 
     <!-- In app updates -->
     <string name="update_success">Update Success!</string>
