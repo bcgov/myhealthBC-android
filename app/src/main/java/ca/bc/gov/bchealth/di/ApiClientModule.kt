@@ -3,20 +3,24 @@ package ca.bc.gov.bchealth.di
 import android.content.Context
 import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.http.AddCookiesInterceptor
+import ca.bc.gov.bchealth.http.CookieStorage
+import ca.bc.gov.bchealth.http.QueueITInterceptor
+import ca.bc.gov.bchealth.http.ReceivedCookiesInterceptor
+import ca.bc.gov.bchealth.http.UserAgentInterceptor
 import ca.bc.gov.bchealth.services.ImmunizationServices
+import ca.bc.gov.bchealth.services.ProductService
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import java.text.DateFormat
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.text.DateFormat
-import javax.inject.Singleton
-
 
 /**
  * [ApiClientModule]
@@ -27,21 +31,42 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class ApiClientModule {
 
-    @Singleton
+    lateinit var _queueItInterceptor: QueueITInterceptor
+
     @Provides
-    fun provideRetrofit(uniqueRetrofitConstant: String, context: Context):
-            Retrofit {
+    fun provideRetrofit(
+        uniqueRetrofitConstant: String,
+        context: Context
+    ):
+        Retrofit {
         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
 
         /*
         * For logging request and responses
         * */
+        val interceptor = HttpLoggingInterceptor()
         if (BuildConfig.DEBUG) {
-            val interceptor = HttpLoggingInterceptor()
             interceptor.level = HttpLoggingInterceptor.Level.BASIC
             interceptor.level = HttpLoggingInterceptor.Level.BODY
-            builder.addInterceptor(interceptor)
         }
+
+        /*
+        * Queue.it
+        * */
+        val cookies = CookieStorage()
+        _queueItInterceptor = QueueITInterceptor(cookies)
+        builder.addInterceptor(_queueItInterceptor)
+            .addInterceptor(AddCookiesInterceptor(cookies))
+            .addInterceptor(ReceivedCookiesInterceptor(cookies))
+            .addInterceptor(
+                UserAgentInterceptor(
+                    context.getString(R.string.app_name),
+                    BuildConfig.VERSION_NAME
+                )
+            )
+            //.addInterceptor( UserAgentInterceptor("demoapp", "1.0.0"))
+            .addInterceptor(interceptor = interceptor)
+            .hostnameVerifier { p0, p1 -> true }
 
         val okHttpClient = builder.build()
 
@@ -63,27 +88,42 @@ class ApiClientModule {
                     .client(okHttpClient)
                     .build()
             // TODO: 06/10/21 Add more retrofit objects here
-            else ->
-                //Default is retrofit end point
+            SERVICE_PRODUCT ->
                 Retrofit.Builder()
-                    .baseUrl(context.getString(R.string.retrofit_url_immunization))
+                    .baseUrl(context.getString(R.string.retrofit_url_product))
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .client(okHttpClient)
+                    .build()
+            else ->
+                // Default is retrofit end point
+                Retrofit.Builder()
+                    .baseUrl(context.getString(R.string.retrofit_url_product))
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(okHttpClient)
                     .build()
         }
     }
 
-    @Singleton
     @Provides
     fun provideImmunizationServices(@ApplicationContext context: Context):
-            ImmunizationServices {
-        return provideRetrofit(SERVICE_IMMUNIZATION, context = context)
+        ImmunizationServices {
+        return provideRetrofit(
+            SERVICE_IMMUNIZATION,
+            context = context
+        )
             .create(ImmunizationServices::class.java)
     }
 
+    @Provides
+    fun provideProductServices(@ApplicationContext context: Context):
+        ProductService {
+        return provideRetrofit(SERVICE_PRODUCT, context = context)
+            .create(ProductService::class.java)
+    }
 
     companion object {
         const val SERVICE_IMMUNIZATION = "SERVICE_IMMUNIZATION"
+        const val SERVICE_PRODUCT = "SERVICE_PRODUCT"
+        var token: String = ""
     }
-
 }

@@ -58,6 +58,8 @@
     <string name="update_downloaded">An update has just been downloaded.</string>
     <string name="restart">RESTART</string>
     <string name="tap_to_zoom_in">Tap to zoom in</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--Educational screens text at on-boarding experience-->
     <string name="place_holder_text">Place holder text</string>

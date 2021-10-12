@@ -97,7 +97,7 @@ class AddCardOptionViewModel @Inject constructor(
         repository.insert(HealthCard(uri = uri))
     }
 
-    suspend fun getVaccineStatus() {
+    fun getVaccineStatus() {
         repository.getVaccineStatus()
     }
 }

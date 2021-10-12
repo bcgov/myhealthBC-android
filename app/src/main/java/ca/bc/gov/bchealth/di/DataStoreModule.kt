@@ -20,5 +20,5 @@ class DataStoreModule {
 
     @Provides
     @Singleton
-    fun providesDataStore(@ApplicationContext context: Context) = DataStoreRepo(context)
+    fun providesDataStore(@ApplicationContext context: Context) = DataStoreRepo(context = context)
 }

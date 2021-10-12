@@ -127,7 +127,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                         binding.progressBar.visibility = View.VISIBLE
                     } else {
                         binding.progressBar.visibility = View.GONE
-                        if (cards.isNullOrEmpty()) {
+                        if (cards.isEmpty()) {
                             /*
                             * Add card scene
                             * */

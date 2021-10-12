@@ -5,5 +5,6 @@
     <string name="url_how_to_get_covid_vaccinated">https://www2.gov.bc.ca/gov/content/covid-19/vaccine/register</string>
 
     <string name="retrofit_url_immunization">https://test.healthgateway.gov.bc.ca/</string>
+    <string name="retrofit_url_product">https://fastly.v3.ticketania.com</string>
 
 </resources>
