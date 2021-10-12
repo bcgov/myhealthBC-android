@@ -16,11 +16,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import java.text.DateFormat
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.DateFormat
 
 /**
  * [ApiClientModule]
@@ -31,14 +31,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 @InstallIn(SingletonComponent::class)
 class ApiClientModule {
 
-    lateinit var _queueItInterceptor: QueueITInterceptor
-
     @Provides
     fun provideRetrofit(
         uniqueRetrofitConstant: String,
         context: Context
-    ):
-        Retrofit {
+    ): Retrofit {
         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
 
         /*
@@ -54,8 +51,7 @@ class ApiClientModule {
         * Queue.it
         * */
         val cookies = CookieStorage()
-        _queueItInterceptor = QueueITInterceptor(cookies)
-        builder.addInterceptor(_queueItInterceptor)
+        builder.addInterceptor(QueueITInterceptor(cookies))
             .addInterceptor(AddCookiesInterceptor(cookies))
             .addInterceptor(ReceivedCookiesInterceptor(cookies))
             .addInterceptor(
@@ -64,7 +60,6 @@ class ApiClientModule {
                     BuildConfig.VERSION_NAME
                 )
             )
-            //.addInterceptor( UserAgentInterceptor("demoapp", "1.0.0"))
             .addInterceptor(interceptor = interceptor)
             .hostnameVerifier { p0, p1 -> true }
 
@@ -79,7 +74,6 @@ class ApiClientModule {
         * An app might be using different API endpoints with different base URLs
         * So it is required to create different Retrofit objects based on the API endpoint requested
         *  */
-
         return when (uniqueRetrofitConstant) {
             SERVICE_IMMUNIZATION ->
                 Retrofit.Builder()
@@ -87,17 +81,17 @@ class ApiClientModule {
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(okHttpClient)
                     .build()
-            // TODO: 06/10/21 Add more retrofit objects here
             SERVICE_PRODUCT ->
                 Retrofit.Builder()
                     .baseUrl(context.getString(R.string.retrofit_url_product))
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(okHttpClient)
                     .build()
+            // TODO: 06/10/21 Add more retrofit objects here
             else ->
-                // Default is retrofit end point
+                // Default retrofit object
                 Retrofit.Builder()
-                    .baseUrl(context.getString(R.string.retrofit_url_product))
+                    .baseUrl(context.getString(R.string.retrofit_url_immunization))
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(okHttpClient)
                     .build()
@@ -105,18 +99,15 @@ class ApiClientModule {
     }
 
     @Provides
-    fun provideImmunizationServices(@ApplicationContext context: Context):
-        ImmunizationServices {
+    fun provideImmunizationServices(@ApplicationContext context: Context): ImmunizationServices {
         return provideRetrofit(
             SERVICE_IMMUNIZATION,
             context = context
-        )
-            .create(ImmunizationServices::class.java)
+        ).create(ImmunizationServices::class.java)
     }
 
     @Provides
-    fun provideProductServices(@ApplicationContext context: Context):
-        ProductService {
+    fun provideProductServices(@ApplicationContext context: Context): ProductService {
         return provideRetrofit(SERVICE_PRODUCT, context = context)
             .create(ProductService::class.java)
     }
@@ -124,6 +115,6 @@ class ApiClientModule {
     companion object {
         const val SERVICE_IMMUNIZATION = "SERVICE_IMMUNIZATION"
         const val SERVICE_PRODUCT = "SERVICE_PRODUCT"
-        var token: String = ""
+        var queueItToken: String = ""
     }
 }

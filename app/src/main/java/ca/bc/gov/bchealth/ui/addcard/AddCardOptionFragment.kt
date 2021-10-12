@@ -10,12 +10,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import ca.bc.gov.bchealth.MainActivity
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
-import ca.bc.gov.bchealth.datasource.DataStoreRepo
 import ca.bc.gov.bchealth.di.ApiClientModule
-import ca.bc.gov.bchealth.http.IProductRepository
 import ca.bc.gov.bchealth.http.MustBeQueued
 import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -31,13 +28,9 @@ import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicBoolean
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
 
 /**
  * [AddCardOptionFragment]
@@ -126,7 +119,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             val wrId = valueUri.getQueryParameter("e")
             QueueService.IsTest = false
             val q = QueueITEngine(
-                MainActivity._instance,
+                requireActivity(),
                 customerId,
                 wrId,
                 "",
@@ -134,12 +127,12 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                 object : QueueListener() {
                     override fun onQueuePassed(queuePassedInfo: QueuePassedInfo) {
 
-                        ApiClientModule.token = queuePassedInfo.queueItToken
+                        ApiClientModule.queueItToken = queuePassedInfo.queueItToken
 
                         _queuePassed.set(true)
 
                         Toast.makeText(
-                            MainActivity._instance,
+                            requireActivity(),
                             "You passed the queue! You can try again.",
                             Toast.LENGTH_SHORT
                         ).show()
@@ -157,7 +150,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
 
                     override fun onQueueViewWillOpen() {
                         Toast.makeText(
-                            MainActivity._instance,
+                            requireActivity(),
                             "onQueueViewWillOpen",
                             Toast.LENGTH_SHORT
                         ).show()
@@ -165,7 +158,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
 
                     override fun onUserExited() {
                         Toast.makeText(
-                            MainActivity._instance,
+                            requireActivity(),
                             "onUserExited",
                             Toast.LENGTH_SHORT
                         ).show()
@@ -173,7 +166,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
 
                     override fun onQueueDisabled() {
                         Toast.makeText(
-                            MainActivity._instance,
+                            requireActivity(),
                             "The queue is disabled.",
                             Toast.LENGTH_SHORT
                         ).show()
@@ -181,7 +174,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
 
                     override fun onQueueItUnavailable() {
                         Toast.makeText(
-                            MainActivity._instance,
+                            requireActivity(),
                             "Queue-it is unavailable",
                             Toast.LENGTH_SHORT
                         ).show()
@@ -189,7 +182,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
 
                     override fun onError(error: Error, errorMessage: String) {
                         Toast.makeText(
-                            MainActivity._instance,
+                            requireActivity(),
                             "Critical error: $errorMessage",
                             Toast.LENGTH_SHORT
                         ).show()
@@ -197,7 +190,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
 
                     override fun onWebViewClosed() {
                         Toast.makeText(
-                            MainActivity._instance,
+                            requireActivity(),
                             "WebView closed",
                             Toast.LENGTH_SHORT
                         ).show()

@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.http
 
 import ca.bc.gov.bchealth.di.ApiClientModule
 import java.io.IOException
-import kotlinx.coroutines.runBlocking
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -16,8 +15,8 @@ class QueueITInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val urlBuilder: HttpUrl.Builder = chain.request().url.newBuilder()
 
-        if (ApiClientModule.token.isNotEmpty()) {
-            urlBuilder.addQueryParameter("queueittoken", ApiClientModule.token)
+        if (ApiClientModule.queueItToken.isNotEmpty()) {
+            urlBuilder.addQueryParameter("queueittoken", ApiClientModule.queueItToken)
         }
 
         val chainReq: Request = chain.request()
@@ -28,7 +27,7 @@ class QueueITInterceptor(
         val res: Response = chain.proceed(req)
 
         if (mustQueue(res)) {
-            ApiClientModule.token = ""
+            ApiClientModule.queueItToken = ""
             _cookies.clear()
             val resHeaders = res.headers
             throw MustBeQueued(resHeaders["x-queueit-redirect"])
