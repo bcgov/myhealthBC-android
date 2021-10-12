@@ -61,4 +61,8 @@
             android:name="qrData"
             app:argType="string" />
     </dialog>
+    <fragment
+        android:id="@+id/onBoardingSliderFragment"
+        android:name="ca.bc.gov.bchealth.ui.onboarding.OnBoardingSliderFragment"
+        android:label="OnBoardingSliderFragment" />
 </navigation>

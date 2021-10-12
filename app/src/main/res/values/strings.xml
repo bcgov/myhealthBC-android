@@ -59,4 +59,10 @@
     <string name="restart">RESTART</string>
     <string name="tap_to_zoom_in">Tap to zoom in</string>
 
+    <!--Educational screens text at on-boarding experience-->
+    <string name="place_holder_text">Place holder text</string>
+    <string name="lorem_ipsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</string>
+    <string name="next">Next</string>
+    <string name="get_started">Get Started</string>
+
 </resources>

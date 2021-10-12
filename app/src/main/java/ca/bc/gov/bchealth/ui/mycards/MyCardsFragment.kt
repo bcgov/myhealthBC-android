@@ -67,7 +67,8 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
         binding.toolbar.imgAction.contentDescription = getString(R.string.add_card)
         binding.toolbar.imgAction.setOnClickListener {
-            findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
+            // findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
+            findNavController().navigate(R.id.onBoardingSliderFragment)
         }
 
         val cardsTemp: MutableList<HealthCardDto> = mutableListOf()

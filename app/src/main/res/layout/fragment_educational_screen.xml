@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.onboarding.OnBoardingFragment">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_on_boarding_slider_icon_fixed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_8_x"
+                android:src="@drawable/ic_group_5214"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_on_boarding_slider_icon_movable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginTop="@dimen/space_4_x"
+                android:src="@drawable/ic_check_mark"
+                app:layout_constraintBottom_toBottomOf="@+id/img_on_boarding_slider_icon_fixed"
+                app:layout_constraintEnd_toEndOf="@+id/img_on_boarding_slider_icon_fixed"
+                app:layout_constraintStart_toStartOf="@+id/img_on_boarding_slider_icon_fixed"
+                app:layout_constraintTop_toTopOf="@+id/img_on_boarding_slider_icon_fixed" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/txt_slider_title"
+                style="?textAppearanceHeadline6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_2_x"
+                android:layout_marginTop="@dimen/space_8_x"
+                android:layout_marginEnd="@dimen/space_2_x"
+                android:text="@string/place_holder_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img_on_boarding_slider_icon_fixed" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/txt_slider_description"
+                style="?textAppearanceHeadline4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginTop="@dimen/space_2_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:text="@string/lorem_ipsum"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_slider_title" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
