@@ -141,6 +141,9 @@ dependencies {
 
     implementation "com.google.android.play:core-ktx:$versions.play"
 
+    //DataStore
+    implementation "androidx.datastore:datastore-preferences:$versions.datastore"
+
     // https://stackoverflow.com/questions/29402155/android-unit-test-not-mocked
     testImplementation 'org.json:json:20210307'
 

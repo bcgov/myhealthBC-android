@@ -9,11 +9,12 @@
         android:width="100dp"
         android:height="25dp"
         android:drawable="@drawable/ic_bc_app_logo"
-        android:gravity="top|center"
-        android:top="64dp" />
+        android:gravity="bottom|center"
+        android:bottom="@dimen/space_8_x" />
 
     <item
         android:drawable="@drawable/ic_logo"
-        android:gravity="center" />
+        android:gravity="center"
+        android:bottom="@dimen/space_8_x"/>
 
 </layer-list>

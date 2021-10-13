@@ -3,6 +3,8 @@ package ca.bc.gov.bchealth.ui.onboarding
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentOnboardingSliderBinding
@@ -14,6 +16,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
 
     private val binding by viewBindings(FragmentOnboardingSliderBinding::bind)
+
+    private val viewModel: OnBoardingSliderViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -27,7 +31,11 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
         ) { _, _ -> }.attach()
 
         binding.btnNextSlide.setOnClickListener {
-            binding.viewpagerOnBoardingSlides.currentItem = getCurrentItem() + 1
+            if(educationalScreenAdapter.itemCount == getCurrentItem() + 1){
+                findNavController().navigate(R.id.myCardsFragment)
+            } else {
+                binding.viewpagerOnBoardingSlides.currentItem = getCurrentItem() + 1
+            }
         }
 
         binding.viewpagerOnBoardingSlides.registerOnPageChangeCallback(object :
@@ -41,6 +49,8 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
                     }
                 }
             })
+
+        viewModel.setOnBoardingShown(true)
     }
 
     private fun getCurrentItem(): Int {

@@ -65,4 +65,14 @@
         android:id="@+id/onBoardingSliderFragment"
         android:name="ca.bc.gov.bchealth.ui.onboarding.OnBoardingSliderFragment"
         android:label="OnBoardingSliderFragment" />
+    <fragment
+        android:id="@+id/resourcesFragment"
+        android:name="ca.bc.gov.bchealth.ui.resources.ResourcesFragment"
+        android:label="fragment_resources"
+        tools:layout="@layout/fragment_resources" />
+    <fragment
+        android:id="@+id/newsfeedFragment"
+        android:name="ca.bc.gov.bchealth.ui.newsfeed.NewsfeedFragment"
+        android:label="fragment_newsfeed"
+        tools:layout="@layout/fragment_newsfeed" />
 </navigation>

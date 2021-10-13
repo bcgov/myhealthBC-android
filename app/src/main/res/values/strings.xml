@@ -6,7 +6,8 @@
     <string name="allow_vaxwallet">Allow My Health BC to use your camera to scan QR codes to store your card.</string>
     <string name="skip_for_now">Skip for now</string>
 
-    <string name="my_cards">My Cards</string>
+    <string name="pass">Pass</string>
+    <string name="resource">Resource</string>
     <string name="setting">Setting</string>
     <string name="settings_message">BC Vaccine Card app is the official mobile application from the Government of British Columbia. It allows you to store and organize a proof of vaccination for you and your family members.</string>
 
@@ -64,5 +65,13 @@
     <string name="lorem_ipsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</string>
     <string name="next">Next</string>
     <string name="get_started">Get Started</string>
+    <string name="health_passes">Health Passes</string>
+    <string name="onboarding_message_1">All of your vaccine documents and booking confirmations stored in a single place</string>
+    <string name="health_resource">Health Resource</string>
+    <string name="onboarding_message_2">Find health and COVID test</string>
+    <string name="news_feed">News Feed</string>
+    <string name="onboarding_message_3">Stay updated on COVID-19 news</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

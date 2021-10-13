@@ -35,6 +35,7 @@ versions.bouncycastle = "1.69"
 
 versions.browser = "1.3.0"
 versions.play = "1.8.1"
+versions.datastore = "1.0.0"
 
 versions.junit = "4.13.2"
 versions.ext_junit = "1.1.3"
