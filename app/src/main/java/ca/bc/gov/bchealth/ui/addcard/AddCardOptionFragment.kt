@@ -24,13 +24,13 @@ import com.queue_it.androidsdk.QueueListener
 import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 /**
  * [AddCardOptionFragment]
@@ -99,6 +99,8 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                 findNavController().popBackStack()
             }
         }
+
+
     }
 
     private fun showError() {
@@ -145,7 +147,6 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                                 e.printStackTrace()
                             }
                         }
-
                     }
 
                     override fun onQueueViewWillOpen() {

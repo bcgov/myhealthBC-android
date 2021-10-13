@@ -1,6 +1,6 @@
 package ca.bc.gov.bchealth.services
 
-import ca.bc.gov.bchealth.model.network.responses.VaxStatusResponse
+import ca.bc.gov.bchealth.model.network.responses.vaccinestatus.VaxStatusResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header

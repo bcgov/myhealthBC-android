@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.model.network.responses
+package ca.bc.gov.bchealth.model.network.responses.vaccinestatus
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -13,7 +13,7 @@ data class ResourcePayload(
     val id: String,
     val loaded: Boolean,
     val retryin: Int,
-    val personalhealthnumber: Int,
+    val personalhealthnumber: String,
     val firstname: String,
     val lastname: String,
     val birthdate: String,

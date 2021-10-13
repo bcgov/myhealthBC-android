@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.model.network.responses
+package ca.bc.gov.bchealth.model.network.responses.vaccinestatus
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

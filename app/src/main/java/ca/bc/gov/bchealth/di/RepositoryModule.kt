@@ -3,7 +3,6 @@ package ca.bc.gov.bchealth.di
 import ca.bc.gov.bchealth.datasource.LocalDataSource
 import ca.bc.gov.bchealth.repository.CardRepository
 import ca.bc.gov.bchealth.services.ImmunizationServices
-import ca.bc.gov.bchealth.services.ProductService
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import dagger.Module
 import dagger.Provides
@@ -25,8 +24,7 @@ class RepositoryModule {
     fun provideCardRepository(
         localDataSource: LocalDataSource,
         shcDecoder: SHCDecoder,
-        immunizationServices: ImmunizationServices,
-        productService: ProductService
+        immunizationServices: ImmunizationServices
     ) =
-        CardRepository(localDataSource, shcDecoder, immunizationServices, productService)
+        CardRepository(localDataSource, shcDecoder, immunizationServices)
 }

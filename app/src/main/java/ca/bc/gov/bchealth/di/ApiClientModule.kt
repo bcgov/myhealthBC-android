@@ -9,7 +9,6 @@ import ca.bc.gov.bchealth.http.QueueITInterceptor
 import ca.bc.gov.bchealth.http.ReceivedCookiesInterceptor
 import ca.bc.gov.bchealth.http.UserAgentInterceptor
 import ca.bc.gov.bchealth.services.ImmunizationServices
-import ca.bc.gov.bchealth.services.ProductService
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -21,6 +20,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.text.DateFormat
+import javax.inject.Singleton
 
 /**
  * [ApiClientModule]
@@ -32,6 +32,7 @@ import java.text.DateFormat
 class ApiClientModule {
 
     @Provides
+    @Singleton
     fun provideRetrofit(
         uniqueRetrofitConstant: String,
         context: Context
@@ -81,12 +82,6 @@ class ApiClientModule {
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(okHttpClient)
                     .build()
-            SERVICE_PRODUCT ->
-                Retrofit.Builder()
-                    .baseUrl(context.getString(R.string.retrofit_url_product))
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .client(okHttpClient)
-                    .build()
             // TODO: 06/10/21 Add more retrofit objects here
             else ->
                 // Default retrofit object
@@ -99,6 +94,7 @@ class ApiClientModule {
     }
 
     @Provides
+    @Singleton
     fun provideImmunizationServices(@ApplicationContext context: Context): ImmunizationServices {
         return provideRetrofit(
             SERVICE_IMMUNIZATION,
@@ -106,15 +102,8 @@ class ApiClientModule {
         ).create(ImmunizationServices::class.java)
     }
 
-    @Provides
-    fun provideProductServices(@ApplicationContext context: Context): ProductService {
-        return provideRetrofit(SERVICE_PRODUCT, context = context)
-            .create(ProductService::class.java)
-    }
-
     companion object {
         const val SERVICE_IMMUNIZATION = "SERVICE_IMMUNIZATION"
-        const val SERVICE_PRODUCT = "SERVICE_PRODUCT"
         var queueItToken: String = ""
     }
 }

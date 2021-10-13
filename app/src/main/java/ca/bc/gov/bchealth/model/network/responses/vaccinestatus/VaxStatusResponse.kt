@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.model.network.responses
+package ca.bc.gov.bchealth.model.network.responses.vaccinestatus
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -11,9 +11,9 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class VaxStatusResponse(
     val resourcePayload: ResourcePayload,
-    val totalResultCount: String,
-    val pageIndex: String,
-    val pageSize: String,
+    val totalResultCount: Int,
+    val pageIndex: Int,
+    val pageSize: Int,
     val resultStatus: Int,
-    val resultError: String
+    val resultError: ResultError
 ) : Parcelable
