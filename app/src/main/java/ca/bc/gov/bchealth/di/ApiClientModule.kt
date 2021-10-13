@@ -52,8 +52,8 @@ class ApiClientModule {
         * */
         val cookies = CookieStorage()
         builder.addInterceptor(QueueITInterceptor(cookies))
-            .addInterceptor(AddCookiesInterceptor(cookies))
-            .addInterceptor(ReceivedCookiesInterceptor(cookies))
+            .addNetworkInterceptor(AddCookiesInterceptor(cookies))
+            .addNetworkInterceptor(ReceivedCookiesInterceptor(cookies))
             .addInterceptor(
                 UserAgentInterceptor(
                     context.getString(R.string.app_name),
