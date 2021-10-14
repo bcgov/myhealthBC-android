@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.mycards
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
+import ca.bc.gov.bchealth.datasource.DataStoreRepo
 import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.repository.CardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +21,8 @@ import kotlinx.coroutines.withContext
  */
 @HiltViewModel
 class MyCardsViewModel @Inject constructor(
-    private val repository: CardRepository
+    private val repository: CardRepository,
+    private val dataStoreRepo: DataStoreRepo
 ) : ViewModel() {
 
     val cards = repository.cards.stateIn(
@@ -50,4 +52,10 @@ class MyCardsViewModel @Inject constructor(
         }
         repository.rearrangeHealthCards(healthCards)
     }
+
+    val isOnBoardingShown = dataStoreRepo.isOnBoardingShown.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
 }

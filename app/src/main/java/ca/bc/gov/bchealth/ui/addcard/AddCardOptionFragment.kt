@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
+import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,7 +35,8 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         val action = registerForActivityResult(
             ActivityResultContracts.GetContent()
         ) {
-            viewModel.processUploadedImage(it, requireContext())
+            if (it != null)
+                viewModel.processUploadedImage(it, requireContext())
         }
 
         viewModel.uploadStatus.observe(viewLifecycleOwner, {
@@ -50,13 +52,17 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         }
 
         binding.btnGetCard.setOnClickListener {
-            // TODO: Start Add Card with citizen detail flow.
+            context?.toast(getString(R.string.coming_soon))
         }
 
-        binding.toolbar.imgAction.setImageResource(R.drawable.ic_plus)
-        binding.toolbar.imgAction.contentDescription = getString(R.string.close)
-        binding.toolbar.imgAction.setOnClickListener {
-            findNavController().popBackStack()
+        binding.toolbar.apply {
+            ivBack.visibility = View.VISIBLE
+            ivBack.setImageResource(R.drawable.ic_acion_back)
+            tvTitle.visibility = View.VISIBLE
+            tvTitle.text = getString(R.string.add_card)
+            ivBack.setOnClickListener {
+                findNavController().popBackStack()
+            }
         }
     }
 

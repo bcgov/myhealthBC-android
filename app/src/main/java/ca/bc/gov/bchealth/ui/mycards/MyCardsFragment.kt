@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,6 +49,18 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewLifecycleOwner.lifecycleScope.launch {
+
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                launch {
+                    collectOnBoardingFlow()
+                }
+            }
+        }
+    }
+
+    private fun healthPassesFlow() {
         sceneAddCard = Scene.getSceneForLayout(
             binding.sceneRoot,
             R.layout.scene_mycards_add_card,
@@ -65,9 +78,18 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 requireContext()
             )
 
-        binding.toolbar.imgAction.contentDescription = getString(R.string.add_card)
-        binding.toolbar.imgAction.setOnClickListener {
-            findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
+        binding.toolbar.apply {
+
+            tvTitle.visibility = View.VISIBLE
+            tvTitle.text = getString(R.string.bc_vaccine_cards)
+
+            binding.toolbar.ivSettings.visibility = View.VISIBLE
+            binding.toolbar.ivSettings.setImageResource(R.drawable.ic_add_card_blue)
+            binding.toolbar.ivSettings.setOnClickListener {
+                findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
+            }
+
+            binding.toolbar.line1.visibility = View.INVISIBLE
         }
 
         val cardsTemp: MutableList<HealthCardDto> = mutableListOf()
@@ -89,7 +111,8 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                             cards.forEach {
                                 it.isExpanded = false
                             }
-                            cards[0].isExpanded = true
+                            if (cards.size > 1)
+                                cards[0].isExpanded = true
                         } else {
                             cards.forEach {
                                 it.isExpanded = it.id == newCards[0].id
@@ -230,5 +253,29 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 dialog.dismiss()
             }
             .show()
+    }
+
+    private suspend fun collectOnBoardingFlow() {
+        viewModel.isOnBoardingShown.collect { shown ->
+            if (shown != null) {
+                when (shown) {
+                    true -> {
+                        healthPassesFlow()
+                    }
+
+                    false -> {
+                        val startDestination = findNavController().graph.startDestination
+                        val navOptions = NavOptions.Builder()
+                            .setPopUpTo(startDestination, true)
+                            .build()
+                        findNavController().navigate(
+                            R.id.onBoardingSliderFragment,
+                            null,
+                            navOptions
+                        )
+                    }
+                }
+            }
+        }
     }
 }

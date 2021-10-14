@@ -4,11 +4,16 @@
     <item
         android:id="@+id/myCardsFragment"
         android:enabled="true"
-        android:icon="@drawable/ic_my_cards"
-        android:title="@string/my_cards" />
+        android:icon="@drawable/pass_selector"
+        android:title="@string/pass" />
     <item
-        android:id="@+id/settingFragment"
+        android:id="@+id/resourcesFragment"
         android:enabled="true"
-        android:icon="@drawable/ic_setting"
-        android:title="@string/setting" />
+        android:icon="@drawable/resource_selector"
+        android:title="@string/resource" />
+    <item
+        android:id="@+id/newsfeedFragment"
+        android:enabled="true"
+        android:icon="@drawable/news_feed_selector"
+        android:title="@string/news_feed" />
 </menu>

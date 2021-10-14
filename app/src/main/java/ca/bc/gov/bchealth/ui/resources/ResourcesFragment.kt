@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.setting
+package ca.bc.gov.bchealth.ui.resources
 
 import android.content.Intent
 import android.net.Uri
@@ -8,36 +8,29 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.databinding.FragmentSettingBinding
+import ca.bc.gov.bchealth.databinding.FragmentResourcesBinding
 import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
+import dagger.hilt.android.AndroidEntryPoint
 
-/**
- * [SettingFragment]
- *
- * @author amit metri
- */
-class SettingFragment : Fragment(R.layout.fragment_setting) {
+@AndroidEntryPoint
+class ResourcesFragment : Fragment(R.layout.fragment_resources) {
 
-    private val binding by viewBindings(FragmentSettingBinding::bind)
+    private val binding by viewBindings(FragmentResourcesBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbar.apply {
-            ivBack.visibility = View.VISIBLE
-            ivBack.setImageResource(R.drawable.ic_acion_back)
-            tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.settings)
-            ivBack.setOnClickListener {
-                findNavController().popBackStack()
-            }
+        // TODO: 14/10/21 Redirection URLs needs to be updated once available
+        binding.customView1.setOnClickListener {
+            redirect(getString(R.string.url_how_to_get_covid_vaccinated))
         }
-
-        binding.viewPrivacyStatement.setOnClickListener {
-            redirect(getString(R.string.url_privacy_policy))
+        binding.customView2.setOnClickListener {
+            redirect(getString(R.string.url_how_to_get_covid_vaccinated))
+        }
+        binding.customView3.setOnClickListener {
+            redirect(getString(R.string.url_how_to_get_covid_vaccinated))
         }
     }
 
