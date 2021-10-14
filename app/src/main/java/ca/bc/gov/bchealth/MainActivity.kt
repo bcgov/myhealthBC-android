@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import ca.bc.gov.bchealth.databinding.ActivityMainBinding
+import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,8 +34,12 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.myCardsFragment -> showBottomNav()
+                R.id.addCardOptionFragment -> showBottomNav()
                 R.id.resourcesFragment -> showBottomNav()
-                R.id.newsfeedFragment -> showBottomNav()
+                R.id.newsfeedFragment -> {
+                    showBottomNav()
+                    this.toast(getString(R.string.coming_soon))
+                }
                 else -> hideBottomNav()
             }
         }

@@ -78,11 +78,11 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 requireContext()
             )
 
-        binding.toolbar.imgAction.contentDescription = getString(R.string.add_card)
-        binding.toolbar.imgAction.setOnClickListener {
-            // findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
-            findNavController().navigate(R.id.onBoardingSliderFragment)
+        binding.toolbar.ivSettings.visibility = View.VISIBLE
+        binding.toolbar.ivSettings.setOnClickListener {
+             findNavController().navigate(R.id.settingFragment)
         }
+        binding.toolbar.line1.visibility = View.INVISIBLE
 
         val cardsTemp: MutableList<HealthCardDto> = mutableListOf()
 

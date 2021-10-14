@@ -13,7 +13,7 @@
         android:bottom="@dimen/space_8_x" />
 
     <item
-        android:drawable="@drawable/ic_logo"
+        android:drawable="@drawable/ic_splash_logo"
         android:gravity="center"
         android:bottom="@dimen/space_8_x"/>
 

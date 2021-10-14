@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.onboarding.OnBoardingFragment">
+    tools:context=".ui.onboarding.CameraPermissionFragment">
 
     <ScrollView
         android:layout_width="0dp"
@@ -25,18 +25,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_8_x"
-                android:src="@drawable/ic_group_5214"
+                android:src="@drawable/ic_camera_permission"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!--Todo, this image might be used for animation effect in future-->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/img_on_boarding_slider_icon_movable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
                 android:layout_marginTop="@dimen/space_4_x"
-                android:src="@drawable/ic_check_mark"
                 app:layout_constraintBottom_toBottomOf="@+id/img_on_boarding_slider_icon_fixed"
                 app:layout_constraintEnd_toEndOf="@+id/img_on_boarding_slider_icon_fixed"
                 app:layout_constraintStart_toStartOf="@+id/img_on_boarding_slider_icon_fixed"
@@ -44,7 +44,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/txt_slider_title"
-                style="?textAppearanceHeadline6"
+                style="?textAppearanceHeadline2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_2_x"
@@ -58,7 +58,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/txt_slider_description"
-                style="?textAppearanceHeadline4"
+                style="?textAppearanceBody1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"

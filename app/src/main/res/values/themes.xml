@@ -47,14 +47,25 @@
             @style/BC_VAX.TextAppearance.MaterialComponents.Headline5
         </item>
 
+        <item name="textAppearanceHeadline6">
+            @style/BC_VAX.TextAppearance.MaterialComponents.Headline6
+        </item>
+
         <item name="textAppearanceBody1">@style/BC_VAX.TextAppearance.MaterialComponents.Body1
+        </item>
+
+        <item name="textAppearanceBody2">@style/BC_VAX.TextAppearance.MaterialComponents.Body2
+        </item>
+
+        <item name="textAppearanceSubtitle1">
+            @style/BC_VAX.TextAppearance.MaterialComponents.Subtitle1
         </item>
 
         <item name="textAppearanceButton">@style/BC_VAX.TextAppearance.MaterialComponents.Button
         </item>
 
         <!--COMPONENT STYLES-->
-        <item name="materialButtonStyle">@style/BC_VAX.Widget.MaterialComponents.Button</item>
+        <!--<item name="materialButtonStyle">@style/BC_VAX.Widget.MaterialComponents.Button</item>-->
         <item name="materialButtonOutlinedStyle">
             @style/BC_VAX.Widget.MaterialComponents.Button.OutlinedButton
         </item>

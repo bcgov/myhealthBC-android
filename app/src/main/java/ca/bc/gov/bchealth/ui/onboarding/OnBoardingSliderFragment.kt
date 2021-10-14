@@ -31,7 +31,7 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
         ) { _, _ -> }.attach()
 
         binding.btnNextSlide.setOnClickListener {
-            if(educationalScreenAdapter.itemCount == getCurrentItem() + 1){
+            if (educationalScreenAdapter.itemCount == getCurrentItem() + 1) {
                 findNavController().navigate(R.id.myCardsFragment)
             } else {
                 binding.viewpagerOnBoardingSlides.currentItem = getCurrentItem() + 1
@@ -39,16 +39,16 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
         }
 
         binding.viewpagerOnBoardingSlides.registerOnPageChangeCallback(object :
-                ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    if (position == educationalScreenAdapter.itemCount - 1) {
-                        binding.btnNextSlide.text = getString(R.string.get_started)
-                    } else {
-                        binding.btnNextSlide.text = getString(R.string.next)
-                    }
+            ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                if (position == educationalScreenAdapter.itemCount - 1) {
+                    binding.btnNextSlide.text = getString(R.string.get_started)
+                } else {
+                    binding.btnNextSlide.text = getString(R.string.next)
                 }
-            })
+            }
+        })
 
         viewModel.setOnBoardingShown(true)
     }

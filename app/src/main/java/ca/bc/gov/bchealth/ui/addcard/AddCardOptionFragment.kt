@@ -53,11 +53,17 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             // TODO: Start Add Card with citizen detail flow.
         }
 
-        binding.toolbar.imgAction.setImageResource(R.drawable.ic_plus)
-        binding.toolbar.imgAction.contentDescription = getString(R.string.close)
-        binding.toolbar.imgAction.setOnClickListener {
-            findNavController().popBackStack()
+
+        binding.toolbar.apply {
+            ivBack.visibility = View.VISIBLE
+            ivBack.setImageResource(R.drawable.ic_acion_back)
+            tvTitle.visibility = View.VISIBLE
+            tvTitle.text = getString(R.string.add_card)
+            ivBack.setOnClickListener {
+                findNavController().popBackStack()
+            }
         }
+
     }
 
     private fun showError() {

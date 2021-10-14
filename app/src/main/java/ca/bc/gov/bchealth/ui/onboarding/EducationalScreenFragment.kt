@@ -18,14 +18,17 @@ class EducationalScreenFragment : Fragment(R.layout.fragment_educational_screen)
         arguments?.takeIf { it.containsKey(SLIDER_POSITION) }?.apply {
             when (get(SLIDER_POSITION)) {
                 0 -> {
+                    binding.imgOnBoardingSliderIconFixed.setImageResource(R.drawable.ic_slider_1)
                     binding.txtSliderTitle.text = getString(R.string.health_passes)
                     binding.txtSliderDescription.text = getString(R.string.onboarding_message_1)
                 }
                 1 -> {
+                    binding.imgOnBoardingSliderIconFixed.setImageResource(R.drawable.ic_slider_2)
                     binding.txtSliderTitle.text = getString(R.string.health_resource)
                     binding.txtSliderDescription.text = getString(R.string.onboarding_message_2)
                 }
                 2 -> {
+                    binding.imgOnBoardingSliderIconFixed.setImageResource(R.drawable.ic_slider_3)
                     binding.txtSliderTitle.text = getString(R.string.news_feed)
                     binding.txtSliderDescription.text = getString(R.string.onboarding_message_3)
                 }

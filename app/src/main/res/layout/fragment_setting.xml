@@ -55,7 +55,7 @@
         android:drawableEnd="@drawable/ic_angle_right"
         android:drawablePadding="@dimen/space_2_x"
         android:text="@string/privacy_statement"
-        android:textColor="@color/blue_link"
+        android:textColor="@color/blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

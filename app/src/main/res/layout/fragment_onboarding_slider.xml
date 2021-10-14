@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.onboarding.OnBoardingFragment">
+    tools:context=".ui.onboarding.CameraPermissionFragment">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewpager_on_boarding_slides"
@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/space_2_x"
         app:layout_constraintBottom_toTopOf="@+id/btn_next_slide"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -32,16 +32,15 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_next_slide"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button.TextButton.Icon"
+        style="@style/BC_VAX.Widget.MaterialComponents.Button1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/space_4_x"
+        android:layout_marginBottom="@dimen/space_8_x"
         android:text="@string/next"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="ContentDescription" />
+        android:contentDescription="@string/next" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

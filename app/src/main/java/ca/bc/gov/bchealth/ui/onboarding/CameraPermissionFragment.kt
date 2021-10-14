@@ -16,22 +16,22 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.databinding.FragmentOnboardingBinding
+import ca.bc.gov.bchealth.databinding.FragmentCameraPermissionBinding
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
- * [OnBoardingFragment]
+ * [CameraPermissionFragment]
  *
  * @author amit metri
  */
 @AndroidEntryPoint
-class OnBoardingFragment : Fragment(R.layout.fragment_onboarding) {
+class CameraPermissionFragment : Fragment(R.layout.fragment_camera_permission) {
 
     private lateinit var requestPermission: ActivityResultLauncher<String>
 
-    private val binding by viewBindings(FragmentOnboardingBinding::bind)
+    private val binding by viewBindings(FragmentCameraPermissionBinding::bind)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

@@ -6,11 +6,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsServiceConnection
 import androidx.browser.customtabs.CustomTabsSession
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSettingBinding
@@ -81,6 +83,8 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
                 val builder: CustomTabsIntent.Builder = CustomTabsIntent.Builder(customTabsSession)
                 val customTabIntent: CustomTabsIntent = builder
                     .setDefaultColorSchemeParams(customTabColorSchemeParams)
+                    .setCloseButtonIcon(resources.getDrawable(R.drawable.ic_acion_back, null)
+                        .toBitmap())
                     .build()
 
                 customTabIntent.launchUrl(

@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/onBoardingFragment"
-        android:name="ca.bc.gov.bchealth.ui.onboarding.OnBoardingFragment"
+        android:name="ca.bc.gov.bchealth.ui.onboarding.CameraPermissionFragment"
         android:label="fragment_onboarding"
-        tools:layout="@layout/fragment_onboarding" />
+        tools:layout="@layout/fragment_camera_permission" />
 
     <fragment
         android:id="@+id/myCardsFragment"

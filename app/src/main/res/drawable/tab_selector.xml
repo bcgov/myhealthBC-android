@@ -4,4 +4,5 @@
     <item android:drawable="@drawable/selected_indicator_dot" android:state_selected="true" />
 
     <item android:drawable="@drawable/default_indicator_dot" />
+
 </selector>

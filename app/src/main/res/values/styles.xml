@@ -2,18 +2,35 @@
 <resources>
 
     <!--Button style-->
-    <style name="BC_VAX.Widget.MaterialComponents.Button" parent="Widget.MaterialComponents.Button">
-        <item name="android:textColor">@android:color/primary_text_light</item>
-        <item name="backgroundTint">@android:color/white</item>
+    <style name="BC_VAX.Widget.MaterialComponents.Button1" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/primary_blue</item>
+        <item name="android:layout_height">@dimen/space_8_x</item>
+        <item name="android:textSize">16sp</item>
+        <item name="fontFamily">@font/bc_sans_bold</item>
+    </style>
+
+    <style name="BC_VAX.Widget.MaterialComponents.Button2" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/primary_blue</item>
+        <item name="android:layout_height">@dimen/space_8_x</item>
+        <item name="android:textSize">16sp</item>
+        <item name="fontFamily">@font/bc_sans_regular</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">12dp</item>
+        <item name="iconTint">@color/white</item>
+        <item name="android:lineSpacingMultiplier">1.0</item>
+        <item name="android:letterSpacing">-0.01</item>
     </style>
 
     <style name="BC_VAX.Widget.MaterialComponents.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="strokeWidth">2dp</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="backgroundTint">@android:color/white</item>
         <item name="fontFamily">@font/bc_sans_bold</item>
         <item name="android:lineSpacingMultiplier">0.1</item>
-        <item name="strokeColor">@color/dark_blue</item>
+        <item name="strokeColor">@color/primary_blue</item>
+        <item name="android:layout_height">54dp</item>
     </style>
 
     <style name="BC_VAX.Widget.MaterialComponents.Button.TextButton.Icon" parent="Widget.MaterialComponents.Button.TextButton.Icon">
@@ -25,7 +42,7 @@
         <item name="cornerRadius">4dp</item>
         <item name="android:textColor">@color/white</item>
         <item name="rippleColor">@color/white</item>
-        <item name="backgroundTint">@color/dark_blue</item>
+        <item name="backgroundTint">@color/primary_blue</item>
         <item name="fontFamily">@font/bc_sans_bold</item>
         <item name="android:lineSpacingMultiplier">0.1</item>
     </style>
@@ -39,7 +56,7 @@
         <item name="cornerRadius">4dp</item>
         <item name="android:textColor">@color/white</item>
         <item name="rippleColor">@color/white</item>
-        <item name="backgroundTint">@color/dark_blue</item>
+        <item name="backgroundTint">@color/primary_blue</item>
         <item name="fontFamily">@font/bc_sans_regular</item>
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">12dp</item>
@@ -73,7 +90,7 @@
         <item name="android:layout_height">48dp</item>
         <item name="android:paddingLeft">@dimen/space_2_x</item>
         <item name="android:paddingRight">@dimen/space_2_x</item>
-        <item name="strokeColor">@color/dark_blue</item>
+        <item name="strokeColor">@color/primary_blue</item>
         <item name="strokeWidth">1dp</item>
     </style>
 </resources>

@@ -16,7 +16,6 @@ class EducationalScreenAdapter(fragment: Fragment) : FragmentStateAdapter(fragme
         val fragment = EducationalScreenFragment()
 
         fragment.arguments = Bundle().apply {
-            // pass the slider position for different UI configuration on the slides
             putInt(SLIDER_POSITION, position)
         }
 
