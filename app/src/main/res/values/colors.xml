@@ -13,9 +13,9 @@
     <color name="ic_launcher_background">#1A5A95</color>
 
     <color name="primary_blue">#003366</color>
+    <color name="blue">#1A5A96</color>
     <color name="text_black">#313132</color>
     <color name="grey">#606060</color>
-    <color name="blue">#1A5A96</color>
+    <color name="shadow_grey">#CFCFCF</color>
     <color name="light_grey">#F2F2F2</color>
-
 </resources>

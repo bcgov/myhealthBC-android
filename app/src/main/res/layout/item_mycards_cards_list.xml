@@ -25,7 +25,6 @@
             android:padding="@dimen/space_1_x"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@+id/img_unlink"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -50,9 +49,9 @@
                 android:layout_gravity="center"
                 android:drawablePadding="@dimen/space_1_x"
                 android:gravity="center"
+                android:textSize="18sp"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="18sp"
                 tools:text="VACCINATED" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -100,13 +99,11 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/txt_issue_date"
-                style="?textAppearanceBody1"
+                style="?textAppearanceHeadline6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/space_1_x"
                 android:textColor="@color/white"
-                android:textStyle="normal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -128,7 +125,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/txt_tap_to_zoom"
-                style="?textAppearanceBody1"
+                style="?textAppearanceHeadline6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -138,7 +135,6 @@
                 android:drawablePadding="@dimen/space_1_x"
                 android:text="@string/tap_to_zoom_in"
                 android:textColor="@color/white"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"

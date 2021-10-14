@@ -24,8 +24,8 @@
                 android:id="@+id/img_on_boarding_slider_icon_fixed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_8_x"
                 android:src="@drawable/ic_camera_permission"
+                app:layout_constraintBottom_toTopOf="@+id/txt_slider_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -48,13 +48,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_2_x"
-                android:layout_marginTop="@dimen/space_8_x"
                 android:layout_marginEnd="@dimen/space_2_x"
                 android:text="@string/place_holder_text"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/img_on_boarding_slider_icon_fixed" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.456" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/txt_slider_description"
@@ -67,7 +67,7 @@
                 android:text="@string/lorem_ipsum"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txt_slider_title" />
 

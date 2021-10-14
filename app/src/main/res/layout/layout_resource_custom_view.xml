@@ -27,7 +27,7 @@
         android:layout_marginStart="@dimen/space_2_x"
         android:layout_marginEnd="@dimen/space_2_x"
         android:drawableEnd="@drawable/ic_angle_right"
-        android:drawablePadding="@dimen/space_1_x"
+        android:drawablePadding="@dimen/space_2_x"
         app:layout_constraintBottom_toBottomOf="@+id/img_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_icon"

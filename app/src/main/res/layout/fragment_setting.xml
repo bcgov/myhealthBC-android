@@ -6,42 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".ui.setting.SettingFragment">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/txt_setting"
-        style="?textAppearanceHeadline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginTop="@dimen/space_4_x"
-        android:text="@string/setting"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/txt_bc_camera_permission_message"
-        style="?textAppearanceHeadline4"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginTop="@dimen/space_2_x"
-        android:layout_marginEnd="@dimen/space_4_x"
-        android:text="@string/settings_message"
-        android:textAlignment="textStart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_setting" />
-
-    <View
-        android:id="@+id/line1"
-        android:layout_width="0dp"
-        android:layout_height="1.5dp"
-        android:layout_marginTop="@dimen/space_2_x"
-        android:background="@drawable/solid_line"
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/layout_toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_bc_camera_permission_message" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/txt_privacy_statement"
@@ -59,7 +30,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line1" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <View
         android:id="@+id/line2"
@@ -78,12 +49,12 @@
         android:layout_height="0dp"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
-        android:focusable="true"
         android:contentDescription="@string/privacy_statement"
+        android:focusable="true"
         app:layout_constraintBottom_toTopOf="@+id/line2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line1" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

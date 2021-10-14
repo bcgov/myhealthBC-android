@@ -51,7 +51,7 @@
             android:layout_marginEnd="@dimen/space_4_x"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:contentDescription="@string/setting"
+            android:contentDescription="@string/settings"
             android:focusable="true"
             android:src="@drawable/ic_settings"
             android:visibility="gone"

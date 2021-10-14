@@ -80,7 +80,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
         binding.toolbar.ivSettings.visibility = View.VISIBLE
         binding.toolbar.ivSettings.setOnClickListener {
-             findNavController().navigate(R.id.settingFragment)
+             findNavController().navigate(R.id.action_myCardsFragment_to_settingFragment)
         }
         binding.toolbar.line1.visibility = View.INVISIBLE
 

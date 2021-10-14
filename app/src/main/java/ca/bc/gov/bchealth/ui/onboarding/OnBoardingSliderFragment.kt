@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import ca.bc.gov.bchealth.R
@@ -32,7 +33,10 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
 
         binding.btnNextSlide.setOnClickListener {
             if (educationalScreenAdapter.itemCount == getCurrentItem() + 1) {
-                findNavController().navigate(R.id.myCardsFragment)
+                val navOptions = NavOptions.Builder()
+                    .setPopUpTo(R.id.onBoardingSliderFragment, true)
+                    .build()
+                findNavController().navigate(R.id.myCardsFragment, null, navOptions)
             } else {
                 binding.viewpagerOnBoardingSlides.currentItem = getCurrentItem() + 1
             }

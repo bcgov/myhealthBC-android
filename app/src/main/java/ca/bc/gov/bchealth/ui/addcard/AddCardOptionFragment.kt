@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
+import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,7 +35,8 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         val action = registerForActivityResult(
             ActivityResultContracts.GetContent()
         ) {
-            viewModel.processUploadedImage(it, requireContext())
+            if(it != null)
+                viewModel.processUploadedImage(it, requireContext())
         }
 
         viewModel.uploadStatus.observe(viewLifecycleOwner, {
@@ -50,7 +52,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         }
 
         binding.btnGetCard.setOnClickListener {
-            // TODO: Start Add Card with citizen detail flow.
+            context?.toast(getString(R.string.coming_soon))
         }
 
 
