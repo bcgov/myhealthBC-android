@@ -80,5 +80,6 @@
     <string name="coming_soon">Coming soon!</string>
     <string name="title_add_card">Please select one of the following options to add a card</string>
     <string name="back">Back</string>
+    <string name="bc_vaccine_cards">BC Vaccine Cards</string>
 
 </resources>

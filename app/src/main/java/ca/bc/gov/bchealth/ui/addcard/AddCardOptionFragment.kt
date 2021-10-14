@@ -35,7 +35,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         val action = registerForActivityResult(
             ActivityResultContracts.GetContent()
         ) {
-            if(it != null)
+            if (it != null)
                 viewModel.processUploadedImage(it, requireContext())
         }
 
@@ -55,7 +55,6 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             context?.toast(getString(R.string.coming_soon))
         }
 
-
         binding.toolbar.apply {
             ivBack.visibility = View.VISIBLE
             ivBack.setImageResource(R.drawable.ic_acion_back)
@@ -65,7 +64,6 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                 findNavController().popBackStack()
             }
         }
-
     }
 
     private fun showError() {

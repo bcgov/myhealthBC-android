@@ -78,11 +78,19 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 requireContext()
             )
 
-        binding.toolbar.ivSettings.visibility = View.VISIBLE
-        binding.toolbar.ivSettings.setOnClickListener {
-             findNavController().navigate(R.id.action_myCardsFragment_to_settingFragment)
+        binding.toolbar.apply {
+
+            tvTitle.visibility = View.VISIBLE
+            tvTitle.text = getString(R.string.bc_vaccine_cards)
+
+            binding.toolbar.ivSettings.visibility = View.VISIBLE
+            binding.toolbar.ivSettings.setImageResource(R.drawable.ic_add_card_blue)
+            binding.toolbar.ivSettings.setOnClickListener {
+                findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
+            }
+
+            binding.toolbar.line1.visibility = View.INVISIBLE
         }
-        binding.toolbar.line1.visibility = View.INVISIBLE
 
         val cardsTemp: MutableList<HealthCardDto> = mutableListOf()
 
@@ -103,7 +111,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                             cards.forEach {
                                 it.isExpanded = false
                             }
-                            if(cards.size > 1)
+                            if (cards.size > 1)
                                 cards[0].isExpanded = true
                         } else {
                             cards.forEach {
@@ -249,7 +257,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
     private suspend fun collectOnBoardingFlow() {
         viewModel.isOnBoardingShown.collect { shown ->
-            if(shown != null) {
+            if (shown != null) {
                 when (shown) {
                     true -> {
                         healthPassesFlow()

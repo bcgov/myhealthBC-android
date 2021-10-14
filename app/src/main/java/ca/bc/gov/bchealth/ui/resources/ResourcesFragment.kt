@@ -22,7 +22,7 @@ class ResourcesFragment : Fragment(R.layout.fragment_resources) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO: 14/10/21 Redirection URLs needs to be updated once available 
+        // TODO: 14/10/21 Redirection URLs needs to be updated once available
         binding.customView1.setOnClickListener {
             redirect(getString(R.string.url_how_to_get_covid_vaccinated))
         }
@@ -32,7 +32,6 @@ class ResourcesFragment : Fragment(R.layout.fragment_resources) {
         binding.customView3.setOnClickListener {
             redirect(getString(R.string.url_how_to_get_covid_vaccinated))
         }
-
     }
 
     private fun redirect(url: String) {
@@ -71,5 +70,4 @@ class ResourcesFragment : Fragment(R.layout.fragment_resources) {
             context?.toast(getString(R.string.no_app_found))
         }
     }
-
 }

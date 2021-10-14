@@ -21,7 +21,7 @@ constructor(
     private val defStyleAttr: Int = 0
 ) : ConstraintLayout(ctx, attributeSet, defStyleAttr) {
 
-    //Default values
+    // Default values
     var textDescription: String = ""
     @DrawableRes
     var imgSrc: Int = R.drawable.ic_resources_icon_1
@@ -41,14 +41,13 @@ constructor(
         val view = inflater.inflate(R.layout.layout_resource_custom_view, this)
 
         initializeViews(view)
-
     }
 
     private fun initializeViews(view: View) {
-        val textView: MaterialTextView = view.findViewById(R.id.txt_label);
+        val textView: MaterialTextView = view.findViewById(R.id.txt_label)
         textView.text = textDescription
 
-        val imageView: ShapeableImageView = view.findViewById(R.id.img_icon);
+        val imageView: ShapeableImageView = view.findViewById(R.id.img_icon)
         imageView.setImageResource(imgSrc)
     }
 

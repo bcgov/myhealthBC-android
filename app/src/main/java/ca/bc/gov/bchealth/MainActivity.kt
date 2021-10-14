@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.myCardsFragment -> showBottomNav()
-                R.id.addCardOptionFragment -> showBottomNav()
+                R.id.myCardsFragment,
+                R.id.addCardOptionFragment,
                 R.id.resourcesFragment -> showBottomNav()
                 R.id.newsfeedFragment -> {
                     showBottomNav()
@@ -47,7 +47,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun showBottomNav() {
         binding.bottomNav.visibility = View.VISIBLE
-
     }
 
     private fun hideBottomNav() {
