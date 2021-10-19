@@ -13,8 +13,8 @@ import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 /**
  * [AddCardOptionViewModel]
@@ -95,9 +95,5 @@ class AddCardOptionViewModel @Inject constructor(
 
     private fun saveCard(uri: String) = viewModelScope.launch {
         repository.insert(HealthCard(uri = uri))
-    }
-
-    fun getVaccineStatus() {
-        repository.getVaccineStatus()
     }
 }

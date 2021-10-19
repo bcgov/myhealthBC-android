@@ -82,4 +82,9 @@
         android:name="ca.bc.gov.bchealth.ui.newsfeed.NewsfeedFragment"
         android:label="fragment_newsfeed"
         tools:layout="@layout/fragment_newsfeed" />
+    <fragment
+        android:id="@+id/fetchVaccineCardFragment"
+        android:name="ca.bc.gov.bchealth.ui.addcard.FetchVaccineCardFragment"
+        android:label="fragment_fetch_vaccine_card"
+        tools:layout="@layout/fragment_fetch_vaccine_card" />
 </navigation>

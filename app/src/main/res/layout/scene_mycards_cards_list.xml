@@ -21,9 +21,8 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_manage_cards"
-        style="?materialButtonOutlinedStyle"
+        style="@style/BC_VAX.Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/space_1_x"
         android:minWidth="162dp"
         android:paddingStart="@dimen/space_3_x"

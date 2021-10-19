@@ -18,4 +18,5 @@
     <color name="grey">#606060</color>
     <color name="shadow_grey">#CFCFCF</color>
     <color name="light_grey">#F2F2F2</color>
+    <color name="error">#D8292F</color>
 </resources>

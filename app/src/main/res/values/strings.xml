@@ -58,8 +58,6 @@
     <string name="update_downloaded">An update has just been downloaded.</string>
     <string name="restart">RESTART</string>
     <string name="tap_to_zoom_in">Tap to zoom in</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--Educational screens text at on-boarding experience-->
     <string name="place_holder_text">Place holder text</string>
@@ -72,8 +70,7 @@
     <string name="onboarding_message_2">Find health and COVID test</string>
     <string name="news_feed">News Feed</string>
     <string name="onboarding_message_3">Stay updated on COVID-19 news</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="health_passes_message">The easiest way to show proof is using the BC Vaccine Card. Add your cards here for easy access.</string>
     <string name="resource_screen_message">Find information about where and how to get a COVID-19 testing.</string>
     <string name="label_resource_1">Get vaccinated for COVID-19</string>
@@ -83,5 +80,15 @@
     <string name="title_add_card">Please select one of the following options to add a card</string>
     <string name="back">Back</string>
     <string name="bc_vaccine_cards">BC Vaccine Cards</string>
+    <string name="submit">Submit</string>
+    <string name="cancel">Cancel</string>
+    <string name="add_bc_vaccine_card">Add a BC Vaccine Card</string>
+    <string name="to_access_your_bc_vaccine_card">To access your BC Vaccine Card, please provide the following information:</string>
+    <string name="personal_health_number">Personal Health Number</string>
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="date_of_vaccination">Date of Vaccination</string>
+    <string name="select_date">Select date</string>
+    <string name="dose_1_or_dose_2">Dose 1 or Dose 2</string>
+    <string name="privacy_statement_add_card">Privacy statement</string>
 
 </resources>

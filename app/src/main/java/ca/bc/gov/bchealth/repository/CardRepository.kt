@@ -1,16 +1,20 @@
 package ca.bc.gov.bchealth.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.datasource.LocalDataSource
 import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.model.ImmunizationStatus
+import ca.bc.gov.bchealth.model.network.responses.vaccinestatus.VaxStatusResponse
 import ca.bc.gov.bchealth.services.ImmunizationServices
+import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import ca.bc.gov.bchealth.utils.getDateTime
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 /**
  * [CardRepository]
@@ -52,9 +56,9 @@ class CardRepository @Inject constructor(
                 val record = cards.filter { record ->
                     val immunizationRecord = shcDecoder.getImmunizationStatus(record.uri)
                     (
-                            immunizationRecord.name == cardToBeInserted.name &&
-                                    immunizationRecord.birthDate == cardToBeInserted.birthDate
-                            )
+                        immunizationRecord.name == cardToBeInserted.name &&
+                            immunizationRecord.birthDate == cardToBeInserted.birthDate
+                        )
                 }
 
                 if (record.isNullOrEmpty()) {
@@ -79,11 +83,20 @@ class CardRepository @Inject constructor(
     suspend fun unLink(card: HealthCard) = dataSource.unLink(card)
     suspend fun rearrangeHealthCards(cards: List<HealthCard>) = dataSource.rearrange(cards)
 
-    fun getVaccineStatus() {
-        immunizationServices.getVaccineStatus(
-            "9000201422",
-            "1989-12-12",
-            "2021-05-12"
-        ).execute()
+    private val vaxStatusResponseMutableLiveData = MutableLiveData<Response<VaxStatusResponse>>()
+
+    val vaxStatusResponseLiveData: LiveData<Response<VaxStatusResponse>>
+        get() = vaxStatusResponseMutableLiveData
+
+    suspend fun getVaccineStatus(phn: String, dob: String, dov: String) {
+        vaxStatusResponseMutableLiveData.postValue(Response.Loading())
+        val result = immunizationServices.getVaccineStatus(
+            phn, dob, dov
+        )
+        if (result.isSuccessful) {
+            vaxStatusResponseMutableLiveData.postValue(Response.Success(result.body()))
+        } else {
+            vaxStatusResponseMutableLiveData.postValue(Response.Error("Error!"))
+        }
     }
 }
