@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,64 +15,81 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_health_passes"
-        style="?textAppearanceHeadline1"
+        style="?textAppearanceHeadline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_2_x"
         android:text="@string/health_passes"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_health_pass_message"
-        style="?textAppearanceHeadline4"
+        style="?textAppearanceHeadline3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginTop="@dimen/space_2_x"
-        android:layout_marginEnd="@dimen/space_4_x"
-        android:text="@string/health_passes_message"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/bc_vaccine_cards"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_health_passes" />
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/img_no_card"
+        android:id="@+id/iv_add_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_8_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="@string/settings"
+        android:focusable="true"
+        android:src="@drawable/ic_add_card_blue"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_health_pass_message"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_health_passes" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_number_of_passes"
+        style="?textAppearanceHeadline4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_1_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_health_pass_message"
-        app:srcCompat="@drawable/ic_group_5209" />
+        tools:text="3 passes" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_do_not_have_any_card"
-        style="?textAppearanceHeadline6"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rec_cards_list"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginTop="@dimen/space_2_x"
-        android:layout_marginEnd="@dimen/space_4_x"
-        android:text="@string/no_cards_message"
-        android:textAlignment="center"
+        android:layout_weight="1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_no_card" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_number_of_passes"
+        tools:itemCount="10"
+        tools:listitem="@layout/item_mycards_cards_list" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_add_card"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button1"
+        android:id="@+id/btn_view_all"
+        style="@style/BC_VAX.Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
-        android:layout_marginBottom="@dimen/space_3_x"
-        android:text="@string/add_a_bc_vaccine_card"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/view_all"
+        android:textSize="16sp"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rec_cards_list" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

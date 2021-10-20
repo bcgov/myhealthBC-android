@@ -35,7 +35,6 @@ class QueueITInterceptor(
         return res
     }
 
-
     fun mustQueue(response: Response): Boolean {
         val responseHeaders = response.headers
         return responseHeaders.names().contains("x-queueit-redirect")

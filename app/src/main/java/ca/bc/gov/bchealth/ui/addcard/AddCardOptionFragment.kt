@@ -5,6 +5,7 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
@@ -51,17 +52,19 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         }
 
         binding.btnGetCard.setOnClickListener {
-            findNavController().navigate(R.id.fetchVaccineCardFragment)
+            findNavController()
+                .navigate(R.id.action_addCardOptionFragment_to_fetchVaccineCardFragment)
         }
 
         binding.toolbar.apply {
             ivBack.visibility = View.VISIBLE
             ivBack.setImageResource(R.drawable.ic_acion_back)
             tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.add_card)
+            tvTitle.text = getString(R.string.add_a_bc_vaccine_card)
             ivBack.setOnClickListener {
                 findNavController().popBackStack()
             }
+            line1.visibility = View.VISIBLE
         }
     }
 

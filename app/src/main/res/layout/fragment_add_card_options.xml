@@ -14,7 +14,7 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/txt_add_card_title"
-        style="?textAppearanceHeadline3"
+        style="?textAppearanceHeadline4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"

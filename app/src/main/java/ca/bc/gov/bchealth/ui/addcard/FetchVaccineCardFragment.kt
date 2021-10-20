@@ -93,8 +93,10 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             ivSettings.visibility = View.VISIBLE
             ivSettings.setImageResource(R.drawable.ic_help)
             ivSettings.setOnClickListener {
-                findNavController().popBackStack()
+                redirect(getString(R.string.url_help))
             }
+
+            line1.visibility = View.VISIBLE
         }
     }
 
@@ -149,6 +151,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                 }
                 is Response.Error -> {
                     binding.progressBar.visibility = View.INVISIBLE
+                    showError(getString(R.string.error), message = it.errorMessage.toString())
                 }
             }
         })
@@ -157,28 +160,51 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             if (it) {
                 findNavController().popBackStack(R.id.myCardsFragment, false)
             } else {
-                showError()
+                showError(
+                    getString(R.string.bc_invalid_barcode_title),
+                    getString(R.string.bc_invalid_barcode_upload_message)
+                )
             }
         })
     }
 
     private fun validateInputData(): Boolean {
         if (binding.edPhnNumber.editText?.text.isNullOrEmpty()) {
+            binding.edPhnNumber.isErrorEnabled = true
+            binding.edPhnNumber.error = "Personal Health Number is required"
             binding.edPhnNumber.editText?.doOnTextChanged { text, start, before, count ->
-                if (count > 5) {
-                    binding.edPhnNumber.error = "Invalid!"
-                } else {
-                    binding.edPhnNumber.error = null
-                }
+                if (text != null)
+                    if (text.isNotEmpty()) {
+                        binding.edPhnNumber.isErrorEnabled = false
+                        binding.edPhnNumber.error = null
+                    }
             }
             return false
         }
 
         if (binding.edDob.editText?.text.isNullOrEmpty()) {
+            binding.edDob.isErrorEnabled = true
+            binding.edDob.error = "Date of Birth is required"
+            binding.edDob.editText?.doOnTextChanged { text, start, before, count ->
+                if (text != null)
+                    if (text.isNotEmpty()) {
+                        binding.edDob.isErrorEnabled = false
+                        binding.edDob.error = null
+                    }
+            }
             return false
         }
 
         if (binding.edDov.editText?.text.isNullOrEmpty()) {
+            binding.edDov.isErrorEnabled = true
+            binding.edDov.error = "Date of Vaccination is required"
+            binding.edDov.editText?.doOnTextChanged { text, start, before, count ->
+                if (text != null)
+                    if (text.isNotEmpty()) {
+                        binding.edDov.isErrorEnabled = false
+                        binding.edDov.error = null
+                    }
+            }
             return false
         }
 
@@ -191,7 +217,9 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                 .setTitleText(getString(R.string.select_date))
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                 .build()
-        binding.edDob.editText?.isEnabled = false
+        binding.edDob.editText?.setOnClickListener {
+            dateOfBirthPicker.show(parentFragmentManager, "DATE_OF_BIRTH")
+        }
         binding.edDob.setEndIconOnClickListener {
             dateOfBirthPicker.show(parentFragmentManager, "DATE_OF_BIRTH")
         }
@@ -207,7 +235,9 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                 .setTitleText(getString(R.string.select_date))
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                 .build()
-        binding.edDov.editText?.isEnabled = false
+        binding.edDov.editText?.setOnClickListener {
+            dateOfVaccinationPicker.show(parentFragmentManager, "DATE_OF_VACCINATION")
+        }
         binding.edDov.setEndIconOnClickListener {
             dateOfVaccinationPicker.show(parentFragmentManager, "DATE_OF_VACCINATION")
         }
@@ -345,11 +375,11 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         }
     }
 
-    private fun showError() {
+    private fun showError(title: String, message: String) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.bc_invalid_barcode_title))
+            .setTitle(title)
             .setCancelable(false)
-            .setMessage(getString(R.string.bc_invalid_barcode_upload_message))
+            .setMessage(message)
             .setPositiveButton(getString(android.R.string.ok)) { dialog, which ->
                 dialog.dismiss()
             }

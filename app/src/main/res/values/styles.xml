@@ -17,8 +17,7 @@
         <item name="android:layout_height">@dimen/space_8_x</item>
         <item name="android:textSize">16sp</item>
         <item name="fontFamily">@font/bc_sans_regular</item>
-        <item name="iconGravity">textStart</item>
-        <item name="iconPadding">12dp</item>
+        <item name="iconGravity">start</item>
         <item name="iconTint">@color/white</item>
         <item name="android:lineSpacingMultiplier">1.0</item>
         <item name="android:letterSpacing">-0.01</item>
