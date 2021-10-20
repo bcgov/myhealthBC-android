@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asFlow
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.datasource.LocalDataSource
 import ca.bc.gov.bchealth.model.HealthCardDto
@@ -85,8 +86,8 @@ class CardRepository @Inject constructor(
 
     private val vaxStatusResponseMutableLiveData = MutableLiveData<Response<VaxStatusResponse>>()
 
-    val vaxStatusResponseLiveData: LiveData<Response<VaxStatusResponse>>
-        get() = vaxStatusResponseMutableLiveData
+    val vaxStatusResponseLiveData: Flow<Response<VaxStatusResponse>>
+        get() = vaxStatusResponseMutableLiveData.asFlow()
 
     suspend fun getVaccineStatus(phn: String, dob: String, dov: String) {
         vaxStatusResponseMutableLiveData.postValue(Response.Loading())

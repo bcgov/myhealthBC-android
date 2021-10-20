@@ -95,5 +95,7 @@
     <string name="add_a_bc_vaccine_card">Add a BC Vaccine Card</string>
     <string name="view_all">View All</string>
     <string name="health_resources">Health Resources</string>
+    <string name="no_internet">No internet!</string>
+    <string name="check_connection">Please check network connection.</string>
 
 </resources>

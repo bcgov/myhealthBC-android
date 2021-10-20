@@ -89,6 +89,7 @@ class AddCardOptionViewModel @Inject constructor(
                 }
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             uploadStatus.value = false
         }
     }

@@ -27,13 +27,13 @@ class ResourcesFragment : Fragment(R.layout.fragment_resources) {
             redirect(getString(R.string.url_how_to_get_covid_vaccinated))
         }
         binding.customView2.setOnClickListener {
-            requireContext().toast(getString(R.string.coming_soon))
+            redirect(getString(R.string.url_get_tested_for_covid))
         }
         binding.customView3.setOnClickListener {
-            requireContext().toast(getString(R.string.coming_soon))
+            redirect(getString(R.string.url_covid_symptom_checker))
         }
         binding.customView4.setOnClickListener {
-            requireContext().toast(getString(R.string.coming_soon))
+            redirect(getString(R.string.url_K12_daily_check))
         }
     }
 

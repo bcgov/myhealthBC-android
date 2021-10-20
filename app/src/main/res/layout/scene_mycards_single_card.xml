@@ -85,7 +85,7 @@
         android:layout_marginEnd="@dimen/space_4_x"
         android:text="@string/view_all"
         android:textSize="16sp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

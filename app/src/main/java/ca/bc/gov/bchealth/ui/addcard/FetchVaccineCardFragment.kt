@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.system.Os.bind
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
 import android.view.View
@@ -15,6 +16,9 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
@@ -22,6 +26,7 @@ import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineCardBinding
 import ca.bc.gov.bchealth.di.ApiClientModule
 import ca.bc.gov.bchealth.http.MustBeQueued
 import ca.bc.gov.bchealth.utils.Response
+import ca.bc.gov.bchealth.utils.isOnline
 import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -43,7 +48,15 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import android.graphics.BitmapFactory
+
+import android.graphics.Bitmap
+import android.util.Base64
+import androidx.core.graphics.drawable.toIcon
+import com.google.mlkit.vision.common.InputImage
+
 
 @AndroidEntryPoint
 class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) {
@@ -60,16 +73,16 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
     private val viewModel: FetchVaccineCardViewModel by viewModels()
 
-    private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-        print(exception.printStackTrace())
+    /* private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+         print(exception.printStackTrace())
 
-        if (exception !is MustBeQueued) {
-            exception.printStackTrace()
-        }
-        assert(exception is MustBeQueued)
-        val handler = Handler(Looper.getMainLooper())
-        handler.post { queueUser((exception as MustBeQueued).getValue()) }
-    }
+         if (exception !is MustBeQueued) {
+             exception.printStackTrace()
+         }
+         assert(exception is MustBeQueued)
+         val handler = Handler(Looper.getMainLooper())
+         handler.post { queueUser((exception as MustBeQueued).getValue()) }
+     }*/
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -103,9 +116,13 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     private fun iniUI() {
 
         if (BuildConfig.DEBUG) {
-            binding.edPhnNumber.editText?.setText("9000201422")
+            /*binding.edPhnNumber.editText?.setText("9000201422")
             binding.edDob.editText?.setText("1989-12-12")
-            binding.edDov.editText?.setText("2021-05-15")
+            binding.edDov.editText?.setText("2021-05-15")*/
+
+            binding.edPhnNumber.editText?.setText("9000691304")
+            binding.edDob.editText?.setText("1965-01-14")
+            binding.edDov.editText?.setText("2021-07-15")
         }
 
         setUpDobUI()
@@ -125,36 +142,61 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
         binding.btnSubmit.setOnClickListener {
             if (validateInputData()) {
-                parentJob.launch(exceptionHandler) {
-                    viewModel.getVaccineStatus(
-                        binding.edPhnNumber.editText?.text.toString(),
-                        binding.edDob.editText?.text.toString(),
-                        binding.edDov.editText?.text.toString()
-                    )
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                        try {
+                            viewModel.getVaccineStatus(
+                                binding.edPhnNumber.editText?.text.toString(),
+                                binding.edDob.editText?.text.toString(),
+                                binding.edDov.editText?.text.toString()
+                            )
+                        } catch (exception: Exception){
+                            if (exception !is MustBeQueued) {
+                                exception.printStackTrace()
+                            }
+                            assert(exception is MustBeQueued)
+                            val handler = Handler(Looper.getMainLooper())
+                            handler.post { queueUser((exception as MustBeQueued).getValue()) }
+                        }
+
+                        viewModel.vaxStatusResponseLiveData.collect(){
+                            when (it) {
+                                is Response.Loading -> {
+                                    binding.progressBar.visibility = View.VISIBLE
+                                }
+                                is Response.Success -> {
+                                    binding.progressBar.visibility = View.INVISIBLE
+                                    it.data?.resourcePayload?.qrCode?.data?.let { it1 ->
+
+                                        val decodedString: ByteArray =
+                                            Base64.decode(it1, Base64.DEFAULT)
+                                        val decodedByte = BitmapFactory.decodeByteArray(
+                                            decodedString,
+                                            0,
+                                            decodedString.size
+                                        )
+
+                                        var image: InputImage? = null
+                                        try {
+                                            image = InputImage.fromBitmap(decodedByte, 0)
+                                        } catch (e: java.lang.Exception) {
+                                            e.printStackTrace()
+                                        }
+                                        image?.let { it2 -> viewModel.processImage(it2) }
+                                    }
+                                }
+                                is Response.Error -> {
+                                    binding.progressBar.visibility = View.INVISIBLE
+                                    showError(getString(R.string.error), message = it.errorMessage.toString())
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-
-        viewModel.vaxStatusResponseLiveData.observe(viewLifecycleOwner, {
-            when (it) {
-                is Response.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                }
-                is Response.Success -> {
-                    binding.progressBar.visibility = View.INVISIBLE
-                    it.data?.resourcePayload?.qrCode?.data?.removePrefix("/")
-                        ?.let { it1 ->
-                            viewModel.processShcUri(
-                                it1
-                            )
-                        }
-                }
-                is Response.Error -> {
-                    binding.progressBar.visibility = View.INVISIBLE
-                    showError(getString(R.string.error), message = it.errorMessage.toString())
-                }
-            }
-        })
 
         viewModel.uploadStatus.observe(viewLifecycleOwner, {
             if (it) {
@@ -169,6 +211,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     }
 
     private fun validateInputData(): Boolean {
+
         if (binding.edPhnNumber.editText?.text.isNullOrEmpty()) {
             binding.edPhnNumber.isErrorEnabled = true
             binding.edPhnNumber.error = "Personal Health Number is required"
@@ -205,6 +248,14 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                         binding.edDov.error = null
                     }
             }
+            return false
+        }
+
+        if(!requireContext().isOnline()){
+            showError(
+                getString(R.string.no_internet),
+                getString(R.string.check_connection)
+            )
             return false
         }
 
@@ -309,13 +360,26 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                             Toast.LENGTH_SHORT
                         ).show()
 
-                        parentJob1.launch {
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                                try {
+                                    viewModel.getVaccineStatus(
+                                        binding.edPhnNumber.editText?.text.toString(),
+                                        binding.edDob.editText?.text.toString(),
+                                        binding.edDov.editText?.text.toString()
+                                    )
+                                } catch (exception: Exception) {
+                                    exception.printStackTrace()
+                                }
+                            }
+                        }
+                        /*parentJob1.launch {
                             viewModel.getVaccineStatus(
                                 binding.edPhnNumber.editText?.text.toString(),
                                 binding.edDob.editText?.text.toString(),
                                 binding.edDov.editText?.text.toString()
                             )
-                        }
+                        }*/
                     }
 
                     override fun onQueueViewWillOpen() {
