@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class QrCode(
-    val mediaType: String,
-    val encoding: String,
-    val data: String
+    val mediaType: String?,
+    val encoding: String?,
+    val data: String?
 ) : Parcelable

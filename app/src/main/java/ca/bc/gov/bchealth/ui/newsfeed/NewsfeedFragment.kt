@@ -1,68 +1,77 @@
 package ca.bc.gov.bchealth.ui.newsfeed
 
 import android.os.Bundle
-import android.util.Xml
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.model.rss.Item
-import org.xmlpull.v1.XmlPullParser
-import org.xmlpull.v1.XmlPullParserException
-import java.io.IOException
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
+import ca.bc.gov.bchealth.databinding.FragmentNewsfeedBinding
+import ca.bc.gov.bchealth.model.rss.Newsfeed
+import ca.bc.gov.bchealth.utils.viewBindings
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
 
+    private lateinit var newsfeedAdapter: NewsfeedAdapter
+
+    private var newsFeeds: MutableList<Newsfeed> = mutableListOf()
+
+    private val binding by viewBindings(FragmentNewsfeedBinding::bind)
+
+    private val viewModel: NewsfeedViewModel by viewModels()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-    }
 
+        newsfeedAdapter = NewsfeedAdapter(newsFeeds)
 
+        binding.recItems.adapter = newsfeedAdapter
 
-    @Throws(XmlPullParserException::class, IOException::class)
-    fun parse(inputStream: InputStream): List<*> {
-        inputStream.use { inputStream ->
-            val parser: XmlPullParser = Xml.newPullParser()
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
-            parser.setInput(inputStream, null)
-            parser.nextTag()
-            return readFeed(parser)
-        }
-    }
+        binding.recItems
+            .addItemDecoration(
+                DividerItemDecoration(
+                    requireContext(),
+                    LinearLayoutManager.VERTICAL
+                )
+            )
 
+        binding.recItems.layoutManager = LinearLayoutManager(requireContext())
 
-    @Throws(XmlPullParserException::class, IOException::class)
-    private fun readFeed(parser: XmlPullParser): List<Item> {
-        val items = mutableListOf<Item>()
-
-        /*parser.require(XmlPullParser.START_TAG, ns, "rss")
-        while (parser.next() != XmlPullParser.END_TAG) {
-            if (parser.eventType != XmlPullParser.START_TAG) {
-                continue
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.fetchNewsFeed(getString(R.string.url_news_feed))
             }
-            // Starts by looking for the entry tag
-            if (parser.name == "item") {
-                items.add(readEntry(parser))
+        }
+
+        viewModel.newsfeedLiveData.observe(viewLifecycleOwner, {
+            if (it.isNullOrEmpty()) {
+                showError(
+                    getString(R.string.error),
+                    getString(R.string.error_message)
+                )
             } else {
-                skip(parser)
+                newsfeedAdapter.newsFeeds = it
+                newsfeedAdapter.notifyDataSetChanged()
+                binding.progressBar.visibility = View.INVISIBLE
             }
-        }*/
-        return items
+        })
     }
 
-    @Throws(IOException::class)
-    private fun downloadUrl(urlString: String): InputStream? {
-        val url = URL(urlString)
-        return (url.openConnection() as? HttpURLConnection)?.run {
-            readTimeout = 10000
-            connectTimeout = 15000
-            requestMethod = "GET"
-            doInput = true
-            // Starts the query
-            connect()
-            inputStream
-        }
+    private fun showError(title: String, message: String) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(title)
+            .setCancelable(false)
+            .setMessage(message)
+            .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 }

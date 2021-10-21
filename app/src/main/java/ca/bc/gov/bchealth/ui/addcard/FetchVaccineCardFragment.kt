@@ -3,9 +3,6 @@ package ca.bc.gov.bchealth.ui.addcard
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.system.Os.bind
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
 import android.view.View
@@ -38,24 +35,17 @@ import com.queue_it.androidsdk.QueueListener
 import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.concurrent.atomic.AtomicBoolean
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import android.graphics.BitmapFactory
-
-import android.graphics.Bitmap
-import android.util.Base64
-import androidx.core.graphics.drawable.toIcon
-import com.google.mlkit.vision.common.InputImage
+import java.util.*
 
 
 @AndroidEntryPoint
@@ -65,24 +55,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
     private val simpleDateFormat = SimpleDateFormat("yyyy-dd-MM", Locale.ENGLISH)
 
-    private val _queuePassed = AtomicBoolean(false)
-
-    private val parentJob = CoroutineScope(IO)
-
-    private val parentJob1 = CoroutineScope(IO)
-
     private val viewModel: FetchVaccineCardViewModel by viewModels()
-
-    /* private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-         print(exception.printStackTrace())
-
-         if (exception !is MustBeQueued) {
-             exception.printStackTrace()
-         }
-         assert(exception is MustBeQueued)
-         val handler = Handler(Looper.getMainLooper())
-         handler.post { queueUser((exception as MustBeQueued).getValue()) }
-     }*/
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -116,13 +89,13 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     private fun iniUI() {
 
         if (BuildConfig.DEBUG) {
-            /*binding.edPhnNumber.editText?.setText("9000201422")
+            binding.edPhnNumber.editText?.setText("9000201422")
             binding.edDob.editText?.setText("1989-12-12")
-            binding.edDov.editText?.setText("2021-05-15")*/
+            binding.edDov.editText?.setText("2021-05-15")
 
-            binding.edPhnNumber.editText?.setText("9000691304")
+            /*binding.edPhnNumber.editText?.setText("9000691304")
             binding.edDob.editText?.setText("1965-01-14")
-            binding.edDov.editText?.setText("2021-07-15")
+            binding.edDov.editText?.setText("2021-07-15")*/
         }
 
         setUpDobUI()
@@ -144,52 +117,59 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             if (validateInputData()) {
 
                 viewLifecycleOwner.lifecycleScope.launch {
-                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
-                        try {
-                            viewModel.getVaccineStatus(
-                                binding.edPhnNumber.editText?.text.toString(),
-                                binding.edDob.editText?.text.toString(),
-                                binding.edDov.editText?.text.toString()
-                            )
-                        } catch (exception: Exception){
-                            if (exception !is MustBeQueued) {
-                                exception.printStackTrace()
+                    try {
+                        viewModel.getVaccineStatus(
+                            binding.edPhnNumber.editText?.text.toString(),
+                            binding.edDob.editText?.text.toString(),
+                            binding.edDov.editText?.text.toString()
+                        )
+                    } catch (e: Exception) {
+                        if (e is MustBeQueued) {
+                            withContext(Dispatchers.Main) {
+                                queueUser(e.getValue())
                             }
-                            assert(exception is MustBeQueued)
-                            val handler = Handler(Looper.getMainLooper())
-                            handler.post { queueUser((exception as MustBeQueued).getValue()) }
+                        } else {
+                            e.printStackTrace()
+                            showError(
+                                getString(R.string.error),
+                                getString(R.string.error_message)
+                            )
                         }
+                    }
 
-                        viewModel.vaxStatusResponseLiveData.collect(){
-                            when (it) {
-                                is Response.Loading -> {
-                                    binding.progressBar.visibility = View.VISIBLE
-                                }
-                                is Response.Success -> {
-                                    binding.progressBar.visibility = View.INVISIBLE
-                                    it.data?.resourcePayload?.qrCode?.data?.let { it1 ->
 
-                                        val decodedString: ByteArray =
-                                            Base64.decode(it1, Base64.DEFAULT)
-                                        val decodedByte = BitmapFactory.decodeByteArray(
-                                            decodedString,
-                                            0,
-                                            decodedString.size
-                                        )
-
-                                        var image: InputImage? = null
-                                        try {
-                                            image = InputImage.fromBitmap(decodedByte, 0)
-                                        } catch (e: java.lang.Exception) {
-                                            e.printStackTrace()
-                                        }
-                                        image?.let { it2 -> viewModel.processImage(it2) }
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                            viewModel.vaxStatusResponseLiveData.collect {
+                                when (it) {
+                                    is Response.Loading -> {
+                                        binding.progressBar.visibility = View.VISIBLE
                                     }
-                                }
-                                is Response.Error -> {
-                                    binding.progressBar.visibility = View.INVISIBLE
-                                    showError(getString(R.string.error), message = it.errorMessage.toString())
+                                    is Response.Success -> {
+                                        ApiClientModule.queueItToken = ""
+
+                                        binding.progressBar.visibility = View.INVISIBLE
+
+                                        it.data?.resourcePayload?.qrCode?.data
+                                            ?.let { base64EncodedImage ->
+                                                try {
+                                                    viewModel.saveVaccineCard(base64EncodedImage)
+                                                } catch (e: Exception) {
+                                                    e.printStackTrace()
+                                                    showError(
+                                                        getString(R.string.error),
+                                                        getString(R.string.error_message)
+                                                    )
+                                                }
+                                            }
+                                    }
+                                    is Response.Error -> {
+                                        binding.progressBar.visibility = View.INVISIBLE
+                                        showError(
+                                            getString(R.string.error),
+                                            message = it.errorMessage.toString()
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -203,8 +183,8 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                 findNavController().popBackStack(R.id.myCardsFragment, false)
             } else {
                 showError(
-                    getString(R.string.bc_invalid_barcode_title),
-                    getString(R.string.bc_invalid_barcode_upload_message)
+                    getString(R.string.error),
+                    getString(R.string.error_message)
                 )
             }
         })
@@ -251,7 +231,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             return false
         }
 
-        if(!requireContext().isOnline()){
+        if (!requireContext().isOnline()) {
             showError(
                 getString(R.string.no_internet),
                 getString(R.string.check_connection)
@@ -335,16 +315,21 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         }
     }
 
+    /*
+    * HGS APIs are protected by Queue.it
+    * User will see the Queue.it waiting page if there are more number of users trying to
+    * access HGS service at the same time. Ref: https://github.com/queueit/android-webui-sdk
+    * */
     private fun queueUser(value: String) {
         try {
             val valueUri = Uri.parse(URLDecoder.decode(value, StandardCharsets.UTF_8.name()))
             val customerId = valueUri.getQueryParameter("c")
-            val wrId = valueUri.getQueryParameter("e")
+            val waitingRoomId = valueUri.getQueryParameter("e")
             QueueService.IsTest = false
             val q = QueueITEngine(
                 requireActivity(),
                 customerId,
-                wrId,
+                waitingRoomId,
                 "",
                 "",
                 object : QueueListener() {
@@ -352,90 +337,68 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
                         ApiClientModule.queueItToken = queuePassedInfo.queueItToken
 
-                        _queuePassed.set(true)
-
-                        Toast.makeText(
-                            requireActivity(),
-                            "You passed the queue! You can try again.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
                         viewLifecycleOwner.lifecycleScope.launch {
-                            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                                try {
-                                    viewModel.getVaccineStatus(
-                                        binding.edPhnNumber.editText?.text.toString(),
-                                        binding.edDob.editText?.text.toString(),
-                                        binding.edDov.editText?.text.toString()
-                                    )
-                                } catch (exception: Exception) {
-                                    exception.printStackTrace()
-                                }
+                            try {
+                                viewModel.getVaccineStatus(
+                                    binding.edPhnNumber.editText?.text.toString(),
+                                    binding.edDob.editText?.text.toString(),
+                                    binding.edDov.editText?.text.toString()
+                                )
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                showError(
+                                    getString(R.string.error),
+                                    getString(R.string.error_message)
+                                )
                             }
                         }
-                        /*parentJob1.launch {
-                            viewModel.getVaccineStatus(
-                                binding.edPhnNumber.editText?.text.toString(),
-                                binding.edDob.editText?.text.toString(),
-                                binding.edDov.editText?.text.toString()
-                            )
-                        }*/
                     }
 
                     override fun onQueueViewWillOpen() {
                         Toast.makeText(
                             requireActivity(),
-                            "onQueueViewWillOpen",
+                            "Please wait! We are receiving more requests at the moment",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
 
                     override fun onUserExited() {
-                        Toast.makeText(
-                            requireActivity(),
-                            "onUserExited",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
 
                     override fun onQueueDisabled() {
-                        Toast.makeText(
-                            requireActivity(),
-                            "The queue is disabled.",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
 
                     override fun onQueueItUnavailable() {
-                        Toast.makeText(
-                            requireActivity(),
-                            "Queue-it is unavailable",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        showError(
+                            getString(R.string.error),
+                            getString(R.string.error_message)
+                        )
                     }
 
                     override fun onError(error: Error, errorMessage: String) {
-                        Toast.makeText(
-                            requireActivity(),
-                            "Critical error: $errorMessage",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        showError(
+                            getString(R.string.error),
+                            getString(R.string.error_message)
+                        )
                     }
 
                     override fun onWebViewClosed() {
-                        Toast.makeText(
-                            requireActivity(),
-                            "WebView closed",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
                 }
             )
             q.run(requireActivity())
         } catch (e: QueueITException) {
             e.printStackTrace()
+            showError(
+                getString(R.string.error),
+                getString(R.string.error_message)
+            )
         } catch (e: UnsupportedEncodingException) {
             e.printStackTrace()
+            showError(
+                getString(R.string.error),
+                getString(R.string.error_message)
+            )
         }
     }
 
@@ -444,7 +407,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             .setTitle(title)
             .setCancelable(false)
             .setMessage(message)
-            .setPositiveButton(getString(android.R.string.ok)) { dialog, which ->
+            .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
                 dialog.dismiss()
             }
             .show()

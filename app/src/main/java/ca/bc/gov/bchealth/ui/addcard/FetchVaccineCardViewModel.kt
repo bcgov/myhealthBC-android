@@ -1,13 +1,12 @@
 package ca.bc.gov.bchealth.ui.addcard
 
-import android.content.Context
-import android.net.Uri
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
-import ca.bc.gov.bchealth.http.MustBeQueued
 import ca.bc.gov.bchealth.model.ImmunizationStatus
 import ca.bc.gov.bchealth.model.network.responses.vaccinestatus.VaxStatusResponse
 import ca.bc.gov.bchealth.repository.CardRepository
@@ -18,8 +17,9 @@ import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /*
 * Created by amit_metri on 18,October,2021
@@ -39,7 +39,35 @@ class FetchVaccineCardViewModel @Inject constructor(
 
     val uploadStatus = MutableLiveData<Boolean>()
 
-    fun processImage(
+    /*
+    * HGS vaccine status API provides Base64 encoded image data.
+    * Get the QR image from this data.
+    * */
+    fun saveVaccineCard(base64EncodedImage: String){
+        prepareQRImage(base64EncodedImage)
+    }
+
+    private fun prepareQRImage(base64EncodedImage: String) {
+        val decodedByteArray: ByteArray =
+            Base64
+                .decode(base64EncodedImage, Base64.DEFAULT)
+        val decodedBitmap = BitmapFactory.decodeByteArray(
+            decodedByteArray,
+            0,
+            decodedByteArray.size
+        )
+
+        var image: InputImage? = null
+        image = InputImage
+            .fromBitmap(decodedBitmap, 0)
+
+        processImage(image)
+    }
+
+    /*
+    * Process QR image and get the shcUri
+    * */
+    private fun processImage(
         image: InputImage
     ) = viewModelScope.launch {
 
@@ -73,7 +101,10 @@ class FetchVaccineCardViewModel @Inject constructor(
             }
     }
 
-    fun processShcUri(
+    /*
+    * Find the vaccination status and save the vaccine data for future use.
+    * */
+    private fun processShcUri(
         shcUri: String
     ) = viewModelScope.launch {
         try {

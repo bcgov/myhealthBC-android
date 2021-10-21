@@ -38,7 +38,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.resourcesFragment -> showBottomNav()
                 R.id.newsfeedFragment -> {
                     showBottomNav()
-                    this.toast(getString(R.string.coming_soon))
                 }
                 else -> hideBottomNav()
             }

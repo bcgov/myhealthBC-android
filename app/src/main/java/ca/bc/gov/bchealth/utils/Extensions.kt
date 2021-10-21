@@ -5,8 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.widget.Toast
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 /**
  * Helper function to read file from asset
@@ -37,8 +36,8 @@ fun Long.getDateTime(): String {
 
 
 /*
-   * Check is network connection
-   * */
+* Check is network connection
+* */
 fun Context.isOnline(): Boolean {
     val connectivityManager =
         this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

@@ -102,7 +102,12 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 viewModel.cards.collect { cards ->
 
                     cards?.toMutableList()?.let { it ->
-                        val newCards = cards.filter { it.id !in cardsTemp.map { item -> item.id } }
+                        var newCards = cards.filter { it.id !in cardsTemp.map { item -> item.id } }
+
+                        if(newCards.isEmpty()){
+                             newCards = cards.filter { it.uri !in cardsTemp
+                                 .map{ item -> item.uri } }
+                        }
 
                         cardsTemp.clear()
                         cardsTemp.addAll(cards)
@@ -111,7 +116,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                             cards.forEach {
                                 it.isExpanded = false
                             }
-                            if (cards.size > 1)
+                            if (cards.isNotEmpty())
                                 cards[0].isExpanded = true
                         } else {
                             cards.forEach {
@@ -172,6 +177,12 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
     * Single card scene
     * */
     private fun enterSingleCardScene(cards: List<HealthCardDto>) {
+
+        cards.forEach {
+            it.isExpanded = false
+        }
+        if (cards.isNotEmpty())
+            cards[0].isExpanded = true
 
         sceneSingleCard.enter()
 

@@ -15,5 +15,5 @@ data class VaxStatusResponse(
     val pageIndex: Int,
     val pageSize: Int,
     val resultStatus: Int,
-    val resultError: ResultError
+    val resultError: ResultError?
 ) : Parcelable

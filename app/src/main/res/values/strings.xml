@@ -92,6 +92,7 @@
     <string name="dose_1_or_dose_2">Dose 1 or Dose 2</string>
     <string name="privacy_statement_add_card">Privacy statement</string>
     <string name="error">Error!</string>
+    <string name="error_message">Something went wrong!. Please retry.</string>
     <string name="add_a_bc_vaccine_card">Add a BC Vaccine Card</string>
     <string name="view_all">View All</string>
     <string name="health_resources">Health Resources</string>

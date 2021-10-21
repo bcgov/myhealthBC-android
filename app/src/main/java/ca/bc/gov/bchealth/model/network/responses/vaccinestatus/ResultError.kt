@@ -8,8 +8,8 @@ import kotlinx.parcelize.Parcelize
 */
 @Parcelize
 data class ResultError(
-    val resultMessage: String,
-    val errorCode: String,
-    val traceId: String,
-    val actionCode: String
+    val resultMessage: String?,
+    val errorCode: String?,
+    val traceId: String?,
+    val actionCode: String?
 ) : Parcelable
