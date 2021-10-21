@@ -4,16 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ca.bc.gov.bchealth.model.rss.Newsfeed
-import org.w3c.dom.Document
-import org.w3c.dom.Element
-import org.w3c.dom.Node
-import org.w3c.dom.NodeList
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
+import org.w3c.dom.Document
+import org.w3c.dom.Element
+import org.w3c.dom.Node
+import org.w3c.dom.NodeList
 
 /*
 * Created by amit_metri on 21,October,2021
@@ -54,7 +54,6 @@ class NewsfeedViewModel : ViewModel() {
             }
 
             newsfeedMutableLiveData.postValue(newsFeeds)
-
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -79,5 +78,4 @@ class NewsfeedViewModel : ViewModel() {
             inputStream
         }
     }
-
 }

@@ -11,10 +11,10 @@ import ca.bc.gov.bchealth.services.ImmunizationServices
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import ca.bc.gov.bchealth.utils.getDateTime
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 /**
  * [CardRepository]
@@ -51,15 +51,14 @@ class CardRepository @Inject constructor(
             val cards = dataSource.getCards().firstOrNull()
             if (cards.isNullOrEmpty()) {
                 dataSource.insert(card)
-
             } else {
 
                 val record = cards.filter { record ->
                     val immunizationRecord = shcDecoder.getImmunizationStatus(record.uri)
                     (
-                            immunizationRecord.name == cardToBeInserted.name &&
-                                    immunizationRecord.birthDate == cardToBeInserted.birthDate
-                            )
+                        immunizationRecord.name == cardToBeInserted.name &&
+                            immunizationRecord.birthDate == cardToBeInserted.birthDate
+                        )
                 }
 
                 if (record.isNullOrEmpty()) {
@@ -84,10 +83,6 @@ class CardRepository @Inject constructor(
     suspend fun unLink(card: HealthCard) = dataSource.unLink(card)
     suspend fun rearrangeHealthCards(cards: List<HealthCard>) = dataSource.rearrange(cards)
 
-
-    /*
-    * Vaccination status from HGS
-    * */
     private val vaxStatusResponseMutableLiveData = MutableLiveData<Response<VaxStatusResponse>>()
 
     val vaxStatusResponseLiveData: Flow<Response<VaxStatusResponse>>
@@ -98,7 +93,7 @@ class CardRepository @Inject constructor(
         val result = immunizationServices.getVaccineStatus(
             phn, dob, dov
         )
-        if (validateVaccineStatusResponse(result)) {
+        if (validateResponse(result)) {
             vaxStatusResponseMutableLiveData.postValue(Response.Success(result.body()))
         } else {
             result.body()?.resultError?.resultMessage?.let {
@@ -110,18 +105,17 @@ class CardRepository @Inject constructor(
         }
     }
 
-    private fun validateVaccineStatusResponse(result: retrofit2.Response<VaxStatusResponse>)
-            : Boolean {
+    private fun validateResponse(result: retrofit2.Response<VaxStatusResponse>): Boolean {
 
-        if(!result.isSuccessful)
+        if (!result.isSuccessful)
             return false
 
         val vaxStatusResponse: VaxStatusResponse = result.body() ?: return false
 
-        if(vaxStatusResponse.resultError != null)
+        if (vaxStatusResponse.resultError != null)
             return false
 
-        if(vaxStatusResponse.resourcePayload.qrCode.data.isNullOrEmpty())
+        if (vaxStatusResponse.resourcePayload.qrCode.data.isNullOrEmpty())
             return false
 
         return true

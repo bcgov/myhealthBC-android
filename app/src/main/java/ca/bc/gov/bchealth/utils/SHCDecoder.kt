@@ -11,8 +11,6 @@ import com.google.gson.Gson
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.impl.crypto.DefaultJwtSignatureValidator
 import io.jsonwebtoken.io.Decoders
-import org.bouncycastle.jce.ECNamedCurveTable
-import org.bouncycastle.jce.spec.ECNamedCurveSpec
 import java.math.BigInteger
 import java.security.KeyFactory
 import java.security.interfaces.ECPublicKey
@@ -22,6 +20,8 @@ import java.util.Base64
 import java.util.zip.DataFormatException
 import java.util.zip.Inflater
 import javax.inject.Inject
+import org.bouncycastle.jce.ECNamedCurveTable
+import org.bouncycastle.jce.spec.ECNamedCurveSpec
 
 /**
  * [SHCDecoder] Helper class to decode SMART HEALTH CARD record retrieved from QR.
@@ -72,16 +72,16 @@ class SHCDecoder @Inject constructor(
 
         val jwkSigned = shcUriToBase64(shcUri)
 
-        var isAnyOfTheKeyValid  = false
+        var isAnyOfTheKeyValid = false
 
-        jwks.keys.forEach {jwksKey ->
+        jwks.keys.forEach { jwksKey ->
 
-            if(isValidSignature(getPublicKey(jwksKey), jwkSigned)){
+            if (isValidSignature(getPublicKey(jwksKey), jwkSigned)) {
                 isAnyOfTheKeyValid = true
             }
         }
 
-        if(!isAnyOfTheKeyValid){
+        if (!isAnyOfTheKeyValid) {
             throw SHCDecoderException(INVALID_SIGNATURE_KEY, "Signing keys are not valid")
         }
 

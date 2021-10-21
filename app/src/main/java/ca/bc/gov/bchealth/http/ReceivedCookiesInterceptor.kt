@@ -1,8 +1,8 @@
 package ca.bc.gov.bchealth.http
 
+import java.io.IOException
 import okhttp3.Interceptor
 import okhttp3.Response
-import java.io.IOException
 
 class ReceivedCookiesInterceptor constructor(cookies: CookieStorage) : Interceptor {
 

@@ -35,7 +35,6 @@ fun Long.getDateTime(): String {
     }
 }
 
-
 /*
 * Check is network connection
 * */

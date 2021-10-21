@@ -25,9 +25,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Collections
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.util.Collections
 
 /**
  * [MyCardsFragment]
@@ -104,9 +104,11 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                     cards?.toMutableList()?.let { it ->
                         var newCards = cards.filter { it.id !in cardsTemp.map { item -> item.id } }
 
-                        if(newCards.isEmpty()){
-                             newCards = cards.filter { it.uri !in cardsTemp
-                                 .map{ item -> item.uri } }
+                        if (newCards.isEmpty()) {
+                            newCards = cards.filter {
+                                it.uri !in cardsTemp
+                                    .map { item -> item.uri }
+                            }
                         }
 
                         cardsTemp.clear()

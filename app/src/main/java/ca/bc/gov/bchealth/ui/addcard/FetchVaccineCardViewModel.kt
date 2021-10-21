@@ -15,9 +15,9 @@ import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /*
 * Created by amit_metri on 18,October,2021
@@ -41,7 +41,7 @@ class FetchVaccineCardViewModel @Inject constructor(
     * HGS vaccine status API provides Base64 encoded image data.
     * Get the QR image from this data.
     * */
-    fun saveVaccineCard(base64EncodedImage: String){
+    fun saveVaccineCard(base64EncodedImage: String) {
         prepareQRImage(base64EncodedImage)
     }
 

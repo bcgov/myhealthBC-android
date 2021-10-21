@@ -1,11 +1,11 @@
 package ca.bc.gov.bchealth.http
 
 import ca.bc.gov.bchealth.di.ApiClientModule
+import java.io.IOException
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import java.io.IOException
 
 class QueueITInterceptor(
     private var _cookies: CookieStorage
