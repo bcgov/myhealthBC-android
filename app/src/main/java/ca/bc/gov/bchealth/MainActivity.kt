@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import ca.bc.gov.bchealth.databinding.ActivityMainBinding
-import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 

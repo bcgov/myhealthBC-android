@@ -5,7 +5,8 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.widget.Toast
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 /**
  * Helper function to read file from asset

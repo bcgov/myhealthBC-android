@@ -5,7 +5,6 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding

@@ -1,6 +1,5 @@
 package ca.bc.gov.bchealth.repository
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
@@ -12,15 +11,10 @@ import ca.bc.gov.bchealth.services.ImmunizationServices
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import ca.bc.gov.bchealth.utils.getDateTime
-import kotlinx.coroutines.Dispatchers
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * [CardRepository]

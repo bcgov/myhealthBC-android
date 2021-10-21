@@ -37,16 +37,14 @@ import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
-import java.util.*
-
+import java.util.Locale
+import java.util.Date
 
 @AndroidEntryPoint
 class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) {

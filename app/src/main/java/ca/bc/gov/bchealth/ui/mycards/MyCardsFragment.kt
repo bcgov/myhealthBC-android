@@ -25,9 +25,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Collections
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.Collections
 
 /**
  * [MyCardsFragment]

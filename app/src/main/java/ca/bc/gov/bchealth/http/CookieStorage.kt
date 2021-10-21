@@ -1,7 +1,5 @@
 package ca.bc.gov.bchealth.http
 
-import java.util.HashSet
-
 class CookieStorage {
 
     private var _cookies: HashSet<String>? = HashSet()

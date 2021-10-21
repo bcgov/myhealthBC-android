@@ -8,7 +8,7 @@ import ca.bc.gov.bchealth.databinding.ItemNewsFeedRowBinding
 import ca.bc.gov.bchealth.model.rss.Newsfeed
 import ca.bc.gov.bchealth.utils.getDateTime
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 /**
  * [NewsfeedAdapter]
