@@ -72,9 +72,16 @@ class SHCDecoder @Inject constructor(
 
         val jwkSigned = shcUriToBase64(shcUri)
 
-        val key = getPublicKey(jwks.keys.first())
+        var isAnyOfTheKeyValid = false
 
-        if (!isValidSignature(key, jwkSigned)) {
+        jwks.keys.forEach { jwksKey ->
+
+            if (isValidSignature(getPublicKey(jwksKey), jwkSigned)) {
+                isAnyOfTheKeyValid = true
+            }
+        }
+
+        if (!isAnyOfTheKeyValid) {
             throw SHCDecoderException(INVALID_SIGNATURE_KEY, "Signing keys are not valid")
         }
 

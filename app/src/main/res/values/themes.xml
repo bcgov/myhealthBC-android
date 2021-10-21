@@ -61,15 +61,6 @@
             @style/BC_VAX.TextAppearance.MaterialComponents.Subtitle1
         </item>
 
-        <item name="textAppearanceButton">@style/BC_VAX.TextAppearance.MaterialComponents.Button
-        </item>
-
-        <!--COMPONENT STYLES-->
-        <!--<item name="materialButtonStyle">@style/BC_VAX.Widget.MaterialComponents.Button</item>-->
-        <item name="materialButtonOutlinedStyle">
-            @style/BC_VAX.Widget.MaterialComponents.Button.OutlinedButton
-        </item>
-
     </style>
 
 </resources>

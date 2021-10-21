@@ -3,7 +3,10 @@ package ca.bc.gov.bchealth.ui.mycards
 import android.os.Bundle
 import android.transition.Scene
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -19,6 +22,8 @@ import ca.bc.gov.bchealth.databinding.FragmentMyCardsBinding
 import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Collections
 import kotlinx.coroutines.flow.collect
@@ -38,6 +43,8 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
     private lateinit var sceneAddCard: Scene
 
+    private lateinit var sceneSingleCard: Scene
+
     private lateinit var sceneMyCardsList: Scene
 
     private lateinit var sceneManageCards: Scene
@@ -45,6 +52,8 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
     private lateinit var cardsListAdapter: MyCardsAdapter
 
     private lateinit var manageCardsAdapter: MyCardsAdapter
+
+    private var isEnterSceneMyCardsList: Boolean = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,6 +75,11 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
             R.layout.scene_mycards_add_card,
             requireContext()
         )
+        sceneSingleCard = Scene.getSceneForLayout(
+            binding.sceneRoot,
+            R.layout.scene_mycards_single_card,
+            requireContext()
+        )
         sceneMyCardsList = Scene.getSceneForLayout(
             binding.sceneRoot,
             R.layout.scene_mycards_cards_list,
@@ -78,20 +92,6 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 requireContext()
             )
 
-        binding.toolbar.apply {
-
-            tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.bc_vaccine_cards)
-
-            binding.toolbar.ivSettings.visibility = View.VISIBLE
-            binding.toolbar.ivSettings.setImageResource(R.drawable.ic_add_card_blue)
-            binding.toolbar.ivSettings.setOnClickListener {
-                findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
-            }
-
-            binding.toolbar.line1.visibility = View.INVISIBLE
-        }
-
         val cardsTemp: MutableList<HealthCardDto> = mutableListOf()
 
         /*
@@ -102,7 +102,14 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 viewModel.cards.collect { cards ->
 
                     cards?.toMutableList()?.let { it ->
-                        val newCards = cards.filter { it.id !in cardsTemp.map { item -> item.id } }
+                        var newCards = cards.filter { it.id !in cardsTemp.map { item -> item.id } }
+
+                        if (newCards.isEmpty()) {
+                            newCards = cards.filter {
+                                it.uri !in cardsTemp
+                                    .map { item -> item.uri }
+                            }
+                        }
 
                         cardsTemp.clear()
                         cardsTemp.addAll(cards)
@@ -111,7 +118,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                             cards.forEach {
                                 it.isExpanded = false
                             }
-                            if (cards.size > 1)
+                            if (cards.isNotEmpty())
                                 cards[0].isExpanded = true
                         } else {
                             cards.forEach {
@@ -127,20 +134,16 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                         binding.progressBar.visibility = View.VISIBLE
                     } else {
                         binding.progressBar.visibility = View.GONE
-                        if (cards.isNullOrEmpty()) {
-                            /*
-                            * Add card scene
-                            * */
-                            sceneAddCard.enter()
-                            sceneAddCard.sceneRoot.findViewById<View>(R.id.btn_add_card)
-                                .setOnClickListener {
-                                    findNavController()
-                                        .navigate(
-                                            R.id.action_myCardsFragment_to_addCardOptionFragment
-                                        )
-                                }
+                        if (cards.isEmpty()) {
+                            enterAddCardScene()
                         } else {
-                            enterCardsListScene(cards)
+                            // Show single card scene only after fresh app launch.
+                            if (isEnterSceneMyCardsList) {
+                                enterCardsListScene(cards)
+                            } else {
+                                enterSingleCardScene(cards)
+                                isEnterSceneMyCardsList = true
+                            }
                         }
                     }
                 }
@@ -149,11 +152,111 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
     }
 
     /*
+    * Add card scene
+    * */
+    private fun enterAddCardScene() {
+
+        sceneAddCard.enter()
+
+        // Toolbar setup
+        val toolBar = sceneAddCard.sceneRoot.findViewById<ViewGroup>(R.id.toolbar)
+        val settingsButton = toolBar.findViewById<ImageView>(R.id.iv_settings)
+        settingsButton.visibility = View.VISIBLE
+        settingsButton.setOnClickListener {
+            findNavController().navigate(R.id.action_myCardsFragment_to_settingFragment)
+        }
+
+        sceneAddCard.sceneRoot.findViewById<View>(R.id.btn_add_card)
+            .setOnClickListener {
+                findNavController()
+                    .navigate(
+                        R.id.action_myCardsFragment_to_addCardOptionFragment
+                    )
+            }
+    }
+
+    /*
+    * Single card scene
+    * */
+    private fun enterSingleCardScene(cards: List<HealthCardDto>) {
+
+        cards.forEach {
+            it.isExpanded = false
+        }
+        if (cards.isNotEmpty())
+            cards[0].isExpanded = true
+
+        sceneSingleCard.enter()
+
+        // Toolbar setup
+        val toolBar = sceneSingleCard.sceneRoot.findViewById<ViewGroup>(R.id.toolbar)
+        val settingsButton = toolBar.findViewById<ImageView>(R.id.iv_settings)
+        settingsButton.visibility = View.VISIBLE
+        settingsButton.setOnClickListener {
+            findNavController().navigate(R.id.action_myCardsFragment_to_settingFragment)
+        }
+
+        // Recycler view setup
+        cardsListAdapter = MyCardsAdapter(cards.toMutableList().subList(0, 1)) { healthCard ->
+            confirmUnlinking(healthCard = healthCard)
+        }
+        val recyclerViewCardsList =
+            sceneSingleCard.sceneRoot
+                .findViewById<RecyclerView>(R.id.rec_cards_list)
+
+        recyclerViewCardsList.adapter = cardsListAdapter
+
+        recyclerViewCardsList.layoutManager =
+            LinearLayoutManager(requireContext())
+
+        // Other UI setup
+        if (cards.size > 1) {
+            sceneSingleCard.sceneRoot.findViewById<MaterialTextView>(R.id.tv_number_of_passes)
+                .text = "${cards.size} passes"
+            val btnViewAll = sceneSingleCard.sceneRoot.findViewById<Button>(R.id.btn_view_all)
+            btnViewAll.visibility = View.VISIBLE
+            btnViewAll.setOnClickListener {
+                enterCardsListScene(cards)
+            }
+        } else {
+            sceneSingleCard.sceneRoot.findViewById<MaterialTextView>(R.id.tv_number_of_passes)
+                .visibility = View.GONE
+        }
+
+        sceneSingleCard.sceneRoot.findViewById<ShapeableImageView>(R.id.iv_add_card)
+            .setOnClickListener {
+                findNavController()
+                    .navigate(
+                        R.id.action_myCardsFragment_to_addCardOptionFragment
+                    )
+            }
+    }
+
+    /*
     * Cards List scene
     * */
     private fun enterCardsListScene(cards: List<HealthCardDto>) {
+
         sceneMyCardsList.enter()
 
+        // Toolbar setup
+        val toolBar = sceneMyCardsList.sceneRoot.findViewById<ViewGroup>(R.id.toolbar)
+        val backButton = toolBar.findViewById<ImageView>(R.id.iv_back)
+        backButton.visibility = View.VISIBLE
+        backButton.setOnClickListener {
+            enterSingleCardScene(cards)
+        }
+        val titleText = toolBar.findViewById<TextView>(R.id.tv_title)
+        titleText.visibility = View.VISIBLE
+        titleText.text = getString(R.string.add_bc_vaccine_card)
+        val addButton = toolBar.findViewById<ImageView>(R.id.iv_settings)
+        addButton.setImageResource(R.drawable.ic_plus)
+        addButton.visibility = View.VISIBLE
+        addButton.setOnClickListener {
+            findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
+        }
+
+        // Recycler view setup
         cardsListAdapter = MyCardsAdapter(cards.toMutableList()) { healthCard ->
             confirmUnlinking(healthCard = healthCard)
         }
@@ -167,21 +270,41 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         recyclerViewCardsList.layoutManager =
             LinearLayoutManager(requireContext())
 
-        val btnManageCards = sceneManageCards.sceneRoot.findViewById<Button>(R.id.btn_manage_cards)
+        cardsListAdapter.notifyItemRangeChanged(0, cardsListAdapter.itemCount)
+
+        // Other UI setup
+        val btnManageCards = sceneMyCardsList.sceneRoot.findViewById<Button>(R.id.btn_manage_cards)
         btnManageCards.text = getString(R.string.manage_cards)
         btnManageCards.setOnClickListener {
             enterManageCardsScene(cards)
         }
-
-        cardsListAdapter.notifyItemRangeChanged(0, cardsListAdapter.itemCount)
     }
 
     /*
     * Manage Cards scene
     * */
     private fun enterManageCardsScene(cards: List<HealthCardDto>) {
+
         sceneManageCards.enter()
 
+        // Toolbar setup
+        val toolBar = sceneManageCards.sceneRoot.findViewById<ViewGroup>(R.id.toolbar)
+        val backButton = toolBar.findViewById<ImageView>(R.id.iv_back)
+        backButton.visibility = View.VISIBLE
+        backButton.setOnClickListener {
+            enterCardsListScene(cards)
+        }
+        val titleText = toolBar.findViewById<TextView>(R.id.tv_title)
+        titleText.visibility = View.VISIBLE
+        titleText.text = getString(R.string.add_bc_vaccine_card)
+        val addButton = toolBar.findViewById<ImageView>(R.id.iv_settings)
+        addButton.setImageResource(R.drawable.ic_plus)
+        addButton.visibility = View.VISIBLE
+        addButton.setOnClickListener {
+            findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
+        }
+
+        // Recycler view setup
         manageCardsAdapter = MyCardsAdapter(cards.toMutableList(), true) { healthCard ->
             confirmUnlinking(healthCard = healthCard)
         }
@@ -195,6 +318,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         recyclerViewManageCards.layoutManager =
             LinearLayoutManager(requireContext())
 
+        // Other UI setup
         val btnManageCards = sceneManageCards.sceneRoot.findViewById<Button>(R.id.btn_manage_cards)
         btnManageCards.text = getString(R.string.done)
         btnManageCards.setOnClickListener {

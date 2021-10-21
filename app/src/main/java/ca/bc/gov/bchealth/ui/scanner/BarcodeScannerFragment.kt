@@ -22,11 +22,13 @@ import ca.bc.gov.bchealth.barcodeanalyzer.BarcodeAnalyzer
 import ca.bc.gov.bchealth.barcodeanalyzer.ScanningResultListener
 import ca.bc.gov.bchealth.databinding.FragmentBarcodeScannerBinding
 import ca.bc.gov.bchealth.ui.mycards.MyCardsViewModel
+import ca.bc.gov.bchealth.utils.SHCDecoder
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 /**
@@ -48,6 +50,9 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
     private lateinit var camera: Camera
 
     private val myCardsViewModel: MyCardsViewModel by viewModels()
+
+    @Inject
+    lateinit var shcDecoder: SHCDecoder
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -177,8 +182,13 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
             // When barcode is not supported
             imageAnalysis.clearAnalyzer()
 
-            myCardsViewModel.saveCard(shcUri).invokeOnCompletion {
-                findNavController().popBackStack(R.id.myCardsFragment, false)
+            try {
+                shcDecoder.getImmunizationStatus(shcUri)
+                myCardsViewModel.saveCard(shcUri).invokeOnCompletion {
+                    findNavController().popBackStack(R.id.myCardsFragment, false)
+                }
+            } catch (e: Exception) {
+                showError()
             }
         }
 
@@ -189,6 +199,10 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
             // When barcode is not supported
             imageAnalysis.clearAnalyzer()
 
+            showError()
+        }
+
+        private fun showError() {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(R.string.bc_invalid_barcode_title))
                 .setCancelable(false)

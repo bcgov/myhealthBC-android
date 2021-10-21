@@ -141,6 +141,15 @@ dependencies {
 
     implementation "com.google.android.play:core-ktx:$versions.play"
 
+    //networking
+    implementation "com.google.code.gson:gson:$versions.gson"
+    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$versions.converter_gson"
+    implementation "com.squareup.okhttp3:logging-interceptor:$versions.logging_interceptor"
+
+    //Queue.it
+    implementation "com.queue-it.androidsdk:library-androidx:$versions.queue_it"
+
     //DataStore
     implementation "androidx.datastore:datastore-preferences:$versions.datastore"
 
