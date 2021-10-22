@@ -1,38 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!--Headline styles-->
     <style name="BC_VAX.TextAppearance.MaterialComponents.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
         <item name="android:textSize">32sp</item>
         <item name="fontFamily">@font/bc_sans_bold</item>
-        <item name="android:textColor">@android:color/primary_text_dark</item>
+        <item name="android:textColor">@color/primary_blue</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="BC_VAX.TextAppearance.MaterialComponents.Headline2" parent="TextAppearance.MaterialComponents.Headline2">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">24sp</item>
         <item name="fontFamily">@font/bc_sans_bold</item>
-        <item name="android:textColor">@color/dark_blue</item>
+        <item name="android:textColor">@color/primary_blue</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="BC_VAX.TextAppearance.MaterialComponents.Headline3" parent="TextAppearance.MaterialComponents.Headline3">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">17sp</item>
         <item name="fontFamily">@font/bc_sans_bold</item>
-        <item name="android:textColor">@android:color/primary_text_dark</item>
+        <item name="android:textColor">@color/text_black</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="BC_VAX.TextAppearance.MaterialComponents.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="android:textSize">16sp</item>
         <item name="fontFamily">@font/bc_sans_regular</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/text_black</item>
     </style>
 
-    <style name="BC_VAX.TextAppearance.MaterialComponents.Body1" parent="TextAppearance.MaterialComponents.Body1">
-        <item name="android:textSize">12sp</item>
+    <style name="BC_VAX.TextAppearance.MaterialComponents.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textSize">16sp</item>
         <item name="fontFamily">@font/bc_sans_regular</item>
-        <item name="android:textColor">@android:color/primary_text_dark</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
+    <style name="BC_VAX.TextAppearance.MaterialComponents.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textSize">14sp</item>
+        <item name="fontFamily">@font/bc_sans_bold</item>
+        <item name="android:textColor">@color/blue</item>
+    </style>
+
+    <!--Body styles-->
+    <style name="BC_VAX.TextAppearance.MaterialComponents.Body1" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textSize">17sp</item>
+        <item name="fontFamily">@font/bc_sans_regular</item>
+        <item name="android:textColor">@color/text_black</item>
+    </style>
+
+    <style name="BC_VAX.TextAppearance.MaterialComponents.Body2" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textSize">15sp</item>
+        <item name="fontFamily">@font/bc_sans_regular</item>
+        <item name="android:textColor">@color/blue</item>
+    </style>
+
+    <!--Subtitle styles-->
+    <style name="BC_VAX.TextAppearance.MaterialComponents.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textSize">14sp</item>
+        <item name="fontFamily">@font/bc_sans_bold</item>
+        <item name="android:textColor">@color/blue</item>
     </style>
 
     <!--Button Font style-->

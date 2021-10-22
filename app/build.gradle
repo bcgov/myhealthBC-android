@@ -11,13 +11,22 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "ca.bc.gov.vaxcheck"
+        applicationId "ca.bc.gov.myhealth"
         minSdk 27
         targetSdk 31
-        versionCode 12
-        versionName "1.0.1"
+        versionCode 1
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                        "room.schemaLocation"  : "$projectDir/schemas".toString(),
+                        "room.incremental"     : "true",
+                        "room.expandProjection": "true"]
+            }
+        }
     }
 
     buildTypes {
@@ -30,9 +39,9 @@ android {
     flavorDimensions "version"
     productFlavors {
 
-        demo{
+        dev {
             dimension "version"
-            versionNameSuffix "-demo"
+            versionNameSuffix "-dev"
         }
         stage {
             dimension "version"
@@ -46,11 +55,11 @@ android {
 
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
 
     buildFeatures {
@@ -93,11 +102,18 @@ dependencies {
 
     kapt "com.google.dagger:hilt-compiler:$versions.hilt"
 
+    //ROOM
+    implementation "androidx.room:room-runtime:$versions.room"
+    kapt "androidx.room:room-compiler:$versions.room"
+    implementation "androidx.room:room-ktx:$versions.room"
+
     //Google BarcodeScanner
     //TODO:- we may replace it with dynamic model download library
     //implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:16.2.1'
     implementation "com.google.mlkit:barcode-scanning:$versions.barcode_scanning"
 
+    //QR Generator
+    implementation "androidmads.library.qrgenearator:QRGenearator:1.0.3"
 
     //Camerax
     //TODO: decide on usage of lifecycle, view and extensions lib
@@ -109,6 +125,36 @@ dependencies {
 
     implementation "androidx.camera:camera-extensions:$versions.camerax_extensions"
 
+    //GSOn
+    implementation "com.google.code.gson:gson:$versions.gson"
+
+    //JWT library
+    api "io.jsonwebtoken:jjwt-api:$versions.jjwt"
+    implementation "io.jsonwebtoken:jjwt-impl:$versions.jjwt"
+    implementation("io.jsonwebtoken:jjwt-orgjson:$versions.jjwt") {
+        exclude group: 'org.json', module: 'json' //provided by Android natively
+    }
+
+    implementation "org.bouncycastle:bcprov-jdk15on:$versions.bouncycastle"
+
+    implementation "androidx.browser:browser:$versions.browser"
+
+    implementation "com.google.android.play:core-ktx:$versions.play"
+
+    //networking
+    implementation "com.google.code.gson:gson:$versions.gson"
+    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$versions.converter_gson"
+    implementation "com.squareup.okhttp3:logging-interceptor:$versions.logging_interceptor"
+
+    //Queue.it
+    implementation "com.queue-it.androidsdk:library-androidx:$versions.queue_it"
+
+    //DataStore
+    implementation "androidx.datastore:datastore-preferences:$versions.datastore"
+
+    // https://stackoverflow.com/questions/29402155/android-unit-test-not-mocked
+    testImplementation 'org.json:json:20210307'
 
     testImplementation "junit:junit:$versions.junit"
 
@@ -120,7 +166,4 @@ dependencies {
     androidTestImplementation "com.google.dagger:hilt-android-testing:$versions.hilt"
 
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$versions.hilt"
-
-    //DataStore
-    implementation "androidx.datastore:datastore-preferences:$versions.datastore"
 }

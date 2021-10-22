@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:opacity="opaque">
+
+    <!--TODO Actual Splash screen design not yet available.-->
+    <item android:drawable="?android:colorBackground" />
+
+    <item
+        android:width="100dp"
+        android:height="25dp"
+        android:drawable="@drawable/ic_bc_app_logo"
+        android:gravity="bottom|center"
+        android:bottom="@dimen/space_8_x" />
+
+    <item
+        android:drawable="@drawable/ic_splash_logo"
+        android:gravity="center"
+        android:bottom="@dimen/space_8_x"/>
+
+</layer-list>

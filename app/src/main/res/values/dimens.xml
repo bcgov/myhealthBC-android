@@ -10,5 +10,10 @@
     <dimen name="space_6_x">48dp</dimen>
     <dimen name="space_7_x">56dp</dimen>
     <dimen name="space_8_x">64dp</dimen>
+    <dimen name="space_9_x">72dp</dimen>
+    <dimen name="space_10_x">80dp</dimen>
+
+    <dimen name="barcode_reticle_stroke_width">4dp</dimen>
+    <dimen name="barcode_reticle_corner_radius">8dp</dimen>
 
 </resources>

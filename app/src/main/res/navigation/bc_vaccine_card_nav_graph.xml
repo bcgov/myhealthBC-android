@@ -1,5 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/bc_vaccine_card_nav_graph">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bc_vaccine_card_nav_graph"
+    app:startDestination="@id/myCardsFragment">
 
+    <fragment
+        android:id="@+id/onBoardingFragment"
+        android:name="ca.bc.gov.bchealth.ui.onboarding.CameraPermissionFragment"
+        android:label="fragment_onboarding"
+        tools:layout="@layout/fragment_camera_permission" />
+
+    <fragment
+        android:id="@+id/myCardsFragment"
+        android:name="ca.bc.gov.bchealth.ui.mycards.MyCardsFragment"
+        android:label="MyCardsFragment"
+        tools:layout="@layout/fragment_my_cards">
+        <action
+            android:id="@+id/action_myCardsFragment_to_addCardOptionFragment"
+            app:destination="@id/addCardOptionFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_myCardsFragment_to_expandQRFragment"
+            app:destination="@id/expandQRFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_myCardsFragment_to_settingFragment"
+            app:destination="@id/settingFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/addCardOptionFragment"
+        android:name="ca.bc.gov.bchealth.ui.addcard.AddCardOptionFragment"
+        android:label="AddCardOptionFragment"
+        tools:layout="@layout/fragment_add_card_options">
+        <action
+            android:id="@+id/action_addCardOptionFragment_to_onBoardingFragment"
+            app:destination="@id/onBoardingFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_addCardOptionFragment_to_fetchVaccineCardFragment"
+            app:destination="@id/fetchVaccineCardFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="ca.bc.gov.bchealth.ui.setting.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/barcodeScannerFragment"
+        android:name="ca.bc.gov.bchealth.ui.scanner.BarcodeScannerFragment"
+        android:label="BarcodeScannerFragment" />
+    <dialog
+        android:id="@+id/expandQRFragment"
+        android:name="ca.bc.gov.bchealth.ui.mycards.ExpandQRFragment"
+        android:label="ExpandQRFragment">
+        <argument
+            android:name="qrData"
+            app:argType="string" />
+    </dialog>
+    <fragment
+        android:id="@+id/onBoardingSliderFragment"
+        android:name="ca.bc.gov.bchealth.ui.onboarding.OnBoardingSliderFragment"
+        android:label="OnBoardingSliderFragment" />
+    <fragment
+        android:id="@+id/resourcesFragment"
+        android:name="ca.bc.gov.bchealth.ui.resources.ResourcesFragment"
+        android:label="fragment_resources"
+        tools:layout="@layout/fragment_resources" />
+    <fragment
+        android:id="@+id/newsfeedFragment"
+        android:name="ca.bc.gov.bchealth.ui.newsfeed.NewsfeedFragment"
+        android:label="fragment_newsfeed"
+        tools:layout="@layout/fragment_newsfeed" />
+    <fragment
+        android:id="@+id/fetchVaccineCardFragment"
+        android:name="ca.bc.gov.bchealth.ui.addcard.FetchVaccineCardFragment"
+        android:label="fragment_fetch_vaccine_card"
+        tools:layout="@layout/fragment_fetch_vaccine_card" />
 </navigation>

@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="grey">#B6B6B6</color>
-    <color name="blue">#888FB8</color>
-    <color name="green">#368039</color>
+
     <color name="navy_blue">#082B55</color>
     <color name="barcode_reticle_background">#99000000</color>
     <color name="barcode_reticle_stroke">#ffffff</color>
-    <color name="dark_blue">#003366</color>
-    <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
-    <color name="yellow">#FAA500</color>
+    <color name="yellow">#FEE100</color>
     <color name="status_green">#2E8540</color>
     <color name="status_blue">#38598A</color>
-    <color name="ic_launcher_background">#1A5A95</color>
+
+    <color name="primary_blue">#003366</color>
+    <color name="blue">#1A5A96</color>
+    <color name="text_black">#313132</color>
+    <color name="grey">#606060</color>
+    <color name="shadow_grey">#CFCFCF</color>
+    <color name="light_grey">#F2F2F2</color>
+    <color name="error">#D8292F</color>
 </resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/myCardsFragment"
+        android:enabled="true"
+        android:icon="@drawable/pass_selector"
+        android:title="@string/pass" />
+    <item
+        android:id="@+id/resourcesFragment"
+        android:enabled="true"
+        android:icon="@drawable/resource_selector"
+        android:title="@string/resource" />
+    <item
+        android:id="@+id/newsfeedFragment"
+        android:enabled="true"
+        android:icon="@drawable/news_feed_selector"
+        android:title="@string/news_feed" />
+</menu>
