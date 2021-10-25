@@ -178,10 +178,11 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         viewModel.uploadStatus.observe(viewLifecycleOwner, {
             if (it) {
 
-                //Snowplow event
+                // Snowplow event
                 Snowplow.getDefaultTracker()?.track(
                     SelfDescribingEvent
-                        .get(AnalyticsAction.AddQR, AnalyticsText.Get))
+                        .get(AnalyticsAction.AddQR, AnalyticsText.Get)
+                )
 
                 findNavController().popBackStack(R.id.myCardsFragment, false)
             } else {

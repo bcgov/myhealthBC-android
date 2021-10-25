@@ -44,10 +44,11 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
 
         viewModel.uploadStatus.observe(viewLifecycleOwner, {
             if (it) {
-                //Snowplow event
+                // Snowplow event
                 Snowplow.getDefaultTracker()?.track(
                     SelfDescribingEvent
-                    .get(AnalyticsAction.AddQR, AnalyticsText.Upload))
+                        .get(AnalyticsAction.AddQR, AnalyticsText.Upload)
+                )
 
                 findNavController().popBackStack(R.id.myCardsFragment, false)
             } else {

@@ -8,7 +8,7 @@ import com.snowplowanalytics.snowplow.payload.SelfDescribingJson
 */
 object SelfDescribingEvent {
 
-    const val schema  = "iglu:ca.bc.gov.gateway/action/jsonschema/1-0-0"
+    const val schema = "iglu:ca.bc.gov.gateway/action/jsonschema/1-0-0"
 
     fun get(key: AnalyticsAction, value: AnalyticsText): SelfDescribing {
 

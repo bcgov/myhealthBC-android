@@ -190,10 +190,11 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                 shcDecoder.getImmunizationStatus(shcUri)
                 myCardsViewModel.saveCard(shcUri).invokeOnCompletion {
 
-                    //Snowplow event
+                    // Snowplow event
                     Snowplow.getDefaultTracker()?.track(
                         SelfDescribingEvent
-                            .get(AnalyticsAction.AddQR, AnalyticsText.Scan))
+                            .get(AnalyticsAction.AddQR, AnalyticsText.Scan)
+                    )
 
                     findNavController().popBackStack(R.id.myCardsFragment, false)
                 }

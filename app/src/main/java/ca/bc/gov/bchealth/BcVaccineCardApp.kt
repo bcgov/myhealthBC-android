@@ -13,7 +13,6 @@ import com.snowplowanalytics.snowplow.util.TimeMeasure
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
 
-
 /**
  * [BcVaccineCardApp].
  *
@@ -36,7 +35,6 @@ class BcVaccineCardApp : Application() {
         super.onCreate()
 
         initSnowplow()
-
     }
 
     private fun initSnowplow() {
@@ -102,5 +100,4 @@ class BcVaccineCardApp : Application() {
             sessionConfig
         )
     }
-
 }
