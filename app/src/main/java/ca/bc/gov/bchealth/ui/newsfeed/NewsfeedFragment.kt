@@ -10,11 +10,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.analytics.AnalyticsAction
+import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.databinding.FragmentNewsfeedBinding
 import ca.bc.gov.bchealth.model.rss.Newsfeed
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.snowplowanalytics.snowplow.Snowplow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -32,7 +35,15 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
         super.onViewCreated(view, savedInstanceState)
 
         newsfeedAdapter = NewsfeedAdapter(newsFeeds) {
-            it.link?.let { it1 -> requireActivity().redirect(it1) }
+            it.link?.let { it1 ->
+                requireActivity().redirect(it1)
+
+                // Snowplow event
+                Snowplow.getDefaultTracker()?.track(
+                    SelfDescribingEvent
+                        .get(AnalyticsAction.NewsLinkSelected, it1)
+                )
+            }
         }
 
         binding.recItems.adapter = newsfeedAdapter

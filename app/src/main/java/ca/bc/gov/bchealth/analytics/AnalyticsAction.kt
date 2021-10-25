@@ -9,5 +9,4 @@ enum class AnalyticsAction(val value: String) {
     RemoveCard("remove_card"),
     ResourceLinkSelected("resource_click"),
     NewsLinkSelected("news_feed_selected")
-
 }
