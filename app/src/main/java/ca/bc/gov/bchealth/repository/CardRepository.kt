@@ -44,7 +44,7 @@ class CardRepository @Inject constructor(
         }
     }
 
-    suspend fun insert(card: HealthCard) {
+    suspend fun insert(card: HealthCard)  {
         try {
             val cardToBeInserted = shcDecoder.getImmunizationStatus(card.uri)
 
@@ -56,20 +56,30 @@ class CardRepository @Inject constructor(
                 val record = cards.filter { record ->
                     val immunizationRecord = shcDecoder.getImmunizationStatus(record.uri)
                     (
-                        immunizationRecord.name == cardToBeInserted.name &&
-                            immunizationRecord.birthDate == cardToBeInserted.birthDate
-                        )
+                            immunizationRecord.name == cardToBeInserted.name
+                                    && immunizationRecord.birthDate == cardToBeInserted.birthDate
+                            )
                 }
 
                 if (record.isNullOrEmpty()) {
                     dataSource.insert(card)
                 } else {
-                    record.forEach { healthCard ->
-                        if (shcDecoder.getImmunizationStatus(healthCard.uri).status
+                    record.forEach { existingHealthCard ->
+
+                        if(cardToBeInserted.status ==
+                            shcDecoder.getImmunizationStatus(existingHealthCard.uri).status){
+                            responseMutableLiveData
+                                .postValue(Response.
+                                Error("This card is already present!"))
+                            return@forEach
+                        }
+
+                        if (shcDecoder.getImmunizationStatus(existingHealthCard.uri).status
                             == ImmunizationStatus.PARTIALLY_IMMUNIZED
                         ) {
-                            healthCard.uri = card.uri
-                            dataSource.update(healthCard)
+                            existingHealthCard.uri = card.uri
+                            dataSource.update(existingHealthCard)
+                            responseMutableLiveData.postValue(Response.Success())
                         }
                     }
                 }
@@ -120,4 +130,10 @@ class CardRepository @Inject constructor(
 
         return true
     }
+
+
+    private val responseMutableLiveData = MutableLiveData<Response<String>>()
+    val responseLiveData: Flow<Response<String>>
+        get() = responseMutableLiveData.asFlow()
+
 }

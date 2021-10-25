@@ -22,14 +22,16 @@ import ca.bc.gov.bchealth.barcodeanalyzer.BarcodeAnalyzer
 import ca.bc.gov.bchealth.barcodeanalyzer.ScanningResultListener
 import ca.bc.gov.bchealth.databinding.FragmentBarcodeScannerBinding
 import ca.bc.gov.bchealth.ui.mycards.MyCardsViewModel
+import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import kotlinx.coroutines.launch
 
 /**
  * [BarcodeScannerFragment]
@@ -71,6 +73,23 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                myCardsViewModel.response.collect {
+                    when (it) {
+                        is Response.Success -> {
+                            findNavController().popBackStack(R.id.myCardsFragment, false)
+                        }
+                        is Response.Error -> {
+                            showError(getString(R.string.error), it.errorMessage.toString())
+                        }
+                        is Response.Loading -> {
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun initCamera() {
@@ -102,118 +121,118 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
 
             enableFlashControl()
         }, ContextCompat.getMainExecutor(requireContext()))
-        }
+    }
 
-        private fun bindBarcodeScannerUseCase() {
+    private fun bindBarcodeScannerUseCase() {
 
-            val cameraSelector = CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+        val cameraSelector = CameraSelector.Builder()
+            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+            .build()
+
+        val hasCamera = cameraProvider.hasCamera(cameraSelector)
+
+        if (hasCamera) {
+
+            val resolution = Size(
+                binding.scannerPreview.width,
+                binding.scannerPreview.height
+            )
+            val preview = Preview.Builder()
+                .apply {
+                    setTargetResolution(resolution)
+                }.build()
+
+            imageAnalysis = ImageAnalysis.Builder()
+                .setTargetResolution(resolution)
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
 
-            val hasCamera = cameraProvider.hasCamera(cameraSelector)
+            imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this))
 
-            if (hasCamera) {
+            cameraProvider.unbindAll()
 
-                val resolution = Size(
-                    binding.scannerPreview.width,
-                    binding.scannerPreview.height
-                )
-                val preview = Preview.Builder()
-                    .apply {
-                        setTargetResolution(resolution)
-                    }.build()
+            camera = cameraProvider.bindToLifecycle(
+                viewLifecycleOwner, cameraSelector, preview, imageAnalysis
+            )
 
-                imageAnalysis = ImageAnalysis.Builder()
-                    .setTargetResolution(resolution)
-                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                    .build()
-
-                imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this))
-
-                cameraProvider.unbindAll()
-
-                camera = cameraProvider.bindToLifecycle(
-                    viewLifecycleOwner, cameraSelector, preview, imageAnalysis
-                )
-
-                preview.setSurfaceProvider(binding.scannerPreview.surfaceProvider)
-            } else {
-                showNoCameraAlertDialog()
-            }
-        }
-
-        private fun showNoCameraAlertDialog() {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.bc_no_rear_camera_title))
-                .setCancelable(false)
-                .setMessage(getString(R.string.bc_nor_rear_camera_message))
-                .setNegativeButton(getString(R.string.exit)) { dialog, which ->
-                    if (!findNavController().popBackStack() || !findNavController().navigateUp()) {
-                        requireActivity().finish()
-                    }
-                    dialog.dismiss()
-                }
-                .show()
-        }
-
-        private fun enableFlashControl() {
-            if (camera.cameraInfo.hasFlashUnit()) {
-                binding.checkboxFlashLight.visibility = View.VISIBLE
-
-                binding.checkboxFlashLight.setOnCheckedChangeListener { buttonView, isChecked ->
-
-                    if (buttonView.isPressed) {
-                        camera.cameraControl.enableTorch(isChecked)
-                    }
-                }
-
-                camera.cameraInfo.torchState.observe(viewLifecycleOwner) {
-                    it?.let { torchState ->
-                        binding.checkboxFlashLight.isChecked = torchState == TorchState.ON
-                    }
-                }
-            }
-        }
-
-        override fun onScanned(shcUri: String) {
-
-            // Since camera is constantly analysing
-            // Its good to clear analyzer to avoid duplicate dialogs
-            // When barcode is not supported
-            imageAnalysis.clearAnalyzer()
-
-            try {
-                shcDecoder.getImmunizationStatus(shcUri)
-                myCardsViewModel.saveCard(shcUri).invokeOnCompletion {
-                    findNavController().popBackStack(R.id.myCardsFragment, false)
-                }
-            } catch (e: Exception) {
-                showError()
-            }
-        }
-
-        override fun onFailure() {
-
-            // Since camera is constantly analysing
-            // Its good to clear analyzer to avoid duplicate dialogs
-            // When barcode is not supported
-            imageAnalysis.clearAnalyzer()
-
-            showError()
-        }
-
-        private fun showError() {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.bc_invalid_barcode_title))
-                .setCancelable(false)
-                .setMessage(getString(R.string.bc_invalid_barcode_message))
-                .setPositiveButton(getString(R.string.scan_next)) { dialog, which ->
-
-                    // Attach analyzer again to start analysis.
-                    imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this))
-
-                    dialog.dismiss()
-                }
-                .show()
+            preview.setSurfaceProvider(binding.scannerPreview.surfaceProvider)
+        } else {
+            showNoCameraAlertDialog()
         }
     }
+
+    private fun showNoCameraAlertDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.bc_no_rear_camera_title))
+            .setCancelable(false)
+            .setMessage(getString(R.string.bc_nor_rear_camera_message))
+            .setNegativeButton(getString(R.string.exit)) { dialog, which ->
+                if (!findNavController().popBackStack() || !findNavController().navigateUp()) {
+                    requireActivity().finish()
+                }
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun enableFlashControl() {
+        if (camera.cameraInfo.hasFlashUnit()) {
+            binding.checkboxFlashLight.visibility = View.VISIBLE
+
+            binding.checkboxFlashLight.setOnCheckedChangeListener { buttonView, isChecked ->
+
+                if (buttonView.isPressed) {
+                    camera.cameraControl.enableTorch(isChecked)
+                }
+            }
+
+            camera.cameraInfo.torchState.observe(viewLifecycleOwner) {
+                it?.let { torchState ->
+                    binding.checkboxFlashLight.isChecked = torchState == TorchState.ON
+                }
+            }
+        }
+    }
+
+    override fun onScanned(shcUri: String) {
+
+        // Since camera is constantly analysing
+        // Its good to clear analyzer to avoid duplicate dialogs
+        // When barcode is not supported
+        imageAnalysis.clearAnalyzer()
+
+        try {
+            shcDecoder.getImmunizationStatus(shcUri)
+            myCardsViewModel.saveCard(shcUri)
+        } catch (e: Exception) {
+            showError(getString(R.string.error), e.message.toString())
+        }
+    }
+
+    override fun onFailure() {
+
+        // Since camera is constantly analysing
+        // Its good to clear analyzer to avoid duplicate dialogs
+        // When barcode is not supported
+        imageAnalysis.clearAnalyzer()
+
+        showError(getString(R.string.error), "")
+        //getString(R.string.bc_invalid_barcode_title)
+        //getString(R.string.bc_invalid_barcode_message)
+    }
+
+    private fun showError(title: String, message: String) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(title)
+            .setCancelable(false)
+            .setMessage(message)
+            .setPositiveButton(getString(R.string.scan_next)) { dialog, which ->
+
+                // Attach analyzer again to start analysis.
+                imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this))
+
+                dialog.dismiss()
+            }
+            .show()
+    }
+}

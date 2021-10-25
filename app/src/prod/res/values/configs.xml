@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--TODO Prod url needs to updated once available-->
-    <string name="retrofit_url_immunization">https://test.healthgateway.gov.bc.ca/</string>
+    <string name="retrofit_url_immunization">https://healthgateway.gov.bc.ca/</string>
 
 </resources>

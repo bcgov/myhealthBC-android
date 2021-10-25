@@ -58,4 +58,6 @@ class MyCardsViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null
     )
+
+    val response = repository.responseLiveData
 }
