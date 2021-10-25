@@ -377,7 +377,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 // Snowplow event
                 Snowplow.getDefaultTracker()?.track(
                     SelfDescribingEvent
-                        .get(AnalyticsAction.RemoveCard, "")
+                        .get(AnalyticsAction.RemoveCard.value, "")
                 )
 
                 viewModel.unLink(healthCard.id, healthCard.uri)

@@ -181,7 +181,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                 // Snowplow event
                 Snowplow.getDefaultTracker()?.track(
                     SelfDescribingEvent
-                        .get(AnalyticsAction.AddQR, AnalyticsText.Get)
+                        .get(AnalyticsAction.AddQR.value, AnalyticsText.Get.value)
                 )
 
                 findNavController().popBackStack(R.id.myCardsFragment, false)

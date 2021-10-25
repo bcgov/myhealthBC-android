@@ -47,7 +47,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                 // Snowplow event
                 Snowplow.getDefaultTracker()?.track(
                     SelfDescribingEvent
-                        .get(AnalyticsAction.AddQR, AnalyticsText.Upload)
+                        .get(AnalyticsAction.AddQR.value, AnalyticsText.Upload.value)
                 )
 
                 findNavController().popBackStack(R.id.myCardsFragment, false)

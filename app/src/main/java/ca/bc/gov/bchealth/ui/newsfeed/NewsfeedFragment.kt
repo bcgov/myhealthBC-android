@@ -40,9 +40,9 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
 
                 // Snowplow event
                 Snowplow.getDefaultTracker()?.track(
-                    SelfDescribingEvent
-                        .get(AnalyticsAction.NewsLinkSelected, it1)
+                    SelfDescribingEvent.get(AnalyticsAction.NewsLinkSelected.value, it1)
                 )
+
             }
         }
 
