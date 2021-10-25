@@ -25,7 +25,7 @@ class NewsfeedViewModel : ViewModel() {
     val newsfeedLiveData: LiveData<MutableList<Newsfeed>>
         get() = newsfeedMutableLiveData
 
-    suspend fun fetchNewsFeed(urlString: String) {
+    fun fetchNewsFeed(urlString: String) {
         try {
             val newsFeeds: MutableList<Newsfeed> = mutableListOf()
 
@@ -41,10 +41,11 @@ class NewsfeedViewModel : ViewModel() {
 
             for (i in 0 until nList.length) {
                 val node: Node = nList.item(i)
-                if (node.nodeType === Node.ELEMENT_NODE) {
+                if (node.nodeType == Node.ELEMENT_NODE) {
                     val element2 = node as Element
                     newsFeeds.add(
                         Newsfeed(
+                            getValue("link", element2),
                             getValue("title", element2),
                             getValue("description", element2),
                             getValue("pubDate", element2)
