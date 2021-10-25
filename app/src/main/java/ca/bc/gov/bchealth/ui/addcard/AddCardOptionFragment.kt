@@ -10,10 +10,18 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.analytics.AnalyticsAction
+import ca.bc.gov.bchealth.analytics.AnalyticsText
+import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
+import ca.bc.gov.bchealth.analytics.AnalyticsAction
+import ca.bc.gov.bchealth.analytics.AnalyticsText
+import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.snowplowanalytics.snowplow.Snowplow
+import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
@@ -53,6 +61,11 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                     viewModel.responseSharedFlow.collect {
                         when (it) {
                             is Response.Success -> {
+                                //Snowplow event
+                                Snowplow.getDefaultTracker()?.track(
+                                    SelfDescribingEvent
+                                        .get(AnalyticsAction.AddQR, AnalyticsText.Upload))
+
                                 findNavController().popBackStack(R.id.myCardsFragment, false)
                             }
                             is Response.Error -> {

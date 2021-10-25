@@ -18,6 +18,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.analytics.AnalyticsAction
+import ca.bc.gov.bchealth.analytics.AnalyticsText
+import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.barcodeanalyzer.BarcodeAnalyzer
 import ca.bc.gov.bchealth.barcodeanalyzer.ScanningResultListener
 import ca.bc.gov.bchealth.databinding.FragmentBarcodeScannerBinding
@@ -27,6 +30,7 @@ import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -80,6 +84,12 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                 myCardsViewModel.responseFlow.collect {
                     when (it) {
                         is Response.Success -> {
+
+                            //Snowplow event
+                            Snowplow.getDefaultTracker()?.track(
+                                SelfDescribingEvent
+                                    .get(AnalyticsAction.AddQR, AnalyticsText.Scan))
+
                             findNavController().popBackStack(R.id.myCardsFragment, false)
                         }
                         is Response.Error -> {
