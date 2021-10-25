@@ -15,6 +15,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.analytics.AnalyticsAction
+import ca.bc.gov.bchealth.analytics.AnalyticsText
+import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineCardBinding
 import ca.bc.gov.bchealth.di.ApiClientModule
 import ca.bc.gov.bchealth.http.MustBeQueued
@@ -30,6 +33,7 @@ import com.queue_it.androidsdk.QueueITException
 import com.queue_it.androidsdk.QueueListener
 import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
+import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -173,6 +177,12 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
         viewModel.uploadStatus.observe(viewLifecycleOwner, {
             if (it) {
+
+                //Snowplow event
+                Snowplow.getDefaultTracker()?.track(
+                    SelfDescribingEvent
+                        .get(AnalyticsAction.AddQR, AnalyticsText.Get))
+
                 findNavController().popBackStack(R.id.myCardsFragment, false)
             } else {
                 showError(

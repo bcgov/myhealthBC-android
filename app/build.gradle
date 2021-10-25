@@ -153,6 +153,11 @@ dependencies {
     //DataStore
     implementation "androidx.datastore:datastore-preferences:$versions.datastore"
 
+    // Snowplow Android Tracker
+    implementation "com.snowplowanalytics:snowplow-android-tracker:$versions.snowplow@aar"
+    // In case 'lifecycleAutotracking' is enabled
+    implementation "androidx.lifecycle:lifecycle-extensions:$versions.snowplow_lifecycle"
+
     // https://stackoverflow.com/questions/29402155/android-unit-test-not-mocked
     testImplementation 'org.json:json:20210307'
 
