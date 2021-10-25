@@ -45,8 +45,7 @@ class ResourcesFragment : Fragment(R.layout.fragment_resources) {
     private fun seedAnalyticsData(url: String) {
         // Snowplow event
         Snowplow.getDefaultTracker()?.track(
-            SelfDescribingEvent
-                .get(AnalyticsAction.ResourceLinkSelected, url)
+            SelfDescribingEvent.get(AnalyticsAction.ResourceLinkSelected.value, url)
         )
     }
 }
