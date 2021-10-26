@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentNewsfeedBinding
 import ca.bc.gov.bchealth.model.rss.Newsfeed
+import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +31,9 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        newsfeedAdapter = NewsfeedAdapter(newsFeeds)
+        newsfeedAdapter = NewsfeedAdapter(newsFeeds) {
+            it.link?.let { it1 -> requireActivity().redirect(it1) }
+        }
 
         binding.recItems.adapter = newsfeedAdapter
 

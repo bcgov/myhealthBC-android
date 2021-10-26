@@ -3,16 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_title"
         style="?textAppearanceHeadline3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginTop="@dimen/space_2_x"
-        android:layout_marginEnd="@dimen/space_4_x"
+        android:ellipsize="end"
+        android:maxLines="2"
         android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -25,23 +27,20 @@
         style="?textAppearanceBody1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_4_x"
+        android:ellipsize="end"
+        android:maxLines="2"
         android:textColor="@color/text_black"
-        android:layout_marginEnd="@dimen/space_4_x"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title"
         tools:text="@string/place_holder_text" />
 
-
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_date"
         style="?textAppearanceHeadline5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginEnd="@dimen/space_4_x"
         android:layout_marginBottom="@dimen/space_2_x"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

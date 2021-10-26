@@ -22,6 +22,7 @@ import ca.bc.gov.bchealth.barcodeanalyzer.BarcodeAnalyzer
 import ca.bc.gov.bchealth.barcodeanalyzer.ScanningResultListener
 import ca.bc.gov.bchealth.databinding.FragmentBarcodeScannerBinding
 import ca.bc.gov.bchealth.ui.mycards.MyCardsViewModel
+import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -29,6 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**
@@ -71,14 +73,32 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                myCardsViewModel.responseFlow.collect {
+                    when (it) {
+                        is Response.Success -> {
+                            findNavController().popBackStack(R.id.myCardsFragment, false)
+                        }
+                        is Response.Error -> {
+                            showError(
+                                getString(R.string.error),
+                                it.errorData?.errorMessage.toString()
+                            )
+                        }
+                        is Response.Loading -> {
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun initCamera() {
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        binding.overlay.post {
-            binding.overlay.setViewFinder()
-        }
+        binding.overlay.postDelayed({ binding.overlay.setViewFinder() }, 500)
     }
 
     override fun onDestroyView() {
@@ -184,11 +204,12 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
 
             try {
                 shcDecoder.getImmunizationStatus(shcUri)
-                myCardsViewModel.saveCard(shcUri).invokeOnCompletion {
-                    findNavController().popBackStack(R.id.myCardsFragment, false)
-                }
+                myCardsViewModel.saveCard(shcUri)
             } catch (e: Exception) {
-                showError()
+                showError(
+                    getString(R.string.bc_invalid_barcode_title),
+                    getString(R.string.bc_invalid_barcode_message)
+                )
             }
         }
 
@@ -199,14 +220,17 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
             // When barcode is not supported
             imageAnalysis.clearAnalyzer()
 
-            showError()
+            showError(
+                getString(R.string.bc_invalid_barcode_title),
+                getString(R.string.bc_invalid_barcode_message)
+            )
         }
 
-        private fun showError() {
+        private fun showError(title: String, message: String) {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.bc_invalid_barcode_title))
+                .setTitle(title)
                 .setCancelable(false)
-                .setMessage(getString(R.string.bc_invalid_barcode_message))
+                .setMessage(message)
                 .setPositiveButton(getString(R.string.scan_next)) { dialog, which ->
 
                     // Attach analyzer again to start analysis.

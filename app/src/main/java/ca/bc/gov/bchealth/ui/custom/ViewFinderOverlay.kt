@@ -52,7 +52,7 @@ class ViewFinderOverlay(context: Context, attrs: AttributeSet) : View(context, a
         super.draw(canvas)
         boxRect?.let {
             // Draws the dark background scrim and leaves the box area clear.
-            canvas.drawRect(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat(), scrimPaint)
+            canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), scrimPaint)
             // As the stroke is always centered, so erase twice with FILL and STROKE respectively to clear
             // all area that the box rect would occupy.
             eraserPaint.style = Paint.Style.FILL

@@ -248,7 +248,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         }
         val titleText = toolBar.findViewById<TextView>(R.id.tv_title)
         titleText.visibility = View.VISIBLE
-        titleText.text = getString(R.string.add_bc_vaccine_card)
+        titleText.text = getString(R.string.bc_vaccine_cards)
         val addButton = toolBar.findViewById<ImageView>(R.id.iv_settings)
         addButton.setImageResource(R.drawable.ic_plus)
         addButton.visibility = View.VISIBLE
@@ -296,7 +296,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         }
         val titleText = toolBar.findViewById<TextView>(R.id.tv_title)
         titleText.visibility = View.VISIBLE
-        titleText.text = getString(R.string.add_bc_vaccine_card)
+        titleText.text = getString(R.string.bc_vaccine_cards)
         val addButton = toolBar.findViewById<ImageView>(R.id.iv_settings)
         addButton.setImageResource(R.drawable.ic_plus)
         addButton.visibility = View.VISIBLE

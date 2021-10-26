@@ -1,9 +1,15 @@
 package ca.bc.gov.bchealth.utils
 
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.Uri
 import android.widget.Toast
+import androidx.browser.customtabs.CustomTabColorSchemeParams
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.graphics.drawable.toBitmap
+import ca.bc.gov.bchealth.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -26,8 +32,22 @@ fun Context.toast(message: String) =
 * */
 fun Long.getDateTime(): String {
     return try {
+        val date1 = Date(this * 1000)
+        val format = SimpleDateFormat("MMMM-dd-y, HH:mm", Locale.CANADA)
+        format.format(date1)
+    } catch (e: java.lang.Exception) {
+        e.printStackTrace()
+        ""
+    }
+}
+
+/*
+* For converting epoch datetime format to human readable format (YYYY-MM-DD)
+* */
+fun Long.getNewsFeedDateTime(): String {
+    return try {
         val date1 = Date(this)
-        val format = SimpleDateFormat("MMMM-dd-y, HH:mm", Locale.ENGLISH)
+        val format = SimpleDateFormat("y-MM-d", Locale.CANADA)
         format.format(date1)
     } catch (e: java.lang.Exception) {
         e.printStackTrace()
@@ -53,4 +73,44 @@ fun Context.isOnline(): Boolean {
         }
     }
     return false
+}
+
+/*
+* Redirect to external URL
+* */
+fun Context.redirect(url: String) {
+    try {
+        val customTabColorSchemeParams: CustomTabColorSchemeParams =
+            CustomTabColorSchemeParams.Builder()
+                .setToolbarColor(resources.getColor(R.color.white, null))
+                .setSecondaryToolbarColor(resources.getColor(R.color.white, null))
+                .build()
+
+        val builder: CustomTabsIntent.Builder = CustomTabsIntent.Builder()
+        val customTabIntent: CustomTabsIntent = builder
+            .setDefaultColorSchemeParams(customTabColorSchemeParams)
+            .setCloseButtonIcon(
+                resources.getDrawable(R.drawable.ic_acion_back, null)
+                    .toBitmap()
+            )
+            .build()
+
+        customTabIntent.launchUrl(
+            this,
+            Uri.parse(url)
+        )
+    } catch (e: Exception) {
+        e.printStackTrace()
+        showURLFallBack(this, url)
+    }
+}
+
+private fun showURLFallBack(context: Context, url: String) {
+    val webpage: Uri = Uri.parse(url)
+    val intent = Intent(Intent.ACTION_VIEW, webpage)
+    try {
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        context.toast(context.getString(R.string.no_app_found))
+    }
 }

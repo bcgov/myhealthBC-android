@@ -1,15 +1,11 @@
 package ca.bc.gov.bchealth.ui.addcard
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
 import android.view.View
 import android.widget.Toast
-import androidx.browser.customtabs.CustomTabColorSchemeParams
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -24,7 +20,7 @@ import ca.bc.gov.bchealth.di.ApiClientModule
 import ca.bc.gov.bchealth.http.MustBeQueued
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.isOnline
-import ca.bc.gov.bchealth.utils.toast
+import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -42,6 +38,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -51,7 +48,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
     private val binding by viewBindings(FragmentFetchVaccineCardBinding::bind)
 
-    private val simpleDateFormat = SimpleDateFormat("yyyy-dd-MM", Locale.ENGLISH)
+    private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CANADA)
 
     private val viewModel: FetchVaccineCardViewModel by viewModels()
 
@@ -77,7 +74,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             ivSettings.visibility = View.VISIBLE
             ivSettings.setImageResource(R.drawable.ic_help)
             ivSettings.setOnClickListener {
-                redirect(getString(R.string.url_help))
+                requireActivity().redirect(getString(R.string.url_help))
             }
 
             line1.visibility = View.VISIBLE
@@ -87,9 +84,9 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     private fun iniUI() {
 
         if (BuildConfig.DEBUG) {
-            binding.edPhnNumber.editText?.setText("9000201422")
+            /*binding.edPhnNumber.editText?.setText("9000201422")
             binding.edDob.editText?.setText("1989-12-12")
-            binding.edDov.editText?.setText("2021-05-15")
+            binding.edDov.editText?.setText("2021-05-15")*/
 
             /*binding.edPhnNumber.editText?.setText("9000691304")
             binding.edDob.editText?.setText("1965-01-14")
@@ -104,7 +101,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         content.setSpan(UnderlineSpan(), 0, content.length, 0)
         binding.tvPrivacyStatement.text = content
         binding.tvPrivacyStatement.setOnClickListener {
-            redirect(getString(R.string.url_privacy_policy))
+            requireActivity().redirect(getString(R.string.url_privacy_policy))
         }
 
         binding.btnCancel.setOnClickListener {
@@ -113,6 +110,33 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
         binding.btnSubmit.setOnClickListener {
             if (validateInputData()) {
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        viewModel.responseSharedFlow.collect {
+                            when (it) {
+                                is Response.Success -> {
+                                    ApiClientModule.queueItToken = ""
+                                    binding.progressBar.visibility = View.INVISIBLE
+                                    findNavController().popBackStack(R.id.myCardsFragment, false)
+                                    this.cancel()
+                                }
+                                is Response.Error -> {
+                                    ApiClientModule.queueItToken = ""
+                                    binding.progressBar.visibility = View.INVISIBLE
+                                    showError(
+                                        it.errorData?.errorTitle.toString(),
+                                        it.errorData?.errorMessage.toString()
+                                    )
+                                    this.cancel()
+                                }
+                                is Response.Loading -> {
+                                    binding.progressBar.visibility = View.VISIBLE
+                                }
+                            }
+                        }
+                    }
+                }
 
                 viewLifecycleOwner.lifecycleScope.launch {
                     try {
@@ -134,57 +158,9 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                             )
                         }
                     }
-
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                            viewModel.vaxStatusResponseLiveData.collect {
-                                when (it) {
-                                    is Response.Loading -> {
-                                        binding.progressBar.visibility = View.VISIBLE
-                                    }
-                                    is Response.Success -> {
-                                        ApiClientModule.queueItToken = ""
-
-                                        binding.progressBar.visibility = View.INVISIBLE
-
-                                        it.data?.resourcePayload?.qrCode?.data
-                                            ?.let { base64EncodedImage ->
-                                                try {
-                                                    viewModel.saveVaccineCard(base64EncodedImage)
-                                                } catch (e: Exception) {
-                                                    e.printStackTrace()
-                                                    showError(
-                                                        getString(R.string.error),
-                                                        getString(R.string.error_message)
-                                                    )
-                                                }
-                                            }
-                                    }
-                                    is Response.Error -> {
-                                        binding.progressBar.visibility = View.INVISIBLE
-                                        showError(
-                                            getString(R.string.error),
-                                            message = it.errorMessage.toString()
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
-
-        viewModel.uploadStatus.observe(viewLifecycleOwner, {
-            if (it) {
-                findNavController().popBackStack(R.id.myCardsFragment, false)
-            } else {
-                showError(
-                    getString(R.string.error),
-                    getString(R.string.error_message)
-                )
-            }
-        })
     }
 
     private fun validateInputData(): Boolean {
@@ -272,43 +248,6 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         dateOfVaccinationPicker.addOnPositiveButtonClickListener {
             val date = Date(it)
             binding.edDov.editText?.setText(simpleDateFormat.format(date))
-        }
-    }
-
-    private fun redirect(url: String) {
-        try {
-            val customTabColorSchemeParams: CustomTabColorSchemeParams =
-                CustomTabColorSchemeParams.Builder()
-                    .setToolbarColor(resources.getColor(R.color.white, null))
-                    .setSecondaryToolbarColor(resources.getColor(R.color.white, null))
-                    .build()
-
-            val builder: CustomTabsIntent.Builder = CustomTabsIntent.Builder()
-            val customTabIntent: CustomTabsIntent = builder
-                .setDefaultColorSchemeParams(customTabColorSchemeParams)
-                .setCloseButtonIcon(
-                    resources.getDrawable(R.drawable.ic_acion_back, null)
-                        .toBitmap()
-                )
-                .build()
-
-            customTabIntent.launchUrl(
-                requireContext(),
-                Uri.parse(url)
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            showURLFallBack(url)
-        }
-    }
-
-    private fun showURLFallBack(url: String) {
-        val webpage: Uri = Uri.parse(url)
-        val intent = Intent(Intent.ACTION_VIEW, webpage)
-        try {
-            startActivity(intent)
-        } catch (e: Exception) {
-            context?.toast(getString(R.string.no_app_found))
         }
     }
 
