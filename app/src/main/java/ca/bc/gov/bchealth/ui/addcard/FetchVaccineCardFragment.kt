@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -111,6 +112,33 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             if (validateInputData()) {
 
                 viewLifecycleOwner.lifecycleScope.launch {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        viewModel.responseSharedFlow.collect {
+                            when (it) {
+                                is Response.Success -> {
+                                    ApiClientModule.queueItToken = ""
+                                    binding.progressBar.visibility = View.INVISIBLE
+                                    findNavController().popBackStack(R.id.myCardsFragment, false)
+                                    this.cancel()
+                                }
+                                is Response.Error -> {
+                                    ApiClientModule.queueItToken = ""
+                                    binding.progressBar.visibility = View.INVISIBLE
+                                    showError(
+                                        it.errorData?.errorTitle.toString(),
+                                        it.errorData?.errorMessage.toString()
+                                    )
+                                    this.cancel()
+                                }
+                                is Response.Loading -> {
+                                    binding.progressBar.visibility = View.VISIBLE
+                                }
+                            }
+                        }
+                    }
+                }
+
+                viewLifecycleOwner.lifecycleScope.launch {
                     try {
                         viewModel.getVaccineStatus(
                             binding.edPhnNumber.editText?.text.toString(),
@@ -130,57 +158,9 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                             )
                         }
                     }
-
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                            viewModel.vaxStatusResponseLiveData.collect {
-                                when (it) {
-                                    is Response.Loading -> {
-                                        binding.progressBar.visibility = View.VISIBLE
-                                    }
-                                    is Response.Success -> {
-                                        ApiClientModule.queueItToken = ""
-
-                                        binding.progressBar.visibility = View.INVISIBLE
-
-                                        it.data?.resourcePayload?.qrCode?.data
-                                            ?.let { base64EncodedImage ->
-                                                try {
-                                                    viewModel.saveVaccineCard(base64EncodedImage)
-                                                } catch (e: Exception) {
-                                                    e.printStackTrace()
-                                                    showError(
-                                                        getString(R.string.error),
-                                                        getString(R.string.error_message)
-                                                    )
-                                                }
-                                            }
-                                    }
-                                    is Response.Error -> {
-                                        binding.progressBar.visibility = View.INVISIBLE
-                                        showError(
-                                            getString(R.string.error),
-                                            message = it.errorMessage.toString()
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
-
-        viewModel.uploadStatus.observe(viewLifecycleOwner, {
-            if (it) {
-                findNavController().popBackStack(R.id.myCardsFragment, false)
-            } else {
-                showError(
-                    getString(R.string.error),
-                    getString(R.string.error_message)
-                )
-            }
-        })
     }
 
     private fun validateInputData(): Boolean {

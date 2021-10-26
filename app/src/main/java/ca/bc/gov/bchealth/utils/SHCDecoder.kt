@@ -104,16 +104,15 @@ class SHCDecoder @Inject constructor(
         }.map { entry ->
             val name = entry.resource.name?.firstOrNull()
             if (name != null) {
-                var fullName   =  ""
-                if(!name.given.isNullOrEmpty())
+                var fullName = ""
+                if (!name.given.isNullOrEmpty())
                     name.given[0].let {
                         fullName = it
                     }
 
                 name.family?.let {
                     fullName = buildString {
-                        append(' ')
-                            .append(it)
+                        append(fullName).append(' ').append(it)
                     }
                 }
                 Pair(fullName, entry.resource.birthDate)

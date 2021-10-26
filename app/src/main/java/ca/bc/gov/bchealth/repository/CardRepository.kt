@@ -1,20 +1,30 @@
 package ca.bc.gov.bchealth.repository
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asFlow
+import android.content.Context
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Base64
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.datasource.LocalDataSource
 import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.model.ImmunizationStatus
 import ca.bc.gov.bchealth.model.network.responses.vaccinestatus.VaxStatusResponse
 import ca.bc.gov.bchealth.services.ImmunizationServices
+import ca.bc.gov.bchealth.utils.ErrorData
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import ca.bc.gov.bchealth.utils.getDateTime
+import com.google.mlkit.vision.barcode.Barcode
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.common.InputImage
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 
 /**
  * [CardRepository]
@@ -27,6 +37,16 @@ class CardRepository @Inject constructor(
     private val immunizationServices: ImmunizationServices,
 ) {
 
+    /*
+    * Used to manage Success, Error and Loading status in the UI
+    * */
+    private val responseMutableSharedFlow = MutableSharedFlow<Response<String>>()
+    val responseSharedFlow: SharedFlow<Response<String>>
+        get() = responseMutableSharedFlow.asSharedFlow()
+
+    /*
+    * Health passes fetched from DB
+    * */
     val cards: Flow<List<HealthCardDto>> = dataSource.getCards().map { healthCards ->
         healthCards.map { card ->
             try {
@@ -44,74 +64,213 @@ class CardRepository @Inject constructor(
         }
     }
 
-    suspend fun insert(card: HealthCard)  {
+    /*
+    * Insert or update existing health pass
+    * */
+    suspend fun insert(card: HealthCard) {
         try {
-            val cardToBeInserted = shcDecoder.getImmunizationStatus(card.uri)
+            val healthPassToBeInserted = shcDecoder.getImmunizationStatus(card.uri)
 
             val cards = dataSource.getCards().firstOrNull()
+
             if (cards.isNullOrEmpty()) {
                 dataSource.insert(card)
+                responseMutableSharedFlow.emit(Response.Success())
             } else {
 
-                val record = cards.filter { record ->
+                val existingHealthPass = cards.filter { record ->
                     val immunizationRecord = shcDecoder.getImmunizationStatus(record.uri)
                     (
-                            immunizationRecord.name == cardToBeInserted.name
-                                    && immunizationRecord.birthDate == cardToBeInserted.birthDate
-                            )
+                        immunizationRecord.name == healthPassToBeInserted.name &&
+                            immunizationRecord.birthDate == healthPassToBeInserted.birthDate
+                        )
                 }
 
-                if (record.isNullOrEmpty()) {
+                if (existingHealthPass.isNullOrEmpty()) {
                     dataSource.insert(card)
+                    responseMutableSharedFlow.emit(Response.Success())
                 } else {
-                    record.forEach { existingHealthCard ->
+                    existingHealthPass.forEach { existingHealthCard ->
 
-                        if(cardToBeInserted.status ==
-                            shcDecoder.getImmunizationStatus(existingHealthCard.uri).status){
-                            responseMutableLiveData
-                                .postValue(Response.
-                                Error("This card is already present!"))
+                        val existingHealthPassStatus = shcDecoder
+                            .getImmunizationStatus(existingHealthCard.uri).status
+
+                        if (healthPassToBeInserted.status == existingHealthPassStatus) {
+                            responseMutableSharedFlow
+                                .emit(
+                                    Response.Error(ErrorData.EXISTING_QR)
+                                )
                             return@forEach
                         }
 
-                        if (shcDecoder.getImmunizationStatus(existingHealthCard.uri).status
-                            == ImmunizationStatus.PARTIALLY_IMMUNIZED
-                        ) {
+                        if (existingHealthPassStatus == ImmunizationStatus.PARTIALLY_IMMUNIZED) {
                             existingHealthCard.uri = card.uri
                             dataSource.update(existingHealthCard)
-                            responseMutableLiveData.postValue(Response.Success())
+                            responseMutableSharedFlow.emit(Response.Success())
+                        } else if (existingHealthPassStatus == ImmunizationStatus.FULLY_IMMUNIZED) {
+                            responseMutableSharedFlow
+                                .emit(
+                                    Response.Error(
+                                        ErrorData.FULLY_VACCINATED_QR_EXISTS
+                                    )
+                                )
                         }
                     }
                 }
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            responseMutableSharedFlow
+                .emit(Response.Error(ErrorData.GENERIC_ERROR))
         }
     }
 
-    suspend fun updateHealthCard(card: HealthCard) = dataSource.update(card)
     suspend fun unLink(card: HealthCard) = dataSource.unLink(card)
+
     suspend fun rearrangeHealthCards(cards: List<HealthCard>) = dataSource.rearrange(cards)
 
-    private val vaxStatusResponseMutableLiveData = MutableLiveData<Response<VaxStatusResponse>>()
+    private suspend fun saveCard(uri: String) {
+        insert(HealthCard(uri = uri))
+    }
 
-    val vaxStatusResponseLiveData: Flow<Response<VaxStatusResponse>>
-        get() = vaxStatusResponseMutableLiveData.asFlow()
+    /*
+    * Used in uploading the QR from gallery
+    * */
+    suspend fun processUploadedImage(
+        uri: Uri,
+        context: Context
+    ) {
 
+        var image: InputImage? = null
+        try {
+            image = InputImage.fromFilePath(context, uri) // TODO: 24/09/21 yet to handle warning
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+            responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
+            return
+        }
+
+        processImage(image)
+    }
+
+    /*
+    * HGS vaccine status API provides Base64 encoded image data.
+    * Get the QR image from this data.
+    * */
+    suspend fun prepareQRImage(base64EncodedImage: String) {
+        val decodedByteArray: ByteArray =
+            Base64
+                .decode(base64EncodedImage, Base64.DEFAULT)
+        val decodedBitmap = BitmapFactory.decodeByteArray(
+            decodedByteArray,
+            0,
+            decodedByteArray.size
+        )
+
+        var image: InputImage? = null
+        image = InputImage
+            .fromBitmap(decodedBitmap, 0)
+
+        processImage(image)
+    }
+
+    /*
+    * Process QR image and get the shcUri
+    * */
+    private suspend fun processImage(
+        image: InputImage
+    ) {
+
+        val scanner = BarcodeScanning.getClient()
+
+        scanner.process(image)
+            .addOnSuccessListener { barcodes ->
+                barcodes.firstOrNull().let { barcode ->
+
+                    if (barcode == null) {
+                        runBlocking {
+                            responseMutableSharedFlow.emit(Response.Error(ErrorData.INVALID_QR))
+                        }
+                        return@let
+                    }
+
+                    if (barcode.format != Barcode.FORMAT_QR_CODE) {
+                        runBlocking {
+                            responseMutableSharedFlow.emit(Response.Error(ErrorData.INVALID_QR))
+                        }
+                        return@let
+                    }
+
+                    val rawValue = barcode.rawValue
+                    rawValue?.let {
+                        runBlocking {
+                            processShcUri(it)
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener {
+                runBlocking {
+                    responseMutableSharedFlow.emit(Response.Error(ErrorData.INVALID_QR))
+                }
+            }
+            .addOnCompleteListener {
+                println("Scan finished!")
+            }
+    }
+
+    /*
+    * Find the vaccination status and save the vaccine data for future use.
+    * */
+    private suspend fun processShcUri(
+        shcUri: String
+    ) {
+        try {
+            when (shcDecoder.getImmunizationStatus(shcUri).status) {
+                ImmunizationStatus.FULLY_IMMUNIZED,
+                ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
+                    saveCard(shcUri)
+                }
+
+                ImmunizationStatus.INVALID_QR_CODE -> {
+                    responseMutableSharedFlow.emit(Response.Error(ErrorData.INVALID_QR))
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            responseMutableSharedFlow.emit(Response.Error(ErrorData.INVALID_QR))
+        }
+    }
+
+    /*
+    * HGS connection to fetch vaccination status
+    * */
     suspend fun getVaccineStatus(phn: String, dob: String, dov: String) {
-        vaxStatusResponseMutableLiveData.postValue(Response.Loading())
+        responseMutableSharedFlow.emit(Response.Loading())
         val result = immunizationServices.getVaccineStatus(
             phn, dob, dov
         )
         if (validateResponse(result)) {
-            vaxStatusResponseMutableLiveData.postValue(Response.Success(result.body()))
+            val vaxStatusResponse = result.body()
+
+            vaxStatusResponse?.resourcePayload?.qrCode?.data
+                ?.let { base64EncodedImage ->
+                    try {
+                        prepareQRImage(base64EncodedImage)
+                    } catch (e: Exception) {
+                        responseMutableSharedFlow
+                            .emit(Response.Error(ErrorData.GENERIC_ERROR))
+                    }
+                }
         } else {
             result.body()?.resultError?.resultMessage?.let {
-                vaxStatusResponseMutableLiveData.postValue(Response.Error(it))
+                val errorData = ErrorData.NETWORK_ERROR
+                errorData.errorMessage = it
+                responseMutableSharedFlow.emit(Response.Error(errorData))
                 return
             }
-            vaxStatusResponseMutableLiveData
-                .postValue(Response.Error("Something went wrong!. Please retry."))
+            responseMutableSharedFlow
+                .emit(Response.Error(ErrorData.GENERIC_ERROR))
         }
     }
 
@@ -130,10 +289,4 @@ class CardRepository @Inject constructor(
 
         return true
     }
-
-
-    private val responseMutableLiveData = MutableLiveData<Response<String>>()
-    val responseLiveData: Flow<Response<String>>
-        get() = responseMutableLiveData.asFlow()
-
 }
