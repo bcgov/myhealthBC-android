@@ -10,9 +10,9 @@ object SelfDescribingEvent {
 
     private const val schema = "iglu:ca.bc.gov.gateway/action/jsonschema/1-0-0"
 
-    fun get(action: String, text: String): SelfDescribing {
+    fun get(action: String, text: String?): SelfDescribing {
 
-        val properties: MutableMap<String, String> = HashMap()
+        val properties: MutableMap<String, String?> = HashMap()
         properties["action"] = action
         properties["text"] = text
 
