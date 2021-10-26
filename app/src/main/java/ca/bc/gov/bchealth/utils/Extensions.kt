@@ -32,8 +32,8 @@ fun Context.toast(message: String) =
 * */
 fun Long.getDateTime(): String {
     return try {
-        val date1 = Date(this)
-        val format = SimpleDateFormat("MMMM-dd-y, HH:mm", Locale.ENGLISH)
+        val date1 = Date(this * 1000)
+        val format = SimpleDateFormat("MMMM-dd-y, HH:mm", Locale.CANADA)
         format.format(date1)
     } catch (e: java.lang.Exception) {
         e.printStackTrace()
@@ -47,7 +47,7 @@ fun Long.getDateTime(): String {
 fun Long.getNewsFeedDateTime(): String {
     return try {
         val date1 = Date(this)
-        val format = SimpleDateFormat("y-MM-d", Locale.ENGLISH)
+        val format = SimpleDateFormat("y-MM-d", Locale.CANADA)
         format.format(date1)
     } catch (e: java.lang.Exception) {
         e.printStackTrace()

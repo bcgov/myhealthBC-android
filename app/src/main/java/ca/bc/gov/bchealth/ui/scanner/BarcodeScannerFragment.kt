@@ -98,9 +98,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
     private fun initCamera() {
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        binding.overlay.post {
-            binding.overlay.setViewFinder()
-        }
+        binding.overlay.postDelayed({ binding.overlay.setViewFinder() }, 500)
     }
 
     override fun onDestroyView() {

@@ -6,8 +6,8 @@
     <string name="allow_vaxwallet">Allow My Health BC to use your camera to scan QR codes to store your card.</string>
     <string name="skip_for_now">Skip for now</string>
 
-    <string name="pass">Pass</string>
-    <string name="resource">Resource</string>
+    <string name="passes">Passes</string>
+    <string name="resources">Resources</string>
     <string name="settings">Settings</string>
     <string name="settings_message">BC Vaccine Card app is the official mobile application from the Government of British Columbia. It allows you to store and organize a proof of vaccination for you and your family members.</string>
 

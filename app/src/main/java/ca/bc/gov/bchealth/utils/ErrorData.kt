@@ -16,8 +16,8 @@ enum class ErrorData(var errorTitle: String?, var errorMessage: String?) {
     ),
 
     EXISTING_QR(
-        "Error!",
-        "This health pass is already present!"
+        "Duplicate!",
+        "This health pass is already added!"
     ),
 
     FULLY_VACCINATED_QR_EXISTS(

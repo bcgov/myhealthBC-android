@@ -48,7 +48,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
     private val binding by viewBindings(FragmentFetchVaccineCardBinding::bind)
 
-    private val simpleDateFormat = SimpleDateFormat("yyyy-dd-MM", Locale.ENGLISH)
+    private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CANADA)
 
     private val viewModel: FetchVaccineCardViewModel by viewModels()
 

@@ -157,7 +157,7 @@ class CardRepository @Inject constructor(
     * HGS vaccine status API provides Base64 encoded image data.
     * Get the QR image from this data.
     * */
-    suspend fun prepareQRImage(base64EncodedImage: String) {
+    private suspend fun prepareQRImage(base64EncodedImage: String) {
         val decodedByteArray: ByteArray =
             Base64
                 .decode(base64EncodedImage, Base64.DEFAULT)
