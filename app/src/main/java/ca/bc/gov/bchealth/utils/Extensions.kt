@@ -90,7 +90,7 @@ fun Context.redirect(url: String) {
         val customTabIntent: CustomTabsIntent = builder
             .setDefaultColorSchemeParams(customTabColorSchemeParams)
             .setCloseButtonIcon(
-                resources.getDrawable(R.drawable.ic_acion_back, null)
+                resources.getDrawable(R.drawable.ic_action_back, null)
                     .toBitmap()
             )
             .build()

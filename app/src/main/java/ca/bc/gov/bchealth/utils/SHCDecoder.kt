@@ -149,7 +149,8 @@ class SHCDecoder @Inject constructor(
                 ImmunizationStatus.PARTIALLY_IMMUNIZED
             }
             else -> {
-                ImmunizationStatus.INVALID_QR_CODE
+                // ImmunizationStatus.INVALID_QR_CODE
+                throw SHCDecoderException(INVALID_PAYLOAD_DATA_FORMAT, "Invalid QR Code")
             }
         }
 

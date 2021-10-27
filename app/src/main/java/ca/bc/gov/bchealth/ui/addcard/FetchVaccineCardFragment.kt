@@ -2,11 +2,8 @@ package ca.bc.gov.bchealth.ui.addcard
 
 import android.net.Uri
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.style.UnderlineSpan
 import android.view.View
 import android.widget.Toast
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -63,7 +60,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     private fun setToolBar() {
         binding.toolbar.apply {
             ivBack.visibility = View.VISIBLE
-            ivBack.setImageResource(R.drawable.ic_acion_back)
+            ivBack.setImageResource(R.drawable.ic_action_back)
             ivBack.setOnClickListener {
                 findNavController().popBackStack()
             }
@@ -96,13 +93,6 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         setUpDobUI()
 
         setUpDovUI()
-
-        val content = SpannableString(getString(R.string.privacy_statement_add_card))
-        content.setSpan(UnderlineSpan(), 0, content.length, 0)
-        binding.tvPrivacyStatement.text = content
-        binding.tvPrivacyStatement.setOnClickListener {
-            requireActivity().redirect(getString(R.string.url_privacy_policy))
-        }
 
         binding.btnCancel.setOnClickListener {
             findNavController().popBackStack()
@@ -178,6 +168,19 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             return false
         }
 
+        if (binding.edPhnNumber.editText?.text?.length != 10) {
+            binding.edPhnNumber.isErrorEnabled = true
+            binding.edPhnNumber.error = "PHN should be 10 characters"
+            binding.edPhnNumber.editText?.doOnTextChanged { text, start, before, count ->
+                if (text != null)
+                    if (text.isNotEmpty()) {
+                        binding.edPhnNumber.isErrorEnabled = false
+                        binding.edPhnNumber.error = null
+                    }
+            }
+            return false
+        }
+
         if (binding.edDob.editText?.text.isNullOrEmpty()) {
             binding.edDob.isErrorEnabled = true
             binding.edDob.error = "Date of Birth is required"
@@ -191,9 +194,39 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             return false
         }
 
+        if (!binding.edDob.editText?.text.toString()
+            .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
+        ) {
+            binding.edDob.isErrorEnabled = true
+            binding.edDob.error = "Please enter a valid date format"
+            binding.edDob.editText?.doOnTextChanged { text, start, before, count ->
+                if (text != null)
+                    if (text.isNotEmpty()) {
+                        binding.edDob.isErrorEnabled = false
+                        binding.edDob.error = null
+                    }
+            }
+            return false
+        }
+
         if (binding.edDov.editText?.text.isNullOrEmpty()) {
             binding.edDov.isErrorEnabled = true
             binding.edDov.error = "Date of Vaccination is required"
+            binding.edDov.editText?.doOnTextChanged { text, start, before, count ->
+                if (text != null)
+                    if (text.isNotEmpty()) {
+                        binding.edDov.isErrorEnabled = false
+                        binding.edDov.error = null
+                    }
+            }
+            return false
+        }
+
+        if (!binding.edDov.editText?.text.toString()
+            .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
+        ) {
+            binding.edDov.isErrorEnabled = true
+            binding.edDov.error = "Please enter a valid date format"
             binding.edDov.editText?.doOnTextChanged { text, start, before, count ->
                 if (text != null)
                     if (text.isNotEmpty()) {

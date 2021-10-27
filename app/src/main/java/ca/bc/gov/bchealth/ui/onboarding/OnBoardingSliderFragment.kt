@@ -33,10 +33,12 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
 
         binding.btnNextSlide.setOnClickListener {
             if (educationalScreenAdapter.itemCount == getCurrentItem() + 1) {
-                val navOptions = NavOptions.Builder()
-                    .setPopUpTo(R.id.onBoardingSliderFragment, true)
-                    .build()
-                findNavController().navigate(R.id.myCardsFragment, null, navOptions)
+                viewModel.setOnBoardingShown(true).invokeOnCompletion {
+                    val navOptions = NavOptions.Builder()
+                        .setPopUpTo(R.id.onBoardingSliderFragment, true)
+                        .build()
+                    findNavController().navigate(R.id.myCardsFragment, null, navOptions)
+                }
             } else {
                 binding.viewpagerOnBoardingSlides.currentItem = getCurrentItem() + 1
             }
@@ -53,8 +55,6 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
                     }
                 }
             })
-
-        viewModel.setOnBoardingShown(true)
     }
 
     private fun getCurrentItem(): Int {

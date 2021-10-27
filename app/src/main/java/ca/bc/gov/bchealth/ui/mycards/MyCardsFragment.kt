@@ -26,6 +26,7 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Collections
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -49,11 +50,20 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
     private lateinit var sceneManageCards: Scene
 
+    private lateinit var currentScene: CurrentScene
+
     private lateinit var cardsListAdapter: MyCardsAdapter
 
     private lateinit var manageCardsAdapter: MyCardsAdapter
 
-    private var isEnterSceneMyCardsList: Boolean = false
+    private lateinit var cardsTemp: MutableList<HealthCardDto>
+
+    private var newlyAddedCardPosition = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        cardsTemp = mutableListOf()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -92,8 +102,6 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 requireContext()
             )
 
-        val cardsTemp: MutableList<HealthCardDto> = mutableListOf()
-
         /*
         * Scenes are dependent on cards
         * */
@@ -102,6 +110,15 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 viewModel.cards.collect { cards ->
 
                     cards?.toMutableList()?.let { it ->
+
+                        if (cardsTemp.isEmpty()) {
+                            enterSingleCardScene(cards)
+                            cardsTemp.clear()
+                            cardsTemp.addAll(cards)
+                            binding.progressBar.visibility = View.GONE
+                            return@collect
+                        }
+
                         var newCards = cards.filter { it.id !in cardsTemp.map { item -> item.id } }
 
                         if (newCards.isEmpty()) {
@@ -118,11 +135,18 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                             cards.forEach {
                                 it.isExpanded = false
                             }
-                            if (cards.isNotEmpty())
+                            if (cards.isNotEmpty()) {
                                 cards[0].isExpanded = true
+                            } else {
+                                currentScene = CurrentScene.AddCardScene
+                            }
                         } else {
                             cards.forEach {
-                                it.isExpanded = it.id == newCards[0].id
+                                if (it.id == newCards[0].id) {
+                                    it.isExpanded = true
+                                    newlyAddedCardPosition = cards.indexOf(it)
+                                }
+                                currentScene = CurrentScene.CardsListScene
                             }
                         }
                     }
@@ -137,12 +161,11 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                         if (cards.isEmpty()) {
                             enterAddCardScene()
                         } else {
-                            // Show single card scene only after fresh app launch.
-                            if (isEnterSceneMyCardsList) {
-                                enterCardsListScene(cards)
-                            } else {
-                                enterSingleCardScene(cards)
-                                isEnterSceneMyCardsList = true
+                            when (currentScene) {
+                                CurrentScene.AddCardScene -> enterAddCardScene()
+                                CurrentScene.SingleCardScene -> enterSingleCardScene(cards)
+                                CurrentScene.CardsListScene -> enterCardsListScene(cards)
+                                CurrentScene.ManageCardsScene -> enterManageCardsScene(cards)
                             }
                         }
                     }
@@ -157,6 +180,8 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
     private fun enterAddCardScene() {
 
         sceneAddCard.enter()
+
+        currentScene = CurrentScene.AddCardScene
 
         // Toolbar setup
         val toolBar = sceneAddCard.sceneRoot.findViewById<ViewGroup>(R.id.toolbar)
@@ -187,6 +212,8 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
             cards[0].isExpanded = true
 
         sceneSingleCard.enter()
+
+        currentScene = CurrentScene.SingleCardScene
 
         // Toolbar setup
         val toolBar = sceneSingleCard.sceneRoot.findViewById<ViewGroup>(R.id.toolbar)
@@ -239,6 +266,8 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
         sceneMyCardsList.enter()
 
+        currentScene = CurrentScene.CardsListScene
+
         // Toolbar setup
         val toolBar = sceneMyCardsList.sceneRoot.findViewById<ViewGroup>(R.id.toolbar)
         val backButton = toolBar.findViewById<ImageView>(R.id.iv_back)
@@ -272,6 +301,17 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
         cardsListAdapter.notifyItemRangeChanged(0, cardsListAdapter.itemCount)
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                delay(500)
+                (recyclerViewCardsList.layoutManager as LinearLayoutManager)
+                    .smoothScrollToPosition(
+                        recyclerViewCardsList,
+                        RecyclerView.State(), newlyAddedCardPosition
+                    )
+            }
+        }
+
         // Other UI setup
         val btnManageCards = sceneMyCardsList.sceneRoot.findViewById<Button>(R.id.btn_manage_cards)
         btnManageCards.text = getString(R.string.manage_cards)
@@ -286,6 +326,8 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
     private fun enterManageCardsScene(cards: List<HealthCardDto>) {
 
         sceneManageCards.enter()
+
+        currentScene = CurrentScene.ManageCardsScene
 
         // Toolbar setup
         val toolBar = sceneManageCards.sceneRoot.findViewById<ViewGroup>(R.id.toolbar)
@@ -401,5 +443,12 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 }
             }
         }
+    }
+
+    enum class CurrentScene {
+        AddCardScene,
+        SingleCardScene,
+        CardsListScene,
+        ManageCardsScene
     }
 }
