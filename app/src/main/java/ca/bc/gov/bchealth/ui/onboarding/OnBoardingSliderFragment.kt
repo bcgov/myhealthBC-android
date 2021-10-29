@@ -32,7 +32,7 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
         ) { _, _ -> }.attach()
 
         binding.btnNextSlide.setOnClickListener {
-            if (educationalScreenAdapter.itemCount == getCurrentItem() + 1) {
+            if (educationalScreenAdapter.itemCount == (getCurrentItem() + 1)) {
                 viewModel.setOnBoardingShown(true).invokeOnCompletion {
                     val navOptions = NavOptions.Builder()
                         .setPopUpTo(R.id.onBoardingSliderFragment, true)
@@ -44,17 +44,17 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
             }
         }
 
-        binding.viewpagerOnBoardingSlides
-            .registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    if (position == educationalScreenAdapter.itemCount - 1) {
-                        binding.btnNextSlide.text = getString(R.string.get_started)
-                    } else {
-                        binding.btnNextSlide.text = getString(R.string.next)
-                    }
+        binding.viewpagerOnBoardingSlides.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                if (position == educationalScreenAdapter.itemCount - 1) {
+                    binding.btnNextSlide.text = getString(R.string.get_started)
+                } else {
+                    binding.btnNextSlide.text = getString(R.string.next)
                 }
-            })
+            }
+        })
     }
 
     private fun getCurrentItem(): Int {
