@@ -7,7 +7,7 @@ enum class ErrorData(var errorTitle: String?, var errorMessage: String?) {
 
     GENERIC_ERROR(
         "Error!",
-        "Something went wrong!. Please retry."
+        "Something went wrong. Please retry."
     ),
 
     INVALID_QR(
@@ -17,16 +17,16 @@ enum class ErrorData(var errorTitle: String?, var errorMessage: String?) {
 
     EXISTING_QR(
         "Duplicate!",
-        "This health pass is already added!"
+        "This health pass is already added."
     ),
 
     FULLY_VACCINATED_QR_EXISTS(
-        "Error!",
-        "Fully vaccinated health pass is already added!"
+        "Duplicate!",
+        "Fully vaccinated health pass is already added."
     ),
 
     NETWORK_ERROR(
         "Error!",
-        "Something went wrong!. Please retry."
+        "Something went wrong. Please retry."
     ),
 }

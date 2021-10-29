@@ -64,7 +64,7 @@
             android:focusable="true"
             android:padding="@dimen/space_2_x"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_full_name"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ic_reorder"
             app:layout_constraintTop_toTopOf="@+id/txt_full_name"
             app:srcCompat="@drawable/ic_un_link"

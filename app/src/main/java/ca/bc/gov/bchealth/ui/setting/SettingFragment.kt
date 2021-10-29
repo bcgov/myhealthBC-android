@@ -23,7 +23,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
 
         binding.toolbar.apply {
             ivBack.visibility = View.VISIBLE
-            ivBack.setImageResource(R.drawable.ic_acion_back)
+            ivBack.setImageResource(R.drawable.ic_action_back)
             tvTitle.visibility = View.VISIBLE
             tvTitle.text = getString(R.string.settings)
             ivBack.setOnClickListener {

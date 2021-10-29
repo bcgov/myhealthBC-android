@@ -121,6 +121,10 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
             bindBarcodeScannerUseCase()
 
             enableFlashControl()
+
+            binding.ivClose.setOnClickListener {
+                findNavController().popBackStack()
+            }
         }, ContextCompat.getMainExecutor(requireContext()))
         }
 

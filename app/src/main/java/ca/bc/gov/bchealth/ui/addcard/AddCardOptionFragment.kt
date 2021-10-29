@@ -77,7 +77,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
 
         binding.toolbar.apply {
             ivBack.visibility = View.VISIBLE
-            ivBack.setImageResource(R.drawable.ic_acion_back)
+            ivBack.setImageResource(R.drawable.ic_action_back)
             tvTitle.visibility = View.VISIBLE
             tvTitle.text = getString(R.string.add_a_bc_vaccine_card)
             ivBack.setOnClickListener {

@@ -11,7 +11,9 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.graphics.drawable.toBitmap
 import ca.bc.gov.bchealth.R
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
+import java.util.GregorianCalendar
 import java.util.Locale
 
 /**
@@ -90,7 +92,7 @@ fun Context.redirect(url: String) {
         val customTabIntent: CustomTabsIntent = builder
             .setDefaultColorSchemeParams(customTabColorSchemeParams)
             .setCloseButtonIcon(
-                resources.getDrawable(R.drawable.ic_acion_back, null)
+                resources.getDrawable(R.drawable.ic_action_back, null)
                     .toBitmap()
             )
             .build()
@@ -113,4 +115,32 @@ private fun showURLFallBack(context: Context, url: String) {
     } catch (e: Exception) {
         context.toast(context.getString(R.string.no_app_found))
     }
+}
+
+/*
+* Adjust offset to get the correct date from Date Picker in all the timezones
+* */
+fun Long.adjustOffset(): Date {
+
+    var adjustedEpoch = this
+
+    /*
+    * Get the Date object out of epoch time.
+    * Date object will be attached with timezone offset depending on devices timezone
+    * */
+    val date = Date(this)
+
+    // Calender instance
+    val calendar = Calendar.getInstance()
+    calendar.time = date
+
+    val offsetInMilliSeconds =
+        (((calendar as GregorianCalendar).toZonedDateTime().offset).totalSeconds * 1000)
+
+    adjustedEpoch = if (offsetInMilliSeconds < 0)
+        adjustedEpoch.plus(offsetInMilliSeconds * -1)
+    else // adding +1 to get correct date from formatter
+        adjustedEpoch.minus(offsetInMilliSeconds) + 1
+
+    return Date(adjustedEpoch)
 }
