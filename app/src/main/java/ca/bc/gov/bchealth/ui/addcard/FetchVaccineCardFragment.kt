@@ -17,6 +17,7 @@ import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineCardBinding
 import ca.bc.gov.bchealth.di.ApiClientModule
 import ca.bc.gov.bchealth.http.MustBeQueued
 import ca.bc.gov.bchealth.utils.Response
+import ca.bc.gov.bchealth.utils.adjustOffset
 import ca.bc.gov.bchealth.utils.isOnline
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -29,17 +30,16 @@ import com.queue_it.androidsdk.QueueListener
 import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.Date
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) {
@@ -196,7 +196,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         }
 
         if (!binding.edDob.editText?.text.toString()
-                .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
+            .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
         ) {
             binding.edDob.isErrorEnabled = true
             binding.edDob.error = "Please enter a valid date format"
@@ -224,7 +224,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         }
 
         if (!binding.edDov.editText?.text.toString()
-                .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
+            .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
         ) {
             binding.edDov.isErrorEnabled = true
             binding.edDov.error = "Please enter a valid date format"
@@ -262,8 +262,8 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             dateOfBirthPicker.show(parentFragmentManager, "DATE_OF_BIRTH")
         }
         dateOfBirthPicker.addOnPositiveButtonClickListener {
-            val date = Date(it)
-            binding.edDob.editText?.setText(simpleDateFormat.format(date))
+            binding.edDob.editText
+                ?.setText(simpleDateFormat.format(it.adjustOffset()))
         }
     }
 
@@ -280,8 +280,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             dateOfVaccinationPicker.show(parentFragmentManager, "DATE_OF_VACCINATION")
         }
         dateOfVaccinationPicker.addOnPositiveButtonClickListener {
-            val date = Date(it)
-            binding.edDov.editText?.setText(simpleDateFormat.format(date))
+            binding.edDov.editText?.setText(simpleDateFormat.format(it.adjustOffset()))
         }
     }
 
