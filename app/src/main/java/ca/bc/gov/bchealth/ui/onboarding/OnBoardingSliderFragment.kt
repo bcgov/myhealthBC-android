@@ -24,12 +24,25 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
         super.onViewCreated(view, savedInstanceState)
 
         val educationalScreenAdapter = EducationalScreenAdapter(this)
+
         binding.viewpagerOnBoardingSlides.adapter = educationalScreenAdapter
 
         TabLayoutMediator(
             binding.tabOnBoardingSlides,
             binding.viewpagerOnBoardingSlides
         ) { _, _ -> }.attach()
+
+        binding.viewpagerOnBoardingSlides.registerOnPageChangeCallback(object :
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    if (position == educationalScreenAdapter.itemCount - 1) {
+                        binding.btnNextSlide.text = getString(R.string.get_started)
+                    } else {
+                        binding.btnNextSlide.text = getString(R.string.next)
+                    }
+                }
+            })
 
         binding.btnNextSlide.setOnClickListener {
             if (educationalScreenAdapter.itemCount == (getCurrentItem() + 1)) {
@@ -40,21 +53,9 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
                     findNavController().navigate(R.id.myCardsFragment, null, navOptions)
                 }
             } else {
-                binding.viewpagerOnBoardingSlides.currentItem = getCurrentItem() + 1
+                binding.viewpagerOnBoardingSlides.currentItem = (getCurrentItem() + 1)
             }
         }
-
-        binding.viewpagerOnBoardingSlides.registerOnPageChangeCallback(object :
-            ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                if (position == educationalScreenAdapter.itemCount - 1) {
-                    binding.btnNextSlide.text = getString(R.string.get_started)
-                } else {
-                    binding.btnNextSlide.text = getString(R.string.next)
-                }
-            }
-        })
     }
 
     private fun getCurrentItem(): Int {
