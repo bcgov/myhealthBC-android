@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -28,17 +29,16 @@ import com.queue_it.androidsdk.QueueListener
 import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.UnsupportedEncodingException
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
+import java.text.SimpleDateFormat
+import java.util.*
 
 @AndroidEntryPoint
 class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) {
@@ -195,7 +195,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         }
 
         if (!binding.edDob.editText?.text.toString()
-            .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
+                .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
         ) {
             binding.edDob.isErrorEnabled = true
             binding.edDob.error = "Please enter a valid date format"
@@ -223,7 +223,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         }
 
         if (!binding.edDov.editText?.text.toString()
-            .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
+                .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
         ) {
             binding.edDov.isErrorEnabled = true
             binding.edDov.error = "Please enter a valid date format"

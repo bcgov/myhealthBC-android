@@ -56,4 +56,10 @@ class MyCardsViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null
     )
+
+    val getOnBoardingFragmentCounter = dataStoreRepo.getOnBoardingFragmentCounter.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
 }

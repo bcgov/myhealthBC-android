@@ -99,5 +99,7 @@
     <string name="no_internet">No internet!</string>
     <string name="check_connection">Please check network connection.</string>
     <string name="privacy_statement_info">Your information is being collected to provide you with your COVID-19 vaccination status under s. 26(c) of the Freedom of Information and Protection of Privacy Act. Contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849 if you have any questions about this collection.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
