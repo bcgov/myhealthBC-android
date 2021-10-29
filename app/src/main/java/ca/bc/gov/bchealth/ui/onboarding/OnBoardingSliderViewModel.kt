@@ -18,8 +18,4 @@ class OnBoardingSliderViewModel @Inject constructor(
     fun setOnBoardingShown(shown: Boolean) = viewModelScope.launch {
         dataStoreRepo.setOnBoardingShown(shown)
     }
-
-    fun setOnBoardingFragmentCounter(counter: Int) = viewModelScope.launch {
-        dataStoreRepo.setOnBoardingFragmentCounter(counter = counter)
-    }
 }

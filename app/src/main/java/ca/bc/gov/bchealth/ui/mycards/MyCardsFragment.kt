@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -21,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentMyCardsBinding
 import ca.bc.gov.bchealth.model.HealthCardDto
-import ca.bc.gov.bchealth.ui.onboarding.OnBoardingSliderFragment.Companion.NUMBER_OF_ON_BOARDING_SCREENS
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
@@ -30,7 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Collections
 
 /**
  * [MyCardsFragment]
@@ -448,25 +446,6 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 }
             }
         }
-
-        /*viewModel.getOnBoardingFragmentCounter.collect {
-            if (it != null) {
-                if (it == NUMBER_OF_ON_BOARDING_SCREENS) {
-                    healthPassesFlow()
-                } else {
-
-                    val startDestination = findNavController().graph.startDestination
-                    val navOptions = NavOptions.Builder()
-                        .setPopUpTo(startDestination, true)
-                        .build()
-                    findNavController().navigate(
-                        R.id.onBoardingSliderFragment,
-                        bundleOf(Pair("ON_BOARDING_COUNTER", it)),
-                        navOptions
-                    )
-                }
-            }
-        }*/
     }
 
     enum class CurrentScene {
