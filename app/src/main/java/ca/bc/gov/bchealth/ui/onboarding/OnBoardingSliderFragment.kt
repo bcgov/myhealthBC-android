@@ -45,16 +45,16 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
         }
 
         binding.viewpagerOnBoardingSlides.registerOnPageChangeCallback(object :
-            ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                if (position == educationalScreenAdapter.itemCount - 1) {
-                    binding.btnNextSlide.text = getString(R.string.get_started)
-                } else {
-                    binding.btnNextSlide.text = getString(R.string.next)
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    if (position == educationalScreenAdapter.itemCount - 1) {
+                        binding.btnNextSlide.text = getString(R.string.get_started)
+                    } else {
+                        binding.btnNextSlide.text = getString(R.string.next)
+                    }
                 }
-            }
-        })
+            })
     }
 
     private fun getCurrentItem(): Int {
