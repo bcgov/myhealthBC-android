@@ -44,8 +44,8 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
             }
         }
 
-        binding.viewpagerOnBoardingSlides.registerOnPageChangeCallback(object :
-                ViewPager2.OnPageChangeCallback() {
+        binding.viewpagerOnBoardingSlides
+            .registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     if (position == educationalScreenAdapter.itemCount - 1) {
