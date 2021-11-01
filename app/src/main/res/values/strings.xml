@@ -17,7 +17,7 @@
     <string name="add_card_options_message">Scan, upload or get access to your proof of vaccination.</string>
     <string name="scan_qr_code">Scan a QR code</string>
     <string name="use_image_of_qr">Upload a QR code</string>
-    <string name="enter_info_to_get_card">Get a QR code</string>
+    <string name="enter_information">Enter information</string>
 
     <string name="privacy_statement">Privacy Statement</string>
     <string name="help">Help</string>
@@ -71,14 +71,15 @@
     <string name="news_feed">News Feed</string>
     <string name="onboarding_message_3">Stay updated on COVID-19 news</string>
 
-    <string name="health_passes_message">You need proof of vaccination to access many businesses, events and services. Add your BC Vaccine Cards here for easy access.</string>
+    <string name="health_passes_message">Use Health Passes as an easy way to access and show your proof of vaccination.</string>
+    <string name="health_passes_message_1">Save a <b>BC Vaccine Card</b> and <b>Federal COVID-19 Travel Proof</b> here.</string>
     <string name="resource_screen_message">Find useful information and learn how to get vaccinated or tested for COVID-19</string>
     <string name="label_resource_1">Get vaccinated for COVID-19</string>
     <string name="label_resource_2">Get tested for COVID-19</string>
     <string name="label_resource_3">COVID-19 symptom checker</string>
     <string name="label_resource_4">K-12 Daily Check</string>
     <string name="coming_soon">Coming soon!</string>
-    <string name="title_add_card">Please select one of the following options to add a BC Vaccine Card</string>
+    <string name="title_add_card">Please select one of the following options to add a Health Pass</string>
     <string name="back">Back</string>
     <string name="bc_vaccine_cards">BC Vaccine Cards</string>
     <string name="submit">Submit</string>
@@ -93,7 +94,7 @@
     <string name="privacy_statement_add_card">Privacy statement</string>
     <string name="error">Error!</string>
     <string name="error_message">Something went wrong. Please retry.</string>
-    <string name="add_a_bc_vaccine_card">Add a BC Vaccine Card</string>
+    <string name="add_a_health_pass">Add a Health Pass</string>
     <string name="view_all">View All</string>
     <string name="health_resources">Health Resources</string>
     <string name="no_internet">No internet!</string>
