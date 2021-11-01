@@ -46,7 +46,7 @@ class ExpandQRFragment : DialogFragment(R.layout.fragment_expand_q_r) {
     }
 
     private fun getBarcode(data: String): Bitmap {
-        val qrcode = QRGEncoder(data, null, QRGContents.Type.TEXT, 1200)
+        val qrcode = QRGEncoder(data.removePrefix("shc:/"), null, QRGContents.Type.TEXT, 1200)
         return qrcode.encodeAsBitmap()
     }
 }
