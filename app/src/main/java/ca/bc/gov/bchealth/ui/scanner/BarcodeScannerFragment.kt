@@ -83,7 +83,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                         }
                         is Response.Error -> {
                             showError(
-                                getString(R.string.error),
+                                it.errorData?.errorTitle.toString(),
                                 it.errorData?.errorMessage.toString()
                             )
                         }

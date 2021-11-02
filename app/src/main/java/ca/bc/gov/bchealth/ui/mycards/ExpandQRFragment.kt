@@ -1,18 +1,18 @@
 package ca.bc.gov.bchealth.ui.mycards
 
 import android.app.Dialog
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidmads.library.qrgenearator.QRGContents
-import androidmads.library.qrgenearator.QRGEncoder
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentExpandQRBinding
+import ca.bc.gov.bchealth.utils.getBarcode
 import ca.bc.gov.bchealth.utils.viewBindings
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 
 /**
  * [ExpandQRFragment]
@@ -38,15 +38,19 @@ class ExpandQRFragment : DialogFragment(R.layout.fragment_expand_q_r) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.imgQrCode.setImageBitmap(getBarcode(args.qrData))
+        runBlocking {
+            try {
+                val bitmap = async {
+                    args.qrData.getBarcode()
+                }
+                binding.imgQrCode.setImageBitmap(bitmap.await())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
 
         binding.btnClose.setOnClickListener {
             findNavController().popBackStack()
         }
-    }
-
-    private fun getBarcode(data: String): Bitmap {
-        val qrcode = QRGEncoder(data.removePrefix("shc:/"), null, QRGContents.Type.TEXT, 1200)
-        return qrcode.encodeAsBitmap()
     }
 }
