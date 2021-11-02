@@ -72,14 +72,14 @@
     <string name="onboarding_message_3">Stay updated on COVID-19 news</string>
 
     <string name="health_passes_message">Use Health Passes as an easy way to access and show your proof of vaccination.</string>
-    <string name="health_passes_message_1">Save a <b>BC Vaccine Card</b> and <b>Federal COVID-19 Travel Proof</b> here.</string>
+    <string name="health_passes_message_1">Save a <b><font face='@font/bc_sans_bold'>BC Vaccine Card</font></b> and <b><font face='@font/bc_sans_bold'>Federal Proof of Vaccination</font></b> here.</string>
     <string name="resource_screen_message">Find useful information and learn how to get vaccinated or tested for COVID-19</string>
     <string name="label_resource_1">Get vaccinated for COVID-19</string>
     <string name="label_resource_2">Get tested for COVID-19</string>
     <string name="label_resource_3">COVID-19 symptom checker</string>
     <string name="label_resource_4">K-12 Daily Check</string>
     <string name="coming_soon">Coming soon!</string>
-    <string name="title_add_card">Please select one of the following options to add a Health Pass</string>
+    <string name="title_add_card">Please select one of the following options to add an <b><font face='@font/bc_sans_bold'>official Health Pass</font></b> containing a QR code</string>
     <string name="back">Back</string>
     <string name="bc_vaccine_cards">BC Vaccine Cards</string>
     <string name="submit">Submit</string>

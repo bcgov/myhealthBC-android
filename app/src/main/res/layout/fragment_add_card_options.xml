@@ -31,7 +31,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_add_card"
-        app:layout_constraintBottom_toTopOf="@+id/btn_enter_info"
+        app:layout_constraintBottom_toTopOf="@+id/btn_image_picker"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,14 +46,14 @@
         android:layout_marginBottom="16dp"
         android:text="@string/scan_qr_code"
         app:icon="@drawable/ic_camera"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_enter_info"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_image_picker"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button.OutlinedButton.Icon"
+        style="@style/BC_VAX.Widget.MaterialComponents.Button2"
         android:layout_width="0dp"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
@@ -67,14 +67,14 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_enter_info"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button2"
+        style="@style/BC_VAX.Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="0dp"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
         android:layout_marginBottom="16dp"
         android:text="@string/enter_information"
         app:icon="@drawable/ic_address_card"
-        app:layout_constraintBottom_toTopOf="@+id/btn_image_picker"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />

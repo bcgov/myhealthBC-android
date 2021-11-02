@@ -545,7 +545,29 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
             if (shown != null) {
                 when (shown) {
                     true -> {
-                        healthPassesFlow()
+
+                        viewModel.setHealthRecordIntroShown.collect { shown ->
+                            if (shown != null) {
+                                when (shown) {
+                                    true -> {
+                                        healthPassesFlow()
+                                    }
+
+                                    false -> {
+                                        val startDestination = findNavController().graph.startDestination
+                                        val navOptions = NavOptions.Builder()
+                                            .setPopUpTo(startDestination, true)
+                                            .build()
+                                        findNavController().navigate(
+                                            R.id.onBoardingSliderFragment,
+                                            null,
+                                            navOptions
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
                     }
 
                     false -> {
@@ -562,6 +584,8 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 }
             }
         }
+
+
     }
 
     enum class CurrentScene {
