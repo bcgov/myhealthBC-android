@@ -1,17 +1,17 @@
 package ca.bc.gov.bchealth.ui.mycards
 
-import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidmads.library.qrgenearator.QRGContents
-import androidmads.library.qrgenearator.QRGEncoder
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemMycardsCardsListBinding
 import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.model.ImmunizationStatus
+import ca.bc.gov.bchealth.utils.getBarcode
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 
 /**
  * [MyCardsAdapter]
@@ -53,10 +53,16 @@ class MyCardsAdapter(
         } else {
             if (card.isExpanded) {
                 holder.binding.layoutQrCode.visibility = View.VISIBLE
-                try {
-                    holder.binding.imgQrCode.setImageBitmap(getBarcode(card.uri))
-                } catch (e: Exception) {
-                    e.printStackTrace()
+
+                runBlocking {
+                    try {
+                        val bitmap = async {
+                            card.uri.getBarcode()
+                        }
+                        holder.binding.imgQrCode.setImageBitmap(bitmap.await())
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             } else {
                 holder.binding.layoutQrCode.visibility = View.GONE
@@ -131,10 +137,5 @@ class MyCardsAdapter(
         holder.binding.layoutVaccineStatus.setBackgroundColor(color)
 
         holder.binding.layoutQrCode.setBackgroundColor(color)
-    }
-
-    private fun getBarcode(data: String): Bitmap {
-        val qrcode = QRGEncoder(data, null, QRGContents.Type.TEXT, 1200)
-        return qrcode.encodeAsBitmap()
     }
 }

@@ -70,7 +70,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             }
         }
 
-        binding.btnGetCard.setOnClickListener {
+        binding.btnEnterInfo.setOnClickListener {
             findNavController()
                 .navigate(R.id.action_addCardOptionFragment_to_fetchVaccineCardFragment)
         }
@@ -79,7 +79,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             ivBack.visibility = View.VISIBLE
             ivBack.setImageResource(R.drawable.ic_action_back)
             tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.add_a_bc_vaccine_card)
+            tvTitle.text = getString(R.string.add_a_health_pass)
             ivBack.setOnClickListener {
                 findNavController().popBackStack()
             }

@@ -8,16 +8,12 @@ import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 /*
-* Created by amit_metri on 13,October,2021
+* Created by amit_metri on 02,November,2021
 */
 @HiltViewModel
-class OnBoardingSliderViewModel @Inject constructor(
+class NewFeatureViewModel @Inject constructor(
     private val dataStoreRepo: DataStoreRepo
 ) : ViewModel() {
-
-    fun setOnBoardingShown(shown: Boolean) = viewModelScope.launch {
-        dataStoreRepo.setOnBoardingShown(shown)
-    }
 
     fun setNewFeatureShown(shown: Boolean) = viewModelScope.launch {
         dataStoreRepo.setNewFeatureShown(shown)

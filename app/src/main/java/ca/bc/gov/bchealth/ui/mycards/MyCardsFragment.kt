@@ -1,5 +1,9 @@
 package ca.bc.gov.bchealth.ui.mycards
 
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
 import android.os.Bundle
 import android.transition.Scene
 import android.view.View
@@ -7,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -23,6 +28,7 @@ import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Collections
@@ -260,6 +266,116 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                         R.id.action_myCardsFragment_to_addCardOptionFragment
                     )
             }
+
+        /*
+        * card swipe out functionality
+        * */
+        val callback = SwipeToDeleteCallBack(cards)
+        val itemTouchHelper = ItemTouchHelper(callback)
+        itemTouchHelper.attachToRecyclerView(recyclerViewCardsList)
+    }
+
+    inner class SwipeToDeleteCallBack(cards: List<HealthCardDto>) :
+        ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+
+        private val cardsTemp = cards.toMutableList()
+
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            return false
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+            var hardDelete = true
+            val deletePass: HealthCardDto = cardsTemp[viewHolder.adapterPosition]
+            val position = viewHolder.adapterPosition
+
+            cardsListAdapter.cards.removeAt(position)
+            cardsListAdapter.notifyItemRemoved(position)
+
+            val snackBar = Snackbar.make(
+                binding.constraintLayoutMyCards,
+                getString(R.string.bc_vaccine_card_unlinked), Snackbar.LENGTH_LONG
+            )
+                .setAction(
+                    getString(R.string.undo)
+                ) {
+                    hardDelete = false
+                    cardsListAdapter.cards.add(position, deletePass)
+                    cardsListAdapter.notifyItemInserted(position)
+                }
+            snackBar.addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    if (hardDelete)
+                        viewModel.unLink(deletePass.id, deletePass.uri)
+                }
+            })
+            snackBar.show()
+        }
+
+        private val clearPaint = Paint().apply {
+            xfermode =
+                PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        }
+
+        override fun onChildDraw(
+            c: Canvas,
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            dX: Float,
+            dY: Float,
+            actionState: Int,
+            isCurrentlyActive: Boolean
+        ) {
+            val deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_un_link)
+            val intrinsicWidth = deleteIcon?.intrinsicWidth
+            val intrinsicHeight = deleteIcon?.intrinsicHeight
+            val itemView = viewHolder.itemView
+            val itemHeight = itemView.bottom - itemView.top
+            val isCanceled = dX == 0f && !isCurrentlyActive
+
+            if (isCanceled) {
+                clearCanvas(
+                    c,
+                    itemView.right + dX,
+                    itemView.top.toFloat(),
+                    itemView.right.toFloat(),
+                    itemView.bottom.toFloat()
+                )
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
+                return
+            }
+
+            // Calculate position of delete icon
+            val deleteIconTop = itemView.top + (itemHeight - intrinsicHeight!!) / 2
+            val deleteIconMargin = (itemHeight - intrinsicHeight) / 8
+            val deleteIconLeft = itemView.right - deleteIconMargin - intrinsicWidth!!
+            val deleteIconRight = itemView.right - deleteIconMargin
+            val deleteIconBottom = deleteIconTop + intrinsicHeight
+
+            // Draw the delete icon
+            deleteIcon.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom)
+            deleteIcon.draw(c)
+
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+        }
+
+        private fun clearCanvas(c: Canvas?, left: Float, top: Float, right: Float, bottom: Float) {
+            c?.drawRect(left, top, right, bottom, clearPaint)
+        }
     }
 
     /*
@@ -307,11 +423,12 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 delay(500)
-                (recyclerViewCardsList.layoutManager as LinearLayoutManager)
-                    .smoothScrollToPosition(
-                        recyclerViewCardsList,
-                        RecyclerView.State(), newlyAddedCardPosition
-                    )
+                if (newlyAddedCardPosition > 0)
+                    (recyclerViewCardsList.layoutManager as LinearLayoutManager)
+                        .smoothScrollToPosition(
+                            recyclerViewCardsList,
+                            RecyclerView.State(), newlyAddedCardPosition
+                        )
             }
         }
 
@@ -429,7 +546,33 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
             if (shown != null) {
                 when (shown) {
                     true -> {
-                        healthPassesFlow()
+
+                        viewModel.isNewfeatureShown.collect { shown ->
+                            if (shown != null) {
+                                when (shown) {
+                                    true -> {
+                                        healthPassesFlow()
+                                    }
+
+                                    false -> {
+                                        // TODO: 03/11/21 enable below flow when we plan to show new feature to existing users.
+                                        // Also no need to disable once enabled.
+
+                                        /*val startDestination =
+                                            findNavController().graph.startDestination
+                                        val navOptions = NavOptions.Builder()
+                                            .setPopUpTo(startDestination, true)
+                                            .build()
+                                        findNavController().navigate(
+                                            R.id.newFeatureFragment,
+                                            null,
+                                            navOptions
+                                        )*/
+                                        healthPassesFlow()
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     false -> {
