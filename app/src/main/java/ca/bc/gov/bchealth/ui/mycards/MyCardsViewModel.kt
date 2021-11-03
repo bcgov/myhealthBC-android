@@ -57,7 +57,7 @@ class MyCardsViewModel @Inject constructor(
         initialValue = null
     )
 
-    val setHealthRecordIntroShown = dataStoreRepo.isHealthRecordIntroShown.stateIn(
+    val isNewfeatureShown = dataStoreRepo.isNewFeatureShown.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null

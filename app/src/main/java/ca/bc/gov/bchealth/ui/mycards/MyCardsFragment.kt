@@ -423,11 +423,12 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 delay(500)
-                (recyclerViewCardsList.layoutManager as LinearLayoutManager)
-                    .smoothScrollToPosition(
-                        recyclerViewCardsList,
-                        RecyclerView.State(), newlyAddedCardPosition
-                    )
+                if (newlyAddedCardPosition > 0)
+                    (recyclerViewCardsList.layoutManager as LinearLayoutManager)
+                        .smoothScrollToPosition(
+                            recyclerViewCardsList,
+                            RecyclerView.State(), newlyAddedCardPosition
+                        )
             }
         }
 
@@ -546,7 +547,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 when (shown) {
                     true -> {
 
-                        viewModel.setHealthRecordIntroShown.collect { shown ->
+                        viewModel.isNewfeatureShown.collect { shown ->
                             if (shown != null) {
                                 when (shown) {
                                     true -> {
@@ -554,20 +555,24 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                                     }
 
                                     false -> {
-                                        val startDestination = findNavController().graph.startDestination
+                                        // TODO: 03/11/21 enable below flow when we plan to show new feature to existing users.
+                                        // Also no need to disable once enabled.
+
+                                        /*val startDestination =
+                                            findNavController().graph.startDestination
                                         val navOptions = NavOptions.Builder()
                                             .setPopUpTo(startDestination, true)
                                             .build()
                                         findNavController().navigate(
-                                            R.id.onBoardingSliderFragment,
+                                            R.id.newFeatureFragment,
                                             null,
                                             navOptions
-                                        )
+                                        )*/
+                                        healthPassesFlow()
                                     }
                                 }
                             }
                         }
-
                     }
 
                     false -> {
@@ -584,8 +589,6 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 }
             }
         }
-
-
     }
 
     enum class CurrentScene {

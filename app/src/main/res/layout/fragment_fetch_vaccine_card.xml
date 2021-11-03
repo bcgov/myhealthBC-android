@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_4_x"
+                android:layout_marginTop="@dimen/space_2_x"
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:hint="@string/personal_health_number"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +49,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_health_pass_message">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/ed_phn"
+                    style="@style/Widget.MaterialComponents.AutoCompleteTextView.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number" />
@@ -125,6 +127,7 @@
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:autoLink="email|phone"
                 android:linksClickable="true"
+                android:textSize="14sp"
                 android:text="@string/privacy_statement_info"
                 android:textAlignment="textStart"
                 android:textColorLink="@color/blue"

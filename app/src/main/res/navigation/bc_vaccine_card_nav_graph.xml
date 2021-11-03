@@ -94,4 +94,8 @@
         android:name="ca.bc.gov.bchealth.ui.addcard.FetchVaccineCardFragment"
         android:label="fragment_fetch_vaccine_card"
         tools:layout="@layout/fragment_fetch_vaccine_card" />
+    <fragment
+        android:id="@+id/newFeatureFragment"
+        android:name="ca.bc.gov.bchealth.ui.onboarding.NewFeatureFragment"
+        android:label="NewFeatureFragment" />
 </navigation>

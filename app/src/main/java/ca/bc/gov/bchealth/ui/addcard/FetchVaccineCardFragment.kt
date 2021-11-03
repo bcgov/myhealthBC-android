@@ -3,6 +3,9 @@ package ca.bc.gov.bchealth.ui.addcard
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
@@ -107,10 +110,22 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                         viewModel.responseSharedFlow.collect {
                             when (it) {
                                 is Response.Success -> {
-                                    ApiClientModule.queueItToken = ""
-                                    binding.progressBar.visibility = View.INVISIBLE
-                                    findNavController().popBackStack(R.id.myCardsFragment, false)
-                                    this.cancel()
+
+                                    // Save form data for autocomplete option
+                                    val formData: String =
+                                        binding.edPhnNumber.editText?.text.toString() +
+                                            binding.edDob.editText?.text.toString() +
+                                            binding.edDov.editText?.text.toString()
+
+                                    viewModel.setRecentFormData(formData).invokeOnCompletion {
+
+                                        // Navigate to health passes
+                                        ApiClientModule.queueItToken = ""
+                                        binding.progressBar.visibility = View.INVISIBLE
+                                        findNavController()
+                                            .popBackStack(R.id.myCardsFragment, false)
+                                        this.cancel()
+                                    }
                                 }
                                 is Response.Error -> {
                                     ApiClientModule.queueItToken = ""
@@ -152,13 +167,47 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                 }
             }
         }
+
+        /*
+        * Fetch saved form data
+        * */
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isRecentFormData.collect {
+                    if (it.isNotEmpty()) {
+
+                        val triple = Triple(
+                            it.subSequence(0, 10),
+                            it.subSequence(10, 20),
+                            it.subSequence(20, 30)
+                        )
+
+                        val phnArray = arrayOf(triple.first.toString())
+
+                        val adapter: ArrayAdapter<String> = ArrayAdapter(
+                            requireContext(),
+                            android.R.layout.simple_dropdown_item_1line,
+                            phnArray
+                        )
+
+                        val textView = binding.edPhnNumber.editText as AutoCompleteTextView
+                        textView.setAdapter(adapter)
+                        textView.onItemClickListener =
+                            AdapterView.OnItemClickListener { p0, p1, p2, p3 ->
+                                binding.edDob.editText?.setText(triple.second.toString())
+                                binding.edDov.editText?.setText(triple.third.toString())
+                            }
+                    }
+                }
+            }
+        }
     }
 
     private fun validateInputData(): Boolean {
 
         if (binding.edPhnNumber.editText?.text.isNullOrEmpty()) {
             binding.edPhnNumber.isErrorEnabled = true
-            binding.edPhnNumber.error = "Personal Health Number is required"
+            binding.edPhnNumber.error = getString(R.string.phn_number_required)
             binding.edPhnNumber.editText?.doOnTextChanged { text, start, before, count ->
                 if (text != null)
                     if (text.isNotEmpty()) {
@@ -171,7 +220,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
         if (binding.edPhnNumber.editText?.text?.length != 10) {
             binding.edPhnNumber.isErrorEnabled = true
-            binding.edPhnNumber.error = "PHN should be 10 characters"
+            binding.edPhnNumber.error = getString(R.string.phn_should_be_10_digit)
             binding.edPhnNumber.editText?.doOnTextChanged { text, start, before, count ->
                 if (text != null)
                     if (text.isNotEmpty()) {
@@ -184,7 +233,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
         if (binding.edDob.editText?.text.isNullOrEmpty()) {
             binding.edDob.isErrorEnabled = true
-            binding.edDob.error = "Date of Birth is required"
+            binding.edDob.error = getString(R.string.dob_required)
             binding.edDob.editText?.doOnTextChanged { text, start, before, count ->
                 if (text != null)
                     if (text.isNotEmpty()) {
@@ -196,10 +245,13 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         }
 
         if (!binding.edDob.editText?.text.toString()
-            .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
+            .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
+
+            !binding.edDob.editText?.text.toString()
+                .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
         ) {
             binding.edDob.isErrorEnabled = true
-            binding.edDob.error = "Please enter a valid date format"
+            binding.edDob.error = getString(R.string.enter_valid_date_format)
             binding.edDob.editText?.doOnTextChanged { text, start, before, count ->
                 if (text != null)
                     if (text.isNotEmpty()) {
@@ -212,7 +264,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
         if (binding.edDov.editText?.text.isNullOrEmpty()) {
             binding.edDov.isErrorEnabled = true
-            binding.edDov.error = "Date of Vaccination is required"
+            binding.edDov.error = getString(R.string.dov_required)
             binding.edDov.editText?.doOnTextChanged { text, start, before, count ->
                 if (text != null)
                     if (text.isNotEmpty()) {
@@ -224,10 +276,13 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         }
 
         if (!binding.edDov.editText?.text.toString()
-            .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
+            .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
+
+            !binding.edDov.editText?.text.toString()
+                .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
         ) {
             binding.edDov.isErrorEnabled = true
-            binding.edDov.error = "Please enter a valid date format"
+            binding.edDov.error = getString(R.string.enter_valid_date_format)
             binding.edDov.editText?.doOnTextChanged { text, start, before, count ->
                 if (text != null)
                     if (text.isNotEmpty()) {

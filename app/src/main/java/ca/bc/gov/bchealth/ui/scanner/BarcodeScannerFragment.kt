@@ -22,6 +22,7 @@ import ca.bc.gov.bchealth.barcodeanalyzer.BarcodeAnalyzer
 import ca.bc.gov.bchealth.barcodeanalyzer.ScanningResultListener
 import ca.bc.gov.bchealth.databinding.FragmentBarcodeScannerBinding
 import ca.bc.gov.bchealth.ui.mycards.MyCardsViewModel
+import ca.bc.gov.bchealth.utils.ErrorData
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -211,8 +212,8 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                 myCardsViewModel.saveCard(shcUri)
             } catch (e: Exception) {
                 showError(
-                    getString(R.string.bc_invalid_barcode_title),
-                    getString(R.string.bc_invalid_barcode_message)
+                    ErrorData.INVALID_QR.errorTitle.toString(),
+                    ErrorData.INVALID_QR.errorMessage.toString()
                 )
             }
         }
@@ -225,8 +226,8 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
             imageAnalysis.clearAnalyzer()
 
             showError(
-                getString(R.string.bc_invalid_barcode_title),
-                getString(R.string.bc_invalid_barcode_message)
+                ErrorData.INVALID_QR.errorTitle.toString(),
+                ErrorData.INVALID_QR.errorMessage.toString()
             )
         }
 
