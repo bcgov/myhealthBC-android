@@ -117,24 +117,39 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/checkbox_remember"
+                style="?textAppearanceHeadline4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginTop="@dimen/space_1_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:text="@string/remember_my_phn_and_dob_for_next_time"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ed_dov" />
+
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_privacy_statement"
                 style="?textAppearanceHeadline4"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_3_x"
+                android:layout_marginTop="@dimen/space_1_x"
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:autoLink="email|phone"
                 android:linksClickable="true"
-                android:textSize="14sp"
                 android:text="@string/privacy_statement_info"
                 android:textAlignment="textStart"
                 android:textColorLink="@color/blue"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ed_dov" />
+                app:layout_constraintTop_toBottomOf="@+id/checkbox_remember" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

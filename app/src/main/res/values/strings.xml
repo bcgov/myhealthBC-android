@@ -54,6 +54,7 @@
     <string name="enter_valid_date_format">Please enter a valid date format</string>
     <string name="dov_required">Date of Vaccination is required</string>
     <string name="add_a_health_pass">Add a Health Pass</string>
+    <string name="remember_my_phn_and_dob_for_next_time">Remember my PHN and DoB for next time.</string>
 
     <!--Health Passes-->
     <string name="passes">Passes</string>

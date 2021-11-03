@@ -111,19 +111,22 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                             when (it) {
                                 is Response.Success -> {
 
-                                    // Save form data for autocomplete option
-                                    val formData: String =
-                                        binding.edPhnNumber.editText?.text.toString() +
-                                            binding.edDob.editText?.text.toString() +
-                                            binding.edDov.editText?.text.toString()
+                                    if (binding.checkboxRemember.isChecked) {
+                                        // Save form data for autocomplete option
+                                        val formData: String =
+                                            binding.edPhnNumber.editText?.text.toString() +
+                                                binding.edDob.editText?.text.toString() +
+                                                binding.edDov.editText?.text.toString()
 
-                                    viewModel.setRecentFormData(formData).invokeOnCompletion {
+                                        viewModel.setRecentFormData(formData).invokeOnCompletion {
 
+                                            // Navigate to health passes
+                                            navigateToHealthPasses()
+                                            this.cancel()
+                                        }
+                                    } else {
                                         // Navigate to health passes
-                                        ApiClientModule.queueItToken = ""
-                                        binding.progressBar.visibility = View.INVISIBLE
-                                        findNavController()
-                                            .popBackStack(R.id.myCardsFragment, false)
+                                        navigateToHealthPasses()
                                         this.cancel()
                                     }
                                 }
@@ -201,6 +204,13 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                 }
             }
         }
+    }
+
+    private fun navigateToHealthPasses() {
+        ApiClientModule.queueItToken = ""
+        binding.progressBar.visibility = View.INVISIBLE
+        findNavController()
+            .popBackStack(R.id.myCardsFragment, false)
     }
 
     private fun validateInputData(): Boolean {
