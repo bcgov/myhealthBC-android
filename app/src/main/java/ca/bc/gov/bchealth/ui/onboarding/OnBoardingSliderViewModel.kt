@@ -18,4 +18,8 @@ class OnBoardingSliderViewModel @Inject constructor(
     fun setOnBoardingShown(shown: Boolean) = viewModelScope.launch {
         dataStoreRepo.setOnBoardingShown(shown)
     }
+
+    fun setNewFeatureShown(shown: Boolean) = viewModelScope.launch {
+        dataStoreRepo.setNewFeatureShown(shown)
+    }
 }

@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.datasource
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import ca.bc.gov.bchealth.BuildConfig
 import javax.inject.Inject
@@ -22,6 +23,15 @@ class DataStoreRepo @Inject constructor(
 
     companion object {
         val ON_BOARDING_SHOWN = booleanPreferencesKey("ON_BOARDING_SHOWN")
+        /*
+        * Below preference is required to show new feature screen to existing users.
+        * This feature will be enabled from v1.0.4
+        * If we want to show new feature screen to existing users,
+        * we need to change key for NEW_FEATURE so that new storage with false flag is created
+        * for existing users. Ex: Change NEW_FEATURE to NEW_FEATURE_FEDERAL_PASS
+        * */
+        val NEW_FEATURE = booleanPreferencesKey("NEW_FEATURE")
+        val RECENT_FORM_DATA = stringPreferencesKey("RECENT_FORM_DATA")
     }
 
     val isOnBoardingShown: Flow<Boolean> = context.dataStore.data.map { preference ->
@@ -30,5 +40,21 @@ class DataStoreRepo @Inject constructor(
 
     suspend fun setOnBoardingShown(shown: Boolean = true) = context.dataStore.edit { preference ->
         preference[ON_BOARDING_SHOWN] = shown
+    }
+
+    val isNewFeatureShown: Flow<Boolean> = context.dataStore.data.map { preference ->
+        preference[NEW_FEATURE] ?: false
+    }
+
+    suspend fun setNewFeatureShown(shown: Boolean = true) = context.dataStore.edit { preference ->
+        preference[NEW_FEATURE] = shown
+    }
+
+    val isRecentFormData: Flow<String> = context.dataStore.data.map { preference ->
+        preference[RECENT_FORM_DATA] ?: ""
+    }
+
+    suspend fun setRecentFormData(formData: String) = context.dataStore.edit { preference ->
+        preference[RECENT_FORM_DATA] = formData
     }
 }

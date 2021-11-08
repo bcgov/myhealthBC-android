@@ -1,55 +1,79 @@
 <resources>
     <string name="app_name">My Health BC</string>
 
+    <!--Informational screen for camera permission-->
     <string name="allow">Allow</string>
     <string name="permission_required">Permission Required</string>
     <string name="allow_vaxwallet">Allow My Health BC to use your camera to scan QR codes to store your card.</string>
     <string name="skip_for_now">Skip for now</string>
+    <string name="camera_permission_required_title">Camera permission required!</string>
+    <string name="camera_permission_message">Camera permission is required to scan BC Vaccine Card QR codes.</string>
+    <string name="grant">Grant</string>
+    <string name="not_now">Not now</string>
 
-    <string name="pass">Pass</string>
-    <string name="resource">Resource</string>
+    <!--Resources-->
+    <string name="resources">Resources</string>
+    <string name="resource_screen_message">Find useful information and learn how to get vaccinated or tested for COVID-19</string>
+    <string name="label_resource_1">Get vaccinated for COVID-19</string>
+    <string name="label_resource_2">Get tested for COVID-19</string>
+    <string name="label_resource_3">COVID-19 symptom checker</string>
+    <string name="label_resource_4">K-12 Daily Check</string>
+    <string name="health_resources">Health Resources</string>
+
+    <!--Settings-->
     <string name="settings">Settings</string>
     <string name="settings_message">BC Vaccine Card app is the official mobile application from the Government of British Columbia. It allows you to store and organize a proof of vaccination for you and your family members.</string>
+    <string name="privacy_statement">Privacy Statement</string>
+    <string name="no_app_found">No app found to open link!</string>
 
-    <string name="no_cards_message">You don\'t have any card yet</string>
+    <!--Add card-->
     <string name="add_card">Add Card</string>
-
+    <string name="add_bc_vaccine_card">Add a BC Vaccine Card</string>
+    <string name="no_cards_message">You don\'t have any card yet</string>
+    <string name="title_add_card">Please select one of the following options to add an <b><font face='@font/bc_sans_bold'>official Health Pass</font></b> containing a QR code</string>
     <string name="add_card_options_message">Scan, upload or get access to your proof of vaccination.</string>
     <string name="scan_qr_code">Scan a QR code</string>
     <string name="use_image_of_qr">Upload a QR code</string>
-    <string name="enter_info_to_get_card">Get a QR code</string>
-
-    <string name="privacy_statement">Privacy Statement</string>
+    <string name="enter_information">Enter information</string>
     <string name="help">Help</string>
-
-    <string name="camera_permission_required_title">Camera permission required!</string>
-    <string name="camera_permission_message">Camera permission is required to scan BC Vaccine Card QR codes.</string>
     <string name="exit">Exit</string>
     <string name="btn_ok">OK</string>
-
     <string name="bc_no_rear_camera_title">Oops!</string>
     <string name="bc_nor_rear_camera_message">Oops, It seems your device does not have a rear camera\nWe do not support scanning BC Vaccine Card QR codes using the front camera at the moment.</string>
-
-    <string name="bc_invalid_barcode_title">Invalid QR Code</string>
-    <string name="bc_invalid_barcode_message">Please scan an official BC Vaccine Card QR Code.</string>
-    <string name="bc_invalid_barcode_upload_message">Please upload an official BC Vaccine Card QR Code.</string>
     <string name="scan_next">Scan Next</string>
-    <string name="close">Close</string>
-    <string name="grant">Grant</string>
-    <string name="not_now">Not now</string>
+    <string name="to_access_your_bc_vaccine_card">To access your BC Vaccine Card, please provide the following information:</string>
+    <string name="personal_health_number">Personal Health Number</string>
+    <string name="date_of_birth">Date of Birth (YYYY-MM-DD)</string>
+    <string name="date_of_vaccination">Date of Vaccination (YYYY-MM-DD)</string>
+    <string name="select_date">Select date</string>
+    <string name="dose_1_or_dose_2">Dose 1 or Dose 2</string>
+    <string name="privacy_statement_info">Your information is being collected to provide you with your COVID-19 vaccination status under s. 26(c) of the Freedom of Information and Protection of Privacy Act. Contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849 if you have any questions about this collection.</string>
+    <string name="phn_number_required">Personal Health Number is required</string>
+    <string name="phn_should_be_10_digit">PHN should be 10 characters</string>
+    <string name="dob_required">Date of Birth is required</string>
+    <string name="enter_valid_date_format">Please enter a valid date format</string>
+    <string name="dov_required">Date of Vaccination is required</string>
+    <string name="add_a_health_pass">Add a Health Pass</string>
+    <string name="remember_my_phn_and_dob_for_next_time">Remember my PHN and DoB for next time.</string>
+
+    <!--Health Passes-->
+    <string name="passes">Passes</string>
+    <string name="health_passes_message">Use Health Passes as an easy way to access and show your proof of vaccination.</string>
+    <string name="health_passes_message_1">Save a <b><font face='@font/bc_sans_bold'>BC Vaccine Card</font></b> and <b><font face='@font/bc_sans_bold'>Federal Proof of Vaccination</font></b> here.</string>
     <string name="vaccinated">Vaccinated</string>
     <string name="partially_vaccinated">Partially Vaccinated</string>
     <string name="no_record">No Record</string>
-    <string name="no_app_found">No app found to open link!</string>
-    <string name="present_for_scanning">Present For Scanning</string>
-
     <string name="manage_cards">Manage Cards</string>
     <string name="done">Done</string>
-
+    <string name="close">Close</string>
+    <string name="present_for_scanning">Present For Scanning</string>
     <string name="do_you_want_to_unlink">Do you want to unlink this card?</string>
     <string name="unlink_card">Unlink Card</string>
     <string name="unlink">Unlink</string>
     <string name="issued_on">Issued on</string>
+    <string name="view_all">View All</string>
+    <string name="undo">Undo</string>
+    <string name="bc_vaccine_card_unlinked">BC Vaccine Card unlinked.</string>
 
     <!-- In app updates -->
     <string name="update_success">Update Success!</string>
@@ -60,43 +84,29 @@
     <string name="tap_to_zoom_in">Tap to zoom in</string>
 
     <!--Educational screens text at on-boarding experience-->
-    <string name="place_holder_text">Place holder text</string>
-    <string name="lorem_ipsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</string>
     <string name="next">Next</string>
     <string name="get_started">Get Started</string>
     <string name="health_passes">Health Passes</string>
-    <string name="onboarding_message_1">All of your vaccine cards and booking confirmations stored in a single place</string>
+    <string name="onboarding_message_1">All of your proof of COVID-19 vaccinations available in a single place</string>
     <string name="health_resource">Health Resources</string>
-    <string name="onboarding_message_2">Find health information and COVID-19 tests</string>
+    <string name="onboarding_message_2">Find COVID-19 health information and testing resources</string>
     <string name="news_feed">News Feed</string>
-    <string name="onboarding_message_3">Stay updated on COVID-19 news</string>
+    <string name="onboarding_message_3">Get the latest BC government COVID-19 news</string>
+    <string name="new_string">New</string>
+    <string name="ok_camel_case">Ok</string>
+    <string name="health_records">Health Records</string>
 
-    <string name="health_passes_message">You need proof of vaccination to access many businesses, events and services. Add your BC Vaccine Cards here for easy access.</string>
-    <string name="resource_screen_message">Find useful information and learn how to get vaccinated or tested for COVID-19</string>
-    <string name="label_resource_1">Get vaccinated for COVID-19</string>
-    <string name="label_resource_2">Get tested for COVID-19</string>
-    <string name="label_resource_3">COVID-19 symptom checker</string>
-    <string name="label_resource_4">K-12 Daily Check</string>
+    <!--Miscellaneous-->
     <string name="coming_soon">Coming soon!</string>
-    <string name="title_add_card">Please select one of the following options to add a BC Vaccine Card</string>
     <string name="back">Back</string>
     <string name="bc_vaccine_cards">BC Vaccine Cards</string>
     <string name="submit">Submit</string>
     <string name="cancel">Cancel</string>
-    <string name="add_bc_vaccine_card">Add a BC Vaccine Card</string>
-    <string name="to_access_your_bc_vaccine_card">To access your BC Vaccine Card, please provide the following information:</string>
-    <string name="personal_health_number">Personal Health Number</string>
-    <string name="date_of_birth">Date of Birth (YYYY-MM-DD)</string>
-    <string name="date_of_vaccination">Date of Vaccination (YYYY-MM-DD)</string>
-    <string name="select_date">Select date</string>
-    <string name="dose_1_or_dose_2">Dose 1 or Dose 2</string>
-    <string name="privacy_statement_add_card">Privacy statement</string>
     <string name="error">Error!</string>
-    <string name="error_message">Something went wrong!. Please retry.</string>
-    <string name="add_a_bc_vaccine_card">Add a BC Vaccine Card</string>
-    <string name="view_all">View All</string>
-    <string name="health_resources">Health Resources</string>
+    <string name="error_message">Something went wrong. Please retry.</string>
     <string name="no_internet">No internet!</string>
     <string name="check_connection">Please check network connection.</string>
+    <string name="place_holder_text">Place holder text</string>
+    <string name="lorem_ipsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</string>
 
 </resources>

@@ -10,6 +10,6 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class Name(
-    val family: String,
+    val family: String?,
     val given: List<String>
 ) : Parcelable

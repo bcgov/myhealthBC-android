@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.databinding.ItemNewsFeedRowBinding
 import ca.bc.gov.bchealth.model.rss.Newsfeed
-import ca.bc.gov.bchealth.utils.getDateTime
+import ca.bc.gov.bchealth.utils.getNewsFeedDateTime
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -17,6 +17,7 @@ import java.util.Date
  */
 class NewsfeedAdapter(
     var newsFeeds: MutableList<Newsfeed>,
+    val clickListener: (Newsfeed) -> Unit
 ) : RecyclerView.Adapter<NewsfeedAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemNewsFeedRowBinding) :
@@ -43,10 +44,14 @@ class NewsfeedAdapter(
             val sdf = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z")
             val mDate: Date = sdf.parse(item.pubDate)
             val timeInMilliseconds = mDate.time
-            holder.binding.tvDate.text = timeInMilliseconds.getDateTime()
+            holder.binding.tvDate.text = timeInMilliseconds.getNewsFeedDateTime()
         } catch (e: Exception) {
             e.printStackTrace()
             holder.binding.tvDate.text = item.pubDate
+        }
+
+        holder.itemView.setOnClickListener {
+            clickListener(item)
         }
     }
 

@@ -24,23 +24,13 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
         super.onViewCreated(view, savedInstanceState)
 
         val educationalScreenAdapter = EducationalScreenAdapter(this)
+
         binding.viewpagerOnBoardingSlides.adapter = educationalScreenAdapter
 
         TabLayoutMediator(
             binding.tabOnBoardingSlides,
             binding.viewpagerOnBoardingSlides
         ) { _, _ -> }.attach()
-
-        binding.btnNextSlide.setOnClickListener {
-            if (educationalScreenAdapter.itemCount == getCurrentItem() + 1) {
-                val navOptions = NavOptions.Builder()
-                    .setPopUpTo(R.id.onBoardingSliderFragment, true)
-                    .build()
-                findNavController().navigate(R.id.myCardsFragment, null, navOptions)
-            } else {
-                binding.viewpagerOnBoardingSlides.currentItem = getCurrentItem() + 1
-            }
-        }
 
         binding.viewpagerOnBoardingSlides.registerOnPageChangeCallback(object :
                 ViewPager2.OnPageChangeCallback() {
@@ -54,7 +44,20 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
                 }
             })
 
-        viewModel.setOnBoardingShown(true)
+        binding.btnNextSlide.setOnClickListener {
+            if (educationalScreenAdapter.itemCount == (getCurrentItem() + 1)) {
+                viewModel.setOnBoardingShown(true).invokeOnCompletion {
+                    viewModel.setNewFeatureShown(true).invokeOnCompletion {
+                        val navOptions = NavOptions.Builder()
+                            .setPopUpTo(R.id.onBoardingSliderFragment, true)
+                            .build()
+                        findNavController().navigate(R.id.myCardsFragment, null, navOptions)
+                    }
+                }
+            } else {
+                binding.viewpagerOnBoardingSlides.currentItem = (getCurrentItem() + 1)
+            }
+        }
     }
 
     private fun getCurrentItem(): Int {

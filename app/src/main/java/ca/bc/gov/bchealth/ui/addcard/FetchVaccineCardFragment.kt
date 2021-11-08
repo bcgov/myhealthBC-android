@@ -1,15 +1,12 @@
 package ca.bc.gov.bchealth.ui.addcard
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.style.UnderlineSpan
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
-import androidx.browser.customtabs.CustomTabColorSchemeParams
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -23,8 +20,9 @@ import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineCardBinding
 import ca.bc.gov.bchealth.di.ApiClientModule
 import ca.bc.gov.bchealth.http.MustBeQueued
 import ca.bc.gov.bchealth.utils.Response
+import ca.bc.gov.bchealth.utils.adjustOffset
 import ca.bc.gov.bchealth.utils.isOnline
-import ca.bc.gov.bchealth.utils.toast
+import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -39,9 +37,9 @@ import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -51,7 +49,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
     private val binding by viewBindings(FragmentFetchVaccineCardBinding::bind)
 
-    private val simpleDateFormat = SimpleDateFormat("yyyy-dd-MM", Locale.ENGLISH)
+    private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CANADA)
 
     private val viewModel: FetchVaccineCardViewModel by viewModels()
 
@@ -66,7 +64,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     private fun setToolBar() {
         binding.toolbar.apply {
             ivBack.visibility = View.VISIBLE
-            ivBack.setImageResource(R.drawable.ic_acion_back)
+            ivBack.setImageResource(R.drawable.ic_action_back)
             ivBack.setOnClickListener {
                 findNavController().popBackStack()
             }
@@ -77,7 +75,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             ivSettings.visibility = View.VISIBLE
             ivSettings.setImageResource(R.drawable.ic_help)
             ivSettings.setOnClickListener {
-                redirect(getString(R.string.url_help))
+                requireActivity().redirect(getString(R.string.url_help))
             }
 
             line1.visibility = View.VISIBLE
@@ -87,9 +85,9 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     private fun iniUI() {
 
         if (BuildConfig.DEBUG) {
-            binding.edPhnNumber.editText?.setText("9000201422")
+            /*binding.edPhnNumber.editText?.setText("9000201422")
             binding.edDob.editText?.setText("1989-12-12")
-            binding.edDov.editText?.setText("2021-05-15")
+            binding.edDov.editText?.setText("2021-05-15")*/
 
             /*binding.edPhnNumber.editText?.setText("9000691304")
             binding.edDob.editText?.setText("1965-01-14")
@@ -100,19 +98,54 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
         setUpDovUI()
 
-        val content = SpannableString(getString(R.string.privacy_statement_add_card))
-        content.setSpan(UnderlineSpan(), 0, content.length, 0)
-        binding.tvPrivacyStatement.text = content
-        binding.tvPrivacyStatement.setOnClickListener {
-            redirect(getString(R.string.url_privacy_policy))
-        }
-
         binding.btnCancel.setOnClickListener {
             findNavController().popBackStack()
         }
 
         binding.btnSubmit.setOnClickListener {
             if (validateInputData()) {
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        viewModel.responseSharedFlow.collect {
+                            when (it) {
+                                is Response.Success -> {
+
+                                    if (binding.checkboxRemember.isChecked) {
+                                        // Save form data for autocomplete option
+                                        val formData: String =
+                                            binding.edPhnNumber.editText?.text.toString() +
+                                                binding.edDob.editText?.text.toString() +
+                                                binding.edDov.editText?.text.toString()
+
+                                        viewModel.setRecentFormData(formData).invokeOnCompletion {
+
+                                            // Navigate to health passes
+                                            navigateToHealthPasses()
+                                            this.cancel()
+                                        }
+                                    } else {
+                                        // Navigate to health passes
+                                        navigateToHealthPasses()
+                                        this.cancel()
+                                    }
+                                }
+                                is Response.Error -> {
+                                    ApiClientModule.queueItToken = ""
+                                    binding.progressBar.visibility = View.INVISIBLE
+                                    showError(
+                                        it.errorData?.errorTitle.toString(),
+                                        it.errorData?.errorMessage.toString()
+                                    )
+                                    this.cancel()
+                                }
+                                is Response.Loading -> {
+                                    binding.progressBar.visibility = View.VISIBLE
+                                }
+                            }
+                        }
+                    }
+                }
 
                 viewLifecycleOwner.lifecycleScope.launch {
                     try {
@@ -134,64 +167,70 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                             )
                         }
                     }
-
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                            viewModel.vaxStatusResponseLiveData.collect {
-                                when (it) {
-                                    is Response.Loading -> {
-                                        binding.progressBar.visibility = View.VISIBLE
-                                    }
-                                    is Response.Success -> {
-                                        ApiClientModule.queueItToken = ""
-
-                                        binding.progressBar.visibility = View.INVISIBLE
-
-                                        it.data?.resourcePayload?.qrCode?.data
-                                            ?.let { base64EncodedImage ->
-                                                try {
-                                                    viewModel.saveVaccineCard(base64EncodedImage)
-                                                } catch (e: Exception) {
-                                                    e.printStackTrace()
-                                                    showError(
-                                                        getString(R.string.error),
-                                                        getString(R.string.error_message)
-                                                    )
-                                                }
-                                            }
-                                    }
-                                    is Response.Error -> {
-                                        binding.progressBar.visibility = View.INVISIBLE
-                                        showError(
-                                            getString(R.string.error),
-                                            message = it.errorMessage.toString()
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
 
-        viewModel.uploadStatus.observe(viewLifecycleOwner, {
-            if (it) {
-                findNavController().popBackStack(R.id.myCardsFragment, false)
-            } else {
-                showError(
-                    getString(R.string.error),
-                    getString(R.string.error_message)
-                )
+        /*
+        * Fetch saved form data
+        * */
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isRecentFormData.collect {
+                    if (it.isNotEmpty()) {
+
+                        val triple = Triple(
+                            it.subSequence(0, 10),
+                            it.subSequence(10, 20),
+                            it.subSequence(20, 30)
+                        )
+
+                        val phnArray = arrayOf(triple.first.toString())
+
+                        val adapter: ArrayAdapter<String> = ArrayAdapter(
+                            requireContext(),
+                            android.R.layout.simple_dropdown_item_1line,
+                            phnArray
+                        )
+
+                        val textView = binding.edPhnNumber.editText as AutoCompleteTextView
+                        textView.setAdapter(adapter)
+                        textView.onItemClickListener =
+                            AdapterView.OnItemClickListener { p0, p1, p2, p3 ->
+                                binding.edDob.editText?.setText(triple.second.toString())
+                                binding.edDov.editText?.setText(triple.third.toString())
+                            }
+                    }
+                }
             }
-        })
+        }
+    }
+
+    private fun navigateToHealthPasses() {
+        ApiClientModule.queueItToken = ""
+        binding.progressBar.visibility = View.INVISIBLE
+        findNavController()
+            .popBackStack(R.id.myCardsFragment, false)
     }
 
     private fun validateInputData(): Boolean {
 
         if (binding.edPhnNumber.editText?.text.isNullOrEmpty()) {
             binding.edPhnNumber.isErrorEnabled = true
-            binding.edPhnNumber.error = "Personal Health Number is required"
+            binding.edPhnNumber.error = getString(R.string.phn_number_required)
+            binding.edPhnNumber.editText?.doOnTextChanged { text, start, before, count ->
+                if (text != null)
+                    if (text.isNotEmpty()) {
+                        binding.edPhnNumber.isErrorEnabled = false
+                        binding.edPhnNumber.error = null
+                    }
+            }
+            return false
+        }
+
+        if (binding.edPhnNumber.editText?.text?.length != 10) {
+            binding.edPhnNumber.isErrorEnabled = true
+            binding.edPhnNumber.error = getString(R.string.phn_should_be_10_digit)
             binding.edPhnNumber.editText?.doOnTextChanged { text, start, before, count ->
                 if (text != null)
                     if (text.isNotEmpty()) {
@@ -204,7 +243,25 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
         if (binding.edDob.editText?.text.isNullOrEmpty()) {
             binding.edDob.isErrorEnabled = true
-            binding.edDob.error = "Date of Birth is required"
+            binding.edDob.error = getString(R.string.dob_required)
+            binding.edDob.editText?.doOnTextChanged { text, start, before, count ->
+                if (text != null)
+                    if (text.isNotEmpty()) {
+                        binding.edDob.isErrorEnabled = false
+                        binding.edDob.error = null
+                    }
+            }
+            return false
+        }
+
+        if (!binding.edDob.editText?.text.toString()
+            .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
+
+            !binding.edDob.editText?.text.toString()
+                .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
+        ) {
+            binding.edDob.isErrorEnabled = true
+            binding.edDob.error = getString(R.string.enter_valid_date_format)
             binding.edDob.editText?.doOnTextChanged { text, start, before, count ->
                 if (text != null)
                     if (text.isNotEmpty()) {
@@ -217,7 +274,25 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
         if (binding.edDov.editText?.text.isNullOrEmpty()) {
             binding.edDov.isErrorEnabled = true
-            binding.edDov.error = "Date of Vaccination is required"
+            binding.edDov.error = getString(R.string.dov_required)
+            binding.edDov.editText?.doOnTextChanged { text, start, before, count ->
+                if (text != null)
+                    if (text.isNotEmpty()) {
+                        binding.edDov.isErrorEnabled = false
+                        binding.edDov.error = null
+                    }
+            }
+            return false
+        }
+
+        if (!binding.edDov.editText?.text.toString()
+            .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
+
+            !binding.edDov.editText?.text.toString()
+                .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
+        ) {
+            binding.edDov.isErrorEnabled = true
+            binding.edDov.error = getString(R.string.enter_valid_date_format)
             binding.edDov.editText?.doOnTextChanged { text, start, before, count ->
                 if (text != null)
                     if (text.isNotEmpty()) {
@@ -252,8 +327,8 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             dateOfBirthPicker.show(parentFragmentManager, "DATE_OF_BIRTH")
         }
         dateOfBirthPicker.addOnPositiveButtonClickListener {
-            val date = Date(it)
-            binding.edDob.editText?.setText(simpleDateFormat.format(date))
+            binding.edDob.editText
+                ?.setText(simpleDateFormat.format(it.adjustOffset()))
         }
     }
 
@@ -270,45 +345,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             dateOfVaccinationPicker.show(parentFragmentManager, "DATE_OF_VACCINATION")
         }
         dateOfVaccinationPicker.addOnPositiveButtonClickListener {
-            val date = Date(it)
-            binding.edDov.editText?.setText(simpleDateFormat.format(date))
-        }
-    }
-
-    private fun redirect(url: String) {
-        try {
-            val customTabColorSchemeParams: CustomTabColorSchemeParams =
-                CustomTabColorSchemeParams.Builder()
-                    .setToolbarColor(resources.getColor(R.color.white, null))
-                    .setSecondaryToolbarColor(resources.getColor(R.color.white, null))
-                    .build()
-
-            val builder: CustomTabsIntent.Builder = CustomTabsIntent.Builder()
-            val customTabIntent: CustomTabsIntent = builder
-                .setDefaultColorSchemeParams(customTabColorSchemeParams)
-                .setCloseButtonIcon(
-                    resources.getDrawable(R.drawable.ic_acion_back, null)
-                        .toBitmap()
-                )
-                .build()
-
-            customTabIntent.launchUrl(
-                requireContext(),
-                Uri.parse(url)
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            showURLFallBack(url)
-        }
-    }
-
-    private fun showURLFallBack(url: String) {
-        val webpage: Uri = Uri.parse(url)
-        val intent = Intent(Intent.ACTION_VIEW, webpage)
-        try {
-            startActivity(intent)
-        } catch (e: Exception) {
-            context?.toast(getString(R.string.no_app_found))
+            binding.edDov.editText?.setText(simpleDateFormat.format(it.adjustOffset()))
         }
     }
 

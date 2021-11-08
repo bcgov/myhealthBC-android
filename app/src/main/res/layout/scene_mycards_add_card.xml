@@ -35,6 +35,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_health_passes" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_health_pass_message_1"
+        style="?textAppearanceHeadline4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:text="@string/health_passes_message_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_health_pass_message" />
+
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/img_no_card"
         android:layout_width="wrap_content"
@@ -43,7 +56,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_health_pass_message"
+        app:layout_constraintTop_toBottomOf="@+id/tv_health_pass_message_1"
         app:srcCompat="@drawable/ic_group_5209" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -68,7 +81,7 @@
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
         android:layout_marginBottom="@dimen/space_3_x"
-        android:text="@string/add_a_bc_vaccine_card"
+        android:text="@string/add_a_health_pass"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

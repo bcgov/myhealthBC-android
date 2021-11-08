@@ -10,7 +10,7 @@ interface ImmunizationServices {
     /*
     * API endpoint for VaccineStatus
     * */
-    @GET("api/immunizationservice/v1/api/VaccineStatus")
+    @GET("api/immunizationservice/v1/api/PublicVaccineStatus")
     suspend fun getVaccineStatus(
         @Header("phn") phn: String,
         @Header("dateOfBirth") dateOfBirth: String,

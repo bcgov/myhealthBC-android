@@ -104,7 +104,18 @@ class SHCDecoder @Inject constructor(
         }.map { entry ->
             val name = entry.resource.name?.firstOrNull()
             if (name != null) {
-                Pair("${name.given.joinToString(" ")} ${name.family}", entry.resource.birthDate)
+                var fullName = ""
+                if (!name.given.isNullOrEmpty())
+                    name.given[0].let {
+                        fullName = it
+                    }
+
+                name.family?.let {
+                    fullName = buildString {
+                        append(fullName).append(' ').append(it)
+                    }
+                }
+                Pair(fullName, entry.resource.birthDate)
             } else {
                 Pair("Name not found!", entry.resource.birthDate)
             }
@@ -138,7 +149,8 @@ class SHCDecoder @Inject constructor(
                 ImmunizationStatus.PARTIALLY_IMMUNIZED
             }
             else -> {
-                ImmunizationStatus.INVALID_QR_CODE
+                // ImmunizationStatus.INVALID_QR_CODE
+                throw SHCDecoderException(INVALID_PAYLOAD_DATA_FORMAT, "Invalid QR Code")
             }
         }
 

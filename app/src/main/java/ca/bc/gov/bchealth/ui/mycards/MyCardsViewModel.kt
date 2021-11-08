@@ -25,6 +25,8 @@ class MyCardsViewModel @Inject constructor(
     private val dataStoreRepo: DataStoreRepo
 ) : ViewModel() {
 
+    val responseFlow = repository.responseSharedFlow
+
     val cards = repository.cards.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(10000),
@@ -35,10 +37,6 @@ class MyCardsViewModel @Inject constructor(
         withContext(Dispatchers.IO) {
             repository.insert(HealthCard(uri = uri))
         }
-    }
-
-    fun updateCard(id: Int, uri: String) = viewModelScope.launch {
-        repository.updateHealthCard(HealthCard(id, uri))
     }
 
     fun unLink(id: Int, uri: String) = viewModelScope.launch {
@@ -54,6 +52,12 @@ class MyCardsViewModel @Inject constructor(
     }
 
     val isOnBoardingShown = dataStoreRepo.isOnBoardingShown.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
+
+    val isNewfeatureShown = dataStoreRepo.isNewFeatureShown.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null

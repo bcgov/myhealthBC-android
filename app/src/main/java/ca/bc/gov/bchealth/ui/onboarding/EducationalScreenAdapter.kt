@@ -1,6 +1,5 @@
 package ca.bc.gov.bchealth.ui.onboarding
 
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
@@ -13,16 +12,11 @@ class EducationalScreenAdapter(fragment: Fragment) : FragmentStateAdapter(fragme
 
     override fun createFragment(position: Int): Fragment {
 
-        val fragment = EducationalScreenFragment()
-
-        fragment.arguments = Bundle().apply {
-            putInt(SLIDER_POSITION, position)
+        return when (position) {
+            0 -> OnboardingHealthPassesFragment()
+            1 -> OnboardingHealthResourcesFragment()
+            2 -> OnboardingNewsFeedFragment()
+            else -> OnboardingHealthPassesFragment()
         }
-
-        return fragment
-    }
-
-    companion object {
-        const val SLIDER_POSITION = "SLIDER_POSITION"
     }
 }
