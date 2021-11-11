@@ -21,7 +21,7 @@ import kotlinx.coroutines.runBlocking
 class MyCardsAdapter(
     var cards: MutableList<HealthCardDto>,
     private var canManage: Boolean = false,
-    val unLinkListener: (HealthCardDto) -> Unit
+    var clickListener: ((HealthCardDto)-> Unit)? = null
 ) : RecyclerView.Adapter<MyCardsAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemMycardsCardsListBinding) :
@@ -43,12 +43,11 @@ class MyCardsAdapter(
             .getString(R.string.issued_on).plus(" ").plus(card.issueDate)
         setUiState(holder, card.status)
 
-        holder.binding.imgUnlink.setOnClickListener {
-            unLinkListener(card)
-        }
-
         if (canManage) {
             holder.binding.imgUnlink.visibility = View.VISIBLE
+            holder.binding.imgUnlink.setOnClickListener {
+                clickListener?.invoke(card)
+            }
             holder.binding.icReorder.visibility = View.VISIBLE
         } else {
             if (card.isExpanded) {
@@ -68,10 +67,10 @@ class MyCardsAdapter(
                 holder.binding.layoutQrCode.visibility = View.GONE
             }
 
-            holder.binding.layoutQrCode.setOnClickListener {
+            holder.binding.imgQrCode.setOnClickListener {
                 val action = MyCardsFragmentDirections
                     .actionMyCardsFragmentToExpandQRFragment(card.uri)
-                holder.binding.layoutQrCode.findNavController().navigate(action)
+                holder.binding.imgQrCode.findNavController().navigate(action)
             }
 
             holder.itemView.setOnClickListener {
@@ -84,6 +83,25 @@ class MyCardsAdapter(
 
             holder.binding.imgUnlink.visibility = View.GONE
             holder.binding.icReorder.visibility = View.GONE
+
+            if(card.federalPass.isNullOrEmpty()){
+                holder.binding.tvFederalPassTitle.text = holder.itemView.resources
+                    .getString(R.string.get_federal_proof_of_vaccination)
+                holder.binding.ivFederalPassAction.
+                setImageResource(R.drawable.ic_federal_pass_add)
+                holder.binding.viewFederalProof.setOnClickListener {
+                    holder.itemView.findNavController().navigate(R.id.travelPassFragment)
+                }
+            } else {
+                holder.binding.tvFederalPassTitle.text = holder.itemView.resources
+                    .getString(R.string.show_federal_proof_of_vaccination)
+                holder.binding.ivFederalPassAction
+                    .setImageResource(R.drawable.ic_federal_pass_forward_arrow)
+                holder.binding.viewFederalProof.setOnClickListener {
+                    clickListener?.invoke(card)
+                }
+            }
+
         }
     }
 

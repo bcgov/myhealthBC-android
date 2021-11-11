@@ -22,11 +22,11 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.toolbar.apply {
-            ivBack.visibility = View.VISIBLE
-            ivBack.setImageResource(R.drawable.ic_action_back)
+            ivLeftOption.visibility = View.VISIBLE
+            ivLeftOption.setImageResource(R.drawable.ic_action_back)
             tvTitle.visibility = View.VISIBLE
             tvTitle.text = getString(R.string.settings)
-            ivBack.setOnClickListener {
+            ivLeftOption.setOnClickListener {
                 findNavController().popBackStack()
             }
         }

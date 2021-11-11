@@ -74,6 +74,11 @@
     <string name="view_all">View All</string>
     <string name="undo">Undo</string>
     <string name="bc_vaccine_card_unlinked">BC Vaccine Card unlinked.</string>
+    <string name="edit">Edit</string>
+    <string name="travel_pass">Travel Pass</string>
+    <string name="get_federal_proof_of_vaccination">Get Federal Proof of Vaccination</string>
+    <string name="show_federal_proof_of_vaccination">Show Federal Proof of Vaccination</string>
+    <string name="domestic_and_international_travel">Domestic and International Travel</string>
 
     <!-- In app updates -->
     <string name="update_success">Update Success!</string>
@@ -108,5 +113,8 @@
     <string name="check_connection">Please check network connection.</string>
     <string name="place_holder_text">Place holder text</string>
     <string name="lorem_ipsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</string>
+
+    <!--TODO any new strings below needs to be grouped logically as above-->
+
 
 </resources>

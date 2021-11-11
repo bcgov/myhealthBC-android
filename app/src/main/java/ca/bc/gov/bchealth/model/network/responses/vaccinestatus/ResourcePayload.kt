@@ -20,5 +20,6 @@ data class ResourcePayload(
     val vaccinedate: String?,
     val doses: Int,
     val state: Int,
-    val qrCode: QrCode
+    val qrCode: QrCode,
+    val federalVaccineProof: FederalVaccineProof
 ) : Parcelable

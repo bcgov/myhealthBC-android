@@ -10,7 +10,7 @@ import ca.bc.gov.bchealth.data.local.entity.HealthCard
  *
  * @author Pinakin Kansara
  */
-@Database(entities = [HealthCard::class], version = 1, exportSchema = true)
+@Database(entities = [HealthCard::class], version = 2, exportSchema = true)
 abstract class BcVaccineCardDataBase : RoomDatabase() {
 
     abstract fun getHealthCardDao(): HealthCardDao

@@ -76,11 +76,11 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         }
 
         binding.toolbar.apply {
-            ivBack.visibility = View.VISIBLE
-            ivBack.setImageResource(R.drawable.ic_action_back)
+            ivLeftOption.visibility = View.VISIBLE
+            ivLeftOption.setImageResource(R.drawable.ic_action_back)
             tvTitle.visibility = View.VISIBLE
             tvTitle.text = getString(R.string.add_a_health_pass)
-            ivBack.setOnClickListener {
+            ivLeftOption.setOnClickListener {
                 findNavController().popBackStack()
             }
             line1.visibility = View.VISIBLE

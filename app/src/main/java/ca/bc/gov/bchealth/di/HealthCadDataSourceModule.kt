@@ -2,6 +2,8 @@ package ca.bc.gov.bchealth.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import ca.bc.gov.bchealth.data.local.BcVaccineCardDataBase
 import ca.bc.gov.bchealth.datasource.LocalDataSource
 import dagger.Module
@@ -26,9 +28,25 @@ class HealthCadDataSourceModule {
         context,
         BcVaccineCardDataBase::class.java,
         "bc_vaccine_card_db"
-    ).build()
+    ).addMigrations(MIGRATION_1_2)
+        .fallbackToDestructiveMigration()
+        .build()
 
     @Provides
     @Singleton
     fun provideLocalDataSource(dataBase: BcVaccineCardDataBase) = LocalDataSource(dataBase)
+
+    /*
+    * HealthCard entity has been replaced by HealthCardV2
+    * */
+    private val MIGRATION_1_2 = object : Migration(1, 2) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+
+            database.execSQL(
+                "ALTER TABLE" +
+                    " `health_card`" +
+                    "ADD COLUMN federalPass TEXT "
+            )
+        }
+    }
 }

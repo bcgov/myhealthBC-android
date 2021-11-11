@@ -17,7 +17,6 @@ import ca.bc.gov.bchealth.utils.getDateTime
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -25,6 +24,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 /**
  * [CardRepository]
@@ -53,7 +53,7 @@ class CardRepository @Inject constructor(
                 val data = shcDecoder.getImmunizationStatus(card.uri)
                 HealthCardDto(
                     card.id, data.name, data.status, card.uri,
-                    false, data.issueDate.getDateTime()
+                    false, data.issueDate.getDateTime(), card.federalPass
                 )
             } catch (e: Exception) {
                 HealthCardDto(
@@ -81,9 +81,9 @@ class CardRepository @Inject constructor(
                 val existingHealthPass = cards.filter { record ->
                     val immunizationRecord = shcDecoder.getImmunizationStatus(record.uri)
                     (
-                        immunizationRecord.name == healthPassToBeInserted.name &&
-                            immunizationRecord.birthDate == healthPassToBeInserted.birthDate
-                        )
+                            immunizationRecord.name == healthPassToBeInserted.name &&
+                                    immunizationRecord.birthDate == healthPassToBeInserted.birthDate
+                            )
                 }
 
                 if (existingHealthPass.isNullOrEmpty()) {
@@ -105,6 +105,7 @@ class CardRepository @Inject constructor(
 
                         if (existingHealthPassStatus == ImmunizationStatus.PARTIALLY_IMMUNIZED) {
                             existingHealthCard.uri = card.uri
+                            existingHealthCard.federalPass = card.federalPass
                             dataSource.update(existingHealthCard)
                             responseMutableSharedFlow.emit(Response.Success())
                         } else if (existingHealthPassStatus == ImmunizationStatus.FULLY_IMMUNIZED) {
@@ -129,8 +130,8 @@ class CardRepository @Inject constructor(
 
     suspend fun rearrangeHealthCards(cards: List<HealthCard>) = dataSource.rearrange(cards)
 
-    private suspend fun saveCard(uri: String) {
-        insert(HealthCard(uri = uri))
+    private suspend fun saveCard(uri: String, base64EncodedPdf: String) {
+        insert(HealthCard(uri = uri, federalPass = base64EncodedPdf))
     }
 
     /*
@@ -150,14 +151,14 @@ class CardRepository @Inject constructor(
             return
         }
 
-        processImage(image)
+        processImage(image, "")
     }
 
     /*
     * HGS vaccine status API provides Base64 encoded image data.
     * Get the QR image from this data.
     * */
-    private suspend fun prepareQRImage(base64EncodedImage: String) {
+    private suspend fun prepareQRImage(base64EncodedImage: String, base64EncodedPdf: String) {
         val decodedByteArray: ByteArray =
             Base64
                 .decode(base64EncodedImage, Base64.DEFAULT)
@@ -171,14 +172,14 @@ class CardRepository @Inject constructor(
         image = InputImage
             .fromBitmap(decodedBitmap, 0)
 
-        processImage(image)
+        processImage(image, base64EncodedPdf)
     }
 
     /*
     * Process QR image and get the shcUri
     * */
     private suspend fun processImage(
-        image: InputImage
+        image: InputImage, base64EncodedPdf: String
     ) {
 
         val scanner = BarcodeScanning.getClient()
@@ -204,7 +205,7 @@ class CardRepository @Inject constructor(
                     val rawValue = barcode.rawValue
                     rawValue?.let {
                         runBlocking {
-                            processShcUri(it)
+                            processShcUri(it, base64EncodedPdf)
                         }
                     }
                 }
@@ -223,13 +224,13 @@ class CardRepository @Inject constructor(
     * Find the vaccination status and save the vaccine data for future use.
     * */
     private suspend fun processShcUri(
-        shcUri: String
+        shcUri: String, base64EncodedPdf: String
     ) {
         try {
             when (shcDecoder.getImmunizationStatus(shcUri).status) {
                 ImmunizationStatus.FULLY_IMMUNIZED,
                 ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
-                    saveCard(shcUri)
+                    saveCard(shcUri, base64EncodedPdf)
                 }
 
                 ImmunizationStatus.INVALID_QR_CODE -> {
@@ -250,16 +251,21 @@ class CardRepository @Inject constructor(
         val result = immunizationServices.getVaccineStatus(
             phn, dob, dov
         )
+
         if (validateResponse(result)) {
             val vaxStatusResponse = result.body()
 
             vaxStatusResponse?.resourcePayload?.qrCode?.data
                 ?.let { base64EncodedImage ->
-                    try {
-                        prepareQRImage(base64EncodedImage)
-                    } catch (e: Exception) {
-                        responseMutableSharedFlow
-                            .emit(Response.Error(ErrorData.GENERIC_ERROR))
+
+                    vaxStatusResponse.resourcePayload.federalVaccineProof.data?.let { base64EncodedPdf ->
+
+                        try {
+                            prepareQRImage(base64EncodedImage, base64EncodedPdf)
+                        } catch (e: Exception) {
+                            responseMutableSharedFlow
+                                .emit(Response.Error(ErrorData.GENERIC_ERROR))
+                        }
                     }
                 }
         } else {
@@ -287,6 +293,14 @@ class CardRepository @Inject constructor(
         if (vaxStatusResponse.resourcePayload.qrCode.data.isNullOrEmpty())
             return false
 
+        if (vaxStatusResponse.resourcePayload.federalVaccineProof.data.isNullOrEmpty())
+            return false
+
         return true
+    }
+
+
+    suspend fun updateHealthPass(healthCard: HealthCard) {
+        dataSource.update(healthCard)
     }
 }
