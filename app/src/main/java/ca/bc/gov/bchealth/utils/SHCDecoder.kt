@@ -123,7 +123,7 @@ class SHCDecoder @Inject constructor(
 
         var vaccines = 0
         var oneDoseVaccines = 0
-
+        var occurrenceDateTime: String? = ""
         entries.forEach { entry ->
 
             if (entry.resource.resourceType.contains(IMMUNIZATION)) {
@@ -138,6 +138,8 @@ class SHCDecoder @Inject constructor(
                         vaccines++
                     }
                 }
+
+                occurrenceDateTime = entry.resource.occurrenceDateTime
             }
         }
 
@@ -155,7 +157,11 @@ class SHCDecoder @Inject constructor(
         }
 
         return ImmunizationRecord(
-            record.first().first, record.first().second, status, shcData.payload.nbf
+            record.first().first,
+            record.first().second,
+            status,
+            shcData.payload.nbf,
+            occurrenceDateTime
         )
     }
 

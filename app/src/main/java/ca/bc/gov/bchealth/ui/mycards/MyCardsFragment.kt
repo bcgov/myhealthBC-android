@@ -38,10 +38,10 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Collections
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.util.Collections
 
 /**
  * [MyCardsFragment]
@@ -126,8 +126,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                     * Below logic is used to preserve expanded state of health card and
                     * to show newly added card in cards list.
                     * Temporary list is used to compare previous cards list to find
-                    * newly added card.
-                    *
+                    * newly added/updated card.
                     * */
                     cards?.toMutableList()?.let { it ->
 
@@ -142,12 +141,32 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                             return@collect
                         }
 
-                        var newCards = cards.filter { it.id !in cardsTemp.map { item -> item.id } }
+                        /*
+                        * Get newly added cards
+                        * */
+                        var newCards =
+                            cards.filter {
+                                it.id !in cardsTemp
+                                    .map { item -> item.id }
+                            }
 
+                        /*
+                        * Get vaccine status updated card
+                        * */
                         if (newCards.isEmpty()) {
                             newCards = cards.filter {
                                 it.uri !in cardsTemp
                                     .map { item -> item.uri }
+                            }
+                        }
+
+                        /*
+                        * Get federal pass updated card
+                        * */
+                        if (newCards.isEmpty()) {
+                            newCards = cards.filter {
+                                it.federalPass !in cardsTemp
+                                    .map { item -> item.federalPass }
                             }
                         }
 
@@ -159,7 +178,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                             var previouslyExpandedCard = 0
 
                             cards.forEach {
-                                if(it.isExpanded){
+                                if (it.isExpanded) {
                                     previouslyExpandedCard = cards.indexOf(it)
                                 }
                             }
@@ -170,6 +189,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                                 currentScene = CurrentScene.AddCardScene
                             }
 
+                            newlyAddedCardPosition = 0
                         } else {
                             cards.forEach {
                                 if (it.id == newCards[0].id) {
@@ -490,7 +510,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                         try {
                             val authority =
                                 requireActivity().applicationContext.packageName.toString() +
-                                        ".fileprovider"
+                                    ".fileprovider"
                             val uriToFile: Uri =
                                 FileProvider.getUriForFile(requireActivity(), authority, file)
 
@@ -498,7 +518,6 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                             shareIntent.setDataAndType(uriToFile, "application/pdf")
                             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                             requireActivity().startActivity(shareIntent)
-
                         } catch (e: java.lang.Exception) {
                             e.printStackTrace()
                             fallBackToLocalPDFRenderer(healthCardDto)

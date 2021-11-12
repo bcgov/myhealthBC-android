@@ -21,7 +21,7 @@ import kotlinx.coroutines.runBlocking
 class MyCardsAdapter(
     var cards: MutableList<HealthCardDto>,
     private var canManage: Boolean = false,
-    var clickListener: ((HealthCardDto)-> Unit)? = null
+    var clickListener: ((HealthCardDto) -> Unit)? = null
 ) : RecyclerView.Adapter<MyCardsAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemMycardsCardsListBinding) :
@@ -84,13 +84,15 @@ class MyCardsAdapter(
             holder.binding.imgUnlink.visibility = View.GONE
             holder.binding.icReorder.visibility = View.GONE
 
-            if(card.federalPass.isNullOrEmpty()){
+            if (card.federalPass.isNullOrEmpty()) {
                 holder.binding.tvFederalPassTitle.text = holder.itemView.resources
                     .getString(R.string.get_federal_proof_of_vaccination)
-                holder.binding.ivFederalPassAction.
-                setImageResource(R.drawable.ic_federal_pass_add)
+                holder.binding.ivFederalPassAction
+                    .setImageResource(R.drawable.ic_federal_pass_add)
                 holder.binding.viewFederalProof.setOnClickListener {
-                    holder.itemView.findNavController().navigate(R.id.travelPassFragment)
+                    val action = MyCardsFragmentDirections
+                        .actionMyCardsFragmentToFetchTravelPassFragment(card)
+                    holder.itemView.findNavController().navigate(action)
                 }
             } else {
                 holder.binding.tvFederalPassTitle.text = holder.itemView.resources
@@ -101,7 +103,6 @@ class MyCardsAdapter(
                     clickListener?.invoke(card)
                 }
             }
-
         }
     }
 

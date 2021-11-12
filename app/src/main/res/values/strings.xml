@@ -79,6 +79,8 @@
     <string name="get_federal_proof_of_vaccination">Get Federal Proof of Vaccination</string>
     <string name="show_federal_proof_of_vaccination">Show Federal Proof of Vaccination</string>
     <string name="domestic_and_international_travel">Domestic and International Travel</string>
+    <string name="find_phn_on_care_card_or_the_back_of_driver_s_license">Find PHN on care card or the back of driver’s license.</string>
+    <string name="get_federal_travel_pass">Get Federal Travel Pass</string>
 
     <!-- In app updates -->
     <string name="update_success">Update Success!</string>
@@ -113,7 +115,6 @@
     <string name="check_connection">Please check network connection.</string>
     <string name="place_holder_text">Place holder text</string>
     <string name="lorem_ipsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</string>
-
     <!--TODO any new strings below needs to be grouped logically as above-->
 
 

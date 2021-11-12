@@ -9,5 +9,6 @@ data class ImmunizationRecord(
     val name: String,
     val birthDate: String?,
     val status: ImmunizationStatus,
-    val issueDate: Long
+    val issueDate: Long,
+    val occurrenceDateTime: String?
 )

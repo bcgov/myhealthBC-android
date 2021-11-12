@@ -15,5 +15,7 @@ data class HealthCardDto(
     val uri: String,
     var isExpanded: Boolean = false,
     val issueDate: String = "",
-    val federalPass : String? = ""
+    val birthDate: String = "",
+    val occurrenceDateTime: String = "",
+    var federalPass: String? = ""
 ) : Parcelable

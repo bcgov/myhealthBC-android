@@ -20,7 +20,6 @@ import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
-
 @AndroidEntryPoint
 class TravelPassFragment : Fragment(R.layout.fragment_travel_pass) {
 
@@ -42,7 +41,7 @@ class TravelPassFragment : Fragment(R.layout.fragment_travel_pass) {
         if (!args.healthCardDto.federalPass.isNullOrEmpty()) {
 
             try {
-                //Save the file in app's internal memory
+                // Save the file in app's internal memory
                 val decodedByteArray: ByteArray =
                     Base64.decode(args.healthCardDto.federalPass, Base64.DEFAULT)
 
@@ -73,7 +72,6 @@ class TravelPassFragment : Fragment(R.layout.fragment_travel_pass) {
                         pdfRenderer = PdfRenderer(parcelFileDescriptor)
 
                         setRecyclerView(pdfRenderer)
-
                     }
                 }
             } catch (e: Exception) {
@@ -81,7 +79,6 @@ class TravelPassFragment : Fragment(R.layout.fragment_travel_pass) {
             }
         }
     }
-
 
     private fun setRecyclerView(pdfRenderer: PdfRenderer) {
 
@@ -91,7 +88,6 @@ class TravelPassFragment : Fragment(R.layout.fragment_travel_pass) {
 
         binding.rvPdfPages.layoutManager = LinearLayoutManager(requireContext())
     }
-
 
     private fun setToolBar() {
         binding.toolbar.apply {
@@ -109,7 +105,7 @@ class TravelPassFragment : Fragment(R.layout.fragment_travel_pass) {
                     try {
                         val authority =
                             requireActivity().applicationContext.packageName.toString() +
-                                    ".fileprovider"
+                                ".fileprovider"
                         val uriToFile: Uri =
                             FileProvider.getUriForFile(requireActivity(), authority, fileForSharing)
 
@@ -126,7 +122,6 @@ class TravelPassFragment : Fragment(R.layout.fragment_travel_pass) {
                             args.healthCardDto.name + ": Travel Pass"
                         )
                         requireActivity().startActivity(shareIntent)
-
                     } catch (e: Exception) {
                         e.printStackTrace()
                         requireContext().toast(requireContext().getString(R.string.no_app_found))
@@ -144,5 +139,4 @@ class TravelPassFragment : Fragment(R.layout.fragment_travel_pass) {
     companion object {
         const val tempFileName = "Travel_Pass.pdf"
     }
-
 }

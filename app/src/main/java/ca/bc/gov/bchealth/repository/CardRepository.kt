@@ -17,6 +17,7 @@ import ca.bc.gov.bchealth.utils.getDateTime
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -24,7 +25,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
 
 /**
  * [CardRepository]
@@ -52,8 +52,15 @@ class CardRepository @Inject constructor(
             try {
                 val data = shcDecoder.getImmunizationStatus(card.uri)
                 HealthCardDto(
-                    card.id, data.name, data.status, card.uri,
-                    false, data.issueDate.getDateTime(), card.federalPass
+                    card.id,
+                    data.name,
+                    data.status,
+                    card.uri,
+                    false,
+                    data.issueDate.getDateTime(),
+                    data.birthDate.toString(),
+                    data.occurrenceDateTime.toString(),
+                    card.federalPass
                 )
             } catch (e: Exception) {
                 HealthCardDto(
@@ -81,9 +88,9 @@ class CardRepository @Inject constructor(
                 val existingHealthPass = cards.filter { record ->
                     val immunizationRecord = shcDecoder.getImmunizationStatus(record.uri)
                     (
-                            immunizationRecord.name == healthPassToBeInserted.name &&
-                                    immunizationRecord.birthDate == healthPassToBeInserted.birthDate
-                            )
+                        immunizationRecord.name == healthPassToBeInserted.name &&
+                            immunizationRecord.birthDate == healthPassToBeInserted.birthDate
+                        )
                 }
 
                 if (existingHealthPass.isNullOrEmpty()) {
@@ -179,7 +186,8 @@ class CardRepository @Inject constructor(
     * Process QR image and get the shcUri
     * */
     private suspend fun processImage(
-        image: InputImage, base64EncodedPdf: String
+        image: InputImage,
+        base64EncodedPdf: String
     ) {
 
         val scanner = BarcodeScanning.getClient()
@@ -224,7 +232,8 @@ class CardRepository @Inject constructor(
     * Find the vaccination status and save the vaccine data for future use.
     * */
     private suspend fun processShcUri(
-        shcUri: String, base64EncodedPdf: String
+        shcUri: String,
+        base64EncodedPdf: String
     ) {
         try {
             when (shcDecoder.getImmunizationStatus(shcUri).status) {
@@ -258,15 +267,16 @@ class CardRepository @Inject constructor(
             vaxStatusResponse?.resourcePayload?.qrCode?.data
                 ?.let { base64EncodedImage ->
 
-                    vaxStatusResponse.resourcePayload.federalVaccineProof.data?.let { base64EncodedPdf ->
+                    vaxStatusResponse.resourcePayload.federalVaccineProof.data
+                        ?.let { base64EncodedPdf ->
 
-                        try {
-                            prepareQRImage(base64EncodedImage, base64EncodedPdf)
-                        } catch (e: Exception) {
-                            responseMutableSharedFlow
-                                .emit(Response.Error(ErrorData.GENERIC_ERROR))
+                            try {
+                                prepareQRImage(base64EncodedImage, base64EncodedPdf)
+                            } catch (e: Exception) {
+                                responseMutableSharedFlow
+                                    .emit(Response.Error(ErrorData.GENERIC_ERROR))
+                            }
                         }
-                    }
                 }
         } else {
             result.body()?.resultError?.resultMessage?.let {
@@ -299,8 +309,48 @@ class CardRepository @Inject constructor(
         return true
     }
 
+    /*
+    * Fetch federal travel pass for existing vaccine cards
+    * */
+    suspend fun getFederalTravelPass(healthCardDto: HealthCardDto, phn: String) {
+        responseMutableSharedFlow.emit(Response.Loading())
 
-    suspend fun updateHealthPass(healthCard: HealthCard) {
-        dataSource.update(healthCard)
+        val result = immunizationServices.getVaccineStatus(
+            phn,
+            healthCardDto.birthDate,
+            healthCardDto.occurrenceDateTime
+        )
+
+        if (validateResponse(result)) {
+            val vaxStatusResponse = result.body()
+
+            vaxStatusResponse?.resourcePayload?.federalVaccineProof?.data
+                ?.let { base64EncodedPdf ->
+
+                    try {
+                        dataSource.update(
+                            HealthCard(
+                                healthCardDto.id,
+                                healthCardDto.uri,
+                                base64EncodedPdf
+                            )
+                        )
+                        healthCardDto.federalPass = base64EncodedPdf
+                        responseMutableSharedFlow.emit(Response.Success(data = healthCardDto))
+                    } catch (e: Exception) {
+                        responseMutableSharedFlow
+                            .emit(Response.Error(ErrorData.GENERIC_ERROR))
+                    }
+                }
+        } else {
+            result.body()?.resultError?.resultMessage?.let {
+                val errorData = ErrorData.NETWORK_ERROR
+                errorData.errorMessage = it
+                responseMutableSharedFlow.emit(Response.Error(errorData))
+                return
+            }
+            responseMutableSharedFlow
+                .emit(Response.Error(ErrorData.GENERIC_ERROR))
+        }
     }
 }
