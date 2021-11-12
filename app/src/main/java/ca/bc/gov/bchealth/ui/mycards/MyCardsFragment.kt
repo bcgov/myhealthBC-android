@@ -1,17 +1,22 @@
 package ca.bc.gov.bchealth.ui.mycards
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
+import android.net.Uri
 import android.os.Bundle
 import android.transition.Scene
+import android.util.Base64
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -25,6 +30,8 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentMyCardsBinding
 import ca.bc.gov.bchealth.model.HealthCardDto
+import ca.bc.gov.bchealth.ui.travelpass.TravelPassFragment
+import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
@@ -115,6 +122,12 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.cards.collect { cards ->
 
+                    /*
+                    * Below logic is used to preserve expanded state of health card and
+                    * to show newly added card in cards list.
+                    * Temporary list is used to compare previous cards list to find
+                    * newly added/updated card.
+                    * */
                     cards?.toMutableList()?.let { it ->
 
                         if (cardsTemp.isEmpty()) {
@@ -128,8 +141,18 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                             return@collect
                         }
 
-                        var newCards = cards.filter { it.id !in cardsTemp.map { item -> item.id } }
+                        /*
+                        * Get newly added cards
+                        * */
+                        var newCards =
+                            cards.filter {
+                                it.id !in cardsTemp
+                                    .map { item -> item.id }
+                            }
 
+                        /*
+                        * Get vaccine status updated card
+                        * */
                         if (newCards.isEmpty()) {
                             newCards = cards.filter {
                                 it.uri !in cardsTemp
@@ -137,18 +160,36 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                             }
                         }
 
+                        /*
+                        * Get federal pass updated card
+                        * */
+                        if (newCards.isEmpty()) {
+                            newCards = cards.filter {
+                                it.federalPass !in cardsTemp
+                                    .map { item -> item.federalPass }
+                            }
+                        }
+
                         cardsTemp.clear()
                         cardsTemp.addAll(cards)
 
                         if (newCards.isEmpty()) {
+
+                            var previouslyExpandedCard = 0
+
                             cards.forEach {
-                                it.isExpanded = false
+                                if (it.isExpanded) {
+                                    previouslyExpandedCard = cards.indexOf(it)
+                                }
                             }
+
                             if (cards.isNotEmpty()) {
-                                cards[0].isExpanded = true
+                                cards[previouslyExpandedCard].isExpanded = true
                             } else {
                                 currentScene = CurrentScene.AddCardScene
                             }
+
+                            newlyAddedCardPosition = 0
                         } else {
                             cards.forEach {
                                 if (it.id == newCards[0].id) {
@@ -194,7 +235,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
         // Toolbar setup
         val toolBar = sceneAddCard.sceneRoot.findViewById<ViewGroup>(R.id.toolbar)
-        val settingsButton = toolBar.findViewById<ImageView>(R.id.iv_settings)
+        val settingsButton = toolBar.findViewById<ImageView>(R.id.iv_right_option)
         settingsButton.visibility = View.VISIBLE
         settingsButton.setOnClickListener {
             findNavController().navigate(R.id.action_myCardsFragment_to_settingFragment)
@@ -226,16 +267,19 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
         // Toolbar setup
         val toolBar = sceneSingleCard.sceneRoot.findViewById<ViewGroup>(R.id.toolbar)
-        val settingsButton = toolBar.findViewById<ImageView>(R.id.iv_settings)
+        val settingsButton = toolBar.findViewById<ImageView>(R.id.iv_right_option)
         settingsButton.visibility = View.VISIBLE
         settingsButton.setOnClickListener {
             findNavController().navigate(R.id.action_myCardsFragment_to_settingFragment)
         }
 
         // Recycler view setup
-        cardsListAdapter = MyCardsAdapter(cards.toMutableList().subList(0, 1)) { healthCard ->
-            confirmUnlinking(healthCard = healthCard)
+        cardsListAdapter = MyCardsAdapter(cards.toMutableList().subList(0, 1))
+
+        cardsListAdapter.clickListener = {
+            showFederalProof(it)
         }
+
         val recyclerViewCardsList =
             sceneSingleCard.sceneRoot
                 .findViewById<RecyclerView>(R.id.rec_cards_list)
@@ -389,24 +433,26 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
         // Toolbar setup
         val toolBar = sceneMyCardsList.sceneRoot.findViewById<ViewGroup>(R.id.toolbar)
-        val backButton = toolBar.findViewById<ImageView>(R.id.iv_back)
+        val backButton = toolBar.findViewById<ImageView>(R.id.iv_left_option)
         backButton.visibility = View.VISIBLE
         backButton.setOnClickListener {
             enterSingleCardScene(cards)
         }
         val titleText = toolBar.findViewById<TextView>(R.id.tv_title)
         titleText.visibility = View.VISIBLE
-        titleText.text = getString(R.string.bc_vaccine_cards)
-        val addButton = toolBar.findViewById<ImageView>(R.id.iv_settings)
-        addButton.setImageResource(R.drawable.ic_plus)
-        addButton.visibility = View.VISIBLE
-        addButton.setOnClickListener {
-            findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
+        titleText.text = getString(R.string.bc_vaccine_passes)
+        val tvEdit = toolBar.findViewById<TextView>(R.id.tv_right_option)
+        tvEdit.text = getString(R.string.edit)
+        tvEdit.visibility = View.VISIBLE
+        tvEdit.setOnClickListener {
+            enterManageCardsScene(cards)
         }
 
         // Recycler view setup
-        cardsListAdapter = MyCardsAdapter(cards.toMutableList()) { healthCard ->
-            confirmUnlinking(healthCard = healthCard)
+        cardsListAdapter = MyCardsAdapter(cards.toMutableList())
+
+        cardsListAdapter.clickListener = {
+            showFederalProof(it)
         }
 
         val recyclerViewCardsList =
@@ -431,13 +477,56 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                         )
             }
         }
+    }
 
-        // Other UI setup
-        val btnManageCards = sceneMyCardsList.sceneRoot.findViewById<Button>(R.id.btn_manage_cards)
-        btnManageCards.text = getString(R.string.manage_cards)
-        btnManageCards.setOnClickListener {
-            enterManageCardsScene(cards)
+    private fun showFederalProof(healthCardDto: HealthCardDto) {
+
+        if (!healthCardDto.federalPass.isNullOrEmpty()) {
+            try {
+                val decodedByteArray: ByteArray =
+                    Base64.decode(healthCardDto.federalPass, Base64.DEFAULT)
+
+                val filename = TravelPassFragment.tempFileName
+
+                kotlin.runCatching {
+                    requireContext().openFileOutput(filename, Context.MODE_PRIVATE).use {
+                        it.write(decodedByteArray)
+                    }
+                }
+
+                val internalStorageFiles = requireContext().filesDir
+
+                internalStorageFiles?.listFiles()?.forEach { file ->
+
+                    if (file.name == TravelPassFragment.tempFileName) {
+
+                        try {
+                            val authority =
+                                requireActivity().applicationContext.packageName.toString() +
+                                    ".fileprovider"
+                            val uriToFile: Uri =
+                                FileProvider.getUriForFile(requireActivity(), authority, file)
+
+                            val shareIntent = Intent(Intent.ACTION_VIEW)
+                            shareIntent.setDataAndType(uriToFile, "application/pdf")
+                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            requireActivity().startActivity(shareIntent)
+                        } catch (e: java.lang.Exception) {
+                            e.printStackTrace()
+                            fallBackToLocalPDFRenderer(healthCardDto)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                requireContext().toast(requireContext().getString(R.string.error_message))
+            }
         }
+    }
+
+    private fun fallBackToLocalPDFRenderer(healthCardDto: HealthCardDto) {
+        val action = MyCardsFragmentDirections
+            .actionMyCardsFragmentToTravelPassFragment(healthCardDto)
+        findNavController().navigate(action)
     }
 
     /*
@@ -451,24 +540,28 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
         // Toolbar setup
         val toolBar = sceneManageCards.sceneRoot.findViewById<ViewGroup>(R.id.toolbar)
-        val backButton = toolBar.findViewById<ImageView>(R.id.iv_back)
+        val backButton = toolBar.findViewById<ImageView>(R.id.iv_left_option)
         backButton.visibility = View.VISIBLE
         backButton.setOnClickListener {
             enterCardsListScene(cards)
         }
         val titleText = toolBar.findViewById<TextView>(R.id.tv_title)
         titleText.visibility = View.VISIBLE
-        titleText.text = getString(R.string.bc_vaccine_cards)
-        val addButton = toolBar.findViewById<ImageView>(R.id.iv_settings)
-        addButton.setImageResource(R.drawable.ic_plus)
-        addButton.visibility = View.VISIBLE
-        addButton.setOnClickListener {
-            findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
+        titleText.text = getString(R.string.bc_vaccine_passes)
+        val tvDone = toolBar.findViewById<TextView>(R.id.tv_right_option)
+        tvDone.text = getString(R.string.done)
+        tvDone.visibility = View.VISIBLE
+        tvDone.setOnClickListener {
+            viewModel.rearrange(manageCardsAdapter.cards.toList()).invokeOnCompletion {
+                enterCardsListScene(cards)
+            }
         }
 
         // Recycler view setup
-        manageCardsAdapter = MyCardsAdapter(cards.toMutableList(), true) { healthCard ->
-            confirmUnlinking(healthCard = healthCard)
+        manageCardsAdapter = MyCardsAdapter(cards.toMutableList(), true)
+
+        manageCardsAdapter.clickListener = { healtCardDto ->
+            confirmUnlinking(healtCardDto)
         }
 
         val recyclerViewManageCards =
@@ -479,14 +572,6 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
         recyclerViewManageCards.layoutManager =
             LinearLayoutManager(requireContext())
-
-        // Other UI setup
-        val btnManageCards = sceneManageCards.sceneRoot.findViewById<Button>(R.id.btn_manage_cards)
-        btnManageCards.text = getString(R.string.done)
-        btnManageCards.setOnClickListener {
-            viewModel.rearrange(manageCardsAdapter.cards.toList())
-            enterCardsListScene(cards)
-        }
 
         /*
         * Add cards movement functionality

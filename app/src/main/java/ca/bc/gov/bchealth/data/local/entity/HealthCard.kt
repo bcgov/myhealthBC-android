@@ -16,5 +16,6 @@ import androidx.room.PrimaryKey
 data class HealthCard(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    var uri: String
+    var uri: String,
+    var federalPass: String? = ""
 )

@@ -28,7 +28,6 @@
 
     <!--Add card-->
     <string name="add_card">Add Card</string>
-    <string name="add_bc_vaccine_card">Add a BC Vaccine Card</string>
     <string name="no_cards_message">You don\'t have any card yet</string>
     <string name="title_add_card">Please select one of the following options to add an <b><font face='@font/bc_sans_bold'>official Health Pass</font></b> containing a QR code</string>
     <string name="add_card_options_message">Scan, upload or get access to your proof of vaccination.</string>
@@ -58,6 +57,8 @@
 
     <!--Health Passes-->
     <string name="passes">Passes</string>
+    <string name="bc_vaccine_pass">BC Vaccine Pass</string>
+    <string name="bc_vaccine_passes">BC Vaccine Passes</string>
     <string name="health_passes_message">Use Health Passes as an easy way to access and show your proof of vaccination.</string>
     <string name="health_passes_message_1">Save a <b><font face='@font/bc_sans_bold'>BC Vaccine Card</font></b> and <b><font face='@font/bc_sans_bold'>Federal Proof of Vaccination</font></b> here.</string>
     <string name="vaccinated">Vaccinated</string>
@@ -74,6 +75,13 @@
     <string name="view_all">View All</string>
     <string name="undo">Undo</string>
     <string name="bc_vaccine_card_unlinked">BC Vaccine Card unlinked.</string>
+    <string name="edit">Edit</string>
+    <string name="travel_pass">Travel Pass</string>
+    <string name="get_federal_proof_of_vaccination">Get Federal Proof of Vaccination</string>
+    <string name="show_federal_proof_of_vaccination">Show Federal Proof of Vaccination</string>
+    <string name="domestic_and_international_travel">Domestic and International Travel</string>
+    <string name="find_phn_on_care_card_or_the_back_of_driver_s_license">Find PHN on care card or the back of driver’s license.</string>
+    <string name="get_federal_travel_pass">Get Federal Travel Pass</string>
 
     <!-- In app updates -->
     <string name="update_success">Update Success!</string>
@@ -87,7 +95,7 @@
     <string name="next">Next</string>
     <string name="get_started">Get Started</string>
     <string name="health_passes">Health Passes</string>
-    <string name="onboarding_message_1">All of your proof of COVID-19 vaccinations available in a single place</string>
+    <string name="onboarding_message_1">Keep your BC Vaccine Cards and Federal COVID-19 Travel Proofs in a single place</string>
     <string name="health_resource">Health Resources</string>
     <string name="onboarding_message_2">Find COVID-19 health information and testing resources</string>
     <string name="news_feed">News Feed</string>
@@ -99,7 +107,6 @@
     <!--Miscellaneous-->
     <string name="coming_soon">Coming soon!</string>
     <string name="back">Back</string>
-    <string name="bc_vaccine_cards">BC Vaccine Cards</string>
     <string name="submit">Submit</string>
     <string name="cancel">Cancel</string>
     <string name="error">Error!</string>
@@ -108,5 +115,7 @@
     <string name="check_connection">Please check network connection.</string>
     <string name="place_holder_text">Place holder text</string>
     <string name="lorem_ipsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</string>
+    <!--TODO any new strings below needs to be grouped logically as above-->
+
 
 </resources>

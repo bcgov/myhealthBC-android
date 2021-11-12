@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/iv_back"
+            android:id="@+id/iv_left_option"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="@dimen/space_3_x"
@@ -22,6 +22,24 @@
             android:focusable="true"
             android:padding="12dp"
             android:src="@drawable/ic_action_back"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.516"
+            tools:visibility="visible" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_left_option"
+            style="?textAppearanceBody2"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginStart="@dimen/space_3_x"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="12dp"
+            android:text="@string/done"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +65,7 @@
             tools:visibility="visible" />
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/iv_settings"
+            android:id="@+id/iv_right_option"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginEnd="@dimen/space_4_x"
@@ -61,6 +79,24 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_right_option"
+            style="?textAppearanceBody2"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginEnd="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="12dp"
+            android:text="@string/edit"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.516"
             tools:visibility="visible" />
 
         <View

@@ -1,9 +1,8 @@
-package ca.bc.gov.bchealth.ui.addcard
+package ca.bc.gov.bchealth.ui.travelpass
 
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
@@ -13,18 +12,19 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import ca.bc.gov.bchealth.BuildConfig
+import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineCardBinding
+import ca.bc.gov.bchealth.databinding.FragmentFetchTravelPassBinding
 import ca.bc.gov.bchealth.di.ApiClientModule
 import ca.bc.gov.bchealth.http.MustBeQueued
+import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.utils.Response
-import ca.bc.gov.bchealth.utils.adjustOffset
+import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.isOnline
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
-import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
@@ -36,22 +36,27 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
-import java.text.SimpleDateFormat
-import java.util.Locale
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
-class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) {
+class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
 
-    private val binding by viewBindings(FragmentFetchVaccineCardBinding::bind)
+    private val binding by viewBindings(FragmentFetchTravelPassBinding::bind)
 
-    private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CANADA)
+    private val viewModel: FetchTravelPassViewModel by viewModels()
 
-    private val viewModel: FetchVaccineCardViewModel by viewModels()
+    private val args: FetchTravelPassFragmentArgs by navArgs()
+
+    private lateinit var healthCardDto: HealthCardDto
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        healthCardDto = args.healthCardDto
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,6 +66,9 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         iniUI()
     }
 
+    /*
+    * Toolbar UI and functionality
+    * */
     private fun setToolBar() {
         binding.toolbar.apply {
             ivLeftOption.visibility = View.VISIBLE
@@ -70,7 +78,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             }
 
             tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.add_a_health_pass)
+            tvTitle.text = getString(R.string.get_federal_travel_pass)
 
             ivRightOption.visibility = View.VISIBLE
             ivRightOption.setImageResource(R.drawable.ic_help)
@@ -82,21 +90,10 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         }
     }
 
+    /*
+    * Initialize UI functionality
+    * */
     private fun iniUI() {
-
-        if (BuildConfig.DEBUG) {
-            /*binding.edPhnNumber.editText?.setText("9000201422")
-            binding.edDob.editText?.setText("1989-12-12")
-            binding.edDov.editText?.setText("2021-05-15")*/
-
-            /*binding.edPhnNumber.editText?.setText("9000691304")
-            binding.edDob.editText?.setText("1965-01-14")
-            binding.edDov.editText?.setText("2021-07-15")*/
-        }
-
-        setUpDobUI()
-
-        setUpDovUI()
 
         binding.btnCancel.setOnClickListener {
             findNavController().popBackStack()
@@ -107,53 +104,10 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             if (validateInputData()) {
 
                 viewLifecycleOwner.lifecycleScope.launch {
-                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        viewModel.responseSharedFlow.collect {
-                            when (it) {
-                                is Response.Success -> {
-
-                                    if (binding.checkboxRemember.isChecked) {
-                                        // Save form data for autocomplete option
-                                        val formData: String =
-                                            binding.edPhnNumber.editText?.text.toString() +
-                                                binding.edDob.editText?.text.toString() +
-                                                binding.edDov.editText?.text.toString()
-
-                                        viewModel.setRecentFormData(formData).invokeOnCompletion {
-
-                                            // Navigate to health passes
-                                            navigateToHealthPasses()
-                                            this.cancel()
-                                        }
-                                    } else {
-                                        // Navigate to health passes
-                                        navigateToHealthPasses()
-                                        this.cancel()
-                                    }
-                                }
-                                is Response.Error -> {
-                                    ApiClientModule.queueItToken = ""
-                                    binding.progressBar.visibility = View.INVISIBLE
-                                    showError(
-                                        it.errorData?.errorTitle.toString(),
-                                        it.errorData?.errorMessage.toString()
-                                    )
-                                    this.cancel()
-                                }
-                                is Response.Loading -> {
-                                    binding.progressBar.visibility = View.VISIBLE
-                                }
-                            }
-                        }
-                    }
-                }
-
-                viewLifecycleOwner.lifecycleScope.launch {
                     try {
-                        viewModel.getVaccineStatus(
-                            binding.edPhnNumber.editText?.text.toString(),
-                            binding.edDob.editText?.text.toString(),
-                            binding.edDov.editText?.text.toString()
+                        viewModel.getFederalTravelPass(
+                            healthCardDto,
+                            binding.edPhnNumber.editText?.text.toString()
                         )
                     } catch (e: Exception) {
                         if (e is MustBeQueued) {
@@ -196,24 +150,43 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
                         val textView = binding.edPhnNumber.editText as AutoCompleteTextView
                         textView.setAdapter(adapter)
-                        textView.onItemClickListener =
-                            AdapterView.OnItemClickListener { p0, p1, p2, p3 ->
-                                binding.edDob.editText?.setText(triple.second.toString())
-                                binding.edDov.editText?.setText(triple.third.toString())
-                            }
+                    }
+                }
+            }
+        }
+
+        observeResponse()
+    }
+
+    private fun observeResponse() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.responseSharedFlow.collect {
+                    when (it) {
+                        is Response.Success -> {
+                            healthCardDto = it.data as HealthCardDto
+                            showFederalTravelPass()
+                        }
+                        is Response.Error -> {
+                            ApiClientModule.queueItToken = ""
+                            binding.progressBar.visibility = View.INVISIBLE
+                            showError(
+                                it.errorData?.errorTitle.toString(),
+                                it.errorData?.errorMessage.toString()
+                            )
+                        }
+                        is Response.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun navigateToHealthPasses() {
-        ApiClientModule.queueItToken = ""
-        binding.progressBar.visibility = View.INVISIBLE
-        findNavController()
-            .popBackStack(R.id.myCardsFragment, false)
-    }
-
+    /*
+    * Validations before network call
+    * */
     private fun validateInputData(): Boolean {
 
         if (binding.edPhnNumber.editText?.text.isNullOrEmpty()) {
@@ -242,68 +215,6 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             return false
         }
 
-        if (binding.edDob.editText?.text.isNullOrEmpty()) {
-            binding.edDob.isErrorEnabled = true
-            binding.edDob.error = getString(R.string.dob_required)
-            binding.edDob.editText?.doOnTextChanged { text, start, before, count ->
-                if (text != null)
-                    if (text.isNotEmpty()) {
-                        binding.edDob.isErrorEnabled = false
-                        binding.edDob.error = null
-                    }
-            }
-            return false
-        }
-
-        if (!binding.edDob.editText?.text.toString()
-            .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
-
-            !binding.edDob.editText?.text.toString()
-                .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
-        ) {
-            binding.edDob.isErrorEnabled = true
-            binding.edDob.error = getString(R.string.enter_valid_date_format)
-            binding.edDob.editText?.doOnTextChanged { text, start, before, count ->
-                if (text != null)
-                    if (text.isNotEmpty()) {
-                        binding.edDob.isErrorEnabled = false
-                        binding.edDob.error = null
-                    }
-            }
-            return false
-        }
-
-        if (binding.edDov.editText?.text.isNullOrEmpty()) {
-            binding.edDov.isErrorEnabled = true
-            binding.edDov.error = getString(R.string.dov_required)
-            binding.edDov.editText?.doOnTextChanged { text, start, before, count ->
-                if (text != null)
-                    if (text.isNotEmpty()) {
-                        binding.edDov.isErrorEnabled = false
-                        binding.edDov.error = null
-                    }
-            }
-            return false
-        }
-
-        if (!binding.edDov.editText?.text.toString()
-            .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
-
-            !binding.edDov.editText?.text.toString()
-                .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
-        ) {
-            binding.edDov.isErrorEnabled = true
-            binding.edDov.error = getString(R.string.enter_valid_date_format)
-            binding.edDov.editText?.doOnTextChanged { text, start, before, count ->
-                if (text != null)
-                    if (text.isNotEmpty()) {
-                        binding.edDov.isErrorEnabled = false
-                        binding.edDov.error = null
-                    }
-            }
-            return false
-        }
-
         if (!requireContext().isOnline()) {
             showError(
                 getString(R.string.no_internet),
@@ -315,39 +226,17 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         return true
     }
 
-    private fun setUpDobUI() {
-        val dateOfBirthPicker =
-            MaterialDatePicker.Builder.datePicker()
-                .setTitleText(getString(R.string.select_date))
-                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-                .build()
-        binding.edDob.editText?.setOnClickListener {
-            dateOfBirthPicker.show(parentFragmentManager, "DATE_OF_BIRTH")
-        }
-        binding.edDob.setEndIconOnClickListener {
-            dateOfBirthPicker.show(parentFragmentManager, "DATE_OF_BIRTH")
-        }
-        dateOfBirthPicker.addOnPositiveButtonClickListener {
-            binding.edDob.editText
-                ?.setText(simpleDateFormat.format(it.adjustOffset()))
-        }
-    }
+    private fun showFederalTravelPass() {
+        ApiClientModule.queueItToken = ""
+        binding.progressBar.visibility = View.INVISIBLE
+        requireContext().hideKeyboard(binding.edPhnNumber)
 
-    private fun setUpDovUI() {
-        val dateOfVaccinationPicker =
-            MaterialDatePicker.Builder.datePicker()
-                .setTitleText(getString(R.string.select_date))
-                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-                .build()
-        binding.edDov.editText?.setOnClickListener {
-            dateOfVaccinationPicker.show(parentFragmentManager, "DATE_OF_VACCINATION")
-        }
-        binding.edDov.setEndIconOnClickListener {
-            dateOfVaccinationPicker.show(parentFragmentManager, "DATE_OF_VACCINATION")
-        }
-        dateOfVaccinationPicker.addOnPositiveButtonClickListener {
-            binding.edDov.editText?.setText(simpleDateFormat.format(it.adjustOffset()))
-        }
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.fetchTravelPassFragment, true)
+            .build()
+        val action = FetchTravelPassFragmentDirections
+            .actionFetchTravelPassFragmentToTravelPassFragment(healthCardDto)
+        findNavController().navigate(action, navOptions)
     }
 
     /*
@@ -374,10 +263,9 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
                         viewLifecycleOwner.lifecycleScope.launch {
                             try {
-                                viewModel.getVaccineStatus(
-                                    binding.edPhnNumber.editText?.text.toString(),
-                                    binding.edDob.editText?.text.toString(),
-                                    binding.edDov.editText?.text.toString()
+                                viewModel.getFederalTravelPass(
+                                    healthCardDto,
+                                    binding.edPhnNumber.editText?.text.toString()
                                 )
                             } catch (e: Exception) {
                                 e.printStackTrace()

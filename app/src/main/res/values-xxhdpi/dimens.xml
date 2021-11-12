@@ -2,6 +2,8 @@
 <resources>
 
     <!--Spacing in multiple of 8px used for Margin or Padding-->
+    <dimen name="space_2_x_negative">-16dp</dimen>
+    <dimen name="space_1_x_negative">-8dp</dimen>
     <dimen name="space_1_x">8dp</dimen>
     <dimen name="space_2_x">16dp</dimen>
     <dimen name="space_3_x">24dp</dimen>

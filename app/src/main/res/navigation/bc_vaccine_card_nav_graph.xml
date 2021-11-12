@@ -37,6 +37,20 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_myCardsFragment_to_TravelPassFragment"
+            app:destination="@id/travelPassFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_myCardsFragment_to_fetchTravelPassFragment"
+            app:destination="@id/fetchTravelPassFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/addCardOptionFragment"
@@ -98,4 +112,28 @@
         android:id="@+id/newFeatureFragment"
         android:name="ca.bc.gov.bchealth.ui.onboarding.NewFeatureFragment"
         android:label="NewFeatureFragment" />
+    <fragment
+        android:id="@+id/travelPassFragment"
+        android:name="ca.bc.gov.bchealth.ui.travelpass.TravelPassFragment"
+        android:label="fragment_travel_pass"
+        tools:layout="@layout/fragment_travel_pass" >
+        <argument
+            android:name="healthCardDto"
+            app:argType="ca.bc.gov.bchealth.model.HealthCardDto" />
+    </fragment>
+    <fragment
+        android:id="@+id/fetchTravelPassFragment"
+        android:name="ca.bc.gov.bchealth.ui.travelpass.FetchTravelPassFragment"
+        android:label="FetchTravelPassFragment" >
+        <argument
+            android:name="healthCardDto"
+            app:argType="ca.bc.gov.bchealth.model.HealthCardDto" />
+        <action
+            android:id="@+id/action_fetchTravelPassFragment_to_travelPassFragment"
+            app:destination="@id/travelPassFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
 </navigation>
