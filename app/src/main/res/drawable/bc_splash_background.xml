@@ -2,7 +2,6 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
     android:opacity="opaque">
 
-    <!--TODO Actual Splash screen design not yet available.-->
     <item android:drawable="?android:colorBackground" />
 
     <item

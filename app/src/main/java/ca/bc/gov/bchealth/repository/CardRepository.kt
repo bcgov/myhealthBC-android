@@ -149,16 +149,18 @@ class CardRepository @Inject constructor(
         context: Context
     ) {
 
-        var image: InputImage? = null
-        try {
-            image = InputImage.fromFilePath(context, uri) // TODO: 24/09/21 yet to handle warning
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-            responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
-            return
-        }
+        kotlin.runCatching {
+            var image: InputImage? = null
+            try {
+                image = InputImage.fromFilePath(context, uri)
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+                responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
+                return
+            }
 
-        processImage(image, "")
+            processImage(image, "")
+        }
     }
 
     /*
