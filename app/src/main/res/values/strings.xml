@@ -28,7 +28,6 @@
 
     <!--Add card-->
     <string name="add_card">Add Card</string>
-    <string name="add_bc_vaccine_card">Add a BC Vaccine Card</string>
     <string name="no_cards_message">You don\'t have any card yet</string>
     <string name="title_add_card">Please select one of the following options to add an <b><font face='@font/bc_sans_bold'>official Health Pass</font></b> containing a QR code</string>
     <string name="add_card_options_message">Scan, upload or get access to your proof of vaccination.</string>
@@ -58,6 +57,8 @@
 
     <!--Health Passes-->
     <string name="passes">Passes</string>
+    <string name="bc_vaccine_pass">BC Vaccine Pass</string>
+    <string name="bc_vaccine_passes">BC Vaccine Passes</string>
     <string name="health_passes_message">Use Health Passes as an easy way to access and show your proof of vaccination.</string>
     <string name="health_passes_message_1">Save a <b><font face='@font/bc_sans_bold'>BC Vaccine Card</font></b> and <b><font face='@font/bc_sans_bold'>Federal Proof of Vaccination</font></b> here.</string>
     <string name="vaccinated">Vaccinated</string>
@@ -94,7 +95,7 @@
     <string name="next">Next</string>
     <string name="get_started">Get Started</string>
     <string name="health_passes">Health Passes</string>
-    <string name="onboarding_message_1">All of your proof of COVID-19 vaccinations available in a single place</string>
+    <string name="onboarding_message_1">Keep your BC Vaccine Cards and Federal COVID-19 Travel Proofs in a single place</string>
     <string name="health_resource">Health Resources</string>
     <string name="onboarding_message_2">Find COVID-19 health information and testing resources</string>
     <string name="news_feed">News Feed</string>
@@ -106,7 +107,6 @@
     <!--Miscellaneous-->
     <string name="coming_soon">Coming soon!</string>
     <string name="back">Back</string>
-    <string name="bc_vaccine_cards">BC Vaccine Cards</string>
     <string name="submit">Submit</string>
     <string name="cancel">Cancel</string>
     <string name="error">Error!</string>

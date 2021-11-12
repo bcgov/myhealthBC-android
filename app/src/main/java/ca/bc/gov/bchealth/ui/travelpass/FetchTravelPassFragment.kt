@@ -21,6 +21,7 @@ import ca.bc.gov.bchealth.di.ApiClientModule
 import ca.bc.gov.bchealth.http.MustBeQueued
 import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.utils.Response
+import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.isOnline
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -228,6 +229,7 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
     private fun showFederalTravelPass() {
         ApiClientModule.queueItToken = ""
         binding.progressBar.visibility = View.INVISIBLE
+        requireContext().hideKeyboard(binding.edPhnNumber)
 
         val navOptions = NavOptions.Builder()
             .setPopUpTo(R.id.fetchTravelPassFragment, true)

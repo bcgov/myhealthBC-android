@@ -1,5 +1,6 @@
 package ca.bc.gov.bchealth.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -8,6 +9,8 @@ import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
@@ -202,4 +205,12 @@ private fun addWhiteBorder(bmp: Bitmap, borderSize: Int): Bitmap? {
     canvas.drawColor(Color.WHITE)
     canvas.drawBitmap(bmp, borderSize.toFloat(), borderSize.toFloat(), null)
     return bmpWithBorder
+}
+
+/*
+* Close keypad
+* */
+fun Context.hideKeyboard(view: View) {
+    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }

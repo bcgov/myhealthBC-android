@@ -70,7 +70,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             }
 
             tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.add_bc_vaccine_card)
+            tvTitle.text = getString(R.string.add_a_health_pass)
 
             ivRightOption.visibility = View.VISIBLE
             ivRightOption.setImageResource(R.drawable.ic_help)
@@ -85,9 +85,9 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     private fun iniUI() {
 
         if (BuildConfig.DEBUG) {
-            binding.edPhnNumber.editText?.setText("9000201422")
+            /*binding.edPhnNumber.editText?.setText("9000201422")
             binding.edDob.editText?.setText("1989-12-12")
-            binding.edDov.editText?.setText("2021-05-15")
+            binding.edDov.editText?.setText("2021-05-15")*/
 
             /*binding.edPhnNumber.editText?.setText("9000691304")
             binding.edDob.editText?.setText("1965-01-14")

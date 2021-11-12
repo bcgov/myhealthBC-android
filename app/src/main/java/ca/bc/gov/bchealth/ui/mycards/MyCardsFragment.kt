@@ -440,12 +440,12 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         }
         val titleText = toolBar.findViewById<TextView>(R.id.tv_title)
         titleText.visibility = View.VISIBLE
-        titleText.text = getString(R.string.bc_vaccine_cards)
-        val addButton = toolBar.findViewById<ImageView>(R.id.iv_right_option)
-        addButton.setImageResource(R.drawable.ic_plus)
-        addButton.visibility = View.VISIBLE
-        addButton.setOnClickListener {
-            findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
+        titleText.text = getString(R.string.bc_vaccine_passes)
+        val tvEdit = toolBar.findViewById<TextView>(R.id.tv_right_option)
+        tvEdit.text = getString(R.string.edit)
+        tvEdit.visibility = View.VISIBLE
+        tvEdit.setOnClickListener {
+            enterManageCardsScene(cards)
         }
 
         // Recycler view setup
@@ -476,13 +476,6 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                             RecyclerView.State(), newlyAddedCardPosition
                         )
             }
-        }
-
-        // Other UI setup
-        val btnManageCards = sceneMyCardsList.sceneRoot.findViewById<Button>(R.id.btn_manage_cards)
-        btnManageCards.text = getString(R.string.manage_cards)
-        btnManageCards.setOnClickListener {
-            enterManageCardsScene(cards)
         }
     }
 
@@ -554,12 +547,14 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         }
         val titleText = toolBar.findViewById<TextView>(R.id.tv_title)
         titleText.visibility = View.VISIBLE
-        titleText.text = getString(R.string.bc_vaccine_cards)
-        val addButton = toolBar.findViewById<ImageView>(R.id.iv_right_option)
-        addButton.setImageResource(R.drawable.ic_plus)
-        addButton.visibility = View.VISIBLE
-        addButton.setOnClickListener {
-            findNavController().navigate(R.id.action_myCardsFragment_to_addCardOptionFragment)
+        titleText.text = getString(R.string.bc_vaccine_passes)
+        val tvDone = toolBar.findViewById<TextView>(R.id.tv_right_option)
+        tvDone.text = getString(R.string.done)
+        tvDone.visibility = View.VISIBLE
+        tvDone.setOnClickListener {
+            viewModel.rearrange(manageCardsAdapter.cards.toList()).invokeOnCompletion {
+                enterCardsListScene(cards)
+            }
         }
 
         // Recycler view setup
@@ -577,14 +572,6 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
         recyclerViewManageCards.layoutManager =
             LinearLayoutManager(requireContext())
-
-        // Other UI setup
-        val btnManageCards = sceneManageCards.sceneRoot.findViewById<Button>(R.id.btn_manage_cards)
-        btnManageCards.text = getString(R.string.done)
-        btnManageCards.setOnClickListener {
-            viewModel.rearrange(manageCardsAdapter.cards.toList())
-            enterCardsListScene(cards)
-        }
 
         /*
         * Add cards movement functionality
