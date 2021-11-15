@@ -5,13 +5,6 @@
     <item android:drawable="?android:colorBackground" />
 
     <item
-        android:width="100dp"
-        android:height="25dp"
-        android:drawable="@drawable/ic_bc_app_logo"
-        android:gravity="bottom|center"
-        android:bottom="@dimen/space_8_x" />
-
-    <item
         android:drawable="@drawable/ic_splash_logo"
         android:gravity="center"
         android:bottom="@dimen/space_8_x"/>

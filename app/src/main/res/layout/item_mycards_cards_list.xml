@@ -149,26 +149,25 @@
                 android:id="@+id/view_federal_proof"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="@dimen/space_1_x_negative"
-                android:layout_marginBottom="@dimen/space_2_x_negative"
+                android:layout_marginTop="@dimen/space_1_x"
                 android:background="@color/white"
                 android:foreground="?attr/selectableItemBackground"
                 android:clickable="true"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_federal_pass_desc"
+                app:layout_constraintBottom_toBottomOf="@+id/layout_qr_code"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/iv_federal_pass_icon" />
+                app:layout_constraintTop_toBottomOf="@+id/txt_tap_to_zoom" />
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_federal_pass_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_2_x"
-                android:layout_marginTop="@dimen/space_2_x"
+                android:layout_marginTop="8dp"
                 android:src="@drawable/ic_federal_pass_icon"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_tap_to_zoom" />
+                app:layout_constraintTop_toTopOf="@+id/view_federal_proof" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_federal_pass_title"
@@ -194,8 +193,10 @@
                 android:layout_marginStart="@dimen/space_2_x"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="@dimen/space_2_x"
+                android:layout_marginBottom="16dp"
                 android:text="@string/domestic_and_international_travel"
                 android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="@id/view_federal_proof"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_federal_pass_title" />

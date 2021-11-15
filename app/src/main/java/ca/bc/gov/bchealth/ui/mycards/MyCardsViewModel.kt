@@ -46,7 +46,7 @@ class MyCardsViewModel @Inject constructor(
     fun rearrange(healthCardsDto: List<HealthCardDto>) = viewModelScope.launch {
         val healthCards: MutableList<HealthCard> = mutableListOf()
         healthCardsDto.forEach {
-            healthCards.add(HealthCard(uri = it.uri))
+            healthCards.add(HealthCard(uri = it.uri, federalPass = it.federalPass))
         }
         repository.rearrangeHealthCards(healthCards)
     }
