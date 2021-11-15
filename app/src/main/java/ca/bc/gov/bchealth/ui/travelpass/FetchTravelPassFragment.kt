@@ -74,6 +74,7 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
             ivLeftOption.visibility = View.VISIBLE
             ivLeftOption.setImageResource(R.drawable.ic_action_back)
             ivLeftOption.setOnClickListener {
+                requireContext().hideKeyboard(binding.edPhnNumber)
                 findNavController().popBackStack()
             }
 
@@ -85,6 +86,7 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
             ivRightOption.setOnClickListener {
                 requireActivity().redirect(getString(R.string.url_help))
             }
+            ivRightOption.contentDescription = getString(R.string.help)
 
             line1.visibility = View.VISIBLE
         }
@@ -96,6 +98,7 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
     private fun iniUI() {
 
         binding.btnCancel.setOnClickListener {
+            requireContext().hideKeyboard(binding.edPhnNumber)
             findNavController().popBackStack()
         }
 
@@ -150,6 +153,11 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
 
                         val textView = binding.edPhnNumber.editText as AutoCompleteTextView
                         textView.setAdapter(adapter)
+
+                        binding.edPhnNumber.setEndIconDrawable(R.drawable.ic_arrow_down)
+                        binding.edPhnNumber.setEndIconOnClickListener {
+                            textView.showDropDown()
+                        }
                     }
                 }
             }

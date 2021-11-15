@@ -2,8 +2,6 @@
 <resources>
 
     <!--Spacing in multiple of 4px used for Margin or Padding-->
-    <dimen name="space_2_x_negative">-8dp</dimen>
-    <dimen name="space_1_x_negative">-4dp</dimen>
     <dimen name="space_1_x">4dp</dimen>
     <dimen name="space_2_x">8dp</dimen>
     <dimen name="space_3_x">12dp</dimen>
@@ -15,4 +13,8 @@
     <dimen name="space_9_x">36dp</dimen>
     <dimen name="space_10_x">40dp</dimen>
 
+    <dimen name="add_card_icon_width">80dp</dimen>
+    <dimen name="add_card_icon_height">116dp</dimen>
+
+    <dimen name="qr_width_height">150dp</dimen>
 </resources>

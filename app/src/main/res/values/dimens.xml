@@ -2,8 +2,6 @@
 <resources>
 
     <!--Spacing in multiple of 8px used for Margin or Padding-->
-    <dimen name="space_2_x_negative">-16dp</dimen>
-    <dimen name="space_1_x_negative">-8dp</dimen>
     <dimen name="space_1_x">8dp</dimen>
     <dimen name="space_2_x">16dp</dimen>
     <dimen name="space_3_x">24dp</dimen>
@@ -17,5 +15,10 @@
 
     <dimen name="barcode_reticle_stroke_width">4dp</dimen>
     <dimen name="barcode_reticle_corner_radius">8dp</dimen>
+
+    <dimen name="add_card_icon_width">133dp</dimen>
+    <dimen name="add_card_icon_height">195dp</dimen>
+
+    <dimen name="qr_width_height">200dp</dimen>
 
 </resources>

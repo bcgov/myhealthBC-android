@@ -23,24 +23,31 @@
             android:id="@+id/checkbox_flash_light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_1_x"
-            android:layout_marginEnd="@dimen/space_1_x"
+            android:layout_marginEnd="@dimen/space_2_x"
             android:button="@drawable/ic_flash_selector"
             android:buttonTint="@android:color/white"
+            android:contentDescription="@string/torch"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_close"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/iv_close"
+            app:layout_constraintTop_toTopOf="@+id/iv_close" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_close"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/space_2_x"
             android:layout_marginTop="@dimen/space_1_x"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
             android:padding="@dimen/space_2_x"
+            android:contentDescription="@string/cancel"
             android:src="@drawable/ic_scanner_close"
+            app:layout_constraintEnd_toStartOf="@+id/checkbox_flash_light"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
