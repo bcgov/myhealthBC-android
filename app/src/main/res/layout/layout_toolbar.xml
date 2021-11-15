@@ -23,6 +23,7 @@
             android:padding="12dp"
             android:src="@drawable/ic_action_back"
             android:visibility="gone"
+            android:contentDescription="@string/back"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -85,6 +85,7 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
             ivRightOption.setOnClickListener {
                 requireActivity().redirect(getString(R.string.url_help))
             }
+            ivRightOption.contentDescription = getString(R.string.help)
 
             line1.visibility = View.VISIBLE
         }

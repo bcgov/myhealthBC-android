@@ -116,6 +116,8 @@
     <string name="place_holder_text">Place holder text</string>
     <string name="lorem_ipsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</string>
     <string name="select_phn">select personal health number</string>
+    <string name="federal_proof">federal proof</string>
+    <string name="torch">torch</string>
     <!--TODO any new strings below needs to be grouped logically as above-->
 
 

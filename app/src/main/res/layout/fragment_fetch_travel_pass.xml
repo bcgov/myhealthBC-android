@@ -72,6 +72,7 @@
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:autoLink="email|phone"
                 android:linksClickable="true"
+                android:textIsSelectable="true"
                 android:text="@string/privacy_statement_info"
                 android:textAlignment="textStart"
                 android:textColorLink="@color/blue"
