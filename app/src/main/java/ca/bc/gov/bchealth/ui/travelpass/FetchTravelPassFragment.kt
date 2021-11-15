@@ -150,6 +150,11 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
 
                         val textView = binding.edPhnNumber.editText as AutoCompleteTextView
                         textView.setAdapter(adapter)
+
+                        binding.edPhnNumber.setEndIconDrawable(R.drawable.ic_arrow_down)
+                        binding.edPhnNumber.setEndIconOnClickListener {
+                            textView.showDropDown()
+                        }
                     }
                 }
             }

@@ -31,6 +31,8 @@
                 android:layout_marginTop="@dimen/space_3_x"
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:hint="@string/personal_health_number"
+                app:endIconContentDescription="@string/select_phn"
+                app:endIconMode="custom"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
