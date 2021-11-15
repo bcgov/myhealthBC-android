@@ -41,6 +41,7 @@
         android:id="@+id/btn_scan_qr_code"
         style="@style/BC_VAX.Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
         android:layout_marginBottom="@dimen/space_2_x"
@@ -55,6 +56,7 @@
         android:id="@+id/btn_image_picker"
         style="@style/BC_VAX.Widget.MaterialComponents.Button2"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
         android:layout_marginBottom="@dimen/space_2_x"
@@ -69,6 +71,7 @@
         android:id="@+id/btn_enter_info"
         style="@style/BC_VAX.Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
         android:layout_marginBottom="@dimen/space_2_x"
@@ -78,4 +81,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

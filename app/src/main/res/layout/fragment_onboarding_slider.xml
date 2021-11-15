@@ -34,6 +34,7 @@
         android:id="@+id/btn_next_slide"
         style="@style/BC_VAX.Widget.MaterialComponents.Button1"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/space_8_x"
         android:text="@string/next"
         app:layout_constraintBottom_toBottomOf="parent"

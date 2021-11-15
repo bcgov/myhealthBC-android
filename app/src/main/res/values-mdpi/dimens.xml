@@ -15,4 +15,8 @@
     <dimen name="space_9_x">36dp</dimen>
     <dimen name="space_10_x">40dp</dimen>
 
+    <dimen name="add_card_icon_width">80dp</dimen>
+    <dimen name="add_card_icon_height">116dp</dimen>
+
+    <dimen name="qr_width_height">100dp</dimen>
 </resources>

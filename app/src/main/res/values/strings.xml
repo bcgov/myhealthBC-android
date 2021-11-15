@@ -31,8 +31,8 @@
     <string name="no_cards_message">You don\'t have any card yet</string>
     <string name="title_add_card">Please select one of the following options to add an <b><font face='@font/bc_sans_bold'>official Health Pass</font></b> containing a QR code</string>
     <string name="add_card_options_message">Scan, upload or get access to your proof of vaccination.</string>
-    <string name="scan_qr_code">Scan a QR code</string>
-    <string name="use_image_of_qr">Upload a QR code</string>
+    <string name="scan_qr_code">Scan using your camera</string>
+    <string name="use_image_of_qr">Upload from your device</string>
     <string name="enter_information">Enter information</string>
     <string name="help">Help</string>
     <string name="exit">Exit</string>
@@ -74,7 +74,7 @@
     <string name="issued_on">Issued on</string>
     <string name="view_all">View All</string>
     <string name="undo">Undo</string>
-    <string name="bc_vaccine_card_unlinked">BC Vaccine Card unlinked.</string>
+    <string name="bc_vaccine_card_unlinked">BC Vaccine Pass unlinked.</string>
     <string name="edit">Edit</string>
     <string name="travel_pass">Travel Pass</string>
     <string name="get_federal_proof_of_vaccination">Get Federal Proof of Vaccination</string>
