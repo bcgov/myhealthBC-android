@@ -74,6 +74,7 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
             ivLeftOption.visibility = View.VISIBLE
             ivLeftOption.setImageResource(R.drawable.ic_action_back)
             ivLeftOption.setOnClickListener {
+                requireContext().hideKeyboard(binding.edPhnNumber)
                 findNavController().popBackStack()
             }
 
@@ -97,6 +98,7 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
     private fun iniUI() {
 
         binding.btnCancel.setOnClickListener {
+            requireContext().hideKeyboard(binding.edPhnNumber)
             findNavController().popBackStack()
         }
 
