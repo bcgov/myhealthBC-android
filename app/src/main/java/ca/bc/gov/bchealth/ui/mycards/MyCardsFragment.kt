@@ -45,7 +45,6 @@ import java.util.Collections
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.util.*
 
 /**
  * [MyCardsFragment]
@@ -643,10 +642,11 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
             .setMessage(getString(R.string.do_you_want_to_unlink))
             .setPositiveButton(getString(R.string.unlink)) { dialog, _ ->
 
-                //Snowplow event
+                // Snowplow event
                 Snowplow.getDefaultTracker()?.track(
                     SelfDescribingEvent
-                        .get(AnalyticsAction.RemoveCard, ""))
+                        .get(AnalyticsAction.RemoveCard.value, "")
+                )
 
                 viewModel.unLink(healthCard.id, healthCard.uri)
                 dialog.dismiss()

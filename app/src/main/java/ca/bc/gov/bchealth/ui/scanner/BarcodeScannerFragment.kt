@@ -85,10 +85,11 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                     when (it) {
                         is Response.Success -> {
 
-                            //Snowplow event
+                            // Snowplow event
                             Snowplow.getDefaultTracker()?.track(
                                 SelfDescribingEvent
-                                    .get(AnalyticsAction.AddQR, AnalyticsText.Scan))
+                                    .get(AnalyticsAction.AddQR.value, AnalyticsText.Scan.value)
+                            )
 
                             findNavController().popBackStack(R.id.myCardsFragment, false)
                         }

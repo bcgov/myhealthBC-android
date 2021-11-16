@@ -42,7 +42,6 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
                 Snowplow.getDefaultTracker()?.track(
                     SelfDescribingEvent.get(AnalyticsAction.NewsLinkSelected.value, it1)
                 )
-
             }
         }
 

@@ -36,7 +36,6 @@ import com.queue_it.androidsdk.QueueListener
 import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
 import com.snowplowanalytics.snowplow.Snowplow
-import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -183,10 +182,11 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
     private fun navigateToHealthPasses() {
 
-        //Snowplow event
+        // Snowplow event
         Snowplow.getDefaultTracker()?.track(
             SelfDescribingEvent
-                .get(AnalyticsAction.AddQR, AnalyticsText.Get))
+                .get(AnalyticsAction.AddQR.value, AnalyticsText.Get.value)
+        )
 
         ApiClientModule.queueItToken = ""
         binding.progressBar.visibility = View.INVISIBLE

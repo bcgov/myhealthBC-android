@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.ui.setting
 
 import android.os.Bundle
 import android.view.View
-import android.widget.CompoundButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController

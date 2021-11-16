@@ -71,7 +71,8 @@ class BcVaccineCardApp : Application() {
                 .installAutotracking(true)
         } else {
 
-            appId = "Snowplow_standalone_HApp_dev" // TODO: 22/10/21 TBD for release version of the app
+            // TODO: 22/10/21 TBD for release version of the app
+            appId = "Snowplow_standalone_HApp_dev"
 
             networkConfig = NetworkConfiguration(COLLECTOR_URL_PROD, HttpMethod.POST)
 
