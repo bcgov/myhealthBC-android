@@ -62,11 +62,32 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         super.onViewCreated(view, savedInstanceState)
 
         viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                launch {
+                    setUpAnalyticsTracking()
+                }
+            }
+        }
 
+        viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
                 launch {
                     collectOnBoardingFlow()
+                }
+            }
+        }
+    }
+
+    private suspend fun setUpAnalyticsTracking() {
+        viewModel.isAnalyticsEnabled.collect { isEnabled ->
+            if (isEnabled != null) {
+                when (isEnabled) {
+                    true -> {
+                        Snowplow.getDefaultTracker()?.resume()
+                    }
+                    false -> {
+                        Snowplow.getDefaultTracker()?.pause()
+                    }
                 }
             }
         }

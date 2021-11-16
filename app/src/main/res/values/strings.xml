@@ -98,5 +98,7 @@
     <string name="health_resources">Health Resources</string>
     <string name="no_internet">No internet!</string>
     <string name="check_connection">Please check network connection.</string>
+    <string name="disable_analytics">Disable analytics</string>
+    <string name="anonymized_behavioural_data_is_used_to_help_improve_the_user_experience">Anonymized behavioural data is used to help improve the user experience</string>
 
 </resources>
