@@ -42,17 +42,17 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
             requireActivity().redirect(getString(R.string.url_privacy_policy))
         }
 
-        binding.switchAnalytics.isChecked = Snowplow.getDefaultTracker()?.isTracking == true
+        binding.switchAnalytics.isChecked = Snowplow.getDefaultTracker()?.isTracking == false
 
         binding.switchAnalytics.setOnCheckedChangeListener { _, isChecked ->
             when (isChecked) {
                 true -> {
-                    Snowplow.getDefaultTracker()?.resume()
-                    viewModel.trackAnalytics(true)
-                }
-                false -> {
                     Snowplow.getDefaultTracker()?.pause()
                     viewModel.trackAnalytics(false)
+                }
+                false -> {
+                    Snowplow.getDefaultTracker()?.resume()
+                    viewModel.trackAnalytics(true)
                 }
             }
         }
