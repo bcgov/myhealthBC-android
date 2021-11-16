@@ -6,9 +6,9 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import ca.bc.gov.bchealth.BuildConfig
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
 /**
  * [DataStoreRepo]
@@ -23,6 +23,7 @@ class DataStoreRepo @Inject constructor(
 
     companion object {
         val ON_BOARDING_SHOWN = booleanPreferencesKey("ON_BOARDING_SHOWN")
+        val IS_ANALYTICS_ENABLED = booleanPreferencesKey("IS_ANALYTICS_ENABLED")
         /*
         * Below preference is required to show new feature screen to existing users.
         * This feature will be enabled from v1.0.4
@@ -40,6 +41,14 @@ class DataStoreRepo @Inject constructor(
 
     suspend fun setOnBoardingShown(shown: Boolean = true) = context.dataStore.edit { preference ->
         preference[ON_BOARDING_SHOWN] = shown
+    }
+
+    val isAnalyticsEnabled: Flow<Boolean> = context.dataStore.data.map { preference ->
+        preference[IS_ANALYTICS_ENABLED] ?: false
+    }
+
+    suspend fun trackAnalytics(shown: Boolean = true) = context.dataStore.edit { preference ->
+        preference[IS_ANALYTICS_ENABLED] = shown
     }
 
     val isNewFeatureShown: Flow<Boolean> = context.dataStore.data.map { preference ->
