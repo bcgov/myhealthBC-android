@@ -86,7 +86,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     private fun iniUI() {
 
         if (BuildConfig.DEBUG) {
-            /* binding.edPhnNumber.editText?.setText("9000201422")
+             /*binding.edPhnNumber.editText?.setText("9000201422")
              binding.edDob.editText?.setText("1989-12-12")
              binding.edDov.editText?.setText("2021-05-15")*/
 
