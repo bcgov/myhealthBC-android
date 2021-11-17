@@ -24,10 +24,11 @@ class BcVaccineCardApp : Application() {
     companion object {
         const val COLLECTOR_URL_NON_PROD = "spm.apps.gov.bc.ca"
         const val COLLECTOR_URL_PROD = "spt.apps.gov.bc.ca"
+        const val APP_ID_NON_PROD = "Snowplow_standalone_HApp_dev"
+        const val APP_ID_PROD = "Snowplow_standalone_HApp_prod"
         const val namespace = "android"
     }
 
-    private lateinit var appId: String
     private lateinit var networkConfig: NetworkConfiguration
     private lateinit var trackerConfig: TrackerConfiguration
 
@@ -41,11 +42,9 @@ class BcVaccineCardApp : Application() {
 
         if (BuildConfig.DEBUG) {
 
-            appId = "Snowplow_standalone_HApp_dev"
-
             networkConfig = NetworkConfiguration(COLLECTOR_URL_NON_PROD, HttpMethod.POST)
 
-            trackerConfig = TrackerConfiguration(appId)
+            trackerConfig = TrackerConfiguration(APP_ID_NON_PROD)
                 .logLevel(LogLevel.VERBOSE)
                 .loggerDelegate(object : LoggerDelegate {
                     override fun error(tag: String?, msg: String?) {
@@ -71,12 +70,9 @@ class BcVaccineCardApp : Application() {
                 .installAutotracking(true)
         } else {
 
-            // TODO: 22/10/21 TBD for release version of the app
-            appId = "Snowplow_standalone_HApp_dev"
-
             networkConfig = NetworkConfiguration(COLLECTOR_URL_PROD, HttpMethod.POST)
 
-            trackerConfig = TrackerConfiguration(appId)
+            trackerConfig = TrackerConfiguration(APP_ID_PROD)
                 .base64encoding(true)
                 .sessionContext(true)
                 .platformContext(true)
