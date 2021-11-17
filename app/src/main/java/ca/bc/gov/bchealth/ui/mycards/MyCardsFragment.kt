@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -272,6 +273,8 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                         R.id.action_myCardsFragment_to_addCardOptionFragment
                     )
             }
+
+        registerCustomBackPress(currentScene, null)
     }
 
     /*
@@ -341,6 +344,8 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         val callback = SwipeToDeleteCallBack(cards)
         val itemTouchHelper = ItemTouchHelper(callback)
         itemTouchHelper.attachToRecyclerView(recyclerViewCardsList)
+
+        registerCustomBackPress(currentScene, cards)
     }
 
     inner class SwipeToDeleteCallBack(cards: List<HealthCardDto>) :
@@ -501,6 +506,8 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                         )
             }
         }
+
+        registerCustomBackPress(currentScene, cards)
     }
 
     private fun showFederalProof(healthCardDto: HealthCardDto) {
@@ -609,6 +616,8 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         helper.attachToRecyclerView(recyclerViewManageCards)
 
         manageCardsAdapter.notifyItemRangeChanged(0, manageCardsAdapter.itemCount)
+
+        registerCustomBackPress(currentScene, cards)
     }
 
     inner class RecyclerDragCallBack(
@@ -705,6 +714,26 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 }
             }
         }
+    }
+
+    /*
+     * Register custom behaviour for device back button press
+     * */
+    private fun registerCustomBackPress(currentScene: CurrentScene, cards: List<HealthCardDto>?) {
+
+        requireActivity().onBackPressedDispatcher
+            .addCallback(
+                viewLifecycleOwner,
+                object : OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() {
+                        when (currentScene) {
+                            CurrentScene.CardsListScene -> cards?.let { enterSingleCardScene(it) }
+                            CurrentScene.ManageCardsScene -> cards?.let { enterCardsListScene(it) }
+                            else -> requireActivity().moveTaskToBack(true)
+                        }
+                    }
+                }
+            )
     }
 
     enum class CurrentScene {

@@ -18,6 +18,7 @@ import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import javax.inject.Inject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -259,36 +260,63 @@ class CardRepository @Inject constructor(
     * */
     suspend fun getVaccineStatus(phn: String, dob: String, dov: String) {
         responseMutableSharedFlow.emit(Response.Loading())
-        val result = immunizationServices.getVaccineStatus(
-            phn, dob, dov
-        )
 
-        if (validateResponse(result)) {
-            val vaxStatusResponse = result.body()
+        loop@ for (i in RETRY_COUNT downTo 1) {
 
-            vaxStatusResponse?.resourcePayload?.qrCode?.data
-                ?.let { base64EncodedImage ->
+            val result = immunizationServices.getVaccineStatus(
+                phn, dob, dov
+            )
 
-                    vaxStatusResponse.resourcePayload.federalVaccineProof.data
-                        ?.let { base64EncodedPdf ->
+            if (validateResponse(result)) {
+                val vaxStatusResponse = result.body()
 
-                            try {
-                                prepareQRImage(base64EncodedImage, base64EncodedPdf)
-                            } catch (e: Exception) {
-                                responseMutableSharedFlow
-                                    .emit(Response.Error(ErrorData.GENERIC_ERROR))
-                            }
+                /*
+                * Retry logic in case if pdf data is not available.
+                * */
+                if (vaxStatusResponse?.resourcePayload?.federalVaccineProof?.data.isNullOrEmpty()) {
+                    vaxStatusResponse?.resourcePayload?.retryin?.toLong()?.let {
+                        delay(it)
+                    }
+                    if (i == 1) {
+                        result.body()?.resultError?.resultMessage?.let {
+                            val errorData = ErrorData.NETWORK_ERROR
+                            errorData.errorMessage = it
+                            responseMutableSharedFlow.emit(Response.Error(errorData))
+                            return
                         }
+                        responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
+                        return
+                    } else {
+                        continue@loop
+                    }
                 }
-        } else {
-            result.body()?.resultError?.resultMessage?.let {
-                val errorData = ErrorData.NETWORK_ERROR
-                errorData.errorMessage = it
-                responseMutableSharedFlow.emit(Response.Error(errorData))
-                return
+
+                vaxStatusResponse?.resourcePayload?.qrCode?.data
+                    ?.let { base64EncodedImage ->
+
+                        vaxStatusResponse.resourcePayload.federalVaccineProof.data
+                            ?.let { base64EncodedPdf ->
+
+                                try {
+                                    prepareQRImage(base64EncodedImage, base64EncodedPdf)
+                                } catch (e: Exception) {
+                                    responseMutableSharedFlow
+                                        .emit(Response.Error(ErrorData.GENERIC_ERROR))
+                                }
+                            }
+                    }
+            } else {
+                result.body()?.resultError?.resultMessage?.let {
+                    val errorData = ErrorData.NETWORK_ERROR
+                    errorData.errorMessage = it
+                    responseMutableSharedFlow.emit(Response.Error(errorData))
+                    return
+                }
+                responseMutableSharedFlow
+                    .emit(Response.Error(ErrorData.GENERIC_ERROR))
             }
-            responseMutableSharedFlow
-                .emit(Response.Error(ErrorData.GENERIC_ERROR))
+
+            break@loop
         }
     }
 
@@ -305,9 +333,6 @@ class CardRepository @Inject constructor(
         if (vaxStatusResponse.resourcePayload.qrCode.data.isNullOrEmpty())
             return false
 
-        if (vaxStatusResponse.resourcePayload.federalVaccineProof.data.isNullOrEmpty())
-            return false
-
         return true
     }
 
@@ -317,42 +342,71 @@ class CardRepository @Inject constructor(
     suspend fun getFederalTravelPass(healthCardDto: HealthCardDto, phn: String) {
         responseMutableSharedFlow.emit(Response.Loading())
 
-        val result = immunizationServices.getVaccineStatus(
-            phn,
-            healthCardDto.birthDate,
-            healthCardDto.occurrenceDateTime
-        )
+        loop@ for (i in RETRY_COUNT downTo 1) {
+            val result = immunizationServices.getVaccineStatus(
+                phn,
+                healthCardDto.birthDate,
+                healthCardDto.occurrenceDateTime
+            )
 
-        if (validateResponse(result)) {
-            val vaxStatusResponse = result.body()
+            if (validateResponse(result)) {
+                val vaxStatusResponse = result.body()
 
-            vaxStatusResponse?.resourcePayload?.federalVaccineProof?.data
-                ?.let { base64EncodedPdf ->
-
-                    try {
-                        dataSource.update(
-                            HealthCard(
-                                healthCardDto.id,
-                                healthCardDto.uri,
-                                base64EncodedPdf
-                            )
-                        )
-                        healthCardDto.federalPass = base64EncodedPdf
-                        responseMutableSharedFlow.emit(Response.Success(data = healthCardDto))
-                    } catch (e: Exception) {
-                        responseMutableSharedFlow
-                            .emit(Response.Error(ErrorData.GENERIC_ERROR))
+                /*
+                * Retry logic in case if pdf data is not available.
+                * */
+                if (vaxStatusResponse?.resourcePayload?.federalVaccineProof?.data.isNullOrEmpty()) {
+                    vaxStatusResponse?.resourcePayload?.retryin?.toLong()?.let {
+                        delay(it)
+                    }
+                    if (i == 1) {
+                        result.body()?.resultError?.resultMessage?.let {
+                            val errorData = ErrorData.NETWORK_ERROR
+                            errorData.errorMessage = it
+                            responseMutableSharedFlow.emit(Response.Error(errorData))
+                            return
+                        }
+                        responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
+                        return
+                    } else {
+                        continue@loop
                     }
                 }
-        } else {
-            result.body()?.resultError?.resultMessage?.let {
-                val errorData = ErrorData.NETWORK_ERROR
-                errorData.errorMessage = it
-                responseMutableSharedFlow.emit(Response.Error(errorData))
-                return
+
+                vaxStatusResponse?.resourcePayload?.federalVaccineProof?.data
+                    ?.let { base64EncodedPdf ->
+
+                        try {
+                            dataSource.update(
+                                HealthCard(
+                                    healthCardDto.id,
+                                    healthCardDto.uri,
+                                    base64EncodedPdf
+                                )
+                            )
+                            healthCardDto.federalPass = base64EncodedPdf
+                            responseMutableSharedFlow.emit(Response.Success(data = healthCardDto))
+                        } catch (e: Exception) {
+                            responseMutableSharedFlow
+                                .emit(Response.Error(ErrorData.GENERIC_ERROR))
+                        }
+                    }
+            } else {
+                result.body()?.resultError?.resultMessage?.let {
+                    val errorData = ErrorData.NETWORK_ERROR
+                    errorData.errorMessage = it
+                    responseMutableSharedFlow.emit(Response.Error(errorData))
+                    return
+                }
+                responseMutableSharedFlow
+                    .emit(Response.Error(ErrorData.GENERIC_ERROR))
             }
-            responseMutableSharedFlow
-                .emit(Response.Error(ErrorData.GENERIC_ERROR))
+
+            break@loop
         }
+    }
+
+    companion object {
+        const val RETRY_COUNT = 3
     }
 }

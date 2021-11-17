@@ -137,13 +137,12 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                 viewModel.isRecentFormData.collect {
                     if (it.isNotEmpty()) {
 
-                        val triple = Triple(
+                        val pair = Pair(
                             it.subSequence(0, 10),
-                            it.subSequence(10, 20),
-                            it.subSequence(20, 30)
+                            it.subSequence(10, 20)
                         )
 
-                        val phnArray = arrayOf(triple.first.toString())
+                        val phnArray = arrayOf(pair.first.toString())
 
                         val adapter: ArrayAdapter<String> = ArrayAdapter(
                             requireContext(),
