@@ -17,6 +17,7 @@ import ca.bc.gov.bchealth.utils.getDateTime
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -25,7 +26,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
 
 /**
  * [CardRepository]
@@ -89,9 +89,9 @@ class CardRepository @Inject constructor(
                 val existingHealthPass = cards.filter { record ->
                     val immunizationRecord = shcDecoder.getImmunizationStatus(record.uri)
                     (
-                            immunizationRecord.name == healthPassToBeInserted.name &&
-                                    immunizationRecord.birthDate == healthPassToBeInserted.birthDate
-                            )
+                        immunizationRecord.name == healthPassToBeInserted.name &&
+                            immunizationRecord.birthDate == healthPassToBeInserted.birthDate
+                        )
                 }
 
                 if (existingHealthPass.isNullOrEmpty()) {
@@ -406,7 +406,7 @@ class CardRepository @Inject constructor(
         }
     }
 
-    companion object{
+    companion object {
         const val RETRY_COUNT = 3
     }
 }

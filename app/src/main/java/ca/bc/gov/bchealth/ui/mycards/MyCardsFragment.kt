@@ -39,10 +39,10 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Collections
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.util.*
 
 /**
  * [MyCardsFragment]
@@ -510,7 +510,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                         try {
                             val authority =
                                 requireActivity().applicationContext.packageName.toString() +
-                                        ".fileprovider"
+                                    ".fileprovider"
                             val uriToFile: Uri =
                                 FileProvider.getUriForFile(requireActivity(), authority, file)
 
@@ -691,16 +691,18 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
     private fun registerCustomBackPress(currentScene: CurrentScene, cards: List<HealthCardDto>?) {
 
         requireActivity().onBackPressedDispatcher
-            .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    when (currentScene) {
-                        CurrentScene.CardsListScene -> cards?.let { enterSingleCardScene(it) }
-                        CurrentScene.ManageCardsScene -> cards?.let { enterCardsListScene(it) }
-                        else -> requireActivity().moveTaskToBack(true)
+            .addCallback(
+                viewLifecycleOwner,
+                object : OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() {
+                        when (currentScene) {
+                            CurrentScene.CardsListScene -> cards?.let { enterSingleCardScene(it) }
+                            CurrentScene.ManageCardsScene -> cards?.let { enterCardsListScene(it) }
+                            else -> requireActivity().moveTaskToBack(true)
+                        }
                     }
                 }
-            })
-
+            )
     }
 
     enum class CurrentScene {
