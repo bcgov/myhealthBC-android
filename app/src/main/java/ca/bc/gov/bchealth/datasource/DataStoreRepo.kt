@@ -23,6 +23,7 @@ class DataStoreRepo @Inject constructor(
 
     companion object {
         val ON_BOARDING_SHOWN = booleanPreferencesKey("ON_BOARDING_SHOWN")
+        val IS_ANALYTICS_ENABLED = booleanPreferencesKey("IS_ANALYTICS_ENABLED")
         /*
         * Below preference is required to show new feature screen to existing users.
         * This feature will be enabled from v1.0.4
@@ -40,6 +41,14 @@ class DataStoreRepo @Inject constructor(
 
     suspend fun setOnBoardingShown(shown: Boolean = true) = context.dataStore.edit { preference ->
         preference[ON_BOARDING_SHOWN] = shown
+    }
+
+    val isAnalyticsEnabled: Flow<Boolean> = context.dataStore.data.map { preference ->
+        preference[IS_ANALYTICS_ENABLED] ?: false
+    }
+
+    suspend fun trackAnalytics(shown: Boolean = true) = context.dataStore.edit { preference ->
+        preference[IS_ANALYTICS_ENABLED] = shown
     }
 
     val isNewFeatureShown: Flow<Boolean> = context.dataStore.data.map { preference ->
