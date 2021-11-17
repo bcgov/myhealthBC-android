@@ -44,7 +44,7 @@ class DataStoreRepo @Inject constructor(
     }
 
     val isAnalyticsEnabled: Flow<Boolean> = context.dataStore.data.map { preference ->
-        preference[IS_ANALYTICS_ENABLED] ?: false
+        preference[IS_ANALYTICS_ENABLED] ?: true
     }
 
     suspend fun trackAnalytics(shown: Boolean = true) = context.dataStore.edit { preference ->

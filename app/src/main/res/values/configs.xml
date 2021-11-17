@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="url_privacy_policy">http://www.healthgateway.gov.bc.ca/termsofservice</string>
+    <string name="url_privacy_policy">https://www2.gov.bc.ca/gov/content/health/managing-your-health/health-gateway/myhealth-app-privacy</string>
     <string name="url_help">https://www2.gov.bc.ca/gov/content/covid-19/vaccine/proof#help</string>
     <string name="url_news_feed">https://news.gov.bc.ca/news-subscribe/covid-19/feed</string>
 
