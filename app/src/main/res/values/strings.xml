@@ -120,5 +120,7 @@
     <string name="torch">torch</string>
     <!--TODO any new strings below needs to be grouped logically as above-->
 
+    <string name="disable_analytics">Disable analytics</string>
+    <string name="anonymized_behavioural_data_is_used_to_help_improve_the_user_experience">Anonymized behavioural data is used to help improve the user experience</string>
 
 </resources>

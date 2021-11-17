@@ -62,4 +62,10 @@ class MyCardsViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null
     )
+
+    val isAnalyticsEnabled = dataStoreRepo.isAnalyticsEnabled.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(0),
+        initialValue = null
+    )
 }

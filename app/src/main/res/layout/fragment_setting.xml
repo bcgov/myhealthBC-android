@@ -14,47 +14,89 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_disable_analytics"
+            style="@style/BC_VAX.TextAppearance.MaterialComponents.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_4_x"
+            android:layout_marginTop="@dimen/space_2_x"
+            android:text="@string/disable_analytics"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_analytics_desc"
+            style="@style/BC_VAX.TextAppearance.MaterialComponents.Headline5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_4_x"
+            android:layout_marginTop="@dimen/space_1_x"
+            android:layout_marginEnd="@dimen/space_4_x"
+            android:layout_marginBottom="@dimen/space_2_x"
+            android:text="@string/anonymized_behavioural_data_is_used_to_help_improve_the_user_experience"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_disable_analytics" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_analytics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/space_4_x"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_disable_analytics"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_disable_analytics" />
+
+        <View
+            android:id="@+id/line1"
+            android:layout_width="0dp"
+            android:layout_height="1.5dp"
+            android:background="@drawable/solid_line"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/txt_privacy_statement"
         style="?textAppearanceHeadline4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_5_x"
-        android:layout_marginTop="@dimen/space_2_x"
-        android:layout_marginEnd="@dimen/space_6_x"
-        android:drawableStart="@drawable/ic_lock_alt"
-        android:drawableEnd="@drawable/ic_angle_right"
-        android:drawablePadding="@dimen/space_2_x"
+        android:background="?attr/selectableItemBackground"
+        android:paddingStart="@dimen/space_4_x"
+        android:paddingTop="@dimen/space_2_x"
+        android:paddingEnd="@dimen/space_4_x"
+        android:paddingBottom="@dimen/space_2_x"
         android:text="@string/privacy_statement"
         android:textColor="@color/blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
     <View
         android:id="@+id/line2"
         android:layout_width="0dp"
         android:layout_height="1.5dp"
-        android:layout_marginTop="@dimen/space_2_x"
         android:background="@drawable/solid_line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_privacy_statement" />
-
-    <View
-        android:id="@+id/view_privacy_statement"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:contentDescription="@string/privacy_statement"
-        android:focusable="true"
-        app:layout_constraintBottom_toTopOf="@+id/line2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

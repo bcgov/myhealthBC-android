@@ -28,6 +28,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.analytics.AnalyticsAction
+import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.databinding.FragmentMyCardsBinding
 import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.ui.travelpass.TravelPassFragment
@@ -37,6 +39,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
+import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Collections
 import kotlinx.coroutines.delay
@@ -82,11 +85,32 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         super.onViewCreated(view, savedInstanceState)
 
         viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                launch {
+                    setUpAnalyticsTracking()
+                }
+            }
+        }
 
+        viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
                 launch {
                     collectOnBoardingFlow()
+                }
+            }
+        }
+    }
+
+    private suspend fun setUpAnalyticsTracking() {
+        viewModel.isAnalyticsEnabled.collect { isEnabled ->
+            if (isEnabled != null) {
+                when (isEnabled) {
+                    true -> {
+                        Snowplow.getDefaultTracker()?.resume()
+                    }
+                    false -> {
+                        Snowplow.getDefaultTracker()?.pause()
+                    }
                 }
             }
         }
@@ -617,6 +641,13 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
             .setCancelable(false)
             .setMessage(getString(R.string.do_you_want_to_unlink))
             .setPositiveButton(getString(R.string.unlink)) { dialog, _ ->
+
+                // Snowplow event
+                Snowplow.getDefaultTracker()?.track(
+                    SelfDescribingEvent
+                        .get(AnalyticsAction.RemoveCard.value, "")
+                )
+
                 viewModel.unLink(healthCard.id, healthCard.uri)
                 dialog.dismiss()
             }
