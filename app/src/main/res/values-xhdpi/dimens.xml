@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="small">4dp</dimen>
-    <dimen name="medium">8dp</dimen>
-    <dimen name="large">12dp</dimen>
-    <dimen name="xl">16dp</dimen>
-    <dimen name="xxl">32dp</dimen>
+    <!--Spacing in multiple of 4px used for Margin or Padding-->
+    <dimen name="space_1_x">4dp</dimen>
+    <dimen name="space_2_x">8dp</dimen>
+    <dimen name="space_3_x">12dp</dimen>
+    <dimen name="space_4_x">16dp</dimen>
+    <dimen name="space_5_x">20dp</dimen>
+    <dimen name="space_6_x">24dp</dimen>
+    <dimen name="space_7_x">28dp</dimen>
+    <dimen name="space_8_x">32dp</dimen>
+    <dimen name="space_9_x">36dp</dimen>
+    <dimen name="space_10_x">40dp</dimen>
 
-    <!-- Dimens for scanner result screen -->
-    <dimen name="text_full_name_margin_top">24dp</dimen>
-    <dimen name="view_partially_vaccinated_blue_box_margin_bottom">-24dp</dimen>
-    <dimen name="view_divider_line_margin_top">16dp</dimen>
+    <dimen name="add_card_icon_width">80dp</dimen>
+    <dimen name="add_card_icon_height">116dp</dimen>
 
-    <!-- Dimens for fully vaccinated scene -->
-    <dimen name="rect_line_margin_bottom">-40dp</dimen>
-    <dimen name="image_right_tick_margin_top">38dp</dimen>
-
-    <!-- Dimens for partially vaccinated scene -->
-    <dimen name="partial_text_result_margin_top">38dp</dimen>
-
-    <!--Dimens for on-boarding screen -->
-    <dimen name="ic_educational_mobile_width">81dp</dimen>
-    <dimen name="ic_educational_mobile_height">153dp</dimen>
-
+    <dimen name="qr_width_height">150dp</dimen>
 </resources>

@@ -31,10 +31,10 @@
             app:textAllCaps="true"
             tools:text="JEAN SMITH Here for testing the length of the name " />
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_vaccine_status"
             android:layout_width="0dp"
-            android:layout_height="@dimen/space_6_x"
+            android:layout_height="wrap_content"
             android:background="@color/status_green"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="@id/txt_full_name"
@@ -45,15 +45,21 @@
                 android:id="@+id/txt_vaccine_status"
                 style="?textAppearanceHeadline4"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/space_6_x"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawablePadding="@dimen/space_1_x"
                 android:gravity="center"
-                android:textSize="18sp"
                 android:textAlignment="center"
                 android:textColor="@color/white"
+                android:textSize="18sp"
+                android:padding="@dimen/space_1_x"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="VACCINATED" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/img_unlink"
@@ -64,6 +70,7 @@
             android:focusable="true"
             android:padding="@dimen/space_2_x"
             android:visibility="gone"
+            android:contentDescription="@string/unlink"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ic_reorder"
             app:layout_constraintTop_toTopOf="@+id/txt_full_name"
@@ -79,6 +86,7 @@
             android:focusable="true"
             android:padding="@dimen/space_2_x"
             android:visibility="gone"
+            android:contentDescription="move"
             app:layout_constraintBottom_toBottomOf="@+id/img_unlink"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/img_unlink"
@@ -89,7 +97,6 @@
             android:id="@+id/layout_qr_code"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/status_green"
             android:orientation="vertical"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@+id/layout_vaccine_status"
@@ -112,11 +119,13 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/img_qr_code"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="@dimen/qr_width_height"
+                android:layout_height="@dimen/qr_width_height"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/space_1_x"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/tap_to_zoom_in"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -130,16 +139,81 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/space_1_x"
-                android:layout_marginBottom="@dimen/space_2_x"
                 android:drawableStart="@drawable/ic_mycards_tap_to_zoom"
                 android:drawablePadding="@dimen/space_1_x"
                 android:text="@string/tap_to_zoom_in"
                 android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/img_qr_code" />
+
+            <View
+                android:id="@+id/view_federal_proof"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/space_1_x"
+                android:background="@color/white"
+                android:foreground="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:contentDescription="@string/federal_proof"
+                app:layout_constraintBottom_toBottomOf="@+id/layout_qr_code"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_tap_to_zoom" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_federal_pass_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_2_x"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_federal_pass_icon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/view_federal_proof" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_federal_pass_title"
+                style="?textAppearanceHeadline3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_2_x"
+                android:layout_marginTop="@dimen/space_1_x"
+                android:layout_marginEnd="@dimen/space_1_x"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@+id/iv_federal_pass_action"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iv_federal_pass_icon"
+                tools:text="@string/get_federal_proof_of_vaccination" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_federal_pass_desc"
+                style="?textAppearanceHeadline4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_2_x"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="@dimen/space_2_x"
+                android:layout_marginBottom="16dp"
+                android:text="@string/domestic_and_international_travel"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="@id/view_federal_proof"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_federal_pass_title" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_federal_pass_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/space_1_x"
+                android:src="@drawable/ic_federal_pass_add"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_federal_pass_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_federal_pass_title" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

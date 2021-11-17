@@ -13,4 +13,8 @@
     <dimen name="space_9_x">72dp</dimen>
     <dimen name="space_10_x">80dp</dimen>
 
+    <dimen name="add_card_icon_width">133dp</dimen>
+    <dimen name="add_card_icon_height">195dp</dimen>
+
+    <dimen name="qr_width_height">200dp</dimen>
 </resources>

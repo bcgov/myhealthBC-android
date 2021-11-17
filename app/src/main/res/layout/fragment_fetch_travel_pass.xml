@@ -26,9 +26,8 @@
                 style="@style/BC_VAX.Widget.App.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="35dp"
                 android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_3_x"
+                android:layout_marginTop="@dimen/space_4_x"
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:hint="@string/personal_health_number"
                 app:endIconContentDescription="@string/select_phn"
@@ -63,88 +62,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ed_phn_number" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/ed_dob"
-                style="@style/BC_VAX.Widget.App.TextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_2_x"
-                android:layout_marginEnd="@dimen/space_4_x"
-                android:hint="@string/date_of_birth"
-                app:endIconContentDescription="@string/select_date"
-                app:endIconDrawable="@drawable/ic_calender"
-                app:endIconMode="custom"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_phn_info">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_dose"
-                style="?textAppearanceSubtitle2"
-                android:textColor="@color/grey"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_4_x"
-                android:layout_marginEnd="@dimen/space_4_x"
-                android:text="@string/dose_1_or_dose_2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ed_dob" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/ed_dov"
-                style="@style/BC_VAX.Widget.App.TextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginEnd="@dimen/space_4_x"
-                android:hint="@string/date_of_vaccination"
-                app:endIconContentDescription="@string/select_date"
-                app:endIconDrawable="@drawable/ic_calender"
-                app:endIconMode="custom"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_dose">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/checkbox_remember"
-                style="?textAppearanceHeadline4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_1_x"
-                android:layout_marginEnd="@dimen/space_4_x"
-                android:text="@string/remember_my_phn_and_dob_for_next_time"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ed_dov" />
-
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_privacy_statement"
                 style="?textAppearanceHeadline4"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_1_x"
+                android:layout_marginTop="@dimen/space_4_x"
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:autoLink="email|phone"
                 android:linksClickable="true"
@@ -156,7 +80,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkbox_remember" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_phn_info" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

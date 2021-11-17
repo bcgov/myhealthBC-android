@@ -16,4 +16,9 @@
     <dimen name="barcode_reticle_stroke_width">4dp</dimen>
     <dimen name="barcode_reticle_corner_radius">8dp</dimen>
 
+    <dimen name="add_card_icon_width">133dp</dimen>
+    <dimen name="add_card_icon_height">195dp</dimen>
+
+    <dimen name="qr_width_height">200dp</dimen>
+
 </resources>

@@ -12,6 +12,6 @@
     <string name="url_K12_daily_check">https://www.k12dailycheck.gov.bc.ca/healthcheck?execution=e1s1</string>
 
     <!--HGS endpoint-->
-    <string name="retrofit_url_immunization">https://test.healthgateway.gov.bc.ca/</string>
+    <string name="retrofit_url_immunization">https://dev.healthgateway.gov.bc.ca/</string>
 
 </resources>

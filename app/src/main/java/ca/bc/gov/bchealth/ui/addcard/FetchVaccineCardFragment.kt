@@ -63,20 +63,21 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
     private fun setToolBar() {
         binding.toolbar.apply {
-            ivBack.visibility = View.VISIBLE
-            ivBack.setImageResource(R.drawable.ic_action_back)
-            ivBack.setOnClickListener {
+            ivLeftOption.visibility = View.VISIBLE
+            ivLeftOption.setImageResource(R.drawable.ic_action_back)
+            ivLeftOption.setOnClickListener {
                 findNavController().popBackStack()
             }
 
             tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.add_bc_vaccine_card)
+            tvTitle.text = getString(R.string.add_a_health_pass)
 
-            ivSettings.visibility = View.VISIBLE
-            ivSettings.setImageResource(R.drawable.ic_help)
-            ivSettings.setOnClickListener {
+            ivRightOption.visibility = View.VISIBLE
+            ivRightOption.setImageResource(R.drawable.ic_help)
+            ivRightOption.setOnClickListener {
                 requireActivity().redirect(getString(R.string.url_help))
             }
+            ivRightOption.contentDescription = getString(R.string.help)
 
             line1.visibility = View.VISIBLE
         }
@@ -85,14 +86,16 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     private fun iniUI() {
 
         if (BuildConfig.DEBUG) {
-            /*binding.edPhnNumber.editText?.setText("9000201422")
-            binding.edDob.editText?.setText("1989-12-12")
-            binding.edDov.editText?.setText("2021-05-15")*/
+            /* binding.edPhnNumber.editText?.setText("9000201422")
+             binding.edDob.editText?.setText("1989-12-12")
+             binding.edDov.editText?.setText("2021-05-15")*/
 
             /*binding.edPhnNumber.editText?.setText("9000691304")
             binding.edDob.editText?.setText("1965-01-14")
             binding.edDov.editText?.setText("2021-07-15")*/
         }
+
+        setUpPhnUI()
 
         setUpDobUI()
 
@@ -103,6 +106,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         }
 
         binding.btnSubmit.setOnClickListener {
+
             if (validateInputData()) {
 
                 viewLifecycleOwner.lifecycleScope.launch {
@@ -166,40 +170,6 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                                 getString(R.string.error_message)
                             )
                         }
-                    }
-                }
-            }
-        }
-
-        /*
-        * Fetch saved form data
-        * */
-        viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isRecentFormData.collect {
-                    if (it.isNotEmpty()) {
-
-                        val triple = Triple(
-                            it.subSequence(0, 10),
-                            it.subSequence(10, 20),
-                            it.subSequence(20, 30)
-                        )
-
-                        val phnArray = arrayOf(triple.first.toString())
-
-                        val adapter: ArrayAdapter<String> = ArrayAdapter(
-                            requireContext(),
-                            android.R.layout.simple_dropdown_item_1line,
-                            phnArray
-                        )
-
-                        val textView = binding.edPhnNumber.editText as AutoCompleteTextView
-                        textView.setAdapter(adapter)
-                        textView.onItemClickListener =
-                            AdapterView.OnItemClickListener { p0, p1, p2, p3 ->
-                                binding.edDob.editText?.setText(triple.second.toString())
-                                binding.edDov.editText?.setText(triple.third.toString())
-                            }
                     }
                 }
             }
@@ -312,6 +282,48 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         }
 
         return true
+    }
+
+    /*
+     * Fetch saved form data
+     * */
+    private fun setUpPhnUI() {
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isRecentFormData.collect {
+                    if (it.isNotEmpty()) {
+
+                        val triple = Triple(
+                            it.subSequence(0, 10),
+                            it.subSequence(10, 20),
+                            it.subSequence(20, 30)
+                        )
+
+                        val phnArray = arrayOf(triple.first.toString())
+
+                        val adapter: ArrayAdapter<String> = ArrayAdapter(
+                            requireContext(),
+                            android.R.layout.simple_dropdown_item_1line,
+                            phnArray
+                        )
+
+                        val textView = binding.edPhnNumber.editText as AutoCompleteTextView
+                        textView.setAdapter(adapter)
+                        textView.onItemClickListener =
+                            AdapterView.OnItemClickListener { p0, p1, p2, p3 ->
+                                binding.edDob.editText?.setText(triple.second.toString())
+                                binding.edDov.editText?.setText(triple.third.toString())
+                            }
+
+                        binding.edPhnNumber.setEndIconDrawable(R.drawable.ic_arrow_down)
+                        binding.edPhnNumber.setEndIconOnClickListener {
+                            textView.showDropDown()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setUpDobUI() {
