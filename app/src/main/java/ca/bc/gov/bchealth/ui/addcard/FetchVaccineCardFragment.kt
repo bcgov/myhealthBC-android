@@ -16,6 +16,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.analytics.AnalyticsAction
+import ca.bc.gov.bchealth.analytics.AnalyticsText
+import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineCardBinding
 import ca.bc.gov.bchealth.di.ApiClientModule
 import ca.bc.gov.bchealth.http.MustBeQueued
@@ -32,6 +35,7 @@ import com.queue_it.androidsdk.QueueITException
 import com.queue_it.androidsdk.QueueListener
 import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
+import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -86,13 +90,21 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     private fun iniUI() {
 
         if (BuildConfig.DEBUG) {
-            /* binding.edPhnNumber.editText?.setText("9000201422")
+             /*binding.edPhnNumber.editText?.setText("9000201422")
              binding.edDob.editText?.setText("1989-12-12")
              binding.edDov.editText?.setText("2021-05-15")*/
 
             /*binding.edPhnNumber.editText?.setText("9000691304")
             binding.edDob.editText?.setText("1965-01-14")
             binding.edDov.editText?.setText("2021-07-15")*/
+
+            /*binding.edPhnNumber.editText?.setText("9890826056")
+            binding.edDob.editText?.setText("1962-01-02")
+            binding.edDov.editText?.setText("2021-06-10")*/
+
+            /*binding.edPhnNumber.editText?.setText("9879458314")
+             binding.edDob.editText?.setText("1934-02-23")
+             binding.edDov.editText?.setText("2021-04-26")*/
         }
 
         setUpPhnUI()
@@ -119,8 +131,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                                         // Save form data for autocomplete option
                                         val formData: String =
                                             binding.edPhnNumber.editText?.text.toString() +
-                                                binding.edDob.editText?.text.toString() +
-                                                binding.edDov.editText?.text.toString()
+                                                binding.edDob.editText?.text.toString()
 
                                         viewModel.setRecentFormData(formData).invokeOnCompletion {
 
@@ -177,6 +188,13 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     }
 
     private fun navigateToHealthPasses() {
+
+        // Snowplow event
+        Snowplow.getDefaultTracker()?.track(
+            SelfDescribingEvent
+                .get(AnalyticsAction.AddQR.value, AnalyticsText.Get.value)
+        )
+
         ApiClientModule.queueItToken = ""
         binding.progressBar.visibility = View.INVISIBLE
         findNavController()
@@ -294,13 +312,12 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                 viewModel.isRecentFormData.collect {
                     if (it.isNotEmpty()) {
 
-                        val triple = Triple(
+                        val pair = Pair(
                             it.subSequence(0, 10),
-                            it.subSequence(10, 20),
-                            it.subSequence(20, 30)
+                            it.subSequence(10, 20)
                         )
 
-                        val phnArray = arrayOf(triple.first.toString())
+                        val phnArray = arrayOf(pair.first.toString())
 
                         val adapter: ArrayAdapter<String> = ArrayAdapter(
                             requireContext(),
@@ -312,8 +329,8 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                         textView.setAdapter(adapter)
                         textView.onItemClickListener =
                             AdapterView.OnItemClickListener { p0, p1, p2, p3 ->
-                                binding.edDob.editText?.setText(triple.second.toString())
-                                binding.edDov.editText?.setText(triple.third.toString())
+                                binding.edDob.editText?.setText(pair.second.toString())
+                                binding.edDov.editText?.requestFocus()
                             }
 
                         binding.edPhnNumber.setEndIconDrawable(R.drawable.ic_arrow_down)

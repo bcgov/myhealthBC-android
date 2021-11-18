@@ -164,7 +164,7 @@ fun String.getBarcode(): Bitmap? {
             segments,
             QrCode.Ecc.LOW,
             5,
-            20,
+            40,
             2,
             false
         )
