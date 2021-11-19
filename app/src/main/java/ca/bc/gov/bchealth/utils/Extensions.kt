@@ -11,6 +11,7 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.webkit.URLUtil
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
@@ -89,7 +90,14 @@ fun Context.isOnline(): Boolean {
 * Redirect to external URL
 * */
 fun Context.redirect(url: String) {
+
     try {
+
+        if (URLUtil.isHttpUrl(url) || URLUtil.isFileUrl(url)) {
+            this.toast(getString(R.string.not_secure_connection))
+            return
+        }
+
         val customTabColorSchemeParams: CustomTabColorSchemeParams =
             CustomTabColorSchemeParams.Builder()
                 .setToolbarColor(resources.getColor(R.color.white, null))

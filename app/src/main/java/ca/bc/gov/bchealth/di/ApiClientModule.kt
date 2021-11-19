@@ -34,7 +34,6 @@ class ApiClientModule {
     @Provides
     @Singleton
     fun provideRetrofit(
-        uniqueRetrofitConstant: String,
         context: Context
     ): Retrofit {
         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
@@ -71,39 +70,26 @@ class ApiClientModule {
             .create()
 
         /*
-        * Create different retrofit objects based on uniqueRetrofit constant
+        * To create different retrofit objects use uniqueRetrofit constant.
         * An app might be using different API endpoints with different base URLs
         * So it is required to create different Retrofit objects based on the API endpoint requested
-        *  */
-        return when (uniqueRetrofitConstant) {
-            SERVICE_IMMUNIZATION ->
-                Retrofit.Builder()
-                    .baseUrl(context.getString(R.string.retrofit_url_immunization))
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .client(okHttpClient)
-                    .build()
-            // TODO: 06/10/21 Add more retrofit objects here
-            else ->
-                // Default retrofit object
-                Retrofit.Builder()
-                    .baseUrl(context.getString(R.string.retrofit_url_immunization))
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .client(okHttpClient)
-                    .build()
-        }
+        * */
+        return Retrofit.Builder()
+            .baseUrl(context.getString(R.string.retrofit_url_immunization))
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(okHttpClient)
+            .build()
     }
 
     @Provides
     @Singleton
     fun provideImmunizationServices(@ApplicationContext context: Context): ImmunizationServices {
         return provideRetrofit(
-            SERVICE_IMMUNIZATION,
             context = context
         ).create(ImmunizationServices::class.java)
     }
 
     companion object {
-        const val SERVICE_IMMUNIZATION = "SERVICE_IMMUNIZATION"
         var queueItToken: String = ""
     }
 }
