@@ -11,7 +11,6 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.webkit.URLUtil
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
