@@ -18,7 +18,6 @@ import ca.bc.gov.bchealth.utils.getDateTime
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
-import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,6 +26,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 /**
  * [CardRepository]
@@ -217,11 +217,11 @@ class CardRepository @Inject constructor(
                 val filteredHealthCard = cards.filter { record ->
                     val immunizationRecord = shcDecoder.getImmunizationStatus(record.uri)
                     (
-                        immunizationRecord.name.lowercase()
-                            == healthPassToBeInserted.name.lowercase() &&
-                            immunizationRecord.birthDate
-                            == healthPassToBeInserted.birthDate
-                        )
+                            immunizationRecord.name.lowercase()
+                                    == healthPassToBeInserted.name.lowercase() &&
+                                    immunizationRecord.birthDate
+                                    == healthPassToBeInserted.birthDate
+                            )
                 }
 
                 if (filteredHealthCard.isNullOrEmpty()) {
@@ -389,16 +389,16 @@ class CardRepository @Inject constructor(
         if (!result.isSuccessful)
             return false
 
-        val vaxStatusResponse: VaxStatusResponse = result.body() ?: return false
-
-        if (vaxStatusResponse.resultError != null)
+        if (result.body() == null)
             return false
 
-        if (vaxStatusResponse.resourcePayload.qrCode.data.isNullOrEmpty())
+        val vaxStatusResponse = result.body()
+        if (vaxStatusResponse?.resourcePayload == null)
             return false
 
         return true
     }
+
 
     /*
     * Fetch federal travel pass for existing vaccine cards
@@ -417,12 +417,16 @@ class CardRepository @Inject constructor(
                 val vaxStatusResponse = result.body()
 
                 /*
-                * Retry logic in case if pdf data is not available.
+                * Retry logic in case if loaded is false.
+                * HGS will send cache data for both qrCode and federal proof but try to fetch actual
+                * data from the source
                 * */
-                if (vaxStatusResponse?.resourcePayload?.federalVaccineProof?.data.isNullOrEmpty()) {
-                    vaxStatusResponse?.resourcePayload?.retryin?.toLong()?.let {
+                if (vaxStatusResponse?.resourcePayload?.loaded == false) {
+
+                    vaxStatusResponse.resourcePayload.retryin.toLong().let {
                         delay(it)
                     }
+
                     if (i == 1) {
                         result.body()?.resultError?.resultMessage?.let {
                             val errorData = ErrorData.NETWORK_ERROR
@@ -435,15 +439,23 @@ class CardRepository @Inject constructor(
                     } else {
                         continue@loop
                     }
-                }
+                } else {
 
-                vaxStatusResponse?.resourcePayload?.federalVaccineProof?.data
-                    ?.let { base64EncodedPdf ->
-                        prepareQRImage(
-                            vaxStatusResponse.resourcePayload.qrCode.data.toString(),
-                            base64EncodedPdf, true
-                        )
+                    vaxStatusResponse?.resourcePayload?.qrCode?.data?.let { base64EncodedQrImage ->
+                        vaxStatusResponse.resourcePayload.federalVaccineProof.data?.let {
+                                base64EncodedFederalPassPdf ->
+                            prepareQRImage(
+                                base64EncodedQrImage,
+                                base64EncodedFederalPassPdf,
+                                true
+                            )
+                            return
+                        }
                     }
+
+                    responseMutableSharedFlow
+                        .emit(Response.Error(ErrorData.GENERIC_ERROR))
+                }
             } else {
                 result.body()?.resultError?.resultMessage?.let {
                     val errorData = ErrorData.NETWORK_ERROR
