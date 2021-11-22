@@ -7,6 +7,7 @@ import android.util.Base64
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.datasource.LocalDataSource
 import ca.bc.gov.bchealth.model.HealthCardDto
+import ca.bc.gov.bchealth.model.ImmunizationRecord
 import ca.bc.gov.bchealth.model.ImmunizationStatus
 import ca.bc.gov.bchealth.model.network.responses.vaccinestatus.VaxStatusResponse
 import ca.bc.gov.bchealth.services.ImmunizationServices
@@ -213,8 +214,6 @@ class CardRepository @Inject constructor(
                 responseMutableSharedFlow.emit(Response.Success())
             } else {
 
-                // Ref: https://freshworks.atlassian.net/browse/HAPP-173
-
                 val filteredHealthCard = cards.filter { record ->
                     val immunizationRecord = shcDecoder.getImmunizationStatus(record.uri)
                     (
@@ -229,67 +228,83 @@ class CardRepository @Inject constructor(
                     dataSource.insert(healthCard)
                     responseMutableSharedFlow.emit(Response.Success())
                 } else {
-                    filteredHealthCard.forEach { existingHealthCard ->
-
-                        val existingImmuRecord =
-                            shcDecoder.getImmunizationStatus(existingHealthCard.uri)
-
-                        if (existingImmuRecord.issueDate >= healthPassToBeInserted.issueDate) {
-                            if (isAddingFederalTravelProof) {
-                                dataSource.update(
-                                    HealthCard(
-                                        existingHealthCard.id,
-                                        existingHealthCard.uri,
-                                        healthCard.federalPass
-                                    )
-                                )
-                                responseMutableSharedFlow.emit(
-                                    Response.Success(
-                                        Pair(
-                                            HealthCard(
-                                                existingHealthCard.id,
-                                                existingHealthCard.uri,
-                                                healthCard.federalPass
-                                            ),
-                                            false
-                                        )
-                                    )
-                                )
-                            } else {
-                                responseMutableSharedFlow
-                                    .emit(
-                                        Response.Error(ErrorData.EXISTING_QR)
-                                    )
-                            }
-                            return@forEach
-                        }
-
-                        if (existingImmuRecord.issueDate < healthPassToBeInserted.issueDate) {
-
-                            existingHealthCard.uri = healthCard.uri
-                            existingHealthCard.federalPass = healthCard.federalPass
-
-                            if (isAddingFederalTravelProof) {
-                                responseMutableSharedFlow
-                                    .emit(
-                                        Response.Success(Pair(existingHealthCard, true))
-                                    )
-                            } else {
-                                responseMutableSharedFlow
-                                    .emit(
-                                        Response.Success(existingHealthCard)
-                                    )
-                            }
-
-                            return@forEach
-                        }
-                    }
+                    updateHealthPass(
+                        healthCard,
+                        isAddingFederalTravelProof,
+                        filteredHealthCard,
+                        healthPassToBeInserted
+                    )
                 }
             }
         } catch (e: Exception) {
             e.printStackTrace()
             responseMutableSharedFlow
                 .emit(Response.Error(ErrorData.GENERIC_ERROR))
+        }
+    }
+
+    private suspend fun updateHealthPass(
+        healthCard: HealthCard,
+        isAddingFederalTravelProof: Boolean,
+        filteredHealthCard: List<HealthCard>,
+        healthPassToBeInserted: ImmunizationRecord
+    ) {
+
+        // Ref: https://freshworks.atlassian.net/browse/HAPP-173
+
+        filteredHealthCard.forEach { existingHealthCard ->
+
+            val existingImmuRecord = shcDecoder.getImmunizationStatus(existingHealthCard.uri)
+
+            if (existingImmuRecord.issueDate >= healthPassToBeInserted.issueDate) {
+                if (isAddingFederalTravelProof) {
+                    dataSource.update(
+                        HealthCard(
+                            existingHealthCard.id,
+                            existingHealthCard.uri,
+                            healthCard.federalPass
+                        )
+                    )
+                    responseMutableSharedFlow.emit(
+                        Response.Success(
+                            Pair(
+                                HealthCard(
+                                    existingHealthCard.id,
+                                    existingHealthCard.uri,
+                                    healthCard.federalPass
+                                ),
+                                false
+                            )
+                        )
+                    )
+                } else {
+                    responseMutableSharedFlow
+                        .emit(
+                            Response.Error(ErrorData.EXISTING_QR)
+                        )
+                }
+                return@forEach
+            }
+
+            if (existingImmuRecord.issueDate < healthPassToBeInserted.issueDate) {
+
+                existingHealthCard.uri = healthCard.uri
+                existingHealthCard.federalPass = healthCard.federalPass
+
+                if (isAddingFederalTravelProof) {
+                    responseMutableSharedFlow
+                        .emit(
+                            Response.Success(Pair(existingHealthCard, true))
+                        )
+                } else {
+                    responseMutableSharedFlow
+                        .emit(
+                            Response.Success(existingHealthCard)
+                        )
+                }
+
+                return@forEach
+            }
         }
     }
 
