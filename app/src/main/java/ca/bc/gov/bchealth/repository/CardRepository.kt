@@ -18,6 +18,7 @@ import ca.bc.gov.bchealth.utils.getDateTime
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -26,7 +27,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
 
 /**
  * [CardRepository]
@@ -217,11 +217,11 @@ class CardRepository @Inject constructor(
                 val filteredHealthCard = cards.filter { record ->
                     val immunizationRecord = shcDecoder.getImmunizationStatus(record.uri)
                     (
-                            immunizationRecord.name.lowercase()
-                                    == healthPassToBeInserted.name.lowercase() &&
-                                    immunizationRecord.birthDate
-                                    == healthPassToBeInserted.birthDate
-                            )
+                        immunizationRecord.name.lowercase()
+                            == healthPassToBeInserted.name.lowercase() &&
+                            immunizationRecord.birthDate
+                            == healthPassToBeInserted.birthDate
+                        )
                 }
 
                 if (filteredHealthCard.isNullOrEmpty()) {
@@ -332,54 +332,40 @@ class CardRepository @Inject constructor(
                 val vaxStatusResponse = result.body()
 
                 /*
-                * Retry logic in case if pdf data is not available.
-                * */
-                if (vaxStatusResponse?.resourcePayload?.federalVaccineProof?.data.isNullOrEmpty()) {
-                    vaxStatusResponse?.resourcePayload?.retryin?.toLong()?.let {
+                 * Loaded field will return false when HGS will respond with cache data.
+                 * HGS response also provide the retry time after which updated data is available.
+                 * */
+                if (vaxStatusResponse?.resourcePayload?.loaded == false) {
+
+                    vaxStatusResponse.resourcePayload.retryin.toLong().let {
                         delay(it)
                     }
+
                     if (i == 1) {
-                        result.body()?.resultError?.resultMessage?.let {
-                            val errorData = ErrorData.NETWORK_ERROR
-                            errorData.errorMessage = it
-                            responseMutableSharedFlow.emit(Response.Error(errorData))
-                            return
-                        }
                         responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
-                        return
+                        break@loop
                     } else {
                         continue@loop
                     }
-                }
+                } else {
 
-                vaxStatusResponse?.resourcePayload?.qrCode?.data
-                    ?.let { base64EncodedImage ->
+                    vaxStatusResponse?.resourcePayload?.qrCode?.data?.let { base64EncodedQrImage ->
+                        vaxStatusResponse.resourcePayload.federalVaccineProof.data?.let {
+                            base64EncodedFederalPassPdf ->
 
-                        vaxStatusResponse.resourcePayload.federalVaccineProof.data
-                            ?.let { base64EncodedPdf ->
-
-                                try {
-                                    prepareQRImage(
-                                        base64EncodedImage, base64EncodedPdf,
-                                        false
-                                    )
-                                } catch (e: Exception) {
-                                    responseMutableSharedFlow
-                                        .emit(Response.Error(ErrorData.GENERIC_ERROR))
-                                }
-                            }
+                            prepareQRImage(
+                                base64EncodedQrImage,
+                                base64EncodedFederalPassPdf,
+                                false
+                            )
+                            return
+                        }
                     }
-            } else {
-                result.body()?.resultError?.resultMessage?.let {
-                    val errorData = ErrorData.NETWORK_ERROR
-                    errorData.errorMessage = it
-                    responseMutableSharedFlow.emit(Response.Error(errorData))
-                    return
+                    responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
                 }
-                responseMutableSharedFlow
-                    .emit(Response.Error(ErrorData.GENERIC_ERROR))
+            } else {
+                responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
             }
-
             break@loop
         }
     }
@@ -399,7 +385,6 @@ class CardRepository @Inject constructor(
         return true
     }
 
-
     /*
     * Fetch federal travel pass for existing vaccine cards
     * */
@@ -417,9 +402,8 @@ class CardRepository @Inject constructor(
                 val vaxStatusResponse = result.body()
 
                 /*
-                * Retry logic in case if loaded is false.
-                * HGS will send cache data for both qrCode and federal proof but try to fetch actual
-                * data from the source
+                * Loaded field will return false when HGS will respond with cache data.
+                * HGS response also provide the retry time after which updated data is available.
                 * */
                 if (vaxStatusResponse?.resourcePayload?.loaded == false) {
 
@@ -428,14 +412,8 @@ class CardRepository @Inject constructor(
                     }
 
                     if (i == 1) {
-                        result.body()?.resultError?.resultMessage?.let {
-                            val errorData = ErrorData.NETWORK_ERROR
-                            errorData.errorMessage = it
-                            responseMutableSharedFlow.emit(Response.Error(errorData))
-                            return
-                        }
                         responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
-                        return
+                        break@loop
                     } else {
                         continue@loop
                     }
@@ -443,7 +421,8 @@ class CardRepository @Inject constructor(
 
                     vaxStatusResponse?.resourcePayload?.qrCode?.data?.let { base64EncodedQrImage ->
                         vaxStatusResponse.resourcePayload.federalVaccineProof.data?.let {
-                                base64EncodedFederalPassPdf ->
+                            base64EncodedFederalPassPdf ->
+
                             prepareQRImage(
                                 base64EncodedQrImage,
                                 base64EncodedFederalPassPdf,
@@ -452,21 +431,11 @@ class CardRepository @Inject constructor(
                             return
                         }
                     }
-
-                    responseMutableSharedFlow
-                        .emit(Response.Error(ErrorData.GENERIC_ERROR))
+                    responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
                 }
             } else {
-                result.body()?.resultError?.resultMessage?.let {
-                    val errorData = ErrorData.NETWORK_ERROR
-                    errorData.errorMessage = it
-                    responseMutableSharedFlow.emit(Response.Error(errorData))
-                    return
-                }
-                responseMutableSharedFlow
-                    .emit(Response.Error(ErrorData.GENERIC_ERROR))
+                responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
             }
-
             break@loop
         }
     }

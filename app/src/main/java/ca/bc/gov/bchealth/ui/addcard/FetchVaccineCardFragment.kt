@@ -187,6 +187,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                             }
                         } else {
                             e.printStackTrace()
+                            binding.progressBar.visibility = View.INVISIBLE
                             showError(
                                 getString(R.string.error),
                                 getString(R.string.error_message)
@@ -406,6 +407,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                                 )
                             } catch (e: Exception) {
                                 e.printStackTrace()
+                                binding.progressBar.visibility = View.INVISIBLE
                                 showError(
                                     getString(R.string.error),
                                     getString(R.string.error_message)
