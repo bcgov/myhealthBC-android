@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.repository.CardRepository
 import ca.bc.gov.bchealth.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,5 +33,9 @@ class AddCardOptionViewModel @Inject constructor(
         context: Context
     ) = viewModelScope.launch {
         repository.processUploadedImage(uri, context)
+    }
+
+    fun replaceExitingHealthPass(healthCard: HealthCard) = viewModelScope.launch {
+        repository.replaceExitingHealthPass(healthCard)
     }
 }

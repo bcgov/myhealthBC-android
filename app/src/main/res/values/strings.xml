@@ -56,6 +56,9 @@
     <string name="dov_required">Date of Vaccination is required</string>
     <string name="add_a_health_pass">Add a Health Pass</string>
     <string name="remember_my_phn_and_dob_for_next_time">Remember my PHN and DoB for next time.</string>
+    <string name="replace">Replace</string>
+    <string name="replace_health_pass_title">Proof of vaccination is updated.</string>
+    <string name="replace_health_pass_message">Would you like to replace the health pass?</string>
 
     <!--Health Passes-->
     <string name="passes">Passes</string>
@@ -120,7 +123,6 @@
     <string name="select_phn">select personal health number</string>
     <string name="federal_proof">federal proof</string>
     <string name="torch">torch</string>
-    <string name="not_secure_connection">This site can\'t provide a secure connection!</string>
-    <!--TODO any new strings below needs to be grouped logically as above-->
+     <!--TODO any new strings below needs to be grouped logically as above-->
 
 </resources>

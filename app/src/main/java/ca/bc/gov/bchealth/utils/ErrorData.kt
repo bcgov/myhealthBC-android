@@ -20,11 +20,6 @@ enum class ErrorData(var errorTitle: String?, var errorMessage: String?) {
         "This health pass is already added."
     ),
 
-    FULLY_VACCINATED_QR_EXISTS(
-        "Duplicate!",
-        "Fully vaccinated health pass is already added."
-    ),
-
     NETWORK_ERROR(
         "Error!",
         "Something went wrong. Please retry."

@@ -18,6 +18,7 @@ import androidx.core.graphics.drawable.toBitmap
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.mycards.qrgen.QrCode
 import ca.bc.gov.bchealth.ui.mycards.qrgen.QrSegment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -215,4 +216,22 @@ private fun addWhiteBorder(bmp: Bitmap, borderSize: Int): Bitmap? {
 fun Context.hideKeyboard(view: View) {
     val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+/*
+* Show alert while replacing existing health pass
+* */
+fun Context.showCardReplacementDialog(runnable: Runnable) {
+
+    MaterialAlertDialogBuilder(this)
+        .setTitle(getString(R.string.replace_health_pass_title))
+        .setCancelable(false)
+        .setMessage(getString(R.string.replace_health_pass_message))
+        .setPositiveButton(getString(R.string.replace)) { dialog, _ ->
+            runnable.run()
+            dialog.dismiss()
+        }.setNegativeButton(getString(R.string.not_now)) { dialog, _ ->
+            dialog.dismiss()
+        }
+        .show()
 }

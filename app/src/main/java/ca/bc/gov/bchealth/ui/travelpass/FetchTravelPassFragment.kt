@@ -16,6 +16,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.databinding.FragmentFetchTravelPassBinding
 import ca.bc.gov.bchealth.di.ApiClientModule
 import ca.bc.gov.bchealth.http.MustBeQueued
@@ -24,6 +25,7 @@ import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.isOnline
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showCardReplacementDialog
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.queue_it.androidsdk.Error
@@ -171,8 +173,22 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                 viewModel.responseSharedFlow.collect {
                     when (it) {
                         is Response.Success -> {
-                            healthCardDto = it.data as HealthCardDto
-                            showFederalTravelPass()
+                            binding.progressBar.visibility = View.INVISIBLE
+
+                            val pair = it.data as Pair<*, *>
+                            val healthCard = pair.first as HealthCard
+                            healthCardDto.federalPass = healthCard.federalPass
+
+                            if (pair.second as Boolean) {
+                                requireContext().showCardReplacementDialog() {
+                                    viewModel.replaceExitingHealthPass(healthCard)
+                                        .invokeOnCompletion {
+                                            showFederalTravelPass()
+                                        }
+                                }
+                            } else {
+                                showFederalTravelPass()
+                            }
                         }
                         is Response.Error -> {
                             ApiClientModule.queueItToken = ""
@@ -235,7 +251,6 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
 
     private fun showFederalTravelPass() {
         ApiClientModule.queueItToken = ""
-        binding.progressBar.visibility = View.INVISIBLE
         requireContext().hideKeyboard(binding.edPhnNumber)
 
         val navOptions = NavOptions.Builder()
