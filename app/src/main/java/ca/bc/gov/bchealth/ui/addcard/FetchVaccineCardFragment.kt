@@ -104,9 +104,9 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             binding.edDob.editText?.setText("1962-01-02")
             binding.edDov.editText?.setText("2021-06-10")*/
 
-            binding.edPhnNumber.editText?.setText("9879458314")
+            /*binding.edPhnNumber.editText?.setText("9879458314")
             binding.edDob.editText?.setText("1934-02-23")
-            binding.edDov.editText?.setText("2021-04-26")
+            binding.edDov.editText?.setText("2021-04-26")*/
         }
 
         setUpPhnUI()
