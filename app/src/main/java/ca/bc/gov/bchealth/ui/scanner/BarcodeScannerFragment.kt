@@ -261,13 +261,13 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                 .setTitle(getString(R.string.replace_health_pass_title))
                 .setCancelable(false)
                 .setMessage(getString(R.string.replace_health_pass_message))
-                .setPositiveButton(getString(R.string.replace)) { dialog, which ->
+                .setPositiveButton(getString(R.string.replace)) { dialog, _ ->
 
                     myCardsViewModel.replaceExitingHealthPass(healthCard).invokeOnCompletion {
                         dialog.dismiss()
                         navigateToCardsList()
                     }
-                }.setNegativeButton(getString(R.string.not_now)) { dialog, which ->
+                }.setNegativeButton(getString(R.string.not_now)) { dialog, _ ->
 
                     // Attach analyzer again to start analysis.
                     imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this))

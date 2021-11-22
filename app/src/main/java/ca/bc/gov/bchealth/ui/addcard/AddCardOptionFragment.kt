@@ -113,13 +113,13 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             .setTitle(getString(R.string.replace_health_pass_title))
             .setCancelable(false)
             .setMessage(getString(R.string.replace_health_pass_message))
-            .setPositiveButton(getString(R.string.replace)) { dialog, which ->
+            .setPositiveButton(getString(R.string.replace)) { dialog, _ ->
 
                 viewModel.replaceExitingHealthPass(healthCard).invokeOnCompletion {
                     dialog.dismiss()
                     navigateToCardsList()
                 }
-            }.setNegativeButton(getString(R.string.not_now)) { dialog, which ->
+            }.setNegativeButton(getString(R.string.not_now)) { dialog, _ ->
                 dialog.dismiss()
             }
             .show()
