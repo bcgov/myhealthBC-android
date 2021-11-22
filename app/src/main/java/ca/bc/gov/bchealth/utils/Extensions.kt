@@ -90,7 +90,9 @@ fun Context.isOnline(): Boolean {
 * Redirect to external URL
 * */
 fun Context.redirect(url: String) {
+
     try {
+
         val customTabColorSchemeParams: CustomTabColorSchemeParams =
             CustomTabColorSchemeParams.Builder()
                 .setToolbarColor(resources.getColor(R.color.white, null))
