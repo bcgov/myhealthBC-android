@@ -286,6 +286,7 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                                 )
                             } catch (e: Exception) {
                                 e.printStackTrace()
+                                binding.progressBar.visibility = View.INVISIBLE
                                 showError(
                                     getString(R.string.error),
                                     getString(R.string.error_message)
