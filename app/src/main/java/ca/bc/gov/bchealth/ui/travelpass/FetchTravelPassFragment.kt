@@ -25,6 +25,7 @@ import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.isOnline
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showCardReplacementDialog
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.queue_it.androidsdk.Error
@@ -179,7 +180,12 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                             healthCardDto.federalPass = healthCard.federalPass
 
                             if (pair.second as Boolean) {
-                                showCardReplacementDialog(healthCard)
+                                requireContext().showCardReplacementDialog() {
+                                    viewModel.replaceExitingHealthPass(healthCard)
+                                        .invokeOnCompletion {
+                                            showFederalTravelPass()
+                                        }
+                                }
                             } else {
                                 showFederalTravelPass()
                             }
@@ -347,23 +353,6 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
             .setCancelable(false)
             .setMessage(message)
             .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
-    }
-
-    private fun showCardReplacementDialog(healthCard: HealthCard) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.replace_health_pass_title))
-            .setCancelable(false)
-            .setMessage(getString(R.string.replace_health_pass_message))
-            .setPositiveButton(getString(R.string.replace)) { dialog, _ ->
-
-                viewModel.replaceExitingHealthPass(healthCard).invokeOnCompletion {
-                    dialog.dismiss()
-                    showFederalTravelPass()
-                }
-            }.setNegativeButton(getString(R.string.not_now)) { dialog, _ ->
                 dialog.dismiss()
             }
             .show()

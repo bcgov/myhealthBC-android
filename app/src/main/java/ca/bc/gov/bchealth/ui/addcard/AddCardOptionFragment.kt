@@ -16,6 +16,7 @@ import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
 import ca.bc.gov.bchealth.utils.Response
+import ca.bc.gov.bchealth.utils.showCardReplacementDialog
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.snowplowanalytics.snowplow.Snowplow
@@ -62,7 +63,12 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                                 if (it.data == null) {
                                     navigateToCardsList()
                                 } else {
-                                    showCardReplacementDialog(it.data as HealthCard)
+                                    requireContext().showCardReplacementDialog {
+                                        viewModel.replaceExitingHealthPass(it.data as HealthCard)
+                                            .invokeOnCompletion {
+                                                navigateToCardsList()
+                                            }
+                                    }
                                 }
                             }
                             is Response.Error -> {
@@ -103,23 +109,6 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             .setCancelable(false)
             .setMessage(message)
             .setPositiveButton(getString(android.R.string.ok)) { dialog, which ->
-                dialog.dismiss()
-            }
-            .show()
-    }
-
-    private fun showCardReplacementDialog(healthCard: HealthCard) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.replace_health_pass_title))
-            .setCancelable(false)
-            .setMessage(getString(R.string.replace_health_pass_message))
-            .setPositiveButton(getString(R.string.replace)) { dialog, _ ->
-
-                viewModel.replaceExitingHealthPass(healthCard).invokeOnCompletion {
-                    dialog.dismiss()
-                    navigateToCardsList()
-                }
-            }.setNegativeButton(getString(R.string.not_now)) { dialog, _ ->
                 dialog.dismiss()
             }
             .show()

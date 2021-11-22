@@ -27,6 +27,7 @@ import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.adjustOffset
 import ca.bc.gov.bchealth.utils.isOnline
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showCardReplacementDialog
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -91,9 +92,9 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     private fun iniUI() {
 
         if (BuildConfig.DEBUG) {
-             /*binding.edPhnNumber.editText?.setText("9000201422")
-             binding.edDob.editText?.setText("1989-12-12")
-             binding.edDov.editText?.setText("2021-05-15")*/
+            /*binding.edPhnNumber.editText?.setText("9000201422")
+            binding.edDob.editText?.setText("1989-12-12")
+            binding.edDov.editText?.setText("2021-05-15")*/
 
             /*binding.edPhnNumber.editText?.setText("9000691304")
             binding.edDob.editText?.setText("1965-01-14")
@@ -103,9 +104,9 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             binding.edDob.editText?.setText("1962-01-02")
             binding.edDov.editText?.setText("2021-06-10")*/
 
-            /*binding.edPhnNumber.editText?.setText("9879458314")
-             binding.edDob.editText?.setText("1934-02-23")
-             binding.edDov.editText?.setText("2021-04-26")*/
+            binding.edPhnNumber.editText?.setText("9879458314")
+            binding.edDob.editText?.setText("1934-02-23")
+            binding.edDov.editText?.setText("2021-04-26")
         }
 
         setUpPhnUI()
@@ -142,7 +143,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                                                 if (it.data == null)
                                                     navigateToCardsList()
                                                 else {
-                                                    showCardReplacementDialog(it.data as HealthCard)
+                                                    showCardReplacement(it.data as HealthCard)
                                                 }
                                                 this.cancel()
                                             }
@@ -150,7 +151,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                                         if (it.data == null)
                                             navigateToCardsList()
                                         else {
-                                            showCardReplacementDialog(it.data as HealthCard)
+                                            showCardReplacement(it.data as HealthCard)
                                         }
                                         this.cancel()
                                     }
@@ -472,22 +473,12 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             .show()
     }
 
-    private fun showCardReplacementDialog(healthCard: HealthCard) {
-
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.replace_health_pass_title))
-            .setCancelable(false)
-            .setMessage(getString(R.string.replace_health_pass_message))
-            .setPositiveButton(getString(R.string.replace)) { dialog, _ ->
-
-                viewModel.replaceExitingHealthPass(healthCard).invokeOnCompletion {
-                    dialog.dismiss()
-                    navigateToCardsList()
-                }
-            }.setNegativeButton(getString(R.string.not_now)) { dialog, _ ->
-                dialog.dismiss()
+    private fun showCardReplacement(healthCard: HealthCard) {
+        requireContext().showCardReplacementDialog() {
+            viewModel.replaceExitingHealthPass(healthCard).invokeOnCompletion {
+                navigateToCardsList()
             }
-            .show()
+        }
     }
 
     private fun navigateToCardsList() {
