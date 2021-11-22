@@ -93,11 +93,6 @@ fun Context.redirect(url: String) {
 
     try {
 
-        if (URLUtil.isHttpUrl(url) || URLUtil.isFileUrl(url)) {
-            this.toast(getString(R.string.not_secure_connection))
-            return
-        }
-
         val customTabColorSchemeParams: CustomTabColorSchemeParams =
             CustomTabColorSchemeParams.Builder()
                 .setToolbarColor(resources.getColor(R.color.white, null))
