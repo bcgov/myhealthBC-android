@@ -23,6 +23,7 @@ import ca.bc.gov.bchealth.analytics.AnalyticsText
 import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.barcodeanalyzer.BarcodeAnalyzer
 import ca.bc.gov.bchealth.barcodeanalyzer.ScanningResultListener
+import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.databinding.FragmentBarcodeScannerBinding
 import ca.bc.gov.bchealth.ui.mycards.MyCardsViewModel
 import ca.bc.gov.bchealth.utils.ErrorData
@@ -85,13 +86,11 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                     when (it) {
                         is Response.Success -> {
 
-                            // Snowplow event
-                            Snowplow.getDefaultTracker()?.track(
-                                SelfDescribingEvent
-                                    .get(AnalyticsAction.AddQR.value, AnalyticsText.Scan.value)
-                            )
-
-                            findNavController().popBackStack(R.id.myCardsFragment, false)
+                            if (it.data == null) {
+                                navigateToCardsList()
+                            } else {
+                                showCardReplacementDialog(it.data as HealthCard)
+                            }
                         }
                         is Response.Error -> {
                             showError(
@@ -255,5 +254,36 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                     dialog.dismiss()
                 }
                 .show()
+        }
+
+        private fun showCardReplacementDialog(healthCard: HealthCard) {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(getString(R.string.replace_health_pass_title))
+                .setCancelable(false)
+                .setMessage(getString(R.string.replace_health_pass_message))
+                .setPositiveButton(getString(R.string.replace)) { dialog, which ->
+
+                    myCardsViewModel.replaceExitingHealthPass(healthCard).invokeOnCompletion {
+                        dialog.dismiss()
+                        navigateToCardsList()
+                    }
+                }.setNegativeButton(getString(R.string.not_now)) { dialog, which ->
+
+                    // Attach analyzer again to start analysis.
+                    imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this))
+
+                    dialog.dismiss()
+                }
+                .show()
+        }
+
+        private fun navigateToCardsList() {
+            // Snowplow event
+            Snowplow.getDefaultTracker()?.track(
+                SelfDescribingEvent
+                    .get(AnalyticsAction.AddQR.value, AnalyticsText.Scan.value)
+            )
+
+            findNavController().popBackStack(R.id.myCardsFragment, false)
         }
     }

@@ -35,7 +35,7 @@ class MyCardsViewModel @Inject constructor(
 
     fun saveCard(uri: String) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
-            repository.insert(HealthCard(uri = uri))
+            repository.insert(HealthCard(uri = uri), false)
         }
     }
 
@@ -68,4 +68,8 @@ class MyCardsViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(0),
         initialValue = null
     )
+
+    fun replaceExitingHealthPass(healthCard: HealthCard) = viewModelScope.launch {
+        repository.replaceExitingHealthPass(healthCard)
+    }
 }
