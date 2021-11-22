@@ -13,6 +13,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.analytics.AnalyticsAction
 import ca.bc.gov.bchealth.analytics.AnalyticsText
 import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
+import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -57,16 +58,12 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                     viewModel.responseSharedFlow.collect {
                         when (it) {
                             is Response.Success -> {
-                                // Snowplow event
-                                Snowplow.getDefaultTracker()?.track(
-                                    SelfDescribingEvent
-                                        .get(
-                                            AnalyticsAction.AddQR.value,
-                                            AnalyticsText.Upload.value
-                                        )
-                                )
 
-                                findNavController().popBackStack(R.id.myCardsFragment, false)
+                                if (it.data == null) {
+                                    navigateToCardsList()
+                                } else {
+                                    showCardReplacementDialog(it.data as HealthCard)
+                                }
                             }
                             is Response.Error -> {
                                 showError(
@@ -109,5 +106,35 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                 dialog.dismiss()
             }
             .show()
+    }
+
+    private fun showCardReplacementDialog(healthCard: HealthCard) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.replace_health_pass_title))
+            .setCancelable(false)
+            .setMessage(getString(R.string.replace_health_pass_message))
+            .setPositiveButton(getString(R.string.replace)) { dialog, which ->
+
+                viewModel.replaceExitingHealthPass(healthCard).invokeOnCompletion {
+                    dialog.dismiss()
+                    navigateToCardsList()
+                }
+            }.setNegativeButton(getString(R.string.not_now)) { dialog, which ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun navigateToCardsList() {
+        // Snowplow event
+        Snowplow.getDefaultTracker()?.track(
+            SelfDescribingEvent
+                .get(
+                    AnalyticsAction.AddQR.value,
+                    AnalyticsText.Upload.value
+                )
+        )
+
+        findNavController().popBackStack(R.id.myCardsFragment, false)
     }
 }

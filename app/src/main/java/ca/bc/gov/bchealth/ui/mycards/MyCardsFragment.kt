@@ -498,12 +498,14 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 delay(500)
-                if (newlyAddedCardPosition > 0)
+                if (newlyAddedCardPosition > 0) {
                     (recyclerViewCardsList.layoutManager as LinearLayoutManager)
                         .smoothScrollToPosition(
                             recyclerViewCardsList,
                             RecyclerView.State(), newlyAddedCardPosition
                         )
+                    newlyAddedCardPosition = 0
+                }
             }
         }
 

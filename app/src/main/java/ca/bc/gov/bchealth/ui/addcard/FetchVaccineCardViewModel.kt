@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.addcard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.datasource.DataStoreRepo
 import ca.bc.gov.bchealth.repository.CardRepository
 import ca.bc.gov.bchealth.utils.Response
@@ -40,4 +41,8 @@ class FetchVaccineCardViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = ""
     )
+
+    fun replaceExitingHealthPass(healthCard: HealthCard) = viewModelScope.launch {
+        repository.replaceExitingHealthPass(healthCard)
+    }
 }

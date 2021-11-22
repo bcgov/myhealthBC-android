@@ -73,76 +73,6 @@ class CardRepository @Inject constructor(
     }
 
     /*
-    * Insert or update existing health pass
-    * */
-    suspend fun insert(card: HealthCard) {
-        try {
-            val healthPassToBeInserted = shcDecoder.getImmunizationStatus(card.uri)
-
-            val cards = dataSource.getCards().firstOrNull()
-
-            if (cards.isNullOrEmpty()) {
-                dataSource.insert(card)
-                responseMutableSharedFlow.emit(Response.Success())
-            } else {
-
-                val existingHealthPass = cards.filter { record ->
-                    val immunizationRecord = shcDecoder.getImmunizationStatus(record.uri)
-                    (
-                        immunizationRecord.name == healthPassToBeInserted.name &&
-                            immunizationRecord.birthDate == healthPassToBeInserted.birthDate
-                        )
-                }
-
-                if (existingHealthPass.isNullOrEmpty()) {
-                    dataSource.insert(card)
-                    responseMutableSharedFlow.emit(Response.Success())
-                } else {
-                    existingHealthPass.forEach { existingHealthCard ->
-
-                        val existingHealthPassStatus = shcDecoder
-                            .getImmunizationStatus(existingHealthCard.uri).status
-
-                        if (healthPassToBeInserted.status == existingHealthPassStatus) {
-                            responseMutableSharedFlow
-                                .emit(
-                                    Response.Error(ErrorData.EXISTING_QR)
-                                )
-                            return@forEach
-                        }
-
-                        if (existingHealthPassStatus == ImmunizationStatus.PARTIALLY_IMMUNIZED) {
-                            existingHealthCard.uri = card.uri
-                            existingHealthCard.federalPass = card.federalPass
-                            dataSource.update(existingHealthCard)
-                            responseMutableSharedFlow.emit(Response.Success())
-                        } else if (existingHealthPassStatus == ImmunizationStatus.FULLY_IMMUNIZED) {
-                            responseMutableSharedFlow
-                                .emit(
-                                    Response.Error(
-                                        ErrorData.FULLY_VACCINATED_QR_EXISTS
-                                    )
-                                )
-                        }
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            responseMutableSharedFlow
-                .emit(Response.Error(ErrorData.GENERIC_ERROR))
-        }
-    }
-
-    suspend fun unLink(card: HealthCard) = dataSource.unLink(card)
-
-    suspend fun rearrangeHealthCards(cards: List<HealthCard>) = dataSource.rearrange(cards)
-
-    private suspend fun saveCard(uri: String, base64EncodedPdf: String) {
-        insert(HealthCard(uri = uri, federalPass = base64EncodedPdf))
-    }
-
-    /*
     * Used in uploading the QR from gallery
     * */
     suspend fun processUploadedImage(
@@ -160,7 +90,7 @@ class CardRepository @Inject constructor(
                 return
             }
 
-            processImage(image, "")
+            processImage(image, "", false)
         }
     }
 
@@ -168,7 +98,11 @@ class CardRepository @Inject constructor(
     * HGS vaccine status API provides Base64 encoded image data.
     * Get the QR image from this data.
     * */
-    private suspend fun prepareQRImage(base64EncodedImage: String, base64EncodedPdf: String) {
+    private suspend fun prepareQRImage(
+        base64EncodedImage: String,
+        base64EncodedPdf: String,
+        isAddingFederalTravelProof: Boolean
+    ) {
         val decodedByteArray: ByteArray =
             Base64
                 .decode(base64EncodedImage, Base64.DEFAULT)
@@ -182,7 +116,7 @@ class CardRepository @Inject constructor(
         image = InputImage
             .fromBitmap(decodedBitmap, 0)
 
-        processImage(image, base64EncodedPdf)
+        processImage(image, base64EncodedPdf, isAddingFederalTravelProof)
     }
 
     /*
@@ -190,7 +124,8 @@ class CardRepository @Inject constructor(
     * */
     private suspend fun processImage(
         image: InputImage,
-        base64EncodedPdf: String
+        base64EncodedPdf: String,
+        isAddingFederalTravelProof: Boolean
     ) {
 
         val scanner = BarcodeScanning.getClient()
@@ -216,7 +151,7 @@ class CardRepository @Inject constructor(
                     val rawValue = barcode.rawValue
                     rawValue?.let {
                         runBlocking {
-                            processShcUri(it, base64EncodedPdf)
+                            processShcUri(it, base64EncodedPdf, isAddingFederalTravelProof)
                         }
                     }
                 }
@@ -236,13 +171,14 @@ class CardRepository @Inject constructor(
     * */
     private suspend fun processShcUri(
         shcUri: String,
-        base64EncodedPdf: String
+        base64EncodedPdf: String,
+        isAddingFederalTravelProof: Boolean
     ) {
         try {
             when (shcDecoder.getImmunizationStatus(shcUri).status) {
                 ImmunizationStatus.FULLY_IMMUNIZED,
                 ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
-                    saveCard(shcUri, base64EncodedPdf)
+                    saveCard(shcUri, base64EncodedPdf, isAddingFederalTravelProof)
                 }
 
                 ImmunizationStatus.INVALID_QR_CODE -> {
@@ -254,6 +190,116 @@ class CardRepository @Inject constructor(
             responseMutableSharedFlow.emit(Response.Error(ErrorData.INVALID_QR))
         }
     }
+
+    private suspend fun saveCard(
+        uri: String,
+        base64EncodedPdf: String,
+        isAddingFederalTravelProof: Boolean
+    ) {
+        insert(HealthCard(uri = uri, federalPass = base64EncodedPdf), isAddingFederalTravelProof)
+    }
+
+    /*
+    * Insert or update existing health pass
+    * */
+    suspend fun insert(healthCard: HealthCard, isAddingFederalTravelProof: Boolean) {
+        try {
+            val healthPassToBeInserted = shcDecoder.getImmunizationStatus(healthCard.uri)
+
+            val cards = dataSource.getCards().firstOrNull()
+
+            if (cards.isNullOrEmpty()) {
+                dataSource.insert(healthCard)
+                responseMutableSharedFlow.emit(Response.Success())
+            } else {
+
+                // Ref: https://freshworks.atlassian.net/browse/HAPP-173
+
+                val filteredHealthCard = cards.filter { record ->
+                    val immunizationRecord = shcDecoder.getImmunizationStatus(record.uri)
+                    (
+                        immunizationRecord.name.lowercase()
+                            == healthPassToBeInserted.name.lowercase() &&
+                            immunizationRecord.birthDate
+                            == healthPassToBeInserted.birthDate
+                        )
+                }
+
+                if (filteredHealthCard.isNullOrEmpty()) {
+                    dataSource.insert(healthCard)
+                    responseMutableSharedFlow.emit(Response.Success())
+                } else {
+                    filteredHealthCard.forEach { existingHealthCard ->
+
+                        val existingImmuRecord =
+                            shcDecoder.getImmunizationStatus(existingHealthCard.uri)
+
+                        if (existingImmuRecord.issueDate >= healthPassToBeInserted.issueDate) {
+                            if (isAddingFederalTravelProof) {
+                                dataSource.update(
+                                    HealthCard(
+                                        existingHealthCard.id,
+                                        existingHealthCard.uri,
+                                        healthCard.federalPass
+                                    )
+                                )
+                                responseMutableSharedFlow.emit(
+                                    Response.Success(
+                                        Pair(
+                                            HealthCard(
+                                                existingHealthCard.id,
+                                                existingHealthCard.uri,
+                                                healthCard.federalPass
+                                            ),
+                                            false
+                                        )
+                                    )
+                                )
+                            } else {
+                                responseMutableSharedFlow
+                                    .emit(
+                                        Response.Error(ErrorData.EXISTING_QR)
+                                    )
+                            }
+                            return@forEach
+                        }
+
+                        if (existingImmuRecord.issueDate < healthPassToBeInserted.issueDate) {
+
+                            existingHealthCard.uri = healthCard.uri
+                            existingHealthCard.federalPass = healthCard.federalPass
+
+                            if (isAddingFederalTravelProof) {
+                                responseMutableSharedFlow
+                                    .emit(
+                                        Response.Success(Pair(existingHealthCard, true))
+                                    )
+                            } else {
+                                responseMutableSharedFlow
+                                    .emit(
+                                        Response.Success(existingHealthCard)
+                                    )
+                            }
+
+                            return@forEach
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            responseMutableSharedFlow
+                .emit(Response.Error(ErrorData.GENERIC_ERROR))
+        }
+    }
+
+    suspend fun replaceExitingHealthPass(healthCard: HealthCard) {
+        dataSource.update(healthCard)
+    }
+
+    suspend fun unLink(card: HealthCard) = dataSource.unLink(card)
+
+    suspend fun rearrangeHealthCards(cards: List<HealthCard>) = dataSource.rearrange(cards)
 
     /*
     * HGS connection to fetch vaccination status
@@ -298,7 +344,10 @@ class CardRepository @Inject constructor(
                             ?.let { base64EncodedPdf ->
 
                                 try {
-                                    prepareQRImage(base64EncodedImage, base64EncodedPdf)
+                                    prepareQRImage(
+                                        base64EncodedImage, base64EncodedPdf,
+                                        false
+                                    )
                                 } catch (e: Exception) {
                                     responseMutableSharedFlow
                                         .emit(Response.Error(ErrorData.GENERIC_ERROR))
@@ -375,21 +424,10 @@ class CardRepository @Inject constructor(
 
                 vaxStatusResponse?.resourcePayload?.federalVaccineProof?.data
                     ?.let { base64EncodedPdf ->
-
-                        try {
-                            dataSource.update(
-                                HealthCard(
-                                    healthCardDto.id,
-                                    healthCardDto.uri,
-                                    base64EncodedPdf
-                                )
-                            )
-                            healthCardDto.federalPass = base64EncodedPdf
-                            responseMutableSharedFlow.emit(Response.Success(data = healthCardDto))
-                        } catch (e: Exception) {
-                            responseMutableSharedFlow
-                                .emit(Response.Error(ErrorData.GENERIC_ERROR))
-                        }
+                        prepareQRImage(
+                            vaxStatusResponse.resourcePayload.qrCode.data.toString(),
+                            base64EncodedPdf, true
+                        )
                     }
             } else {
                 result.body()?.resultError?.resultMessage?.let {
