@@ -7,6 +7,11 @@
         android:icon="@drawable/pass_selector"
         android:title="@string/passes" />
     <item
+        android:id="@+id/healthRecordsFragment"
+        android:enabled="true"
+        android:icon="@drawable/records_selector"
+        android:title="@string/records" />
+    <item
         android:id="@+id/resourcesFragment"
         android:enabled="true"
         android:icon="@drawable/resource_selector"
