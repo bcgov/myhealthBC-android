@@ -34,7 +34,9 @@ class MainActivity : AppCompatActivity() {
             when (destination.id) {
                 R.id.myCardsFragment,
                 R.id.addCardOptionFragment,
-                R.id.resourcesFragment -> showBottomNav()
+                R.id.healthRecordsFragment,
+                R.id.addHealthRecordsFragment,
+                R.id.resourcesFragment,
                 R.id.newsfeedFragment -> {
                     showBottomNav()
                 }

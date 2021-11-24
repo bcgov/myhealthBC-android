@@ -109,6 +109,17 @@
     <string name="ok_camel_case">Ok</string>
     <string name="health_records">Health Records</string>
 
+    <!--Health Records-->
+    <string name="view_the_details_of_all_your_covid_19_health_records">View the details of all your COVID-19 Health Records</string>
+    <string name="records">Records</string>
+    <string name="get_vaccination_records">Get Vaccination Records</string>
+    <string name="access_to_the_details_of_you_and_your_family_s_covid_19_vaccination_records">Access to the details of you and your family’s COVID-19 Vaccination Records</string>
+    <string name="get_covid_19_test_results">Get COVID-19 Test Results</string>
+    <string name="access_to_the_details_of_you_and_your_family_s_covid_19_test_results">Access to the details of you and your family’s COVID-19 Test Results</string>
+    <string name="add_bc_vaccine_record">Add a BC Vaccine Record</string>
+    <string name="add_covid_test_result">Add COVID-19 Test Result</string>
+    <string name="date_of_test">Date of Test (YYYY-MM-DD)</string>
+
     <!--Miscellaneous-->
     <string name="coming_soon">Coming soon!</string>
     <string name="back">Back</string>
@@ -123,6 +134,5 @@
     <string name="select_phn">select personal health number</string>
     <string name="federal_proof">federal proof</string>
     <string name="torch">torch</string>
-     <!--TODO any new strings below needs to be grouped logically as above-->
 
 </resources>
