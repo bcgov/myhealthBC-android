@@ -14,7 +14,7 @@ import ca.bc.gov.bchealth.services.ImmunizationServices
 import ca.bc.gov.bchealth.utils.ErrorData
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
-import ca.bc.gov.bchealth.utils.getDateTime
+import ca.bc.gov.bchealth.utils.getIssueDate
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
@@ -55,19 +55,21 @@ class CardRepository @Inject constructor(
                 val data = shcDecoder.getImmunizationStatus(card.uri)
                 HealthCardDto(
                     card.id,
+                    card.uri,
+                    card.federalPass,
                     data.name,
                     data.status,
-                    card.uri,
                     false,
-                    data.issueDate.getDateTime(),
+                    data.issueDate.getIssueDate(),
                     data.birthDate.toString(),
                     data.occurrenceDateTime.toString(),
-                    card.federalPass
+                    data.immunizationEntries
                 )
             } catch (e: Exception) {
                 HealthCardDto(
-                    0, "", ImmunizationStatus.INVALID_QR_CODE, card.uri,
-                    false
+                    0, card.uri, "", "", ImmunizationStatus.INVALID_QR_CODE,
+                    false, "", "", "",
+                    null
                 )
             }
         }
@@ -219,15 +221,13 @@ class CardRepository @Inject constructor(
 
             if (cards.isNullOrEmpty()) {
                 dataSource.insert(healthCard)
-                responseMutableSharedFlow.emit(Response.Success())
+                responseMutableSharedFlow.emit(Response.Success(Pair(healthCard, false)))
                 return
             }
             if (healthPassTobeUpdated.isNotEmpty()) {
                 healthCard.id = healthPassTobeUpdated.toInt()
                 responseMutableSharedFlow
-                    .emit(
-                        Response.Success(healthCard)
-                    )
+                    .emit(Response.Success(Pair(healthCard, true)))
             } else {
 
                 val filteredHealthCard = cards.filter { record ->
@@ -242,7 +242,7 @@ class CardRepository @Inject constructor(
 
                 if (filteredHealthCard.isNullOrEmpty()) {
                     dataSource.insert(healthCard)
-                    responseMutableSharedFlow.emit(Response.Success())
+                    responseMutableSharedFlow.emit(Response.Success(Pair(healthCard, false)))
                 } else {
                     updateHealthPass(
                         healthCard,
@@ -275,7 +275,7 @@ class CardRepository @Inject constructor(
             } else {
                 existingHealthCard.uri = healthCard.uri
                 existingHealthCard.federalPass = healthCard.federalPass
-                responseMutableSharedFlow.emit(Response.Success(existingHealthCard))
+                responseMutableSharedFlow.emit(Response.Success(Pair(existingHealthCard, true)))
             }
         }
     }

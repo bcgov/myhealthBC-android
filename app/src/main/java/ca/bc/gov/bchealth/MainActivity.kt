@@ -32,15 +32,13 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.myCardsFragment,
-                R.id.addCardOptionFragment,
-                R.id.healthRecordsFragment,
-                R.id.addHealthRecordsFragment,
-                R.id.resourcesFragment,
-                R.id.newsfeedFragment -> {
-                    showBottomNav()
+                R.id.fetchVaccineCardFragment,
+                R.id.fetchTravelPassFragment,
+                R.id.fetchCovidTestResultFragment,
+                R.id.fetchVaccineRecordFragment -> {
+                    hideBottomNav()
                 }
-                else -> hideBottomNav()
+                else -> showBottomNav()
             }
         }
     }

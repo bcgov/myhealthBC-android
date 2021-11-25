@@ -147,6 +147,13 @@
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_healthRecordsFragment_to_individualHealthRecordFragment"
+            app:destination="@id/individualHealthRecordFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/addHealthRecordsFragment"
@@ -170,14 +177,50 @@
     <fragment
         android:id="@+id/fetchVaccineRecordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecords.vaccinerecords.FetchVaccineRecordFragment"
-        android:label="FetchVaccineRecordFragment" />
+        android:label="FetchVaccineRecordFragment">
+        <action
+            android:id="@+id/action_fetchVaccineRecordFragment_to_individualHealthRecordFragment"
+            app:destination="@id/individualHealthRecordFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
     <fragment
         android:id="@+id/fetchCovidTestResultFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecords.covidtestresults.FetchCovidTestResultFragment"
-        android:label="FetchCovidTestResultFragment" />
+        android:label="FetchCovidTestResultFragment">
+        <action
+            android:id="@+id/action_fetchCovidTestResultFragment_to_individualHealthRecordFragment"
+            app:destination="@id/individualHealthRecordFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
     <fragment
         android:id="@+id/individualHealthRecordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecords.IndividualHealthRecordFragment"
         android:label="fragment_individual_health_record"
-        tools:layout="@layout/fragment_individual_health_record" />
+        tools:layout="@layout/fragment_individual_health_record">
+        <argument
+            android:name="healthRecord"
+            app:argType="ca.bc.gov.bchealth.model.healthrecords.HealthRecord" />
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_covidTestResultFragment"
+            app:destination="@id/covidTestResultFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/covidTestResultFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecords.covidtestresults.CovidTestResultFragment"
+        android:label="fragment_covid_test_result"
+        tools:layout="@layout/fragment_covid_test_result">
+        <argument
+            android:name="covidTestResult"
+            app:argType="ca.bc.gov.bchealth.data.local.entity.CovidTestResult" />
+    </fragment>
 </navigation>

@@ -28,7 +28,7 @@ class HealthCadDataSourceModule {
         context,
         BcVaccineCardDataBase::class.java,
         "bc_vaccine_card_db"
-    ).addMigrations(MIGRATION_1_2)
+    ).addMigrations(MIGRATION_1_2, MIGRATION_2_3)
         .fallbackToDestructiveMigration()
         .build()
 
@@ -46,6 +46,28 @@ class HealthCadDataSourceModule {
                 "ALTER TABLE" +
                     " `health_card`" +
                     "ADD COLUMN federalPass TEXT "
+            )
+        }
+    }
+
+    val MIGRATION_2_3 = object : Migration(2, 3) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL(
+                "CREATE TABLE IF NOT EXISTS " +
+                    "`covid_test_results` " +
+                    "(reportId TEXT PRIMARY KEY NOT NULL," +
+                    "patientDisplayName TEXT NOT NULL," +
+                    "lab TEXT NOT NULL," +
+                    "collectionDateTime INTEGER NOT NULL," +
+                    "resultDateTime INTEGER NOT NULL," +
+                    "testName TEXT NOT NULL," +
+                    "testType TEXT NOT NULL," +
+                    "testStatus TEXT NOT NULL," +
+                    "testOutcome TEXT NOT NULL," +
+                    "resultTitle TEXT NOT NULL," +
+                    "resultDescription TEXT NOT NULL," +
+                    "resultLink TEXT NOT NULL," +
+                    "userId TEXT NOT NULL)"
             )
         }
     }

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHealthRecordsBinding
-import ca.bc.gov.bchealth.model.HealthCardDto
+import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -28,35 +28,36 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
     private val viewModel: HealthRecordsViewModel by viewModels()
 
     private lateinit var healthRecordsAdapter: HealthRecordsAdapter
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        fetchMembers()
 
         binding.ivAddHealthRecord.setOnClickListener {
             findNavController()
                 .navigate(R.id.action_healthRecordsFragment_to_addHealthRecordsFragment)
         }
+
+        observeHealthRecords()
     }
 
-    private fun fetchMembers() {
+    /*
+    * Observe the health records
+    * */
+    private fun observeHealthRecords() {
+
+        showLoader(true)
+
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.members.collect { members ->
+                viewModel.healthRecords.collect { healthRecords ->
 
-                    binding.progressBar.visibility = View.INVISIBLE
-                    if (members != null) {
-                        if (members.isNotEmpty()) {
-                            setupRecyclerView(members.toMutableList())
+                    showLoader(false)
+
+                    if (healthRecords != null) {
+                        if (healthRecords.isNotEmpty()) {
+                            setupRecyclerView(healthRecords.toMutableList())
                         } else {
-                            val navOptions = NavOptions.Builder()
-                                .setPopUpTo(R.id.healthRecordsFragment, true)
-                                .build()
-                            findNavController().navigate(
-                                R.id.addHealthRecordsFragment,
-                                null,
-                                navOptions
-                            )
+                            navigateToAddHealthRecords()
                         }
                     }
                 }
@@ -64,10 +65,25 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         }
     }
 
-    /*
-     * SetUp recycler view
-     * */
-    private fun setupRecyclerView(members: MutableList<HealthCardDto>) {
+    private fun showLoader(value: Boolean) {
+        if (value)
+            binding.progressBar.visibility = View.VISIBLE
+        else
+            binding.progressBar.visibility = View.INVISIBLE
+    }
+
+    private fun navigateToAddHealthRecords() {
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.healthRecordsFragment, true)
+            .build()
+        findNavController().navigate(
+            R.id.addHealthRecordsFragment,
+            null,
+            navOptions
+        )
+    }
+
+    private fun setupRecyclerView(members: MutableList<HealthRecord>) {
 
         healthRecordsAdapter = HealthRecordsAdapter(members)
 
