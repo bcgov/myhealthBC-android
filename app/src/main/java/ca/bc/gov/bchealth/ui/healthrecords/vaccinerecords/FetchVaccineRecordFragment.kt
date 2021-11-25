@@ -106,23 +106,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
             if (validateInputData()) {
 
-                viewLifecycleOwner.lifecycleScope.launch {
-                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        viewModel.responseSharedFlow.collect {
-                            when (it) {
-                                is Response.Success -> {
-                                    respondToSuccess(it, this)
-                                }
-                                is Response.Error -> {
-                                    respondToError(it, this)
-                                }
-                                is Response.Loading -> {
-                                    showLoader(true)
-                                }
-                            }
-                        }
-                    }
-                }
+                observeResponse()
 
                 viewLifecycleOwner.lifecycleScope.launch {
                     try {
@@ -271,6 +255,26 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         }
 
         return true
+    }
+
+    private fun observeResponse() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.responseSharedFlow.collect {
+                    when (it) {
+                        is Response.Success -> {
+                            respondToSuccess(it, this)
+                        }
+                        is Response.Error -> {
+                            respondToError(it, this)
+                        }
+                        is Response.Loading -> {
+                            showLoader(true)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun respondToSuccess(
@@ -449,9 +453,11 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                     }
 
                     override fun onUserExited() {
+                        // Not required
                     }
 
                     override fun onQueueDisabled() {
+                        // Not required
                     }
 
                     override fun onQueueItUnavailable() {
@@ -469,6 +475,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                     }
 
                     override fun onWebViewClosed() {
+                        // Not required
                     }
                 }
             )
