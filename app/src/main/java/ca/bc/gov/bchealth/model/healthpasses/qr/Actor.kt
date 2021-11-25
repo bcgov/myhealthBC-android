@@ -1,14 +1,14 @@
-package ca.bc.gov.bchealth.model
+package ca.bc.gov.bchealth.model.healthpasses.qr
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 /**
- * [Patient]
+ * [Actor]
  *
  * @author Pinakin Kansara
  */
 @Parcelize
-data class Patient(
-    val reference: String
+data class Actor(
+        val display: String
 ) : Parcelable

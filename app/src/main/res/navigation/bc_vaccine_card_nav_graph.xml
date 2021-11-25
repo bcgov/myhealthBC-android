@@ -147,6 +147,13 @@
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_healthRecordsFragment_to_individualHealthRecordFragment"
+            app:destination="@id/individualHealthRecordFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/addHealthRecordsFragment"
@@ -179,5 +186,9 @@
         android:id="@+id/individualHealthRecordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecords.IndividualHealthRecordFragment"
         android:label="fragment_individual_health_record"
-        tools:layout="@layout/fragment_individual_health_record" />
+        tools:layout="@layout/fragment_individual_health_record">
+        <argument
+            android:name="healthRecordDto"
+            app:argType="ca.bc.gov.bchealth.model.HealthCardDto" />
+    </fragment>
 </navigation>

@@ -18,7 +18,6 @@ import ca.bc.gov.bchealth.utils.getDateTime
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
-import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,6 +26,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 /**
  * [CardRepository]
@@ -54,21 +54,22 @@ class CardRepository @Inject constructor(
             try {
                 val data = shcDecoder.getImmunizationStatus(card.uri)
                 HealthCardDto(
-                    card.id,
-                    data.name,
-                    data.status,
-                    card.uri,
-                    false,
-                    data.issueDate.getDateTime(),
-                    data.birthDate.toString(),
-                    data.occurrenceDateTime.toString(),
-                    card.federalPass
+                        card.id,
+                        card.uri,
+                        card.federalPass,
+                        data.name,
+                        data.status,
+                        false,
+                        data.issueDate.getDateTime(),
+                        data.birthDate.toString(),
+                        data.occurrenceDateTime.toString(),
+                        data.immunizationEntries
                 )
             } catch (e: Exception) {
                 HealthCardDto(
-                    0, "", ImmunizationStatus.INVALID_QR_CODE, card.uri,
-                    false
-                )
+                        0, card.uri, "", "", ImmunizationStatus.INVALID_QR_CODE,
+                        false, "", "", "",
+                        null)
             }
         }
     }
@@ -77,8 +78,8 @@ class CardRepository @Inject constructor(
     * Used in uploading the QR from gallery
     * */
     suspend fun processUploadedImage(
-        uri: Uri,
-        context: Context
+            uri: Uri,
+            context: Context
     ) {
 
         kotlin.runCatching {

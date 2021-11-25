@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.model
+package ca.bc.gov.bchealth.model.healthpasses.qr
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class SHCData(
-    val header: SHCHeader,
-    val payload: SHCPayload,
-    val signature: String
+        val header: SHCHeader,
+        val payload: SHCPayload,
+        val signature: String
 ) : Parcelable

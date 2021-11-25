@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.model
+package ca.bc.gov.bchealth.model.healthpasses.qr
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -10,6 +10,6 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class Name(
-    val family: String?,
-    val given: List<String>
+        val family: String?,
+        val given: List<String>
 ) : Parcelable

@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.model
+package ca.bc.gov.bchealth.model.healthpasses.qr
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -10,6 +10,6 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class CredentialSubject(
-    val fhirVersion: String,
-    val fhirBundle: FhirBundle
+        val fhirVersion: String,
+        val fhirBundle: FhirBundle
 ) : Parcelable

@@ -2,15 +2,17 @@ package ca.bc.gov.bchealth.utils
 
 import ca.bc.gov.bchealth.model.ImmunizationRecord
 import ca.bc.gov.bchealth.model.ImmunizationStatus
-import ca.bc.gov.bchealth.model.Jwks
-import ca.bc.gov.bchealth.model.JwksKey
-import ca.bc.gov.bchealth.model.SHCData
-import ca.bc.gov.bchealth.model.SHCHeader
-import ca.bc.gov.bchealth.model.SHCPayload
+import ca.bc.gov.bchealth.model.healthpasses.decoder.Jwks
+import ca.bc.gov.bchealth.model.healthpasses.decoder.JwksKey
+import ca.bc.gov.bchealth.model.healthpasses.qr.SHCData
+import ca.bc.gov.bchealth.model.healthpasses.qr.SHCHeader
+import ca.bc.gov.bchealth.model.healthpasses.qr.SHCPayload
 import com.google.gson.Gson
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.impl.crypto.DefaultJwtSignatureValidator
 import io.jsonwebtoken.io.Decoders
+import org.bouncycastle.jce.ECNamedCurveTable
+import org.bouncycastle.jce.spec.ECNamedCurveSpec
 import java.math.BigInteger
 import java.security.KeyFactory
 import java.security.interfaces.ECPublicKey
@@ -20,8 +22,6 @@ import java.util.Base64
 import java.util.zip.DataFormatException
 import java.util.zip.Inflater
 import javax.inject.Inject
-import org.bouncycastle.jce.ECNamedCurveTable
-import org.bouncycastle.jce.spec.ECNamedCurveSpec
 
 /**
  * [SHCDecoder] Helper class to decode SMART HEALTH CARD record retrieved from QR.
@@ -33,7 +33,7 @@ import org.bouncycastle.jce.spec.ECNamedCurveSpec
  * @author Pinakin Kansara
  */
 class SHCDecoder @Inject constructor(
-    private val jwks: String
+        private val jwks: String
 ) {
 
     companion object {
@@ -45,7 +45,7 @@ class SHCDecoder @Inject constructor(
         const val IMMUNIZATION = "Immunization"
         const val PATIENT = "Patient"
         const val JANSSEN_SNOWMED =
-            "28951000087107" // TODO: 03/09/21 This will be removed in future
+                "28951000087107" // TODO: 03/09/21 This will be removed in future
         const val JANSSEN_CVX = "212"
     }
 
@@ -126,8 +126,8 @@ class SHCDecoder @Inject constructor(
                 val vaxCode = entry.resource.vaccineCode?.coding?.firstOrNull()?.code
                 vaxCode?.let { code ->
                     if (code.contentEquals(JANSSEN_CVX) || code.contentEquals(
-                            JANSSEN_SNOWMED
-                        )
+                                    JANSSEN_SNOWMED
+                            )
                     ) {
                         oneDoseVaccines++
                     } else {
@@ -153,11 +153,14 @@ class SHCDecoder @Inject constructor(
         }
 
         return ImmunizationRecord(
-            record.first().first,
-            record.first().second,
-            status,
-            shcData.payload.nbf,
-            occurrenceDateTime
+                record.first().first,
+                record.first().second,
+                status,
+                shcData.payload.nbf,
+                occurrenceDateTime,
+                entries.filter { entry ->
+                    entry.resource.resourceType.contains(IMMUNIZATION)
+                }
         )
     }
 
@@ -172,14 +175,14 @@ class SHCDecoder @Inject constructor(
 
         val params = ECNamedCurveTable.getParameterSpec(name)
         val spec =
-            ECNamedCurveSpec(name, params.curve, params.g, params.n, params.h, params.seed)
+                ECNamedCurveSpec(name, params.curve, params.g, params.n, params.h, params.seed)
 
         val parsedX = BigInteger(1, Base64.getUrlDecoder().decode(jwksKey.x))
         val parsedY = BigInteger(1, Base64.getUrlDecoder().decode(jwksKey.y))
         val point = ECPoint(parsedX, parsedY)
         val key = KeyFactory
-            .getInstance("EC")
-            .generatePublic(ECPublicKeySpec(point, spec)) as ECPublicKey
+                .getInstance("EC")
+                .generatePublic(ECPublicKeySpec(point, spec)) as ECPublicKey
         algorithm.assertValidVerificationKey(key)
         return key
     }
