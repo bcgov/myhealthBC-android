@@ -1,22 +1,40 @@
 package ca.bc.gov.bchealth.ui.healthrecords
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.datasource.LocalDataSource
 import ca.bc.gov.bchealth.model.ImmunizationStatus
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 import ca.bc.gov.bchealth.model.healthrecords.IndividualRecord
 import ca.bc.gov.bchealth.repository.HealthRecordsRepository
+import ca.bc.gov.bchealth.utils.getDateForIndividualHealthRecord
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 /*
 * Created by amit_metri on 25,November,2021
 */
 @HiltViewModel
 class IndividualHealthRecordViewModel @Inject constructor(
-    val healthRecordsRepository: HealthRecordsRepository
+    val healthRecordsRepository: HealthRecordsRepository,
+    val dataSource: LocalDataSource
 ) : ViewModel() {
 
+    companion object {
+        const val bulletPoint = " \u2022 "
+    }
+
+    val healthRecords = healthRecordsRepository.healthRecords.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
+
     fun prepareIndividualRecords(healthRecord: HealthRecord): MutableList<IndividualRecord> {
+
         val individualRecords: MutableList<IndividualRecord> = mutableListOf()
 
         if (healthRecord.vaccineDataList.isNotEmpty()) {
@@ -37,7 +55,9 @@ class IndividualHealthRecordViewModel @Inject constructor(
             individualRecords.add(
                 IndividualRecord(
                     "Covid-19 Test Result",
-                    it.testStatus,
+                    it.testStatus
+                        .plus(bulletPoint)
+                        .plus(it.resultDateTime.getDateForIndividualHealthRecord()),
                     IndividualHealthRecordAdapter.HealthRecordType.COVID_TEST_RECORD,
                     it.reportId
                 )
@@ -51,18 +71,28 @@ class IndividualHealthRecordViewModel @Inject constructor(
         return when (healthRecord.immunizationStatus) {
             ImmunizationStatus.FULLY_IMMUNIZED -> {
                 return "Vaccinated"
-                    .plus(" ")
-                    .plus(healthRecord.vaccineDataList.last()?.occurrenceDate)
+                    .plus(bulletPoint)
+                    .plus(
+                        healthRecord.vaccineDataList.last()?.occurrenceDate
+                            ?.getDateForIndividualHealthRecord()
+                    )
             }
             ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
                 return "Partially Vaccinated"
-                    .plus(" ")
-                    .plus(healthRecord.vaccineDataList.last()?.occurrenceDate)
+                    .plus(bulletPoint)
+                    .plus(
+                        healthRecord.vaccineDataList.last()?.occurrenceDate
+                            ?.getDateForIndividualHealthRecord()
+                    )
             }
             ImmunizationStatus.INVALID_QR_CODE -> {
                 return "No Record"
             }
             else -> "No Record"
         }
+    }
+
+    fun deleteCovidTestResult(reportId: String) = viewModelScope.launch {
+        dataSource.deleteCovidTestResult(reportId)
     }
 }

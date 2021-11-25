@@ -22,6 +22,7 @@
 
 #KEEP MODEL
 -keep class ca.bc.gov.bchealth.model.** { *; }
+-keep class ca.bc.gov.bchealth.data.local.entity.*
 
 #JJWKT
 -keepattributes InnerClasses

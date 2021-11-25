@@ -46,6 +46,10 @@ class HealthRecordsAdapter(
         }
     }
 
+    override fun getItemCount(): Int {
+        return members.size
+    }
+
     private fun getHealthRecordsCount(healthRecord: HealthRecord): Int {
         var count = 0
 
@@ -55,10 +59,6 @@ class HealthRecordsAdapter(
         count += healthRecord.covidTestResultList.size
 
         return count
-    }
-
-    override fun getItemCount(): Int {
-        return members.size
     }
 
     private fun getSubtitle(memberHealthRecordsCount: Int, resources: Resources): String {

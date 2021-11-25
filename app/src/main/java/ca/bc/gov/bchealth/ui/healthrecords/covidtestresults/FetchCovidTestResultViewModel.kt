@@ -3,8 +3,6 @@ package ca.bc.gov.bchealth.ui.healthrecords.covidtestresults
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.datasource.DataStoreRepo
-import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
-import ca.bc.gov.bchealth.repository.CardRepository
 import ca.bc.gov.bchealth.repository.HealthRecordsRepository
 import ca.bc.gov.bchealth.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +17,6 @@ import kotlinx.coroutines.launch
 */
 @HiltViewModel
 class FetchCovidTestResultViewModel @Inject constructor(
-    private val cardRepository: CardRepository,
     private val healthRecordsRepository: HealthRecordsRepository,
     private val dataStoreRepo: DataStoreRepo
 ) : ViewModel() {
@@ -44,13 +41,9 @@ class FetchCovidTestResultViewModel @Inject constructor(
         healthRecordsRepository.getCovidTestResult(phn, dob, dot)
     }
 
-    /*
-   * Used as an observable for healthRecords
-   * */
-    val healthRecordsSharedFlow: SharedFlow<List<HealthRecord>>
-        get() = healthRecordsRepository.healthRecordsSharedFlow
-
-    fun prepareHealthRecords() = viewModelScope.launch {
-        healthRecordsRepository.prepareHealthRecords()
-    }
+    val healthRecords = healthRecordsRepository.healthRecords.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
 }

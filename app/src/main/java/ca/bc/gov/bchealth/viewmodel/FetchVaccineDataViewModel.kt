@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.datasource.DataStoreRepo
 import ca.bc.gov.bchealth.model.ImmunizationRecord
-import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 import ca.bc.gov.bchealth.repository.CardRepository
 import ca.bc.gov.bchealth.repository.HealthRecordsRepository
 import ca.bc.gov.bchealth.utils.Response
@@ -50,15 +49,11 @@ class FetchVaccineDataViewModel @Inject constructor(
         repository.replaceExitingHealthPass(healthCard)
     }
 
-    /*
-    * Used as an observable for healthRecords
-    * */
-    val healthRecordsSharedFlow: SharedFlow<List<HealthRecord>>
-        get() = healthRecordsRepository.healthRecordsSharedFlow
-
-    fun prepareHealthRecords() = viewModelScope.launch {
-        healthRecordsRepository.prepareHealthRecords()
-    }
+    val healthRecords = healthRecordsRepository.healthRecords.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
 
     fun fetchHealthRecordFromHealthCard(healthCard: HealthCard): ImmunizationRecord? {
         return healthRecordsRepository.fetchHealthRecordFromHealthCard(healthCard)

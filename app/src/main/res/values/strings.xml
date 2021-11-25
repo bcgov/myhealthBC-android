@@ -123,6 +123,30 @@
     <string name="space_records">" records"</string>
     <string name="space_record">" record"</string>
     <string name="dot_required">Date of Test is required</string>
+    <string name="covid_19_test_result">COVID-19 Test Result</string>
+    <string name="delete">Delete</string>
+    <string name="instructions_details">
+        You need to self-isolate now.\n
+        The people you live with will also need to self-isolate if they are not fully vaccinated.\n
+        Public health will contact you.\n
+        Monitor your health and contact a health care provider or call 8-1-1 if you are concerned about your symptoms.\n
+        Go to Understanding Test Results for more information.
+    </string>
+    <string name="instruction_1">You need to self-isolate now.</string>
+    <string name="instruction_2">The people you live with will also need to self-isolate if they are not fully vaccinated.</string>
+    <string name="instruction_3">Public health will contact you.</string>
+    <string name="instruction_4">Monitor your health and contact a health care provider or call 8-1-1 if you are concerned about your symptoms.</string>
+    <string name="instruction_5">Go to <a href="http://www.google.com/">Understanding Test Results</a> for more information.</string>
+    <string name="instructions">Instructions</string>
+    <string name="tested_on">Tested on</string>
+    <string name="name">Name</string>
+    <string name="date_of_testing">Date of Testing</string>
+    <string name="test_status">Test Status</string>
+    <string name="test_result">Test Result</string>
+    <string name="type_name">Type Name</string>
+    <string name="provider_clinic">Provider / Clinic:</string>
+    <string name="delete_hc_record_title">Delete Record</string>
+    <string name="delete_hc_record_message">This action cannot be undone. You will be required to enter your health information again to access the record.</string>
 
     <!--Miscellaneous-->
     <string name="coming_soon">Coming soon!</string>
@@ -138,5 +162,6 @@
     <string name="select_phn">select personal health number</string>
     <string name="federal_proof">federal proof</string>
     <string name="torch">torch</string>
+
 
 </resources>
