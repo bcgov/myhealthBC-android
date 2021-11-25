@@ -235,3 +235,17 @@ fun Context.showCardReplacementDialog(runnable: Runnable) {
         }
         .show()
 }
+
+/*
+* Error dialog
+* */
+fun Context.showError(title: String, message: String) {
+    MaterialAlertDialogBuilder(this)
+        .setTitle(title)
+        .setCancelable(false)
+        .setMessage(message)
+        .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
+            dialog.dismiss()
+        }
+        .show()
+}

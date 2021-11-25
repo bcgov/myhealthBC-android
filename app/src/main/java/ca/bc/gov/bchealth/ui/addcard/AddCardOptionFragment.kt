@@ -17,8 +17,8 @@ import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.showCardReplacementDialog
+import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
@@ -72,7 +72,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                                 }
                             }
                             is Response.Error -> {
-                                showError(
+                                requireContext().showError(
                                     it.errorData?.errorTitle.toString(),
                                     it.errorData?.errorMessage.toString()
                                 )
@@ -101,17 +101,6 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             }
             line1.visibility = View.VISIBLE
         }
-    }
-
-    private fun showError(title: String, message: String) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(title)
-            .setCancelable(false)
-            .setMessage(message)
-            .setPositiveButton(getString(android.R.string.ok)) { dialog, which ->
-                dialog.dismiss()
-            }
-            .show()
     }
 
     private fun navigateToCardsList() {

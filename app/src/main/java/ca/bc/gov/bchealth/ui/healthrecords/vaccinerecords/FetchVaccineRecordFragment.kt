@@ -14,7 +14,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.analytics.AnalyticsAction
 import ca.bc.gov.bchealth.analytics.AnalyticsText
@@ -28,9 +27,10 @@ import ca.bc.gov.bchealth.utils.adjustOffset
 import ca.bc.gov.bchealth.utils.isOnline
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showCardReplacementDialog
+import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.viewmodel.FetchVaccineDataViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
 import com.queue_it.androidsdk.QueueITException
@@ -44,6 +44,7 @@ import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.Locale
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
@@ -57,7 +58,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
     private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CANADA)
 
-    private val viewModel: FetchVaccineRecordViewModel by viewModels()
+    private val viewModel: FetchVaccineDataViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -91,24 +92,6 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
     private fun iniUI() {
 
-        if (BuildConfig.DEBUG) {
-            /*binding.edPhnNumber.editText?.setText("9000201422")
-            binding.edDob.editText?.setText("1989-12-12")
-            binding.edDov.editText?.setText("2021-05-15")*/
-
-            /*binding.edPhnNumber.editText?.setText("9000691304")
-            binding.edDob.editText?.setText("1965-01-14")
-            binding.edDov.editText?.setText("2021-07-15")*/
-
-            /*binding.edPhnNumber.editText?.setText("9890826056")
-            binding.edDob.editText?.setText("1962-01-02")
-            binding.edDov.editText?.setText("2021-06-10")*/
-
-            /*binding.edPhnNumber.editText?.setText("9879458314")
-            binding.edDob.editText?.setText("1934-02-23")
-            binding.edDov.editText?.setText("2021-04-26")*/
-        }
-
         setUpPhnUI()
 
         setUpDobUI()
@@ -128,45 +111,13 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                         viewModel.responseSharedFlow.collect {
                             when (it) {
                                 is Response.Success -> {
-
-                                    ApiClientModule.queueItToken = ""
-                                    binding.progressBar.visibility = View.INVISIBLE
-
-                                    if (binding.checkboxRemember.isChecked) {
-                                        // Save form data for autocomplete option
-                                        val formData: String =
-                                            binding.edPhnNumber.editText?.text.toString() +
-                                                binding.edDob.editText?.text.toString()
-
-                                        viewModel.setRecentFormData(formData)
-                                            .invokeOnCompletion { _ ->
-                                                if (it.data == null)
-                                                    navigateToCardsList()
-                                                else {
-                                                    showCardReplacement(it.data as HealthCard)
-                                                }
-                                                this.cancel()
-                                            }
-                                    } else {
-                                        if (it.data == null)
-                                            navigateToCardsList()
-                                        else {
-                                            showCardReplacement(it.data as HealthCard)
-                                        }
-                                        this.cancel()
-                                    }
+                                    respondToSuccess(it, this)
                                 }
                                 is Response.Error -> {
-                                    ApiClientModule.queueItToken = ""
-                                    binding.progressBar.visibility = View.INVISIBLE
-                                    showError(
-                                        it.errorData?.errorTitle.toString(),
-                                        it.errorData?.errorMessage.toString()
-                                    )
-                                    this.cancel()
+                                    respondToError(it, this)
                                 }
                                 is Response.Loading -> {
-                                    binding.progressBar.visibility = View.VISIBLE
+                                    showLoader(true)
                                 }
                             }
                         }
@@ -187,8 +138,8 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                             }
                         } else {
                             e.printStackTrace()
-                            binding.progressBar.visibility = View.INVISIBLE
-                            showError(
+                            showLoader(false)
+                            requireContext().showError(
                                 getString(R.string.error),
                                 getString(R.string.error_message)
                             )
@@ -201,15 +152,41 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
     private fun validateInputData(): Boolean {
 
+        if (validatePhnNumber()) {
+
+            if (validateDob()) {
+
+                if (validateDov()) {
+
+                    if (!requireContext().isOnline()) {
+                        requireContext().showError(
+                            getString(R.string.no_internet),
+                            getString(R.string.check_connection)
+                        )
+                        return false
+                    }
+                } else {
+                    return false
+                }
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
+
+        return true
+    }
+
+    private fun validatePhnNumber(): Boolean {
         if (binding.edPhnNumber.editText?.text.isNullOrEmpty()) {
             binding.edPhnNumber.isErrorEnabled = true
             binding.edPhnNumber.error = getString(R.string.phn_number_required)
-            binding.edPhnNumber.editText?.doOnTextChanged { text, start, before, count ->
-                if (text != null)
-                    if (text.isNotEmpty()) {
-                        binding.edPhnNumber.isErrorEnabled = false
-                        binding.edPhnNumber.error = null
-                    }
+            binding.edPhnNumber.editText?.doOnTextChanged { text, _, _, _ ->
+                if (text != null && text.isNotEmpty()) {
+                    binding.edPhnNumber.isErrorEnabled = false
+                    binding.edPhnNumber.error = null
+                }
             }
             return false
         }
@@ -217,25 +194,27 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         if (binding.edPhnNumber.editText?.text?.length != 10) {
             binding.edPhnNumber.isErrorEnabled = true
             binding.edPhnNumber.error = getString(R.string.phn_should_be_10_digit)
-            binding.edPhnNumber.editText?.doOnTextChanged { text, start, before, count ->
-                if (text != null)
-                    if (text.isNotEmpty()) {
-                        binding.edPhnNumber.isErrorEnabled = false
-                        binding.edPhnNumber.error = null
-                    }
+            binding.edPhnNumber.editText?.doOnTextChanged { text, _, _, _ ->
+                if (text != null && text.isNotEmpty()) {
+                    binding.edPhnNumber.isErrorEnabled = false
+                    binding.edPhnNumber.error = null
+                }
             }
             return false
         }
 
+        return true
+    }
+
+    private fun validateDob(): Boolean {
         if (binding.edDob.editText?.text.isNullOrEmpty()) {
             binding.edDob.isErrorEnabled = true
             binding.edDob.error = getString(R.string.dob_required)
-            binding.edDob.editText?.doOnTextChanged { text, start, before, count ->
-                if (text != null)
-                    if (text.isNotEmpty()) {
-                        binding.edDob.isErrorEnabled = false
-                        binding.edDob.error = null
-                    }
+            binding.edDob.editText?.doOnTextChanged { text, _, _, _ ->
+                if (text != null && text.isNotEmpty()) {
+                    binding.edDob.isErrorEnabled = false
+                    binding.edDob.error = null
+                }
             }
             return false
         }
@@ -248,25 +227,27 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         ) {
             binding.edDob.isErrorEnabled = true
             binding.edDob.error = getString(R.string.enter_valid_date_format)
-            binding.edDob.editText?.doOnTextChanged { text, start, before, count ->
-                if (text != null)
-                    if (text.isNotEmpty()) {
-                        binding.edDob.isErrorEnabled = false
-                        binding.edDob.error = null
-                    }
+            binding.edDob.editText?.doOnTextChanged { text, _, _, _ ->
+                if (text != null && text.isNotEmpty()) {
+                    binding.edDob.isErrorEnabled = false
+                    binding.edDob.error = null
+                }
             }
             return false
         }
 
+        return true
+    }
+
+    private fun validateDov(): Boolean {
         if (binding.edDov.editText?.text.isNullOrEmpty()) {
             binding.edDov.isErrorEnabled = true
             binding.edDov.error = getString(R.string.dov_required)
-            binding.edDov.editText?.doOnTextChanged { text, start, before, count ->
-                if (text != null)
-                    if (text.isNotEmpty()) {
-                        binding.edDov.isErrorEnabled = false
-                        binding.edDov.error = null
-                    }
+            binding.edDov.editText?.doOnTextChanged { text, _, _, _ ->
+                if (text != null && text.isNotEmpty()) {
+                    binding.edDov.isErrorEnabled = false
+                    binding.edDov.error = null
+                }
             }
             return false
         }
@@ -275,29 +256,72 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
             .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
 
             !binding.edDov.editText?.text.toString()
-                .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
+                .matches
+                (Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
         ) {
             binding.edDov.isErrorEnabled = true
             binding.edDov.error = getString(R.string.enter_valid_date_format)
-            binding.edDov.editText?.doOnTextChanged { text, start, before, count ->
-                if (text != null)
-                    if (text.isNotEmpty()) {
-                        binding.edDov.isErrorEnabled = false
-                        binding.edDov.error = null
-                    }
+            binding.edDov.editText?.doOnTextChanged { text, _, _, _ ->
+                if (text != null && text.isNotEmpty()) {
+                    binding.edDov.isErrorEnabled = false
+                    binding.edDov.error = null
+                }
             }
             return false
         }
 
-        if (!requireContext().isOnline()) {
-            showError(
-                getString(R.string.no_internet),
-                getString(R.string.check_connection)
-            )
-            return false
-        }
-
         return true
+    }
+
+    private fun respondToSuccess(
+        response: Response.Success<String>,
+        coroutineScope: CoroutineScope
+    ) {
+        ApiClientModule.queueItToken = ""
+
+        showLoader(false)
+
+        if (binding.checkboxRemember.isChecked) {
+            // Save form data for autocomplete option
+            val formData: String =
+                binding.edPhnNumber.editText?.text.toString() +
+                    binding.edDob.editText?.text.toString()
+
+            viewModel.setRecentFormData(formData)
+                .invokeOnCompletion {
+                    if (response.data == null)
+                        navigateToCardsList()
+                    else {
+                        showCardReplacement(response.data as HealthCard)
+                    }
+                    coroutineScope.cancel()
+                }
+        } else {
+            if (response.data == null)
+                navigateToCardsList()
+            else {
+                showCardReplacement(response.data as HealthCard)
+            }
+            coroutineScope.cancel()
+        }
+    }
+
+    private fun showLoader(value: Boolean) {
+        if (value)
+            binding.progressBar.visibility = View.VISIBLE
+        else
+            binding.progressBar.visibility = View.INVISIBLE
+    }
+
+    private fun respondToError(it: Response.Error<String>, coroutineScope: CoroutineScope) {
+
+        ApiClientModule.queueItToken = ""
+        showLoader(false)
+        requireContext().showError(
+            it.errorData?.errorTitle.toString(),
+            it.errorData?.errorMessage.toString()
+        )
+        coroutineScope.cancel()
     }
 
     /*
@@ -326,7 +350,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                         val textView = binding.edPhnNumber.editText as AutoCompleteTextView
                         textView.setAdapter(adapter)
                         textView.onItemClickListener =
-                            AdapterView.OnItemClickListener { p0, p1, p2, p3 ->
+                            AdapterView.OnItemClickListener { _, _, _, _ ->
                                 binding.edDob.editText?.setText(pair.second.toString())
                                 binding.edDov.editText?.requestFocus()
                             }
@@ -407,8 +431,8 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                                 )
                             } catch (e: Exception) {
                                 e.printStackTrace()
-                                binding.progressBar.visibility = View.INVISIBLE
-                                showError(
+                                showLoader(false)
+                                requireContext().showError(
                                     getString(R.string.error),
                                     getString(R.string.error_message)
                                 )
@@ -431,14 +455,14 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                     }
 
                     override fun onQueueItUnavailable() {
-                        showError(
+                        requireContext().showError(
                             getString(R.string.error),
                             getString(R.string.error_message)
                         )
                     }
 
                     override fun onError(error: Error, errorMessage: String) {
-                        showError(
+                        requireContext().showError(
                             getString(R.string.error),
                             getString(R.string.error_message)
                         )
@@ -451,28 +475,17 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
             q.run(requireActivity())
         } catch (e: QueueITException) {
             e.printStackTrace()
-            showError(
+            requireContext().showError(
                 getString(R.string.error),
                 getString(R.string.error_message)
             )
         } catch (e: UnsupportedEncodingException) {
             e.printStackTrace()
-            showError(
+            requireContext().showError(
                 getString(R.string.error),
                 getString(R.string.error_message)
             )
         }
-    }
-
-    private fun showError(title: String, message: String) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(title)
-            .setCancelable(false)
-            .setMessage(message)
-            .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
     }
 
     private fun showCardReplacement(healthCard: HealthCard) {

@@ -68,7 +68,7 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
 
         setUpDobUI()
 
-        setUpDovUI()
+        setUpDotUI()
 
         binding.btnCancel.setOnClickListener {
             findNavController().popBackStack()
@@ -101,9 +101,9 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
                         val textView = binding.edPhnNumber.editText as AutoCompleteTextView
                         textView.setAdapter(adapter)
                         textView.onItemClickListener =
-                            AdapterView.OnItemClickListener { p0, p1, p2, p3 ->
+                            AdapterView.OnItemClickListener { _, _, _, _ ->
                                 binding.edDob.editText?.setText(pair.second.toString())
-                                binding.edDov.editText?.requestFocus()
+                                binding.edDot.editText?.requestFocus()
                             }
 
                         binding.edPhnNumber.setEndIconDrawable(R.drawable.ic_arrow_down)
@@ -134,20 +134,20 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
         }
     }
 
-    private fun setUpDovUI() {
-        val dateOfVaccinationPicker =
+    private fun setUpDotUI() {
+        val dateOfTestPicker =
             MaterialDatePicker.Builder.datePicker()
                 .setTitleText(getString(R.string.select_date))
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                 .build()
-        binding.edDov.editText?.setOnClickListener {
-            dateOfVaccinationPicker.show(parentFragmentManager, "DATE_OF_VACCINATION")
+        binding.edDot.editText?.setOnClickListener {
+            dateOfTestPicker.show(parentFragmentManager, "DATE_OF_TEST")
         }
-        binding.edDov.setEndIconOnClickListener {
-            dateOfVaccinationPicker.show(parentFragmentManager, "DATE_OF_VACCINATION")
+        binding.edDot.setEndIconOnClickListener {
+            dateOfTestPicker.show(parentFragmentManager, "DATE_OF_TEST")
         }
-        dateOfVaccinationPicker.addOnPositiveButtonClickListener {
-            binding.edDov.editText?.setText(simpleDateFormat.format(it.adjustOffset()))
+        dateOfTestPicker.addOnPositiveButtonClickListener {
+            binding.edDot.editText?.setText(simpleDateFormat.format(it.adjustOffset()))
         }
     }
 }
