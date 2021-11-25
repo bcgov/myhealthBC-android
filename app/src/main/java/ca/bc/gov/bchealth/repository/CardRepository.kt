@@ -332,54 +332,40 @@ class CardRepository @Inject constructor(
                 val vaxStatusResponse = result.body()
 
                 /*
-                * Retry logic in case if pdf data is not available.
-                * */
-                if (vaxStatusResponse?.resourcePayload?.federalVaccineProof?.data.isNullOrEmpty()) {
-                    vaxStatusResponse?.resourcePayload?.retryin?.toLong()?.let {
+                 * Loaded field will return false when HGS will respond with cache data.
+                 * HGS response also provide the retry time after which updated data is available.
+                 * */
+                if (vaxStatusResponse?.resourcePayload?.loaded == false) {
+
+                    vaxStatusResponse.resourcePayload.retryin.toLong().let {
                         delay(it)
                     }
+
                     if (i == 1) {
-                        result.body()?.resultError?.resultMessage?.let {
-                            val errorData = ErrorData.NETWORK_ERROR
-                            errorData.errorMessage = it
-                            responseMutableSharedFlow.emit(Response.Error(errorData))
-                            return
-                        }
                         responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
-                        return
+                        break@loop
                     } else {
                         continue@loop
                     }
-                }
+                } else {
 
-                vaxStatusResponse?.resourcePayload?.qrCode?.data
-                    ?.let { base64EncodedImage ->
+                    vaxStatusResponse?.resourcePayload?.qrCode?.data?.let { base64EncodedQrImage ->
+                        vaxStatusResponse.resourcePayload.federalVaccineProof.data?.let {
+                            base64EncodedFederalPassPdf ->
 
-                        vaxStatusResponse.resourcePayload.federalVaccineProof.data
-                            ?.let { base64EncodedPdf ->
-
-                                try {
-                                    prepareQRImage(
-                                        base64EncodedImage, base64EncodedPdf,
-                                        false
-                                    )
-                                } catch (e: Exception) {
-                                    responseMutableSharedFlow
-                                        .emit(Response.Error(ErrorData.GENERIC_ERROR))
-                                }
-                            }
+                            prepareQRImage(
+                                base64EncodedQrImage,
+                                base64EncodedFederalPassPdf,
+                                false
+                            )
+                            return
+                        }
                     }
-            } else {
-                result.body()?.resultError?.resultMessage?.let {
-                    val errorData = ErrorData.NETWORK_ERROR
-                    errorData.errorMessage = it
-                    responseMutableSharedFlow.emit(Response.Error(errorData))
-                    return
+                    responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
                 }
-                responseMutableSharedFlow
-                    .emit(Response.Error(ErrorData.GENERIC_ERROR))
+            } else {
+                responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
             }
-
             break@loop
         }
     }
@@ -389,12 +375,11 @@ class CardRepository @Inject constructor(
         if (!result.isSuccessful)
             return false
 
-        val vaxStatusResponse: VaxStatusResponse = result.body() ?: return false
-
-        if (vaxStatusResponse.resultError != null)
+        if (result.body() == null)
             return false
 
-        if (vaxStatusResponse.resourcePayload.qrCode.data.isNullOrEmpty())
+        val vaxStatusResponse = result.body()
+        if (vaxStatusResponse?.resourcePayload == null)
             return false
 
         return true
@@ -417,44 +402,40 @@ class CardRepository @Inject constructor(
                 val vaxStatusResponse = result.body()
 
                 /*
-                * Retry logic in case if pdf data is not available.
+                * Loaded field will return false when HGS will respond with cache data.
+                * HGS response also provide the retry time after which updated data is available.
                 * */
-                if (vaxStatusResponse?.resourcePayload?.federalVaccineProof?.data.isNullOrEmpty()) {
-                    vaxStatusResponse?.resourcePayload?.retryin?.toLong()?.let {
+                if (vaxStatusResponse?.resourcePayload?.loaded == false) {
+
+                    vaxStatusResponse.resourcePayload.retryin.toLong().let {
                         delay(it)
                     }
+
                     if (i == 1) {
-                        result.body()?.resultError?.resultMessage?.let {
-                            val errorData = ErrorData.NETWORK_ERROR
-                            errorData.errorMessage = it
-                            responseMutableSharedFlow.emit(Response.Error(errorData))
-                            return
-                        }
                         responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
-                        return
+                        break@loop
                     } else {
                         continue@loop
                     }
-                }
+                } else {
 
-                vaxStatusResponse?.resourcePayload?.federalVaccineProof?.data
-                    ?.let { base64EncodedPdf ->
-                        prepareQRImage(
-                            vaxStatusResponse.resourcePayload.qrCode.data.toString(),
-                            base64EncodedPdf, true
-                        )
+                    vaxStatusResponse?.resourcePayload?.qrCode?.data?.let { base64EncodedQrImage ->
+                        vaxStatusResponse.resourcePayload.federalVaccineProof.data?.let {
+                            base64EncodedFederalPassPdf ->
+
+                            prepareQRImage(
+                                base64EncodedQrImage,
+                                base64EncodedFederalPassPdf,
+                                true
+                            )
+                            return
+                        }
                     }
-            } else {
-                result.body()?.resultError?.resultMessage?.let {
-                    val errorData = ErrorData.NETWORK_ERROR
-                    errorData.errorMessage = it
-                    responseMutableSharedFlow.emit(Response.Error(errorData))
-                    return
+                    responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
                 }
-                responseMutableSharedFlow
-                    .emit(Response.Error(ErrorData.GENERIC_ERROR))
+            } else {
+                responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
             }
-
             break@loop
         }
     }
