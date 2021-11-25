@@ -350,16 +350,16 @@ class CardRepository @Inject constructor(
                 } else {
 
                     vaxStatusResponse?.resourcePayload?.qrCode?.data?.let { base64EncodedQrImage ->
-                        vaxStatusResponse.resourcePayload.federalVaccineProof.data?.let {
-                            base64EncodedFederalPassPdf ->
+                        vaxStatusResponse.resourcePayload.federalVaccineProof.data
+                            ?.let { base64EncodedFederalPassPdf ->
 
-                            prepareQRImage(
-                                base64EncodedQrImage,
-                                base64EncodedFederalPassPdf,
-                                false
-                            )
-                            return
-                        }
+                                prepareQRImage(
+                                    base64EncodedQrImage,
+                                    base64EncodedFederalPassPdf,
+                                    false
+                                )
+                                return
+                            }
                     }
                     responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
                 }
@@ -420,16 +420,16 @@ class CardRepository @Inject constructor(
                 } else {
 
                     vaxStatusResponse?.resourcePayload?.qrCode?.data?.let { base64EncodedQrImage ->
-                        vaxStatusResponse.resourcePayload.federalVaccineProof.data?.let {
-                            base64EncodedFederalPassPdf ->
+                        vaxStatusResponse.resourcePayload.federalVaccineProof.data
+                            ?.let { base64EncodedFederalPassPdf ->
 
-                            prepareQRImage(
-                                base64EncodedQrImage,
-                                base64EncodedFederalPassPdf,
-                                true
-                            )
-                            return
-                        }
+                                prepareQRImage(
+                                    base64EncodedQrImage,
+                                    base64EncodedFederalPassPdf,
+                                    true
+                                )
+                                return
+                            }
                     }
                     responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
                 }
