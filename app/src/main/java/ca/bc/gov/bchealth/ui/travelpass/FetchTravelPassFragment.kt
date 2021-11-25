@@ -26,8 +26,8 @@ import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.isOnline
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showCardReplacementDialog
+import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
 import com.queue_it.androidsdk.QueueITException
@@ -122,7 +122,7 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                         } else {
                             e.printStackTrace()
                             binding.progressBar.visibility = View.INVISIBLE
-                            showError(
+                            requireContext().showError(
                                 getString(R.string.error),
                                 getString(R.string.error_message)
                             )
@@ -189,7 +189,7 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                         is Response.Error -> {
                             ApiClientModule.queueItToken = ""
                             binding.progressBar.visibility = View.INVISIBLE
-                            showError(
+                            requireContext().showError(
                                 it.errorData?.errorTitle.toString(),
                                 it.errorData?.errorMessage.toString()
                             )
@@ -235,7 +235,7 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
         }
 
         if (!requireContext().isOnline()) {
-            showError(
+            requireContext().showError(
                 getString(R.string.no_internet),
                 getString(R.string.check_connection)
             )
@@ -288,7 +288,7 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                             } catch (e: Exception) {
                                 e.printStackTrace()
                                 binding.progressBar.visibility = View.INVISIBLE
-                                showError(
+                                requireContext().showError(
                                     getString(R.string.error),
                                     getString(R.string.error_message)
                                 )
@@ -305,53 +305,45 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                     }
 
                     override fun onUserExited() {
+                        // Not required
                     }
 
                     override fun onQueueDisabled() {
+                        // Not required
                     }
 
                     override fun onQueueItUnavailable() {
-                        showError(
+                        requireContext().showError(
                             getString(R.string.error),
                             getString(R.string.error_message)
                         )
                     }
 
                     override fun onError(error: Error, errorMessage: String) {
-                        showError(
+                        requireContext().showError(
                             getString(R.string.error),
                             getString(R.string.error_message)
                         )
                     }
 
                     override fun onWebViewClosed() {
+                        // Not required
                     }
                 }
             )
             q.run(requireActivity())
         } catch (e: QueueITException) {
             e.printStackTrace()
-            showError(
+            requireContext().showError(
                 getString(R.string.error),
                 getString(R.string.error_message)
             )
         } catch (e: UnsupportedEncodingException) {
             e.printStackTrace()
-            showError(
+            requireContext().showError(
                 getString(R.string.error),
                 getString(R.string.error_message)
             )
         }
-    }
-
-    private fun showError(title: String, message: String) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(title)
-            .setCancelable(false)
-            .setMessage(message)
-            .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
     }
 }

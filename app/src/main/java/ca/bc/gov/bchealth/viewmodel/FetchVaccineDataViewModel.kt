@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.healthrecords.vaccinerecords
+package ca.bc.gov.bchealth.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,17 +14,17 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 /*
-* Created by amit_metri on 24,November,2021
+* Created by amit_metri on 18,October,2021
 */
 @HiltViewModel
-class FetchVaccineRecordViewModel @Inject constructor(
+class FetchVaccineDataViewModel @Inject constructor(
     private val repository: CardRepository,
     private val dataStoreRepo: DataStoreRepo
 ) : ViewModel() {
 
     /*
-    * Used to manage Success, Error and Loading status in the UI
-    * */
+     * Used to manage Success, Error and Loading status in the UI
+     * */
     val responseSharedFlow: SharedFlow<Response<String>>
         get() = repository.responseSharedFlow
 
