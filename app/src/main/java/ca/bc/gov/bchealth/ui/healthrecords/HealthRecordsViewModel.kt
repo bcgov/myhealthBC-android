@@ -2,7 +2,7 @@ package ca.bc.gov.bchealth.ui.healthrecords
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.bchealth.repository.CardRepository
+import ca.bc.gov.bchealth.repository.HealthRecordsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,12 +13,12 @@ import kotlinx.coroutines.flow.stateIn
 */
 @HiltViewModel
 class HealthRecordsViewModel @Inject constructor(
-    cardRepository: CardRepository
+    val healthRecordsRepository: HealthRecordsRepository
 ) : ViewModel() {
 
-    val members = cardRepository.cards.stateIn(
+    val healthRecords = healthRecordsRepository.healthRecords.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(0, 0),
+        started = SharingStarted.WhileSubscribed(5000),
         initialValue = null
     )
 }

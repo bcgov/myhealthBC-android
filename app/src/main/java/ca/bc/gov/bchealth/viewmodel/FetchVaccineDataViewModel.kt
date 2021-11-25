@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.datasource.DataStoreRepo
+import ca.bc.gov.bchealth.model.ImmunizationRecord
 import ca.bc.gov.bchealth.repository.CardRepository
+import ca.bc.gov.bchealth.repository.HealthRecordsRepository
 import ca.bc.gov.bchealth.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -19,7 +21,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class FetchVaccineDataViewModel @Inject constructor(
     private val repository: CardRepository,
-    private val dataStoreRepo: DataStoreRepo
+    private val dataStoreRepo: DataStoreRepo,
+    private val healthRecordsRepository: HealthRecordsRepository
 ) : ViewModel() {
 
     /*
@@ -44,5 +47,15 @@ class FetchVaccineDataViewModel @Inject constructor(
 
     fun replaceExitingHealthPass(healthCard: HealthCard) = viewModelScope.launch {
         repository.replaceExitingHealthPass(healthCard)
+    }
+
+    val healthRecords = healthRecordsRepository.healthRecords.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
+
+    fun fetchHealthRecordFromHealthCard(healthCard: HealthCard): ImmunizationRecord? {
+        return healthRecordsRepository.fetchHealthRecordFromHealthCard(healthCard)
     }
 }

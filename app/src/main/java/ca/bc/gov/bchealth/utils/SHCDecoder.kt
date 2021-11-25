@@ -2,11 +2,11 @@ package ca.bc.gov.bchealth.utils
 
 import ca.bc.gov.bchealth.model.ImmunizationRecord
 import ca.bc.gov.bchealth.model.ImmunizationStatus
-import ca.bc.gov.bchealth.model.Jwks
-import ca.bc.gov.bchealth.model.JwksKey
-import ca.bc.gov.bchealth.model.SHCData
-import ca.bc.gov.bchealth.model.SHCHeader
-import ca.bc.gov.bchealth.model.SHCPayload
+import ca.bc.gov.bchealth.model.healthpasses.decoder.Jwks
+import ca.bc.gov.bchealth.model.healthpasses.decoder.JwksKey
+import ca.bc.gov.bchealth.model.healthpasses.qr.SHCData
+import ca.bc.gov.bchealth.model.healthpasses.qr.SHCHeader
+import ca.bc.gov.bchealth.model.healthpasses.qr.SHCPayload
 import com.google.gson.Gson
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.impl.crypto.DefaultJwtSignatureValidator
@@ -157,7 +157,10 @@ class SHCDecoder @Inject constructor(
             record.first().second,
             status,
             shcData.payload.nbf,
-            occurrenceDateTime
+            occurrenceDateTime,
+            entries.filter { entry ->
+                entry.resource.resourceType.contains(IMMUNIZATION)
+            }
         )
     }
 

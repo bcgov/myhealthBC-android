@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.analytics.AnalyticsAction
@@ -22,6 +23,8 @@ import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineRecordBinding
 import ca.bc.gov.bchealth.di.ApiClientModule
 import ca.bc.gov.bchealth.http.MustBeQueued
+import ca.bc.gov.bchealth.model.ImmunizationRecord
+import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.adjustOffset
 import ca.bc.gov.bchealth.utils.isOnline
@@ -293,19 +296,25 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
             viewModel.setRecentFormData(formData)
                 .invokeOnCompletion {
-                    if (response.data == null)
-                        navigateToCardsList()
-                    else {
-                        showCardReplacement(response.data as HealthCard)
+
+                    val pair = response.data as Pair<*, *>
+                    if (pair.second as Boolean) {
+                        showCardReplacement(pair.first as HealthCard)
+                    } else {
+                        navigateToIndividualRecords(pair.first as HealthCard)
                     }
+
                     coroutineScope.cancel()
                 }
         } else {
-            if (response.data == null)
-                navigateToCardsList()
-            else {
-                showCardReplacement(response.data as HealthCard)
+
+            val pair = response.data as Pair<*, *>
+            if (pair.second as Boolean) {
+                showCardReplacement(pair.first as HealthCard)
+            } else {
+                navigateToIndividualRecords(pair.first as HealthCard)
             }
+
             coroutineScope.cancel()
         }
     }
@@ -317,7 +326,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
             binding.progressBar.visibility = View.INVISIBLE
     }
 
-    private fun respondToError(it: Response.Error<String>, coroutineScope: CoroutineScope) {
+    private fun respondToError(it: Response<String>, coroutineScope: CoroutineScope) {
 
         ApiClientModule.queueItToken = ""
         showLoader(false)
@@ -498,12 +507,12 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
     private fun showCardReplacement(healthCard: HealthCard) {
         requireContext().showCardReplacementDialog {
             viewModel.replaceExitingHealthPass(healthCard).invokeOnCompletion {
-                navigateToCardsList()
+                navigateToIndividualRecords(healthCard)
             }
         }
     }
 
-    private fun navigateToCardsList() {
+    private fun navigateToIndividualRecords(healthCard: HealthCard) {
 
         // Snowplow event
         Snowplow.getDefaultTracker()?.track(
@@ -511,6 +520,40 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                 .get(AnalyticsAction.AddQR.value, AnalyticsText.Get.value)
         )
 
-        findNavController().popBackStack(R.id.myCardsFragment, false)
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.healthRecords.collect { healthRecords ->
+
+                    healthRecords?.let {
+                        viewModel.fetchHealthRecordFromHealthCard(healthCard)?.let { immuRecord ->
+
+                            navigate(healthRecords, immuRecord)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun navigate(healthRecords: List<HealthRecord>, immuRecord: ImmunizationRecord) {
+
+        var healthRecord: HealthRecord? = null
+        healthRecords.forEach {
+            if (it.name.lowercase() == immuRecord.name.lowercase())
+                healthRecord = it
+        }
+
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.addHealthRecordsFragment, true)
+            .build()
+
+        val action = healthRecord?.let {
+            FetchVaccineRecordFragmentDirections
+                .actionFetchVaccineRecordFragmentToIndividualHealthRecordFragment(
+                    it
+                )
+        }
+
+        action?.let { findNavController().navigate(it, navOptions) }
     }
 }

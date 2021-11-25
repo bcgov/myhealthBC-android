@@ -1,5 +1,7 @@
 package ca.bc.gov.bchealth.model
 
+import ca.bc.gov.bchealth.model.healthpasses.qr.Entry
+
 /**
  * [ImmunizationRecord]
  *
@@ -10,5 +12,6 @@ data class ImmunizationRecord(
     val birthDate: String?,
     val status: ImmunizationStatus,
     val issueDate: Long,
-    val occurrenceDateTime: String?
+    val occurrenceDateTime: String?,
+    val immunizationEntries: List<Entry>?
 )

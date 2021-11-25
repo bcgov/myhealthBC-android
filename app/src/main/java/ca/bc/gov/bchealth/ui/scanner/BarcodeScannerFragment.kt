@@ -86,10 +86,11 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                     when (it) {
                         is Response.Success -> {
 
-                            if (it.data == null) {
-                                navigateToCardsList()
+                            val pair = it.data as Pair<*, *>
+                            if (pair.second as Boolean) {
+                                showCardReplacementDialog(pair.first as HealthCard)
                             } else {
-                                showCardReplacementDialog(it.data as HealthCard)
+                                navigateToCardsList()
                             }
                         }
                         is Response.Error -> {

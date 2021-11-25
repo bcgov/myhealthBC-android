@@ -60,15 +60,16 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                         when (it) {
                             is Response.Success -> {
 
-                                if (it.data == null) {
-                                    navigateToCardsList()
-                                } else {
+                                val pair = it.data as Pair<*, *>
+                                if (pair.second as Boolean) {
                                     requireContext().showCardReplacementDialog {
-                                        viewModel.replaceExitingHealthPass(it.data as HealthCard)
+                                        viewModel.replaceExitingHealthPass(pair.first as HealthCard)
                                             .invokeOnCompletion {
                                                 navigateToCardsList()
                                             }
                                     }
+                                } else {
+                                    navigateToCardsList()
                                 }
                             }
                             is Response.Error -> {

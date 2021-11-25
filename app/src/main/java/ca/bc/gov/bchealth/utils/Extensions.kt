@@ -39,13 +39,13 @@ fun Context.toast(message: String) =
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 
 /*
-* For converting epoch datetime format to human readable format
+* For date time to be shown on helath passes
 * */
-fun Long.getDateTime(): String {
+fun Long.getIssueDate(): String {
     return try {
-        val date1 = Date(this * 1000)
+        val date = Date(this * 1000)
         val format = SimpleDateFormat("MMMM-dd-y, HH:mm", Locale.CANADA)
-        format.format(date1)
+        format.format(date)
     } catch (e: java.lang.Exception) {
         e.printStackTrace()
         ""
@@ -53,13 +53,13 @@ fun Long.getDateTime(): String {
 }
 
 /*
-* For converting epoch datetime format to human readable format (YYYY-MM-DD)
+* For date to be shown under every news feed
 * */
-fun Long.getNewsFeedDateTime(): String {
+fun Long.getNewsFeedDate(): String {
     return try {
-        val date1 = Date(this)
+        val date = Date(this)
         val format = SimpleDateFormat("y-MM-d", Locale.CANADA)
-        format.format(date1)
+        format.format(date)
     } catch (e: java.lang.Exception) {
         e.printStackTrace()
         ""
@@ -237,7 +237,7 @@ fun Context.showCardReplacementDialog(runnable: Runnable) {
 }
 
 /*
-* Error dialog
+* Generic error dialog
 * */
 fun Context.showError(title: String, message: String) {
     MaterialAlertDialogBuilder(this)
@@ -248,4 +248,68 @@ fun Context.showError(title: String, message: String) {
             dialog.dismiss()
         }
         .show()
+}
+
+/*
+* Show alert while deleting existing health record
+* */
+fun Context.showHealthRecordDeleteDialog(runnable: Runnable) {
+
+    MaterialAlertDialogBuilder(this)
+        .setTitle(getString(R.string.delete_hc_record_title))
+        .setCancelable(false)
+        .setMessage(getString(R.string.delete_hc_record_message))
+        .setPositiveButton(getString(R.string.delete)) { dialog, _ ->
+            runnable.run()
+            dialog.dismiss()
+        }.setNegativeButton(getString(R.string.not_now)) { dialog, _ ->
+            dialog.dismiss()
+        }
+        .show()
+}
+
+/*
+* For showing date on individual vaccine record
+* */
+fun String.getDateForIndividualHealthRecord(): String {
+
+    return try {
+        val sdf = SimpleDateFormat("yyyy-mm-dd", Locale.CANADA)
+        val date: Date = sdf.parse(this)
+        val timeInMilliseconds = date.time
+
+        val date1 = Date(timeInMilliseconds)
+        val format = SimpleDateFormat("MMM dd, y", Locale.CANADA)
+        format.format(date1)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
+}
+
+/*
+* For showing date on individual covid test record
+* */
+fun Date.getDateForIndividualHealthRecord(): String {
+    return try {
+        val date1 = Date(this.time)
+        val format = SimpleDateFormat("MMM dd, y", Locale.CANADA)
+        format.format(date1)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
+}
+
+/*
+* For Showing date on covid test results screen
+* */
+fun Date.getDateForCovidTestResults(): String {
+    return try {
+        val format = SimpleDateFormat("MMMM-dd-y, HH:mm", Locale.CANADA)
+        format.format(this)
+    } catch (e: java.lang.Exception) {
+        e.printStackTrace()
+        ""
+    }
 }
