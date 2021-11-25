@@ -125,23 +125,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
             if (validateInputData()) {
 
-                viewLifecycleOwner.lifecycleScope.launch {
-                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        viewModel.responseSharedFlow.collect {
-                            when (it) {
-                                is Response.Success -> {
-                                    respondToSuccess(it, this)
-                                }
-                                is Response.Error -> {
-                                    respondToError(it, this)
-                                }
-                                is Response.Loading -> {
-                                    showLoader(true)
-                                }
-                            }
-                        }
-                    }
-                }
+                observeResponse()
 
                 viewLifecycleOwner.lifecycleScope.launch {
                     try {
@@ -289,6 +273,26 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         }
 
         return true
+    }
+
+    private fun observeResponse() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.responseSharedFlow.collect {
+                    when (it) {
+                        is Response.Success -> {
+                            respondToSuccess(it, this)
+                        }
+                        is Response.Error -> {
+                            respondToError(it, this)
+                        }
+                        is Response.Loading -> {
+                            showLoader(true)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun respondToSuccess(
