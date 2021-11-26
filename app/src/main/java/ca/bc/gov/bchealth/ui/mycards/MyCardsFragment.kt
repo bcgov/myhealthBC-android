@@ -42,10 +42,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Collections
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.Collections
 
 /**
  * [MyCardsFragment]
@@ -536,7 +536,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                         try {
                             val authority =
                                 requireActivity().applicationContext.packageName.toString() +
-                                    ".fileprovider"
+                                        ".fileprovider"
                             val uriToFile: Uri =
                                 FileProvider.getUriForFile(requireActivity(), authority, file)
 
