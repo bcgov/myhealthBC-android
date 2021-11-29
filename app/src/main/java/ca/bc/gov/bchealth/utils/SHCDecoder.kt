@@ -103,19 +103,15 @@ class SHCDecoder @Inject constructor(
             entry.resource.resourceType.contains(PATIENT)
         }.map { entry ->
             val name = entry.resource.name?.firstOrNull()
+            val sb = StringBuilder()
             if (name != null) {
-                var fullName = ""
-                if (!name.given.isNullOrEmpty())
-                    name.given.forEach {
-                        fullName = fullName.plus(" ").plus(it)
-                    }
-
-                name.family?.let {
-                    fullName = buildString {
-                        append(fullName).append(' ').append(it)
-                    }
+                if (name.given.joinToString(" ").isNotBlank()) {
+                    sb.append(name.given.joinToString(" "))
                 }
-                Pair(fullName, entry.resource.birthDate)
+                if (!name.family.isNullOrBlank()) {
+                    sb.append(" ${name.family}")
+                }
+                Pair(sb.toString(), entry.resource.birthDate)
             } else {
                 Pair("Name not found!", entry.resource.birthDate)
             }
