@@ -106,8 +106,8 @@ class SHCDecoder @Inject constructor(
             if (name != null) {
                 var fullName = ""
                 if (!name.given.isNullOrEmpty())
-                    name.given[0].let {
-                        fullName = it
+                    name.given.forEach {
+                        fullName = fullName.plus(" ").plus(it)
                     }
 
                 name.family?.let {
