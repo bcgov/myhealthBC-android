@@ -188,7 +188,7 @@
         android:label="fragment_individual_health_record"
         tools:layout="@layout/fragment_individual_health_record">
         <argument
-            android:name="healthRecordDto"
-            app:argType="ca.bc.gov.bchealth.model.HealthCardDto" />
+            android:name="healthRecord"
+            app:argType="ca.bc.gov.bchealth.model.healthrecords.HealthRecord" />
     </fragment>
 </navigation>

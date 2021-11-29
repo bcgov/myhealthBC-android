@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -40,8 +39,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         }
 
         binding.toolbar.tvTitle.visibility = View.VISIBLE
-        binding.toolbar.tvTitle.text = args.healthRecordDto.name.plus(
-                getString(R.string.member_records_toolbar_title)
+        binding.toolbar.tvTitle.text = args.healthRecord.name.plus(
+            getString(R.string.member_records_toolbar_title)
         )
 
         binding.toolbar.tvRightOption.visibility = View.VISIBLE
@@ -55,18 +54,18 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun setUpRecyclerView() {
 
 
-        individualHealthRecordAdapter = IndividualHealthRecordAdapter(
-                viewModel.prepareVaccineDataList(args.healthRecordDto)
-        )
+        /* individualHealthRecordAdapter = IndividualHealthRecordAdapter(
+                 //viewModel.prepareVaccineDataList(args.healthRecord)
+         )
 
-        individualHealthRecordAdapter.clickListener = {
-            // TODO: 25/11/21 Redirection to be implemented 
-        }
+         individualHealthRecordAdapter.clickListener = {
+             // TODO: 25/11/21 Redirection to be implemented
+         }
 
-        val recyclerView = binding.rvHealthRecords
+         val recyclerView = binding.rvHealthRecords
 
-        recyclerView.adapter = individualHealthRecordAdapter
+         recyclerView.adapter = individualHealthRecordAdapter
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+         recyclerView.layoutManager = LinearLayoutManager(requireContext())*/
     }
 }

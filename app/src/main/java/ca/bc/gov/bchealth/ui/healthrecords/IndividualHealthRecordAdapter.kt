@@ -13,19 +13,19 @@ import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 * Created by amit_metri on 25,November,2021
 */
 class IndividualHealthRecordAdapter(
-        private var healthRecord: HealthRecord,
-        var clickListener: ((HealthCardDto) -> Unit)? = null
+    private var healthRecord: HealthRecord,
+    var clickListener: ((HealthCardDto) -> Unit)? = null
 ) : RecyclerView.Adapter<IndividualHealthRecordAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemHealthRecordsAbstractBinding) :
-            RecyclerView.ViewHolder(binding.root)
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-                ItemHealthRecordsAbstractBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent, false
-                )
+            ItemHealthRecordsAbstractBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent, false
+            )
         )
     }
 
@@ -40,19 +40,19 @@ class IndividualHealthRecordAdapter(
             when (healthRecord.immunizationStatus) {
                 ImmunizationStatus.FULLY_IMMUNIZED -> {
                     holder.binding.tvVaccineStatus.text =
-                            holder.itemView.resources.getString(R.string.vaccinated)
-                                    .plus(" ")
-                                    .plus(healthRecord.vaccineDataList.last()?.occurrenceDate)
+                        holder.itemView.resources.getString(R.string.vaccinated)
+                            .plus(" ")
+                            .plus(healthRecord.vaccineDataList.last()?.occurrenceDate)
                 }
                 ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
                     holder.binding.tvVaccineStatus.text =
-                            holder.itemView.resources.getString(R.string.partially_vaccinated)
-                                    .plus(" ")
-                                    .plus(healthRecord.vaccineDataList.last()?.occurrenceDate)
+                        holder.itemView.resources.getString(R.string.partially_vaccinated)
+                            .plus(" ")
+                            .plus(healthRecord.vaccineDataList.last()?.occurrenceDate)
                 }
                 ImmunizationStatus.INVALID_QR_CODE -> {
                     holder.binding.tvVaccineStatus.text =
-                            holder.itemView.resources.getString(R.string.no_record)
+                        holder.itemView.resources.getString(R.string.no_record)
                 }
             }
         }
@@ -65,10 +65,10 @@ class IndividualHealthRecordAdapter(
     }
 
     override fun getItemCount(): Int {
-        if (healthRecord.vaccineDataList.isNotEmpty()) {
-            return 1 + healthRecord.covidTestResultDataList.size
+        return if (healthRecord.vaccineDataList.isNotEmpty()) {
+            1 + healthRecord.covidTestResultList.size
         } else {
-            return healthRecord.covidTestResultDataList.size
+            healthRecord.covidTestResultList.size
         }
 
     }

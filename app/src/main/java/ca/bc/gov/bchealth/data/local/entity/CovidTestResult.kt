@@ -1,12 +1,15 @@
 package ca.bc.gov.bchealth.data.local.entity
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 import java.util.Date
 
 /*
 * Created by amit_metri on 26,November,2021
 */
+@Parcelize
 @Entity(tableName = "covid_test_results")
 class CovidTestResult(
 
@@ -16,7 +19,7 @@ class CovidTestResult(
     * */
     @PrimaryKey
     val reportId: String,
-    val patientDisplayName: String,
+    var patientDisplayName: String,
     val lab: String,
     val collectionDateTime: Date,
     val resultDateTime: Date,
@@ -30,4 +33,4 @@ class CovidTestResult(
 
     //For future use. userId can be mapped once user identity is implemented
     val userId: String
-)
+) : Parcelable
