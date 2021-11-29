@@ -21,17 +21,27 @@ import ca.bc.gov.bchealth.databinding.FragmentFetchTravelPassBinding
 import ca.bc.gov.bchealth.di.ApiClientModule
 import ca.bc.gov.bchealth.http.MustBeQueued
 import ca.bc.gov.bchealth.model.HealthCardDto
-import ca.bc.gov.bchealth.utils.*
+import ca.bc.gov.bchealth.utils.Response
+import ca.bc.gov.bchealth.utils.hideKeyboard
+import ca.bc.gov.bchealth.utils.isOnline
+import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showCardReplacementDialog
+import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.queue_it.androidsdk.*
+import com.queue_it.androidsdk.Error
+import com.queue_it.androidsdk.QueueITEngine
+import com.queue_it.androidsdk.QueueITException
+import com.queue_it.androidsdk.QueueListener
+import com.queue_it.androidsdk.QueuePassedInfo
+import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.UnsupportedEncodingException
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
 
 @AndroidEntryPoint
 class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
@@ -101,8 +111,8 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                 viewLifecycleOwner.lifecycleScope.launch {
                     try {
                         viewModel.getFederalTravelPass(
-                                healthCardDto,
-                                binding.edPhnNumber.editText?.text.toString()
+                            healthCardDto,
+                            binding.edPhnNumber.editText?.text.toString()
                         )
                     } catch (e: Exception) {
                         if (e is MustBeQueued) {
@@ -113,8 +123,8 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                             e.printStackTrace()
                             binding.progressBar.visibility = View.INVISIBLE
                             showError(
-                                    getString(R.string.error),
-                                    getString(R.string.error_message)
+                                getString(R.string.error),
+                                getString(R.string.error_message)
                             )
                         }
                     }
@@ -131,16 +141,16 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                     if (it.isNotEmpty()) {
 
                         val pair = Pair(
-                                it.subSequence(0, 10),
-                                it.subSequence(10, 20)
+                            it.subSequence(0, 10),
+                            it.subSequence(10, 20)
                         )
 
                         val phnArray = arrayOf(pair.first.toString())
 
                         val adapter: ArrayAdapter<String> = ArrayAdapter(
-                                requireContext(),
-                                android.R.layout.simple_dropdown_item_1line,
-                                phnArray
+                            requireContext(),
+                            android.R.layout.simple_dropdown_item_1line,
+                            phnArray
                         )
 
                         val textView = binding.edPhnNumber.editText as AutoCompleteTextView
@@ -171,17 +181,17 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
 
                             requireContext().showCardReplacementDialog {
                                 viewModel.replaceExitingHealthPass(healthCard)
-                                        .invokeOnCompletion {
-                                            showFederalTravelPass()
-                                        }
+                                    .invokeOnCompletion {
+                                        showFederalTravelPass()
+                                    }
                             }
                         }
                         is Response.Error -> {
                             ApiClientModule.queueItToken = ""
                             binding.progressBar.visibility = View.INVISIBLE
                             showError(
-                                    it.errorData?.errorTitle.toString(),
-                                    it.errorData?.errorMessage.toString()
+                                it.errorData?.errorTitle.toString(),
+                                it.errorData?.errorMessage.toString()
                             )
                         }
                         is Response.Loading -> {
@@ -226,8 +236,8 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
 
         if (!requireContext().isOnline()) {
             showError(
-                    getString(R.string.no_internet),
-                    getString(R.string.check_connection)
+                getString(R.string.no_internet),
+                getString(R.string.check_connection)
             )
             return false
         }
@@ -240,10 +250,10 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
         requireContext().hideKeyboard(binding.edPhnNumber)
 
         val navOptions = NavOptions.Builder()
-                .setPopUpTo(R.id.fetchTravelPassFragment, true)
-                .build()
+            .setPopUpTo(R.id.fetchTravelPassFragment, true)
+            .build()
         val action = FetchTravelPassFragmentDirections
-                .actionFetchTravelPassFragmentToTravelPassFragment(healthCardDto)
+            .actionFetchTravelPassFragmentToTravelPassFragment(healthCardDto)
         findNavController().navigate(action, navOptions)
     }
 
@@ -259,89 +269,89 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
             val waitingRoomId = valueUri.getQueryParameter("e")
             QueueService.IsTest = false
             val q = QueueITEngine(
-                    requireActivity(),
-                    customerId,
-                    waitingRoomId,
-                    "",
-                    "",
-                    object : QueueListener() {
-                        override fun onQueuePassed(queuePassedInfo: QueuePassedInfo) {
+                requireActivity(),
+                customerId,
+                waitingRoomId,
+                "",
+                "",
+                object : QueueListener() {
+                    override fun onQueuePassed(queuePassedInfo: QueuePassedInfo) {
 
-                            ApiClientModule.queueItToken = queuePassedInfo.queueItToken
+                        ApiClientModule.queueItToken = queuePassedInfo.queueItToken
 
-                            viewLifecycleOwner.lifecycleScope.launch {
-                                try {
-                                    viewModel.getFederalTravelPass(
-                                            healthCardDto,
-                                            binding.edPhnNumber.editText?.text.toString()
-                                    )
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                    binding.progressBar.visibility = View.INVISIBLE
-                                    showError(
-                                            getString(R.string.error),
-                                            getString(R.string.error_message)
-                                    )
-                                }
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            try {
+                                viewModel.getFederalTravelPass(
+                                    healthCardDto,
+                                    binding.edPhnNumber.editText?.text.toString()
+                                )
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                binding.progressBar.visibility = View.INVISIBLE
+                                showError(
+                                    getString(R.string.error),
+                                    getString(R.string.error_message)
+                                )
                             }
                         }
-
-                        override fun onQueueViewWillOpen() {
-                            Toast.makeText(
-                                    requireActivity(),
-                                    "Please wait! We are receiving more requests at the moment",
-                                    Toast.LENGTH_SHORT
-                            ).show()
-                        }
-
-                        override fun onUserExited() {
-                        }
-
-                        override fun onQueueDisabled() {
-                        }
-
-                        override fun onQueueItUnavailable() {
-                            showError(
-                                    getString(R.string.error),
-                                    getString(R.string.error_message)
-                            )
-                        }
-
-                        override fun onError(error: Error, errorMessage: String) {
-                            showError(
-                                    getString(R.string.error),
-                                    getString(R.string.error_message)
-                            )
-                        }
-
-                        override fun onWebViewClosed() {
-                        }
                     }
+
+                    override fun onQueueViewWillOpen() {
+                        Toast.makeText(
+                            requireActivity(),
+                            "Please wait! We are receiving more requests at the moment",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    override fun onUserExited() {
+                    }
+
+                    override fun onQueueDisabled() {
+                    }
+
+                    override fun onQueueItUnavailable() {
+                        showError(
+                            getString(R.string.error),
+                            getString(R.string.error_message)
+                        )
+                    }
+
+                    override fun onError(error: Error, errorMessage: String) {
+                        showError(
+                            getString(R.string.error),
+                            getString(R.string.error_message)
+                        )
+                    }
+
+                    override fun onWebViewClosed() {
+                    }
+                }
             )
             q.run(requireActivity())
         } catch (e: QueueITException) {
             e.printStackTrace()
             showError(
-                    getString(R.string.error),
-                    getString(R.string.error_message)
+                getString(R.string.error),
+                getString(R.string.error_message)
             )
         } catch (e: UnsupportedEncodingException) {
             e.printStackTrace()
             showError(
-                    getString(R.string.error),
-                    getString(R.string.error_message)
+                getString(R.string.error),
+                getString(R.string.error_message)
             )
         }
     }
 
     private fun showError(title: String, message: String) {
         MaterialAlertDialogBuilder(requireContext())
-                .setTitle(title)
-                .setCancelable(false)
-                .setMessage(message)
-                .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .show()
+            .setTitle(title)
+            .setCancelable(false)
+            .setMessage(message)
+            .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 }
