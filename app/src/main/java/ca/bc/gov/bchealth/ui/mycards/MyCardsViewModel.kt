@@ -35,7 +35,7 @@ class MyCardsViewModel @Inject constructor(
 
     fun saveCard(uri: String) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
-            repository.insert(HealthCard(uri = uri), false)
+            repository.insert(HealthCard(uri = uri))
         }
     }
 
