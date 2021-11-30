@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.analytics.AnalyticsAction
@@ -39,17 +40,17 @@ import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
 import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.UnsupportedEncodingException
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
-import java.text.SimpleDateFormat
-import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @AndroidEntryPoint
 class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_record) {
@@ -204,7 +205,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         }
 
         if (!binding.edDob.editText?.text.toString()
-            .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
+                .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
 
             !binding.edDob.editText?.text.toString()
                 .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
@@ -237,11 +238,11 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         }
 
         if (!binding.edDov.editText?.text.toString()
-            .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
+                .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
 
             !binding.edDov.editText?.text.toString()
                 .matches
-                (Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
+                    (Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
         ) {
             binding.edDov.isErrorEnabled = true
             binding.edDov.error = getString(R.string.enter_valid_date_format)
@@ -289,12 +290,12 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
             // Save form data for autocomplete option
             val formData: String =
                 binding.edPhnNumber.editText?.text.toString() +
-                    binding.edDob.editText?.text.toString()
+                        binding.edDob.editText?.text.toString()
 
             viewModel.setRecentFormData(formData)
                 .invokeOnCompletion {
                     if (response.data == null)
-                        navigateToCardsList()
+                        navigateToIndividualRecords()
                     else {
                         showCardReplacement(response.data as HealthCard)
                     }
@@ -302,7 +303,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                 }
         } else {
             if (response.data == null)
-                navigateToCardsList()
+                navigateToIndividualRecords()
             else {
                 showCardReplacement(response.data as HealthCard)
             }
@@ -498,12 +499,12 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
     private fun showCardReplacement(healthCard: HealthCard) {
         requireContext().showCardReplacementDialog {
             viewModel.replaceExitingHealthPass(healthCard).invokeOnCompletion {
-                navigateToCardsList()
+                navigateToIndividualRecords()
             }
         }
     }
 
-    private fun navigateToCardsList() {
+    private fun navigateToIndividualRecords() {
 
         // Snowplow event
         Snowplow.getDefaultTracker()?.track(
@@ -511,6 +512,13 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                 .get(AnalyticsAction.AddQR.value, AnalyticsText.Get.value)
         )
 
-        findNavController().popBackStack(R.id.myCardsFragment, false)
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.healthRecordsFragment, false)
+            .build()
+
+        val action = FetchVaccineRecordFragmentDirections
+            .actionFetchVaccineRecordFragmentToIndividualHealthRecordFragment()
+
+        findNavController().navigate(action, navOptions)
     }
 }

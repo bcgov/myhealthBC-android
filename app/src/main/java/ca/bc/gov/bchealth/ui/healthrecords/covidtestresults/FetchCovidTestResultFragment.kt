@@ -1,23 +1,20 @@
 package ca.bc.gov.bchealth.ui.healthrecords.covidtestresults
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchCovidTestResultBinding
-import ca.bc.gov.bchealth.di.ApiClientModule
-import ca.bc.gov.bchealth.http.MustBeQueued
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.adjustOffset
 import ca.bc.gov.bchealth.utils.isOnline
@@ -25,22 +22,11 @@ import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.queue_it.androidsdk.Error
-import com.queue_it.androidsdk.QueueITEngine
-import com.queue_it.androidsdk.QueueITException
-import com.queue_it.androidsdk.QueueListener
-import com.queue_it.androidsdk.QueuePassedInfo
-import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.UnsupportedEncodingException
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -102,34 +88,17 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
                 observeResponse()
 
                 viewLifecycleOwner.lifecycleScope.launch {
-                    try {
-                        viewModel.getCovidTestResult(
-                            binding.edPhnNumber.editText?.text.toString(),
-                            binding.edDob.editText?.text.toString(),
-                            binding.edDot.editText?.text.toString()
-                        )
-                    } catch (e: Exception) {
-                        if (e is MustBeQueued) {
-                            withContext(Dispatchers.Main) {
-                                queueUser(e.getValue())
-                            }
-                        } else {
-                            e.printStackTrace()
-                            showLoader(false)
-                            requireContext().showError(
-                                getString(R.string.error),
-                                getString(R.string.error_message)
-                            )
-                        }
-                    }
+
+                    viewModel.getCovidTestResult(
+                        binding.edPhnNumber.editText?.text.toString(),
+                        binding.edDob.editText?.text.toString(),
+                        binding.edDot.editText?.text.toString()
+                    )
                 }
             }
         }
     }
 
-    /*
-     * Fetch saved form data
-     * */
     private fun setUpPhnUI() {
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -165,6 +134,41 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
                     }
                 }
             }
+        }
+    }
+
+    private fun setUpDobUI() {
+        val dateOfBirthPicker =
+            MaterialDatePicker.Builder.datePicker()
+                .setTitleText(getString(R.string.select_date))
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .build()
+        binding.edDob.editText?.setOnClickListener {
+            dateOfBirthPicker.show(parentFragmentManager, "DATE_OF_BIRTH")
+        }
+        binding.edDob.setEndIconOnClickListener {
+            dateOfBirthPicker.show(parentFragmentManager, "DATE_OF_BIRTH")
+        }
+        dateOfBirthPicker.addOnPositiveButtonClickListener {
+            binding.edDob.editText
+                ?.setText(simpleDateFormat.format(it.adjustOffset()))
+        }
+    }
+
+    private fun setUpDotUI() {
+        val dateOfTestPicker =
+            MaterialDatePicker.Builder.datePicker()
+                .setTitleText(getString(R.string.select_date))
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .build()
+        binding.edDot.editText?.setOnClickListener {
+            dateOfTestPicker.show(parentFragmentManager, "DATE_OF_TEST")
+        }
+        binding.edDot.setEndIconOnClickListener {
+            dateOfTestPicker.show(parentFragmentManager, "DATE_OF_TEST")
+        }
+        dateOfTestPicker.addOnPositiveButtonClickListener {
+            binding.edDot.editText?.setText(simpleDateFormat.format(it.adjustOffset()))
         }
     }
 
@@ -260,7 +264,7 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
     private fun validateDov(): Boolean {
         if (binding.edDot.editText?.text.isNullOrEmpty()) {
             binding.edDot.isErrorEnabled = true
-            binding.edDot.error = getString(R.string.dov_required)
+            binding.edDot.error = getString(R.string.dot_required)
             binding.edDot.editText?.doOnTextChanged { text, _, _, _ ->
                 if (text != null && text.isNotEmpty()) {
                     binding.edDot.isErrorEnabled = false
@@ -297,7 +301,7 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
                 viewModel.responseSharedFlow.collect {
                     when (it) {
                         is Response.Success -> {
-                            respondToSuccess(it, this)
+                            respondToSuccess(this)
                         }
                         is Response.Error -> {
                             respondToError(it, this)
@@ -312,10 +316,8 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
     }
 
     private fun respondToSuccess(
-        response: Response.Success<String>,
         coroutineScope: CoroutineScope
     ) {
-        ApiClientModule.queueItToken = ""
 
         showLoader(false)
 
@@ -327,13 +329,22 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
 
             viewModel.setRecentFormData(formData)
                 .invokeOnCompletion {
-                    // TODO: 26/11/21 Success flow
+                    navigateToIndividualRecords()
                     coroutineScope.cancel()
                 }
         } else {
-            // TODO: 26/11/21 Success flow
+            navigateToIndividualRecords()
             coroutineScope.cancel()
         }
+    }
+
+    private fun respondToError(it: Response.Error<String>, coroutineScope: CoroutineScope) {
+        showLoader(false)
+        requireContext().showError(
+            it.errorData?.errorTitle.toString(),
+            it.errorData?.errorMessage.toString()
+        )
+        coroutineScope.cancel()
     }
 
     private fun showLoader(value: Boolean) {
@@ -343,140 +354,18 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
             binding.progressBar.visibility = View.INVISIBLE
     }
 
-    private fun respondToError(it: Response.Error<String>, coroutineScope: CoroutineScope) {
+    private fun navigateToIndividualRecords() {
 
-        ApiClientModule.queueItToken = ""
-        showLoader(false)
-        requireContext().showError(
-            it.errorData?.errorTitle.toString(),
-            it.errorData?.errorMessage.toString()
-        )
-        coroutineScope.cancel()
-    }
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.healthRecordsFragment, false)
+            .build()
 
-    private fun setUpDobUI() {
-        val dateOfBirthPicker =
-            MaterialDatePicker.Builder.datePicker()
-                .setTitleText(getString(R.string.select_date))
-                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-                .build()
-        binding.edDob.editText?.setOnClickListener {
-            dateOfBirthPicker.show(parentFragmentManager, "DATE_OF_BIRTH")
-        }
-        binding.edDob.setEndIconOnClickListener {
-            dateOfBirthPicker.show(parentFragmentManager, "DATE_OF_BIRTH")
-        }
-        dateOfBirthPicker.addOnPositiveButtonClickListener {
-            binding.edDob.editText
-                ?.setText(simpleDateFormat.format(it.adjustOffset()))
-        }
-    }
-
-    private fun setUpDotUI() {
-        val dateOfTestPicker =
-            MaterialDatePicker.Builder.datePicker()
-                .setTitleText(getString(R.string.select_date))
-                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-                .build()
-        binding.edDot.editText?.setOnClickListener {
-            dateOfTestPicker.show(parentFragmentManager, "DATE_OF_TEST")
-        }
-        binding.edDot.setEndIconOnClickListener {
-            dateOfTestPicker.show(parentFragmentManager, "DATE_OF_TEST")
-        }
-        dateOfTestPicker.addOnPositiveButtonClickListener {
-            binding.edDot.editText?.setText(simpleDateFormat.format(it.adjustOffset()))
-        }
-    }
-
-    /*
-    * HGS APIs are protected by Queue.it
-    * User will see the Queue.it waiting page if there are more number of users trying to
-    * access HGS service at the same time. Ref: https://github.com/queueit/android-webui-sdk
-    * */
-    private fun queueUser(value: String) {
-        try {
-            val valueUri = Uri.parse(URLDecoder.decode(value, StandardCharsets.UTF_8.name()))
-            val customerId = valueUri.getQueryParameter("c")
-            val waitingRoomId = valueUri.getQueryParameter("e")
-            QueueService.IsTest = false
-            val q = QueueITEngine(
-                requireActivity(),
-                customerId,
-                waitingRoomId,
-                "",
-                "",
-                object : QueueListener() {
-                    override fun onQueuePassed(queuePassedInfo: QueuePassedInfo) {
-
-                        ApiClientModule.queueItToken = queuePassedInfo.queueItToken
-
-                        viewLifecycleOwner.lifecycleScope.launch {
-                            try {
-                                viewModel.getCovidTestResult(
-                                    binding.edPhnNumber.editText?.text.toString(),
-                                    binding.edDob.editText?.text.toString(),
-                                    binding.edDot.editText?.text.toString()
-                                )
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                                showLoader(false)
-                                requireContext().showError(
-                                    getString(R.string.error),
-                                    getString(R.string.error_message)
-                                )
-                            }
-                        }
-                    }
-
-                    override fun onQueueViewWillOpen() {
-                        Toast.makeText(
-                            requireActivity(),
-                            "Please wait! We are receiving more requests at the moment",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                    override fun onUserExited() {
-                        // Not required
-                    }
-
-                    override fun onQueueDisabled() {
-                        // Not required
-                    }
-
-                    override fun onQueueItUnavailable() {
-                        requireContext().showError(
-                            getString(R.string.error),
-                            getString(R.string.error_message)
-                        )
-                    }
-
-                    override fun onError(error: Error, errorMessage: String) {
-                        requireContext().showError(
-                            getString(R.string.error),
-                            getString(R.string.error_message)
-                        )
-                    }
-
-                    override fun onWebViewClosed() {
-                        // Not required
-                    }
-                }
+        findNavController()
+            .navigate(
+                R.id.action_fetchCovidTestResultFragment_to_individualHealthRecordFragment,
+                null,
+                navOptions
             )
-            q.run(requireActivity())
-        } catch (e: QueueITException) {
-            e.printStackTrace()
-            requireContext().showError(
-                getString(R.string.error),
-                getString(R.string.error_message)
-            )
-        } catch (e: UnsupportedEncodingException) {
-            e.printStackTrace()
-            requireContext().showError(
-                getString(R.string.error),
-                getString(R.string.error_message)
-            )
-        }
     }
+
 }

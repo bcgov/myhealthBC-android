@@ -177,11 +177,27 @@
     <fragment
         android:id="@+id/fetchVaccineRecordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecords.vaccinerecords.FetchVaccineRecordFragment"
-        android:label="FetchVaccineRecordFragment" />
+        android:label="FetchVaccineRecordFragment" >
+        <action
+            android:id="@+id/action_fetchVaccineRecordFragment_to_individualHealthRecordFragment"
+            app:destination="@id/individualHealthRecordFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
     <fragment
         android:id="@+id/fetchCovidTestResultFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecords.covidtestresults.FetchCovidTestResultFragment"
-        android:label="FetchCovidTestResultFragment" />
+        android:label="FetchCovidTestResultFragment" >
+        <action
+            android:id="@+id/action_fetchCovidTestResultFragment_to_individualHealthRecordFragment"
+            app:destination="@id/individualHealthRecordFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
     <fragment
         android:id="@+id/individualHealthRecordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecords.IndividualHealthRecordFragment"
@@ -189,6 +205,7 @@
         tools:layout="@layout/fragment_individual_health_record">
         <argument
             android:name="healthRecord"
-            app:argType="ca.bc.gov.bchealth.model.healthrecords.HealthRecord" />
+            app:argType="ca.bc.gov.bchealth.model.healthrecords.HealthRecord"
+            />
     </fragment>
 </navigation>

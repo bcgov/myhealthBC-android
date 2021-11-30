@@ -47,7 +47,7 @@
     <string name="date_of_birth">Date of Birth (YYYY-MM-DD)</string>
     <string name="date_of_vaccination">Date of Vaccination (YYYY-MM-DD)</string>
     <string name="select_date">Select date</string>
-    <string name="dose_1_or_dose_2">Dose 1 or Dose 2</string>
+    <string name="any_dose">Any Dose</string>
     <string name="privacy_statement_info">Your information is being collected to provide you with your COVID-19 vaccination status under s. 26(c) of the Freedom of Information and Protection of Privacy Act. Contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849 if you have any questions about this collection.</string>
     <string name="phn_number_required">Personal Health Number is required</string>
     <string name="phn_should_be_10_digit">PHN should be 10 characters</string>
@@ -122,6 +122,7 @@
     <string name="member_records_toolbar_title">\'s Records</string>
     <string name="space_records">" records"</string>
     <string name="space_record">" record"</string>
+    <string name="dot_required">Date of Test is required</string>
 
     <!--Miscellaneous-->
     <string name="coming_soon">Coming soon!</string>

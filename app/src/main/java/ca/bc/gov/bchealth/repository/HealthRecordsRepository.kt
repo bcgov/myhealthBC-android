@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.repository
 
 import ca.bc.gov.bchealth.data.local.entity.CovidTestResult
 import ca.bc.gov.bchealth.datasource.LocalDataSource
+import ca.bc.gov.bchealth.model.ImmunizationRecord
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 import ca.bc.gov.bchealth.model.healthrecords.VaccineData
 import ca.bc.gov.bchealth.utils.Response
@@ -61,25 +62,6 @@ class HealthRecordsRepository @Inject constructor(
                         val data = shcDecoder.getImmunizationStatus(healthPass.uri)
 
                         /*
-                        * Prepare vaccination record a member
-                        * */
-                        val vaccineDataList: MutableList<VaccineData> = mutableListOf()
-                        data.immunizationEntries?.forEachIndexed { index, entry ->
-                            vaccineDataList.add(
-                                VaccineData(
-                                    data.name,
-                                    (index + 1).toString(),
-                                    entry.resource.occurrenceDateTime,
-                                    "", // TODO: 29/11/21 Data to be prepared later
-                                    "",
-                                    entry.resource.performer?.last()?.actor?.display,
-                                    entry.resource.lotNumber
-                                )
-                            )
-                        }
-
-
-                        /*
                         * Add common data, vaccination data and covid test results data to health record of a member
                         * */
                         healthRecordList.add(
@@ -87,14 +69,14 @@ class HealthRecordsRepository @Inject constructor(
                                 data.name,
                                 data.status,
                                 data.issueDate.getDateTime(),
-                                vaccineDataList,
+                                getIndividualVaccinationData(data),
                                 covidTestResults.filter {
                                     it.patientDisplayName.lowercase() == data.name.lowercase()
                                 }
                             )
                         )
                     } catch (e: Exception) {
-
+                        e.printStackTrace()
                     }
                 }
 
@@ -136,16 +118,45 @@ class HealthRecordsRepository @Inject constructor(
         }
     }
 
+    /*
+    * Prepare individual member vaccination record
+    * */
+    private fun getIndividualVaccinationData(data: ImmunizationRecord): MutableList<VaccineData> {
+        val vaccineDataList: MutableList<VaccineData> = mutableListOf()
+        data.immunizationEntries?.forEachIndexed { index, entry ->
+            vaccineDataList.add(
+                VaccineData(
+                    data.name,
+                    (index + 1).toString(),
+                    entry.resource.occurrenceDateTime,
+                    "", // TODO: 29/11/21 Data to be prepared later
+                    "",
+                    entry.resource.performer?.last()?.actor?.display,
+                    entry.resource.lotNumber
+                )
+            )
+        }
 
+        return vaccineDataList
+    }
+
+
+    /*
+    * Fetch the covid test result
+    * */
     suspend fun getCovidTestResult(phn: String, dob: String, dot: Any) {
+
+        responseMutableSharedFlow.emit(Response.Loading())
 
         // TODO: 26/11/21 Network call to be implemented
 
         saveCovidTestResult()
     }
 
+    /*
+    * Save covid test results in DB
+    * */
     private suspend fun saveCovidTestResult() {
-        responseMutableSharedFlow.emit(Response.Loading())
 
         dataSource.insertCovidTestResult(
             CovidTestResult(
@@ -168,9 +179,4 @@ class HealthRecordsRepository @Inject constructor(
 
         responseMutableSharedFlow.emit(Response.Success())
     }
-
-    /*
-    * Covid test results fetched from DB
-    * */
-    //val covidTestResults: Flow<List<CovidTestResult>> = dataSource.getCovidTestResults()
 }

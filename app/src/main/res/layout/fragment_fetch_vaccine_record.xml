@@ -94,7 +94,7 @@
                 android:layout_marginStart="@dimen/space_4_x"
                 android:layout_marginTop="@dimen/space_4_x"
                 android:layout_marginEnd="@dimen/space_4_x"
-                android:text="@string/dose_1_or_dose_2"
+                android:text="@string/any_dose"
                 android:textColor="@color/grey"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
