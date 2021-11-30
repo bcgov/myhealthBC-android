@@ -10,6 +10,6 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class Coding(
-        val system: String,
-        val code: String
+    val system: String,
+    val code: String
 ) : Parcelable

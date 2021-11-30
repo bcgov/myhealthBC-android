@@ -19,20 +19,20 @@ import kotlinx.coroutines.runBlocking
  * @author Pinakin Kansara
  */
 class MyCardsAdapter(
-        var cards: MutableList<HealthCardDto>,
-        private var canManage: Boolean = false,
-        var clickListener: ((HealthCardDto) -> Unit)? = null
+    var cards: MutableList<HealthCardDto>,
+    private var canManage: Boolean = false,
+    var clickListener: ((HealthCardDto) -> Unit)? = null
 ) : RecyclerView.Adapter<MyCardsAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemMycardsCardsListBinding) :
-            RecyclerView.ViewHolder(binding.root)
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-                ItemMycardsCardsListBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent, false
-                )
+            ItemMycardsCardsListBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent, false
+            )
         )
     }
 
@@ -40,7 +40,7 @@ class MyCardsAdapter(
         val card = cards[position]
         holder.binding.txtFullName.text = card.name
         holder.binding.txtIssueDate.text = holder.itemView.resources
-                .getString(R.string.issued_on).plus(" ").plus(card.issueDate)
+            .getString(R.string.issued_on).plus(" ").plus(card.issueDate)
         setUiState(holder, card.status)
 
         if (canManage) {
@@ -69,7 +69,7 @@ class MyCardsAdapter(
 
             holder.binding.imgQrCode.setOnClickListener {
                 val action = MyCardsFragmentDirections
-                        .actionMyCardsFragmentToExpandQRFragment(card.uri)
+                    .actionMyCardsFragmentToExpandQRFragment(card.uri)
                 holder.binding.imgQrCode.findNavController().navigate(action)
             }
 
@@ -86,19 +86,19 @@ class MyCardsAdapter(
 
             if (card.federalPass.isNullOrEmpty()) {
                 holder.binding.tvFederalPassTitle.text = holder.itemView.resources
-                        .getString(R.string.get_federal_proof_of_vaccination)
+                    .getString(R.string.get_federal_proof_of_vaccination)
                 holder.binding.ivFederalPassAction
-                        .setImageResource(R.drawable.ic_federal_pass_add)
+                    .setImageResource(R.drawable.ic_federal_pass_add)
                 holder.binding.viewFederalProof.setOnClickListener {
                     val action = MyCardsFragmentDirections
-                            .actionMyCardsFragmentToFetchTravelPassFragment(card)
+                        .actionMyCardsFragmentToFetchTravelPassFragment(card)
                     holder.itemView.findNavController().navigate(action)
                 }
             } else {
                 holder.binding.tvFederalPassTitle.text = holder.itemView.resources
-                        .getString(R.string.show_federal_proof_of_vaccination)
+                    .getString(R.string.show_federal_proof_of_vaccination)
                 holder.binding.ivFederalPassAction
-                        .setImageResource(R.drawable.ic_federal_pass_forward_arrow)
+                    .setImageResource(R.drawable.ic_federal_pass_forward_arrow)
                 holder.binding.viewFederalProof.setOnClickListener {
                     clickListener?.invoke(card)
                 }
@@ -123,31 +123,31 @@ class MyCardsAdapter(
             ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
                 color = partiallyVaccinatedColor
                 statusText = holder.itemView.context.resources
-                        .getString(R.string.partially_vaccinated)
+                    .getString(R.string.partially_vaccinated)
                 holder.binding.txtVaccineStatus
-                        .setCompoundDrawablesWithIntrinsicBounds(
-                                0, 0, 0, 0
-                        )
+                    .setCompoundDrawablesWithIntrinsicBounds(
+                        0, 0, 0, 0
+                    )
             }
 
             ImmunizationStatus.FULLY_IMMUNIZED -> {
                 color = fullyVaccinatedColor
                 statusText = holder.itemView.context.resources
-                        .getString(R.string.vaccinated)
+                    .getString(R.string.vaccinated)
                 holder.binding.txtVaccineStatus
-                        .setCompoundDrawablesWithIntrinsicBounds(
-                                R.drawable.ic_check_mark, 0, 0, 0
-                        )
+                    .setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_check_mark, 0, 0, 0
+                    )
             }
 
             ImmunizationStatus.INVALID_QR_CODE -> {
                 color = inValidColor
                 statusText = holder.itemView.context.resources
-                        .getString(R.string.no_record)
+                    .getString(R.string.no_record)
                 holder.binding.txtVaccineStatus
-                        .setCompoundDrawablesWithIntrinsicBounds(
-                                0, 0, 0, 0
-                        )
+                    .setCompoundDrawablesWithIntrinsicBounds(
+                        0, 0, 0, 0
+                    )
             }
         }
 

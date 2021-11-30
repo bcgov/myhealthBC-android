@@ -23,12 +23,12 @@ import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @AndroidEntryPoint
 class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test_result) {
@@ -242,7 +242,7 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
         }
 
         if (!binding.edDob.editText?.text.toString()
-                .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
+            .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
 
             !binding.edDob.editText?.text.toString()
                 .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
@@ -275,11 +275,11 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
         }
 
         if (!binding.edDot.editText?.text.toString()
-                .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
+            .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
 
             !binding.edDot.editText?.text.toString()
                 .matches
-                    (Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
+                (Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
         ) {
             binding.edDot.isErrorEnabled = true
             binding.edDot.error = getString(R.string.enter_valid_date_format)
@@ -326,7 +326,7 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
             // Save form data for autocomplete option
             val formData: String =
                 binding.edPhnNumber.editText?.text.toString() +
-                        binding.edDob.editText?.text.toString()
+                    binding.edDob.editText?.text.toString()
 
             viewModel.setRecentFormData(formData)
                 .invokeOnCompletion {
@@ -375,12 +375,10 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
                     }
 
                     action?.let { findNavController().navigate(it, navOptions) }
-
                 }
             }
         }
 
         viewModel.prepareHealthRecords()
     }
-
 }

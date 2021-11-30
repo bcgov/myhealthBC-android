@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class SHCHeader(
-        val zip: String,
-        val alg: String,
-        val kid: String
+    val zip: String,
+    val alg: String,
+    val kid: String
 ) : Parcelable

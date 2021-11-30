@@ -40,17 +40,17 @@ import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
 import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
+import java.text.SimpleDateFormat
+import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.UnsupportedEncodingException
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @AndroidEntryPoint
 class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_record) {
@@ -205,7 +205,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         }
 
         if (!binding.edDob.editText?.text.toString()
-                .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
+            .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
 
             !binding.edDob.editText?.text.toString()
                 .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
@@ -238,11 +238,11 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         }
 
         if (!binding.edDov.editText?.text.toString()
-                .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
+            .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
 
             !binding.edDov.editText?.text.toString()
                 .matches
-                    (Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
+                (Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
         ) {
             binding.edDov.isErrorEnabled = true
             binding.edDov.error = getString(R.string.enter_valid_date_format)
@@ -290,7 +290,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
             // Save form data for autocomplete option
             val formData: String =
                 binding.edPhnNumber.editText?.text.toString() +
-                        binding.edDob.editText?.text.toString()
+                    binding.edDob.editText?.text.toString()
 
             viewModel.setRecentFormData(formData)
                 .invokeOnCompletion {
@@ -533,18 +533,17 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
                         val action = healthRecord?.let {
                             FetchVaccineRecordFragmentDirections
-                                .actionFetchVaccineRecordFragmentToIndividualHealthRecordFragment(it)
+                                .actionFetchVaccineRecordFragmentToIndividualHealthRecordFragment(
+                                    it
+                                )
                         }
 
                         action?.let { findNavController().navigate(it, navOptions) }
-
                     }
                 }
             }
         }
 
         viewModel.prepareHealthRecords()
-
-
     }
 }

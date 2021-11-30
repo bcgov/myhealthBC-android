@@ -10,5 +10,5 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class Actor(
-        val display: String
+    val display: String
 ) : Parcelable

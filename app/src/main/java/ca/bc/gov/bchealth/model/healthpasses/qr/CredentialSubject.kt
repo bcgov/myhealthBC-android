@@ -10,6 +10,6 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class CredentialSubject(
-        val fhirVersion: String,
-        val fhirBundle: FhirBundle
+    val fhirVersion: String,
+    val fhirBundle: FhirBundle
 ) : Parcelable

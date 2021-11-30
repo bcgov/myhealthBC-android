@@ -10,5 +10,5 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class VaccineCode(
-        val coding: List<Coding>
+    val coding: List<Coding>
 ) : Parcelable

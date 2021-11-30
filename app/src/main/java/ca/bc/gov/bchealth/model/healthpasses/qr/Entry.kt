@@ -10,6 +10,6 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class Entry(
-        val fullUrl: String,
-        val resource: Resource
+    val fullUrl: String,
+    val resource: Resource
 ) : Parcelable

@@ -10,6 +10,6 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class Vc(
-        val type: List<String>,
-        val credentialSubject: CredentialSubject
+    val type: List<String>,
+    val credentialSubject: CredentialSubject
 ) : Parcelable

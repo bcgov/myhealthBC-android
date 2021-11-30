@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class SHCPayload(
-        val iss: String,
-        val nbf: Long,
-        val vc: Vc
+    val iss: String,
+    val nbf: Long,
+    val vc: Vc
 ) : Parcelable

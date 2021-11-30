@@ -16,7 +16,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
     val healthRecordsRepository: HealthRecordsRepository
 ) : ViewModel() {
 
-
     fun prepareIndividualRecords(healthRecord: HealthRecord): MutableList<IndividualRecord> {
         val individualRecords: MutableList<IndividualRecord> = mutableListOf()
 

@@ -20,5 +20,4 @@ abstract class BcVaccineCardDataBase : RoomDatabase() {
     abstract fun getHealthCardDao(): HealthCardDao
 
     abstract fun getCovidTestResultDao(): CovidTestResultDao
-
 }

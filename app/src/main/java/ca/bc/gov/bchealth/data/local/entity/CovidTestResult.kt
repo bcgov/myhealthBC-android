@@ -3,8 +3,8 @@ package ca.bc.gov.bchealth.data.local.entity
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.parcelize.Parcelize
 import java.util.Date
+import kotlinx.parcelize.Parcelize
 
 /*
 * Created by amit_metri on 26,November,2021
@@ -31,6 +31,6 @@ class CovidTestResult(
     val resultDescription: String,
     val resultLink: String,
 
-    //For future use. userId can be mapped once user identity is implemented
+    // For future use. userId can be mapped once user identity is implemented
     val userId: String
 ) : Parcelable

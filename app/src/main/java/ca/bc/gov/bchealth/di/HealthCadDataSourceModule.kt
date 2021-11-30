@@ -44,8 +44,8 @@ class HealthCadDataSourceModule {
 
             database.execSQL(
                 "ALTER TABLE" +
-                        " `health_card`" +
-                        "ADD COLUMN federalPass TEXT "
+                    " `health_card`" +
+                    "ADD COLUMN federalPass TEXT "
             )
         }
     }
@@ -54,20 +54,20 @@ class HealthCadDataSourceModule {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL(
                 "CREATE TABLE IF NOT EXISTS " +
-                        "`covid_test_results` " +
-                        "(reportId TEXT PRIMARY KEY NOT NULL," +
-                        "patientDisplayName TEXT NOT NULL," +
-                        "lab TEXT NOT NULL," +
-                        "collectionDateTime INTEGER NOT NULL," +
-                        "resultDateTime INTEGER NOT NULL," +
-                        "testName TEXT NOT NULL," +
-                        "testType TEXT NOT NULL," +
-                        "testStatus TEXT NOT NULL," +
-                        "testOutcome TEXT NOT NULL," +
-                        "resultTitle TEXT NOT NULL," +
-                        "resultDescription TEXT NOT NULL," +
-                        "resultLink TEXT NOT NULL," +
-                        "userId TEXT NOT NULL)"
+                    "`covid_test_results` " +
+                    "(reportId TEXT PRIMARY KEY NOT NULL," +
+                    "patientDisplayName TEXT NOT NULL," +
+                    "lab TEXT NOT NULL," +
+                    "collectionDateTime INTEGER NOT NULL," +
+                    "resultDateTime INTEGER NOT NULL," +
+                    "testName TEXT NOT NULL," +
+                    "testType TEXT NOT NULL," +
+                    "testStatus TEXT NOT NULL," +
+                    "testOutcome TEXT NOT NULL," +
+                    "resultTitle TEXT NOT NULL," +
+                    "resultDescription TEXT NOT NULL," +
+                    "resultLink TEXT NOT NULL," +
+                    "userId TEXT NOT NULL)"
             )
         }
     }

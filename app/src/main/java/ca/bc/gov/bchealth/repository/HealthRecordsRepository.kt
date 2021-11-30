@@ -9,12 +9,12 @@ import ca.bc.gov.bchealth.model.healthrecords.VaccineData
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import ca.bc.gov.bchealth.utils.getDateTime
+import java.sql.Date
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
-import java.sql.Date
-import javax.inject.Inject
 
 /*
 * Created by amit_metri on 26,November,2021
@@ -81,7 +81,6 @@ class HealthRecordsRepository @Inject constructor(
                     }
                 }
 
-
                 /*
                 * There is possibility that a member may not get vaccinated but can have covid test results.
                 * Below method prepares the health records for such members
@@ -98,20 +97,22 @@ class HealthRecordsRepository @Inject constructor(
                     }
 
                     if (!isHealthRecordAlreadyPresent) {
-                        healthRecordList.add(HealthRecord(
-                            covidTestResult.patientDisplayName,
-                            null,
-                            "",
-                            mutableListOf(),
-                            covidTestResults.filter {
-                                covidTestResult.patientDisplayName.lowercase() ==
+                        healthRecordList.add(
+                            HealthRecord(
+                                covidTestResult.patientDisplayName,
+                                null,
+                                "",
+                                mutableListOf(),
+                                covidTestResults.filter {
+                                    covidTestResult.patientDisplayName.lowercase() ==
                                         it.patientDisplayName.lowercase()
-                            }
-                        ))
+                                }
+                            )
+                        )
                     }
                 }
 
-                //Emit health records
+                // Emit health records
                 healthRecordsMutableSharedFlow.emit(healthRecordList)
 
                 responseMutableSharedFlow.emit(Response.Success())
@@ -132,7 +133,6 @@ class HealthRecordsRepository @Inject constructor(
         "31301000087101" to "SINOPHARM",
         "NON-WHO" to "UNSPECIFIED COVID-19 VACCINE"
     ) as HashMap<String, String>
-
 
     /*
     * Prepare individual member vaccination record
@@ -165,7 +165,6 @@ class HealthRecordsRepository @Inject constructor(
 
         return vaccineDataList
     }
-
 
     /*
     * Fetch the covid test result

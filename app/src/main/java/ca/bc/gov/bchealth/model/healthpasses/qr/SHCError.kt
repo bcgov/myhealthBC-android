@@ -10,6 +10,6 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class SHCError(
-        val errorCode: Int,
-        val message: String
+    val errorCode: Int,
+    val message: String
 ) : Parcelable

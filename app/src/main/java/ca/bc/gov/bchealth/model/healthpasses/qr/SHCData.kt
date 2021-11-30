@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class SHCData(
-        val header: SHCHeader,
-        val payload: SHCPayload,
-        val signature: String
+    val header: SHCHeader,
+    val payload: SHCPayload,
+    val signature: String
 ) : Parcelable

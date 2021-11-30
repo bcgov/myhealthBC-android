@@ -10,5 +10,5 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class Patient(
-        val reference: String
+    val reference: String
 ) : Parcelable
