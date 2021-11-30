@@ -35,13 +35,13 @@ import com.queue_it.androidsdk.QueueListener
 import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.UnsupportedEncodingException
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 @AndroidEntryPoint
 class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
@@ -176,14 +176,19 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                         is Response.Success -> {
                             binding.progressBar.visibility = View.INVISIBLE
 
-                            val healthCard = it.data as HealthCard
+                            val pair = it.data as Pair<*, *>
+                            val healthCard = pair.first as HealthCard
                             healthCardDto.federalPass = healthCard.federalPass
 
-                            requireContext().showCardReplacementDialog {
-                                viewModel.replaceExitingHealthPass(healthCard)
-                                    .invokeOnCompletion {
-                                        showFederalTravelPass()
-                                    }
+                            if (pair.second as Boolean) {
+                                requireContext().showCardReplacementDialog() {
+                                    viewModel.replaceExitingHealthPass(healthCard)
+                                        .invokeOnCompletion {
+                                            showFederalTravelPass()
+                                        }
+                                }
+                            } else {
+                                showFederalTravelPass()
                             }
                         }
                         is Response.Error -> {

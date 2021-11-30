@@ -54,22 +54,23 @@ class CardRepository @Inject constructor(
             try {
                 val data = shcDecoder.getImmunizationStatus(card.uri)
                 HealthCardDto(
-                        card.id,
-                        card.uri,
-                        card.federalPass,
-                        data.name,
-                        data.status,
-                        false,
-                        data.issueDate.getDateTime(),
-                        data.birthDate.toString(),
-                        data.occurrenceDateTime.toString(),
-                        data.immunizationEntries
+                    card.id,
+                    card.uri,
+                    card.federalPass,
+                    data.name,
+                    data.status,
+                    false,
+                    data.issueDate.getDateTime(),
+                    data.birthDate.toString(),
+                    data.occurrenceDateTime.toString(),
+                    data.immunizationEntries
                 )
             } catch (e: Exception) {
                 HealthCardDto(
-                        0, card.uri, "", "", ImmunizationStatus.INVALID_QR_CODE,
-                        false, "", "", "",
-                        null)
+                    0, card.uri, "", "", ImmunizationStatus.INVALID_QR_CODE,
+                    false, "", "", "",
+                    null
+                )
             }
         }
     }
@@ -78,8 +79,8 @@ class CardRepository @Inject constructor(
     * Used in uploading the QR from gallery
     * */
     suspend fun processUploadedImage(
-            uri: Uri,
-            context: Context
+        uri: Uri,
+        context: Context
     ) {
 
         kotlin.runCatching {
@@ -220,30 +221,28 @@ class CardRepository @Inject constructor(
 
             if (cards.isNullOrEmpty()) {
                 dataSource.insert(healthCard)
-                responseMutableSharedFlow.emit(Response.Success())
+                responseMutableSharedFlow.emit(Response.Success(Pair(healthCard, false)))
                 return
             }
             if (healthPassTobeUpdated.isNotEmpty()) {
                 healthCard.id = healthPassTobeUpdated.toInt()
                 responseMutableSharedFlow
-                    .emit(
-                        Response.Success(healthCard)
-                    )
+                    .emit(Response.Success(Pair(healthCard, true)))
             } else {
 
                 val filteredHealthCard = cards.filter { record ->
                     val immunizationRecord = shcDecoder.getImmunizationStatus(record.uri)
                     (
-                        immunizationRecord.name.lowercase()
-                            == healthPassToBeInserted.name.lowercase() &&
-                            immunizationRecord.birthDate
-                            == healthPassToBeInserted.birthDate
-                        )
+                            immunizationRecord.name.lowercase()
+                                    == healthPassToBeInserted.name.lowercase() &&
+                                    immunizationRecord.birthDate
+                                    == healthPassToBeInserted.birthDate
+                            )
                 }
 
                 if (filteredHealthCard.isNullOrEmpty()) {
                     dataSource.insert(healthCard)
-                    responseMutableSharedFlow.emit(Response.Success())
+                    responseMutableSharedFlow.emit(Response.Success(Pair(healthCard, false)))
                 } else {
                     updateHealthPass(
                         healthCard,
@@ -276,7 +275,7 @@ class CardRepository @Inject constructor(
             } else {
                 existingHealthCard.uri = healthCard.uri
                 existingHealthCard.federalPass = healthCard.federalPass
-                responseMutableSharedFlow.emit(Response.Success(existingHealthCard))
+                responseMutableSharedFlow.emit(Response.Success(Pair(existingHealthCard, true)))
             }
         }
     }

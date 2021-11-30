@@ -5,16 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
-import ca.bc.gov.bchealth.model.HealthCardDto
-import ca.bc.gov.bchealth.model.ImmunizationStatus
-import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
+import ca.bc.gov.bchealth.model.healthrecords.IndividualRecord
 
 /*
 * Created by amit_metri on 25,November,2021
 */
 class IndividualHealthRecordAdapter(
-    private var healthRecord: HealthRecord,
-    var clickListener: ((HealthCardDto) -> Unit)? = null
+    private var individualRecords: MutableList<IndividualRecord>,
+    var clickListener: ((String?) -> Unit)? = null
 ) : RecyclerView.Adapter<IndividualHealthRecordAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemHealthRecordsAbstractBinding) :
@@ -31,45 +29,31 @@ class IndividualHealthRecordAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        if (healthRecord.vaccineDataList.isNotEmpty()) {
+        val individualRecord = individualRecords[position]
 
-            holder.binding.imgIcon.setImageResource(R.drawable.ic_health_record_vaccine)
-
-            holder.binding.tvVaccineName.text = healthRecord.vaccineDataList.last()?.immunizingAgent
-
-            when (healthRecord.immunizationStatus) {
-                ImmunizationStatus.FULLY_IMMUNIZED -> {
-                    holder.binding.tvVaccineStatus.text =
-                        holder.itemView.resources.getString(R.string.vaccinated)
-                            .plus(" ")
-                            .plus(healthRecord.vaccineDataList.last()?.occurrenceDate)
-                }
-                ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
-                    holder.binding.tvVaccineStatus.text =
-                        holder.itemView.resources.getString(R.string.partially_vaccinated)
-                            .plus(" ")
-                            .plus(healthRecord.vaccineDataList.last()?.occurrenceDate)
-                }
-                ImmunizationStatus.INVALID_QR_CODE -> {
-                    holder.binding.tvVaccineStatus.text =
-                        holder.itemView.resources.getString(R.string.no_record)
-                }
+        when (individualRecord.healthRecordType) {
+            HealthRecordType.VACCINE_RECORD -> {
+                holder.binding.imgIcon.setImageResource(R.drawable.ic_health_record_vaccine)
+            }
+            HealthRecordType.COVID_TEST_RECORD -> {
+                holder.binding.imgIcon.setImageResource(R.drawable.ic_health_record_covid_test)
             }
         }
 
-
+        holder.binding.tvVaccineName.text = individualRecord.title
+        holder.binding.tvVaccineStatus.text = individualRecord.subtitle
 
         holder.itemView.setOnClickListener {
-            // TODO: 25/11/21 to be implemented
+            clickListener?.invoke(individualRecord.covidTestReportId)
         }
     }
 
     override fun getItemCount(): Int {
-        return if (healthRecord.vaccineDataList.isNotEmpty()) {
-            1 + healthRecord.covidTestResultList.size
-        } else {
-            healthRecord.covidTestResultList.size
-        }
+        return individualRecords.size
+    }
 
+    enum class HealthRecordType {
+        VACCINE_RECORD,
+        COVID_TEST_RECORD
     }
 }

@@ -1,6 +1,7 @@
 package ca.bc.gov.bchealth.repository
 
 import ca.bc.gov.bchealth.data.local.entity.CovidTestResult
+import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.datasource.LocalDataSource
 import ca.bc.gov.bchealth.model.ImmunizationRecord
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
@@ -118,19 +119,44 @@ class HealthRecordsRepository @Inject constructor(
         }
     }
 
+    val vaccineInfo: HashMap<String, String> = mapOf(
+        "28581000087106" to "PFIZER-BIONTECH COMIRNATY COVID-19",
+        "28571000087109" to "MODERNA SPIKEVAX",
+        "28761000087108" to "ASTRAZENECA VAXZEVRIA",
+        "28961000087105" to "COVISHIELD",
+        "28951000087107" to "JANSSEN (JOHNSON & JOHNSON)",
+        "29171000087106" to "NOVAVAX",
+        "31431000087100" to "CANSINOBIO",
+        "31341000087103" to "SPUTNIK",
+        "31311000087104" to "SINOVAC-CORONAVAC ",
+        "31301000087101" to "SINOPHARM",
+        "NON-WHO" to "UNSPECIFIED COVID-19 VACCINE"
+    ) as HashMap<String, String>
+
+
     /*
     * Prepare individual member vaccination record
     * */
     private fun getIndividualVaccinationData(data: ImmunizationRecord): MutableList<VaccineData> {
         val vaccineDataList: MutableList<VaccineData> = mutableListOf()
+
         data.immunizationEntries?.forEachIndexed { index, entry ->
+
+            val vaccineInfo =
+                vaccineInfo.filter { it.key == entry.resource.vaccineCode.toString() }
+
+            val productInfo = if (vaccineInfo.isEmpty())
+                "Not Available"
+            else
+                vaccineInfo.values.first()
+
             vaccineDataList.add(
                 VaccineData(
                     data.name,
                     (index + 1).toString(),
                     entry.resource.occurrenceDateTime,
-                    "", // TODO: 29/11/21 Data to be prepared later
-                    "",
+                    productInfo,
+                    "Not Available",
                     entry.resource.performer?.last()?.actor?.display,
                     entry.resource.lotNumber
                 )
@@ -150,15 +176,7 @@ class HealthRecordsRepository @Inject constructor(
 
         // TODO: 26/11/21 Network call to be implemented
 
-        saveCovidTestResult()
-    }
-
-    /*
-    * Save covid test results in DB
-    * */
-    private suspend fun saveCovidTestResult() {
-
-        dataSource.insertCovidTestResult(
+        saveCovidTestResult(
             CovidTestResult(
                 kotlin.random.Random.toString(),
                 "AMIT METRI",
@@ -174,9 +192,28 @@ class HealthRecordsRepository @Inject constructor(
                 "link",
                 ""
             )
+        )
+    }
 
+    /*
+    * Save covid test results in DB
+    * */
+    private suspend fun saveCovidTestResult(covidTestResult: CovidTestResult) {
+
+        dataSource.insertCovidTestResult(
+            covidTestResult
         )
 
-        responseMutableSharedFlow.emit(Response.Success())
+        responseMutableSharedFlow.emit(Response.Success(covidTestResult.patientDisplayName))
+    }
+
+    fun fetchHealthRecordFromHealthCard(healthCard: HealthCard): ImmunizationRecord? {
+
+        try {
+            return shcDecoder.getImmunizationStatus(healthCard.uri)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
     }
 }

@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -46,26 +47,25 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         binding.toolbar.tvRightOption.visibility = View.VISIBLE
         binding.toolbar.tvRightOption.text = getString(R.string.edit)
         binding.toolbar.tvRightOption.setOnClickListener {
-            // TODO: 24/11/21 rearrange logic
+            // TODO: 24/11/21 Delete logic
         }
     }
 
     // Recycler view setup
     private fun setUpRecyclerView() {
 
+        individualHealthRecordAdapter = IndividualHealthRecordAdapter(
+            viewModel.prepareIndividualRecords(args.healthRecord)
+        )
 
-        /* individualHealthRecordAdapter = IndividualHealthRecordAdapter(
-                 //viewModel.prepareVaccineDataList(args.healthRecord)
-         )
+        individualHealthRecordAdapter.clickListener = {
+            // TODO: 25/11/21 Redirection to be implemented
+        }
 
-         individualHealthRecordAdapter.clickListener = {
-             // TODO: 25/11/21 Redirection to be implemented
-         }
+        val recyclerView = binding.rvHealthRecords
 
-         val recyclerView = binding.rvHealthRecords
+        recyclerView.adapter = individualHealthRecordAdapter
 
-         recyclerView.adapter = individualHealthRecordAdapter
-
-         recyclerView.layoutManager = LinearLayoutManager(requireContext())*/
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 }

@@ -301,7 +301,7 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
                 viewModel.responseSharedFlow.collect {
                     when (it) {
                         is Response.Success -> {
-                            respondToSuccess(this)
+                            respondToSuccess(it, this)
                         }
                         is Response.Error -> {
                             respondToError(it, this)
@@ -316,6 +316,7 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
     }
 
     private fun respondToSuccess(
+        response: Response.Success<String>,
         coroutineScope: CoroutineScope
     ) {
 
@@ -329,16 +330,16 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
 
             viewModel.setRecentFormData(formData)
                 .invokeOnCompletion {
-                    navigateToIndividualRecords()
+                    navigateToIndividualRecords(response.data as String)
                     coroutineScope.cancel()
                 }
         } else {
-            navigateToIndividualRecords()
+            navigateToIndividualRecords(response.data as String)
             coroutineScope.cancel()
         }
     }
 
-    private fun respondToError(it: Response.Error<String>, coroutineScope: CoroutineScope) {
+    private fun respondToError(it: Response<String>, coroutineScope: CoroutineScope) {
         showLoader(false)
         requireContext().showError(
             it.errorData?.errorTitle.toString(),
@@ -354,18 +355,32 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
             binding.progressBar.visibility = View.INVISIBLE
     }
 
-    private fun navigateToIndividualRecords() {
+    private fun navigateToIndividualRecords(patientDisplayName: String) {
 
-        val navOptions = NavOptions.Builder()
-            .setPopUpTo(R.id.healthRecordsFragment, false)
-            .build()
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.healthRecordsSharedFlow.collect { healthRecords ->
 
-        findNavController()
-            .navigate(
-                R.id.action_fetchCovidTestResultFragment_to_individualHealthRecordFragment,
-                null,
-                navOptions
-            )
+                    val healthRecord = healthRecords.find {
+                        it.name == patientDisplayName
+                    }
+
+                    val navOptions = NavOptions.Builder()
+                        .setPopUpTo(R.id.addHealthRecordsFragment, true)
+                        .build()
+
+                    val action = healthRecord?.let {
+                        FetchCovidTestResultFragmentDirections
+                            .actionFetchCovidTestResultFragmentToIndividualHealthRecordFragment(it)
+                    }
+
+                    action?.let { findNavController().navigate(it, navOptions) }
+
+                }
+            }
+        }
+
+        viewModel.prepareHealthRecords()
     }
 
 }
