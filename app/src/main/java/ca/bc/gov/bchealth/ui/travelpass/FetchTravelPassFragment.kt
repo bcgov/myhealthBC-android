@@ -176,19 +176,14 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                         is Response.Success -> {
                             binding.progressBar.visibility = View.INVISIBLE
 
-                            val pair = it.data as Pair<*, *>
-                            val healthCard = pair.first as HealthCard
+                            val healthCard = it.data as HealthCard
                             healthCardDto.federalPass = healthCard.federalPass
 
-                            if (pair.second as Boolean) {
-                                requireContext().showCardReplacementDialog() {
-                                    viewModel.replaceExitingHealthPass(healthCard)
-                                        .invokeOnCompletion {
-                                            showFederalTravelPass()
-                                        }
-                                }
-                            } else {
-                                showFederalTravelPass()
+                            requireContext().showCardReplacementDialog {
+                                viewModel.replaceExitingHealthPass(healthCard)
+                                    .invokeOnCompletion {
+                                        showFederalTravelPass()
+                                    }
                             }
                         }
                         is Response.Error -> {

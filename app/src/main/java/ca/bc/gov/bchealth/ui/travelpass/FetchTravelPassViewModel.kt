@@ -8,6 +8,7 @@ import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.repository.CardRepository
 import ca.bc.gov.bchealth.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.lang.Exception
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -40,6 +41,10 @@ class FetchTravelPassViewModel @Inject constructor(
     )
 
     fun replaceExitingHealthPass(healthCard: HealthCard) = viewModelScope.launch {
-        repository.replaceExitingHealthPass(healthCard)
+        try {
+            repository.replaceExitingHealthPass(healthCard)
+        } catch (e: Exception) {
+            println(e.message)
+        }
     }
 }
