@@ -15,8 +15,8 @@ import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.databinding.FragmentNewsfeedBinding
 import ca.bc.gov.bchealth.model.rss.Newsfeed
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.snowplowanalytics.snowplow.Snowplow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -65,7 +65,7 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
 
         viewModel.newsfeedLiveData.observe(viewLifecycleOwner, {
             if (it.isNullOrEmpty()) {
-                showError(
+                requireContext().showError(
                     getString(R.string.error),
                     getString(R.string.error_message)
                 )
@@ -75,16 +75,5 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
                 binding.progressBar.visibility = View.INVISIBLE
             }
         })
-    }
-
-    private fun showError(title: String, message: String) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(title)
-            .setCancelable(false)
-            .setMessage(message)
-            .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
     }
 }

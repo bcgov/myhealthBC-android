@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.addcard
+package ca.bc.gov.bchealth.ui.healthrecords.vaccinerecords
 
 import android.net.Uri
 import android.os.Bundle
@@ -14,13 +14,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.analytics.AnalyticsAction
 import ca.bc.gov.bchealth.analytics.AnalyticsText
 import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
-import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineCardBinding
+import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineRecordBinding
 import ca.bc.gov.bchealth.di.ApiClientModule
 import ca.bc.gov.bchealth.http.MustBeQueued
 import ca.bc.gov.bchealth.utils.Response
@@ -53,9 +52,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
-class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) {
+class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_record) {
 
-    private val binding by viewBindings(FragmentFetchVaccineCardBinding::bind)
+    private val binding by viewBindings(FragmentFetchVaccineRecordBinding::bind)
 
     private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CANADA)
 
@@ -78,7 +77,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             }
 
             tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.add_a_health_pass)
+            tvTitle.text = getString(R.string.add_bc_vaccine_record)
 
             ivRightOption.visibility = View.VISIBLE
             ivRightOption.setImageResource(R.drawable.ic_help)
@@ -92,24 +91,6 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     }
 
     private fun iniUI() {
-
-        if (BuildConfig.DEBUG) {
-            /*binding.edPhnNumber.editText?.setText("9000201422")
-            binding.edDob.editText?.setText("1989-12-12")
-            binding.edDov.editText?.setText("2021-05-15")*/
-
-            /*binding.edPhnNumber.editText?.setText("9000691304")
-            binding.edDob.editText?.setText("1965-01-14")
-            binding.edDov.editText?.setText("2021-07-15")*/
-
-            /*binding.edPhnNumber.editText?.setText("9890826056")
-            binding.edDob.editText?.setText("1962-01-02")
-            binding.edDov.editText?.setText("2021-06-10")*/
-
-            /*binding.edPhnNumber.editText?.setText("9879458314")
-            binding.edDob.editText?.setText("1934-02-23")
-            binding.edDov.editText?.setText("2021-04-26")*/
-        }
 
         setUpPhnUI()
 
@@ -259,7 +240,8 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
 
             !binding.edDov.editText?.text.toString()
-                .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
+                .matches
+                (Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
         ) {
             binding.edDov.isErrorEnabled = true
             binding.edDov.error = getString(R.string.enter_valid_date_format)
@@ -300,6 +282,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         coroutineScope: CoroutineScope
     ) {
         ApiClientModule.queueItToken = ""
+
         showLoader(false)
 
         if (binding.checkboxRemember.isChecked) {
@@ -309,7 +292,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                     binding.edDob.editText?.text.toString()
 
             viewModel.setRecentFormData(formData)
-                .invokeOnCompletion { _ ->
+                .invokeOnCompletion {
                     if (response.data == null)
                         navigateToCardsList()
                     else {
@@ -327,6 +310,13 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
         }
     }
 
+    private fun showLoader(value: Boolean) {
+        if (value)
+            binding.progressBar.visibility = View.VISIBLE
+        else
+            binding.progressBar.visibility = View.INVISIBLE
+    }
+
     private fun respondToError(it: Response.Error<String>, coroutineScope: CoroutineScope) {
 
         ApiClientModule.queueItToken = ""
@@ -336,13 +326,6 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             it.errorData?.errorMessage.toString()
         )
         coroutineScope.cancel()
-    }
-
-    private fun showLoader(value: Boolean) {
-        if (value)
-            binding.progressBar.visibility = View.VISIBLE
-        else
-            binding.progressBar.visibility = View.INVISIBLE
     }
 
     /*
@@ -513,7 +496,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     }
 
     private fun showCardReplacement(healthCard: HealthCard) {
-        requireContext().showCardReplacementDialog() {
+        requireContext().showCardReplacementDialog {
             viewModel.replaceExitingHealthPass(healthCard).invokeOnCompletion {
                 navigateToCardsList()
             }

@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.addcard
+package ca.bc.gov.bchealth.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 * Created by amit_metri on 18,October,2021
 */
 @HiltViewModel
-class FetchVaccineCardViewModel @Inject constructor(
+class FetchVaccineDataViewModel @Inject constructor(
     private val repository: CardRepository,
     private val dataStoreRepo: DataStoreRepo
 ) : ViewModel() {
