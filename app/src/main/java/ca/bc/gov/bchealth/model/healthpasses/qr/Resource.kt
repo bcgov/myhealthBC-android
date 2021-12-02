@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.model
+package ca.bc.gov.bchealth.model.healthpasses.qr
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -16,7 +16,7 @@ data class Resource(
     val status: String? = null,
     val vaccineCode: VaccineCode? = null,
     val patient: Patient? = null,
-    val occurrenceDateTime: String? = null,
+    val occurrenceDateTime: String = "",
     val performer: List<Performer>? = null,
     val lotNumber: String? = null
 ) : Parcelable

@@ -310,24 +310,27 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
 
             viewModel.setRecentFormData(formData)
                 .invokeOnCompletion { _ ->
-                    if (response.data == null)
+
+                    val pair = response.data as Pair<*, *>
+                    if (pair.second as Boolean) {
+                        showCardReplacement(pair.first as HealthCard)
+                    } else {
                         navigateToCardsList()
-                    else {
-                        showCardReplacement(response.data as HealthCard)
                     }
                     coroutineScope.cancel()
                 }
         } else {
-            if (response.data == null)
+            val pair = response.data as Pair<*, *>
+            if (pair.second as Boolean) {
+                showCardReplacement(pair.first as HealthCard)
+            } else {
                 navigateToCardsList()
-            else {
-                showCardReplacement(response.data as HealthCard)
             }
             coroutineScope.cancel()
         }
     }
 
-    private fun respondToError(it: Response.Error<String>, coroutineScope: CoroutineScope) {
+    private fun respondToError(it: Response<String>, coroutineScope: CoroutineScope) {
 
         ApiClientModule.queueItToken = ""
         showLoader(false)
