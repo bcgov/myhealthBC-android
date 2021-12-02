@@ -13,8 +13,10 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.analytics.AnalyticsAction
 import ca.bc.gov.bchealth.analytics.AnalyticsText
 import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
+import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
 import ca.bc.gov.bchealth.utils.Response
+import ca.bc.gov.bchealth.utils.showCardReplacementDialog
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.snowplowanalytics.snowplow.Snowplow
@@ -57,16 +59,17 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                     viewModel.responseSharedFlow.collect {
                         when (it) {
                             is Response.Success -> {
-                                // Snowplow event
-                                Snowplow.getDefaultTracker()?.track(
-                                    SelfDescribingEvent
-                                        .get(
-                                            AnalyticsAction.AddQR.value,
-                                            AnalyticsText.Upload.value
-                                        )
-                                )
 
-                                findNavController().popBackStack(R.id.myCardsFragment, false)
+                                if (it.data == null) {
+                                    navigateToCardsList()
+                                } else {
+                                    requireContext().showCardReplacementDialog {
+                                        viewModel.replaceExitingHealthPass(it.data as HealthCard)
+                                            .invokeOnCompletion {
+                                                navigateToCardsList()
+                                            }
+                                    }
+                                }
                             }
                             is Response.Error -> {
                                 showError(
@@ -109,5 +112,18 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                 dialog.dismiss()
             }
             .show()
+    }
+
+    private fun navigateToCardsList() {
+        // Snowplow event
+        Snowplow.getDefaultTracker()?.track(
+            SelfDescribingEvent
+                .get(
+                    AnalyticsAction.AddQR.value,
+                    AnalyticsText.Upload.value
+                )
+        )
+
+        findNavController().popBackStack(R.id.myCardsFragment, false)
     }
 }

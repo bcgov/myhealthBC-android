@@ -1,0 +1,74 @@
+name: Android CICD Firebase deployment
+
+on:
+  pull_request:
+    branches:
+      - develop
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Clean build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check out
+        uses: actions/checkout@v2
+
+      - name: setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
+      - name: clean build
+        run: ./gradlew clean build
+        env:
+          USER: ${{ secrets.USER }}
+          TOKEN: ${{ secrets.TOKEN }}
+
+      - name: upload dev apk
+        uses: actions/upload-artifact@v1
+        with:
+          name: myhealth_dev.apk
+          path: app/build/outputs/apk/dev/debug/app-dev-debug.apk
+
+      - name: upload stage apk
+        uses: actions/upload-artifact@v1
+        with:
+          name: myhealth_stage.apk
+          path: app/build/outputs/apk/stage/debug/app-stage-debug.apk
+
+      - name: upload prod apk
+        uses: actions/upload-artifact@v1
+        with:
+          name: myhealth_prod.apk
+          path: app/build/outputs/apk/prod/debug/app-prod-debug.apk
+
+      - name: upload dev APK to firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          token: ${{secrets.FIREBASE_TOKEN}}
+          groups: freshworks.io
+          file: app/build/outputs/apk/dev/debug/app-dev-debug.apk
+
+      - name: upload stage APK to firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          token: ${{secrets.FIREBASE_TOKEN}}
+          groups: freshworks.io
+          file: app/build/outputs/apk/stage/debug/app-stage-debug.apk
+
+      - name: upload prod APK to firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          token: ${{secrets.FIREBASE_TOKEN}}
+          groups: freshworks.io
+          file: app/build/outputs/apk/prod/debug/app-prod-debug.apk

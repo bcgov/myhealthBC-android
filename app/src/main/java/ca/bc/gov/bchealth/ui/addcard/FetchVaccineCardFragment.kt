@@ -19,6 +19,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.analytics.AnalyticsAction
 import ca.bc.gov.bchealth.analytics.AnalyticsText
 import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
+import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineCardBinding
 import ca.bc.gov.bchealth.di.ApiClientModule
 import ca.bc.gov.bchealth.http.MustBeQueued
@@ -26,6 +27,7 @@ import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.adjustOffset
 import ca.bc.gov.bchealth.utils.isOnline
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showCardReplacementDialog
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -90,9 +92,9 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     private fun iniUI() {
 
         if (BuildConfig.DEBUG) {
-             /*binding.edPhnNumber.editText?.setText("9000201422")
-             binding.edDob.editText?.setText("1989-12-12")
-             binding.edDov.editText?.setText("2021-05-15")*/
+            /*binding.edPhnNumber.editText?.setText("9000201422")
+            binding.edDob.editText?.setText("1989-12-12")
+            binding.edDov.editText?.setText("2021-05-15")*/
 
             /*binding.edPhnNumber.editText?.setText("9000691304")
             binding.edDob.editText?.setText("1965-01-14")
@@ -103,8 +105,8 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
             binding.edDov.editText?.setText("2021-06-10")*/
 
             /*binding.edPhnNumber.editText?.setText("9879458314")
-             binding.edDob.editText?.setText("1934-02-23")
-             binding.edDov.editText?.setText("2021-04-26")*/
+            binding.edDob.editText?.setText("1934-02-23")
+            binding.edDov.editText?.setText("2021-04-26")*/
         }
 
         setUpPhnUI()
@@ -127,21 +129,30 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                             when (it) {
                                 is Response.Success -> {
 
+                                    ApiClientModule.queueItToken = ""
+                                    binding.progressBar.visibility = View.INVISIBLE
+
                                     if (binding.checkboxRemember.isChecked) {
                                         // Save form data for autocomplete option
                                         val formData: String =
                                             binding.edPhnNumber.editText?.text.toString() +
                                                 binding.edDob.editText?.text.toString()
 
-                                        viewModel.setRecentFormData(formData).invokeOnCompletion {
-
-                                            // Navigate to health passes
-                                            navigateToHealthPasses()
-                                            this.cancel()
-                                        }
+                                        viewModel.setRecentFormData(formData)
+                                            .invokeOnCompletion { _ ->
+                                                if (it.data == null)
+                                                    navigateToCardsList()
+                                                else {
+                                                    showCardReplacement(it.data as HealthCard)
+                                                }
+                                                this.cancel()
+                                            }
                                     } else {
-                                        // Navigate to health passes
-                                        navigateToHealthPasses()
+                                        if (it.data == null)
+                                            navigateToCardsList()
+                                        else {
+                                            showCardReplacement(it.data as HealthCard)
+                                        }
                                         this.cancel()
                                     }
                                 }
@@ -176,6 +187,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                             }
                         } else {
                             e.printStackTrace()
+                            binding.progressBar.visibility = View.INVISIBLE
                             showError(
                                 getString(R.string.error),
                                 getString(R.string.error_message)
@@ -185,20 +197,6 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                 }
             }
         }
-    }
-
-    private fun navigateToHealthPasses() {
-
-        // Snowplow event
-        Snowplow.getDefaultTracker()?.track(
-            SelfDescribingEvent
-                .get(AnalyticsAction.AddQR.value, AnalyticsText.Get.value)
-        )
-
-        ApiClientModule.queueItToken = ""
-        binding.progressBar.visibility = View.INVISIBLE
-        findNavController()
-            .popBackStack(R.id.myCardsFragment, false)
     }
 
     private fun validateInputData(): Boolean {
@@ -409,6 +407,7 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                                 )
                             } catch (e: Exception) {
                                 e.printStackTrace()
+                                binding.progressBar.visibility = View.INVISIBLE
                                 showError(
                                     getString(R.string.error),
                                     getString(R.string.error_message)
@@ -474,5 +473,24 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
                 dialog.dismiss()
             }
             .show()
+    }
+
+    private fun showCardReplacement(healthCard: HealthCard) {
+        requireContext().showCardReplacementDialog() {
+            viewModel.replaceExitingHealthPass(healthCard).invokeOnCompletion {
+                navigateToCardsList()
+            }
+        }
+    }
+
+    private fun navigateToCardsList() {
+
+        // Snowplow event
+        Snowplow.getDefaultTracker()?.track(
+            SelfDescribingEvent
+                .get(AnalyticsAction.AddQR.value, AnalyticsText.Get.value)
+        )
+
+        findNavController().popBackStack(R.id.myCardsFragment, false)
     }
 }

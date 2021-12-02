@@ -25,6 +25,8 @@
     <string name="settings_message">BC Vaccine Card app is the official mobile application from the Government of British Columbia. It allows you to store and organize a proof of vaccination for you and your family members.</string>
     <string name="privacy_statement">Privacy Statement</string>
     <string name="no_app_found">No app found to open link!</string>
+    <string name="disable_analytics">Disable analytics</string>
+    <string name="anonymized_behavioural_data_is_used_to_help_improve_the_user_experience">Anonymized behavioural data is used to help improve the user experience</string>
 
     <!--Add card-->
     <string name="add_card">Add Card</string>
@@ -54,6 +56,9 @@
     <string name="dov_required">Date of Vaccination is required</string>
     <string name="add_a_health_pass">Add a Health Pass</string>
     <string name="remember_my_phn_and_dob_for_next_time">Remember my PHN and DoB for next time.</string>
+    <string name="replace">Replace</string>
+    <string name="replace_health_pass_title">Proof of vaccination is updated.</string>
+    <string name="replace_health_pass_message">Would you like to replace the health pass?</string>
 
     <!--Health Passes-->
     <string name="passes">Passes</string>
@@ -118,9 +123,6 @@
     <string name="select_phn">select personal health number</string>
     <string name="federal_proof">federal proof</string>
     <string name="torch">torch</string>
-    <!--TODO any new strings below needs to be grouped logically as above-->
-
-    <string name="disable_analytics">Disable analytics</string>
-    <string name="anonymized_behavioural_data_is_used_to_help_improve_the_user_experience">Anonymized behavioural data is used to help improve the user experience</string>
+     <!--TODO any new strings below needs to be grouped logically as above-->
 
 </resources>
