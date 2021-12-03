@@ -2,7 +2,7 @@ package ca.bc.gov.bchealth.ui.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.bchealth.datasource.DataStoreRepo
+import ca.bc.gov.bchealth.datasource.EncryptedPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -12,14 +12,14 @@ import kotlinx.coroutines.launch
 */
 @HiltViewModel
 class OnBoardingSliderViewModel @Inject constructor(
-    private val dataStoreRepo: DataStoreRepo
+    private val encryptedPreferences: EncryptedPreferences
 ) : ViewModel() {
 
     fun setOnBoardingShown(shown: Boolean) = viewModelScope.launch {
-        dataStoreRepo.setOnBoardingShown(shown)
+        encryptedPreferences.setOnBoardingShown(shown)
     }
 
     fun setNewFeatureShown(shown: Boolean) = viewModelScope.launch {
-        dataStoreRepo.setNewFeatureShown(shown)
+        encryptedPreferences.setNewFeatureShown(shown)
     }
 }

@@ -2,9 +2,8 @@ package ca.bc.gov.bchealth.ui.healthrecords.covidtestresults
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.bchealth.datasource.DataStoreRepo
+import ca.bc.gov.bchealth.datasource.EncryptedPreferences
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
-import ca.bc.gov.bchealth.repository.CardRepository
 import ca.bc.gov.bchealth.repository.HealthRecordsRepository
 import ca.bc.gov.bchealth.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,9 +18,8 @@ import kotlinx.coroutines.launch
 */
 @HiltViewModel
 class FetchCovidTestResultViewModel @Inject constructor(
-    private val cardRepository: CardRepository,
     private val healthRecordsRepository: HealthRecordsRepository,
-    private val dataStoreRepo: DataStoreRepo
+    private val encryptedPreferences: EncryptedPreferences
 ) : ViewModel() {
 
     /*
@@ -30,14 +28,14 @@ class FetchCovidTestResultViewModel @Inject constructor(
     val responseSharedFlow: SharedFlow<Response<String>>
         get() = healthRecordsRepository.responseSharedFlow
 
-    val isRecentFormData = dataStoreRepo.isRecentFormData.stateIn(
+    val isRecentFormData = encryptedPreferences.isRecentFormData.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = ""
     )
 
     fun setRecentFormData(formData: String) = viewModelScope.launch {
-        dataStoreRepo.setRecentFormData(formData)
+        encryptedPreferences.setRecentFormData(formData)
     }
 
     fun getCovidTestResult(phn: String, dob: String, dot: Any) = viewModelScope.launch {

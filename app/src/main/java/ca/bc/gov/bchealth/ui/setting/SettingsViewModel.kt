@@ -2,7 +2,7 @@ package ca.bc.gov.bchealth.ui.setting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.bchealth.datasource.DataStoreRepo
+import ca.bc.gov.bchealth.datasource.EncryptedPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -12,10 +12,10 @@ import kotlinx.coroutines.launch
 */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val dataStoreRepo: DataStoreRepo
+    private val encryptedPreferences: EncryptedPreferences
 ) : ViewModel() {
 
     fun trackAnalytics(value: Boolean) = viewModelScope.launch {
-        dataStoreRepo.trackAnalytics(value)
+        encryptedPreferences.trackAnalytics(value)
     }
 }

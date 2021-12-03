@@ -46,7 +46,9 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
 
         binding.btnNextSlide.setOnClickListener {
             if (educationalScreenAdapter.itemCount == (getCurrentItem() + 1)) {
+
                 viewModel.setOnBoardingShown(true).invokeOnCompletion {
+
                     viewModel.setNewFeatureShown(true).invokeOnCompletion {
                         val navOptions = NavOptions.Builder()
                             .setPopUpTo(R.id.onBoardingSliderFragment, true)
