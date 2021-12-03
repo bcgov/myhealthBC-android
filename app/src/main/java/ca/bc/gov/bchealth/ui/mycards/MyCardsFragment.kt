@@ -714,53 +714,6 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                 }
             }
         }
-        /*viewModel.isOnBoardingShown.collect { shown ->
-            if (shown != null) {
-                when (shown) {
-                    true -> {
-
-                        viewModel.isNewfeatureShown.collect { shown ->
-                            if (shown != null) {
-                                when (shown) {
-                                    true -> {
-                                        healthPassesFlow()
-                                    }
-
-                                    false -> {
-                                        // TODO: 03/11/21 enable below flow when we plan to show new feature to existing users.
-                                        // Also no need to disable once enabled.
-
-                                        *//*val startDestination =
-                                            findNavController().graph.startDestination
-                                        val navOptions = NavOptions.Builder()
-                                            .setPopUpTo(startDestination, true)
-                                            .build()
-                                        findNavController().navigate(
-                                            R.id.newFeatureFragment,
-                                            null,
-                                            navOptions
-                                        )*//*
-                                        healthPassesFlow()
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    false -> {
-                        val startDestination = findNavController().graph.startDestination
-                        val navOptions = NavOptions.Builder()
-                            .setPopUpTo(startDestination, true)
-                            .build()
-                        findNavController().navigate(
-                            R.id.onBoardingSliderFragment,
-                            null,
-                            navOptions
-                        )
-                    }
-                }
-            }
-        }*/
     }
 
     /*
