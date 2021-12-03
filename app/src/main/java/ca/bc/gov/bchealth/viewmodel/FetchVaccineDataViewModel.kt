@@ -3,7 +3,7 @@ package ca.bc.gov.bchealth.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
-import ca.bc.gov.bchealth.datasource.DataStoreRepo
+import ca.bc.gov.bchealth.datasource.EncryptedPreferences
 import ca.bc.gov.bchealth.model.ImmunizationRecord
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 import ca.bc.gov.bchealth.repository.CardRepository
@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class FetchVaccineDataViewModel @Inject constructor(
     private val repository: CardRepository,
-    private val dataStoreRepo: DataStoreRepo,
+    private val encryptedPreferences: EncryptedPreferences,
     private val healthRecordsRepository: HealthRecordsRepository
 ) : ViewModel() {
 
@@ -37,10 +37,10 @@ class FetchVaccineDataViewModel @Inject constructor(
     }
 
     fun setRecentFormData(formData: String) = viewModelScope.launch {
-        dataStoreRepo.setRecentFormData(formData)
+        encryptedPreferences.setRecentFormData(formData)
     }
 
-    val isRecentFormData = dataStoreRepo.isRecentFormData.stateIn(
+    val isRecentFormData = encryptedPreferences.isRecentFormData.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = ""

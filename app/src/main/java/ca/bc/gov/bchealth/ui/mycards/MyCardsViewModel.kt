@@ -3,7 +3,7 @@ package ca.bc.gov.bchealth.ui.mycards
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
-import ca.bc.gov.bchealth.datasource.DataStoreRepo
+import ca.bc.gov.bchealth.datasource.EncryptedPreferences
 import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.repository.CardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +22,7 @@ import kotlinx.coroutines.withContext
 @HiltViewModel
 class MyCardsViewModel @Inject constructor(
     private val repository: CardRepository,
-    private val dataStoreRepo: DataStoreRepo
+    private val encryptedPreferences: EncryptedPreferences
 ) : ViewModel() {
 
     val responseFlow = repository.responseSharedFlow
@@ -51,19 +51,19 @@ class MyCardsViewModel @Inject constructor(
         repository.rearrangeHealthCards(healthCards)
     }
 
-    val isOnBoardingShown = dataStoreRepo.isOnBoardingShown.stateIn(
+    val isOnBoardingShown = encryptedPreferences.isOnBoardingShown.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null
     )
 
-    val isNewfeatureShown = dataStoreRepo.isNewFeatureShown.stateIn(
+    val isNewfeatureShown = encryptedPreferences.isNewFeatureShown.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null
     )
 
-    val isAnalyticsEnabled = dataStoreRepo.isAnalyticsEnabled.stateIn(
+    val isAnalyticsEnabled = encryptedPreferences.isAnalyticsEnabled.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(0),
         initialValue = null

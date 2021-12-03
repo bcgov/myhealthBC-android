@@ -3,12 +3,11 @@ package ca.bc.gov.bchealth.ui.travelpass
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
-import ca.bc.gov.bchealth.datasource.DataStoreRepo
+import ca.bc.gov.bchealth.datasource.EncryptedPreferences
 import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.repository.CardRepository
 import ca.bc.gov.bchealth.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.lang.Exception
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,7 +20,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class FetchTravelPassViewModel @Inject constructor(
     private val repository: CardRepository,
-    private val dataStoreRepo: DataStoreRepo
+    encryptedPreferences: EncryptedPreferences
 ) : ViewModel() {
 
     /*
@@ -34,7 +33,7 @@ class FetchTravelPassViewModel @Inject constructor(
         repository.getFederalTravelPass(healthCardDto, phn)
     }
 
-    val isRecentFormData = dataStoreRepo.isRecentFormData.stateIn(
+    val isRecentFormData = encryptedPreferences.isRecentFormData.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = ""
