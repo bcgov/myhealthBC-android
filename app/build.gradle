@@ -156,6 +156,13 @@ dependencies {
     // In case 'lifecycleAutotracking' is enabled
     implementation "androidx.lifecycle:lifecycle-extensions:$versions.snowplow_lifecycle"
 
+    //Crypto
+    implementation "androidx.security:security-crypto:$versions.crypto"
+
+    //SqlCipher
+    implementation "net.zetetic:android-database-sqlcipher:$versions.sqlcipher"
+    implementation "androidx.sqlite:sqlite:$versions.sqlite"
+
     // https://stackoverflow.com/questions/29402155/android-unit-test-not-mocked
     testImplementation 'org.json:json:20210307'
 
