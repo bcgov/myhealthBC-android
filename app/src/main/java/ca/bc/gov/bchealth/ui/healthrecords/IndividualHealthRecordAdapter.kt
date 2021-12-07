@@ -1,6 +1,7 @@
 package ca.bc.gov.bchealth.ui.healthrecords
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
@@ -11,8 +12,9 @@ import ca.bc.gov.bchealth.model.healthrecords.IndividualRecord
 * Created by amit_metri on 25,November,2021
 */
 class IndividualHealthRecordAdapter(
-    private var individualRecords: MutableList<IndividualRecord>,
-    var clickListener: ((String?) -> Unit)? = null
+    var individualRecords: MutableList<IndividualRecord>,
+    var canDeleteRecord: Boolean,
+    var clickListener: ((String?, Int) -> Unit)? = null
 ) : RecyclerView.Adapter<IndividualHealthRecordAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemHealthRecordsAbstractBinding) :
@@ -44,7 +46,16 @@ class IndividualHealthRecordAdapter(
         holder.binding.tvVaccineStatus.text = individualRecord.subtitle
 
         holder.itemView.setOnClickListener {
-            clickListener?.invoke(individualRecord.covidTestReportId)
+            clickListener?.invoke(individualRecord.covidTestReportId, position)
+        }
+
+        if (canDeleteRecord) {
+            holder.binding.ivUnlink.visibility = View.VISIBLE
+            holder.binding.ivUnlink.setOnClickListener {
+                clickListener?.invoke(individualRecord.covidTestReportId, position)
+            }
+        } else {
+            holder.binding.ivUnlink.visibility = View.GONE
         }
     }
 

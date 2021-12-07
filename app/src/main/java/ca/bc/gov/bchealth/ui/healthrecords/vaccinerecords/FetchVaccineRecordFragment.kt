@@ -23,6 +23,8 @@ import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineRecordBinding
 import ca.bc.gov.bchealth.di.ApiClientModule
 import ca.bc.gov.bchealth.http.MustBeQueued
+import ca.bc.gov.bchealth.model.ImmunizationRecord
+import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.adjustOffset
 import ca.bc.gov.bchealth.utils.isOnline
@@ -520,30 +522,38 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.healthRecordsSharedFlow.collect { healthRecords ->
+                viewModel.healthRecords.collect { healthRecords ->
 
-                    viewModel.fetchHealthRecordFromHealthCard(healthCard)?.let { immuRecord ->
+                    healthRecords?.let {
+                        viewModel.fetchHealthRecordFromHealthCard(healthCard)?.let { immuRecord ->
 
-                        val healthRecord = healthRecords.find {
-                            it.name == immuRecord.name
+                            navigate(healthRecords, immuRecord)
                         }
-                        val navOptions = NavOptions.Builder()
-                            .setPopUpTo(R.id.addHealthRecordsFragment, true)
-                            .build()
-
-                        val action = healthRecord?.let {
-                            FetchVaccineRecordFragmentDirections
-                                .actionFetchVaccineRecordFragmentToIndividualHealthRecordFragment(
-                                    it
-                                )
-                        }
-
-                        action?.let { findNavController().navigate(it, navOptions) }
                     }
                 }
             }
         }
+    }
 
-        viewModel.prepareHealthRecords()
+    private fun navigate(healthRecords: List<HealthRecord>, immuRecord: ImmunizationRecord) {
+
+        var healthRecord: HealthRecord? = null
+        healthRecords.forEach {
+            if (it.name.lowercase() == immuRecord.name.lowercase())
+                healthRecord = it
+        }
+
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.addHealthRecordsFragment, true)
+            .build()
+
+        val action = healthRecord?.let {
+            FetchVaccineRecordFragmentDirections
+                .actionFetchVaccineRecordFragmentToIndividualHealthRecordFragment(
+                    it
+                )
+        }
+
+        action?.let { findNavController().navigate(it, navOptions) }
     }
 }

@@ -14,7 +14,7 @@ import ca.bc.gov.bchealth.services.ImmunizationServices
 import ca.bc.gov.bchealth.utils.ErrorData
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
-import ca.bc.gov.bchealth.utils.getDateTime
+import ca.bc.gov.bchealth.utils.getIssueDate
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
@@ -60,7 +60,7 @@ class CardRepository @Inject constructor(
                     data.name,
                     data.status,
                     false,
-                    data.issueDate.getDateTime(),
+                    data.issueDate.getIssueDate(),
                     data.birthDate.toString(),
                     data.occurrenceDateTime.toString(),
                     data.immunizationEntries

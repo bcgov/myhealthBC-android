@@ -8,13 +8,15 @@ import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 import ca.bc.gov.bchealth.model.healthrecords.VaccineData
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
-import ca.bc.gov.bchealth.utils.getDateTime
+import ca.bc.gov.bchealth.utils.getIssueDate
 import java.sql.Date
 import javax.inject.Inject
+import kotlin.random.Random
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 
 /*
 * Created by amit_metri on 26,November,2021
@@ -32,30 +34,14 @@ class HealthRecordsRepository @Inject constructor(
         get() = responseMutableSharedFlow.asSharedFlow()
 
     /*
-    * Used as an observable for healthRecords
+    * Health Records
     * */
-    private val healthRecordsMutableSharedFlow = MutableSharedFlow<List<HealthRecord>>()
-    val healthRecordsSharedFlow: SharedFlow<List<HealthRecord>>
-        get() = healthRecordsMutableSharedFlow.asSharedFlow()
+    val healthRecords: Flow<List<HealthRecord>> =
 
-    /*
-    * Prepare health records from Health Passes and Covid test results data
-    * */
-    suspend fun prepareHealthRecords() {
+        dataSource.getCards()
+            .combine(dataSource.getCovidTestResults()) { healthPasses, covidTestResults ->
 
-        responseMutableSharedFlow.emit(Response.Loading())
-
-        val healthRecordList: MutableList<HealthRecord> = mutableListOf()
-
-        /*
-        * Collect covid test results from DB
-        * */
-        dataSource.getCovidTestResults().collect { covidTestResults ->
-
-            /*
-            * Collect health passes from DB
-            * */
-            dataSource.getCards().collect { healthPasses ->
+                val healthRecordList: MutableList<HealthRecord> = mutableListOf()
 
                 healthPasses.forEach { healthPass ->
 
@@ -69,7 +55,7 @@ class HealthRecordsRepository @Inject constructor(
                             HealthRecord(
                                 data.name,
                                 data.status,
-                                data.issueDate.getDateTime(),
+                                data.issueDate.getIssueDate(),
                                 getIndividualVaccinationData(data),
                                 covidTestResults.filter {
                                     it.patientDisplayName.lowercase() == data.name.lowercase()
@@ -112,13 +98,8 @@ class HealthRecordsRepository @Inject constructor(
                     }
                 }
 
-                // Emit health records
-                healthRecordsMutableSharedFlow.emit(healthRecordList)
-
-                responseMutableSharedFlow.emit(Response.Success())
+                healthRecordList
             }
-        }
-    }
 
     val vaccineInfo: HashMap<String, String> = mapOf(
         "28581000087106" to "PFIZER-BIONTECH COMIRNATY COVID-19",
@@ -142,13 +123,17 @@ class HealthRecordsRepository @Inject constructor(
 
         data.immunizationEntries?.forEachIndexed { index, entry ->
 
-            val vaccineInfo =
-                vaccineInfo.filter { it.key == entry.resource.vaccineCode.toString() }
+            var value = ""
 
-            val productInfo = if (vaccineInfo.isEmpty())
+            entry.resource.vaccineCode?.coding?.forEach { coding ->
+                if (vaccineInfo.keys.contains(coding.code))
+                    value = vaccineInfo.getValue(coding.code)
+            }
+
+            val productInfo = if (value.isEmpty())
                 "Not Available"
             else
-                vaccineInfo.values.first()
+                value
 
             vaccineDataList.add(
                 VaccineData(
@@ -177,17 +162,17 @@ class HealthRecordsRepository @Inject constructor(
 
         saveCovidTestResult(
             CovidTestResult(
-                kotlin.random.Random.toString(),
-                "AMIT METRI",
+                Random.nextInt(1000000).toString(),
+                "Amit Metri",
                 "Freshworks lab",
                 Date.valueOf("2021-10-10"),
-                Date.valueOf("2021-10-11"),
+                Date.valueOf("2021-9-12"),
                 "Covid Test",
-                "Test Type",
-                "COMPLETED",
-                "POSITIVE",
+                "COVID-19 Corona Virus RNA (PCR/NAAT)",
+                "Final",
+                "Positive",
                 "Tested Positive",
-                "Tested positive description",
+                "Tested Positive description",
                 "link",
                 ""
             )

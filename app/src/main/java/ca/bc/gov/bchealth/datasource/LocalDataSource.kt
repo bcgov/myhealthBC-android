@@ -27,8 +27,8 @@ class LocalDataSource @Inject constructor(
     suspend fun insertCovidTestResult(covidTestResult: CovidTestResult) =
         dataBase.getCovidTestResultDao().insert(covidTestResult)
 
-    suspend fun deleteCovidTestResult(covidTestResult: CovidTestResult) =
-        dataBase.getCovidTestResultDao().delete(covidTestResult)
+    suspend fun deleteCovidTestResult(reportId: String) =
+        dataBase.getCovidTestResultDao().delete(reportId)
 
     fun getCovidTestResults() = dataBase.getCovidTestResultDao().getCovidTestResults()
 }

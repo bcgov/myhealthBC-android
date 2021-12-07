@@ -15,6 +15,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchCovidTestResultBinding
+import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.adjustOffset
 import ca.bc.gov.bchealth.utils.isOnline
@@ -359,26 +360,36 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
 
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.healthRecordsSharedFlow.collect { healthRecords ->
+                viewModel.healthRecords.collect { healthRecords ->
 
-                    val healthRecord = healthRecords.find {
-                        it.name == patientDisplayName
+                    healthRecords?.let {
+                        navigate(it, patientDisplayName)
                     }
-
-                    val navOptions = NavOptions.Builder()
-                        .setPopUpTo(R.id.addHealthRecordsFragment, true)
-                        .build()
-
-                    val action = healthRecord?.let {
-                        FetchCovidTestResultFragmentDirections
-                            .actionFetchCovidTestResultFragmentToIndividualHealthRecordFragment(it)
-                    }
-
-                    action?.let { findNavController().navigate(it, navOptions) }
                 }
             }
         }
+    }
 
-        viewModel.prepareHealthRecords()
+    private fun navigate(healthRecords: List<HealthRecord>, patientDisplayName: String) {
+
+        var healthRecord: HealthRecord? = null
+        healthRecords.forEach {
+            if (it.name.lowercase() == patientDisplayName.lowercase())
+                healthRecord = it
+        }
+
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.addHealthRecordsFragment, true)
+            .build()
+
+        val action =
+            healthRecord?.let {
+                FetchCovidTestResultFragmentDirections
+                    .actionFetchCovidTestResultFragmentToIndividualHealthRecordFragment(
+                        it
+                    )
+            }
+
+        action?.let { findNavController().navigate(it, navOptions) }
     }
 }
