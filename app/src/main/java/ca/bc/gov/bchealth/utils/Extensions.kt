@@ -19,6 +19,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.mycards.qrgen.QrCode
 import ca.bc.gov.bchealth.ui.mycards.qrgen.QrSegment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -312,4 +313,19 @@ fun Date.getDateForCovidTestResults(): String {
         e.printStackTrace()
         ""
     }
+}
+
+/*
+* Get date of collection from covid test result
+* */
+fun String.getDateOfCollection(): Date? {
+    val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+
+    var date: Date? = null
+    try {
+        date = input.parse(this)
+    } catch (e: ParseException) {
+        e.printStackTrace()
+    }
+    return date
 }

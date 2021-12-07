@@ -37,7 +37,7 @@ class FetchCovidTestResultViewModel @Inject constructor(
         dataStoreRepo.setRecentFormData(formData)
     }
 
-    fun getCovidTestResult(phn: String, dob: String, dot: Any) = viewModelScope.launch {
+    fun getCovidTestResult(phn: String, dob: String, dot: String) = viewModelScope.launch {
         healthRecordsRepository.getCovidTestResult(phn, dob, dot)
     }
 

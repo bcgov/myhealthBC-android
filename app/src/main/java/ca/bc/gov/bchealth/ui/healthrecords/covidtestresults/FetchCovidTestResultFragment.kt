@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchCovidTestResultBinding
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
@@ -71,6 +72,13 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
     }
 
     private fun iniUI() {
+
+        if (BuildConfig.DEBUG) {
+
+            /*binding.edPhnNumber.editText?.setText("9874307168")
+            binding.edDob.editText?.setText("2014-03-15")
+            binding.edDot.editText?.setText("2021-11-28")*/
+        }
 
         setUpPhnUI()
 
