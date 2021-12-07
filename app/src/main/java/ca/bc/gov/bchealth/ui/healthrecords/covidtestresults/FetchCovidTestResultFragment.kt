@@ -25,12 +25,12 @@ import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.SimpleDateFormat
-import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @AndroidEntryPoint
 class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test_result) {

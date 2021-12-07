@@ -150,6 +150,7 @@
     <string name="provider_clinic">Provider / Clinic:</string>
     <string name="delete_hc_record_title">Delete Record</string>
     <string name="delete_hc_record_message">This action cannot be undone. You will be required to enter your health information again to access the record.</string>
+    <string name="delete_individual_hc_record_message">Health pass linked to this record will be removed. You will be required to enter your health information again to access the record.</string>
     <string name="vaccination_record">Vaccination record</string>
     <string name="date">Date:</string>
     <string name="product">Product:</string>

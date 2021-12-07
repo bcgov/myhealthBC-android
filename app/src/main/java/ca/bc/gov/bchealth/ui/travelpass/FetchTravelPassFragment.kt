@@ -35,13 +35,13 @@ import com.queue_it.androidsdk.QueueListener
 import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.UnsupportedEncodingException
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 @AndroidEntryPoint
 class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
