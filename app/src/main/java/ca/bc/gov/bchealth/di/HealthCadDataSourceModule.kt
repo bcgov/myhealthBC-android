@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import ca.bc.gov.bchealth.data.local.BcVaccineCardDataBase
+import ca.bc.gov.bchealth.datasource.DataStoreRepo
 import ca.bc.gov.bchealth.datasource.LocalDataSource
 import dagger.Module
 import dagger.Provides
@@ -12,6 +13,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import net.sqlcipher.database.SupportFactory
 
 /**
  * [HealthCadDataSourceModule]
@@ -24,13 +26,37 @@ class HealthCadDataSourceModule {
 
     @Provides
     @Singleton
-    fun providesDataBase(@ApplicationContext context: Context) = Room.databaseBuilder(
-        context,
-        BcVaccineCardDataBase::class.java,
-        "bc_vaccine_card_db"
-    ).addMigrations(MIGRATION_1_2, MIGRATION_2_3)
-        .fallbackToDestructiveMigration()
-        .build()
+    fun providesDataBase(
+        @ApplicationContext context: Context,
+        dataStoreRepo: DataStoreRepo
+    ): BcVaccineCardDataBase {
+
+        val supportFactory: SupportFactory = if (dataStoreRepo.getPassPhrase.isEmpty()) {
+            val random = getRandom()
+            dataStoreRepo.setPassPhrase(random)
+            SupportFactory(random)
+        } else {
+            SupportFactory(dataStoreRepo.getPassPhrase)
+        }
+
+        return Room.databaseBuilder(
+            context,
+            BcVaccineCardDataBase::class.java,
+            "bc_vaccine_card_db"
+        )
+            .openHelperFactory(supportFactory)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    private fun getRandom(): ByteArray {
+        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+        return (1..32)
+            .map { allowedChars.random() }
+            .joinToString("")
+            .toByteArray()
+    }
 
     @Provides
     @Singleton

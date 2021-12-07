@@ -32,7 +32,7 @@ class DataStoreModule {
     fun provideEncryptedPreferences(@ApplicationContext context: Context): SharedPreferences {
 
         // Step 1: Create or retrieve the Master Key for encryption/decryption
-        val masterKey = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+        val masterKey = MasterKey.Builder(context)
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
             .build()
 

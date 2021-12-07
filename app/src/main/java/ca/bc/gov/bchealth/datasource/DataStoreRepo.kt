@@ -27,6 +27,7 @@ class DataStoreRepo @Inject constructor(
         * */
         const val NEW_FEATURE = "NEW_FEATURE"
         const val RECENT_FORM_DATA = "RECENT_FORM_DATA"
+        const val PASS_PHRASE = "RECORD"
     }
 
     val isOnBoardingShown: Flow<Boolean> = flow {
@@ -68,6 +69,15 @@ class DataStoreRepo @Inject constructor(
     fun setRecentFormData(formData: String) {
         encryptedPreferences.edit().putString(
             RECENT_FORM_DATA, formData
+        ).apply()
+    }
+
+    val getPassPhrase: ByteArray = encryptedPreferences
+        .getString(PASS_PHRASE, "")?.toByteArray() ?: "".toByteArray()
+
+    fun setPassPhrase(passPhrase: ByteArray) {
+        encryptedPreferences.edit().putString(
+            PASS_PHRASE, String(passPhrase)
         ).apply()
     }
 }
