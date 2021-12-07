@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.analytics.AnalyticsAction
 import ca.bc.gov.bchealth.analytics.AnalyticsText
@@ -94,6 +95,24 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
     }
 
     private fun iniUI() {
+
+        if (BuildConfig.DEBUG) {
+            /*binding.edPhnNumber.editText?.setText("9000201422")
+            binding.edDob.editText?.setText("1989-12-12")
+            binding.edDov.editText?.setText("2021-05-15")*/
+
+            /*binding.edPhnNumber.editText?.setText("9000691304")
+            binding.edDob.editText?.setText("1965-01-14")
+            binding.edDov.editText?.setText("2021-07-15")*/
+
+            /*binding.edPhnNumber.editText?.setText("9890826056")
+            binding.edDob.editText?.setText("1962-01-02")
+            binding.edDov.editText?.setText("2021-06-10")*/
+
+            /*binding.edPhnNumber.editText?.setText("9879458314")
+            binding.edDob.editText?.setText("1934-02-23")
+            binding.edDov.editText?.setText("2021-04-26")*/
+        }
 
         setUpPhnUI()
 

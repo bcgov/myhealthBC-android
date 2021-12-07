@@ -24,8 +24,8 @@ class LocalDataSource @Inject constructor(
 
     suspend fun rearrange(cards: List<HealthCard>) = dataBase.getHealthCardDao().rearrange(cards)
 
-    suspend fun insertCovidTestResult(covidTestResult: CovidTestResult) =
-        dataBase.getCovidTestResultDao().insert(covidTestResult)
+    suspend fun insertCovidTests(covidTestResult: List<CovidTestResult>) =
+        dataBase.getCovidTestResultDao().insertCovidTests(covidTestResult)
 
     suspend fun deleteCovidTestResult(reportId: String) =
         dataBase.getCovidTestResultDao().delete(reportId)

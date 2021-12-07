@@ -9,6 +9,7 @@ import ca.bc.gov.bchealth.http.QueueITInterceptor
 import ca.bc.gov.bchealth.http.ReceivedCookiesInterceptor
 import ca.bc.gov.bchealth.http.UserAgentInterceptor
 import ca.bc.gov.bchealth.services.ImmunizationServices
+import ca.bc.gov.bchealth.services.LaboratoryServices
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -87,6 +88,14 @@ class ApiClientModule {
         return provideRetrofit(
             context = context
         ).create(ImmunizationServices::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLaboratoryServices(@ApplicationContext context: Context): LaboratoryServices {
+        return provideRetrofit(
+            context = context
+        ).create(LaboratoryServices::class.java)
     }
 
     companion object {

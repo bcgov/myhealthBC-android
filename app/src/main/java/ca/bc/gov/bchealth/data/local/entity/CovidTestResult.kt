@@ -30,7 +30,4 @@ class CovidTestResult(
     val resultTitle: String,
     val resultDescription: String,
     val resultLink: String,
-
-    // For future use. userId can be mapped once user identity is implemented
-    val userId: String
 ) : Parcelable
