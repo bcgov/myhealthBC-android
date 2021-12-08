@@ -48,7 +48,7 @@ versions.snowplow_lifecycle = "2.2.0"
 versions.crypto = "1.1.0-alpha03"
 
 versions.sqlcipher = "4.5.0"
-versions.sqlire = "2.1.0"
+versions.sqlite = "2.1.0"
 
 versions.junit = "4.13.2"
 versions.ext_junit = "1.1.3"

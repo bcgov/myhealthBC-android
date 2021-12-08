@@ -2,11 +2,10 @@ package ca.bc.gov.bchealth.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import ca.bc.gov.bchealth.data.local.BcVaccineCardDataBase
 import ca.bc.gov.bchealth.datasource.DataStoreRepo
 import ca.bc.gov.bchealth.datasource.LocalDataSource
+import ca.bc.gov.bchealth.utils.RandomBytesGenerator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,18 +25,17 @@ class HealthCadDataSourceModule {
 
     @Provides
     @Singleton
+    fun providesRandomBytes(dataStoreRepo: DataStoreRepo) =
+        RandomBytesGenerator(dataStoreRepo)
+
+    @Provides
+    @Singleton
     fun providesDataBase(
         @ApplicationContext context: Context,
-        dataStoreRepo: DataStoreRepo
+        randomBytesGenerator: RandomBytesGenerator
     ): BcVaccineCardDataBase {
 
-        val supportFactory: SupportFactory = if (dataStoreRepo.getPassPhrase.isEmpty()) {
-            val random = getRandom()
-            dataStoreRepo.setPassPhrase(random)
-            SupportFactory(random)
-        } else {
-            SupportFactory(dataStoreRepo.getPassPhrase)
-        }
+        val supportFactory = SupportFactory(randomBytesGenerator.getSecureRandom())
 
         return Room.databaseBuilder(
             context,
@@ -45,56 +43,11 @@ class HealthCadDataSourceModule {
             "bc_vaccine_card_db"
         )
             .openHelperFactory(supportFactory)
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
             .fallbackToDestructiveMigration()
             .build()
-    }
-
-    private fun getRandom(): ByteArray {
-        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-        return (1..32)
-            .map { allowedChars.random() }
-            .joinToString("")
-            .toByteArray()
     }
 
     @Provides
     @Singleton
     fun provideLocalDataSource(dataBase: BcVaccineCardDataBase) = LocalDataSource(dataBase)
-
-    /*
-    * HealthCard entity has been replaced by HealthCardV2
-    * */
-    private val MIGRATION_1_2 = object : Migration(1, 2) {
-        override fun migrate(database: SupportSQLiteDatabase) {
-
-            database.execSQL(
-                "ALTER TABLE" +
-                    " `health_card`" +
-                    "ADD COLUMN federalPass TEXT "
-            )
-        }
-    }
-
-    val MIGRATION_2_3 = object : Migration(2, 3) {
-        override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL(
-                "CREATE TABLE IF NOT EXISTS " +
-                    "`covid_test_results` " +
-                    "(reportId TEXT PRIMARY KEY NOT NULL," +
-                    "patientDisplayName TEXT NOT NULL," +
-                    "lab TEXT NOT NULL," +
-                    "collectionDateTime INTEGER NOT NULL," +
-                    "resultDateTime INTEGER NOT NULL," +
-                    "testName TEXT NOT NULL," +
-                    "testType TEXT NOT NULL," +
-                    "testStatus TEXT NOT NULL," +
-                    "testOutcome TEXT NOT NULL," +
-                    "resultTitle TEXT NOT NULL," +
-                    "resultDescription TEXT NOT NULL," +
-                    "resultLink TEXT NOT NULL," +
-                    "userId TEXT NOT NULL)"
-            )
-        }
-    }
 }

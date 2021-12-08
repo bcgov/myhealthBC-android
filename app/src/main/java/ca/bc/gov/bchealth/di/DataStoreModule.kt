@@ -29,14 +29,19 @@ class DataStoreModule {
 
     @Provides
     @Singleton
-    fun provideEncryptedPreferences(@ApplicationContext context: Context): SharedPreferences {
-
-        // Step 1: Create or retrieve the Master Key for encryption/decryption
-        val masterKey = MasterKey.Builder(context)
+    fun providesMasterKey(@ApplicationContext context: Context): MasterKey {
+        return MasterKey.Builder(context)
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
             .build()
+    }
 
-        // Step 2: Initialize/open an instance of EncryptedSharedPreferences
+    @Provides
+    @Singleton
+    fun provideEncryptedPreferences(
+        @ApplicationContext context: Context,
+        masterKey: MasterKey
+    ): SharedPreferences {
+
         return EncryptedSharedPreferences.create(
             context,
             BuildConfig.APPLICATION_ID + "_preferences",

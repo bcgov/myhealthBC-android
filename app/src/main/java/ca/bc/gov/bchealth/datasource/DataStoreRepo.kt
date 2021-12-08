@@ -1,6 +1,7 @@
 package ca.bc.gov.bchealth.datasource
 
 import android.content.SharedPreferences
+import android.util.Base64
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -15,8 +16,8 @@ class DataStoreRepo @Inject constructor(
 ) {
 
     companion object {
-        const val ON_BOARDING_SHOWN = "ON_BOARDING_SHOWN"
-        const val IS_ANALYTICS_ENABLED = "IS_ANALYTICS_ENABLED"
+        private const val ON_BOARDING_SHOWN = "ON_BOARDING_SHOWN"
+        private const val IS_ANALYTICS_ENABLED = "IS_ANALYTICS_ENABLED"
 
         /*
         * Below preference is required to show new feature screen to existing users.
@@ -25,9 +26,9 @@ class DataStoreRepo @Inject constructor(
         * we need to change key for NEW_FEATURE so that new storage with false flag is created
         * for existing users. Ex: Change NEW_FEATURE to NEW_FEATURE_FEDERAL_PASS
         * */
-        const val NEW_FEATURE = "NEW_FEATURE"
-        const val RECENT_FORM_DATA = "RECENT_FORM_DATA"
-        const val PASS_PHRASE = "RECORD"
+        private const val NEW_FEATURE = "NEW_FEATURE"
+        private const val RECENT_FORM_DATA = "RECENT_FORM_DATA"
+        private const val PASS_PHRASE = "RECORD"
     }
 
     val isOnBoardingShown: Flow<Boolean> = flow {
@@ -72,12 +73,13 @@ class DataStoreRepo @Inject constructor(
         ).apply()
     }
 
-    val getPassPhrase: ByteArray = encryptedPreferences
-        .getString(PASS_PHRASE, "")?.toByteArray() ?: "".toByteArray()
-
-    fun setPassPhrase(passPhrase: ByteArray) {
-        encryptedPreferences.edit().putString(
-            PASS_PHRASE, String(passPhrase)
-        ).apply()
-    }
+    var passPhrase: ByteArray
+        get() =
+            Base64.decode(encryptedPreferences.getString(PASS_PHRASE, "") ?: "", Base64.DEFAULT)
+        set(value) {
+            encryptedPreferences.edit().putString(
+                PASS_PHRASE,
+                Base64.encodeToString(value, Base64.DEFAULT)
+            ).apply()
+        }
 }
