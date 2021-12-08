@@ -170,43 +170,42 @@ class HealthRecordsRepository @Inject constructor(
                 phn, dob, collectionDate
             )
 
-            if (validateResponseCovidTests(result)) {
-                val responseCovidTests = result.body()
-
-                /*
-                 * Loaded field will return false when HGS will respond with cache data.
-                 * HGS response also provide the retry time after which updated data is available.
-                 * */
-                if (responseCovidTests?.resourcePayload?.loaded == false) {
-
-                    responseCovidTests.resourcePayload.retryin.toLong().let {
-                        delay(it)
-                    }
-
-                    if (i == 1) {
-                        responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
-                        break@loop
-                    } else {
-                        continue@loop
-                    }
-                } else {
-
-                    if (!validateResourcePayload(responseCovidTests?.resourcePayload)) {
-                        responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
-                        break@loop
-                    }
-
-                    val covidTestResults: MutableList<CovidTestResult> = mutableListOf()
-                    responseCovidTests?.resourcePayload?.records?.forEach { record ->
-                        covidTestResults.add(record.parseToCovidTestResult())
-                    }
-
-                    saveCovidTestResult(covidTestResults)
-                }
-            } else {
+            if (!validateResponseCovidTests(result)) {
                 responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
+                break@loop
             }
-            break@loop
+
+            val responseCovidTests = result.body()
+
+            /*
+             * Loaded field will return false when HGS will respond with cache data.
+             * HGS response also provide the retry time after which updated data is available.
+             * */
+            if (responseCovidTests?.resourcePayload?.loaded == false) {
+
+                responseCovidTests.resourcePayload.retryin.toLong().let {
+                    delay(it)
+                }
+
+                if (i == 1) {
+                    responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
+                    break@loop
+                } else {
+                    continue@loop
+                }
+            }
+
+            if (!validateResourcePayload(responseCovidTests?.resourcePayload)) {
+                responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
+                break@loop
+            }
+
+            val covidTestResults: MutableList<CovidTestResult> = mutableListOf()
+            responseCovidTests?.resourcePayload?.records?.forEach { record ->
+                covidTestResults.add(record.parseToCovidTestResult())
+            }
+
+            saveCovidTestResult(covidTestResults)
         }
 
         // TODO: 08/12/21 Remove dummy data once API starts working
