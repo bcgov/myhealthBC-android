@@ -53,6 +53,7 @@ class HealthRecordsRepository @Inject constructor(
                         * */
                         healthRecordList.add(
                             HealthRecord(
+                                healthPass.id,
                                 data.name,
                                 data.status,
                                 data.issueDate.getIssueDate(),
@@ -85,6 +86,7 @@ class HealthRecordsRepository @Inject constructor(
                     if (!isHealthRecordAlreadyPresent) {
                         healthRecordList.add(
                             HealthRecord(
+                                null,
                                 covidTestResult.patientDisplayName,
                                 null,
                                 "",
@@ -137,11 +139,9 @@ class HealthRecordsRepository @Inject constructor(
 
             vaccineDataList.add(
                 VaccineData(
-                    data.name,
                     (index + 1).toString(),
                     entry.resource.occurrenceDateTime,
                     productInfo,
-                    "Not Available",
                     entry.resource.performer?.last()?.actor?.display,
                     entry.resource.lotNumber
                 )
@@ -163,7 +163,7 @@ class HealthRecordsRepository @Inject constructor(
         saveCovidTestResult(
             CovidTestResult(
                 Random.nextInt(1000000).toString(),
-                "Amit Metri",
+                "GREG Lozier",
                 "Freshworks lab",
                 Date.valueOf("2021-10-10"),
                 Date.valueOf("2021-9-12"),

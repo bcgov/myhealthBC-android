@@ -14,7 +14,6 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 import ca.bc.gov.bchealth.utils.showHealthRecordDeleteDialog
-import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -82,7 +81,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 viewModel.healthRecords.collect { healthRecords ->
 
                     healthRecords?.forEach {
-                        if (it.name == args.healthRecord.name &&
+                        if (it.name.lowercase() == args.healthRecord.name.lowercase() &&
                             !individualHealthRecordAdapter.canDeleteRecord
                         ) {
                             individualHealthRecord = it
@@ -90,11 +89,11 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                             individualHealthRecordAdapter.individualRecords =
                                 viewModel.prepareIndividualRecords(individualHealthRecord)
 
-                            individualHealthRecordAdapter.notifyDataSetChanged()
-
                             return@forEach
                         }
                     }
+
+                    individualHealthRecordAdapter.notifyDataSetChanged()
                 }
             }
         }
@@ -126,8 +125,11 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     navigateToCovidTestResultPage(reportId)
                 }
             } else {
-                // TODO: 01/12/21 Navigate to Vaccine Details page
-                requireContext().toast(getString(R.string.coming_soon))
+                val action = IndividualHealthRecordFragmentDirections
+                    .actionIndividualHealthRecordFragmentToVaccineDetailsFragment(
+                        individualHealthRecord
+                    )
+                findNavController().navigate(action)
             }
         }
 

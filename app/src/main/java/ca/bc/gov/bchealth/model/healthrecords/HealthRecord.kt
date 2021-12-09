@@ -10,6 +10,7 @@ import kotlinx.parcelize.Parcelize
 */
 @Parcelize
 data class HealthRecord(
+    val healthPassId: Int?,
     var name: String,
     val immunizationStatus: ImmunizationStatus?,
     val issueDate: String = "",
