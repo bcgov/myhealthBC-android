@@ -1,29 +1,24 @@
 package ca.bc.gov.bchealth.datasource
 
-import android.content.Context
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import ca.bc.gov.bchealth.BuildConfig
+import android.content.SharedPreferences
+import android.util.Base64
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flow
 
 /**
  * [DataStoreRepo]
  *
  * @author amit metri
  */
-private val Context.dataStore by preferencesDataStore(BuildConfig.APPLICATION_ID + "_preferences")
-
 class DataStoreRepo @Inject constructor(
-    private val context: Context
+    private val encryptedPreferences: SharedPreferences
 ) {
 
     companion object {
-        val ON_BOARDING_SHOWN = booleanPreferencesKey("ON_BOARDING_SHOWN")
-        val IS_ANALYTICS_ENABLED = booleanPreferencesKey("IS_ANALYTICS_ENABLED")
+        private const val ON_BOARDING_SHOWN = "ON_BOARDING_SHOWN"
+        private const val IS_ANALYTICS_ENABLED = "IS_ANALYTICS_ENABLED"
+
         /*
         * Below preference is required to show new feature screen to existing users.
         * This feature will be enabled from v1.0.4
@@ -31,39 +26,60 @@ class DataStoreRepo @Inject constructor(
         * we need to change key for NEW_FEATURE so that new storage with false flag is created
         * for existing users. Ex: Change NEW_FEATURE to NEW_FEATURE_FEDERAL_PASS
         * */
-        val NEW_FEATURE = booleanPreferencesKey("NEW_FEATURE")
-        val RECENT_FORM_DATA = stringPreferencesKey("RECENT_FORM_DATA")
+        private const val NEW_FEATURE = "NEW_FEATURE"
+        private const val RECENT_FORM_DATA = "RECENT_FORM_DATA"
+        private const val PASS_PHRASE = "RECORD"
     }
 
-    val isOnBoardingShown: Flow<Boolean> = context.dataStore.data.map { preference ->
-        preference[ON_BOARDING_SHOWN] ?: false
+    val isOnBoardingShown: Flow<Boolean> = flow {
+        emit(encryptedPreferences.getBoolean(ON_BOARDING_SHOWN, false))
     }
 
-    suspend fun setOnBoardingShown(shown: Boolean = true) = context.dataStore.edit { preference ->
-        preference[ON_BOARDING_SHOWN] = shown
+    fun setOnBoardingShown(shown: Boolean = true) {
+        encryptedPreferences.edit().putBoolean(
+            ON_BOARDING_SHOWN, shown
+        ).apply()
     }
 
-    val isAnalyticsEnabled: Flow<Boolean> = context.dataStore.data.map { preference ->
-        preference[IS_ANALYTICS_ENABLED] ?: true
+    val isAnalyticsEnabled: Flow<Boolean> = flow {
+        emit(encryptedPreferences.getBoolean(IS_ANALYTICS_ENABLED, true))
     }
 
-    suspend fun trackAnalytics(shown: Boolean = true) = context.dataStore.edit { preference ->
-        preference[IS_ANALYTICS_ENABLED] = shown
+    fun trackAnalytics(shown: Boolean = true) {
+        encryptedPreferences.edit().putBoolean(
+            IS_ANALYTICS_ENABLED, shown
+        ).apply()
     }
 
-    val isNewFeatureShown: Flow<Boolean> = context.dataStore.data.map { preference ->
-        preference[NEW_FEATURE] ?: false
+    val isNewFeatureShown: Flow<Boolean> = flow {
+        emit(
+            encryptedPreferences.getBoolean(NEW_FEATURE, false)
+        )
     }
 
-    suspend fun setNewFeatureShown(shown: Boolean = true) = context.dataStore.edit { preference ->
-        preference[NEW_FEATURE] = shown
+    fun setNewFeatureShown(shown: Boolean = true) {
+        encryptedPreferences.edit().putBoolean(
+            NEW_FEATURE, shown
+        ).apply()
     }
 
-    val isRecentFormData: Flow<String> = context.dataStore.data.map { preference ->
-        preference[RECENT_FORM_DATA] ?: ""
+    val isRecentFormData: Flow<String> = flow {
+        emit(encryptedPreferences.getString(RECENT_FORM_DATA, "") ?: "")
     }
 
-    suspend fun setRecentFormData(formData: String) = context.dataStore.edit { preference ->
-        preference[RECENT_FORM_DATA] = formData
+    fun setRecentFormData(formData: String) {
+        encryptedPreferences.edit().putString(
+            RECENT_FORM_DATA, formData
+        ).apply()
     }
+
+    var passPhrase: ByteArray
+        get() =
+            Base64.decode(encryptedPreferences.getString(PASS_PHRASE, "") ?: "", Base64.DEFAULT)
+        set(value) {
+            encryptedPreferences.edit().putString(
+                PASS_PHRASE,
+                Base64.encodeToString(value, Base64.DEFAULT)
+            ).apply()
+        }
 }
