@@ -20,8 +20,9 @@ enum class ErrorData(var errorTitle: String?, var errorMessage: String?) {
         "This health pass is already added."
     ),
 
-    NETWORK_ERROR(
-        "Error!",
-        "Something went wrong. Please retry."
+    MISMATCH_ERROR(
+        "Data mismatch",
+        "The information you entered does not match our records. " +
+            "Please check and try again."
     ),
 }

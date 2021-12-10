@@ -544,7 +544,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         }
 
         val navOptions = NavOptions.Builder()
-            .setPopUpTo(R.id.addHealthRecordsFragment, true)
+            .setPopUpTo(R.id.fetchVaccineRecordFragment, true)
             .build()
 
         val action = healthRecord?.let {

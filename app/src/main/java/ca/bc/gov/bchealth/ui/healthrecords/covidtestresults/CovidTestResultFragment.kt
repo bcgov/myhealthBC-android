@@ -61,40 +61,115 @@ class CovidTestResultFragment : Fragment(R.layout.fragment_covid_test_result) {
             tvTestResult2.text = covidTestResult.testOutcome
             tvTypeName.text = covidTestResult.testType
             tvProviderClinic.text = covidTestResult.lab
+        }
 
-            when (covidTestResult.testOutcome) {
-                Pending.toString(),
-                Indeterminate.toString(),
-                Cancelled.toString() -> {
-                    binding.rectBackground
-                        .setBackgroundColor(
-                            resources.getColor(
-                                R.color.covid_test_blue,
-                                null
-                            )
-                        )
-                }
-                Negative.toString() -> {
-                    binding.rectBackground
-                        .setBackgroundColor(
-                            resources.getColor(
-                                R.color.covid_test_green,
-                                null
-                            )
-                        )
-                }
-                Positive.toString() -> {
-                    binding.rectBackground
-                        .setBackgroundColor(
-                            resources.getColor(
-                                R.color.covid_test_red,
-                                null
-                            )
-                        )
-                    showInstructions()
-                }
+        getCovidTestStatus(covidTestResult)
+    }
+
+    private fun getCovidTestStatus(
+        covidTestResult: ca.bc.gov.bchealth.data.local.entity.CovidTestResult
+    ) {
+        when (covidTestResult.testOutcome) {
+            Pending.toString() -> {
+                setPendingState()
+            }
+            Indeterminate.toString() -> {
+                setIndeterminateState()
+            }
+            Cancelled.toString() -> {
+                setCancelledState()
+            }
+            Negative.toString() -> {
+                setNegativeState()
+            }
+            Positive.toString() -> {
+                setPositiveState()
             }
         }
+    }
+
+    private fun setPendingState() {
+        binding.apply {
+            tvFullName.visibility = View.GONE
+            tvTestResult.visibility = View.GONE
+            tvTestedOn.visibility = View.GONE
+            tvInfo.visibility = View.VISIBLE
+            tvInfo.text = getString(R.string.covid_test_result_pending)
+            rectBackground
+                .setBackgroundColor(
+                    resources.getColor(
+                        R.color.covid_test_blue,
+                        null
+                    )
+                )
+        }
+    }
+
+    private fun setIndeterminateState() {
+        binding.apply {
+            tvTestResult.setTextColor(
+                resources
+                    .getColor(R.color.covid_test_text_indeterminate, null)
+            )
+            rectBackground
+                .setBackgroundColor(
+                    resources.getColor(
+                        R.color.covid_test_blue,
+                        null
+                    )
+                )
+        }
+    }
+
+    private fun setCancelledState() {
+        binding.apply {
+            tvFullName.visibility = View.GONE
+            tvTestResult.visibility = View.GONE
+            tvTestedOn.visibility = View.GONE
+            tvInfo.visibility = View.VISIBLE
+            tvInfo.text = getString(R.string.covid_test_result_cancelled)
+            rectBackground
+                .setBackgroundColor(
+                    resources.getColor(
+                        R.color.covid_test_blue,
+                        null
+                    )
+                )
+        }
+    }
+
+    private fun setNegativeState() {
+        binding.apply {
+            tvTestResult.setTextColor(
+                resources
+                    .getColor(R.color.covid_test_text_negative, null)
+            )
+            rectBackground
+                .setBackgroundColor(
+                    resources.getColor(
+                        R.color.covid_test_green,
+                        null
+                    )
+                )
+        }
+    }
+
+    private fun setPositiveState() {
+        binding.apply {
+            tvTestResult.setTextColor(
+                resources
+                    .getColor(R.color.covid_test_text_positive, null)
+            )
+            rectBackground
+                .setBackgroundColor(
+                    resources.getColor(
+                        R.color.covid_test_red,
+                        null
+                    )
+                )
+        }
+
+        showInstructions()
     }
 
     private fun setToolBar() {

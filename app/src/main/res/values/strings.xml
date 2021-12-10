@@ -136,7 +136,7 @@
     <string name="instruction_2">The people you live with will also need to self-isolate if they are not fully vaccinated.</string>
     <string name="instruction_3">Public health will contact you.</string>
     <string name="instruction_4">Monitor your health and contact a health care provider or call 8-1-1 if you are concerned about your symptoms.</string>
-    <string name="instruction_5">Go to <a href="http://www.google.com/">Understanding Test Results</a> for more information.</string>
+    <string name="instruction_5">Go to Understanding Test Results for more information.</string>
     <string name="instructions">Instructions</string>
     <string name="tested_on">Tested on</string>
     <string name="name">Name</string>
@@ -152,6 +152,8 @@
     <string name="product">Product:</string>
     <string name="lot_number">Lot Number:</string>
     <string name="dose">Dose</string>
+    <string name="covid_test_result_cancelled">There was a problem with your test. Please call the BC CDC on 1234567890</string>
+    <string name="covid_test_result_pending">Your test is being processed and can take up to 48 hours to complete.</string>
 
     <!--Miscellaneous-->
     <string name="coming_soon">Coming soon!</string>
