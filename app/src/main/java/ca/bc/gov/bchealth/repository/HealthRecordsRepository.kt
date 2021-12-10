@@ -332,7 +332,6 @@ private fun Record.parseToCovidTestResult(): CovidTestResult {
         this.testStatus.toString(),
         this.testOutcome.toString(),
         this.resultTitle.toString(),
-        this.resultDescription.toString(),
         this.resultLink.toString()
     )
 }
