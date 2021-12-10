@@ -6,7 +6,7 @@ data class Record(
     val patientDisplayName: String?,
     val reportId: String?,
     val resultDateTime: String?,
-    val resultDescription: String?,
+    val resultDescription: List<String>?,
     val resultLink: String?,
     val resultTitle: String?,
     val testName: String?,

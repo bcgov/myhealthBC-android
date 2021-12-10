@@ -3,7 +3,6 @@ package ca.bc.gov.bchealth.ui.healthrecords
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.datasource.LocalDataSource
-import ca.bc.gov.bchealth.model.ImmunizationStatus
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 import ca.bc.gov.bchealth.model.healthrecords.IndividualRecord
 import ca.bc.gov.bchealth.repository.HealthRecordsRepository
@@ -39,12 +38,11 @@ class IndividualHealthRecordViewModel @Inject constructor(
 
         if (healthRecord.vaccineDataList.isNotEmpty()) {
 
-            val productInfo = healthRecord.vaccineDataList.last()?.product
-
             individualRecords.add(
                 IndividualRecord(
-                    productInfo.toString(),
-                    getSubTitle(healthRecord),
+                    "Covid-19 vaccination",
+                    healthRecord.vaccineDataList.last()?.occurrenceDate
+                        ?.getDateForIndividualHealthRecord().toString(),
                     IndividualHealthRecordAdapter.HealthRecordType.VACCINE_RECORD,
                     null
                 )
@@ -65,31 +63,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
         }
 
         return individualRecords
-    }
-
-    private fun getSubTitle(healthRecord: HealthRecord): String {
-        return when (healthRecord.immunizationStatus) {
-            ImmunizationStatus.FULLY_IMMUNIZED -> {
-                return "Vaccinated"
-                    .plus(bulletPoint)
-                    .plus(
-                        healthRecord.vaccineDataList.last()?.occurrenceDate
-                            ?.getDateForIndividualHealthRecord()
-                    )
-            }
-            ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
-                return "Partially Vaccinated"
-                    .plus(bulletPoint)
-                    .plus(
-                        healthRecord.vaccineDataList.last()?.occurrenceDate
-                            ?.getDateForIndividualHealthRecord()
-                    )
-            }
-            ImmunizationStatus.INVALID_QR_CODE -> {
-                return "No Record"
-            }
-            else -> "No Record"
-        }
     }
 
     fun deleteCovidTestResult(reportId: String) = viewModelScope.launch {

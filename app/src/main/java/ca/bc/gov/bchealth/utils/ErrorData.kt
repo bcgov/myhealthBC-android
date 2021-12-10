@@ -17,7 +17,7 @@ enum class ErrorData(var errorTitle: String?, var errorMessage: String?) {
 
     EXISTING_QR(
         "Duplicate!",
-        "This health pass is already added."
+        "This record is already added."
     ),
 
     MISMATCH_ERROR(
