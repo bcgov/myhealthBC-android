@@ -21,4 +21,7 @@
     <color name="covid_test_blue">#D2E2EF</color>
     <color name="covid_test_green">#D8ECDC</color>
     <color name="covid_test_red">#F8D8D5</color>
+    <color name="covid_test_text_positive">#A12622</color>
+    <color name="covid_test_text_negative">#2E8540</color>
+    <color name="covid_test_text_indeterminate">#1A5A96</color>
 </resources>

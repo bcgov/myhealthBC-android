@@ -14,78 +14,101 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/rect_background"
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginTop="@dimen/space_2_x"
-        android:layout_marginEnd="@dimen/space_4_x"
-        android:background="@drawable/shape_rectangle"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_full_name"
-            style="?textAppearanceHeadline3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_2_x"
-            android:layout_marginTop="@dimen/space_2_x"
-            android:layout_marginEnd="@dimen/space_2_x"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:textAllCaps="true"
-            tools:text="JEAN SMITH Here for testing the length of the name " />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_test_result"
-            style="?textAppearanceHeadline3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_2_x"
-            android:layout_marginTop="@dimen/space_1_x"
-            android:layout_marginEnd="@dimen/space_2_x"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_full_name"
-            tools:text="Negative" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_tested_on"
-            style="?textAppearanceHeadline4"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_2_x"
-            android:layout_marginTop="@dimen/space_1_x"
-            android:layout_marginEnd="@dimen/space_2_x"
-            android:layout_marginBottom="@dimen/space_2_x"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_test_result"
-            tools:text="Tested on August-31-2021, 13:51" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/space_1_x"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rect_background">
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginTop="@dimen/space_2_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                app:cardCornerRadius="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/rect_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_full_name"
+                        style="?textAppearanceHeadline3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/space_2_x"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="@dimen/space_2_x"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_info"
+                        app:textAllCaps="true"
+                        tools:text="JEAN SMITH Here for testing the length of the name " />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_test_result"
+                        style="?textAppearanceHeadline3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/space_2_x"
+                        android:layout_marginTop="@dimen/space_1_x"
+                        android:layout_marginEnd="@dimen/space_2_x"
+                        android:textSize="20sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_full_name"
+                        tools:text="Negative" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_tested_on"
+                        style="?textAppearanceHeadline4"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/space_2_x"
+                        android:layout_marginTop="@dimen/space_1_x"
+                        android:layout_marginEnd="@dimen/space_2_x"
+                        android:layout_marginBottom="@dimen/space_2_x"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_test_result"
+                        tools:text="Tested on August-31-2021, 13:51" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_info"
+                        style="?textAppearanceSubtitle1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/space_2_x"
+                        android:layout_marginTop="@dimen/space_2_x"
+                        android:layout_marginEnd="@dimen/space_2_x"
+                        android:textSize="15sp"
+                        android:visibility="gone"
+                        android:paddingBottom="@dimen/space_2_x"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Your test is being processed and can take up to 48 hours to complete." />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_instructions"
@@ -97,7 +120,7 @@
                 android:text="@string/instructions"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/cardView" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_instructions_detail"
@@ -107,6 +130,8 @@
                 android:layout_marginStart="@dimen/space_4_x"
                 android:layout_marginTop="@dimen/space_1_x"
                 android:layout_marginEnd="@dimen/space_4_x"
+                android:autoLink="phone|web"
+                android:linksClickable="true"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -118,7 +143,7 @@
                 android:layout_width="0dp"
                 android:layout_height="1.5dp"
                 android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_1_x"
+                android:layout_marginTop="@dimen/space_2_x"
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:background="@drawable/solid_line"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -260,11 +285,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
                 android:layout_marginEnd="@dimen/space_4_x"
+                android:layout_marginBottom="@dimen/space_2_x"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_provider_clinic_title"
                 tools:text="Care Point Medical Centre – Joyce" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
