@@ -27,6 +27,9 @@ interface HealthCardDao {
     @Delete
     suspend fun delete(healthCard: HealthCard)
 
+    @Query("DELETE from health_card WHERE id = :healthPassId")
+    suspend fun deleteVaccineData(healthPassId: Int)
+
     @Query("SELECT * FROM health_card")
     fun getCards(): Flow<List<HealthCard>>
 

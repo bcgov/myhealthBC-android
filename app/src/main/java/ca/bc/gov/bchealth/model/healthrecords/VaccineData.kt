@@ -8,11 +8,9 @@ import kotlinx.parcelize.Parcelize
 */
 @Parcelize
 data class VaccineData(
-    val name: String,
     val doseNumber: String,
     val occurrenceDate: String,
     val product: String? = "",
-    val immunizingAgent: String? = "",
     val provider: String? = "",
     val lotNumber: String? = ""
 ) : Parcelable
