@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 interface CovidTestResultDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(covidTestResult: CovidTestResult)
+    suspend fun insertCovidTests(covidTestResults: List<CovidTestResult>)
 
     @Query("DELETE FROM covid_test_results WHERE reportId = :reportId")
     suspend fun delete(reportId: String)
