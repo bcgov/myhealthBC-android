@@ -16,7 +16,9 @@
         android:layout_marginStart="@dimen/space_2_x"
         android:layout_marginTop="@dimen/space_3_x"
         android:layout_marginEnd="@dimen/space_2_x"
-        android:textSize="16sp"
+        android:textSize="17sp"
+        android:maxLines="2"
+        android:ellipsize="end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,7 +30,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_2_x"
+        android:layout_marginBottom="@dimen/space_8_x"
         android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_member_name"
         tools:text="3 records" />
@@ -42,7 +46,6 @@
         android:contentDescription="@string/add_card"
         android:src="@drawable/ic_health_record"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_member_name" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

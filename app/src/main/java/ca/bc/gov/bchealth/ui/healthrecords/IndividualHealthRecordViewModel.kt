@@ -95,4 +95,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
     fun deleteCovidTestResult(reportId: String) = viewModelScope.launch {
         dataSource.deleteCovidTestResult(reportId)
     }
+
+    fun deleteVaccineRecord(healthPassId: Int) = viewModelScope.launch {
+        dataSource.deleteVaccineData(healthPassId)
+    }
 }

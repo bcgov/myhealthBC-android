@@ -387,7 +387,7 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
         }
 
         val navOptions = NavOptions.Builder()
-            .setPopUpTo(R.id.addHealthRecordsFragment, true)
+            .setPopUpTo(R.id.fetchCovidTestResultFragment, true)
             .build()
 
         val action =

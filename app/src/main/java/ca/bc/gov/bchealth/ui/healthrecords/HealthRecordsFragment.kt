@@ -2,13 +2,15 @@ package ca.bc.gov.bchealth.ui.healthrecords
 
 import android.graphics.Rect
 import android.os.Bundle
+import android.transition.Scene
 import android.view.View
+import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,13 +31,12 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
 
     private lateinit var healthRecordsAdapter: HealthRecordsAdapter
 
+    private lateinit var sceneAddHealthRecords: Scene
+
+    private lateinit var sceneListHealthRecords: Scene
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.ivAddHealthRecord.setOnClickListener {
-            findNavController()
-                .navigate(R.id.action_healthRecordsFragment_to_addHealthRecordsFragment)
-        }
 
         observeHealthRecords()
     }
@@ -55,9 +56,9 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
 
                     if (healthRecords != null) {
                         if (healthRecords.isNotEmpty()) {
-                            setupRecyclerView(healthRecords.toMutableList())
+                            listHealthRecords(healthRecords.toMutableList())
                         } else {
-                            navigateToAddHealthRecords()
+                            addHealthRecords()
                         }
                     }
                 }
@@ -72,18 +73,52 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
             binding.progressBar.visibility = View.INVISIBLE
     }
 
-    private fun navigateToAddHealthRecords() {
-        val navOptions = NavOptions.Builder()
-            .setPopUpTo(R.id.healthRecordsFragment, true)
-            .build()
-        findNavController().navigate(
-            R.id.addHealthRecordsFragment,
-            null,
-            navOptions
+    private fun addHealthRecords() {
+
+        sceneAddHealthRecords = Scene.getSceneForLayout(
+            binding.sceneRoot,
+            R.layout.scene_health_records_add,
+            requireContext()
         )
+
+        sceneAddHealthRecords.enter()
+
+        val vgGetVaccinationRecords = sceneAddHealthRecords.sceneRoot
+            .findViewById<ConstraintLayout>(R.id.vg_get_vaccination_records)
+
+        vgGetVaccinationRecords.setOnClickListener {
+            findNavController()
+                .navigate(R.id.action_healthRecordsFragment_to_fetchVaccineRecordFragment)
+        }
+
+        val vgGetCovidTestResults = sceneAddHealthRecords.sceneRoot
+            .findViewById<ConstraintLayout>(R.id.vg_get_covid_test_results)
+
+        vgGetCovidTestResults.setOnClickListener {
+            findNavController()
+                .navigate(R.id.action_healthRecordsFragment_to_fetchCovidTestResultFragment)
+        }
     }
 
-    private fun setupRecyclerView(members: MutableList<HealthRecord>) {
+    private fun listHealthRecords(healthRecords: MutableList<HealthRecord>) {
+
+        sceneListHealthRecords = Scene.getSceneForLayout(
+            binding.sceneRoot,
+            R.layout.scene_health_records_list,
+            requireContext()
+        )
+
+        sceneListHealthRecords.enter()
+
+        sceneListHealthRecords.sceneRoot.findViewById<ImageView>(R.id.iv_add_health_record)
+            .setOnClickListener {
+                addHealthRecords()
+            }
+
+        setupHealthRecordsList(healthRecords)
+    }
+
+    private fun setupHealthRecordsList(members: MutableList<HealthRecord>) {
 
         healthRecordsAdapter = HealthRecordsAdapter(members)
 
@@ -91,24 +126,24 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
 
         val spacing = resources.getDimensionPixelSize(R.dimen.space_2_x) / 2
 
-        binding.apply {
-            rvMembers.layoutManager = gridLayoutManager
-            rvMembers.adapter = healthRecordsAdapter
-            rvMembers.setPadding(spacing, spacing, spacing, spacing)
-            rvMembers.clipToPadding = false
-            rvMembers.clipChildren = false
-            with(rvMembers) {
-                addItemDecoration(object : RecyclerView.ItemDecoration() {
-                    override fun getItemOffsets(
-                        outRect: Rect,
-                        view: View,
-                        parent: RecyclerView,
-                        state: RecyclerView.State
-                    ) {
-                        outRect.set(spacing, spacing, spacing, spacing)
-                    }
-                })
-            }
+        val rvMembers = sceneListHealthRecords.sceneRoot.findViewById<RecyclerView>(R.id.rv_members)
+
+        rvMembers.layoutManager = gridLayoutManager
+        rvMembers.adapter = healthRecordsAdapter
+        rvMembers.setPadding(spacing, spacing, spacing, spacing)
+        rvMembers.clipToPadding = false
+        rvMembers.clipChildren = false
+        with(rvMembers) {
+            addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    outRect.set(spacing, spacing, spacing, spacing)
+                }
+            })
         }
     }
 }

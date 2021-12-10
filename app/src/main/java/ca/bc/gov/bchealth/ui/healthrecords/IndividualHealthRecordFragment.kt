@@ -93,7 +93,12 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         }
                     }
 
-                    individualHealthRecordAdapter.notifyDataSetChanged()
+                    healthRecords?.let {
+                        individualHealthRecordAdapter.notifyItemRangeChanged(
+                            0,
+                            individualHealthRecordAdapter.individualRecords.size
+                        )
+                    }
                 }
             }
         }
@@ -112,24 +117,33 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 if (individualHealthRecordAdapter.canDeleteRecord) {
 
                     requireContext().showHealthRecordDeleteDialog {
+
                         viewModel.deleteCovidTestResult(reportId).invokeOnCompletion {
-                            individualHealthRecordAdapter.individualRecords.removeAt(position)
-                            individualHealthRecordAdapter.notifyItemRemoved(position)
-                            individualHealthRecordAdapter.notifyItemRangeChanged(
-                                position,
-                                individualHealthRecordAdapter.itemCount - position
-                            )
+                            updateAdapter(position)
                         }
                     }
                 } else {
                     navigateToCovidTestResultPage(reportId)
                 }
             } else {
-                val action = IndividualHealthRecordFragmentDirections
-                    .actionIndividualHealthRecordFragmentToVaccineDetailsFragment(
-                        individualHealthRecord
-                    )
-                findNavController().navigate(action)
+                if (individualHealthRecordAdapter.canDeleteRecord) {
+
+                    individualHealthRecord.healthPassId?.let {
+
+                        requireContext().showHealthRecordDeleteDialog {
+
+                            viewModel.deleteVaccineRecord(it).invokeOnCompletion {
+                                updateAdapter(position)
+                            }
+                        }
+                    }
+                } else {
+                    val action = IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToVaccineDetailsFragment(
+                            individualHealthRecord
+                        )
+                    findNavController().navigate(action)
+                }
             }
         }
 
@@ -138,6 +152,15 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         recyclerView.adapter = individualHealthRecordAdapter
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+    }
+
+    private fun updateAdapter(position: Int) {
+        individualHealthRecordAdapter.individualRecords.removeAt(position)
+        individualHealthRecordAdapter.notifyItemRemoved(position)
+        individualHealthRecordAdapter.notifyItemRangeChanged(
+            position,
+            individualHealthRecordAdapter.itemCount - position
+        )
     }
 
     private fun navigateToCovidTestResultPage(reportId: String) {

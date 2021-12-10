@@ -321,6 +321,9 @@ class CardRepository @Inject constructor(
                     }
                 } else {
 
+                    if (!checkForKnownErrors(vaxStatusResponse))
+                        return
+
                     vaxStatusResponse?.resourcePayload?.qrCode?.data?.let { base64EncodedQrImage ->
                         vaxStatusResponse.resourcePayload.federalVaccineProof.data
                             ?.let { base64EncodedFederalPassPdf ->
@@ -340,6 +343,19 @@ class CardRepository @Inject constructor(
             }
             break@loop
         }
+    }
+
+    private suspend fun checkForKnownErrors(vaxStatusResponse: VaxStatusResponse?): Boolean {
+
+        if (vaxStatusResponse?.resultError != null) {
+
+            if (vaxStatusResponse.resultError.actionCode.contentEquals(ErrorCodes.MISMATCH.name)) {
+                responseMutableSharedFlow.emit(Response.Error(ErrorData.MISMATCH_ERROR))
+                return false
+            }
+        }
+
+        return true
     }
 
     private fun validateResponse(result: retrofit2.Response<VaxStatusResponse>): Boolean {
@@ -390,6 +406,9 @@ class CardRepository @Inject constructor(
                         continue@loop
                     }
                 } else {
+
+                    if (!checkForKnownErrors(vaxStatusResponse))
+                        return
 
                     vaxStatusResponse?.resourcePayload?.qrCode?.data?.let { base64EncodedQrImage ->
                         vaxStatusResponse.resourcePayload.federalVaccineProof.data
