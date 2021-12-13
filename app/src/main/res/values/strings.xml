@@ -27,6 +27,9 @@
     <string name="no_app_found">No app found to open link!</string>
     <string name="disable_analytics">Disable analytics</string>
     <string name="anonymized_behavioural_data_is_used_to_help_improve_the_user_experience">Anonymized behavioural data is used to help improve the user experience</string>
+    <string name="delete_all_records_and_saved_data">Delete all records and saved data</string>
+    <string name="delete_data">Delete data</string>
+    <string name="delete_data_message">Are you sure you want to delete all records and saved data?</string>
 
     <!--Add card-->
     <string name="add_card">Add Card</string>

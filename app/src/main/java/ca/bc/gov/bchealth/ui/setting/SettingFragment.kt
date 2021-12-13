@@ -9,6 +9,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSettingBinding
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -55,5 +56,33 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
                 }
             }
         }
+
+        binding.tvDeleteAllRecords.setOnClickListener {
+            showAlertDialog()
+        }
+    }
+
+    private fun showAlertDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.delete_data))
+            .setCancelable(false)
+            .setMessage(getString(R.string.delete_data_message))
+            .setPositiveButton(getString(R.string.delete)) { dialog, _ ->
+                deleteAllRecordsAndSavedData()
+                dialog.dismiss()
+            }.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun deleteAllRecordsAndSavedData() {
+        viewModel.deleteAllRecordsAndSavedData().invokeOnCompletion {
+            navigatePostDeletion()
+        }
+    }
+
+    private fun navigatePostDeletion() {
+        findNavController().popBackStack(R.id.myCardsFragment, false)
     }
 }

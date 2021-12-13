@@ -99,4 +99,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_privacy_statement" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_delete_all_records"
+        style="?textAppearanceHeadline4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:paddingStart="@dimen/space_4_x"
+        android:paddingTop="@dimen/space_2_x"
+        android:paddingEnd="@dimen/space_4_x"
+        android:paddingBottom="@dimen/space_2_x"
+        android:text="@string/delete_all_records_and_saved_data"
+        android:textColor="@color/error"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line2" />
+
+    <View
+        android:id="@+id/line3"
+        android:layout_width="0dp"
+        android:layout_height="1.5dp"
+        android:background="@drawable/solid_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_delete_all_records" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
