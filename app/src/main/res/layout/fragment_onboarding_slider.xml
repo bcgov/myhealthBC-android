@@ -35,13 +35,31 @@
         style="@style/BC_VAX.Widget.MaterialComponents.Button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/space_8_x"
+        android:layout_marginBottom="@dimen/space_2_x"
+        android:contentDescription="@string/next"
         android:text="@string/next"
+        app:layout_constraintBottom_toTopOf="@+id/tv_skip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_skip"
+        style="?textAppearanceHeadline6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:layout_marginBottom="@dimen/space_8_x"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:linksClickable="true"
+        android:text="@string/skip"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="@string/next" />
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
