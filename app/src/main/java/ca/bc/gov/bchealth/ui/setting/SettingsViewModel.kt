@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.datasource.DataStoreRepo
+import ca.bc.gov.bchealth.datasource.LocalDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -12,10 +13,16 @@ import kotlinx.coroutines.launch
 */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val dataStoreRepo: DataStoreRepo
+    private val dataStoreRepo: DataStoreRepo,
+    private val localDataSource: LocalDataSource
 ) : ViewModel() {
 
     fun trackAnalytics(value: Boolean) = viewModelScope.launch {
         dataStoreRepo.trackAnalytics(value)
+    }
+
+    fun deleteAllRecordsAndSavedData() = viewModelScope.launch {
+        localDataSource.deleteAllRecords()
+        dataStoreRepo.setRecentFormData("")
     }
 }
