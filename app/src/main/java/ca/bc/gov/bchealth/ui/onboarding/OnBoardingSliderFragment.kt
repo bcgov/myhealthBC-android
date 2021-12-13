@@ -38,29 +38,39 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
                     super.onPageSelected(position)
                     if (position == educationalScreenAdapter.itemCount - 1) {
                         binding.btnNextSlide.text = getString(R.string.get_started)
+                        binding.tvSkip.visibility = View.INVISIBLE
                     } else {
                         binding.btnNextSlide.text = getString(R.string.next)
+                        binding.tvSkip.visibility = View.VISIBLE
                     }
                 }
             })
 
         binding.btnNextSlide.setOnClickListener {
             if (educationalScreenAdapter.itemCount == (getCurrentItem() + 1)) {
-                viewModel.setOnBoardingShown(true).invokeOnCompletion {
-                    viewModel.setNewFeatureShown(true).invokeOnCompletion {
-                        val navOptions = NavOptions.Builder()
-                            .setPopUpTo(R.id.onBoardingSliderFragment, true)
-                            .build()
-                        findNavController().navigate(R.id.myCardsFragment, null, navOptions)
-                    }
-                }
+                navigateToHealthPasses()
             } else {
                 binding.viewpagerOnBoardingSlides.currentItem = (getCurrentItem() + 1)
             }
+        }
+
+        binding.tvSkip.setOnClickListener {
+            navigateToHealthPasses()
         }
     }
 
     private fun getCurrentItem(): Int {
         return binding.viewpagerOnBoardingSlides.currentItem
+    }
+
+    private fun navigateToHealthPasses() {
+        viewModel.setOnBoardingShown(true).invokeOnCompletion {
+            viewModel.setNewFeatureShown(true).invokeOnCompletion {
+                val navOptions = NavOptions.Builder()
+                    .setPopUpTo(R.id.onBoardingSliderFragment, true)
+                    .build()
+                findNavController().navigate(R.id.myCardsFragment, null, navOptions)
+            }
+        }
     }
 }

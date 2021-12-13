@@ -99,15 +99,17 @@
     <!--Educational screens text at on-boarding experience-->
     <string name="next">Next</string>
     <string name="get_started">Get Started</string>
-    <string name="health_passes">Health Passes</string>
-    <string name="onboarding_message_1">Keep your BC Vaccine Cards and Federal COVID-19 Travel Proofs in a single place</string>
-    <string name="health_resource">Health Resources</string>
-    <string name="onboarding_message_2">Find COVID-19 health information and testing resources</string>
-    <string name="news_feed">News Feed</string>
-    <string name="onboarding_message_3">Get the latest BC government COVID-19 news</string>
+    <string name="health_passes">Health passes</string>
+    <string name="onboarding_message_1">Keep you and your family’s BC Vaccine Card and Canadian COVID-19 proof of vaccination in a single place</string>
+    <string name="health_records">Health records</string>
+    <string name="onboarding_message_2">Easily access your COVID-19 health records</string>
+    <string name="health_resource">Health resources</string>
+    <string name="onboarding_message_3">Find COVID-19 health information and testing resources</string>
+    <string name="news_feed">News feed</string>
+    <string name="onboarding_message_4">Get the latest BC government COVID-19 news</string>
     <string name="new_string">New</string>
     <string name="ok_camel_case">Ok</string>
-    <string name="health_records">Health Records</string>
+    <string name="skip">Skip</string>
 
     <!--Health Records-->
     <string name="view_the_details_of_all_your_covid_19_health_records">View the details of all your COVID-19 Health Records</string>

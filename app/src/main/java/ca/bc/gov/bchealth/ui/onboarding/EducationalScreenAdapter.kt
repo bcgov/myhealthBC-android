@@ -8,15 +8,16 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 */
 class EducationalScreenAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
-    override fun getItemCount(): Int = 3
+    override fun getItemCount(): Int = 4
 
     override fun createFragment(position: Int): Fragment {
 
         return when (position) {
-            0 -> OnboardingHealthPassesFragment()
-            1 -> OnboardingHealthResourcesFragment()
-            2 -> OnboardingNewsFeedFragment()
-            else -> OnboardingHealthPassesFragment()
+            0 -> OnBoardingHealthPassesFragment()
+            1 -> OnBoardingHealthRecordsFragment()
+            2 -> OnBoardingHealthResourcesFragment()
+            3 -> OnBoardingNewsFeedFragment()
+            else -> OnBoardingHealthPassesFragment()
         }
     }
 }
