@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/health_records"
+    app:startDestination="@id/healthRecordsFragment">
+
+    <fragment
+        android:id="@+id/healthRecordsFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.HealthRecordsFragment"
+        android:label="HealthRecordsFragment"
+        tools:layout="@layout/fragment_health_records">
+        <action
+            android:id="@+id/action_healthRecordsFragment_to_individualHealthRecordFragment"
+            app:destination="@id/individualHealthRecordFragment" />
+        <action
+            android:id="@+id/action_healthRecordsFragment_to_addHealthRecordsFragment"
+            app:popUpTo="@id/healthRecordsFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/addHealthRecordsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addHealthRecordsFragment"
+        tools:layout="@layout/scene_health_records_add"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.add.AddHealthRecordsFragment"
+        android:label="AddHealthRecordsFragment" />
+    <fragment
+        android:id="@+id/individualHealthRecordFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.IndividualHealthRecordFragment"
+        android:label="IndividualHealthRecordFragment"
+        tools:layout="@layout/fragment_individual_health_record" >
+
+        <argument
+            android:name="patient_id"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/fetchVaccineRecordFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment"
+        android:label="FetchVaccineRecordFragment"
+        tools:layout="@layout/fragment_fetch_vaccine_record" />
+    <fragment
+        android:id="@+id/fetchTestRecordFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment"
+        android:label="FetchTestRecordFragment"
+        tools:layout="@layout/fragment_fetch_covid_test_result" />
+
+</navigation>

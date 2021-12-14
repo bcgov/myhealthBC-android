@@ -2,22 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/myCardsFragment"
+        android:id="@+id/health_pass"
         android:enabled="true"
         android:icon="@drawable/pass_selector"
         android:title="@string/passes" />
     <item
-        android:id="@+id/healthRecordsFragment"
+        android:id="@+id/health_records"
         android:enabled="true"
         android:icon="@drawable/records_selector"
         android:title="@string/records" />
     <item
-        android:id="@+id/resourcesFragment"
+        android:id="@+id/resources"
         android:enabled="true"
         android:icon="@drawable/resource_selector"
         android:title="@string/resources" />
     <item
-        android:id="@+id/newsfeedFragment"
+        android:id="@+id/news_feed"
         android:enabled="true"
         android:icon="@drawable/news_feed_selector"
         android:title="@string/news_feed" />

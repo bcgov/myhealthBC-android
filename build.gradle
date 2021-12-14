@@ -2,6 +2,7 @@
 buildscript {
     apply from: './scripts/versions.gradle'
 
+
     repositories {
         google()
         mavenCentral()
@@ -25,7 +26,28 @@ buildscript {
     }
 }
 
-apply plugin: "com.diffplug.spotless"
+def localProperties = new Properties()
+if(project.file("local.properties").exists()){
+    localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/FreshworksStudio/BCVAX-Android")
+            credentials {
+                username = localProperties['USER'] ?: System.getenv("USER")
+                password = localProperties['TOKEN'] ?: System.getenv("TOKEN")
+            }
+        }
+        jcenter()
+    }
+    apply plugin: "com.diffplug.spotless"
+}
+
 
 spotless {
 
