@@ -40,17 +40,17 @@ import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
 import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.UnsupportedEncodingException
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
-import java.text.SimpleDateFormat
-import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @AndroidEntryPoint
 class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) {
