@@ -15,6 +15,8 @@ import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import ca.bc.gov.bchealth.utils.getDateOfCollection
 import ca.bc.gov.bchealth.utils.getIssueDate
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -145,13 +147,22 @@ class HealthRecordsRepository @Inject constructor(
 
             vaccineDataList.add(
                 VaccineData(
-                    (index + 1).toString(),
-                    entry.resource.occurrenceDateTime,
+                    null,
+                    LocalDate.parse(
+                        entry.resource.occurrenceDateTime,
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                    ),
                     productInfo,
                     entry.resource.performer?.last()?.actor?.display,
                     entry.resource.lotNumber
                 )
             )
+        }
+
+        vaccineDataList.sortBy { it.occurrenceDate }
+
+        vaccineDataList.mapIndexed { idx, item ->
+            item.doseNumber = "Dose".plus(" ").plus(idx + 1)
         }
 
         return vaccineDataList

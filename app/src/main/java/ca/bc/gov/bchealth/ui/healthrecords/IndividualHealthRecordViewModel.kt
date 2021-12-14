@@ -6,7 +6,8 @@ import ca.bc.gov.bchealth.datasource.LocalDataSource
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 import ca.bc.gov.bchealth.model.healthrecords.IndividualRecord
 import ca.bc.gov.bchealth.repository.HealthRecordsRepository
-import ca.bc.gov.bchealth.utils.getDateForIndividualHealthRecord
+import ca.bc.gov.bchealth.utils.getDateForIndividualCovidTestResult
+import ca.bc.gov.bchealth.utils.getDateForIndividualVaccineRecord
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
@@ -42,7 +43,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 IndividualRecord(
                     "Covid-19 vaccination",
                     healthRecord.vaccineDataList.last()?.occurrenceDate
-                        ?.getDateForIndividualHealthRecord().toString(),
+                        ?.getDateForIndividualVaccineRecord(),
                     IndividualHealthRecordAdapter.HealthRecordType.VACCINE_RECORD,
                     null
                 )
@@ -55,7 +56,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     "Covid-19 Test Result",
                     it.testStatus
                         .plus(bulletPoint)
-                        .plus(it.resultDateTime.getDateForIndividualHealthRecord()),
+                        .plus(it.resultDateTime.getDateForIndividualCovidTestResult()),
                     IndividualHealthRecordAdapter.HealthRecordType.COVID_TEST_RECORD,
                     it.reportId
                 )

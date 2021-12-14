@@ -1,6 +1,7 @@
 package ca.bc.gov.bchealth.model.healthrecords
 
 import android.os.Parcelable
+import java.time.LocalDate
 import kotlinx.parcelize.Parcelize
 
 /*
@@ -8,8 +9,8 @@ import kotlinx.parcelize.Parcelize
 */
 @Parcelize
 data class VaccineData(
-    val doseNumber: String,
-    val occurrenceDate: String,
+    var doseNumber: String? = "",
+    val occurrenceDate: LocalDate?,
     val product: String? = "",
     val provider: String? = "",
     val lotNumber: String? = ""

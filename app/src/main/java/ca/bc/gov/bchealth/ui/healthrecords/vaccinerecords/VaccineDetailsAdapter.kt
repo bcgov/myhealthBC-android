@@ -3,10 +3,9 @@ package ca.bc.gov.bchealth.ui.healthrecords.vaccinerecords
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemVaccineDetailsBinding
 import ca.bc.gov.bchealth.model.healthrecords.VaccineData
-import ca.bc.gov.bchealth.utils.getDateForIndividualHealthRecord
+import ca.bc.gov.bchealth.utils.getDateForVaccineRecordDetails
 import javax.inject.Inject
 
 /*
@@ -33,10 +32,10 @@ class VaccineDetailsAdapter @Inject constructor(
         val vaccineData = vaccineDataList[position]
 
         holder.binding.apply {
-            tvDose.text = holder.itemView.resources
-                .getString(R.string.dose).plus(" ").plus(vaccineData?.doseNumber)
+            tvDose.text = vaccineData?.doseNumber
 
-            tvOccurrenceDate.text = vaccineData?.occurrenceDate?.getDateForIndividualHealthRecord()
+            tvOccurrenceDate.text = vaccineData?.occurrenceDate
+                ?.getDateForVaccineRecordDetails()
 
             tvProduct.text = vaccineData?.product
 

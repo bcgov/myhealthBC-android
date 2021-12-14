@@ -21,6 +21,8 @@ import ca.bc.gov.bchealth.ui.mycards.qrgen.QrSegment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
@@ -270,28 +272,9 @@ fun Context.showHealthRecordDeleteDialog(runnable: Runnable) {
 }
 
 /*
-* For showing date on individual vaccine record
-* */
-fun String.getDateForIndividualHealthRecord(): String {
-
-    return try {
-        val sdf = SimpleDateFormat("yyyy-mm-dd", Locale.CANADA)
-        val date: Date = sdf.parse(this)
-        val timeInMilliseconds = date.time
-
-        val date1 = Date(timeInMilliseconds)
-        val format = SimpleDateFormat("MMM dd, y", Locale.CANADA)
-        format.format(date1)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        ""
-    }
-}
-
-/*
 * For showing date on individual covid test record
 * */
-fun Date.getDateForIndividualHealthRecord(): String {
+fun Date.getDateForIndividualCovidTestResult(): String {
     return try {
         val date1 = Date(this.time)
         val format = SimpleDateFormat("MMM dd, y", Locale.CANADA)
@@ -328,4 +311,28 @@ fun String.getDateOfCollection(): Date? {
         e.printStackTrace()
     }
     return date
+}
+
+/*
+* Get date for individual vaccine record
+* */
+fun LocalDate.getDateForIndividualVaccineRecord(): String {
+    return try {
+        this.format(DateTimeFormatter.ofPattern("MMM dd, yyyy")).toString()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
+}
+
+/*
+* Get date for individual vaccine record details
+* */
+fun LocalDate.getDateForVaccineRecordDetails(): String {
+    return try {
+        this.format(DateTimeFormatter.ofPattern("MMMM dd, yyyy")).toString()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
 }

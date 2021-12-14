@@ -7,7 +7,7 @@ import ca.bc.gov.bchealth.ui.healthrecords.IndividualHealthRecordAdapter
 */
 data class IndividualRecord(
     val title: String,
-    val subtitle: String,
+    val subtitle: String?,
     val healthRecordType: IndividualHealthRecordAdapter.HealthRecordType,
     val covidTestReportId: String?
 )
