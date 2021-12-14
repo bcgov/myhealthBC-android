@@ -13,8 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
-import ca.bc.gov.bchealth.utils.showHealthRecordDeleteDialog
+import ca.bc.gov.bchealth.model.healthrecords.IndividualRecord
+import ca.bc.gov.bchealth.model.healthrecords.toHealthRecord
 import ca.bc.gov.bchealth.utils.viewBindings
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -80,24 +82,21 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.healthRecords.collect { healthRecords ->
 
-                    healthRecords?.forEach {
-                        if (it.name.lowercase() == args.healthRecord.name.lowercase() &&
-                            !individualHealthRecordAdapter.canDeleteRecord
-                        ) {
-                            individualHealthRecord = it
+                    healthRecords?.let { individualHealthRecord ->
 
-                            individualHealthRecordAdapter.individualRecords =
-                                viewModel.prepareIndividualRecords(individualHealthRecord)
-
-                            return@forEach
+                        if (individualHealthRecord.isEmpty()) {
+                            findNavController().popBackStack()
                         }
-                    }
 
-                    healthRecords?.let {
-                        individualHealthRecordAdapter.notifyItemRangeChanged(
-                            0,
-                            individualHealthRecordAdapter.individualRecords.size
-                        )
+                        val records = individualHealthRecord.filter { individualRecord ->
+                            individualRecord.name.lowercase() == args.healthRecord.name.lowercase()
+                        }
+
+                        if (records.isEmpty()) {
+                            findNavController().popBackStack()
+                        }
+                        individualHealthRecordAdapter.individualRecords = records.toMutableList()
+                        individualHealthRecordAdapter.notifyDataSetChanged()
                     }
                 }
             }
@@ -108,44 +107,23 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun setUpRecyclerView() {
 
         individualHealthRecordAdapter = IndividualHealthRecordAdapter(
-            mutableListOf(), false
-        )
+            mutableListOf(),
+            false,
+            onItemClickListener = { individualRecord ->
 
-        individualHealthRecordAdapter.clickListener = { reportId, position ->
-
-            if (reportId != null && reportId.isNotEmpty()) {
-                if (individualHealthRecordAdapter.canDeleteRecord) {
-
-                    requireContext().showHealthRecordDeleteDialog {
-
-                        viewModel.deleteCovidTestResult(reportId).invokeOnCompletion {
-                            updateAdapter(position)
-                        }
-                    }
-                } else {
-                    navigateToCovidTestResultPage(reportId)
-                }
-            } else {
-                if (individualHealthRecordAdapter.canDeleteRecord) {
-
-                    individualHealthRecord.healthPassId?.let {
-
-                        requireContext().showHealthRecordDeleteDialog {
-
-                            viewModel.deleteVaccineRecord(it).invokeOnCompletion {
-                                updateAdapter(position)
-                            }
-                        }
-                    }
+                if (!individualRecord.covidTestReportId.isNullOrBlank()) {
+                    navigateToCovidTestResultPage(individualRecord.covidTestReportId)
                 } else {
                     val action = IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordFragmentToVaccineDetailsFragment(
-                            individualHealthRecord
+                            individualRecord.toHealthRecord()
                         )
                     findNavController().navigate(action)
                 }
-            }
+            }, onDeleteListener = { individualRecord ->
+            showHealthRecordDeleteDialog(individualRecord)
         }
+        )
 
         val recyclerView = binding.rvHealthRecords
 
@@ -154,13 +132,23 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
-    private fun updateAdapter(position: Int) {
-        individualHealthRecordAdapter.individualRecords.removeAt(position)
-        individualHealthRecordAdapter.notifyItemRemoved(position)
-        individualHealthRecordAdapter.notifyItemRangeChanged(
-            position,
-            individualHealthRecordAdapter.itemCount - position
-        )
+    private fun showHealthRecordDeleteDialog(individualRecord: IndividualRecord) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.delete_hc_record_title)
+            .setMessage(R.string.delete_individual_hc_record_message)
+            .setCancelable(false)
+            .setPositiveButton(R.string.delete) { dialog, _ ->
+                if (!individualRecord.covidTestReportId.isNullOrBlank()) {
+                    viewModel.deleteCovidTestResult(individualRecord.covidTestReportId)
+                } else {
+                    viewModel.deleteVaccineRecord(individualRecord.healthPassId)
+                }
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun navigateToCovidTestResultPage(reportId: String) {

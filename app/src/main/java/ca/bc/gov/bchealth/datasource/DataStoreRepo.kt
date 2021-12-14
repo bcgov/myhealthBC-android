@@ -2,9 +2,9 @@ package ca.bc.gov.bchealth.datasource
 
 import android.content.SharedPreferences
 import android.util.Base64
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
 /**
  * [DataStoreRepo]
