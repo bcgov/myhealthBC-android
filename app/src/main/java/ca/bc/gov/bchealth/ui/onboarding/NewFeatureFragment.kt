@@ -26,7 +26,7 @@ class NewFeatureFragment : Fragment(R.layout.fragment_new_feature) {
                 val navOptions = NavOptions.Builder()
                     .setPopUpTo(R.id.newFeatureFragment, true)
                     .build()
-                findNavController().navigate(R.id.myCardsFragment, null, navOptions)
+                findNavController().navigate(R.id.healthPassFragment, null, navOptions)
             }
         }
     }

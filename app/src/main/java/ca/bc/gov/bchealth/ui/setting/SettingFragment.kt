@@ -9,6 +9,8 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSettingBinding
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
+import ca.bc.gov.common.model.settings.AnalyticsFeature
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +25,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
 
     private val binding by viewBindings(FragmentSettingBinding::bind)
 
+    private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
     private val viewModel: SettingsViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,11 +51,11 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
             when (isChecked) {
                 true -> {
                     Snowplow.getDefaultTracker()?.pause()
-                    viewModel.trackAnalytics(false)
+                    analyticsFeatureViewModel.toggleAnalyticsFeature(AnalyticsFeature.DISABLED)
                 }
                 false -> {
                     Snowplow.getDefaultTracker()?.resume()
-                    viewModel.trackAnalytics(true)
+                    analyticsFeatureViewModel.toggleAnalyticsFeature(AnalyticsFeature.ENABLED)
                 }
             }
         }
@@ -83,6 +86,6 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     }
 
     private fun navigatePostDeletion() {
-        findNavController().popBackStack(R.id.myCardsFragment, false)
+        findNavController().popBackStack(R.id.healthPassFragment, false)
     }
 }

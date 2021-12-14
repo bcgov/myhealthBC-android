@@ -69,7 +69,7 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
                 val navOptions = NavOptions.Builder()
                     .setPopUpTo(R.id.onBoardingSliderFragment, true)
                     .build()
-                findNavController().navigate(R.id.myCardsFragment, null, navOptions)
+                findNavController().navigate(R.id.healthPassFragment, null, navOptions)
             }
         }
     }

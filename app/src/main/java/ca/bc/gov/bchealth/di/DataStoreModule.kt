@@ -26,28 +26,4 @@ class DataStoreModule {
     @Singleton
     fun providesDataStore(sharedPreferences: SharedPreferences) =
         DataStoreRepo(sharedPreferences)
-
-    @Provides
-    @Singleton
-    fun providesMasterKey(@ApplicationContext context: Context): MasterKey {
-        return MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideEncryptedPreferences(
-        @ApplicationContext context: Context,
-        masterKey: MasterKey
-    ): SharedPreferences {
-
-        return EncryptedSharedPreferences.create(
-            context,
-            BuildConfig.APPLICATION_ID + "_preferences",
-            masterKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-    }
 }
