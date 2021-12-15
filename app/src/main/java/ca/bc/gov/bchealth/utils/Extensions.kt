@@ -222,24 +222,6 @@ fun Context.hideKeyboard(view: View) {
 }
 
 /*
-* Show alert while replacing existing health pass
-* */
-fun Context.showCardReplacementDialog(runnable: Runnable) {
-
-    MaterialAlertDialogBuilder(this)
-        .setTitle(getString(R.string.replace_health_pass_title))
-        .setCancelable(false)
-        .setMessage(getString(R.string.replace_health_pass_message))
-        .setPositiveButton(getString(R.string.replace)) { dialog, _ ->
-            runnable.run()
-            dialog.dismiss()
-        }.setNegativeButton(getString(R.string.not_now)) { dialog, _ ->
-            dialog.dismiss()
-        }
-        .show()
-}
-
-/*
 * Generic error dialog
 * */
 fun Context.showError(title: String, message: String) {
@@ -254,18 +236,24 @@ fun Context.showError(title: String, message: String) {
 }
 
 /*
-* Show alert while deleting existing health record
+* Show alert dialog with positive button click action
 * */
-fun Context.showHealthRecordDeleteDialog(runnable: Runnable) {
+fun Context.showAlertDialog(
+    title: String,
+    message: String,
+    positiveButtonText: String,
+    negativeButtonText: String,
+    runnable: Runnable
+) {
 
     MaterialAlertDialogBuilder(this)
-        .setTitle(getString(R.string.delete_hc_record_title))
+        .setTitle(title)
         .setCancelable(false)
-        .setMessage(getString(R.string.delete_hc_record_message))
-        .setPositiveButton(getString(R.string.delete)) { dialog, _ ->
+        .setMessage(message)
+        .setPositiveButton(positiveButtonText) { dialog, _ ->
             runnable.run()
             dialog.dismiss()
-        }.setNegativeButton(getString(R.string.not_now)) { dialog, _ ->
+        }.setNegativeButton(negativeButtonText) { dialog, _ ->
             dialog.dismiss()
         }
         .show()

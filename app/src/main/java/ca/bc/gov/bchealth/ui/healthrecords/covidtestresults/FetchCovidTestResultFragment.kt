@@ -17,7 +17,7 @@ import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchCovidTestResultBinding
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
-import ca.bc.gov.bchealth.utils.Response
+import ca.bc.gov.bchealth.repository.Response
 import ca.bc.gov.bchealth.utils.adjustOffset
 import ca.bc.gov.bchealth.utils.isOnline
 import ca.bc.gov.bchealth.utils.redirect

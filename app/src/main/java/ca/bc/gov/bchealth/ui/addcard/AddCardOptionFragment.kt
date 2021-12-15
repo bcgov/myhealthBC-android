@@ -15,8 +15,8 @@ import ca.bc.gov.bchealth.analytics.AnalyticsText
 import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
-import ca.bc.gov.bchealth.utils.Response
-import ca.bc.gov.bchealth.utils.showCardReplacementDialog
+import ca.bc.gov.bchealth.repository.Response
+import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.snowplowanalytics.snowplow.Snowplow
@@ -62,7 +62,12 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
 
                                 val pair = it.data as Pair<*, *>
                                 if (pair.second as Boolean) {
-                                    requireContext().showCardReplacementDialog {
+                                    requireContext().showAlertDialog(
+                                        title = getString(R.string.replace_health_pass_title),
+                                        message = getString(R.string.replace_health_pass_message),
+                                        positiveButtonText = getString(R.string.replace),
+                                        negativeButtonText = getString(R.string.not_now)
+                                    ) {
                                         viewModel.replaceExitingHealthPass(pair.first as HealthCard)
                                             .invokeOnCompletion {
                                                 navigateToCardsList()

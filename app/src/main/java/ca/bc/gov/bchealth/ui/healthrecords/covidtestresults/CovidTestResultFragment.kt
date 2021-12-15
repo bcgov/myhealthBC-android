@@ -18,7 +18,7 @@ import ca.bc.gov.bchealth.ui.healthrecords.covidtestresults.CovidTestResultFragm
 import ca.bc.gov.bchealth.ui.healthrecords.covidtestresults.CovidTestResultFragment.CovidTestResult.Pending
 import ca.bc.gov.bchealth.ui.healthrecords.covidtestresults.CovidTestResultFragment.CovidTestResult.Positive
 import ca.bc.gov.bchealth.utils.getDateForCovidTestResults
-import ca.bc.gov.bchealth.utils.showHealthRecordDeleteDialog
+import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -186,7 +186,12 @@ class CovidTestResultFragment : Fragment(R.layout.fragment_covid_test_result) {
             tvRightOption.visibility = View.VISIBLE
             tvRightOption.text = getString(R.string.delete)
             tvRightOption.setOnClickListener {
-                requireContext().showHealthRecordDeleteDialog {
+                requireContext().showAlertDialog(
+                    title = getString(R.string.delete_hc_record_title),
+                    message = getString(R.string.delete_individual_covid_test_record_message),
+                    positiveButtonText = getString(R.string.delete),
+                    negativeButtonText = getString(R.string.not_now)
+                ) {
                     binding.progressBar.visibility = View.VISIBLE
                     viewModel.deleteCovidTestResult(args.covidTestResult.reportId)
                         .invokeOnCompletion {
