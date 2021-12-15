@@ -15,18 +15,19 @@ import ca.bc.gov.bchealth.ui.healthrecords.IndividualHealthRecordViewModel
 import ca.bc.gov.bchealth.utils.ErrorData
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
-import ca.bc.gov.bchealth.utils.getDateForIndividualHealthRecord
+import ca.bc.gov.bchealth.utils.getDateForIndividualCovidTestResult
+import ca.bc.gov.bchealth.utils.getDateForIndividualVaccineRecord
 import ca.bc.gov.bchealth.utils.getDateOfCollection
 import ca.bc.gov.bchealth.utils.getIssueDate
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import javax.inject.Inject
 
 /*
 * Created by amit_metri on 26,November,2021
@@ -58,7 +59,7 @@ class HealthRecordsRepository @Inject constructor(
                             IndividualRecord(
                                 "Covid-19 vaccination",
                                 getIndividualVaccinationData(data).last().occurrenceDate
-                                    .getDateForIndividualHealthRecord(),
+                                    ?.getDateForIndividualVaccineRecord(),
                                 data.name,
                                 data.status,
                                 data.issueDate.getIssueDate(),
@@ -88,7 +89,10 @@ class HealthRecordsRepository @Inject constructor(
                                 "Covid-19 Test Result",
                                 result.testStatus
                                     .plus(IndividualHealthRecordViewModel.bulletPoint)
-                                    .plus(result.resultDateTime.getDateForIndividualHealthRecord()),
+                                    .plus(
+                                        result.resultDateTime
+                                            .getDateForIndividualCovidTestResult()
+                                    ),
                                 result.patientDisplayName,
                                 null,
                                 "",
