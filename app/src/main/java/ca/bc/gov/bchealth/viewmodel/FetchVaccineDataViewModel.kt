@@ -9,11 +9,11 @@ import ca.bc.gov.bchealth.repository.CardRepository
 import ca.bc.gov.bchealth.repository.HealthRecordsRepository
 import ca.bc.gov.bchealth.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /*
 * Created by amit_metri on 18,October,2021

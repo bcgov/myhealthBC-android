@@ -3,7 +3,6 @@ package ca.bc.gov.bchealth.ui.healthrecords
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordMemberBinding
@@ -13,7 +12,8 @@ import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 * Created by amit_metri on 23,November,2021
 */
 class HealthRecordsAdapter(
-    private var members: MutableList<HealthRecord>
+    private var members: MutableList<HealthRecord>,
+    private val onItemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<HealthRecordsAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemHealthRecordMemberBinding) :
@@ -40,9 +40,7 @@ class HealthRecordsAdapter(
         )
 
         holder.itemView.setOnClickListener {
-            val action = HealthRecordsFragmentDirections
-                .actionHealthRecordsFragmentToIndividualHealthRecordFragment(member)
-            holder.itemView.findNavController().navigate(action)
+            onItemClickListener.onItemClicked(member)
         }
     }
 
@@ -67,5 +65,9 @@ class HealthRecordsAdapter(
         } else {
             memberHealthRecordsCount.toString().plus(resources.getString(R.string.space_record))
         }
+    }
+
+    fun interface OnItemClickListener {
+        fun onItemClicked(healthRecord: HealthRecord)
     }
 }

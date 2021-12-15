@@ -120,7 +120,11 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
 
     private fun setupHealthRecordsList(members: MutableList<HealthRecord>) {
 
-        healthRecordsAdapter = HealthRecordsAdapter(members)
+        healthRecordsAdapter = HealthRecordsAdapter(members) { healthRecord ->
+            val action = HealthRecordsFragmentDirections
+                .actionHealthRecordsFragmentToIndividualHealthRecordFragment(healthRecord)
+            findNavController().navigate(action)
+        }
 
         val gridLayoutManager = GridLayoutManager(context, 2)
 

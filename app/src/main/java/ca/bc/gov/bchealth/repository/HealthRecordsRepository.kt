@@ -5,14 +5,17 @@ import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.datasource.LocalDataSource
 import ca.bc.gov.bchealth.model.ImmunizationRecord
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
+import ca.bc.gov.bchealth.model.healthrecords.IndividualRecord
 import ca.bc.gov.bchealth.model.healthrecords.VaccineData
 import ca.bc.gov.bchealth.model.network.responses.covidtests.Record
 import ca.bc.gov.bchealth.model.network.responses.covidtests.ResourcePayload
 import ca.bc.gov.bchealth.model.network.responses.covidtests.ResponseCovidTests
 import ca.bc.gov.bchealth.services.LaboratoryServices
+import ca.bc.gov.bchealth.ui.healthrecords.IndividualHealthRecordViewModel
 import ca.bc.gov.bchealth.utils.ErrorData
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
+import ca.bc.gov.bchealth.utils.getDateForIndividualHealthRecord
 import ca.bc.gov.bchealth.utils.getDateOfCollection
 import ca.bc.gov.bchealth.utils.getIssueDate
 import java.time.LocalDate
@@ -40,6 +43,66 @@ class HealthRecordsRepository @Inject constructor(
     private val responseMutableSharedFlow = MutableSharedFlow<Response<String>>()
     val responseSharedFlow: SharedFlow<Response<String>>
         get() = responseMutableSharedFlow.asSharedFlow()
+
+    val individualHealthRecords: Flow<List<IndividualRecord>> =
+        dataSource.getCards()
+            .combine(dataSource.getCovidTestResults()) { healthPasses, covidTestResults ->
+
+                val individualRecords: MutableList<IndividualRecord> = mutableListOf()
+
+                healthPasses.forEach { healthPass ->
+
+                    try {
+                        val data = shcDecoder.getImmunizationStatus(healthPass.uri)
+                        individualRecords.add(
+                            IndividualRecord(
+                                "Covid-19 vaccination",
+                                getIndividualVaccinationData(data).last().occurrenceDate
+                                    .getDateForIndividualHealthRecord(),
+                                data.name,
+                                data.status,
+                                data.issueDate.getIssueDate(),
+                                HealthRecordType.VACCINE_RECORD,
+                                null,
+                                healthPass.id,
+                                getIndividualVaccinationData(data),
+                                covidTestResults.filter {
+                                    it.patientDisplayName.lowercase() == data.name.lowercase()
+                                }
+                            )
+                        )
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+
+                    val filteredResults = covidTestResults.filter { covidTestResult ->
+                        (
+                            !individualRecords.map { record -> record.name.lowercase() }
+                                .contains(covidTestResult.patientDisplayName.lowercase())
+                            )
+                    }
+
+                    filteredResults.forEach { result ->
+                        individualRecords.add(
+                            IndividualRecord(
+                                "Covid-19 Test Result",
+                                result.testStatus
+                                    .plus(IndividualHealthRecordViewModel.bulletPoint)
+                                    .plus(result.resultDateTime.getDateForIndividualHealthRecord()),
+                                result.patientDisplayName,
+                                null,
+                                "",
+                                HealthRecordType.COVID_TEST_RECORD,
+                                result.reportId,
+                                vaccineDataList = mutableListOf(),
+                                covidTestResultList = filteredResults
+                            )
+                        )
+                    }
+                }
+
+                individualRecords
+            }
 
     /*
     * Health Records
@@ -328,6 +391,11 @@ class HealthRecordsRepository @Inject constructor(
     companion object {
         const val RETRY_COUNT = 3
     }
+}
+
+enum class HealthRecordType {
+    VACCINE_RECORD,
+    COVID_TEST_RECORD
 }
 
 private fun Record.parseToCovidTestResult(): CovidTestResult {

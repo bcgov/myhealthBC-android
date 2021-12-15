@@ -27,7 +27,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
         const val bulletPoint = " \u2022 "
     }
 
-    val healthRecords = healthRecordsRepository.healthRecords.stateIn(
+    val healthRecords = healthRecordsRepository.individualHealthRecords.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null

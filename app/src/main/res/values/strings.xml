@@ -31,6 +31,9 @@
     <string name="delete_data">Delete data</string>
     <string name="delete_data_message">Are you sure you want to delete all records and saved data?</string>
 
+    <!--News feed-->
+    <string name="news_feed">News feed</string>
+
     <!--Add card-->
     <string name="add_card">Add Card</string>
     <string name="no_cards_message">You don\'t have any card yet</string>
@@ -90,6 +93,8 @@
     <string name="domestic_and_international_travel">Domestic and International Travel</string>
     <string name="find_phn_on_care_card_or_the_back_of_driver_s_license">Find PHN on care card or the back of driver’s license.</string>
     <string name="get_federal_travel_pass">Get Federal Travel Pass</string>
+    <string name="health_records">Health records</string>
+    <string name="health_passes">Health passes</string>
 
     <!-- In app updates -->
     <string name="update_success">Update Success!</string>
@@ -102,15 +107,17 @@
     <!--Educational screens text at on-boarding experience-->
     <string name="next">Next</string>
     <string name="get_started">Get Started</string>
-    <string name="health_passes">Health Passes</string>
-    <string name="onboarding_message_1">Keep your BC Vaccine Cards and Federal COVID-19 Travel Proofs in a single place</string>
-    <string name="health_resource">Health Resources</string>
-    <string name="onboarding_message_2">Find COVID-19 health information and testing resources</string>
-    <string name="news_feed">News Feed</string>
-    <string name="onboarding_message_3">Get the latest BC government COVID-19 news</string>
+    <string name="onboarding_health_passes_title">Health passes</string>
+    <string name="onboarding_health_passes_desc">Keep you and your family’s BC Vaccine Card and Canadian COVID-19 proof of vaccination in a single place</string>
+    <string name="onboarding_health_records_title">Health records</string>
+    <string name="onboarding_health_records_desc">Easily access your COVID-19 health records</string>
+    <string name="onboarding_health_resources_title">Health resources</string>
+    <string name="onboarding_health_resources_desc">Find COVID-19 health information and testing resources</string>
+    <string name="onboarding_news_feed_title">News feed</string>
+    <string name="onboarding_news_feed_desc">Get the latest BC government COVID-19 news</string>
     <string name="new_string">New</string>
     <string name="ok_camel_case">Ok</string>
-    <string name="health_records">Health Records</string>
+    <string name="skip">Skip</string>
 
     <!--Health Records-->
     <string name="view_the_details_of_all_your_covid_19_health_records">View the details of all your COVID-19 Health Records</string>
@@ -150,6 +157,7 @@
     <string name="provider_clinic">Provider / Clinic:</string>
     <string name="delete_hc_record_title">Delete Record</string>
     <string name="delete_hc_record_message">This action cannot be undone. You will be required to enter your health information again to access the record.</string>
+    <string name="delete_individual_hc_record_message">Health pass linked to this record will be removed. You will be required to enter your health information again to access the record.</string>
     <string name="vaccination_record">Vaccination record</string>
     <string name="date">Date:</string>
     <string name="product">Product:</string>
@@ -172,5 +180,7 @@
     <string name="select_phn">select personal health number</string>
     <string name="federal_proof">federal proof</string>
     <string name="torch">torch</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

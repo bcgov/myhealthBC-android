@@ -42,10 +42,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Collections
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.Collections
 
 /**
  * [MyCardsFragment]
@@ -669,33 +669,20 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
     }
 
     private suspend fun collectOnBoardingFlow() {
-        viewModel.isOnBoardingShown.collect { shown ->
-            if (shown != null) {
-                when (shown) {
+        viewModel.isOnBoardingShown.collect { isOnBoardingShown ->
+            if (isOnBoardingShown != null) {
+                when (isOnBoardingShown) {
                     true -> {
 
-                        viewModel.isNewfeatureShown.collect { shown ->
-                            if (shown != null) {
-                                when (shown) {
+                        viewModel.isNewfeatureShown.collect { isNewfeatureShown ->
+                            if (isNewfeatureShown != null) {
+                                when (isNewfeatureShown) {
                                     true -> {
                                         healthPassesFlow()
                                     }
 
                                     false -> {
-                                        // TODO: 03/11/21 enable below flow when we plan to show new feature to existing users.
-                                        // Also no need to disable once enabled.
-
-                                        /*val startDestination =
-                                            findNavController().graph.startDestination
-                                        val navOptions = NavOptions.Builder()
-                                            .setPopUpTo(startDestination, true)
-                                            .build()
-                                        findNavController().navigate(
-                                            R.id.newFeatureFragment,
-                                            null,
-                                            navOptions
-                                        )*/
-                                        healthPassesFlow()
+                                        navigateToNewFeatureScreen()
                                     }
                                 }
                             }
@@ -703,15 +690,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                     }
 
                     false -> {
-                        val startDestination = findNavController().graph.startDestination
-                        val navOptions = NavOptions.Builder()
-                            .setPopUpTo(startDestination, true)
-                            .build()
-                        findNavController().navigate(
-                            R.id.onBoardingSliderFragment,
-                            null,
-                            navOptions
-                        )
+                        navigateToOnBoardingScreens()
                     }
                 }
             }
@@ -736,6 +715,31 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
                     }
                 }
             )
+    }
+
+    private fun navigateToNewFeatureScreen() {
+        val startDestination =
+            findNavController().graph.startDestination
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(startDestination, true)
+            .build()
+        findNavController().navigate(
+            R.id.newFeatureFragment,
+            null,
+            navOptions
+        )
+    }
+
+    private fun navigateToOnBoardingScreens() {
+        val startDestination = findNavController().graph.startDestination
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(startDestination, true)
+            .build()
+        findNavController().navigate(
+            R.id.onBoardingSliderFragment,
+            null,
+            navOptions
+        )
     }
 
     enum class CurrentScene {

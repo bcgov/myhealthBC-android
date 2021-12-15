@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
 import ca.bc.gov.bchealth.model.healthrecords.IndividualRecord
+import ca.bc.gov.bchealth.repository.HealthRecordType
 
 /*
 * Created by amit_metri on 25,November,2021
@@ -14,7 +15,8 @@ import ca.bc.gov.bchealth.model.healthrecords.IndividualRecord
 class IndividualHealthRecordAdapter(
     var individualRecords: MutableList<IndividualRecord>,
     var canDeleteRecord: Boolean,
-    var clickListener: ((String?, Int) -> Unit)? = null
+    private val onItemClickListener: OnItemClickListener,
+    private val onDeleteListener: OnDeleteListener
 ) : RecyclerView.Adapter<IndividualHealthRecordAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemHealthRecordsAbstractBinding) :
@@ -46,13 +48,13 @@ class IndividualHealthRecordAdapter(
         holder.binding.tvVaccineStatus.text = individualRecord.subtitle
 
         holder.itemView.setOnClickListener {
-            clickListener?.invoke(individualRecord.covidTestReportId, position)
+            onItemClickListener.onItemClicked(individualRecord)
         }
 
         if (canDeleteRecord) {
             holder.binding.ivUnlink.visibility = View.VISIBLE
             holder.binding.ivUnlink.setOnClickListener {
-                clickListener?.invoke(individualRecord.covidTestReportId, position)
+                onDeleteListener.onItemDeleted(individualRecord)
             }
         } else {
             holder.binding.ivUnlink.visibility = View.GONE
@@ -63,8 +65,11 @@ class IndividualHealthRecordAdapter(
         return individualRecords.size
     }
 
-    enum class HealthRecordType {
-        VACCINE_RECORD,
-        COVID_TEST_RECORD
+    fun interface OnItemClickListener {
+        fun onItemClicked(individualRecord: IndividualRecord)
+    }
+
+    fun interface OnDeleteListener {
+        fun onItemDeleted(individualRecord: IndividualRecord)
     }
 }
