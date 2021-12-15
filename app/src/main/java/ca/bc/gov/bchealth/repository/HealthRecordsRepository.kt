@@ -15,7 +15,8 @@ import ca.bc.gov.bchealth.ui.healthrecords.IndividualHealthRecordViewModel
 import ca.bc.gov.bchealth.utils.ErrorData
 import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
-import ca.bc.gov.bchealth.utils.getDateForIndividualHealthRecord
+import ca.bc.gov.bchealth.utils.getDateForIndividualCovidTestResult
+import ca.bc.gov.bchealth.utils.getDateForIndividualVaccineRecord
 import ca.bc.gov.bchealth.utils.getDateOfCollection
 import ca.bc.gov.bchealth.utils.getIssueDate
 import kotlinx.coroutines.delay
@@ -24,6 +25,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 /*
@@ -56,7 +59,7 @@ class HealthRecordsRepository @Inject constructor(
                             IndividualRecord(
                                 "Covid-19 vaccination",
                                 getIndividualVaccinationData(data).last().occurrenceDate
-                                    .getDateForIndividualHealthRecord(),
+                                    ?.getDateForIndividualVaccineRecord(),
                                 data.name,
                                 data.status,
                                 data.issueDate.getIssueDate(),
@@ -86,7 +89,10 @@ class HealthRecordsRepository @Inject constructor(
                                 "Covid-19 Test Result",
                                 result.testStatus
                                     .plus(IndividualHealthRecordViewModel.bulletPoint)
-                                    .plus(result.resultDateTime.getDateForIndividualHealthRecord()),
+                                    .plus(
+                                        result.resultDateTime
+                                            .getDateForIndividualCovidTestResult()
+                                    ),
                                 result.patientDisplayName,
                                 null,
                                 "",
@@ -208,13 +214,22 @@ class HealthRecordsRepository @Inject constructor(
 
             vaccineDataList.add(
                 VaccineData(
-                    (index + 1).toString(),
-                    entry.resource.occurrenceDateTime,
+                    null,
+                    LocalDate.parse(
+                        entry.resource.occurrenceDateTime,
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                    ),
                     productInfo,
                     entry.resource.performer?.last()?.actor?.display,
                     entry.resource.lotNumber
                 )
             )
+        }
+
+        vaccineDataList.sortBy { it.occurrenceDate }
+
+        vaccineDataList.mapIndexed { idx, item ->
+            item.doseNumber = "Dose".plus(" ").plus(idx + 1)
         }
 
         return vaccineDataList

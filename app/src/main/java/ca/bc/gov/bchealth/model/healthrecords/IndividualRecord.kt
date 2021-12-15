@@ -9,7 +9,7 @@ import ca.bc.gov.bchealth.repository.HealthRecordType
 */
 data class IndividualRecord(
     val title: String,
-    val subtitle: String,
+    val subtitle: String?,
     val name: String,
     val status: ImmunizationStatus?,
     val issueDate: String = "",

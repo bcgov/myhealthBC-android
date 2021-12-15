@@ -14,11 +14,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_2_x"
-        android:layout_marginTop="@dimen/space_3_x"
+        android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginEnd="@dimen/space_2_x"
-        android:textSize="17sp"
-        android:maxLines="2"
         android:ellipsize="end"
+        android:lines="2"
+        android:maxLines="2"
+        android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -30,22 +31,23 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_2_x"
-        android:layout_marginBottom="@dimen/space_8_x"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_health_record"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_member_name"
+        app:layout_constraintTop_toTopOf="@+id/iv_health_record"
         tools:text="3 records" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_health_record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/space_3_x"
-        android:layout_marginBottom="@dimen/space_3_x"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginEnd="@dimen/space_2_x"
+        android:layout_marginBottom="@dimen/space_2_x"
         android:contentDescription="@string/add_card"
-        android:src="@drawable/ic_health_record"
+        android:src="@drawable/ic_health_records_members_list"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_member_name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
