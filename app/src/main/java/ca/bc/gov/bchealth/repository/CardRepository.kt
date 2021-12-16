@@ -11,8 +11,6 @@ import ca.bc.gov.bchealth.model.ImmunizationRecord
 import ca.bc.gov.bchealth.model.ImmunizationStatus
 import ca.bc.gov.bchealth.model.network.responses.vaccinestatus.VaxStatusResponse
 import ca.bc.gov.bchealth.services.ImmunizationServices
-import ca.bc.gov.bchealth.utils.ErrorData
-import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import ca.bc.gov.bchealth.utils.getIssueDate
 import com.google.mlkit.vision.barcode.Barcode
@@ -319,25 +317,24 @@ class CardRepository @Inject constructor(
                     } else {
                         continue@loop
                     }
-                } else {
-
-                    if (!checkForKnownErrors(vaxStatusResponse))
-                        return
-
-                    vaxStatusResponse?.resourcePayload?.qrCode?.data?.let { base64EncodedQrImage ->
-                        vaxStatusResponse.resourcePayload.federalVaccineProof.data
-                            ?.let { base64EncodedFederalPassPdf ->
-
-                                prepareQRImage(
-                                    base64EncodedQrImage,
-                                    base64EncodedFederalPassPdf,
-                                    ""
-                                )
-                                return
-                            }
-                    }
-                    responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
                 }
+
+                if (!checkForKnownErrors(vaxStatusResponse))
+                    return
+
+                vaxStatusResponse?.resourcePayload?.qrCode?.data?.let { base64EncodedQrImage ->
+                    vaxStatusResponse.resourcePayload.federalVaccineProof.data
+                        ?.let { base64EncodedFederalPassPdf ->
+
+                            prepareQRImage(
+                                base64EncodedQrImage,
+                                base64EncodedFederalPassPdf,
+                                ""
+                            )
+                            return
+                        }
+                }
+                responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
             } else {
                 responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
             }
@@ -349,9 +346,17 @@ class CardRepository @Inject constructor(
 
         if (vaxStatusResponse?.resultError != null) {
 
-            if (vaxStatusResponse.resultError.actionCode.contentEquals(ErrorCodes.MISMATCH.name)) {
-                responseMutableSharedFlow.emit(Response.Error(ErrorData.MISMATCH_ERROR))
-                return false
+            when (vaxStatusResponse.resultError.actionCode) {
+
+                ErrorCodes.MISMATCH.name -> {
+                    responseMutableSharedFlow.emit(Response.Error(ErrorData.MISMATCH_ERROR))
+                    return false
+                }
+
+                ErrorCodes.INVALID.name -> {
+                    responseMutableSharedFlow.emit(Response.Error(ErrorData.INVALID_PHN))
+                    return false
+                }
             }
         }
 

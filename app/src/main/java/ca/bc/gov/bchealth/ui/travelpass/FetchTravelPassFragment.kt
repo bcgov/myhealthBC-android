@@ -21,11 +21,11 @@ import ca.bc.gov.bchealth.databinding.FragmentFetchTravelPassBinding
 import ca.bc.gov.bchealth.di.ApiClientModule
 import ca.bc.gov.bchealth.http.MustBeQueued
 import ca.bc.gov.bchealth.model.HealthCardDto
-import ca.bc.gov.bchealth.utils.Response
+import ca.bc.gov.bchealth.repository.Response
 import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.isOnline
 import ca.bc.gov.bchealth.utils.redirect
-import ca.bc.gov.bchealth.utils.showCardReplacementDialog
+import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.queue_it.androidsdk.Error
@@ -181,7 +181,12 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                             healthCardDto.federalPass = healthCard.federalPass
 
                             if (pair.second as Boolean) {
-                                requireContext().showCardReplacementDialog() {
+                                requireContext().showAlertDialog(
+                                    title = getString(R.string.replace_health_pass_title),
+                                    message = getString(R.string.replace_health_pass_message),
+                                    positiveButtonText = getString(R.string.replace),
+                                    negativeButtonText = getString(R.string.not_now)
+                                ) {
                                     viewModel.replaceExitingHealthPass(healthCard)
                                         .invokeOnCompletion {
                                             showFederalTravelPass()

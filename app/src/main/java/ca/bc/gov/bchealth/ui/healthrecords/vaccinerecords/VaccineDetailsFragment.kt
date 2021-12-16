@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentVaccineDetailsBinding
 import ca.bc.gov.bchealth.model.ImmunizationStatus
-import ca.bc.gov.bchealth.utils.showHealthRecordDeleteDialog
+import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -73,7 +73,12 @@ class VaccineDetailsFragment : Fragment(R.layout.fragment_vaccine_details) {
             tvRightOption.text = getString(R.string.delete)
             tvRightOption.setOnClickListener {
 
-                requireContext().showHealthRecordDeleteDialog {
+                requireContext().showAlertDialog(
+                    title = getString(R.string.delete_hc_record_title),
+                    message = getString(R.string.delete_individual_vaccine_record_message),
+                    positiveButtonText = getString(R.string.delete),
+                    negativeButtonText = getString(R.string.not_now)
+                ) {
 
                     binding.progressBar.visibility = View.VISIBLE
 

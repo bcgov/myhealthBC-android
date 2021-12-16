@@ -25,9 +25,9 @@ import ca.bc.gov.bchealth.barcodeanalyzer.BarcodeAnalyzer
 import ca.bc.gov.bchealth.barcodeanalyzer.ScanningResultListener
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.databinding.FragmentBarcodeScannerBinding
+import ca.bc.gov.bchealth.repository.ErrorData
+import ca.bc.gov.bchealth.repository.Response
 import ca.bc.gov.bchealth.ui.mycards.MyCardsViewModel
-import ca.bc.gov.bchealth.utils.ErrorData
-import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder

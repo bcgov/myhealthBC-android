@@ -15,8 +15,8 @@ import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 import ca.bc.gov.bchealth.model.healthrecords.IndividualRecord
 import ca.bc.gov.bchealth.model.healthrecords.toHealthRecord
+import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.viewBindings
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -53,6 +53,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         }
 
         binding.toolbar.tvTitle.visibility = View.VISIBLE
+        binding.toolbar.tvTitle.isSelected = true
         binding.toolbar.tvTitle.text = args.healthRecord.name.plus(
             getString(R.string.member_records_toolbar_title)
         )
@@ -133,22 +134,28 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun showHealthRecordDeleteDialog(individualRecord: IndividualRecord) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.delete_hc_record_title)
-            .setMessage(R.string.delete_individual_hc_record_message)
-            .setCancelable(false)
-            .setPositiveButton(R.string.delete) { dialog, _ ->
-                if (!individualRecord.covidTestReportId.isNullOrBlank()) {
-                    viewModel.deleteCovidTestResult(individualRecord.covidTestReportId)
-                } else {
-                    viewModel.deleteVaccineRecord(individualRecord.healthPassId)
-                }
-                dialog.dismiss()
+
+        if (!individualRecord.covidTestReportId.isNullOrBlank()) {
+
+            requireContext().showAlertDialog(
+                title = getString(R.string.delete_hc_record_title),
+                message = getString(R.string.delete_individual_covid_test_record_message),
+                positiveButtonText = getString(R.string.delete),
+                negativeButtonText = getString(R.string.not_now)
+            ) {
+                viewModel.deleteCovidTestResult(individualRecord.covidTestReportId)
             }
-            .setNegativeButton(R.string.cancel) { dialog, _ ->
-                dialog.dismiss()
+        } else {
+
+            requireContext().showAlertDialog(
+                title = getString(R.string.delete_hc_record_title),
+                message = getString(R.string.delete_individual_vaccine_record_message),
+                positiveButtonText = getString(R.string.delete),
+                negativeButtonText = getString(R.string.not_now)
+            ) {
+                viewModel.deleteVaccineRecord(individualRecord.healthPassId)
             }
-            .show()
+        }
     }
 
     private fun navigateToCovidTestResultPage(reportId: String) {

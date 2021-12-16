@@ -12,8 +12,6 @@ import ca.bc.gov.bchealth.model.network.responses.covidtests.ResourcePayload
 import ca.bc.gov.bchealth.model.network.responses.covidtests.ResponseCovidTests
 import ca.bc.gov.bchealth.services.LaboratoryServices
 import ca.bc.gov.bchealth.ui.healthrecords.IndividualHealthRecordViewModel
-import ca.bc.gov.bchealth.utils.ErrorData
-import ca.bc.gov.bchealth.utils.Response
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import ca.bc.gov.bchealth.utils.getDateForIndividualCovidTestResult
 import ca.bc.gov.bchealth.utils.getDateForIndividualVaccineRecord
@@ -273,6 +271,9 @@ class HealthRecordsRepository @Inject constructor(
                 }
             }
 
+            if (!checkForKnownErrors(responseCovidTests))
+                return
+
             if (!validateResourcePayload(responseCovidTests?.resourcePayload)) {
                 responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
                 break@loop
@@ -364,6 +365,27 @@ class HealthRecordsRepository @Inject constructor(
         val responseCovidTests = result.body()
         if (responseCovidTests?.resourcePayload == null)
             return false
+
+        return true
+    }
+
+    private suspend fun checkForKnownErrors(responseCovidTests: ResponseCovidTests?): Boolean {
+
+        if (responseCovidTests?.resultError != null) {
+
+            when (responseCovidTests.resultError.actionCode) {
+
+                ErrorCodes.MISMATCH.name -> {
+                    responseMutableSharedFlow.emit(Response.Error(ErrorData.MISMATCH_ERROR))
+                    return false
+                }
+
+                ErrorCodes.INVALID.name -> {
+                    responseMutableSharedFlow.emit(Response.Error(ErrorData.INVALID_PHN))
+                    return false
+                }
+            }
+        }
 
         return true
     }

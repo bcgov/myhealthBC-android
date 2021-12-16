@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.utils
+package ca.bc.gov.bchealth.repository
 
 /*
 * Created by amit_metri on 26,October,2021
@@ -24,5 +24,11 @@ enum class ErrorData(var errorTitle: String?, var errorMessage: String?) {
         "Data mismatch",
         "The information you entered does not match our records. " +
             "Please check and try again."
+    ),
+
+    INVALID_PHN(
+        "Error!",
+        "There was an error with your Personal Health Number. " +
+            "Please check that it is correct and try again."
     ),
 }

@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.utils
+package ca.bc.gov.bchealth.repository
 
 /*
 * Created by amit_metri on 19,October,2021

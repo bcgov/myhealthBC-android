@@ -26,11 +26,11 @@ import ca.bc.gov.bchealth.di.ApiClientModule
 import ca.bc.gov.bchealth.http.MustBeQueued
 import ca.bc.gov.bchealth.model.ImmunizationRecord
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
-import ca.bc.gov.bchealth.utils.Response
+import ca.bc.gov.bchealth.repository.Response
 import ca.bc.gov.bchealth.utils.adjustOffset
 import ca.bc.gov.bchealth.utils.isOnline
 import ca.bc.gov.bchealth.utils.redirect
-import ca.bc.gov.bchealth.utils.showCardReplacementDialog
+import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.FetchVaccineDataViewModel
@@ -524,7 +524,12 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
     }
 
     private fun showCardReplacement(healthCard: HealthCard) {
-        requireContext().showCardReplacementDialog {
+        requireContext().showAlertDialog(
+            title = getString(R.string.replace_health_pass_title),
+            message = getString(R.string.replace_health_pass_message),
+            positiveButtonText = getString(R.string.replace),
+            negativeButtonText = getString(R.string.not_now)
+        ) {
             viewModel.replaceExitingHealthPass(healthCard).invokeOnCompletion {
                 navigateToIndividualRecords(healthCard)
             }
