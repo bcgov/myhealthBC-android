@@ -1,7 +1,7 @@
 package ca.bc.gov.bchealth.data.local
 
 import androidx.room.TypeConverter
-import java.util.Date
+import java.time.LocalDateTime
 
 /*
 * Created by amit_metri on 26,November,2021
@@ -9,12 +9,16 @@ import java.util.Date
 class Converters {
 
     @TypeConverter
-    fun fromTimestamp(value: Long?): Date? {
-        return value?.let { Date(it) }
+    fun toDate(dateString: String?): LocalDateTime? {
+        return if (dateString == null) {
+            null
+        } else {
+            LocalDateTime.parse(dateString)
+        }
     }
 
     @TypeConverter
-    fun dateToTimestamp(date: Date?): Long? {
-        return date?.time
+    fun toDateString(date: LocalDateTime?): String? {
+        return date?.toString()
     }
 }

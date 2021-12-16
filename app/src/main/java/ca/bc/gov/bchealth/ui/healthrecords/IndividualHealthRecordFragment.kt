@@ -11,8 +11,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.data.local.entity.CovidTestResult
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
-import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 import ca.bc.gov.bchealth.model.healthrecords.IndividualRecord
 import ca.bc.gov.bchealth.model.healthrecords.toHealthRecord
 import ca.bc.gov.bchealth.utils.showAlertDialog
@@ -31,8 +31,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private lateinit var individualHealthRecordAdapter: IndividualHealthRecordAdapter
 
     private val viewModel: IndividualHealthRecordViewModel by viewModels()
-
-    private lateinit var individualHealthRecord: HealthRecord
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -113,7 +111,11 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             onItemClickListener = { individualRecord ->
 
                 if (!individualRecord.covidTestReportId.isNullOrBlank()) {
-                    navigateToCovidTestResultPage(individualRecord.covidTestReportId)
+                    navigateToCovidTestResultPage(
+                        individualRecord.covidTestResultList.first {
+                            it.reportId == individualRecord.covidTestReportId
+                        }
+                    )
                 } else {
                     val action = IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordFragmentToVaccineDetailsFragment(
@@ -158,15 +160,12 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         }
     }
 
-    private fun navigateToCovidTestResultPage(reportId: String) {
-        individualHealthRecord.covidTestResultList.forEach { covidTestResult ->
-            if (covidTestResult.reportId == reportId) {
-                val action = IndividualHealthRecordFragmentDirections
-                    .actionIndividualHealthRecordFragmentToCovidTestResultFragment(
-                        covidTestResult
-                    )
-                findNavController().navigate(action)
-            }
-        }
+    private fun navigateToCovidTestResultPage(covidTestResult: CovidTestResult) {
+
+        val action = IndividualHealthRecordFragmentDirections
+            .actionIndividualHealthRecordFragmentToCovidTestResultFragment(
+                covidTestResult
+            )
+        findNavController().navigate(action)
     }
 }

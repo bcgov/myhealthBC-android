@@ -372,6 +372,7 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
 
                     healthRecords?.let {
                         navigate(it, patientDisplayName)
+                        this.cancel()
                     }
                 }
             }

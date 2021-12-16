@@ -4,7 +4,7 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
-import java.util.Date
+import java.time.LocalDateTime
 
 /*
 * Created by amit_metri on 26,November,2021
@@ -21,8 +21,8 @@ class CovidTestResult(
     val reportId: String,
     var patientDisplayName: String,
     val lab: String,
-    val collectionDateTime: Date,
-    val resultDateTime: Date,
+    val collectionDateTime: LocalDateTime,
+    val resultDateTime: LocalDateTime,
     val testName: String,
     val testType: String,
     val testStatus: String,

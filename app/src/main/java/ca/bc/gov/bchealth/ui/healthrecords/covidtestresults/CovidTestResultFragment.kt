@@ -59,7 +59,7 @@ class CovidTestResultFragment : Fragment(R.layout.fragment_covid_test_result) {
                 .getDateForCovidTestResults()
             tvTestStatus.text = covidTestResult.testStatus
             tvTestResult2.text = covidTestResult.testOutcome
-            tvTypeName.text = covidTestResult.testType
+            tvTypeName.text = covidTestResult.testName
             tvProviderClinic.text = covidTestResult.lab
         }
 
