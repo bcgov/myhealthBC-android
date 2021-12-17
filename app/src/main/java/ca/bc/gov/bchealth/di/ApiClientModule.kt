@@ -62,7 +62,7 @@ class ApiClientModule {
                 )
             )
             .addInterceptor(interceptor = interceptor)
-            .hostnameVerifier { p0, p1 -> true }
+            .hostnameVerifier { _, _ -> true }
 
         val okHttpClient = builder.build()
 

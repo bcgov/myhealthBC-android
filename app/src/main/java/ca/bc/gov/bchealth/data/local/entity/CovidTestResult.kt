@@ -29,4 +29,5 @@ class CovidTestResult(
     val testOutcome: String,
     val resultTitle: String,
     val resultLink: String,
+    val combinedReportId: String,
 ) : Parcelable

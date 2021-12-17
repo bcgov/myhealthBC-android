@@ -8,7 +8,6 @@ import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 import ca.bc.gov.bchealth.model.healthrecords.IndividualRecord
 import ca.bc.gov.bchealth.model.healthrecords.VaccineData
 import ca.bc.gov.bchealth.model.network.responses.covidtests.Record
-import ca.bc.gov.bchealth.model.network.responses.covidtests.ResourcePayload
 import ca.bc.gov.bchealth.model.network.responses.covidtests.ResponseCovidTests
 import ca.bc.gov.bchealth.services.LaboratoryServices
 import ca.bc.gov.bchealth.ui.healthrecords.IndividualHealthRecordViewModel
@@ -233,124 +232,40 @@ class HealthRecordsRepository @Inject constructor(
         return vaccineDataList
     }
 
+    private var retryCount = 0
+
     /*
     * Fetch the covid test result
     * */
     suspend fun getCovidTestResult(phn: String, dob: String, collectionDate: String) {
 
+        retryCount = 0
+
         responseMutableSharedFlow.emit(Response.Loading())
 
-        loop@ for (i in RETRY_COUNT downTo 1) {
+        val map = mapOf(
+            "phn" to phn,
+            "dob" to dob,
+            "collectionDate" to collectionDate
+        )
 
-            val result = laboratoryServices.getCovidTests(
-                phn, dob, collectionDate
-            )
-
-            if (!validateResponseCovidTests(result)) {
-                responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
-                break@loop
-            }
-
-            val responseCovidTests = result.body()
-
-            /*
-             * Loaded field will return false when HGS will respond with cache data.
-             * HGS response also provide the retry time after which updated data is available.
-             * */
-            if (responseCovidTests?.resourcePayload?.loaded == false) {
-
-                responseCovidTests.resourcePayload.retryin.toLong().let {
-                    delay(it)
-                }
-
-                if (i == 1) {
-                    responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
-                    break@loop
-                } else {
-                    continue@loop
-                }
-            }
-
-            if (!checkForKnownErrors(responseCovidTests))
-                return
-
-            if (!validateResourcePayload(responseCovidTests?.resourcePayload)) {
-                responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
-                break@loop
-            }
-
-            val covidTestResults: MutableList<CovidTestResult> = mutableListOf()
-            responseCovidTests?.resourcePayload?.records?.forEach { record ->
-                covidTestResults.add(record.parseToCovidTestResult())
-            }
-
-            saveCovidTestResult(covidTestResults)
-        }
-
-        // TODO: 08/12/21 Remove dummy data once API starts working
-        /*saveCovidTestResult(
-            listOf(
-                CovidTestResult(
-                    toString(),
-                    "GREG Lozier",
-                    "Freshworks lab",
-                    Date.valueOf("2021-10-10"),
-                    Date.valueOf("2021-10-11"),
-                    "Covid Test",
-                    "Test Type",
-                    "COMPLETED",
-                    "POSITIVE",
-                    "Tested Positive",
-                    "Tested positive description",
-                )
-            )
-        )*/
+        initiateNetWorkCall(map)
     }
 
-    private fun validateRecords(records: List<Record>): Boolean {
+    private suspend fun initiateNetWorkCall(map: Map<String, String>) {
 
-        records.forEach { record ->
+        val result = laboratoryServices.getCovidTests(
+            map.getValue("phn"),
+            map.getValue("dob"),
+            map.getValue("collectionDate")
+        )
 
-            record.apply {
-                if (collectionDateTime.isNullOrEmpty() ||
-                    lab.isNullOrEmpty() ||
-                    patientDisplayName.isNullOrEmpty() ||
-                    reportId.isNullOrEmpty() ||
-                    resultDateTime.isNullOrEmpty() ||
-                    // resultDescription.isNullOrEmpty() ||
-                    resultLink.isNullOrEmpty() ||
-                    resultTitle.isNullOrEmpty() ||
-                    testName.isNullOrEmpty() ||
-                    testOutcome.isNullOrEmpty() ||
-                    testStatus.isNullOrEmpty()
-                    // testType.isNullOrEmpty()
-                ) {
-                    return false
-                }
-
-                if (collectionDateTime.getLocalDateTimeFromAPIResponse() == null ||
-                    resultDateTime.getLocalDateTimeFromAPIResponse() == null
-                ) {
-                    return false
-                }
-            }
+        if (!validateResponseCovidTests(result)) {
+            responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
+            return
         }
 
-        return true
-    }
-
-    private fun validateResourcePayload(resourcePayload: ResourcePayload?): Boolean {
-        if (resourcePayload?.records.isNullOrEmpty()) {
-            return false
-        }
-
-        resourcePayload?.records?.let {
-            if (!validateRecords(it)) {
-                return false
-            }
-        }
-
-        return true
+        checkWhetherRetryRequired(result.body(), map)
     }
 
     private fun validateResponseCovidTests(result: retrofit2.Response<ResponseCovidTests>):
@@ -369,7 +284,33 @@ class HealthRecordsRepository @Inject constructor(
         return true
     }
 
-    private suspend fun checkForKnownErrors(responseCovidTests: ResponseCovidTests?): Boolean {
+    private suspend fun checkWhetherRetryRequired(
+        responseCovidTests: ResponseCovidTests?,
+        map: Map<String, String>
+    ) {
+
+        /*
+        * Loaded field will return false when HGS will respond with cache data.
+        * HGS response also provide the retry time after which updated data is available.
+        * */
+        if (responseCovidTests?.resourcePayload?.loaded == false) {
+
+            retryCount++
+            if (retryCount == RETRY_COUNT) {
+                responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
+                return
+            } else {
+                responseCovidTests.resourcePayload.retryin.toLong().let {
+                    delay(it)
+                    initiateNetWorkCall(map)
+                }
+            }
+        } else {
+            checkForKnownErrors(responseCovidTests)
+        }
+    }
+
+    private suspend fun checkForKnownErrors(responseCovidTests: ResponseCovidTests?) {
 
         if (responseCovidTests?.resultError != null) {
 
@@ -377,17 +318,88 @@ class HealthRecordsRepository @Inject constructor(
 
                 ErrorCodes.MISMATCH.name -> {
                     responseMutableSharedFlow.emit(Response.Error(ErrorData.MISMATCH_ERROR))
-                    return false
                 }
 
                 ErrorCodes.INVALID.name -> {
                     responseMutableSharedFlow.emit(Response.Error(ErrorData.INVALID_PHN))
+                }
+
+                else -> {
+                    validateResourcePayload(responseCovidTests)
+                }
+            }
+        } else {
+            validateResourcePayload(responseCovidTests)
+        }
+    }
+
+    private suspend fun validateResourcePayload(responseCovidTests: ResponseCovidTests?) {
+
+        if (responseCovidTests?.resourcePayload?.records.isNullOrEmpty()) {
+            responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
+            return
+        }
+
+        responseCovidTests?.resourcePayload?.records?.let {
+            if (!validateRecords(it)) {
+                responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
+                return
+            }
+        }
+
+        val covidTestResults: MutableList<CovidTestResult> = mutableListOf()
+        var combinedReportId = ""
+
+        responseCovidTests?.resourcePayload?.records?.forEach {
+            combinedReportId = combinedReportId.plus(it.reportId)
+        }
+        responseCovidTests?.resourcePayload?.records?.forEach { record ->
+            covidTestResults.add(record.parseToCovidTestResult(combinedReportId))
+        }
+
+        checkForDuplicateRecord(covidTestResults, combinedReportId)
+    }
+
+    private fun validateRecords(records: List<Record>): Boolean {
+
+        records.forEach { record ->
+
+            record.apply {
+                if (collectionDateTime.isNullOrEmpty() ||
+                    lab.isNullOrEmpty() ||
+                    patientDisplayName.isNullOrEmpty() ||
+                    reportId.isNullOrEmpty() ||
+                    resultDateTime.isNullOrEmpty() ||
+                    resultLink.isNullOrEmpty() ||
+                    resultTitle.isNullOrEmpty() ||
+                    testName.isNullOrEmpty() ||
+                    testOutcome.isNullOrEmpty() ||
+                    testStatus.isNullOrEmpty()
+                ) {
+                    return false
+                }
+
+                if (collectionDateTime.getLocalDateTimeFromAPIResponse() == null ||
+                    resultDateTime.getLocalDateTimeFromAPIResponse() == null
+                ) {
                     return false
                 }
             }
         }
 
         return true
+    }
+
+    private suspend fun checkForDuplicateRecord(
+        covidTestResults: MutableList<CovidTestResult>,
+        combinedReportId: String
+    ) {
+        if (dataSource.getMatchingCovidTestResultsCount(combinedReportId) > 0) {
+            responseMutableSharedFlow.emit(Response.Error(ErrorData.DUPLICATE_RECORD))
+            return
+        } else {
+            saveCovidTestResult(covidTestResults)
+        }
     }
 
     /*
@@ -424,7 +436,7 @@ enum class HealthRecordType {
     COVID_TEST_RECORD
 }
 
-private fun Record.parseToCovidTestResult(): CovidTestResult {
+private fun Record.parseToCovidTestResult(combinedReportId: String): CovidTestResult {
 
     return CovidTestResult(
         this.reportId.toString(),
@@ -437,6 +449,7 @@ private fun Record.parseToCovidTestResult(): CovidTestResult {
         this.testStatus.toString(),
         this.testOutcome.toString(),
         this.resultTitle.toString(),
-        this.resultLink.toString()
+        this.resultLink.toString(),
+        combinedReportId
     )
 }

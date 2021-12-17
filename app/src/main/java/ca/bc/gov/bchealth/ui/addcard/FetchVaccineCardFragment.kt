@@ -342,6 +342,9 @@ class FetchVaccineCardFragment : Fragment(R.layout.fragment_fetch_vaccine_card) 
     }
 
     private fun showLoader(value: Boolean) {
+
+        binding.btnSubmit.isEnabled = !value
+
         if (value)
             binding.progressBar.visibility = View.VISIBLE
         else

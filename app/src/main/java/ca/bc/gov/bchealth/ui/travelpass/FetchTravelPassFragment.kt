@@ -121,7 +121,7 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                             }
                         } else {
                             e.printStackTrace()
-                            binding.progressBar.visibility = View.INVISIBLE
+                            showLoader(false)
                             requireContext().showError(
                                 getString(R.string.error),
                                 getString(R.string.error_message)
@@ -174,7 +174,7 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                 viewModel.responseSharedFlow.collect {
                     when (it) {
                         is Response.Success -> {
-                            binding.progressBar.visibility = View.INVISIBLE
+                            showLoader(false)
 
                             val pair = it.data as Pair<*, *>
                             val healthCard = pair.first as HealthCard
@@ -198,19 +198,29 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                         }
                         is Response.Error -> {
                             ApiClientModule.queueItToken = ""
-                            binding.progressBar.visibility = View.INVISIBLE
+                            showLoader(false)
                             requireContext().showError(
                                 it.errorData?.errorTitle.toString(),
                                 it.errorData?.errorMessage.toString()
                             )
                         }
                         is Response.Loading -> {
-                            binding.progressBar.visibility = View.VISIBLE
+                            showLoader(true)
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun showLoader(value: Boolean) {
+
+        binding.btnSubmit.isEnabled = !value
+
+        if (value)
+            binding.progressBar.visibility = View.VISIBLE
+        else
+            binding.progressBar.visibility = View.INVISIBLE
     }
 
     /*
@@ -297,7 +307,7 @@ class FetchTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
                                 )
                             } catch (e: Exception) {
                                 e.printStackTrace()
-                                binding.progressBar.visibility = View.INVISIBLE
+                                showLoader(false)
                                 requireContext().showError(
                                     getString(R.string.error),
                                     getString(R.string.error_message)
