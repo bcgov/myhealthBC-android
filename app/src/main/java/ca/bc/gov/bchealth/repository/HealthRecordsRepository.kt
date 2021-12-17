@@ -15,8 +15,8 @@ import ca.bc.gov.bchealth.ui.healthrecords.IndividualHealthRecordViewModel
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import ca.bc.gov.bchealth.utils.getDateForIndividualCovidTestResult
 import ca.bc.gov.bchealth.utils.getDateForIndividualVaccineRecord
-import ca.bc.gov.bchealth.utils.getDateOfCollection
 import ca.bc.gov.bchealth.utils.getIssueDate
+import ca.bc.gov.bchealth.utils.getLocalDateTimeFromAPIResponse
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -73,34 +73,34 @@ class HealthRecordsRepository @Inject constructor(
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
+                }
 
-                    val filteredResults = covidTestResults.filter { covidTestResult ->
-                        (
-                            !individualRecords.map { record -> record.name.lowercase() }
-                                .contains(covidTestResult.patientDisplayName.lowercase())
-                            )
-                    }
-
-                    filteredResults.forEach { result ->
-                        individualRecords.add(
-                            IndividualRecord(
-                                "Covid-19 Test Result",
-                                result.testStatus
-                                    .plus(IndividualHealthRecordViewModel.bulletPoint)
-                                    .plus(
-                                        result.resultDateTime
-                                            .getDateForIndividualCovidTestResult()
-                                    ),
-                                result.patientDisplayName,
-                                null,
-                                "",
-                                HealthRecordType.COVID_TEST_RECORD,
-                                result.reportId,
-                                vaccineDataList = mutableListOf(),
-                                covidTestResultList = filteredResults
-                            )
+                val filteredResults = covidTestResults.filter { covidTestResult ->
+                    (
+                        !individualRecords.map { record -> record.name.lowercase() }
+                            .contains(covidTestResult.patientDisplayName.lowercase())
                         )
-                    }
+                }
+
+                filteredResults.forEach { result ->
+                    individualRecords.add(
+                        IndividualRecord(
+                            "Covid-19 Test Result",
+                            result.testStatus
+                                .plus(IndividualHealthRecordViewModel.bulletPoint)
+                                .plus(
+                                    result.resultDateTime
+                                        .getDateForIndividualCovidTestResult()
+                                ),
+                            result.patientDisplayName,
+                            null,
+                            "",
+                            HealthRecordType.COVID_TEST_RECORD,
+                            result.reportId,
+                            vaccineDataList = mutableListOf(),
+                            covidTestResultList = filteredResults
+                        )
+                    )
                 }
 
                 individualRecords
@@ -292,7 +292,7 @@ class HealthRecordsRepository @Inject constructor(
             listOf(
                 CovidTestResult(
                     toString(),
-                    "USER NAME",
+                    "GREG Lozier",
                     "Freshworks lab",
                     Date.valueOf("2021-10-10"),
                     Date.valueOf("2021-10-11"),
@@ -302,7 +302,6 @@ class HealthRecordsRepository @Inject constructor(
                     "POSITIVE",
                     "Tested Positive",
                     "Tested positive description",
-                    "link"
                 )
             )
         )*/
@@ -318,21 +317,22 @@ class HealthRecordsRepository @Inject constructor(
                     patientDisplayName.isNullOrEmpty() ||
                     reportId.isNullOrEmpty() ||
                     resultDateTime.isNullOrEmpty() ||
-                    resultDescription.isNullOrEmpty() ||
+                    // resultDescription.isNullOrEmpty() ||
                     resultLink.isNullOrEmpty() ||
                     resultTitle.isNullOrEmpty() ||
                     testName.isNullOrEmpty() ||
                     testOutcome.isNullOrEmpty() ||
-                    testStatus.isNullOrEmpty() ||
-                    testType.isNullOrEmpty()
+                    testStatus.isNullOrEmpty()
+                    // testType.isNullOrEmpty()
                 ) {
                     return false
                 }
 
-                if (resultDateTime.getDateOfCollection() == null ||
-                    testOutcome.getDateOfCollection() == null
-                )
+                if (collectionDateTime.getLocalDateTimeFromAPIResponse() == null ||
+                    resultDateTime.getLocalDateTimeFromAPIResponse() == null
+                ) {
                     return false
+                }
             }
         }
 
@@ -430,8 +430,8 @@ private fun Record.parseToCovidTestResult(): CovidTestResult {
         this.reportId.toString(),
         this.patientDisplayName.toString(),
         this.lab.toString(),
-        this.collectionDateTime?.getDateOfCollection()!!,
-        this.resultDateTime?.getDateOfCollection()!!,
+        this.collectionDateTime?.getLocalDateTimeFromAPIResponse()!!,
+        this.resultDateTime?.getLocalDateTimeFromAPIResponse()!!,
         this.testName.toString(),
         this.testType.toString(),
         this.testStatus.toString(),

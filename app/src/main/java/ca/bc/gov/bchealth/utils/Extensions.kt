@@ -19,9 +19,9 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.mycards.qrgen.QrCode
 import ca.bc.gov.bchealth.ui.mycards.qrgen.QrSegment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
@@ -262,11 +262,10 @@ fun Context.showAlertDialog(
 /*
 * For showing date on individual covid test record
 * */
-fun Date.getDateForIndividualCovidTestResult(): String {
+fun LocalDateTime.getDateForIndividualCovidTestResult(): String {
+
     return try {
-        val date1 = Date(this.time)
-        val format = SimpleDateFormat("MMM dd, y", Locale.CANADA)
-        format.format(date1)
+        this.format(DateTimeFormatter.ofPattern("MMM dd, y")).toString()
     } catch (e: Exception) {
         e.printStackTrace()
         ""
@@ -276,10 +275,9 @@ fun Date.getDateForIndividualCovidTestResult(): String {
 /*
 * For Showing date on covid test results screen
 * */
-fun Date.getDateForCovidTestResults(): String {
+fun LocalDateTime.getDateForCovidTestResults(): String {
     return try {
-        val format = SimpleDateFormat("MMMM-dd-y, HH:mm", Locale.CANADA)
-        format.format(this)
+        this.format(DateTimeFormatter.ofPattern("MMMM-dd-y, HH:mm")).toString()
     } catch (e: java.lang.Exception) {
         e.printStackTrace()
         ""
@@ -287,18 +285,18 @@ fun Date.getDateForCovidTestResults(): String {
 }
 
 /*
-* Get date of collection from covid test result
+* Convert String date time value to LocalDateTime to save in DB table.
 * */
-fun String.getDateOfCollection(): Date? {
-    val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+fun String.getLocalDateTimeFromAPIResponse(): LocalDateTime? {
 
-    var date: Date? = null
-    try {
-        date = input.parse(this)
-    } catch (e: ParseException) {
+    return try {
+        val format = "yyyy-MM-dd'T'HH:mm:ss"
+        val formatter = DateTimeFormatter.ofPattern(format)
+        LocalDateTime.parse(this, formatter)
+    } catch (e: java.lang.Exception) {
         e.printStackTrace()
+        null
     }
-    return date
 }
 
 /*
