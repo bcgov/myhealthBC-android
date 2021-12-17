@@ -15,7 +15,7 @@ enum class ErrorData(var errorTitle: String?, var errorMessage: String?) {
         "Please use an official BC Vaccine Card QR Code."
     ),
 
-    EXISTING_QR(
+    DUPLICATE_RECORD(
         "Duplicate!",
         "This record is already added."
     ),

@@ -269,7 +269,7 @@ class CardRepository @Inject constructor(
             val existingImmuRecord = shcDecoder.getImmunizationStatus(existingHealthCard.uri)
 
             if (existingImmuRecord.issueDate >= healthPassToBeInserted.issueDate) {
-                responseMutableSharedFlow.emit(Response.Error(ErrorData.EXISTING_QR))
+                responseMutableSharedFlow.emit(Response.Error(ErrorData.DUPLICATE_RECORD))
             } else {
                 existingHealthCard.uri = healthCard.uri
                 existingHealthCard.federalPass = healthCard.federalPass

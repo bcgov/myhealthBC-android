@@ -22,6 +22,12 @@ interface CovidTestResultDao {
     @Query("SELECT * FROM covid_test_results order by resultDateTime desc")
     fun getCovidTestResults(): Flow<List<CovidTestResult>>
 
+    @Query(
+        "SELECT count(*) FROM covid_test_results " +
+            "WHERE combinedReportId = :combinedReportId"
+    )
+    suspend fun getMatchingCovidTestResultsCount(combinedReportId: String): Int
+
     @Query("DELETE from covid_test_results")
     suspend fun deleteAllCovidTestResults(): Int
 }

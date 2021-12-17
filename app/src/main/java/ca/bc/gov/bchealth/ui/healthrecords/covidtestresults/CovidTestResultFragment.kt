@@ -15,7 +15,6 @@ import ca.bc.gov.bchealth.databinding.FragmentCovidTestResultBinding
 import ca.bc.gov.bchealth.ui.healthrecords.covidtestresults.CovidTestResultFragment.CovidTestResult.Cancelled
 import ca.bc.gov.bchealth.ui.healthrecords.covidtestresults.CovidTestResultFragment.CovidTestResult.Indeterminate
 import ca.bc.gov.bchealth.ui.healthrecords.covidtestresults.CovidTestResultFragment.CovidTestResult.Negative
-import ca.bc.gov.bchealth.ui.healthrecords.covidtestresults.CovidTestResultFragment.CovidTestResult.Pending
 import ca.bc.gov.bchealth.ui.healthrecords.covidtestresults.CovidTestResultFragment.CovidTestResult.Positive
 import ca.bc.gov.bchealth.utils.getDateForCovidTestResults
 import ca.bc.gov.bchealth.utils.showAlertDialog
@@ -70,9 +69,6 @@ class CovidTestResultFragment : Fragment(R.layout.fragment_covid_test_result) {
         covidTestResult: ca.bc.gov.bchealth.data.local.entity.CovidTestResult
     ) {
         when (covidTestResult.testOutcome) {
-            Pending.toString() -> {
-                setPendingState()
-            }
             Indeterminate.toString() -> {
                 setIndeterminateState()
             }
@@ -84,6 +80,9 @@ class CovidTestResultFragment : Fragment(R.layout.fragment_covid_test_result) {
             }
             Positive.toString() -> {
                 setPositiveState()
+            }
+            else -> {
+                setPendingState()
             }
         }
     }
