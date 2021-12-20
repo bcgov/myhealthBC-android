@@ -61,7 +61,6 @@ class HealthRecordsRepository @Inject constructor(
                                 data.status,
                                 data.issueDate.getIssueDate(),
                                 HealthRecordType.VACCINE_RECORD,
-                                null,
                                 healthPass.id,
                                 getIndividualVaccinationData(data),
                                 covidTestResults.filter {
@@ -79,25 +78,25 @@ class HealthRecordsRepository @Inject constructor(
                         !individualRecords.map { record -> record.name.lowercase() }
                             .contains(covidTestResult.patientDisplayName.lowercase())
                         )
-                }
+                }.groupBy { it.combinedReportId }
 
                 filteredResults.forEach { result ->
+
                     individualRecords.add(
                         IndividualRecord(
                             "Covid-19 Test Result",
-                            result.testStatus
+                            result.value.first().testStatus
                                 .plus(IndividualHealthRecordViewModel.bulletPoint)
                                 .plus(
-                                    result.resultDateTime
+                                    result.value.first().resultDateTime
                                         .getDateForIndividualCovidTestResult()
                                 ),
-                            result.patientDisplayName,
+                            result.value.first().patientDisplayName,
                             null,
                             "",
                             HealthRecordType.COVID_TEST_RECORD,
-                            result.reportId,
                             vaccineDataList = mutableListOf(),
-                            covidTestResultList = filteredResults
+                            covidTestResultList = result.value
                         )
                     )
                 }

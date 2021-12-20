@@ -16,8 +16,8 @@ class CovidTestResultViewModel @Inject constructor(
     private val dataSource: LocalDataSource
 ) : ViewModel() {
 
-    fun deleteCovidTestResult(reportId: String) = viewModelScope.launch {
-        dataSource.deleteCovidTestResult(reportId)
+    fun deleteCovidTestResult(combinedReportId: String) = viewModelScope.launch {
+        dataSource.deleteCovidTestResult(combinedReportId)
         delay(1000)
     }
 }

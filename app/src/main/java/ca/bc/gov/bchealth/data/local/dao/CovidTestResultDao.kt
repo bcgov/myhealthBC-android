@@ -16,8 +16,8 @@ interface CovidTestResultDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCovidTests(covidTestResults: List<CovidTestResult>)
 
-    @Query("DELETE FROM covid_test_results WHERE reportId = :reportId")
-    suspend fun delete(reportId: String)
+    @Query("DELETE FROM covid_test_results WHERE combinedReportId = :combinedReportId")
+    suspend fun delete(combinedReportId: String)
 
     @Query("SELECT * FROM covid_test_results order by resultDateTime desc")
     fun getCovidTestResults(): Flow<List<CovidTestResult>>

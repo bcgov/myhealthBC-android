@@ -1,24 +1,18 @@
 package ca.bc.gov.bchealth.ui.healthrecords.covidtestresults
 
-import android.graphics.Color
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.BulletSpan
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.data.local.entity.CovidTestResult
 import ca.bc.gov.bchealth.databinding.FragmentCovidTestResultBinding
-import ca.bc.gov.bchealth.ui.healthrecords.covidtestresults.CovidTestResultFragment.CovidTestResult.Cancelled
-import ca.bc.gov.bchealth.ui.healthrecords.covidtestresults.CovidTestResultFragment.CovidTestResult.Indeterminate
-import ca.bc.gov.bchealth.ui.healthrecords.covidtestresults.CovidTestResultFragment.CovidTestResult.Negative
-import ca.bc.gov.bchealth.ui.healthrecords.covidtestresults.CovidTestResultFragment.CovidTestResult.Positive
-import ca.bc.gov.bchealth.utils.getDateForCovidTestResults
 import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.viewBindings
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -35,140 +29,27 @@ class CovidTestResultFragment : Fragment(R.layout.fragment_covid_test_result) {
 
         setToolBar()
 
-        initUI()
+        initUi()
     }
 
-    private fun initUI() {
+    private fun initUi() {
 
-        val covidTestResult = args.covidTestResult
+        val covidTestResultsAdapter = CovidTestResultsAdapter(
+            this,
+            args.covidTestResultList.toList()
+        )
 
-        binding.apply {
-            tvFullName.text = covidTestResult.patientDisplayName
-            tvTestResult.text = covidTestResult.testOutcome
-            tvTestedOn.text =
-                getString(R.string.tested_on)
-                    .plus(" ")
-                    .plus(
-                        covidTestResult.resultDateTime
-                            .getDateForCovidTestResults()
-                    )
+        binding.viewpagerCovidTestResults.adapter = covidTestResultsAdapter
 
-            tvName.text = covidTestResult.patientDisplayName
-            tvDot.text = covidTestResult.resultDateTime
-                .getDateForCovidTestResults()
-            tvTestStatus.text = covidTestResult.testStatus
-            tvTestResult2.text = covidTestResult.testOutcome
-            tvTypeName.text = covidTestResult.testName
-            tvProviderClinic.text = covidTestResult.lab
+        if (args.covidTestResultList.size > 1) {
+
+            binding.tabCovidTestResults.visibility = View.VISIBLE
+
+            TabLayoutMediator(
+                binding.tabCovidTestResults,
+                binding.viewpagerCovidTestResults
+            ) { _, _ -> }.attach()
         }
-
-        getCovidTestStatus(covidTestResult)
-    }
-
-    private fun getCovidTestStatus(
-        covidTestResult: ca.bc.gov.bchealth.data.local.entity.CovidTestResult
-    ) {
-        when (covidTestResult.testOutcome) {
-            Indeterminate.toString() -> {
-                setIndeterminateState()
-            }
-            Cancelled.toString() -> {
-                setCancelledState()
-            }
-            Negative.toString() -> {
-                setNegativeState()
-            }
-            Positive.toString() -> {
-                setPositiveState()
-            }
-            else -> {
-                setPendingState()
-            }
-        }
-    }
-
-    private fun setPendingState() {
-        binding.apply {
-            tvFullName.visibility = View.GONE
-            tvTestResult.visibility = View.GONE
-            tvTestedOn.visibility = View.GONE
-            tvInfo.visibility = View.VISIBLE
-            tvInfo.text = getString(R.string.covid_test_result_pending)
-            rectBackground
-                .setBackgroundColor(
-                    resources.getColor(
-                        R.color.covid_test_blue,
-                        null
-                    )
-                )
-        }
-    }
-
-    private fun setIndeterminateState() {
-        binding.apply {
-            tvTestResult.setTextColor(
-                resources
-                    .getColor(R.color.covid_test_text_indeterminate, null)
-            )
-            rectBackground
-                .setBackgroundColor(
-                    resources.getColor(
-                        R.color.covid_test_blue,
-                        null
-                    )
-                )
-        }
-    }
-
-    private fun setCancelledState() {
-        binding.apply {
-            tvFullName.visibility = View.GONE
-            tvTestResult.visibility = View.GONE
-            tvTestedOn.visibility = View.GONE
-            tvInfo.visibility = View.VISIBLE
-            tvInfo.text = getString(R.string.covid_test_result_cancelled)
-            rectBackground
-                .setBackgroundColor(
-                    resources.getColor(
-                        R.color.covid_test_blue,
-                        null
-                    )
-                )
-        }
-    }
-
-    private fun setNegativeState() {
-        binding.apply {
-            tvTestResult.setTextColor(
-                resources
-                    .getColor(R.color.covid_test_text_negative, null)
-            )
-            rectBackground
-                .setBackgroundColor(
-                    resources.getColor(
-                        R.color.covid_test_green,
-                        null
-                    )
-                )
-        }
-    }
-
-    private fun setPositiveState() {
-        binding.apply {
-            tvTestResult.setTextColor(
-                resources
-                    .getColor(R.color.covid_test_text_positive, null)
-            )
-            rectBackground
-                .setBackgroundColor(
-                    resources.getColor(
-                        R.color.covid_test_red,
-                        null
-                    )
-                )
-        }
-
-        showInstructions()
     }
 
     private fun setToolBar() {
@@ -192,7 +73,7 @@ class CovidTestResultFragment : Fragment(R.layout.fragment_covid_test_result) {
                     negativeButtonText = getString(R.string.not_now)
                 ) {
                     binding.progressBar.visibility = View.VISIBLE
-                    viewModel.deleteCovidTestResult(args.covidTestResult.reportId)
+                    viewModel.deleteCovidTestResult(args.covidTestResultList.first().combinedReportId)
                         .invokeOnCompletion {
                             findNavController().popBackStack()
                         }
@@ -203,36 +84,16 @@ class CovidTestResultFragment : Fragment(R.layout.fragment_covid_test_result) {
         }
     }
 
-    private fun showInstructions() {
+    class CovidTestResultsAdapter(
+        fragment: Fragment,
+        val covidTestResults: List<CovidTestResult>
+    ) : FragmentStateAdapter(fragment) {
 
-        val instructions = listOf(
-            getString(R.string.instruction_1),
-            getString(R.string.instruction_2),
-            getString(R.string.instruction_3),
-            getString(R.string.instruction_4),
-            getString(R.string.instruction_5)
-        )
+        override fun getItemCount(): Int = covidTestResults.size
 
-        val builder = SpannableStringBuilder()
+        override fun createFragment(position: Int): Fragment {
 
-        instructions.forEach { item ->
-            builder.append(
-                item + "\n",
-                BulletSpan(30, Color.BLACK),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+            return ItemCovidTestResultFragment.newInstance(covidTestResults[position])
         }
-
-        binding.tvInstructions.visibility = View.VISIBLE
-        binding.tvInstructionsDetail.visibility = View.VISIBLE
-        binding.tvInstructionsDetail.text = builder
-    }
-
-    enum class CovidTestResult {
-        Pending,
-        Negative,
-        Positive,
-        Indeterminate,
-        Cancelled
     }
 }
