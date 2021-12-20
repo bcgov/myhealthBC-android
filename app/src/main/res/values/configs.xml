@@ -14,4 +14,6 @@
     <!--HGS endpoint-->
     <string name="retrofit_url_immunization">https://dev.healthgateway.gov.bc.ca/</string>
 
+    <!--Covid test result-->
+    <string name="understanding_test_results">http://www.bccdc.ca/results</string>
 </resources>
