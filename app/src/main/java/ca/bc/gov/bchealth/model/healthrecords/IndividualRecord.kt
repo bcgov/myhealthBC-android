@@ -14,7 +14,6 @@ data class IndividualRecord(
     val status: ImmunizationStatus?,
     val issueDate: String = "",
     val healthRecordType: HealthRecordType,
-    val covidTestReportId: String?,
     val healthPassId: Int = 0,
     val vaccineDataList: List<VaccineData?>,
     var covidTestResultList: List<CovidTestResult>

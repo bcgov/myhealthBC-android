@@ -54,7 +54,7 @@ class HealthRecordsAdapter(
         if (healthRecord.vaccineDataList.isNotEmpty())
             count++
 
-        count += healthRecord.covidTestResultList.size
+        count += healthRecord.covidTestResultList.groupBy { it.combinedReportId }.size
 
         return count
     }

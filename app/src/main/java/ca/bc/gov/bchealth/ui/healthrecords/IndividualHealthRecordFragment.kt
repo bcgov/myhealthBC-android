@@ -15,6 +15,7 @@ import ca.bc.gov.bchealth.data.local.entity.CovidTestResult
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
 import ca.bc.gov.bchealth.model.healthrecords.IndividualRecord
 import ca.bc.gov.bchealth.model.healthrecords.toHealthRecord
+import ca.bc.gov.bchealth.repository.HealthRecordType
 import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
@@ -110,18 +111,21 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             false,
             onItemClickListener = { individualRecord ->
 
-                if (!individualRecord.covidTestReportId.isNullOrBlank()) {
-                    navigateToCovidTestResultPage(
-                        individualRecord.covidTestResultList.first {
-                            it.reportId == individualRecord.covidTestReportId
-                        }
-                    )
-                } else {
-                    val action = IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToVaccineDetailsFragment(
-                            individualRecord.toHealthRecord()
+                when (individualRecord.healthRecordType) {
+
+                    HealthRecordType.COVID_TEST_RECORD -> {
+                        navigateToCovidTestResultPage(
+                            individualRecord.covidTestResultList
                         )
-                    findNavController().navigate(action)
+                    }
+
+                    HealthRecordType.VACCINE_RECORD -> {
+                        val action = IndividualHealthRecordFragmentDirections
+                            .actionIndividualHealthRecordFragmentToVaccineDetailsFragment(
+                                individualRecord.toHealthRecord()
+                            )
+                        findNavController().navigate(action)
+                    }
                 }
             }, onDeleteListener = { individualRecord ->
             showHealthRecordDeleteDialog(individualRecord)
@@ -137,34 +141,40 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private fun showHealthRecordDeleteDialog(individualRecord: IndividualRecord) {
 
-        if (!individualRecord.covidTestReportId.isNullOrBlank()) {
+        when (individualRecord.healthRecordType) {
 
-            requireContext().showAlertDialog(
-                title = getString(R.string.delete_hc_record_title),
-                message = getString(R.string.delete_individual_covid_test_record_message),
-                positiveButtonText = getString(R.string.delete),
-                negativeButtonText = getString(R.string.not_now)
-            ) {
-                viewModel.deleteCovidTestResult(individualRecord.covidTestReportId)
+            HealthRecordType.COVID_TEST_RECORD -> {
+                requireContext().showAlertDialog(
+                    title = getString(R.string.delete_hc_record_title),
+                    message = getString(R.string.delete_individual_covid_test_record_message),
+                    positiveButtonText = getString(R.string.delete),
+                    negativeButtonText = getString(R.string.not_now)
+                ) {
+                    viewModel.deleteCovidTestResult(
+                        individualRecord.covidTestResultList.first()
+                            .combinedReportId
+                    )
+                }
             }
-        } else {
 
-            requireContext().showAlertDialog(
-                title = getString(R.string.delete_hc_record_title),
-                message = getString(R.string.delete_individual_vaccine_record_message),
-                positiveButtonText = getString(R.string.delete),
-                negativeButtonText = getString(R.string.not_now)
-            ) {
-                viewModel.deleteVaccineRecord(individualRecord.healthPassId)
+            HealthRecordType.VACCINE_RECORD -> {
+                requireContext().showAlertDialog(
+                    title = getString(R.string.delete_hc_record_title),
+                    message = getString(R.string.delete_individual_vaccine_record_message),
+                    positiveButtonText = getString(R.string.delete),
+                    negativeButtonText = getString(R.string.not_now)
+                ) {
+                    viewModel.deleteVaccineRecord(individualRecord.healthPassId)
+                }
             }
         }
     }
 
-    private fun navigateToCovidTestResultPage(covidTestResult: CovidTestResult) {
+    private fun navigateToCovidTestResultPage(covidTestResults: List<CovidTestResult>) {
 
         val action = IndividualHealthRecordFragmentDirections
             .actionIndividualHealthRecordFragmentToCovidTestResultFragment(
-                covidTestResult
+                covidTestResults.toTypedArray()
             )
         findNavController().navigate(action)
     }
