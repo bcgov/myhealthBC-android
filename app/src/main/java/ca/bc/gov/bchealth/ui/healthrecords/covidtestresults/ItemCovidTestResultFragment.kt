@@ -1,16 +1,23 @@
 package ca.bc.gov.bchealth.ui.healthrecords.covidtestresults
 
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.method.LinkMovementMethod
 import android.text.style.BulletSpan
+import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.view.View
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.data.local.entity.CovidTestResult
 import ca.bc.gov.bchealth.databinding.ItemCovidTestResultBinding
 import ca.bc.gov.bchealth.utils.getDateForCovidTestResults
+import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 
 // fragment initialization parameter
@@ -176,17 +183,72 @@ class ItemCovidTestResultFragment : Fragment(R.layout.item_covid_test_result) {
 
         val builder = SpannableStringBuilder()
 
-        instructions.forEach { item ->
+        instructions.forEachIndexed { index, item ->
+
             builder.append(
                 item + "\n",
                 BulletSpan(30, Color.BLACK),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
+
+            if (index == 4) {
+
+                setupDialer(builder)
+
+                setUpRedirection(builder)
+            }
         }
 
         binding.tvInstructions.visibility = View.VISIBLE
         binding.tvInstructionsDetail.visibility = View.VISIBLE
-        binding.tvInstructionsDetail.text = builder
+        binding.tvInstructionsDetail.movementMethod = LinkMovementMethod.getInstance()
+        binding.tvInstructionsDetail.setText(builder, TextView.BufferType.SPANNABLE)
+    }
+
+    private fun setUpRedirection(builder: SpannableStringBuilder) {
+        val redirectOnClick = object : ClickableSpan() {
+            override fun onClick(view: View) {
+                requireContext().redirect(getString(R.string.understanding_test_results))
+            }
+        }
+
+        builder.setSpan(
+            redirectOnClick,
+            269,
+            295,
+            0
+        )
+
+        builder.setSpan(
+            ForegroundColorSpan(resources.getColor(R.color.blue, null)),
+            269,
+            295,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+    }
+
+    private fun setupDialer(builder: SpannableStringBuilder) {
+        val dialOnClick = object : ClickableSpan() {
+            override fun onClick(view: View) {
+                val intent = Intent(Intent.ACTION_DIAL)
+                intent.data = Uri.parse("tel:811")
+                startActivity(intent)
+            }
+        }
+
+        builder.setSpan(
+            dialOnClick,
+            215,
+            220,
+            0
+        )
+
+        builder.setSpan(
+            ForegroundColorSpan(resources.getColor(R.color.blue, null)),
+            215,
+            220,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
     }
 
     companion object {
