@@ -1,10 +1,12 @@
 package ca.bc.gov.bchealth.ui.healthrecords.covidtestresults
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -16,6 +18,8 @@ import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchCovidTestResultBinding
+import ca.bc.gov.bchealth.di.ApiClientModule
+import ca.bc.gov.bchealth.http.MustBeQueued
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
 import ca.bc.gov.bchealth.repository.Response
 import ca.bc.gov.bchealth.utils.adjustOffset
@@ -24,11 +28,22 @@ import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.queue_it.androidsdk.Error
+import com.queue_it.androidsdk.QueueITEngine
+import com.queue_it.androidsdk.QueueITException
+import com.queue_it.androidsdk.QueueListener
+import com.queue_it.androidsdk.QueuePassedInfo
+import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -97,12 +112,26 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
                 observeResponse()
 
                 viewLifecycleOwner.lifecycleScope.launch {
-
-                    viewModel.getCovidTestResult(
-                        binding.edPhnNumber.editText?.text.toString(),
-                        binding.edDob.editText?.text.toString(),
-                        binding.edDot.editText?.text.toString()
-                    )
+                    try {
+                        viewModel.getCovidTestResult(
+                            binding.edPhnNumber.editText?.text.toString(),
+                            binding.edDob.editText?.text.toString(),
+                            binding.edDot.editText?.text.toString()
+                        )
+                    } catch (e: Exception) {
+                        if (e is MustBeQueued) {
+                            withContext(Dispatchers.Main) {
+                                queueUser(e.getValue())
+                            }
+                        } else {
+                            e.printStackTrace()
+                            showLoader(false)
+                            requireContext().showError(
+                                getString(R.string.error),
+                                getString(R.string.error_message)
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -403,5 +432,96 @@ class FetchCovidTestResultFragment : Fragment(R.layout.fragment_fetch_covid_test
             }
 
         action?.let { findNavController().navigate(it, navOptions) }
+    }
+
+    /*
+    * HGS APIs are protected by Queue.it
+    * User will see the Queue.it waiting page if there are more number of users trying to
+    * access HGS service at the same time. Ref: https://github.com/queueit/android-webui-sdk
+    * */
+    private fun queueUser(value: String) {
+        try {
+            val valueUri = Uri.parse(URLDecoder.decode(value, StandardCharsets.UTF_8.name()))
+            val customerId = valueUri.getQueryParameter("c")
+            val waitingRoomId = valueUri.getQueryParameter("e")
+            QueueService.IsTest = false
+            val q = QueueITEngine(
+                requireActivity(),
+                customerId,
+                waitingRoomId,
+                "",
+                "",
+                object : QueueListener() {
+                    override fun onQueuePassed(queuePassedInfo: QueuePassedInfo) {
+
+                        ApiClientModule.queueItToken = queuePassedInfo.queueItToken
+
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            try {
+                                viewModel.getCovidTestResult(
+                                    binding.edPhnNumber.editText?.text.toString(),
+                                    binding.edDob.editText?.text.toString(),
+                                    binding.edDot.editText?.text.toString()
+                                )
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                showLoader(false)
+                                requireContext().showError(
+                                    getString(R.string.error),
+                                    getString(R.string.error_message)
+                                )
+                            }
+                        }
+                    }
+
+                    override fun onQueueViewWillOpen() {
+                        Toast.makeText(
+                            requireActivity(),
+                            "Please wait! We are receiving more requests at the moment",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    override fun onUserExited() {
+                        // Not required
+                    }
+
+                    override fun onQueueDisabled() {
+                        // Not required
+                    }
+
+                    override fun onQueueItUnavailable() {
+                        requireContext().showError(
+                            getString(R.string.error),
+                            getString(R.string.error_message)
+                        )
+                    }
+
+                    override fun onError(error: Error, errorMessage: String) {
+                        requireContext().showError(
+                            getString(R.string.error),
+                            getString(R.string.error_message)
+                        )
+                    }
+
+                    override fun onWebViewClosed() {
+                        // Not required
+                    }
+                }
+            )
+            q.run(requireActivity())
+        } catch (e: QueueITException) {
+            e.printStackTrace()
+            requireContext().showError(
+                getString(R.string.error),
+                getString(R.string.error_message)
+            )
+        } catch (e: UnsupportedEncodingException) {
+            e.printStackTrace()
+            requireContext().showError(
+                getString(R.string.error),
+                getString(R.string.error_message)
+            )
+        }
     }
 }
