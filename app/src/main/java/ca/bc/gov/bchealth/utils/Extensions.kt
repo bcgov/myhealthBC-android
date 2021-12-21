@@ -265,7 +265,7 @@ fun Context.showAlertDialog(
 fun LocalDateTime.getDateForIndividualCovidTestResult(): String {
 
     return try {
-        this.format(DateTimeFormatter.ofPattern("MMM dd, y")).toString()
+        this.format(DateTimeFormatter.ofPattern("MMM. dd, y")).toString()
     } catch (e: Exception) {
         e.printStackTrace()
         ""
@@ -304,7 +304,7 @@ fun String.getLocalDateTimeFromAPIResponse(): LocalDateTime? {
 * */
 fun LocalDate.getDateForIndividualVaccineRecord(): String {
     return try {
-        this.format(DateTimeFormatter.ofPattern("MMM dd, yyyy")).toString()
+        this.format(DateTimeFormatter.ofPattern("MMM. dd, yyyy")).toString()
     } catch (e: Exception) {
         e.printStackTrace()
         ""
@@ -317,6 +317,18 @@ fun LocalDate.getDateForIndividualVaccineRecord(): String {
 fun LocalDate.getDateForVaccineRecordDetails(): String {
     return try {
         this.format(DateTimeFormatter.ofPattern("MMMM dd, yyyy")).toString()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
+}
+
+/*
+* Get collectionDate for retry
+* */
+fun LocalDateTime.getCollectionDate(): String {
+    return try {
+        this.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")).toString()
     } catch (e: Exception) {
         e.printStackTrace()
         ""

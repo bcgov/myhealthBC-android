@@ -305,11 +305,14 @@ class HealthRecordsRepository @Inject constructor(
                 }
             }
         } else {
-            checkForKnownErrors(responseCovidTests)
+            checkForKnownErrors(responseCovidTests, map)
         }
     }
 
-    private suspend fun checkForKnownErrors(responseCovidTests: ResponseCovidTests?) {
+    private suspend fun checkForKnownErrors(
+        responseCovidTests: ResponseCovidTests?,
+        map: Map<String, String>
+    ) {
 
         if (responseCovidTests?.resultError != null) {
 
@@ -324,15 +327,18 @@ class HealthRecordsRepository @Inject constructor(
                 }
 
                 else -> {
-                    validateResourcePayload(responseCovidTests)
+                    validateResourcePayload(responseCovidTests, map)
                 }
             }
         } else {
-            validateResourcePayload(responseCovidTests)
+            validateResourcePayload(responseCovidTests, map)
         }
     }
 
-    private suspend fun validateResourcePayload(responseCovidTests: ResponseCovidTests?) {
+    private suspend fun validateResourcePayload(
+        responseCovidTests: ResponseCovidTests?,
+        map: Map<String, String>
+    ) {
 
         if (responseCovidTests?.resourcePayload?.records.isNullOrEmpty()) {
             responseMutableSharedFlow.emit(Response.Error(ErrorData.GENERIC_ERROR))
@@ -353,7 +359,7 @@ class HealthRecordsRepository @Inject constructor(
             combinedReportId = combinedReportId.plus(it.reportId)
         }
         responseCovidTests?.resourcePayload?.records?.forEach { record ->
-            covidTestResults.add(record.parseToCovidTestResult(combinedReportId))
+            covidTestResults.add(record.parseToCovidTestResult(combinedReportId, map))
         }
 
         checkForDuplicateRecord(covidTestResults, combinedReportId)
@@ -435,7 +441,10 @@ enum class HealthRecordType {
     COVID_TEST_RECORD
 }
 
-private fun Record.parseToCovidTestResult(combinedReportId: String): CovidTestResult {
+private fun Record.parseToCovidTestResult(
+    combinedReportId: String,
+    map: Map<String, String>
+): CovidTestResult {
 
     return CovidTestResult(
         this.reportId.toString(),
@@ -449,6 +458,8 @@ private fun Record.parseToCovidTestResult(combinedReportId: String): CovidTestRe
         this.testOutcome.toString(),
         this.resultTitle.toString(),
         this.resultLink.toString(),
-        combinedReportId
+        combinedReportId,
+        map.getValue("phn"),
+        map.getValue("dob")
     )
 }

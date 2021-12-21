@@ -16,7 +16,9 @@ class IndividualHealthRecordAdapter(
     var individualRecords: MutableList<IndividualRecord>,
     var canDeleteRecord: Boolean,
     private val onItemClickListener: OnItemClickListener,
-    private val onDeleteListener: OnDeleteListener
+    private val onDeleteListener: OnDeleteListener,
+    private val updateListener: UpdateListener,
+    private var updatePendingStatus: Boolean
 ) : RecyclerView.Adapter<IndividualHealthRecordAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemHealthRecordsAbstractBinding) :
@@ -59,6 +61,22 @@ class IndividualHealthRecordAdapter(
         } else {
             holder.binding.ivUnlink.visibility = View.GONE
         }
+
+        /*
+        * Retry fetching the covid test result for pending record
+        * */
+        if (individualRecord.subtitle
+            ?.contains(holder.itemView.resources.getString(R.string.pending)) == true &&
+            updatePendingStatus
+        ) {
+            holder.binding.progressBar.visibility = View.VISIBLE
+            holder.binding.ivRightArrow.visibility = View.INVISIBLE
+            updateListener.onUpdateRequested(individualRecord)
+            updatePendingStatus = false
+        } else {
+            holder.binding.progressBar.visibility = View.INVISIBLE
+            holder.binding.ivRightArrow.visibility = View.VISIBLE
+        }
     }
 
     override fun getItemCount(): Int {
@@ -71,5 +89,9 @@ class IndividualHealthRecordAdapter(
 
     fun interface OnDeleteListener {
         fun onItemDeleted(individualRecord: IndividualRecord)
+    }
+
+    fun interface UpdateListener {
+        fun onUpdateRequested(individualRecord: IndividualRecord)
     }
 }
