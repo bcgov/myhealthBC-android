@@ -52,12 +52,9 @@ class ItemCovidTestResultFragment : Fragment(R.layout.item_covid_test_result) {
                         covidTestResult?.resultDateTime
                             ?.getDateForCovidTestResults()
                     )
-
-            tvName.text = covidTestResult?.patientDisplayName
             tvDot.text = covidTestResult?.resultDateTime
                 ?.getDateForCovidTestResults()
             tvTestStatus.text = covidTestResult?.testStatus
-            tvTestResult2.text = covidTestResult?.testOutcome
             tvTypeName.text = covidTestResult?.testName
             tvProviderClinic.text = covidTestResult?.lab
         }

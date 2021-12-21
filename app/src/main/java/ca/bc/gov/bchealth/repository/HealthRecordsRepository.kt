@@ -84,7 +84,7 @@ class HealthRecordsRepository @Inject constructor(
 
                     individualRecords.add(
                         IndividualRecord(
-                            "Covid-19 Test Result",
+                            "Covid-19 test result",
                             result.value.first().testStatus
                                 .plus(IndividualHealthRecordViewModel.bulletPoint)
                                 .plus(
