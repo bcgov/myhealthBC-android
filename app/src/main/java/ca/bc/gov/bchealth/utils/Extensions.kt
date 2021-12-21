@@ -322,3 +322,15 @@ fun LocalDate.getDateForVaccineRecordDetails(): String {
         ""
     }
 }
+
+/*
+* Get collectionDate for retry
+* */
+fun LocalDateTime.getCollectionDate(): String {
+    return try {
+        this.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")).toString()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
+}

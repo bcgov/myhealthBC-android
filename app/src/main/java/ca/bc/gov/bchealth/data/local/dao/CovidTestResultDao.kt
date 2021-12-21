@@ -23,8 +23,8 @@ interface CovidTestResultDao {
     fun getCovidTestResults(): Flow<List<CovidTestResult>>
 
     @Query(
-        "SELECT count(*) FROM covid_test_results " +
-            "WHERE combinedReportId = :combinedReportId"
+        "SELECT count(*) FROM covid_test_results" +
+            " WHERE combinedReportId = :combinedReportId AND testStatus != 'Pending' "
     )
     suspend fun getMatchingCovidTestResultsCount(combinedReportId: String): Int
 
