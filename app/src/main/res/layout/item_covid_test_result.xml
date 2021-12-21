@@ -143,29 +143,6 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_instructions_detail" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_name_title"
-                style="?textAppearanceBody1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_2_x"
-                android:text="@string/name"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_line" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_name"
-                style="?textAppearanceHeadline3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginEnd="@dimen/space_4_x"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_name_title"
-                tools:text="Jean Smith" />
-
-            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_dot_title"
                 style="?textAppearanceBody1"
                 android:layout_width="0dp"
@@ -174,7 +151,7 @@
                 android:layout_marginTop="@dimen/space_2_x"
                 android:text="@string/date_of_testing"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+                app:layout_constraintTop_toBottomOf="@+id/view_line" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_dot"
@@ -212,30 +189,6 @@
                 tools:text="Final" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_test_result_title"
-                style="?textAppearanceBody1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_2_x"
-                android:text="@string/test_result"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_test_status" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_test_result_2"
-                style="?textAppearanceHeadline3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginEnd="@dimen/space_4_x"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_test_result_title"
-                tools:text="Negative" />
-
-
-            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_type_name_title"
                 style="?textAppearanceBody1"
                 android:layout_width="0dp"
@@ -244,7 +197,7 @@
                 android:layout_marginTop="@dimen/space_2_x"
                 android:text="@string/type_name"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_test_result_2" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_test_status" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_type_name"

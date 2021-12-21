@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
                 android:layout_marginTop="@dimen/space_2_x"
-                android:text="@string/bc_vaccine_pass"
+                android:text="@string/bc_vaccine_card"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_health_passes" />
 
