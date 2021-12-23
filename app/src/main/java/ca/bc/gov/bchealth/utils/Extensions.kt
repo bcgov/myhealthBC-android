@@ -265,7 +265,7 @@ fun Context.showAlertDialog(
 fun LocalDateTime.getDateForIndividualCovidTestResult(): String {
 
     return try {
-        this.format(DateTimeFormatter.ofPattern("MMM. dd, y")).toString()
+        this.format(DateTimeFormatter.ofPattern("MMM dd, y")).toString()
     } catch (e: Exception) {
         e.printStackTrace()
         ""
@@ -304,7 +304,7 @@ fun String.getLocalDateTimeFromAPIResponse(): LocalDateTime? {
 * */
 fun LocalDate.getDateForIndividualVaccineRecord(): String {
     return try {
-        this.format(DateTimeFormatter.ofPattern("MMM. dd, yyyy")).toString()
+        this.format(DateTimeFormatter.ofPattern("MMM dd, y")).toString()
     } catch (e: Exception) {
         e.printStackTrace()
         ""

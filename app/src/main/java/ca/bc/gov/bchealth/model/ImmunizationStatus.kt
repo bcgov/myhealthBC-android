@@ -5,8 +5,8 @@ package ca.bc.gov.bchealth.model
  *
  * @author Pinakin Kansara
  */
-enum class ImmunizationStatus {
-    FULLY_IMMUNIZED,
-    PARTIALLY_IMMUNIZED,
-    INVALID_QR_CODE
+enum class ImmunizationStatus(val value: String) {
+    FULLY_IMMUNIZED("Vaccinated"),
+    PARTIALLY_IMMUNIZED("Partially vaccinated"),
+    INVALID_QR_CODE("No record")
 }
