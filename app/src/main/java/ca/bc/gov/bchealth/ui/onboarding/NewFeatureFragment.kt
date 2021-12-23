@@ -22,12 +22,24 @@ class NewFeatureFragment : Fragment(R.layout.fragment_new_feature) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnOk.setOnClickListener {
+
+            showLoader()
+
             viewModel.setNewFeatureShown(true).invokeOnCompletion {
                 val navOptions = NavOptions.Builder()
                     .setPopUpTo(R.id.newFeatureFragment, true)
+                    .setEnterAnim(R.anim.nav_default_enter_anim)
+                    .setExitAnim(R.anim.nav_default_exit_anim)
+                    .setPopEnterAnim(R.anim.nav_default_pop_enter_anim)
+                    .setPopExitAnim(R.anim.nav_default_pop_exit_anim)
                     .build()
-                findNavController().navigate(R.id.myCardsFragment, null, navOptions)
+                viewModel.checkLogin(R.id.myCardsFragment, navOptions, findNavController())
             }
         }
+    }
+
+    private fun showLoader() {
+        binding.btnOk.isEnabled = false
+        binding.progressBar.visibility = View.VISIBLE
     }
 }

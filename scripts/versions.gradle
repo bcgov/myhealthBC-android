@@ -52,6 +52,8 @@ versions.crypto = "1.1.0-alpha03"
 versions.sqlcipher = "4.5.0"
 versions.sqlite = "2.1.0"
 
+versions.appauth = "0.11.0"
+
 versions.junit = "4.13.2"
 versions.ext_junit = "1.1.3"
 versions.espresso = "3.4.0"

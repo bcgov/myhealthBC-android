@@ -27,6 +27,10 @@ android {
                         "room.expandProjection": "true"]
             }
         }
+
+        manifestPlaceholders = [
+                'appAuthRedirectScheme': 'myhealthbc'
+        ]
     }
 
     buildTypes {
@@ -162,6 +166,9 @@ dependencies {
     //SqlCipher
     implementation "net.zetetic:android-database-sqlcipher:$versions.sqlcipher"
     implementation "androidx.sqlite:sqlite-ktx:$versions.sqlite"
+
+    //app auth
+    implementation "net.openid:appauth:$versions.appauth"
 
     // https://stackoverflow.com/questions/29402155/android-unit-test-not-mocked
     testImplementation 'org.json:json:20210307'

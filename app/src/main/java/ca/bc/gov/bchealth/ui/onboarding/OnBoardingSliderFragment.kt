@@ -48,14 +48,14 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
 
         binding.btnNextSlide.setOnClickListener {
             if (educationalScreenAdapter.itemCount == (getCurrentItem() + 1)) {
-                navigateToHealthPasses()
+                navigateToLoginFragment()
             } else {
                 binding.viewpagerOnBoardingSlides.currentItem = (getCurrentItem() + 1)
             }
         }
 
         binding.tvSkip.setOnClickListener {
-            navigateToHealthPasses()
+            navigateToLoginFragment()
         }
     }
 
@@ -63,13 +63,22 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
         return binding.viewpagerOnBoardingSlides.currentItem
     }
 
-    private fun navigateToHealthPasses() {
+    private fun navigateToLoginFragment() {
         viewModel.setOnBoardingShown(true).invokeOnCompletion {
             viewModel.setNewFeatureShown(true).invokeOnCompletion {
                 val navOptions = NavOptions.Builder()
                     .setPopUpTo(R.id.onBoardingSliderFragment, true)
+                    .setEnterAnim(R.anim.nav_default_enter_anim)
+                    .setExitAnim(R.anim.nav_default_exit_anim)
+                    .setPopEnterAnim(R.anim.nav_default_pop_enter_anim)
+                    .setPopExitAnim(R.anim.nav_default_pop_exit_anim)
                     .build()
-                findNavController().navigate(R.id.myCardsFragment, null, navOptions)
+
+                viewModel.checkLogin(
+                    destinationId = R.id.myCardsFragment,
+                    navOptions,
+                    findNavController()
+                )
             }
         }
     }

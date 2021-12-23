@@ -182,4 +182,16 @@
     <string name="federal_proof">federal proof</string>
     <string name="torch">torch</string>
 
+    <!-- Login -->
+    <string name="leaving_my_health_bc">Leaving My Health BC</string>
+
+    <string name="login_info_message"><![CDATA[<p>You will be temporarily redirected to <b>Health Gateway</b> to login with your BC Services Card.</p>
+                    <p>You will then be automatically returned to the <b>My Health BC</b> mobile app.</p>]]></string>
+    <string name="btn_continue">Continue</string>
+    <string name="go_to_health_gateway">Go to Health Gateway</string>
+    <string name="tv_login_title">Access health records</string>
+    <string name="tv_login_message">Log in with BC Service Card to access all your health records in My Health BC.</string>
+    <string name="log_in_with_bc_services_card">Log in with BC Services Card</string>
+    <string name="incorrect_credentials">Please enter valid credentials</string>
+
 </resources>

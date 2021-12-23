@@ -34,6 +34,7 @@ import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.databinding.FragmentMyCardsBinding
 import ca.bc.gov.bchealth.model.HealthCardDto
 import ca.bc.gov.bchealth.ui.travelpass.TravelPassFragment
+import ca.bc.gov.bchealth.utils.getNavOptions
 import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -268,10 +269,13 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
         sceneAddCard.sceneRoot.findViewById<View>(R.id.btn_add_card)
             .setOnClickListener {
-                findNavController()
-                    .navigate(
-                        R.id.action_myCardsFragment_to_addCardOptionFragment
-                    )
+                binding.progressBar.visibility = View.VISIBLE
+                it.isEnabled = false
+                viewModel.checkLogin(
+                    destinationId = R.id.addCardOptionFragment,
+                    getNavOptions(),
+                    findNavController()
+                )
             }
 
         registerCustomBackPress(currentScene, null)

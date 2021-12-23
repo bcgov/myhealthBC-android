@@ -147,20 +147,6 @@
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_healthRecordsFragment_to_fetchVaccineRecordFragment"
-            app:destination="@id/fetchVaccineRecordFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_healthRecordsFragment_to_fetchCovidTestResultFragment"
-            app:destination="@id/fetchCovidTestResultFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/fetchVaccineRecordFragment"
@@ -225,5 +211,27 @@
         <argument
             android:name="healthRecord"
             app:argType="ca.bc.gov.bchealth.model.healthrecords.HealthRecord" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="ca.bc.gov.bchealth.ui.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_loginInfoFragment"
+            app:destination="@id/loginInfoFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginInfoFragment"
+        android:name="ca.bc.gov.bchealth.ui.login.LoginInfoFragment"
+        android:label="fragment_login_info"
+        tools:layout="@layout/fragment_login_info" >
+        <argument
+            android:name="destinationId"
+            app:argType="integer" />
     </fragment>
 </navigation>

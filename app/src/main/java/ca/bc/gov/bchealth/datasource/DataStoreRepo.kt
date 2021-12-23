@@ -1,9 +1,20 @@
 package ca.bc.gov.bchealth.datasource
 
 import android.content.SharedPreferences
+import android.net.Uri
 import android.util.Base64
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.JsonParseException
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import net.openid.appauth.AuthState
+import java.lang.reflect.Type
 import javax.inject.Inject
 
 /**
@@ -29,6 +40,7 @@ class DataStoreRepo @Inject constructor(
         private const val NEW_FEATURE = "NEW_FEATURE"
         private const val RECENT_FORM_DATA = "RECENT_FORM_DATA"
         private const val PASS_PHRASE = "RECORD"
+        private const val AUTH_STATE = "STATE"
     }
 
     val isOnBoardingShown: Flow<Boolean> = flow {
@@ -82,4 +94,41 @@ class DataStoreRepo @Inject constructor(
                 Base64.encodeToString(value, Base64.DEFAULT)
             ).apply()
         }
+
+    val getAuthState: Flow<AuthState?> = flow {
+        val gson = GsonBuilder()
+            .registerTypeAdapter(Uri::class.java, UriDeserializer())
+            .create()
+        emit(gson.fromJson(encryptedPreferences.getString(AUTH_STATE, null), AuthState::class.java))
+    }
+
+    fun setAuthState(authState: AuthState) {
+        val gson = GsonBuilder()
+            .registerTypeAdapter(Uri::class.java, UriSerializer())
+            .create()
+        encryptedPreferences.edit().putString(
+            AUTH_STATE, gson.toJson(authState)
+        ).apply()
+    }
+
+    class UriSerializer : JsonSerializer<Uri?> {
+        override fun serialize(
+            src: Uri?,
+            typeOfSrc: Type?,
+            context: JsonSerializationContext?
+        ): JsonElement {
+            return JsonPrimitive(src.toString())
+        }
+    }
+
+    class UriDeserializer : JsonDeserializer<Uri?> {
+        @Throws(JsonParseException::class)
+        override fun deserialize(
+            src: JsonElement,
+            srcType: Type?,
+            context: JsonDeserializationContext?
+        ): Uri {
+            return Uri.parse(src.asString)
+        }
+    }
 }

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHealthRecordsBinding
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
+import ca.bc.gov.bchealth.utils.getNavOptions
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -87,16 +88,26 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
             .findViewById<ConstraintLayout>(R.id.vg_get_vaccination_records)
 
         vgGetVaccinationRecords.setOnClickListener {
-            findNavController()
-                .navigate(R.id.action_healthRecordsFragment_to_fetchVaccineRecordFragment)
+            it.isEnabled = false
+            binding.progressBar.visibility = View.VISIBLE
+            viewModel.checkLogin(
+                R.id.fetchVaccineRecordFragment,
+                getNavOptions(),
+                findNavController()
+            )
         }
 
         val vgGetCovidTestResults = sceneAddHealthRecords.sceneRoot
             .findViewById<ConstraintLayout>(R.id.vg_get_covid_test_results)
 
         vgGetCovidTestResults.setOnClickListener {
-            findNavController()
-                .navigate(R.id.action_healthRecordsFragment_to_fetchCovidTestResultFragment)
+            it.isEnabled = false
+            binding.progressBar.visibility = View.VISIBLE
+            viewModel.checkLogin(
+                R.id.fetchCovidTestResultFragment,
+                getNavOptions(),
+                findNavController()
+            )
         }
     }
 
