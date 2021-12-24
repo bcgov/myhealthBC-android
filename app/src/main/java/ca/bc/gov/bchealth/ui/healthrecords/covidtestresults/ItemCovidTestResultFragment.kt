@@ -131,6 +131,8 @@ class ItemCovidTestResultFragment : Fragment(R.layout.item_covid_test_result) {
                         null
                     )
                 )
+
+            tvTestStatus.text = covidTestResult?.testOutcome
         }
     }
 
