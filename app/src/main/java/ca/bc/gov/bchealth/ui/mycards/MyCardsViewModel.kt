@@ -7,8 +7,8 @@ import androidx.navigation.NavOptions
 import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.datasource.DataStoreRepo
 import ca.bc.gov.bchealth.model.HealthCardDto
+import ca.bc.gov.bchealth.repository.AuthManagerRepo
 import ca.bc.gov.bchealth.repository.CardRepository
-import ca.bc.gov.bchealth.ui.login.AuthManagerRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MyCardsViewModel @Inject constructor(
     private val repository: CardRepository,
-    private val dataStoreRepo: DataStoreRepo,
+    dataStoreRepo: DataStoreRepo,
     private val authManagerRepo: AuthManagerRepo
 ) : ViewModel() {
 

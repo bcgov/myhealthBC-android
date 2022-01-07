@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import ca.bc.gov.bchealth.datasource.DataStoreRepo
-import ca.bc.gov.bchealth.ui.login.AuthManagerRepo
+import ca.bc.gov.bchealth.repository.AuthManagerRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

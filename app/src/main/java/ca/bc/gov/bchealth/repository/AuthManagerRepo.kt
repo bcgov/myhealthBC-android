@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.login
+package ca.bc.gov.bchealth.repository
 
 import android.app.Activity
 import android.content.Context
@@ -7,10 +7,15 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.datasource.DataStoreRepo
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
 import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationException
@@ -18,6 +23,7 @@ import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationResponse
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.AuthorizationServiceConfiguration
+import net.openid.appauth.EndSessionRequest
 import net.openid.appauth.ResponseTypeValues
 
 /*
@@ -49,10 +55,30 @@ class AuthManagerRepo(
 
     private lateinit var authServiceConfiguration: AuthorizationServiceConfiguration
 
+    /*
+    * Used to manage Success, Error and Loading status in the UI
+    * */
+    private val uiStateMutableSharedFlow =
+        MutableSharedFlow<Response<String>>(extraBufferCapacity = 1)
+    val uiStateSharedFlow: SharedFlow<Response<String>>
+        get() = uiStateMutableSharedFlow.asSharedFlow()
+
+    /*
+    * Used to communicate logged in or logged out status
+    * */
+    private val loginMutableSharedFlow = MutableSharedFlow<Boolean>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val loginSharedFlow: SharedFlow<Boolean>
+        get() = loginMutableSharedFlow
+
     fun initializeLogin(
         authResultLauncher: ActivityResultLauncher<Intent>,
         requireContext: Context
     ) {
+
+        uiStateMutableSharedFlow.tryEmit(Response.Loading())
 
         AuthorizationServiceConfiguration.fetchFromIssuer(
             Uri.parse(ISSUER_END_POINT)
@@ -106,11 +132,13 @@ class AuthManagerRepo(
             authState.update(authorizationResponse, ex)
 
             if (ex != null) {
+                uiStateMutableSharedFlow.tryEmit(Response.Error(ErrorData.GENERIC_ERROR))
                 throw Exception(ex.message)
             } else {
                 authorizationResponse?.let { performTokenRequest(it) }
             }
         } else {
+            uiStateMutableSharedFlow.tryEmit(Response.Error(ErrorData.GENERIC_ERROR))
             throw Exception(appContext.resources.getString(R.string.incorrect_credentials))
         }
     }
@@ -121,11 +149,13 @@ class AuthManagerRepo(
             authorizationResponse.createTokenExchangeRequest()
         ) { resp, ex ->
             if (ex != null) {
+                uiStateMutableSharedFlow.tryEmit(Response.Error(ErrorData.GENERIC_ERROR))
                 throw Exception(ex.message)
             }
 
             authState.update(resp, ex)
             dataStoreRepo.setAuthState(authState)
+            uiStateMutableSharedFlow.tryEmit(Response.Success())
         }
     }
 
@@ -141,7 +171,6 @@ class AuthManagerRepo(
         dataStoreRepo.getAuthState.collect { authState ->
 
             if (authState == null) {
-
                 navigateToLoginFragment(destinationId, navOptions, navController)
                 return@collect
             }
@@ -166,14 +195,74 @@ class AuthManagerRepo(
         }
     }
 
+    /*
+    * Look for profile if user is logged in
+    * */
+    suspend fun checkProfile() {
+
+        dataStoreRepo.getAuthState.collect { authState ->
+
+            if (authState == null) {
+                loginMutableSharedFlow.tryEmit(false)
+                return@collect
+            }
+
+            authState.performActionWithFreshTokens(AuthorizationService(appContext)) { accessToken, idToken, ex ->
+
+                if (ex != null) {
+                    loginMutableSharedFlow.tryEmit(false)
+                    return@performActionWithFreshTokens
+                }
+
+                if (!accessToken.isNullOrEmpty() && !idToken.isNullOrEmpty()) {
+                    dataStoreRepo.setAuthState(authState)
+                    loginMutableSharedFlow.tryEmit(true)
+                } else {
+                    loginMutableSharedFlow.tryEmit(false)
+                }
+            }
+        }
+    }
+
     private fun navigateToLoginFragment(
         destinationId: Int,
         navOptions: NavOptions,
         navController: NavController
     ) {
-
         val bundle = Bundle()
         bundle.putInt("destinationId", destinationId)
         navController.navigate(R.id.loginFragment, bundle, navOptions)
+    }
+
+    /*
+    * BCSC logout
+    * */
+    suspend fun logout(
+        logoutResultLauncher: ActivityResultLauncher<Intent>
+    ) {
+        dataStoreRepo.getAuthState.collect { authState ->
+
+            authState?.let {
+                val endSessionRequest =
+                    authState.authorizationServiceConfiguration?.let { it1 ->
+                        EndSessionRequest.Builder(it1)
+                            .setIdTokenHint(authState.lastTokenResponse?.idToken)
+                            .setPostLogoutRedirectUri(REDIRECT_URI.toUri())
+                            .build()
+                    }
+
+                val endSessionIntent = endSessionRequest?.let { it1 ->
+                    AuthorizationService(appContext).getEndSessionRequestIntent(
+                        it1
+                    )
+                }
+
+                logoutResultLauncher.launch(endSessionIntent)
+            }
+        }
+    }
+
+    fun processLogoutResponse() {
+        dataStoreRepo.setAuthState(AuthState())
     }
 }

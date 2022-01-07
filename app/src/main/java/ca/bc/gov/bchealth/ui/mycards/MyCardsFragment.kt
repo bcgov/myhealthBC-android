@@ -264,7 +264,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         val settingsButton = toolBar.findViewById<ImageView>(R.id.iv_right_option)
         settingsButton.visibility = View.VISIBLE
         settingsButton.setOnClickListener {
-            findNavController().navigate(R.id.action_myCardsFragment_to_settingFragment)
+            findNavController().navigate(R.id.action_myCardsFragment_to_profileFragment)
         }
 
         sceneAddCard.sceneRoot.findViewById<View>(R.id.btn_add_card)
@@ -301,7 +301,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
         val settingsButton = toolBar.findViewById<ImageView>(R.id.iv_right_option)
         settingsButton.visibility = View.VISIBLE
         settingsButton.setOnClickListener {
-            findNavController().navigate(R.id.action_myCardsFragment_to_settingFragment)
+            findNavController().navigate(R.id.action_myCardsFragment_to_profileFragment)
         }
 
         // Recycler view setup

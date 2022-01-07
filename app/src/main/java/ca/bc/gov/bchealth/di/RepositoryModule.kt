@@ -3,9 +3,9 @@ package ca.bc.gov.bchealth.di
 import android.content.Context
 import ca.bc.gov.bchealth.datasource.DataStoreRepo
 import ca.bc.gov.bchealth.datasource.LocalDataSource
+import ca.bc.gov.bchealth.repository.AuthManagerRepo
 import ca.bc.gov.bchealth.repository.CardRepository
 import ca.bc.gov.bchealth.services.ImmunizationServices
-import ca.bc.gov.bchealth.ui.login.AuthManagerRepo
 import ca.bc.gov.bchealth.utils.SHCDecoder
 import dagger.Module
 import dagger.Provides

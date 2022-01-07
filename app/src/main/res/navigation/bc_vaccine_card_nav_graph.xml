@@ -31,8 +31,8 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_myCardsFragment_to_settingFragment"
-            app:destination="@id/settingFragment"
+            android:id="@+id/action_myCardsFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -76,7 +76,16 @@
         android:id="@+id/settingFragment"
         android:name="ca.bc.gov.bchealth.ui.setting.SettingFragment"
         android:label="fragment_setting"
-        tools:layout="@layout/fragment_setting" />
+        tools:layout="@layout/fragment_setting">
+        <action
+            android:id="@+id/action_settingFragment_to_loginInfoFragment"
+            app:destination="@id/loginInfoFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+    </fragment>
     <fragment
         android:id="@+id/barcodeScannerFragment"
         android:name="ca.bc.gov.bchealth.ui.scanner.BarcodeScannerFragment"
@@ -229,9 +238,22 @@
         android:id="@+id/loginInfoFragment"
         android:name="ca.bc.gov.bchealth.ui.login.LoginInfoFragment"
         android:label="fragment_login_info"
-        tools:layout="@layout/fragment_login_info" >
+        tools:layout="@layout/fragment_login_info">
         <argument
             android:name="destinationId"
             app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="ca.bc.gov.bchealth.ui.setting.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_settingFragment"
+            app:destination="@id/settingFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 </navigation>
