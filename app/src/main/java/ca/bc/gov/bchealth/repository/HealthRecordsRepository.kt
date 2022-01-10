@@ -55,17 +55,14 @@ class HealthRecordsRepository @Inject constructor(
                         individualRecords.add(
                             IndividualRecord(
                                 "Covid-19 vaccination",
-                                getIndividualVaccinationData(data).last().occurrenceDate
-                                    ?.getDateForIndividualVaccineRecord(),
+                                getSubTitleForVaccinationRecord(data),
                                 data.name,
                                 data.status,
                                 data.issueDate.getIssueDate(),
                                 HealthRecordType.VACCINE_RECORD,
                                 healthPass.id,
                                 getIndividualVaccinationData(data),
-                                covidTestResults.filter {
-                                    it.patientDisplayName.lowercase() == data.name.lowercase()
-                                }
+                                mutableListOf()
                             )
                         )
                     } catch (e: Exception) {
@@ -73,24 +70,13 @@ class HealthRecordsRepository @Inject constructor(
                     }
                 }
 
-                val filteredResults = covidTestResults.filter { covidTestResult ->
-                    (
-                        !individualRecords.map { record -> record.name.lowercase() }
-                            .contains(covidTestResult.patientDisplayName.lowercase())
-                        )
-                }.groupBy { it.combinedReportId }
+                val filteredResults = covidTestResults.groupBy { it.combinedReportId }
 
                 filteredResults.forEach { result ->
-
                     individualRecords.add(
                         IndividualRecord(
                             "Covid-19 test result",
-                            result.value.first().testStatus
-                                .plus(IndividualHealthRecordViewModel.bulletPoint)
-                                .plus(
-                                    result.value.first().resultDateTime
-                                        .getDateForIndividualCovidTestResult()
-                                ),
+                            getSubTitleForCovidTestResult(result),
                             result.value.first().patientDisplayName,
                             null,
                             "",
@@ -103,6 +89,27 @@ class HealthRecordsRepository @Inject constructor(
 
                 individualRecords
             }
+
+    private fun getSubTitleForCovidTestResult(result: Map.Entry<String, List<CovidTestResult>>): String? {
+        return if (result.value.first().testStatus == "Pending") {
+            result.value.first().testStatus
+                .plus(IndividualHealthRecordViewModel.bulletPoint)
+                .plus(result.value.first().resultDateTime.getDateForIndividualCovidTestResult())
+        } else {
+            result.value.first().testOutcome
+                .plus(IndividualHealthRecordViewModel.bulletPoint)
+                .plus(result.value.first().resultDateTime.getDateForIndividualCovidTestResult())
+        }
+    }
+
+    private fun getSubTitleForVaccinationRecord(data: ImmunizationRecord): String? {
+        return data.status.value
+            .plus(IndividualHealthRecordViewModel.bulletPoint)
+            .plus(
+                getIndividualVaccinationData(data).last().occurrenceDate
+                    ?.getDateForIndividualVaccineRecord()
+            )
+    }
 
     /*
     * Health Records
