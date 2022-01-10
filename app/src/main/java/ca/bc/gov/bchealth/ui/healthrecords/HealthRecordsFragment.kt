@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHealthRecordsBinding
 import ca.bc.gov.bchealth.model.healthrecords.HealthRecord
+import ca.bc.gov.bchealth.ui.login.LoginViewModel
 import ca.bc.gov.bchealth.utils.getNavOptions
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +30,8 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
     private val binding by viewBindings(FragmentHealthRecordsBinding::bind)
 
     private val viewModel: HealthRecordsViewModel by viewModels()
+
+    private val loginViewModel: LoginViewModel by viewModels()
 
     private lateinit var healthRecordsAdapter: HealthRecordsAdapter
 
@@ -90,7 +93,7 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         vgGetVaccinationRecords.setOnClickListener {
             it.isEnabled = false
             binding.progressBar.visibility = View.VISIBLE
-            viewModel.checkLogin(
+            loginViewModel.checkLogin(
                 R.id.fetchVaccineRecordFragment,
                 getNavOptions(),
                 findNavController()
@@ -103,7 +106,7 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         vgGetCovidTestResults.setOnClickListener {
             it.isEnabled = false
             binding.progressBar.visibility = View.VISIBLE
-            viewModel.checkLogin(
+            loginViewModel.checkLogin(
                 R.id.fetchCovidTestResultFragment,
                 getNavOptions(),
                 findNavController()

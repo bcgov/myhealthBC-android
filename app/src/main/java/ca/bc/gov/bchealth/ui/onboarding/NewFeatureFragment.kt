@@ -8,6 +8,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentNewFeatureBinding
+import ca.bc.gov.bchealth.ui.login.LoginViewModel
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,6 +18,8 @@ class NewFeatureFragment : Fragment(R.layout.fragment_new_feature) {
     private val binding by viewBindings(FragmentNewFeatureBinding::bind)
 
     private val viewModel: NewFeatureViewModel by viewModels()
+
+    private val loginViewModel: LoginViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -33,7 +36,7 @@ class NewFeatureFragment : Fragment(R.layout.fragment_new_feature) {
                     .setPopEnterAnim(R.anim.nav_default_pop_enter_anim)
                     .setPopExitAnim(R.anim.nav_default_pop_exit_anim)
                     .build()
-                viewModel.checkLogin(R.id.myCardsFragment, navOptions, findNavController())
+                loginViewModel.checkLogin(R.id.myCardsFragment, navOptions, findNavController())
             }
         }
     }

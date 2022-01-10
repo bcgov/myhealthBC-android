@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentOnboardingSliderBinding
+import ca.bc.gov.bchealth.ui.login.LoginViewModel
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,6 +20,8 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
     private val binding by viewBindings(FragmentOnboardingSliderBinding::bind)
 
     private val viewModel: OnBoardingSliderViewModel by viewModels()
+
+    private val loginViewModel: LoginViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,7 +77,7 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
                     .setPopExitAnim(R.anim.nav_default_pop_exit_anim)
                     .build()
 
-                viewModel.checkLogin(
+                loginViewModel.checkLogin(
                     destinationId = R.id.myCardsFragment,
                     navOptions,
                     findNavController()

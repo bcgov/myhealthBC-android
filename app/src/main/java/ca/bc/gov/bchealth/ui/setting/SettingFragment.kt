@@ -14,6 +14,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSettingBinding
+import ca.bc.gov.bchealth.ui.login.LoginViewModel
 import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -34,13 +35,15 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
 
     private val viewModel: SettingsViewModel by viewModels()
 
+    private val loginViewModel: LoginViewModel by viewModels()
+
     private var isLoggedIn: Boolean = false
 
     private var logoutResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { activityResult ->
         if (activityResult.resultCode == Activity.RESULT_OK) {
-            viewModel.processLogoutResponse()
+            loginViewModel.processLogoutResponse()
             isLoggedIn = false
             binding.switchLogin.isChecked = false
         } else {
@@ -77,7 +80,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.isLoggedIn.collect {
+                loginViewModel.isLoggedIn.collect {
                     it?.let {
                         showLoader(false)
                         binding.switchLogin.isChecked = it
@@ -88,7 +91,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
             }
         }
 
-        viewModel.checkProfile()
+        loginViewModel.checkProfile()
 
         analyticsSwitch()
 
@@ -135,7 +138,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
                     .setPopExitAnim(R.anim.nav_default_pop_exit_anim)
                     .build()
 
-                viewModel.checkLogin(
+                loginViewModel.checkLogin(
                     R.id.settingFragment,
                     navOptions,
                     findNavController()
@@ -151,7 +154,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
             positiveButtonText = getString(R.string.log_out),
             negativeButtonText = getString(R.string.cancel)
         ) {
-            viewModel.initLogout(logoutResultLauncher)
+            loginViewModel.initLogout(logoutResultLauncher)
         }
     }
 

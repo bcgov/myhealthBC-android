@@ -33,6 +33,7 @@ import ca.bc.gov.bchealth.analytics.AnalyticsAction
 import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.databinding.FragmentMyCardsBinding
 import ca.bc.gov.bchealth.model.HealthCardDto
+import ca.bc.gov.bchealth.ui.login.LoginViewModel
 import ca.bc.gov.bchealth.ui.travelpass.TravelPassFragment
 import ca.bc.gov.bchealth.utils.getNavOptions
 import ca.bc.gov.bchealth.utils.toast
@@ -57,6 +58,8 @@ import java.util.Collections
 class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
 
     private val viewModel: MyCardsViewModel by viewModels()
+
+    private val loginViewModel: LoginViewModel by viewModels()
 
     private val binding by viewBindings(FragmentMyCardsBinding::bind)
 
@@ -271,7 +274,7 @@ class MyCardsFragment : Fragment(R.layout.fragment_my_cards) {
             .setOnClickListener {
                 binding.progressBar.visibility = View.VISIBLE
                 it.isEnabled = false
-                viewModel.checkLogin(
+                loginViewModel.checkLogin(
                     destinationId = R.id.addCardOptionFragment,
                     getNavOptions(),
                     findNavController()

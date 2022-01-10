@@ -2,10 +2,7 @@ package ca.bc.gov.bchealth.ui.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
-import androidx.navigation.NavOptions
 import ca.bc.gov.bchealth.datasource.DataStoreRepo
-import ca.bc.gov.bchealth.repository.AuthManagerRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,19 +12,10 @@ import javax.inject.Inject
 */
 @HiltViewModel
 class NewFeatureViewModel @Inject constructor(
-    private val dataStoreRepo: DataStoreRepo,
-    private val authManagerRepo: AuthManagerRepo
+    private val dataStoreRepo: DataStoreRepo
 ) : ViewModel() {
 
     fun setNewFeatureShown(shown: Boolean) = viewModelScope.launch {
         dataStoreRepo.setNewFeatureShown(shown)
-    }
-
-    fun checkLogin(
-        destinationId: Int,
-        navOptions: NavOptions,
-        navController: NavController
-    ) = viewModelScope.launch {
-        authManagerRepo.checkLogin(destinationId, navOptions, navController)
     }
 }
