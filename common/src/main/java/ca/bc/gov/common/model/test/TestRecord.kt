@@ -1,10 +1,14 @@
 package ca.bc.gov.common.model.test
 
+import android.os.Parcelable
 import java.time.Instant
+import kotlinx.parcelize.Parcelize
 
 /**
  * @author Pinakin Kansara
  */
+
+@Parcelize
 data class TestRecord(
     var id: String,
     var testResultId: Long = 0,
@@ -18,4 +22,4 @@ data class TestRecord(
     val resultTitle: String,
     val resultDescription: List<String>,
     val resultLink: String
-)
+) : Parcelable

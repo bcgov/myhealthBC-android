@@ -34,7 +34,7 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnSubmit.setOnClickListener {
-            viewModel.fetchTestRecord("9875023209","1955-10-23","2021-11-06")
+            viewModel.fetchTestRecord("9875023209","1955-10-23","2021-04-11")
         }
 
         binding.btnCancel.setOnClickListener {
