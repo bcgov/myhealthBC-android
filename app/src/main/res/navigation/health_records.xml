@@ -35,6 +35,9 @@
             android:name="patient_id"
             app:argType="long" />
         <action
+            android:id="@+id/action_individualHealthRecordFragment_to_testResultDetailFragment"
+            app:destination="@id/testResultDetailFragment" />
+        <action
             android:id="@+id/action_individualHealthRecordFragment_to_vaccineRecordDetailFragment"
             app:destination="@id/vaccineRecordDetailFragment" />
     </fragment>
@@ -48,6 +51,17 @@
         android:name="ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment"
         android:label="FetchTestRecordFragment"
         tools:layout="@layout/fragment_fetch_covid_test_result" />
+    <fragment
+        android:id="@+id/testResultDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.covidtests.TestResultDetailFragment"
+        android:label="TestResultDetailFragment" >
+        <argument
+            android:name="patient_id"
+            app:argType="long" />
+        <argument
+            android:name="testResult_id"
+            app:argType="long" />
+    </fragment>
     <fragment
         android:id="@+id/vaccineRecordDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.vaccine.VaccineRecordDetailFragment"
