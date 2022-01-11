@@ -32,6 +32,7 @@ class VaccineRecordDetailViewModel @Inject constructor(
         val patientAndVaccine = patientWithVaccineRepository.getPatientWithVaccine(patientId)
         if (patientAndVaccine.vaccineRecord != null) {
             val doses = vaccineDoseRepository.getVaccineDoses(patientAndVaccine.vaccineRecord!!.id)
+                .sortedBy { it.date }
             patientAndVaccine.vaccineRecord?.doses = doses
             _uiState.update {
                 it.copy(
