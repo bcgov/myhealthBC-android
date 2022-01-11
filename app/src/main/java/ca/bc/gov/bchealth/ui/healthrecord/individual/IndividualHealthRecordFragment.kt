@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,9 +34,14 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         super.onViewCreated(view, savedInstanceState)
 
         vaccineRecordsAdapter = VaccineRecordsAdapter { vaccineRecord ->
-            //TODO: get patient id from record and send to next fragment
+            val action = IndividualHealthRecordFragmentDirections
+                .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(
+                    vaccineRecord.patientId
+                )
+            findNavController().navigate(action)
         }
         testRecordsAdapter = TestRecordsAdapter { testResult ->
+            // TODO: get patient id from result and send to next fragment
             //TODO: get patient id  & testResult id from result and send to next fragment
         }
         concatAdapter = ConcatAdapter(vaccineRecordsAdapter, testRecordsAdapter)
