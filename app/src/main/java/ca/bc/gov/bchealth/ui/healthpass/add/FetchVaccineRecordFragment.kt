@@ -129,6 +129,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                     override fun onError(error: Error?, errorMessage: String?) {
                     }
                 })
+            queueITEngine.run(requireActivity())
         } catch (e: Exception) {
 
         }

@@ -127,6 +127,7 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
                     override fun onError(error: Error?, errorMessage: String?) {
                     }
                 })
+            queueITEngine.run(requireActivity())
         } catch (e: Exception) {
 
         }
