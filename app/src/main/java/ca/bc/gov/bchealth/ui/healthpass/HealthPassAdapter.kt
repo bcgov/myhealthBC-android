@@ -13,7 +13,7 @@ import ca.bc.gov.common.model.ImmunizationStatus
  * @author Pinakin Kansara
  */
 class HealthPassAdapter(
-    var healthPasses: List<HealthPass>,
+    var healthPasses: MutableList<HealthPass>,
     private val qrCodeClickListener: QrCodeClickListener
 ) : RecyclerView.Adapter<HealthPassAdapter.ViewHolder>() {
 
