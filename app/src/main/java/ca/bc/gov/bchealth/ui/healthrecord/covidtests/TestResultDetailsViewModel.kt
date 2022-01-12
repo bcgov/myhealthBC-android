@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.healthrecord
+package ca.bc.gov.bchealth.ui.healthrecord.covidtests
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

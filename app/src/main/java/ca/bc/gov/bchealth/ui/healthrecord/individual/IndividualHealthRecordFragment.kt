@@ -41,8 +41,11 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             findNavController().navigate(action)
         }
         testRecordsAdapter = TestRecordsAdapter { testResult ->
-            // TODO: get patient id from result and send to next fragment
-            //TODO: get patient id  & testResult id from result and send to next fragment
+            val action = IndividualHealthRecordFragmentDirections
+                .actionIndividualHealthRecordFragmentToTestResultDetailFragment(
+                    testResult.patientId,
+                    testResult.id)
+            findNavController().navigate(action)
         }
         concatAdapter = ConcatAdapter(vaccineRecordsAdapter, testRecordsAdapter)
         binding.rvHealthRecords.adapter = concatAdapter
