@@ -37,8 +37,8 @@ class PatientLocalDataSource @Inject constructor(
         val patientId = patientDao.insertPatient(patientDto.toEntity())
         if (patientId == -1L) {
             return patientDao.getPatientId(
-                patientDto.firstName,
-                patientDto.lastName,
+                patientDto.firstName.uppercase(),
+                patientDto.lastName.uppercase(),
                 patientDto.dateOfBirth
             ) ?: -1L
         }

@@ -17,8 +17,7 @@ import java.time.Instant
         entity = PatientEntity::class,
         parentColumns = ["id"],
         childColumns = ["patient_id"],
-        onDelete = ForeignKey.CASCADE,
-        onUpdate = ForeignKey.CASCADE
+        onDelete = ForeignKey.CASCADE
     )]
 )
 data class VaccineRecordEntity(

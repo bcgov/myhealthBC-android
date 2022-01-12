@@ -1,5 +1,6 @@
 package ca.bc.gov.bchealth.ui.healthrecord
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -10,6 +11,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHealthRecordsBinding
 import ca.bc.gov.bchealth.ui.healthrecord.add.AddHealthRecordsOptionsViewModel
@@ -61,6 +63,20 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 collectHealthRecordsFlow()
             }
+        }
+
+        val spacing = resources.getDimensionPixelSize(R.dimen.space_2_x) / 2
+        with(binding.rvMembers) {
+            addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    outRect.set(spacing, spacing, spacing, spacing)
+                }
+            })
         }
     }
 
