@@ -58,8 +58,23 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
             val phn = binding.edPhn.text.toString()
             val dob = binding.edDob.text.toString()
             val dov = binding.edDov.text.toString()
-            // viewModel.fetchVaccineRecord(phn, dob, dov)
-            viewModel.fetchVaccineRecord("9000691304", "1965-01-14", "2021-07-15")
+            when {
+                phn.isBlank() -> {
+                    binding.edPhnNumber.error = "Invalid PHN"
+                    binding.edPhnNumber.requestFocus()
+                }
+                dob.isBlank() -> {
+                    binding.tipDob.error = "Invalid DOB"
+                    binding.tipDob.requestFocus()
+                }
+                dov.isBlank() -> {
+                    binding.tipDov.error = "Invalid DOV"
+                    binding.tipDov.requestFocus()
+                }
+                else -> {
+                    viewModel.fetchVaccineRecord(phn, dob, dov)
+                }
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
