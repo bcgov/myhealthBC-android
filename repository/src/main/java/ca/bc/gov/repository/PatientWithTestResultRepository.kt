@@ -16,7 +16,7 @@ class PatientWithTestResultRepository @Inject constructor(
     private val testRecordRepository: TestRecordRepository
 ) {
 
-    suspend fun insertTestResult(patientTestResult: PatientTestResult) {
+    suspend fun insertTestResult(patientTestResult: PatientTestResult): Long {
         val patientId =
             patientRepository.insertPatient(patientTestResult.patient.toCreatePatientDto())
         val testResult = patientTestResult.testResult
@@ -27,6 +27,7 @@ class PatientWithTestResultRepository @Inject constructor(
             testRecord.testResultId = testResultId
         }
         testRecordRepository.insertAllTestRecords(records)
+        return testResultId
     }
 
     suspend fun getPatientWithTestResult(patientId: Long,testResultId: Long): PatientTestResult {

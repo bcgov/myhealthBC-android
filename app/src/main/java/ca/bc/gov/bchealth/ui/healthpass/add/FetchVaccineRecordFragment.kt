@@ -7,8 +7,10 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineRecordBinding
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -29,15 +31,23 @@ import java.nio.charset.StandardCharsets
 class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_record) {
     private val binding by viewBindings(FragmentFetchVaccineRecordBinding::bind)
     private val viewModel: FetchVaccineRecordViewModel by viewModels()
+    private lateinit var savedStateHandle: SavedStateHandle
 
     companion object {
         private const val TAG = "FetchVaccineRecordFragment"
+        const val VACCINE_RECORD_ADDED_SUCCESS = "VACCINE_RECORD_ADDED_SUCCESS"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
+        savedStateHandle.set(VACCINE_RECORD_ADDED_SUCCESS, null)
 
         binding.btnSubmit.setOnClickListener {
+            val phn = binding.edPhn.text.toString()
+            val dob = binding.edDob.text.toString()
+            val dov = binding.edDov.text.toString()
+            // viewModel.fetchVaccineRecord(phn, dob, dov)
             viewModel.fetchVaccineRecord("9000691304", "1965-01-14", "2021-07-15")
         }
 
@@ -52,6 +62,11 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                     if (uiState.onMustBeQueued && uiState.queItUrl != null) {
                         Log.d(TAG, "Mut be queue, url = ${uiState.queItUrl}")
                         queUser(uiState.queItUrl)
+                    }
+
+                    if (uiState.vaccineRecord != null) {
+                        savedStateHandle.set(VACCINE_RECORD_ADDED_SUCCESS, uiState.vaccineRecord)
+                        findNavController().popBackStack()
                     }
                 }
             }

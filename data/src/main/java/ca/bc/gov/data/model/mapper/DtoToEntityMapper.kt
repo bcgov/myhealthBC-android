@@ -6,7 +6,6 @@ import ca.bc.gov.common.model.CreateVaccineRecordDto
 import ca.bc.gov.common.model.VaccineRecord
 import ca.bc.gov.common.model.test.TestRecord
 import ca.bc.gov.common.model.test.TestResult
-import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.data.local.entity.PatientEntity
 import ca.bc.gov.data.local.entity.TestRecordEntity
 import ca.bc.gov.data.local.entity.TestResultEntity
@@ -14,8 +13,8 @@ import ca.bc.gov.data.local.entity.VaccineDoseEntity
 import ca.bc.gov.data.local.entity.VaccineRecordEntity
 
 fun CreatePatientDto.toEntity() = PatientEntity(
-    firstName = firstName,
-    lastName = lastName,
+    firstName = firstName.uppercase(),
+    lastName = lastName.uppercase(),
     dateOfBirth = dateOfBirth,
     phn = phn,
 )

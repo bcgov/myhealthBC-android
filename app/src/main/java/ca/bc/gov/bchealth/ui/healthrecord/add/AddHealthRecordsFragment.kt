@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
@@ -23,6 +24,15 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val savedStateHandle = findNavController().currentBackStackEntry!!.savedStateHandle
+        savedStateHandle.getLiveData<Boolean>(FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS)
+            .observe(findNavController().currentBackStackEntry!!, Observer { success ->
+                if (success) {
+                    findNavController().popBackStack()
+                }
+            })
+
         optionsAdapter = HealthRecordOptionAdapter {
             when (it) {
                 OptionType.VACCINE -> {
@@ -33,11 +43,8 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                 }
             }
         }
-
         binding.rvMembers.adapter = optionsAdapter
         binding.rvMembers.layoutManager = LinearLayoutManager(requireContext())
-        optionsAdapter.submitList(
-            viewModel.getHealthRecordOption().toMutableList()
-        )
+        optionsAdapter.submitList(viewModel.getHealthRecordOption().toMutableList())
     }
 }

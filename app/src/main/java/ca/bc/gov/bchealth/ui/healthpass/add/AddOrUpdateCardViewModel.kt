@@ -26,7 +26,7 @@ class AddOrUpdateCardViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState =
-        MutableStateFlow(AddCardOptionUiState(onLoading = true, state = Status.NA))
+        MutableStateFlow(AddCardOptionUiState())
     val uiState: StateFlow<AddCardOptionUiState> = _uiState.asStateFlow()
 
     fun processQRCode(uri: Uri) = viewModelScope.launch {
@@ -40,7 +40,7 @@ class AddOrUpdateCardViewModel @Inject constructor(
         processResult(result)
     }
 
-    private fun processResult(result: Pair<VaccineRecordState, PatientVaccineRecord?>) {
+    fun processResult(result: Pair<VaccineRecordState, PatientVaccineRecord?>) {
 
         when (result.first) {
             VaccineRecordState.CAN_UPDATE -> {
@@ -75,9 +75,7 @@ class AddOrUpdateCardViewModel @Inject constructor(
                 }
             }
         }
-        _uiState.update {
-            it.copy(onLoading = false, state = Status.NA)
-        }
+
     }
 
     fun insert(vaccineRecord: PatientVaccineRecord) = viewModelScope.launch {

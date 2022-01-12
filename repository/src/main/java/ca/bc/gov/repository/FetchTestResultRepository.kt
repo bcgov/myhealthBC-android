@@ -12,12 +12,12 @@ class FetchTestResultRepository @Inject constructor(
     private val laboratoryRemoteDataSource: LaboratoryRemoteDataSource
 ) {
 
-    suspend fun fetchTestRecord(phn: String, dateOfBirth: String, collectionDate: String) {
+    suspend fun fetchTestRecord(phn: String, dateOfBirth: String, collectionDate: String): Long {
         val response = laboratoryRemoteDataSource.getCovidTests(
             CovidTestRequest(
                 phn, dateOfBirth, collectionDate
             )
         )
-        val id = patientWithTestResultRepository.insertTestResult(response)
+        return patientWithTestResultRepository.insertTestResult(response)
     }
 }

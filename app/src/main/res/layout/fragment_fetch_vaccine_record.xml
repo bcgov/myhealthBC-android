@@ -64,7 +64,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/ed_phn_number" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/ed_dob"
+                android:id="@+id/tip_dob"
                 style="@style/BC_VAX.Widget.App.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -81,19 +81,35 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_phn_info">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ed_dob"
+                    android:inputType="date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_dose"
+                style="?textAppearanceSubtitle2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginTop="@dimen/space_4_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:text="@string/any_dose"
+                android:textColor="@color/grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tip_dob" />
+
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/ed_dov"
+                android:id="@+id/tip_dov"
                 style="@style/BC_VAX.Widget.App.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
                 android:layout_marginEnd="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_4_x"
                 android:hint="@string/date_of_vaccination"
                 app:endIconContentDescription="@string/select_date"
                 app:endIconDrawable="@drawable/ic_calender"
@@ -101,29 +117,15 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ed_dob">
+                app:layout_constraintTop_toBottomOf="@+id/tv_dose">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ed_dov"
+                    android:inputType="date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_dov_info"
-                style="?textAppearanceHeadline5"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_1_x"
-                android:layout_marginEnd="@dimen/space_4_x"
-                android:text="@string/add_the_date_of_vaccination_for_any_dose"
-                android:textColor="@color/shadow_grey"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ed_dov" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/checkbox_remember"
@@ -138,7 +140,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_dov_info" />
+                app:layout_constraintTop_toBottomOf="@+id/tip_dov" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_privacy_statement"

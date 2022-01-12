@@ -7,6 +7,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -19,6 +21,7 @@ import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.repository.model.PatientVaccineRecord
+import ca.bc.gov.repository.qr.VaccineRecordState
 import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -50,6 +53,17 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val savedStateHandle: SavedStateHandle =
+            findNavController().currentBackStackEntry!!.savedStateHandle
+        savedStateHandle.getLiveData<Pair<VaccineRecordState, PatientVaccineRecord?>>(
+            FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
+        )
+            .observe(findNavController().currentBackStackEntry!!, Observer {
+                if (it != null) {
+                    addOrUpdateCardViewModel.processResult(it)
+                }
+            })
+
 
         binding.btnScanQrCode.setOnClickListener {
             findNavController().navigate(R.id.action_addCardOptionFragment_to_onBoardingFragment)
@@ -59,26 +73,9 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 addOrUpdateCardViewModel.uiState.collect { state ->
-
-                    if (state.state == Status.CAN_INSERT) {
-                        insert(state.vaccineRecord!!)
+                    if (state.vaccineRecord != null) {
+                        performActionBasedOnState(state.state, state.vaccineRecord!!)
                     }
-
-                    if (state.state == Status.CAN_UPDATE) {
-                        updateRecord(state.vaccineRecord!!)
-                    }
-
-                    if (state.state == Status.DUPLICATE) {
-                        requireContext().showError(
-                            "Duplicate",
-                            "Duplicate hai data"
-                        )
-                    }
-
-                    if (state.state == Status.UPDATED || state.state == Status.INSERTED) {
-                        navigateToCardsList()
-                    }
-
                 }
             }
         }
@@ -102,6 +99,28 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             line1.visibility = View.VISIBLE
         }
     }
+
+    private fun performActionBasedOnState(state: Status, record: PatientVaccineRecord) =
+        when (state) {
+
+            Status.CAN_INSERT -> {
+                insert(record)
+            }
+            Status.CAN_UPDATE -> {
+                updateRecord(record)
+            }
+            Status.INSERTED,
+            Status.UPDATED -> {
+                navigateToCardsList()
+            }
+            Status.DUPLICATE -> {
+                requireContext().showError(
+                    "Duplicate",
+                    "Duplicate hai data"
+                )
+            }
+            else -> {}
+        }
 
     private fun updateRecord(vaccineRecord: PatientVaccineRecord) {
         requireContext().showAlertDialog(
