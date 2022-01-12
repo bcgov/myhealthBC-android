@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.healthRecordsFragment,
                 R.id.settingFragment,
                 R.id.resourcesFragment,
+                R.id.individualHealthRecordFragment,
                 R.id.newsfeedFragment -> {
                     showBottomNav()
                 }
