@@ -34,6 +34,10 @@
         <argument
             android:name="patient_id"
             app:argType="long" />
+
+        <argument
+            android:name="patient_name"
+            app:argType="string" />
         <action
             android:id="@+id/action_individualHealthRecordFragment_to_testResultDetailFragment"
             app:destination="@id/testResultDetailFragment" />
