@@ -43,6 +43,17 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
         savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
         savedStateHandle.set(TEST_RECORD_ADDED_SUCCESS, -1L)
 
+        binding.toolbar.apply {
+            ivLeftOption.visibility = View.VISIBLE
+            ivLeftOption.setImageResource(R.drawable.ic_action_back)
+            ivLeftOption.setOnClickListener {
+                findNavController().popBackStack()
+            }
+            tvTitle.visibility = View.VISIBLE
+            tvTitle.text = getString(R.string.add_covid_test_result)
+            line1.visibility = View.VISIBLE
+        }
+
         binding.btnSubmit.setOnClickListener {
             viewModel.fetchTestRecord("9875023209", "1955-10-23", "2021-04-11")
         }

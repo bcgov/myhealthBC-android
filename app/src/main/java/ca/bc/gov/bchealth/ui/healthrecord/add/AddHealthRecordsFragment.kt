@@ -26,9 +26,9 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         super.onViewCreated(view, savedInstanceState)
 
         val savedStateHandle = findNavController().currentBackStackEntry!!.savedStateHandle
-        savedStateHandle.getLiveData<Boolean>(FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS)
-            .observe(findNavController().currentBackStackEntry!!, Observer { success ->
-                if (success) {
+        savedStateHandle.getLiveData<Long>(FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS)
+            .observe(findNavController().currentBackStackEntry!!, Observer { recordId ->
+                if (recordId > 0) {
                     findNavController().popBackStack()
                 }
             })

@@ -43,6 +43,17 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
         savedStateHandle.set(VACCINE_RECORD_ADDED_SUCCESS, null)
 
+        binding.toolbar.apply {
+            ivLeftOption.visibility = View.VISIBLE
+            ivLeftOption.setImageResource(R.drawable.ic_action_back)
+            ivLeftOption.setOnClickListener {
+                findNavController().popBackStack()
+            }
+            tvTitle.visibility = View.VISIBLE
+            tvTitle.text = getString(R.string.add_bc_vaccine_record)
+            line1.visibility = View.VISIBLE
+        }
+
         binding.btnSubmit.setOnClickListener {
             val phn = binding.edPhn.text.toString()
             val dob = binding.edDob.text.toString()
