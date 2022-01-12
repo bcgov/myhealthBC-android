@@ -9,8 +9,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHealthRecordsBinding
+import ca.bc.gov.bchealth.ui.healthrecord.add.AddHealthRecordsOptionsViewModel
+import ca.bc.gov.bchealth.ui.healthrecord.add.OptionType
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -23,17 +26,23 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
 
     private val binding by viewBindings(FragmentHealthRecordsBinding::bind)
     private val viewModel: HealthRecordsViewModel by viewModels()
+    private val addHealthRecordsOptionsViewModel: AddHealthRecordsOptionsViewModel by viewModels()
     private lateinit var adapter: HealthRecordsAdapter
+    private lateinit var optionsAdapter: HealthRecordOptionAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                collectHealthRecordsFlow()
+        optionsAdapter = HealthRecordOptionAdapter {
+            when (it) {
+                OptionType.VACCINE -> {
+                    findNavController().navigate(R.id.fetchVaccineRecordFragment)
+                }
+                OptionType.TEST -> {
+                    findNavController().navigate(R.id.fetchTestRecordFragment)
+                }
             }
         }
-
         adapter = HealthRecordsAdapter {
             val action =
                 HealthRecordsFragmentDirections.actionHealthRecordsFragmentToIndividualHealthRecordFragment(
@@ -42,17 +51,31 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
             findNavController().navigate(action)
         }
 
-        binding.rvMembers.adapter = adapter
-        binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.ivAddHealthRecord.setOnClickListener {
+            findNavController().navigate(R.id.addHealthRecordsFragment)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                collectHealthRecordsFlow()
+            }
+        }
     }
 
     private suspend fun collectHealthRecordsFlow() {
         viewModel.patientHealthRecords.collect { records ->
-            if (records.isEmpty()) {
-                findNavController().navigate(R.id.action_healthRecordsFragment_to_addHealthRecordsFragment)
-            }
-            if (::adapter.isInitialized) {
+            if (records.isNotEmpty()) {
+                binding.ivAddHealthRecord.visibility = View.VISIBLE
+                binding.rvMembers.adapter = adapter
+                binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), 2)
                 adapter.submitList(records)
+            } else {
+                binding.ivAddHealthRecord.visibility = View.GONE
+                binding.rvMembers.adapter = optionsAdapter
+                binding.rvMembers.layoutManager = LinearLayoutManager(requireContext())
+                optionsAdapter.submitList(
+                    addHealthRecordsOptionsViewModel.getHealthRecordOption().toMutableList()
+                )
             }
         }
     }
