@@ -15,3 +15,4 @@ class HealthRecordsViewModel @Inject constructor(
 
     val patientHealthRecords = repository.patientHealthRecords
 }
+

@@ -39,6 +39,7 @@
         android:clickable="true"
         android:contentDescription="@string/add_card"
         android:focusable="true"
+        android:visibility="gone"
         android:src="@drawable/ic_add_card_blue"
         app:layout_constraintBottom_toBottomOf="@+id/tv_resource_message"
         app:layout_constraintEnd_toEndOf="parent"
