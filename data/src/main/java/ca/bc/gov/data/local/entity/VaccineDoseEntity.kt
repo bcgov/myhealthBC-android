@@ -12,7 +12,7 @@ import java.time.Instant
 @Entity(
     tableName = "vaccine_dose",
     foreignKeys = [ForeignKey(
-        entity = PatientEntity::class,
+        entity = VaccineRecordEntity::class,
         parentColumns = ["id"],
         childColumns = ["vaccine_record_id"],
         onDelete = ForeignKey.CASCADE
