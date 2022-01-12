@@ -13,6 +13,7 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.graphics.drawable.toBitmap
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.common.model.ImmunizationStatus
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -175,3 +176,38 @@ fun Context.showAlertDialog(
         }
         .show()
 }
+
+fun ImmunizationStatus.getHealthPassStatus(context: Context): PassState =
+    when (this) {
+        ImmunizationStatus.FULLY_IMMUNIZED -> {
+            PassState(
+                color = context.getColor(R.color.status_green),
+                context.resources
+                    .getString(R.string.vaccinated),
+                R.drawable.ic_check_mark
+            )
+        }
+        ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
+            PassState(
+                color = context.getColor(R.color.blue),
+                context.resources
+                    .getString(R.string.partially_vaccinated),
+                0
+            )
+        }
+
+        ImmunizationStatus.INVALID -> {
+            PassState(
+                color = context.getColor(R.color.grey),
+                context.resources
+                    .getString(R.string.no_record),
+                0
+            )
+        }
+    }
+
+data class PassState(
+    val color: Int,
+    val status: String,
+    val icon: Int
+)

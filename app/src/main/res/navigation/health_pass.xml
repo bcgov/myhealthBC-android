@@ -39,7 +39,7 @@
 
     <fragment
         android:id="@+id/manageHealthPassFragment"
-        tools:layout="@layout/scene_mycards_manage_cards"
+        tools:layout="@layout/fragment_manage_health_passes"
         android:name="ca.bc.gov.bchealth.ui.healthpass.manage.ManageHealthPassFragment"
         android:label="ManageHealthPassFragment">
         <action
