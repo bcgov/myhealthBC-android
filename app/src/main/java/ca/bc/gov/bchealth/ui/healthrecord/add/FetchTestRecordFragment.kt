@@ -55,7 +55,26 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
         }
 
         binding.btnSubmit.setOnClickListener {
-            viewModel.fetchTestRecord("9875023209", "1955-10-23", "2021-04-11")
+            val phn = binding.edPhn.text.toString()
+            val dob = binding.edtDob.text.toString()
+            val dov = binding.edtDob.text.toString()
+            when {
+                phn.isBlank() -> {
+                    binding.edPhnNumber.error = "Invalid PHN"
+                    binding.edPhnNumber.requestFocus()
+                }
+                dob.isBlank() -> {
+                    binding.tipDob.error = "Invalid DOB"
+                    binding.tipDob.requestFocus()
+                }
+                dov.isBlank() -> {
+                    binding.tipDot.error = "Invalid DOC"
+                    binding.tipDot.requestFocus()
+                }
+                else -> {
+                    viewModel.fetchTestRecord(phn, dob, dov)
+                }
+            }
         }
 
         binding.btnCancel.setOnClickListener {
