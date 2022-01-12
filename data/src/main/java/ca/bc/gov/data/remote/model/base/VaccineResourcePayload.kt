@@ -1,7 +1,6 @@
 package ca.bc.gov.data.remote.model.base
 
 import com.google.gson.annotations.SerializedName
-import java.time.Instant
 
 /**
  * @author Pinakin Kansara
@@ -18,9 +17,9 @@ data class VaccineResourcePayload(
     @SerializedName("lastname")
     val lastName: String,
     @SerializedName("birthdate")
-    val birthDate: Instant,
+    val birthDate: String,
     @SerializedName("vaccinedate")
-    val vaccineDate: Instant,
+    val vaccineDate: String,
     val doses: Int,
     val state: Int,
     val qrCode: Media,

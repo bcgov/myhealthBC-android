@@ -30,9 +30,6 @@
             android:id="@+id/action_healthPassesFragment_to_manageHealthPassFragment"
             app:destination="@id/manageHealthPassFragment" />
         <action
-            android:id="@+id/action_healthPassesFragment_to_addCardOptionFragment"
-            app:destination="@id/addCardOptionFragment" />
-        <action
             android:id="@+id/action_healthPassesFragment_to_expandQRFragment"
             app:destination="@id/expandQRFragment" />
     </fragment>
@@ -45,9 +42,6 @@
         <action
             android:id="@+id/action_manageHealthPassFragment_to_healthPassFragment"
             app:popUpTo="@id/healthPassFragment" />
-        <action
-            android:id="@+id/action_manageHealthPassFragment_to_expandQRFragment"
-            app:destination="@id/expandQRFragment" />
     </fragment>
 
     <fragment
@@ -65,15 +59,7 @@
             app:destination="@id/fetchVaccineRecordFragment" />
     </fragment>
 
-    <fragment
-        android:id="@+id/fetchVaccineRecordFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment"
-        android:label="fragment_fetch_vaccine_record"
-        tools:layout="@layout/fragment_fetch_vaccine_record">
-        <action
-            android:id="@+id/action_fetchVaccineRecordFragment_to_healthPassFragment"
-            app:popUpTo="@id/healthPassFragment" />
-    </fragment>
+
     <dialog
         android:id="@+id/expandQRFragment"
         android:name="ca.bc.gov.bchealth.ui.healthpass.ExpandQRFragment"

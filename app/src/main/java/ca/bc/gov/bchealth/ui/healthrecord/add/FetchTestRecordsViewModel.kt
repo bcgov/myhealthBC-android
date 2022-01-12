@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.add
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.repository.FetchTestResultRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,7 +32,21 @@ class FetchTestRecordsViewModel @Inject constructor(
 
     fun fetchTestRecord(phn: String, dateOfBirth: String, collectionDate: String) =
         viewModelScope.launch {
-            repository.fetchTestRecord(phn, dateOfBirth, collectionDate)
+            try {
+                val tesTestResultId = repository.fetchTestRecord(phn, dateOfBirth, collectionDate)
+                _uiState.update { fetchTestRecordUiState ->
+                    fetchTestRecordUiState.copy(
+                        onLoading = false,
+                        onTestResultFetched = tesTestResultId
+                    )
+                }
+            } catch (e: Exception) {
+                when (e) {
+                    is MustBeQueuedException -> {
+                    }
+                }
+            }
+
         }
 
     fun setQueItToken(token: String?) = viewModelScope.launch {
@@ -47,5 +62,6 @@ data class FetchTestRecordUiState(
     val onLoading: Boolean = false,
     val queItTokenUpdated: Boolean = false,
     val onMustBeQueued: Boolean = false,
-    val queItUrl: String? = null
+    val queItUrl: String? = null,
+    val onTestResultFetched: Long = -1L
 )

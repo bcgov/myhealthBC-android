@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.QueueItTokenRepository
+import ca.bc.gov.repository.model.PatientVaccineRecord
+import ca.bc.gov.repository.qr.VaccineRecordState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,11 +36,16 @@ class FetchVaccineRecordViewModel @Inject constructor(
         viewModelScope.launch {
 
             try {
-                fetchVaccineRecordRepository.fetchVaccineRecord(
+                val vaccineRecord = fetchVaccineRecordRepository.fetchVaccineRecord(
                     phn,
                     dateOfBirth,
                     dateOfVaccine
                 )
+                _uiState.update { fetchVaccineRecordUiState ->
+                    fetchVaccineRecordUiState.copy(
+                        vaccineRecord = vaccineRecord
+                    )
+                }
             } catch (e: Exception) {
                 when (e) {
                     is MustBeQueuedException -> {
@@ -71,5 +78,6 @@ data class FetchVaccineRecordUiState(
     val onLoading: Boolean = false,
     val queItTokenUpdated: Boolean = false,
     val onMustBeQueued: Boolean = false,
-    val queItUrl: String? = null
+    val queItUrl: String? = null,
+    val vaccineRecord: Pair<VaccineRecordState, PatientVaccineRecord?>? = null,
 )
