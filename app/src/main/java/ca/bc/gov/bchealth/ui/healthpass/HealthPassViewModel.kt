@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.utils.toDateTimeString
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
+import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +21,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class HealthPassViewModel @Inject constructor(
-    private val repository: PatientWithVaccineRecordRepository
+    private val repository: PatientWithVaccineRecordRepository,
+    private val vaccineRecordRepository: VaccineRecordRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HealthPassUiState())
@@ -34,7 +36,8 @@ class HealthPassViewModel @Inject constructor(
                 record.vaccineRecord.qrIssueDate.toDateTimeString(),
                 record.vaccineRecord.shcUri!!,
                 record.vaccineRecord.qrCodeImage,
-                record.vaccineRecord.status
+                record.vaccineRecord.status,
+                record.vaccineRecord.id
             )
         }
     }
@@ -50,7 +53,8 @@ class HealthPassViewModel @Inject constructor(
                     record.vaccineRecord.qrIssueDate.toDateTimeString(),
                     record.vaccineRecord.shcUri!!,
                     record.vaccineRecord.qrCodeImage,
-                    record.vaccineRecord.status
+                    record.vaccineRecord.status,
+                    record.vaccineRecord.id
                 )
             }
             _uiState.update { healthPassUiState ->
@@ -60,6 +64,10 @@ class HealthPassViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun deleteHealthPass(vaccineRecordId: Long) = viewModelScope.launch {
+        vaccineRecordRepository.delete(vaccineRecordId = vaccineRecordId)
     }
 }
 
@@ -75,7 +83,8 @@ data class HealthPass(
     val qrIssuedDate: String?,
     val shcUri: String,
     val qrCode: Bitmap?,
-    val status: ImmunizationStatus?
+    val status: ImmunizationStatus?,
+    val vaccineRecordId: Long
 )
 
 fun HealthPass.displayName() = "$firstName $lastName"

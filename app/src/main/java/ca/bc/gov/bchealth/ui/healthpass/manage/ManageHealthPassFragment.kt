@@ -47,7 +47,7 @@ class ManageHealthPassFragment : Fragment(R.layout.scene_mycards_manage_cards) {
         tvDone.setOnClickListener {
             findNavController().navigate(R.id.action_manageHealthPassFragment_to_healthPassFragment)
         }
-        healthPassAdapter = HealthPassAdapter(emptyList(), qrCodeClickListener = {
+        healthPassAdapter = HealthPassAdapter(mutableListOf(), qrCodeClickListener = {
 
         })
         binding.recManageCards.adapter = healthPassAdapter
@@ -64,7 +64,7 @@ class ManageHealthPassFragment : Fragment(R.layout.scene_mycards_manage_cards) {
     private suspend fun collectHealthPasses() {
         viewModel.healthPasses.collect { healthPasses ->
             if (::healthPassAdapter.isInitialized) {
-                healthPassAdapter.healthPasses = healthPasses
+                healthPassAdapter.healthPasses = healthPasses.toMutableList()
                 healthPassAdapter.notifyDataSetChanged()
             }
         }
