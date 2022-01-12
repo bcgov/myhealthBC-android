@@ -15,6 +15,7 @@ import ca.bc.gov.bchealth.databinding.FragmentHealthRecordsBinding
 import ca.bc.gov.bchealth.ui.healthrecord.add.AddHealthRecordsOptionsViewModel
 import ca.bc.gov.bchealth.ui.healthrecord.add.OptionType
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.repository.name
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -46,7 +47,8 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         adapter = HealthRecordsAdapter {
             val action =
                 HealthRecordsFragmentDirections.actionHealthRecordsFragmentToIndividualHealthRecordFragment(
-                    it.patientId.toLong()
+                    it.patientId.toLong(),
+                    it.name()
                 )
             findNavController().navigate(action)
         }

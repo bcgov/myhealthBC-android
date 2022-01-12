@@ -33,6 +33,17 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.toolbar.apply {
+            ivLeftOption.visibility = View.VISIBLE
+            ivLeftOption.setImageResource(R.drawable.ic_action_back)
+            ivLeftOption.setOnClickListener {
+                findNavController().popBackStack()
+            }
+            tvTitle.visibility = View.VISIBLE
+            tvTitle.text = args.patientName
+            line1.visibility = View.VISIBLE
+        }
+
         vaccineRecordsAdapter = VaccineRecordsAdapter { vaccineRecord ->
             val action = IndividualHealthRecordFragmentDirections
                 .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(
@@ -44,7 +55,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             val action = IndividualHealthRecordFragmentDirections
                 .actionIndividualHealthRecordFragmentToTestResultDetailFragment(
                     testResult.patientId,
-                    testResult.id)
+                    testResult.id
+                )
             findNavController().navigate(action)
         }
         concatAdapter = ConcatAdapter(vaccineRecordsAdapter, testRecordsAdapter)
