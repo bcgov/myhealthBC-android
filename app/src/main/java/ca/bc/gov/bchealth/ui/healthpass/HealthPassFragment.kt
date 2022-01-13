@@ -57,10 +57,28 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
             requireContext()
         )
 
-        healthPassAdapter = HealthPassAdapter(mutableListOf(), qrCodeClickListener = {
-            val action = HealthPassFragmentDirections.actionHealthPassFragmentToExpandQRFragment(it)
-            findNavController().navigate(action)
-        })
+        healthPassAdapter = HealthPassAdapter(mutableListOf(),
+            qrCodeClickListener = {
+                val action =
+                    HealthPassFragmentDirections.actionHealthPassFragmentToExpandQRFragment(it)
+                findNavController().navigate(action)
+            },
+            federalPassClickListener = { patientId, federalPass ->
+                if (federalPass.isNullOrBlank()) {
+                    val action =
+                        HealthPassFragmentDirections.actionHealthPassFragmentToFetchFederalTravelPass(
+                            patientId
+                        )
+                    findNavController().navigate(action)
+                } else {
+                    val action =
+                        HealthPassFragmentDirections.actionHealthPassFragmentToTravelPassFragment(
+                            federalPass
+                        )
+                    findNavController().navigate(action)
+                }
+
+            })
 
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {

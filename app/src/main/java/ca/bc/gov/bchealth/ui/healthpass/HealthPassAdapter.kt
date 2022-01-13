@@ -11,11 +11,16 @@ import ca.bc.gov.bchealth.databinding.ItemMycardsCardsListBinding
  */
 class HealthPassAdapter(
     var healthPasses: MutableList<HealthPass>,
-    private val qrCodeClickListener: QrCodeClickListener
+    private val qrCodeClickListener: QrCodeClickListener,
+    private val federalPassClickListener: FederalPassClickListener
 ) : RecyclerView.Adapter<HealthPassAdapter.ViewHolder>() {
 
     fun interface QrCodeClickListener {
         fun onQrCodeClicked(shcUri: String)
+    }
+
+    fun interface FederalPassClickListener {
+        fun onFederalPassClicked(patientId: Long, federalPass: String?)
     }
 
     class ViewHolder(val binding: ItemMycardsCardsListBinding) :
@@ -57,6 +62,12 @@ class HealthPassAdapter(
                 )
             }
 
+            viewFederalProof.setOnClickListener {
+                federalPassClickListener.onFederalPassClicked(
+                    healthPass.patientId,
+                    healthPass.federalPass
+                )
+            }
         }
     }
 

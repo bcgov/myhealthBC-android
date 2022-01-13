@@ -4,10 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.exceptions.MustBeQueuedException
+import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
 import ca.bc.gov.repository.FetchVaccineRecordRepository
+import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.qr.VaccineRecordState
+import ca.bc.gov.repository.vaccine.VaccineDoseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +25,9 @@ import javax.inject.Inject
 @HiltViewModel
 class FetchVaccineRecordViewModel @Inject constructor(
     private val queueItTokenRepository: QueueItTokenRepository,
-    private val fetchVaccineRecordRepository: FetchVaccineRecordRepository
+    private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
+    private val patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
+    private val vaccineDoseRepository: VaccineDoseRepository
 ) : ViewModel() {
 
     companion object {
@@ -99,6 +104,15 @@ class FetchVaccineRecordViewModel @Inject constructor(
             it.copy(onLoading = false, queItTokenUpdated = true)
         }
     }
+
+    fun getPatientWithVaccineRecord(patientId: Long) = viewModelScope.launch {
+        val record = patientWithVaccineRecordRepository.getPatientWithVaccine(patientId)
+        val vaccineDoses = vaccineDoseRepository.getVaccineDoses(record.vaccineRecord!!.id)
+        record.vaccineRecord?.doses = vaccineDoses
+        _uiState.update {
+            it.copy(onLoading = false, patientData = record)
+        }
+    }
 }
 
 data class FetchVaccineRecordUiState(
@@ -106,6 +120,7 @@ data class FetchVaccineRecordUiState(
     val queItTokenUpdated: Boolean = false,
     val onMustBeQueued: Boolean = false,
     val queItUrl: String? = null,
+    val patientData: PatientAndVaccineRecord? = null,
     val vaccineRecord: Pair<VaccineRecordState, PatientVaccineRecord?>? = null,
     val isError: Boolean = false
 )

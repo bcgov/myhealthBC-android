@@ -12,6 +12,12 @@ fun Instant.toDateTimeString(): String {
     return formatter.format(dateTime)
 }
 
+fun Instant.toDate(): String{
+    val dateTime = LocalDateTime.ofInstant(this, ZoneOffset.UTC)
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    return formatter.format(dateTime)
+}
+
 fun String.toDate(): Instant = LocalDate.parse(this).atStartOfDay().toInstant(ZoneOffset.UTC)
 
 fun String.toDateTime(): Instant = LocalDateTime.parse(this).toInstant(ZoneOffset.UTC)

@@ -19,6 +19,12 @@
         <action
             android:id="@+id/action_healthPassFragment_to_expandQRFragment"
             app:destination="@id/expandQRFragment" />
+        <action
+            android:id="@+id/action_healthPassFragment_to_fetchFederalTravelPass"
+            app:destination="@id/fetchFederalTravelPass" />
+        <action
+            android:id="@+id/action_healthPassFragment_to_travelPassFragment"
+            app:destination="@id/travelPassFragment" />
     </fragment>
 
     <fragment
@@ -32,6 +38,12 @@
         <action
             android:id="@+id/action_healthPassesFragment_to_expandQRFragment"
             app:destination="@id/expandQRFragment" />
+        <action
+            android:id="@+id/action_healthPassesFragment_to_fetchFederalTravelPass"
+            app:destination="@id/fetchFederalTravelPass" />
+        <action
+            android:id="@+id/action_healthPassesFragment_to_travelPassFragment"
+            app:destination="@id/travelPassFragment" />
     </fragment>
 
     <fragment
@@ -63,9 +75,27 @@
     <dialog
         android:id="@+id/expandQRFragment"
         android:name="ca.bc.gov.bchealth.ui.healthpass.ExpandQRFragment"
-        android:label="ExpandQRFragment" >
+        android:label="ExpandQRFragment">
         <argument
             android:name="shcUri"
             app:argType="string" />
     </dialog>
+    <fragment
+        android:id="@+id/fetchFederalTravelPass"
+        tools:layout="@layout/fragment_fetch_travel_pass"
+        android:name="ca.bc.gov.bchealth.ui.travelpass.FetchFederalTravelPass"
+        android:label="FetchFederalTravelPass">
+        <argument
+            android:name="patient_id"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/travelPassFragment"
+        android:name="ca.bc.gov.bchealth.ui.travelpass.TravelPassFragment"
+        android:label="FragmentTravelPass"
+        tools:layout="@layout/fragment_travel_pass">
+        <argument
+            android:name="travel_pass"
+            app:argType="string" />
+    </fragment>
 </navigation>

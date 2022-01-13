@@ -19,7 +19,7 @@ class PatientWithVaccineRecordLocalDataSource @Inject constructor(
         dao.getPatientsWithVaccineFlow()
 
     suspend fun getPatientWithVaccineRecord(patient: Patient) =
-        dao.getPatientsWithVaccine(patient.firstName, patient.lastName, patient.dateOfBirth)
+        dao.getPatientsWithVaccine(patient.firstName.uppercase(), patient.lastName.uppercase(), patient.dateOfBirth)
 
     suspend fun getPatientWithVaccineRecord(patientId: Long): PatientAndVaccineRecord? =
         dao.getPatientWithVaccine(patientId)?.toDto()
