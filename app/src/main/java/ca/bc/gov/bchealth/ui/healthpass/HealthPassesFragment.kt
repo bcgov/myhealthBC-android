@@ -48,11 +48,28 @@ class HealthPassesFragment : Fragment(R.layout.scene_mycards_cards_list) {
             findNavController().navigate(R.id.action_healthPassesFragment_to_manageHealthPassFragment)
         }
 
-        healthPassAdapter = HealthPassAdapter(mutableListOf(), qrCodeClickListener = {
-            val action =
-                HealthPassesFragmentDirections.actionHealthPassesFragmentToExpandQRFragment(it)
-            findNavController().navigate(action)
-        })
+        healthPassAdapter = HealthPassAdapter(mutableListOf(),
+            qrCodeClickListener = {
+                val action =
+                    HealthPassesFragmentDirections.actionHealthPassesFragmentToExpandQRFragment(it)
+                findNavController().navigate(action)
+            },
+            federalPassClickListener = { patientId, federalPass ->
+                if (federalPass.isNullOrBlank()) {
+                    val action =
+                        HealthPassesFragmentDirections.actionHealthPassesFragmentToFetchFederalTravelPass(
+                            patientId
+                        )
+                    findNavController().navigate(action)
+                } else {
+                    val action =
+                        HealthPassesFragmentDirections.actionHealthPassesFragmentToTravelPassFragment(
+                            federalPass
+                        )
+                    findNavController().navigate(action)
+                }
+
+            })
         binding.recCardsList.adapter = healthPassAdapter
         binding.recCardsList.layoutManager =
             LinearLayoutManager(requireContext())

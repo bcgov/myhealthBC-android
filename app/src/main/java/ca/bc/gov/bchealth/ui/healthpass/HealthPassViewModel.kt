@@ -33,13 +33,15 @@ class HealthPassViewModel @Inject constructor(
     val healthPasses = repository.patientsVaccineRecord.map { records ->
         records.map { record ->
             HealthPass(
+                record.patient.id,
                 record.patient.firstName,
                 record.patient.lastName,
                 record.vaccineRecord.qrIssueDate.toDateTimeString(),
                 record.vaccineRecord.shcUri!!,
                 record.vaccineRecord.qrCodeImage,
                 record.vaccineRecord.status,
-                record.vaccineRecord.id
+                record.vaccineRecord.id,
+                record.vaccineRecord.federalPass
             )
         }
     }
@@ -50,13 +52,15 @@ class HealthPassViewModel @Inject constructor(
         repository.patientsVaccineRecord.collect { patientVaccineRecords ->
             val healthPasses = patientVaccineRecords.map { record ->
                 HealthPass(
+                    record.patient.id,
                     record.patient.firstName,
                     record.patient.lastName,
                     record.vaccineRecord.qrIssueDate.toDateTimeString(),
                     record.vaccineRecord.shcUri!!,
                     record.vaccineRecord.qrCodeImage,
                     record.vaccineRecord.status,
-                    record.vaccineRecord.id
+                    record.vaccineRecord.id,
+                    record.vaccineRecord.federalPass
                 )
             }
             _uiState.update { healthPassUiState ->
@@ -80,13 +84,15 @@ data class HealthPassUiState(
 )
 
 data class HealthPass(
+    val patientId: Long,
     val firstName: String,
     val lastName: String,
     val qrIssuedDate: String?,
     val shcUri: String,
     val qrCode: Bitmap?,
     val status: ImmunizationStatus?,
-    val vaccineRecordId: Long
+    val vaccineRecordId: Long,
+    val federalPass: String?,
 )
 
 fun ImmunizationStatus.getHealthPassStatus(context: Context): PassState =

@@ -25,6 +25,9 @@ class FetchVaccineRecordRepository @Inject constructor(
         val response =
             immunizationRemoteDataSource.getVaccineStatus(VaccineStatusRequest(phn, dob, dov))
         val image = base64ToInputImageConverter.convert(response.payload.qrCode.data)
-        return processQrRepository.processQrCode(image)
+        val patientVaccineRecord = processQrRepository.processQrCode(image)
+        val (status, record) = patientVaccineRecord
+        record?.vaccineRecord?.federalPass = response.payload.federalVaccineProof.data
+        return Pair(status, record)
     }
 }
