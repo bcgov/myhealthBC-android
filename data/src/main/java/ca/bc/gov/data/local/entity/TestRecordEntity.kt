@@ -12,7 +12,7 @@ import java.time.Instant
 @Entity(
     tableName = "test_record",
     foreignKeys = [ForeignKey(
-        entity = PatientEntity::class,
+        entity = TestResultEntity::class,
         parentColumns = ["id"],
         childColumns = ["test_result_id"],
         onDelete = ForeignKey.CASCADE,
@@ -33,7 +33,7 @@ data class TestRecordEntity(
     @ColumnInfo(name = "test_name")
     val testName: String,
     @ColumnInfo(name = "test_type")
-    val testType: String,
+    val testType: String?,
     @ColumnInfo(name = "test_status")
     val testStatus: String,
     @ColumnInfo(name = "test_outcome")

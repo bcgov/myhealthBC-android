@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
 import ca.bc.gov.common.model.test.TestResult
 import ca.bc.gov.common.utils.toDateTimeString
@@ -34,7 +35,7 @@ class TestRecordsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val testResult = getItem(position)
-        val name = "COVID-19 TEST RESULT"
+        val name = holder.itemView.resources.getString(R.string.covid_19_test_result)
         holder.binding.tvVaccineName.text = name
         holder.binding.tvVaccineStatus.text = testResult.collectionDate.toDateTimeString()
 

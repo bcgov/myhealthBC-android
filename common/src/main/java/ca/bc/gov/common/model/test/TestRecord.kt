@@ -16,7 +16,7 @@ data class TestRecord(
     val collectionDateTime: Instant,
     val resultDateTime: Instant,
     val testName: String,
-    val testType: String,
+    val testType: String?,
     val testOutcome: String,
     val testStatus: String,
     val resultTitle: String,
