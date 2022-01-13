@@ -33,6 +33,11 @@ class IndividualHealthRecordViewModel @Inject constructor(
             it.copy(onLoading = false, onTestRecords = tesRecords, onVaccineRecord = vaccineRecords)
         }
     }
+
+    companion object {
+        const val bulletPoint = " \u2022 "
+    }
+
 }
 
 data class IndividualHealthRecordsUiState(

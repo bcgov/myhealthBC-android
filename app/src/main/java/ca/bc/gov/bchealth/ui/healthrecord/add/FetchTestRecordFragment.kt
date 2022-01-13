@@ -18,6 +18,7 @@ import ca.bc.gov.bchealth.ui.custom.setUpDatePickerUi
 import ca.bc.gov.bchealth.ui.custom.validateDatePickerData
 import ca.bc.gov.bchealth.ui.custom.validatePhnNumber
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
@@ -25,6 +26,7 @@ import com.queue_it.androidsdk.QueueListener
 import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
@@ -58,7 +60,6 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
 
         initClickListeners()
 
-        observeCovidTestResult()
     }
 
     private fun showLoader(value: Boolean) {
@@ -72,6 +73,14 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
                 viewModel.uiState.collect { state ->
 
                     showLoader(state.onLoading)
+
+                    if(state.isError){
+                        requireContext().showError(
+                            getString(R.string.error),
+                            getString(R.string.error_message)
+                        )
+                        this.cancel()
+                    }
 
                     if (state.onTestResultFetched > 0) {
                         savedStateHandle.set(TEST_RECORD_ADDED_SUCCESS, state.onTestResultFetched)
@@ -102,6 +111,8 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
 
                 viewModel.fetchTestRecord(phn, dob, dot)
             }
+
+            observeCovidTestResult()
         }
 
         binding.btnCancel.setOnClickListener {

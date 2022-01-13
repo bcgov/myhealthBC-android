@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.model.relation.PatientTestResult
 import ca.bc.gov.repository.PatientWithTestResultRepository
+import ca.bc.gov.repository.testrecord.TestResultRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +18,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class TestResultDetailsViewModel @Inject constructor(
-    private val patientWithTestResultRepository: PatientWithTestResultRepository
+    private val patientWithTestResultRepository: PatientWithTestResultRepository,
+    private val testResultRepository: TestResultRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TestResultDetailUiState())
@@ -32,6 +34,10 @@ class TestResultDetailsViewModel @Inject constructor(
         _uiState.update {
             it.copy(onLoading = false, onTestResultDetail = patientTestResult)
         }
+    }
+
+    fun deleteTestRecord(testResultId: Long) = viewModelScope.launch {
+        testResultRepository.delete(testResultId)
     }
 }
 
