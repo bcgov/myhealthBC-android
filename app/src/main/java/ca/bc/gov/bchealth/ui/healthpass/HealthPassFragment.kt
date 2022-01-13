@@ -43,6 +43,8 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupToolBar()
+
         sceneSingleHealthPass = Scene.getSceneForLayout(
             binding.sceneRoot,
             R.layout.scene_mycards_single_card,
@@ -76,6 +78,15 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
         }
 
         viewModel.loadHealthPasses()
+    }
+
+    private fun setupToolBar() {
+        binding.toolbar.ivRightOption.apply {
+            visibility = View.VISIBLE
+            setOnClickListener {
+                findNavController().navigate(R.id.settingFragment)
+            }
+        }
     }
 
     private fun showHealthPasses(healthPasses: List<HealthPass>) {

@@ -1,8 +1,10 @@
 package ca.bc.gov.bchealth.ui.healthpass
 
+import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.R
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.utils.toDateTimeString
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
@@ -85,6 +87,41 @@ data class HealthPass(
     val qrCode: Bitmap?,
     val status: ImmunizationStatus?,
     val vaccineRecordId: Long
+)
+
+fun ImmunizationStatus.getHealthPassStatus(context: Context): PassState =
+    when (this) {
+        ImmunizationStatus.FULLY_IMMUNIZED -> {
+            PassState(
+                color = context.getColor(R.color.status_green),
+                context.resources
+                    .getString(R.string.vaccinated),
+                R.drawable.ic_check_mark
+            )
+        }
+        ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
+            PassState(
+                color = context.getColor(R.color.blue),
+                context.resources
+                    .getString(R.string.partially_vaccinated),
+                0
+            )
+        }
+
+        ImmunizationStatus.INVALID -> {
+            PassState(
+                color = context.getColor(R.color.grey),
+                context.resources
+                    .getString(R.string.no_record),
+                0
+            )
+        }
+    }
+
+data class PassState(
+    val color: Int,
+    val status: String,
+    val icon: Int
 )
 
 fun HealthPass.displayName() = "$firstName $lastName"

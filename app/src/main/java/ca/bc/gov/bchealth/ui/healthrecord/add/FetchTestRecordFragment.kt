@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -13,6 +14,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchCovidTestResultBinding
+import ca.bc.gov.bchealth.ui.custom.setUpDatePickerUi
+import ca.bc.gov.bchealth.ui.custom.validateDatePickerData
+import ca.bc.gov.bchealth.ui.custom.validatePhnNumber
+import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
@@ -43,47 +48,31 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
         savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
         savedStateHandle.set(TEST_RECORD_ADDED_SUCCESS, -1L)
 
-        binding.toolbar.apply {
-            ivLeftOption.visibility = View.VISIBLE
-            ivLeftOption.setImageResource(R.drawable.ic_action_back)
-            ivLeftOption.setOnClickListener {
-                findNavController().popBackStack()
-            }
-            tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.add_covid_test_result)
-            line1.visibility = View.VISIBLE
-        }
+        setupToolBar()
 
-        binding.btnSubmit.setOnClickListener {
-            val phn = binding.edPhn.text.toString()
-            val dob = binding.edtDob.text.toString()
-            val dov = binding.edtDob.text.toString()
-            when {
-                phn.isBlank() -> {
-                    binding.edPhnNumber.error = "Invalid PHN"
-                    binding.edPhnNumber.requestFocus()
-                }
-                dob.isBlank() -> {
-                    binding.tipDob.error = "Invalid DOB"
-                    binding.tipDob.requestFocus()
-                }
-                dov.isBlank() -> {
-                    binding.tipDot.error = "Invalid DOC"
-                    binding.tipDot.requestFocus()
-                }
-                else -> {
-                    viewModel.fetchTestRecord(phn, dob, dov)
-                }
-            }
-        }
+        setUpPhnUI()
 
-        binding.btnCancel.setOnClickListener {
-            findNavController().popBackStack()
-        }
+        setUpDobUI()
 
+        setUpDotUI()
+
+        initClickListeners()
+
+        observeCovidTestResult()
+    }
+
+    private fun showLoader(value: Boolean) {
+        binding.btnSubmit.isEnabled = !value
+        binding.progressBar.isVisible = value
+    }
+
+    private fun observeCovidTestResult() {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
+
+                    showLoader(state.onLoading)
+
                     if (state.onTestResultFetched > 0) {
                         savedStateHandle.set(TEST_RECORD_ADDED_SUCCESS, state.onTestResultFetched)
                         findNavController().popBackStack()
@@ -95,6 +84,63 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
                 }
             }
         }
+    }
+
+    private fun initClickListeners() {
+        binding.btnSubmit.setOnClickListener {
+
+            val phn = binding.edPhn.text.toString()
+            val dob = binding.edtDob.text.toString()
+            val dot = binding.edtDoc.text.toString()
+
+            if(this.validatePhnNumber(binding.edPhnNumber,
+                    getString(R.string.phn_should_be_10_digit))
+                && this.validateDatePickerData(binding.tipDob,
+                    getString(R.string.dob_required))
+                && this.validateDatePickerData(binding.tipDot,
+                    getString(R.string.dot_required))) {
+
+                viewModel.fetchTestRecord(phn, dob, dot)
+            }
+        }
+
+        binding.btnCancel.setOnClickListener {
+            findNavController().popBackStack()
+        }
+    }
+
+    private fun setupToolBar() {
+        binding.toolbar.apply {
+            ivLeftOption.visibility = View.VISIBLE
+            ivLeftOption.setImageResource(R.drawable.ic_action_back)
+            ivLeftOption.setOnClickListener {
+                findNavController().popBackStack()
+            }
+
+            tvTitle.visibility = View.VISIBLE
+            tvTitle.text = getString(R.string.add_covid_test_result)
+
+            ivRightOption.visibility = View.VISIBLE
+            ivRightOption.setImageResource(R.drawable.ic_help)
+            ivRightOption.setOnClickListener {
+                requireActivity().redirect(getString(R.string.url_help))
+            }
+            ivRightOption.contentDescription = getString(R.string.help)
+
+            line1.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setUpPhnUI() {
+        // TODO: 13/01/22 Autocomplete feature needs to be implemented
+    }
+
+    private fun setUpDobUI() {
+        this.setUpDatePickerUi(binding.tipDob, "DATE_OF_BIRTH")
+    }
+
+    private fun setUpDotUI() {
+        this.setUpDatePickerUi(binding.tipDot, "DATE_OF_TEST")
     }
 
     private fun queUser(value: String) {

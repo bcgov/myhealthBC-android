@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.databinding.ItemMycardsCardsListBinding
-import ca.bc.gov.bchealth.utils.getHealthPassStatus
 
 /**
  * @author Pinakin Kansara
