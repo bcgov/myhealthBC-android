@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.databinding.ItemMycardsCardsListBinding
 import ca.bc.gov.bchealth.ui.healthpass.HealthPass
 import ca.bc.gov.bchealth.ui.healthpass.displayName
-import ca.bc.gov.bchealth.utils.getHealthPassStatus
+import ca.bc.gov.bchealth.ui.healthpass.getHealthPassStatus
 
 /*
 * Created by amit_metri on 12,January,2022

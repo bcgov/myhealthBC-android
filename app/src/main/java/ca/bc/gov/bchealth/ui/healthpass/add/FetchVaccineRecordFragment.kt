@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -13,6 +14,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineRecordBinding
+import ca.bc.gov.bchealth.ui.custom.setUpDatePickerUi
+import ca.bc.gov.bchealth.ui.custom.validateDatePickerData
+import ca.bc.gov.bchealth.ui.custom.validatePhnNumber
+import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
@@ -43,43 +48,32 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
         savedStateHandle.set(VACCINE_RECORD_ADDED_SUCCESS, null)
 
-        binding.toolbar.apply {
-            ivLeftOption.visibility = View.VISIBLE
-            ivLeftOption.setImageResource(R.drawable.ic_action_back)
-            ivLeftOption.setOnClickListener {
-                findNavController().popBackStack()
-            }
-            tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.add_bc_vaccine_record)
-            line1.visibility = View.VISIBLE
-        }
+        setupToolBar()
 
-        binding.btnSubmit.setOnClickListener {
-            val phn = binding.edPhn.text.toString()
-            val dob = binding.edDob.text.toString()
-            val dov = binding.edDov.text.toString()
-            when {
-                phn.isBlank() -> {
-                    binding.edPhnNumber.error = "Invalid PHN"
-                    binding.edPhnNumber.requestFocus()
-                }
-                dob.isBlank() -> {
-                    binding.tipDob.error = "Invalid DOB"
-                    binding.tipDob.requestFocus()
-                }
-                dov.isBlank() -> {
-                    binding.tipDov.error = "Invalid DOV"
-                    binding.tipDov.requestFocus()
-                }
-                else -> {
-                    viewModel.fetchVaccineRecord(phn, dob, dov)
-                }
-            }
-        }
+        setUpPhnUI()
 
+        setUpDobUI()
+
+        setUpDovUI()
+
+        initClickListeners()
+
+        observeCovidTestResult()
+
+    }
+
+    private fun showLoader(value: Boolean) {
+        binding.btnSubmit.isEnabled = !value
+        binding.progressBar.isVisible = value
+    }
+
+    private fun observeCovidTestResult() {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
+
+                    showLoader(uiState.onLoading)
+
                     if (uiState.queItTokenUpdated) {
                         Log.d(TAG, "QueueIt token updated")
                         viewModel.fetchVaccineRecord("9000691304", "1965-01-14", "2021-07-15")
@@ -96,6 +90,63 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                     }
                 }
             }
+        }
+    }
+
+    private fun initClickListeners() {
+        binding.btnSubmit.setOnClickListener {
+
+            val phn = binding.edPhn.text.toString()
+            val dob = binding.edDob.text.toString()
+            val dov = binding.edDov.text.toString()
+
+            if(this.validatePhnNumber(binding.edPhnNumber,
+                    getString(R.string.phn_should_be_10_digit))
+                && this.validateDatePickerData(binding.tipDob,
+                    getString(R.string.dob_required))
+                && this.validateDatePickerData(binding.tipDov,
+                    getString(R.string.dov_required))) {
+
+                viewModel.fetchVaccineRecord(phn, dob, dov)
+            }
+        }
+
+        binding.btnCancel.setOnClickListener {
+            findNavController().popBackStack()
+        }
+    }
+
+    private fun setUpDovUI() {
+        this.setUpDatePickerUi(binding.tipDov, "DATE_OF_VACCINATION")
+    }
+
+    private fun setUpDobUI() {
+        this.setUpDatePickerUi(binding.tipDob, "DATE_OF_BIRTH")
+    }
+
+    private fun setUpPhnUI() {
+        // TODO: 13/01/22 Autocomplete data to be implemented.
+    }
+
+    private fun setupToolBar() {
+        binding.toolbar.apply {
+            ivLeftOption.visibility = View.VISIBLE
+            ivLeftOption.setImageResource(R.drawable.ic_action_back)
+            ivLeftOption.setOnClickListener {
+                findNavController().popBackStack()
+            }
+
+            tvTitle.visibility = View.VISIBLE
+            tvTitle.text = getString(R.string.add_bc_vaccine_record)
+
+            ivRightOption.visibility = View.VISIBLE
+            ivRightOption.setImageResource(R.drawable.ic_help)
+            ivRightOption.setOnClickListener {
+                requireActivity().redirect(getString(R.string.url_help))
+            }
+            ivRightOption.contentDescription = getString(R.string.help)
+
+            line1.visibility = View.VISIBLE
         }
     }
 
