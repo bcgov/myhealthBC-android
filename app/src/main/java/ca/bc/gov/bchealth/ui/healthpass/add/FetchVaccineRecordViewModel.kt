@@ -35,6 +35,17 @@ class FetchVaccineRecordViewModel @Inject constructor(
     fun fetchVaccineRecord(phn: String, dateOfBirth: String, dateOfVaccine: String) =
         viewModelScope.launch {
 
+            _uiState.update { fetchTestRecordUiState ->
+                fetchTestRecordUiState.copy(
+                    onLoading = true,
+                    queItTokenUpdated = false,
+                    onMustBeQueued = false,
+                    queItUrl = null,
+                    vaccineRecord = null,
+                    isError = false
+                )
+            }
+
             try {
                 val vaccineRecord = fetchVaccineRecordRepository.fetchVaccineRecord(
                     phn,
@@ -43,7 +54,12 @@ class FetchVaccineRecordViewModel @Inject constructor(
                 )
                 _uiState.update { fetchVaccineRecordUiState ->
                     fetchVaccineRecordUiState.copy(
-                        vaccineRecord = vaccineRecord
+                        onLoading = false,
+                        queItTokenUpdated = false,
+                        onMustBeQueued = false,
+                        queItUrl = null,
+                        vaccineRecord = vaccineRecord,
+                        isError = false
                     )
                 }
             } catch (e: Exception) {
@@ -54,12 +70,23 @@ class FetchVaccineRecordViewModel @Inject constructor(
                                 onLoading = false,
                                 queItTokenUpdated = false,
                                 onMustBeQueued = true,
-                                queItUrl = e.message
+                                queItUrl = e.message,
+                                vaccineRecord = null,
+                                isError = false
                             )
                         }
                     }
                     else -> {
-                        //TODO: Emit Error state
+                        _uiState.update {
+                            it.copy(
+                                onLoading = false,
+                                queItTokenUpdated = false,
+                                onMustBeQueued = false,
+                                queItUrl = null,
+                                vaccineRecord = null,
+                                isError = true
+                            )
+                        }
                     }
                 }
             }
@@ -80,4 +107,5 @@ data class FetchVaccineRecordUiState(
     val onMustBeQueued: Boolean = false,
     val queItUrl: String? = null,
     val vaccineRecord: Pair<VaccineRecordState, PatientVaccineRecord?>? = null,
+    val isError: Boolean = false
 )

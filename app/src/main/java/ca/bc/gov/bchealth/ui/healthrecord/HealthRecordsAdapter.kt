@@ -30,7 +30,12 @@ class HealthRecordsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val record = getItem(position)
-        val totalRecords = "${record.totalRecord} records"
+        val totalRecords: String
+        if(record.totalRecord == 1)
+            totalRecords = "${record.totalRecord} record"
+        else
+            totalRecords = "${record.totalRecord} records"
+
         holder.binding.tvNumberOfHealthRecords.text = totalRecords
         holder.binding.tvMemberName.text = record.name()
 

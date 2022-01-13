@@ -103,13 +103,11 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
                     positiveButtonText = getString(R.string.delete),
                     negativeButtonText = getString(R.string.not_now)
                 ) {
-                    /*binding.progressBar.visibility = View.VISIBLE
-                    viewModel.deleteCovidTestResult(args.covidTestResultList.first().combinedReportId)
+                    binding.progressBar.visibility = View.VISIBLE
+                    viewModel.deleteTestRecord(args.testResultId)
                         .invokeOnCompletion {
                             findNavController().popBackStack()
-                        }*/
-
-                    // TODO: 11/01/22 handle delete funtionality
+                        }
                 }
             }
 
