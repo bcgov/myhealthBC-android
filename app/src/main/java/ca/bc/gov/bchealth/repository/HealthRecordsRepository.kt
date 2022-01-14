@@ -382,8 +382,8 @@ class HealthRecordsRepository @Inject constructor(
                     patientDisplayName.isNullOrEmpty() ||
                     reportId.isNullOrEmpty() ||
                     resultDateTime.isNullOrEmpty() ||
-                    resultLink.isNullOrEmpty() ||
-                    resultTitle.isNullOrEmpty() ||
+                    // resultLink.isNullOrEmpty() ||
+                    // resultTitle.isNullOrEmpty() ||
                     testName.isNullOrEmpty() ||
                     testOutcome.isNullOrEmpty() ||
                     testStatus.isNullOrEmpty()
