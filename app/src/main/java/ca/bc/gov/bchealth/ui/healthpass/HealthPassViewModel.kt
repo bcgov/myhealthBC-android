@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.utils.toDateTimeString
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
@@ -32,17 +33,7 @@ class HealthPassViewModel @Inject constructor(
 
     val healthPasses = repository.patientsVaccineRecord.map { records ->
         records.map { record ->
-            HealthPass(
-                record.patient.id,
-                record.patient.firstName,
-                record.patient.lastName,
-                record.vaccineRecord.qrIssueDate.toDateTimeString(),
-                record.vaccineRecord.shcUri!!,
-                record.vaccineRecord.qrCodeImage,
-                record.vaccineRecord.status,
-                record.vaccineRecord.id,
-                record.vaccineRecord.federalPass
-            )
+            record.toUiModel()
         }
     }
 
@@ -51,17 +42,7 @@ class HealthPassViewModel @Inject constructor(
         //TODO: check for onBoarding require or not
         repository.patientsVaccineRecord.collect { patientVaccineRecords ->
             val healthPasses = patientVaccineRecords.map { record ->
-                HealthPass(
-                    record.patient.id,
-                    record.patient.firstName,
-                    record.patient.lastName,
-                    record.vaccineRecord.qrIssueDate.toDateTimeString(),
-                    record.vaccineRecord.shcUri!!,
-                    record.vaccineRecord.qrCodeImage,
-                    record.vaccineRecord.status,
-                    record.vaccineRecord.id,
-                    record.vaccineRecord.federalPass
-                )
+                record.toUiModel()
             }
             _uiState.update { healthPassUiState ->
                 healthPassUiState.copy(
@@ -85,49 +66,24 @@ data class HealthPassUiState(
 
 data class HealthPass(
     val patientId: Long,
-    val firstName: String,
-    val lastName: String,
+    val vaccineRecordId: Long,
+    val isExpanded: Boolean = true,
+    val name: String,
     val qrIssuedDate: String?,
     val shcUri: String,
     val qrCode: Bitmap?,
-    val status: ImmunizationStatus?,
-    val vaccineRecordId: Long,
-    val federalPass: String?,
+    val federalTravelPassState: FederalTravelPassState,
+    val state: PassState
 )
-
-fun ImmunizationStatus.getHealthPassStatus(context: Context): PassState =
-    when (this) {
-        ImmunizationStatus.FULLY_IMMUNIZED -> {
-            PassState(
-                color = context.getColor(R.color.status_green),
-                context.resources
-                    .getString(R.string.vaccinated),
-                R.drawable.ic_check_mark
-            )
-        }
-        ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
-            PassState(
-                color = context.getColor(R.color.blue),
-                context.resources
-                    .getString(R.string.partially_vaccinated),
-                0
-            )
-        }
-
-        ImmunizationStatus.INVALID -> {
-            PassState(
-                color = context.getColor(R.color.grey),
-                context.resources
-                    .getString(R.string.no_record),
-                0
-            )
-        }
-    }
 
 data class PassState(
     val color: Int,
-    val status: String,
+    val status: Int,
     val icon: Int
 )
 
-fun HealthPass.displayName() = "$firstName $lastName"
+data class FederalTravelPassState(
+    val title: Int,
+    val icon: Int,
+    val pdf: String?
+)

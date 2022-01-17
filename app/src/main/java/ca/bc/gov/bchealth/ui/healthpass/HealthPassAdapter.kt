@@ -1,10 +1,10 @@
 package ca.bc.gov.bchealth.ui.healthpass
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import ca.bc.gov.bchealth.databinding.ItemMycardsCardsListBinding
+import ca.bc.gov.bchealth.databinding.ItemHealthPassCardBinding
 
 /**
  * @author Pinakin Kansara
@@ -23,12 +23,12 @@ class HealthPassAdapter(
         fun onFederalPassClicked(patientId: Long, federalPass: String?)
     }
 
-    class ViewHolder(val binding: ItemMycardsCardsListBinding) :
+    class ViewHolder(val binding: ItemHealthPassCardBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            ItemMycardsCardsListBinding.inflate(
+            ItemHealthPassCardBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent, false
             )
@@ -39,33 +39,31 @@ class HealthPassAdapter(
         val healthPass = healthPasses[position]
 
         holder.binding.apply {
-            if (position == 0) {
-                layoutQrCode.visibility = View.VISIBLE
-            } else {
-                layoutQrCode.visibility = View.GONE
-            }
-            txtFullName.text = healthPass.displayName()
-            val issueDate = "Issued on ${healthPass.qrIssuedDate}"
+
+            layoutQrCode.isVisible = healthPass.isExpanded
+
+            txtFullName.text = healthPass.name
+            val issueDate = healthPass.qrIssuedDate
             txtIssueDate.text = issueDate
 
-            healthPass.status?.let {
-                val passState = it.getHealthPassStatus(root.context)
-                txtVaccineStatus.text = passState.status
-                layoutVaccineStatus.setBackgroundColor(passState.color)
-                layoutQrCode.setBackgroundColor(passState.color)
-                imgQrCode.setImageBitmap(healthPass.qrCode)
-                imgQrCode.setOnClickListener {
-                    qrCodeClickListener.onQrCodeClicked(healthPass.shcUri)
-                }
-                txtVaccineStatus.setCompoundDrawablesWithIntrinsicBounds(
-                    passState.icon, 0, 0, 0
-                )
+            txtVaccineStatus.setText(healthPass.state.status)
+            layoutVaccineStatus.setBackgroundColor(holder.itemView.context.getColor(healthPass.state.color))
+            layoutQrCode.setBackgroundColor(holder.itemView.context.getColor(healthPass.state.color))
+            imgQrCode.setImageBitmap(healthPass.qrCode)
+            imgQrCode.setOnClickListener {
+                qrCodeClickListener.onQrCodeClicked(healthPass.shcUri)
             }
+            txtVaccineStatus.setCompoundDrawablesWithIntrinsicBounds(
+                healthPass.state.icon, 0, 0, 0
+            )
+
+            tvFederalPassTitle.setText(healthPass.federalTravelPassState.title)
+            ivFederalPassAction.setImageResource(healthPass.federalTravelPassState.icon)
 
             viewFederalProof.setOnClickListener {
                 federalPassClickListener.onFederalPassClicked(
                     healthPass.patientId,
-                    healthPass.federalPass
+                    healthPass.federalTravelPassState.pdf
                 )
             }
         }

@@ -5,10 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
-import ca.bc.gov.common.model.test.TestResult
-import ca.bc.gov.common.utils.toDateTimeString
 
 /**
  * @author Pinakin Kansara
@@ -16,10 +13,10 @@ import ca.bc.gov.common.utils.toDateTimeString
 class TestRecordsAdapter(
     private val itemClickListener: ItemClickListener
 ) :
-    ListAdapter<TestResult, TestRecordsAdapter.ViewHolder>(TestRecordsDiffCallBacks()) {
+    ListAdapter<HealthRecordItem, TestRecordsAdapter.ViewHolder>(TestRecordsDiffCallBacks()) {
 
     fun interface ItemClickListener {
-        fun onItemClick(result: TestResult)
+        fun onItemClick(result: HealthRecordItem)
     }
 
     class ViewHolder(val binding: ItemHealthRecordsAbstractBinding) :
@@ -34,23 +31,22 @@ class TestRecordsAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val testResult = getItem(position)
-        val name = holder.itemView.resources.getString(R.string.covid_19_test_result)
-        holder.binding.tvVaccineName.text = name
-        holder.binding.tvVaccineStatus.text = testResult.collectionDate.toDateTimeString()
-
+        val record = getItem(position)
+        holder.binding.tvVaccineName.setText(record.title)
+        holder.binding.tvVaccineStatus.text = record.date
+        holder.binding.imgIcon.setImageResource(record.icon)
         holder.itemView.setOnClickListener {
-            itemClickListener.onItemClick(testResult)
+            itemClickListener.onItemClick(record)
         }
     }
 }
 
-class TestRecordsDiffCallBacks : DiffUtil.ItemCallback<TestResult>() {
-    override fun areItemsTheSame(oldItem: TestResult, newItem: TestResult): Boolean {
-        return oldItem.id == newItem.id
+class TestRecordsDiffCallBacks : DiffUtil.ItemCallback<HealthRecordItem>() {
+    override fun areItemsTheSame(oldItem: HealthRecordItem, newItem: HealthRecordItem): Boolean {
+        return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: TestResult, newItem: TestResult): Boolean {
-        return oldItem == newItem
+    override fun areContentsTheSame(oldItem: HealthRecordItem, newItem: HealthRecordItem): Boolean {
+        return oldItem.title == newItem.title
     }
 }

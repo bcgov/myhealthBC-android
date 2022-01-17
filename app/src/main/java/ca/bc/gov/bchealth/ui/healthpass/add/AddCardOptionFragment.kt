@@ -115,8 +115,8 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             }
             Status.DUPLICATE -> {
                 requireContext().showError(
-                    "Duplicate",
-                    "Duplicate hai data"
+                    getString(R.string.error_duplicate_title),
+                    getString(R.string.error_duplicate_message)
                 )
             }
             else -> {}

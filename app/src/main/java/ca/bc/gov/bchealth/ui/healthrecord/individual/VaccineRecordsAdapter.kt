@@ -7,9 +7,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
-import ca.bc.gov.bchealth.ui.healthpass.getHealthPassStatus
-import ca.bc.gov.common.model.VaccineRecord
-import ca.bc.gov.common.utils.toDateTimeString
 
 /**
  * @author Pinakin Kansara
@@ -17,10 +14,10 @@ import ca.bc.gov.common.utils.toDateTimeString
 class VaccineRecordsAdapter(
     private val itemClickListener: ItemClickListener
 ) :
-    ListAdapter<VaccineRecord, VaccineRecordsAdapter.ViewHolder>(HealthPassDiffCallBacks()) {
+    ListAdapter<HealthRecordItem, VaccineRecordsAdapter.ViewHolder>(VaccineRecordDiffCallBacks()) {
 
     fun interface ItemClickListener {
-        fun onItemClick(record: VaccineRecord)
+        fun onItemClick(record: HealthRecordItem)
     }
 
     class ViewHolder(val binding: ItemHealthRecordsAbstractBinding) :
@@ -35,28 +32,24 @@ class VaccineRecordsAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val pass = getItem(position)
-        val name = holder.itemView.resources.getString(R.string.covid_19_vaccination)
-        holder.binding.tvVaccineName.text = name
-        holder.binding.tvVaccineStatus.text =
-            pass.status.getHealthPassStatus(holder.itemView.context).status
-            .plus(IndividualHealthRecordViewModel.bulletPoint)
-            .plus(pass.qrIssueDate.toDateTimeString())
-
+        val record = getItem(position)
+        holder.binding.tvVaccineName.setText(record.title)
+        val description =
+            "${holder.itemView.context.getString(R.string.vaccinated)} • ${record.date}"
+        holder.binding.tvVaccineStatus.text = description
+        holder.binding.imgIcon.setImageResource(record.icon)
         holder.itemView.setOnClickListener {
-            itemClickListener.onItemClick(pass)
+            itemClickListener.onItemClick(record)
         }
     }
 }
 
-
-
-class HealthPassDiffCallBacks : DiffUtil.ItemCallback<VaccineRecord>() {
-    override fun areItemsTheSame(oldItem: VaccineRecord, newItem: VaccineRecord): Boolean {
+class VaccineRecordDiffCallBacks : DiffUtil.ItemCallback<HealthRecordItem>() {
+    override fun areItemsTheSame(oldItem: HealthRecordItem, newItem: HealthRecordItem): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: VaccineRecord, newItem: VaccineRecord): Boolean {
-        return oldItem.status == newItem.status
+    override fun areContentsTheSame(oldItem: HealthRecordItem, newItem: HealthRecordItem): Boolean {
+        return oldItem.title == newItem.title
     }
 }
