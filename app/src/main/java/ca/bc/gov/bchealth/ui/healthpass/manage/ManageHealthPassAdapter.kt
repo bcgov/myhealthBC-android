@@ -4,10 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ca.bc.gov.bchealth.databinding.ItemMycardsCardsListBinding
+import ca.bc.gov.bchealth.databinding.ItemHealthPassCardBinding
 import ca.bc.gov.bchealth.ui.healthpass.HealthPass
-import ca.bc.gov.bchealth.ui.healthpass.displayName
-import ca.bc.gov.bchealth.ui.healthpass.getHealthPassStatus
 
 /*
 * Created by amit_metri on 12,January,2022
@@ -21,12 +19,12 @@ class ManageHealthPassAdapter(
         fun onDeleteClicked(vaccineRecordId: Long)
     }
 
-    class ViewHolder(val binding: ItemMycardsCardsListBinding) :
+    class ViewHolder(val binding: ItemHealthPassCardBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            ItemMycardsCardsListBinding.inflate(
+            ItemHealthPassCardBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent, false
             )
@@ -43,18 +41,13 @@ class ManageHealthPassAdapter(
             imgUnlink.setOnClickListener {
                 deleteClickListener.onDeleteClicked(healthPass.vaccineRecordId)
             }
-
-            txtFullName.text = healthPass.displayName()
-
-            healthPass.status?.let {
-                val passState = it.getHealthPassStatus(root.context)
-                txtVaccineStatus.text = passState.status
-                layoutVaccineStatus.setBackgroundColor(passState.color)
-                txtVaccineStatus
-                    .setCompoundDrawablesWithIntrinsicBounds(
-                        passState.icon, 0, 0, 0
-                    )
-            }
+            txtFullName.text = healthPass.name
+            txtVaccineStatus.setText(healthPass.state.status)
+            layoutVaccineStatus.setBackgroundColor(holder.itemView.context.getColor(healthPass.state.color))
+            txtVaccineStatus
+                .setCompoundDrawablesWithIntrinsicBounds(
+                    healthPass.state.icon, 0, 0, 0
+                )
         }
     }
 

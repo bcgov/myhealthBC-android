@@ -25,6 +25,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:itemCount="10"
-        tools:listitem="@layout/item_mycards_cards_list" />
+        tools:listitem="@layout/item_health_pass_card" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -40,7 +40,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 findNavController().popBackStack()
             }
             tvTitle.visibility = View.VISIBLE
-            tvTitle.text = args.patientName
+            tvTitle.text = args.patientName.plus("'s record")
             line1.visibility = View.VISIBLE
         }
 
@@ -55,7 +55,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             val action = IndividualHealthRecordFragmentDirections
                 .actionIndividualHealthRecordFragmentToTestResultDetailFragment(
                     testResult.patientId,
-                    testResult.id
+                    testResult.testResultId
                 )
             findNavController().navigate(action)
         }
