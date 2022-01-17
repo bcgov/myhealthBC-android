@@ -183,4 +183,7 @@
     <string name="federal_proof">federal proof</string>
     <string name="torch">torch</string>
 
+    <!--ERROR-->
+    <string name="error_duplicate_title">Duplicate!</string>
+    <string name="error_duplicate_message">This record is already added.</string>
 </resources>

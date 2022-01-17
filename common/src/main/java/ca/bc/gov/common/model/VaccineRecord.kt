@@ -12,7 +12,7 @@ data class VaccineRecord(
     val qrIssueDate: Instant,
     val status: ImmunizationStatus,
     var qrCodeImage: Bitmap?,
-    var shcUri: String?,
+    var shcUri: String,
     var federalPass: String?,
     var mode: DataSource,
     var doses: List<VaccineDose> = emptyList()
