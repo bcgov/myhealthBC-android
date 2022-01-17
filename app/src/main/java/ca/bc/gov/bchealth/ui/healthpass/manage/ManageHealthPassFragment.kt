@@ -80,7 +80,10 @@ class ManageHealthPassFragment : Fragment(R.layout.fragment_manage_health_passes
             tvRightOption.visibility = View.VISIBLE
             tvRightOption.text = getString(R.string.done)
             tvRightOption.setOnClickListener {
-                findNavController().popBackStack()
+                viewModel.updateHealthPassOrder(manageHealthPassAdapter.healthPasses)
+                    .invokeOnCompletion {
+                        findNavController().popBackStack()
+                    }
             }
         }
     }
