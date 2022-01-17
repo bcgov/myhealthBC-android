@@ -7,7 +7,6 @@ import android.graphics.PorterDuffXfermode
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -80,22 +79,35 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
 
             })
 
+
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
-
-                    binding.progressBar.isVisible = state.isLoading
-
-                    if (!state.healthPasses.isNullOrEmpty()) {
-                        showHealthPasses(healthPasses = state.healthPasses)
+                viewModel.onBoardingRequired.collect {
+                    if (it) {
+                        findNavController().navigate(R.id.onBoardingSliderFragment)
                     } else {
-                        showNoCardPlaceHolder()
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                                collectHealthPasses()
+                            }
+                        }
                     }
                 }
             }
         }
+    }
 
-        viewModel.loadHealthPasses()
+    private suspend fun collectHealthPasses() {
+        viewModel.healthPasses.collect { healthPasses ->
+            if (::healthPassAdapter.isInitialized) {
+                binding.progressBar.visibility = View.GONE
+                if (!healthPasses.isNullOrEmpty()) {
+                    showHealthPasses(healthPasses)
+                } else {
+                    showNoCardPlaceHolder()
+                }
+            }
+        }
     }
 
     private fun setupToolBar() {
@@ -151,7 +163,9 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
 
     private fun setupRecyclerView(healthPasses: List<HealthPass>) {
         if (::healthPassAdapter.isInitialized) {
-            healthPassAdapter.healthPasses = healthPasses.toMutableList().subList(0, 1)
+            val passes = healthPasses.toMutableList().subList(0, 1)
+            passes.first().isExpanded = true
+            healthPassAdapter.healthPasses = passes
             healthPassAdapter.notifyDataSetChanged()
         }
         val recHealthPasses: RecyclerView =
