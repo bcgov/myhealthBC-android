@@ -42,6 +42,14 @@ class HealthPassAdapter(
 
             layoutQrCode.isVisible = healthPass.isExpanded
 
+            holder.itemView.setOnClickListener {
+                healthPasses.forEach { pass ->
+                    pass.isExpanded = false
+                }
+                healthPasses[position].isExpanded = true
+                notifyDataSetChanged()
+            }
+
             txtFullName.text = healthPass.name
             val issueDate = healthPass.qrIssuedDate
             txtIssueDate.text = issueDate

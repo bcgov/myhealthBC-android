@@ -1,21 +1,18 @@
 package ca.bc.gov.bchealth.ui.healthpass
 
-import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.model.mapper.toUiModel
-import ca.bc.gov.common.model.ImmunizationStatus
-import ca.bc.gov.common.utils.toDateTimeString
+import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HealthPassViewModel @Inject constructor(
     private val repository: PatientWithVaccineRecordRepository,
-    private val vaccineRecordRepository: VaccineRecordRepository
+    private val vaccineRecordRepository: VaccineRecordRepository,
+    private val onBoardingRepository: OnBoardingRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HealthPassUiState())
@@ -37,21 +35,7 @@ class HealthPassViewModel @Inject constructor(
         }
     }
 
-    fun loadHealthPasses() = viewModelScope.launch {
-        _uiState.update { healthPassUiState -> healthPassUiState.copy(isLoading = true) }
-        //TODO: check for onBoarding require or not
-        repository.patientsVaccineRecord.collect { patientVaccineRecords ->
-            val healthPasses = patientVaccineRecords.map { record ->
-                record.toUiModel()
-            }
-            _uiState.update { healthPassUiState ->
-                healthPassUiState.copy(
-                    isLoading = false,
-                    healthPasses = healthPasses
-                )
-            }
-        }
-    }
+    val onBoardingRequired: Flow<Boolean> = onBoardingRepository.onBoardingRequired
 
     fun deleteHealthPass(vaccineRecordId: Long) = viewModelScope.launch {
         vaccineRecordRepository.delete(vaccineRecordId = vaccineRecordId)
@@ -67,14 +51,14 @@ class HealthPassViewModel @Inject constructor(
 
 data class HealthPassUiState(
     val isLoading: Boolean = false,
-    val isOnBoardingShown: Boolean = false,
+    val isOnBoardingRequired: Boolean = false,
     val healthPasses: List<HealthPass> = emptyList()
 )
 
 data class HealthPass(
     val patientId: Long,
     val vaccineRecordId: Long,
-    val isExpanded: Boolean = true,
+    var isExpanded: Boolean = true,
     val name: String,
     val qrIssuedDate: String?,
     val shcUri: String,
