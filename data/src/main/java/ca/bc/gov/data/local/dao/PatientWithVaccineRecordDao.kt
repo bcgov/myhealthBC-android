@@ -3,6 +3,9 @@ package ca.bc.gov.data.local.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
+import ca.bc.gov.data.local.entity.PatientEntity
+import ca.bc.gov.data.local.entity.PatientOrderUpdate
 import ca.bc.gov.data.local.entity.relations.PatientWithVaccineRecord
 import kotlinx.coroutines.flow.Flow
 import java.time.Instant
@@ -26,6 +29,10 @@ interface PatientWithVaccineRecordDao {
     suspend fun getPatientWithVaccine(patientId: Long): PatientWithVaccineRecord?
 
     @Transaction
-    @Query("SELECT * FROM patient")
+    @Query("SELECT * FROM patient ORDER BY patient_order ASC")
     fun getPatientsWithVaccineFlow(): Flow<List<PatientWithVaccineRecord>>
+
+    @Update(entity = PatientEntity::class)
+    suspend fun updatePatientOrder(patientOrderUpdates: List<PatientOrderUpdate>)
+
 }

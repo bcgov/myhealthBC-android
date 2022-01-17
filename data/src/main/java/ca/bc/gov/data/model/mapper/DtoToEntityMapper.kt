@@ -17,6 +17,7 @@ fun CreatePatientDto.toEntity() = PatientEntity(
     lastName = lastName.uppercase(),
     dateOfBirth = dateOfBirth,
     phn = phn,
+    patientOrder = Long.MAX_VALUE
 )
 
 fun CreateVaccineDoseDto.toEntity() = VaccineDoseEntity(

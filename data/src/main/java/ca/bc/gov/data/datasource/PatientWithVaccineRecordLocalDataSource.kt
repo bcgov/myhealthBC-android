@@ -3,6 +3,7 @@ package ca.bc.gov.data.datasource
 import ca.bc.gov.common.model.patient.Patient
 import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
 import ca.bc.gov.data.local.dao.PatientWithVaccineRecordDao
+import ca.bc.gov.data.local.entity.PatientOrderUpdate
 import ca.bc.gov.data.local.entity.relations.PatientWithVaccineRecord
 import ca.bc.gov.data.model.mapper.toDto
 import kotlinx.coroutines.flow.Flow
@@ -23,4 +24,7 @@ class PatientWithVaccineRecordLocalDataSource @Inject constructor(
 
     suspend fun getPatientWithVaccineRecord(patientId: Long): PatientAndVaccineRecord? =
         dao.getPatientWithVaccine(patientId)?.toDto()
+
+    suspend fun updatePatientOrder(patientOrderUpdates: List<PatientOrderUpdate>) =
+        dao.updatePatientOrder(patientOrderUpdates)
 }
