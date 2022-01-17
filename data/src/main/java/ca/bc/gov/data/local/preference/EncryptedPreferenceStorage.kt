@@ -16,6 +16,8 @@ class EncryptedPreferenceStorage @Inject constructor(
     companion object {
         private const val ANALYTICS_FEATURE = "ANALYTICS_FEATURE"
         private const val QUEUE_IT_TOKEN = "QUEUE_IT_TOKEN"
+        private const val APP_VERSION_CODE = "APP_VERSION_CODE"
+        private const val ON_BOARDING_SHOWN = "ON_BOARDING_SHOWN"
     }
 
     var queueItToken: String?
@@ -30,8 +32,23 @@ class EncryptedPreferenceStorage @Inject constructor(
         emit(AnalyticsFeature.getByValue(value) ?: AnalyticsFeature.DISABLED)
     }
 
-    suspend fun setAnalyticsFeature(feature: AnalyticsFeature) =
+    val appVersion: Int = encryptedSharedPreferences.getInt(APP_VERSION_CODE, 0)
+
+    val onBoardingRequired: Flow<Boolean> =
+        flow { emit(encryptedSharedPreferences.getBoolean(ON_BOARDING_SHOWN, true)) }
+
+    fun setAnalyticsFeature(feature: AnalyticsFeature) =
         encryptedSharedPreferences.edit()
             .putInt(ANALYTICS_FEATURE, feature.value)
+            .apply()
+
+    fun setIsOnBoardingShown(onBoardingShown: Boolean) =
+        encryptedSharedPreferences.edit()
+            .putBoolean(ON_BOARDING_SHOWN, onBoardingShown)
+            .apply()
+
+    fun setAppVersion(versionCode: Int) =
+        encryptedSharedPreferences.edit()
+            .putInt(APP_VERSION_CODE, versionCode)
             .apply()
 }

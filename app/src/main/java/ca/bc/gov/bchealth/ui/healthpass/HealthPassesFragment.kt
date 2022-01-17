@@ -84,7 +84,9 @@ class HealthPassesFragment : Fragment(R.layout.scene_mycards_cards_list) {
     private suspend fun collectHealthPasses() {
         viewModel.healthPasses.collect { healthPasses ->
             if (::healthPassAdapter.isInitialized) {
-                healthPassAdapter.healthPasses = healthPasses.toMutableList()
+                val passes = healthPasses.toMutableList()
+                passes.first().isExpanded = true
+                healthPassAdapter.healthPasses = passes
                 healthPassAdapter.notifyDataSetChanged()
             }
         }

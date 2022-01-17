@@ -11,6 +11,7 @@ import ca.bc.gov.data.datasource.VaccineRecordLocalDataSource
 import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
+import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.PatientHealthRecordsRepository
 import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
@@ -136,4 +137,9 @@ class RepositoriesModule {
     @Singleton
     fun providesClearStorageRepository(localDataSource: LocalDataSource) =
         ClearStorageRepository(localDataSource)
+
+    @Provides
+    @Singleton
+    fun providesOnBoardingRepository(preferenceStorage: EncryptedPreferenceStorage) =
+        OnBoardingRepository(preferenceStorage)
 }

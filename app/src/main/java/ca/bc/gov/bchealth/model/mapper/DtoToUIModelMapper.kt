@@ -40,6 +40,7 @@ fun PatientVaccineRecord.toUiModel(): HealthPass {
         shcUri = vaccineRecord.shcUri,
         qrCode = vaccineRecord.qrCodeImage,
         state = passState,
+        isExpanded = false,
         federalTravelPassState = federalTravelPassState
     )
 }
