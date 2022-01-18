@@ -4,15 +4,13 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
-
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.qr.ProcessQrRepository
 import ca.bc.gov.repository.qr.VaccineRecordState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,8 +24,8 @@ class AddOrUpdateCardViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState =
-        MutableStateFlow(AddCardOptionUiState())
-    val uiState: StateFlow<AddCardOptionUiState> = _uiState.asStateFlow()
+        MutableSharedFlow<AddCardOptionUiState>(replay = 0, extraBufferCapacity = 1)
+    val uiState: SharedFlow<AddCardOptionUiState> = _uiState.asSharedFlow()
 
     fun processQRCode(uri: Uri) = viewModelScope.launch {
 
@@ -44,66 +42,54 @@ class AddOrUpdateCardViewModel @Inject constructor(
 
         when (result.first) {
             VaccineRecordState.CAN_UPDATE -> {
-                _uiState.update {
-                    it.copy(
+                _uiState.tryEmit(
+                    AddCardOptionUiState().copy(
                         vaccineRecord = result.second,
                         state = Status.CAN_UPDATE
                     )
-                }
+                )
             }
             VaccineRecordState.CAN_INSERT -> {
-                _uiState.update {
-                    it.copy(
+                _uiState.tryEmit(
+                    AddCardOptionUiState().copy(
                         vaccineRecord = result.second,
                         state = Status.CAN_INSERT
                     )
-                }
+                )
             }
             VaccineRecordState.DUPLICATE -> {
-                _uiState.update {
-                    it.copy(
+                _uiState.tryEmit(
+                    AddCardOptionUiState().copy(
                         state = Status.DUPLICATE
                     )
-                }
+                )
             }
 
             VaccineRecordState.INVALID -> {
-                _uiState.update {
-                    it.copy(
+                _uiState.tryEmit(
+                    AddCardOptionUiState().copy(
                         state = Status.ERROR
                     )
-                }
+                )
             }
         }
-
     }
 
     fun insert(vaccineRecord: PatientVaccineRecord) = viewModelScope.launch {
-        _uiState.update {
-            it.copy(onLoading = true, state = Status.NA)
-        }
+        _uiState.tryEmit(AddCardOptionUiState().copy(onLoading = true, state = Status.NA))
         val result = repository.insertPatientsVaccineRecord(vaccineRecord)
-        _uiState.update {
-            val status = if (result > 0) Status.INSERTED else Status.ERROR
-            it.copy(state = status)
-        }
-        _uiState.update {
-            it.copy(onLoading = false, state = Status.NA)
-        }
+        val status = if (result > 0) Status.INSERTED else Status.ERROR
+        _uiState.tryEmit(AddCardOptionUiState().copy(state = status))
+        _uiState.tryEmit(AddCardOptionUiState().copy(onLoading = false, state = Status.NA))
+
     }
 
     fun update(vaccineRecord: PatientVaccineRecord) = viewModelScope.launch {
-        _uiState.update {
-            it.copy(onLoading = true, state = Status.NA)
-        }
+        _uiState.tryEmit(AddCardOptionUiState().copy(onLoading = true, state = Status.NA))
         val result = repository.updatePatientVaccineRecord(vaccineRecord)
-        _uiState.update {
-            val status = if (result > 0) Status.UPDATED else Status.ERROR
-            it.copy(state = status)
-        }
-        _uiState.update {
-            it.copy(onLoading = false, state = Status.NA)
-        }
+        val status = if (result > 0) Status.UPDATED else Status.ERROR
+        _uiState.tryEmit(AddCardOptionUiState().copy(state = status))
+        _uiState.tryEmit(AddCardOptionUiState().copy(onLoading = false, state = Status.NA))
     }
 }
 

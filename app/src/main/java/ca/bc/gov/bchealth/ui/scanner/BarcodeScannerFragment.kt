@@ -27,7 +27,6 @@ import ca.bc.gov.bchealth.databinding.FragmentBarcodeScannerBinding
 import ca.bc.gov.bchealth.repository.ErrorData
 import ca.bc.gov.bchealth.ui.healthpass.add.AddOrUpdateCardViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
-import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -86,10 +85,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                     }
 
                     if (state.state == Status.DUPLICATE) {
-                        requireContext().showError(
-                            "Duplicate",
-                            "Duplicate hai data"
-                        )
+                        showDuplicateRecordDialog()
                     }
 
                     if (state.state == Status.UPDATED || state.state == Status.INSERTED) {
@@ -235,6 +231,20 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
             .setMessage(message)
             .setPositiveButton(getString(R.string.scan_next)) { dialog, which ->
 
+                // Attach analyzer again to start analysis.
+                imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this))
+
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun showDuplicateRecordDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.error_duplicate_title))
+            .setCancelable(false)
+            .setMessage(getString(R.string.error_duplicate_message))
+            .setPositiveButton(getString(R.string.btn_ok)) { dialog, _ ->
                 // Attach analyzer again to start analysis.
                 imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this))
 

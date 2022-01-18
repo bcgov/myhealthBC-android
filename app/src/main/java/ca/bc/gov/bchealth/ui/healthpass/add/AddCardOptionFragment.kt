@@ -73,9 +73,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 addOrUpdateCardViewModel.uiState.collect { state ->
-                    if (state.vaccineRecord != null) {
-                        performActionBasedOnState(state.state, state.vaccineRecord!!)
-                    }
+                    performActionBasedOnState(state.state, state.vaccineRecord)
                 }
             }
         }
@@ -100,14 +98,14 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         }
     }
 
-    private fun performActionBasedOnState(state: Status, record: PatientVaccineRecord) =
+    private fun performActionBasedOnState(state: Status, record: PatientVaccineRecord?) =
         when (state) {
 
             Status.CAN_INSERT -> {
-                insert(record)
+                record?.let { insert(it) }
             }
             Status.CAN_UPDATE -> {
-                updateRecord(record)
+                record?.let { updateRecord(it) }
             }
             Status.INSERTED,
             Status.UPDATED -> {
@@ -119,7 +117,8 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                     getString(R.string.error_duplicate_message)
                 )
             }
-            else -> {}
+            else -> {
+            }
         }
 
     private fun updateRecord(vaccineRecord: PatientVaccineRecord) {
