@@ -73,7 +73,7 @@
                 android:autoLink="email|phone"
                 android:linksClickable="true"
                 android:textIsSelectable="true"
-                android:text="@string/privacy_statement_info"
+                android:text="@string/privacy_statement_info_vaccine"
                 android:textAlignment="textStart"
                 android:textColorLink="@color/blue"
                 android:textSize="14sp"
