@@ -9,7 +9,7 @@ import java.time.Instant
  */
 @Parcelize
 data class Patient(
-    val id: Long = 0,
+    var id: Long = 0,
     val firstName: String,
     val lastName: String,
     val dateOfBirth: Instant,

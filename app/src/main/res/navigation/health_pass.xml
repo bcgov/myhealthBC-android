@@ -83,7 +83,7 @@
     <fragment
         android:id="@+id/fetchFederalTravelPass"
         tools:layout="@layout/fragment_fetch_travel_pass"
-        android:name="ca.bc.gov.bchealth.ui.travelpass.FetchFederalTravelPass"
+        android:name="ca.bc.gov.bchealth.ui.travelpass.FetchFederalTravelPassFragment"
         android:label="FetchFederalTravelPass">
         <argument
             android:name="patient_id"
