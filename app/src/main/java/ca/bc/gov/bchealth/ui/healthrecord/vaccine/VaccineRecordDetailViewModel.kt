@@ -30,10 +30,10 @@ class VaccineRecordDetailViewModel @Inject constructor(
             it.copy(onLoading = true)
         }
         val patientAndVaccine = patientWithVaccineRepository.getPatientWithVaccine(patientId)
-        if (patientAndVaccine.vaccineRecord != null) {
-            val doses = vaccineDoseRepository.getVaccineDoses(patientAndVaccine.vaccineRecord!!.id)
+        if (patientAndVaccine.vaccineRecordDto != null) {
+            val doses = vaccineDoseRepository.getVaccineDoses(patientAndVaccine.vaccineRecordDto!!.id)
                 .sortedBy { it.date }
-            patientAndVaccine.vaccineRecord?.doses = doses
+            patientAndVaccine.vaccineRecordDto?.doseDtos = doses
             _uiState.update {
                 it.copy(
                     onLoading = false,

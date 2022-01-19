@@ -17,7 +17,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSingleTestResultBinding
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
-import ca.bc.gov.common.model.patient.Patient
+import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.TestRecord
 import ca.bc.gov.common.utils.toDateTimeString
 
@@ -34,13 +34,13 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
 
     private var testRecord: TestRecord? = null
 
-    private var patient: Patient? = null
+    private var patientDto: PatientDto? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             testRecord = it.getParcelable(ARG_PARAM1)
-            patient = it.getParcelable(ARG_PARAM2)
+            patientDto = it.getParcelable(ARG_PARAM2)
         }
     }
 
@@ -48,7 +48,7 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            tvFullName.text = patient?.firstName.plus(" ").plus(patient?.lastName)
+            tvFullName.text = patientDto?.firstName.plus(" ").plus(patientDto?.lastName)
             tvTestResult.text = testRecord?.testOutcome
             tvTestedOn.text =
                 getString(R.string.tested_on)
@@ -263,11 +263,11 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
     companion object {
 
         @JvmStatic
-        fun newInstance(testRecord: TestRecord, patient: Patient) =
+        fun newInstance(testRecord: TestRecord, patientDto: PatientDto) =
             SingleTestResultFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM1, testRecord)
-                    putParcelable(ARG_PARAM2, patient)
+                    putParcelable(ARG_PARAM2, patientDto)
                 }
             }
     }

@@ -6,7 +6,7 @@ import java.time.Instant
 /**
  * @author Pinakin Kansara
  */
-data class VaccineRecord(
+data class VaccineRecordDto(
     var id: Long = 0,
     var patientId: Long = 0,
     val qrIssueDate: Instant,
@@ -15,5 +15,5 @@ data class VaccineRecord(
     var shcUri: String,
     var federalPass: String?,
     var mode: DataSource,
-    var doses: List<VaccineDose> = emptyList()
+    var doseDtos: List<VaccineDoseDto> = emptyList()
 )

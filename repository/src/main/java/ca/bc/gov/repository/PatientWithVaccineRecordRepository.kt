@@ -6,9 +6,6 @@ import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
 import ca.bc.gov.data.datasource.PatientWithVaccineRecordLocalDataSource
 import ca.bc.gov.data.local.entity.PatientOrderUpdate
 import ca.bc.gov.repository.model.PatientVaccineRecord
-import ca.bc.gov.repository.model.mapper.toCreatePatientDto
-import ca.bc.gov.repository.model.mapper.toCreateVaccineDoseDto
-import ca.bc.gov.repository.model.mapper.toCreateVaccineRecordDto
 import ca.bc.gov.repository.model.mapper.toPatient
 import ca.bc.gov.repository.model.mapper.toVaccineRecord
 import ca.bc.gov.repository.patient.PatientRepository
@@ -52,33 +49,36 @@ class PatientWithVaccineRecordRepository @Inject constructor(
      */
     suspend fun insertPatientsVaccineRecord(patientVaccineRecord: PatientVaccineRecord): Long {
         val patientId =
-            patientRepository.insertPatient(patientVaccineRecord.patient.toCreatePatientDto())
+            patientRepository.insertPatient(patientVaccineRecord.patientDto)
+        patientVaccineRecord.vaccineRecordDto.patientId = patientId
         val vaccineRecordId = vaccineRecordRepository.insertVaccineRecord(
-            patientVaccineRecord.vaccineRecord.toCreateVaccineRecordDto(patientId)
+            patientVaccineRecord.vaccineRecordDto
         )
-        val doses = patientVaccineRecord.vaccineRecord.doses.map { vaccineDose ->
-            vaccineDose.toCreateVaccineDoseDto(vaccineRecordId)
+        patientVaccineRecord.vaccineRecordDto.doseDtos.forEach { vaccineDose ->
+            vaccineDose.vaccineRecordId = vaccineRecordId
         }
-        val dosesId = vaccineDoseRepository.insertAllVaccineDose(doses)
+        val dosesId =
+            vaccineDoseRepository.insertAllVaccineDose(patientVaccineRecord.vaccineRecordDto.doseDtos)
         return patientId
     }
 
     suspend fun updatePatientVaccineRecord(patientVaccineRecord: PatientVaccineRecord): Long {
         val patientId =
-            patientRepository.updatePatient(patientVaccineRecord.patient.toCreatePatientDto())
+            patientRepository.updatePatient(patientVaccineRecord.patientDto)
         val vaccineRecordId = vaccineRecordRepository.getVaccineRecordId(patientId) ?: return -1L
         vaccineDoseRepository.deleteVaccineDose(vaccineRecordId)
-        val vaccineRecord = patientVaccineRecord.vaccineRecord
+        val vaccineRecord = patientVaccineRecord.vaccineRecordDto
         vaccineRecord.patientId = patientId
         vaccineRecord.id = vaccineRecordId
         val id = vaccineRecordRepository.updateVaccineRecord(
-            patientVaccineRecord.vaccineRecord
+            patientVaccineRecord.vaccineRecordDto
         )
         println("id = $id")
-        val doses = patientVaccineRecord.vaccineRecord.doses.map { vaccineDose ->
-            vaccineDose.toCreateVaccineDoseDto(vaccineRecordId)
+        patientVaccineRecord.vaccineRecordDto.doseDtos.forEach { vaccineDose ->
+            vaccineDose.vaccineRecordId = vaccineRecordId
         }
-        val vaccineDoseIds = vaccineDoseRepository.insertAllVaccineDose(doses)
+        val vaccineDoseIds =
+            vaccineDoseRepository.insertAllVaccineDose(patientVaccineRecord.vaccineRecordDto.doseDtos)
         return patientId
     }
 

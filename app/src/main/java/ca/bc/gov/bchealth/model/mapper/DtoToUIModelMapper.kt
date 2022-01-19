@@ -7,7 +7,7 @@ import ca.bc.gov.bchealth.ui.healthpass.PassState
 import ca.bc.gov.bchealth.ui.healthrecord.PatientHealthRecord
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
 import ca.bc.gov.common.model.ImmunizationStatus
-import ca.bc.gov.common.model.VaccineRecord
+import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.test.TestResult
 import ca.bc.gov.common.utils.toDate
@@ -16,9 +16,9 @@ import ca.bc.gov.repository.model.PatientVaccineRecord
 
 fun PatientVaccineRecord.toUiModel(): HealthPass {
 
-    val passState = getHealthPassStateResources(vaccineRecord.status)
+    val passState = getHealthPassStateResources(vaccineRecordDto.status)
 
-    val federalTravelPassState = if (vaccineRecord.federalPass.isNullOrBlank()) {
+    val federalTravelPassState = if (vaccineRecordDto.federalPass.isNullOrBlank()) {
         FederalTravelPassState(
             title = R.string.get_federal_proof_of_vaccination,
             icon = R.drawable.ic_federal_pass_add,
@@ -28,24 +28,24 @@ fun PatientVaccineRecord.toUiModel(): HealthPass {
         FederalTravelPassState(
             title = R.string.show_federal_proof_of_vaccination,
             icon = R.drawable.ic_federal_pass_forward_arrow,
-            vaccineRecord.federalPass
+            vaccineRecordDto.federalPass
         )
     }
 
     return HealthPass(
-        patientId = patient.id,
-        vaccineRecordId = vaccineRecord.id,
-        name = "${patient.firstName} ${patient.lastName}",
-        qrIssuedDate = "Issued on ${vaccineRecord.qrIssueDate.toDateTimeString()}",
-        shcUri = vaccineRecord.shcUri,
-        qrCode = vaccineRecord.qrCodeImage,
+        patientId = patientDto.id,
+        vaccineRecordId = vaccineRecordDto.id,
+        name = "${patientDto.firstName} ${patientDto.lastName}",
+        qrIssuedDate = "Issued on ${vaccineRecordDto.qrIssueDate.toDateTimeString()}",
+        shcUri = vaccineRecordDto.shcUri,
+        qrCode = vaccineRecordDto.qrCodeImage,
         state = passState,
         isExpanded = false,
         federalTravelPassState = federalTravelPassState
     )
 }
 
-fun VaccineRecord.toUiModel(): HealthRecordItem {
+fun VaccineRecordDto.toUiModel(): HealthRecordItem {
 
     val passState = getHealthPassStateResources(status)
 
@@ -86,11 +86,11 @@ fun getHealthPassStateResources(state: ImmunizationStatus): PassState = when (st
 fun PatientWithHealthRecordCount.toUiModel(): PatientHealthRecord {
 
     val firstName =
-        patient.firstName.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+        patientDto.firstName.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     val lastName =
-        patient.lastName.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+        patientDto.lastName.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     return PatientHealthRecord(
-        patientId = patient.id,
+        patientId = patientDto.id,
         name = "$firstName $lastName",
         totalRecord = vaccineRecordCount + testResultCount
     )

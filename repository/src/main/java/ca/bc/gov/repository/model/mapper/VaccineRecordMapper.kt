@@ -1,20 +1,9 @@
 package ca.bc.gov.repository.model.mapper
 
-import ca.bc.gov.common.model.CreateVaccineRecordDto
-import ca.bc.gov.common.model.VaccineRecord
+import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.data.local.entity.VaccineRecordEntity
 
-fun VaccineRecord.toCreateVaccineRecordDto(patientId: Long) = CreateVaccineRecordDto(
-    id = id,
-    patientId,
-    qrIssueDate,
-    status,
-    shcUri!!,
-    federalPass,
-    mode,
-)
-
-fun VaccineRecordEntity.toVaccineRecord() = VaccineRecord(
+fun VaccineRecordEntity.toVaccineRecord() = VaccineRecordDto(
     id = id,
     patientId = patientId,
     qrIssueDate = qrIssueDate,

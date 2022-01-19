@@ -2,7 +2,7 @@ package ca.bc.gov.data
 
 import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
-import ca.bc.gov.common.model.patient.Patient
+import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.relation.PatientTestResult
 import ca.bc.gov.common.model.test.TestResult
 import ca.bc.gov.common.utils.toDate
@@ -34,7 +34,7 @@ class LaboratoryRemoteDataSource @Inject constructor(
         }
 
         val patientNameArray = response.payload.covidTestRecords.first().name.split(" ")
-        val patient = Patient(
+        val patient = PatientDto(
             firstName = patientNameArray[0],
             lastName = patientNameArray[1],
             dateOfBirth = request.dateOfBirth.toDate(),

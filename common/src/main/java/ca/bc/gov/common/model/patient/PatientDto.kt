@@ -8,10 +8,11 @@ import java.time.Instant
  * @author Pinakin Kansara
  */
 @Parcelize
-data class Patient(
+data class PatientDto(
     var id: Long = 0,
     val firstName: String,
     val lastName: String,
     val dateOfBirth: Instant,
     val phn: String? = null,
+    val patientOrder: Long = Long.MAX_VALUE
 ) : Parcelable

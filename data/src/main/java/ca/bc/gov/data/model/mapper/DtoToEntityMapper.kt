@@ -1,9 +1,8 @@
 package ca.bc.gov.data.model.mapper
 
-import ca.bc.gov.common.model.CreatePatientDto
-import ca.bc.gov.common.model.CreateVaccineDoseDto
-import ca.bc.gov.common.model.CreateVaccineRecordDto
-import ca.bc.gov.common.model.VaccineRecord
+import ca.bc.gov.common.model.VaccineDoseDto
+import ca.bc.gov.common.model.VaccineRecordDto
+import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.TestRecord
 import ca.bc.gov.common.model.test.TestResult
 import ca.bc.gov.data.local.entity.PatientEntity
@@ -12,7 +11,8 @@ import ca.bc.gov.data.local.entity.TestResultEntity
 import ca.bc.gov.data.local.entity.VaccineDoseEntity
 import ca.bc.gov.data.local.entity.VaccineRecordEntity
 
-fun CreatePatientDto.toEntity() = PatientEntity(
+fun PatientDto.toEntity() = PatientEntity(
+    id,
     firstName = firstName.uppercase(),
     lastName = lastName.uppercase(),
     dateOfBirth = dateOfBirth,
@@ -20,7 +20,7 @@ fun CreatePatientDto.toEntity() = PatientEntity(
     patientOrder = Long.MAX_VALUE
 )
 
-fun CreateVaccineDoseDto.toEntity() = VaccineDoseEntity(
+fun VaccineDoseDto.toEntity() = VaccineDoseEntity(
     vaccineRecordId = vaccineRecordId,
     productName = productName,
     providerName = providerName,
@@ -28,7 +28,8 @@ fun CreateVaccineDoseDto.toEntity() = VaccineDoseEntity(
     date = date
 )
 
-fun CreateVaccineRecordDto.toEntity() = VaccineRecordEntity(
+fun VaccineRecordEntity.toEntity() = VaccineRecordEntity(
+    id,
     patientId = patientId,
     qrIssueDate = qrIssueDate,
     status = status,
@@ -43,7 +44,7 @@ fun TestResult.toEntity() = TestResultEntity(
     collectionDate
 )
 
-fun VaccineRecord.toEntity() = VaccineRecordEntity(
+fun VaccineRecordDto.toEntity() = VaccineRecordEntity(
     id,
     patientId,
     qrIssueDate,

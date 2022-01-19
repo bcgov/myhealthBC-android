@@ -15,7 +15,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentTestResultDetailBinding
 import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.viewBindings
-import ca.bc.gov.common.model.patient.Patient
+import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.TestRecord
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,19 +54,19 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
 
                     state.onTestResultDetail.let { patientTestResult ->
 
-                        patientTestResult?.records?.let { initUi(it, patientTestResult.patient) }
+                        patientTestResult?.records?.let { initUi(it, patientTestResult.patientDto) }
                     }
                 }
             }
         }
     }
 
-    private fun initUi(testRecords: List<TestRecord>, patient: Patient) {
+    private fun initUi(testRecords: List<TestRecord>, patientDto: PatientDto) {
 
         val covidTestResultsAdapter = CovidTestResultsAdapter(
             this,
             testRecords,
-            patient
+            patientDto
         )
 
         binding.viewpagerCovidTestResults.adapter = covidTestResultsAdapter
@@ -117,14 +117,14 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
     class CovidTestResultsAdapter(
         fragment: Fragment,
         private val testRecords: List<TestRecord>,
-        private val patient: Patient
+        private val patientDto: PatientDto
     ) : FragmentStateAdapter(fragment) {
 
         override fun getItemCount(): Int = testRecords.size
 
         override fun createFragment(position: Int): Fragment {
 
-            return SingleTestResultFragment.newInstance(testRecords[position], patient)
+            return SingleTestResultFragment.newInstance(testRecords[position], patientDto)
         }
     }
 }

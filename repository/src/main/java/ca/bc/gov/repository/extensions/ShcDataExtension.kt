@@ -2,9 +2,9 @@ package ca.bc.gov.repository.extensions
 
 import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.ImmunizationStatus
-import ca.bc.gov.common.model.VaccineDose
-import ca.bc.gov.common.model.VaccineRecord
-import ca.bc.gov.common.model.patient.Patient
+import ca.bc.gov.common.model.VaccineDoseDto
+import ca.bc.gov.common.model.VaccineRecordDto
+import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.shcdecoder.model.SHCData
@@ -16,9 +16,9 @@ private const val IMMUNIZATION = "Immunization"
 private const val PATIENT = "Patient"
 private const val CONDITION = "Condition"
 
-fun SHCData.toPatient(): Patient {
+fun SHCData.toPatient(): PatientDto {
     val patient = getPatient()
-    return Patient(
+    return PatientDto(
         firstName = patient.firstName!!,
         lastName = patient.lastName!!,
         dateOfBirth = patient.dateOfBirth?.toDate()!!,
@@ -47,7 +47,7 @@ fun SHCData.toPatientVaccineRecord(
         entry.resource.performer?.forEach {
             provider = it.actor.display
         }
-        VaccineDose(
+        VaccineDoseDto(
             date = entry.resource.occurrenceDateTime?.toDate()!!,
             providerName = provider!!,
             productName = entry.resource.vaccineCode?.coding?.firstOrNull()?.code!!,
@@ -55,11 +55,11 @@ fun SHCData.toPatientVaccineRecord(
         )
     }
 
-    val record = VaccineRecord(
+    val record = VaccineRecordDto(
         id = 0,
         patientId = 0,
         qrIssueDate = Instant.ofEpochSecond(payload.nbf.toLong()),
-        doses = doses,
+        doseDtos = doses,
         federalPass = null,
         shcUri = shcUri,
         status = status.toImmunizationStatus(),

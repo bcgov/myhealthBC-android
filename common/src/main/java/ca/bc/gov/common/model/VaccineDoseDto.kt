@@ -5,7 +5,7 @@ import java.time.Instant
 /**
  * @author Pinakin Kansara
  */
-data class VaccineDose(
+data class VaccineDoseDto(
     val id: Long = 0,
     var vaccineRecordId: Long = 0,
     val productName: String,

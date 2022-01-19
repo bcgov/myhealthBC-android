@@ -1,7 +1,6 @@
 package ca.bc.gov.repository.patient
 
-import ca.bc.gov.common.model.CreatePatientDto
-import ca.bc.gov.common.model.patient.Patient
+import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.data.datasource.PatientLocalDataSource
 import javax.inject.Inject
 
@@ -12,11 +11,12 @@ class PatientRepository @Inject constructor(
     private val patientLocalDataSource: PatientLocalDataSource
 ) {
 
-    suspend fun insertPatient(patientDto: CreatePatientDto): Long =
+    suspend fun insertPatient(patientDto: PatientDto): Long =
         patientLocalDataSource.insertPatient(patientDto)
 
-    suspend fun updatePatient(patientDto: CreatePatientDto): Long =
+    suspend fun updatePatient(patientDto: PatientDto): Long =
         patientLocalDataSource.updatePatient(patientDto)
 
-    suspend fun getPatient(patientId: Long): Patient = patientLocalDataSource.getPatient(patientId)
+    suspend fun getPatient(patientId: Long): PatientDto =
+        patientLocalDataSource.getPatient(patientId)
 }

@@ -1,12 +1,12 @@
 package ca.bc.gov.common.model.relation
 
-import ca.bc.gov.common.model.VaccineRecord
-import ca.bc.gov.common.model.patient.Patient
+import ca.bc.gov.common.model.VaccineRecordDto
+import ca.bc.gov.common.model.patient.PatientDto
 
 /**
  * @author Pinakin Kansara
  */
 data class PatientAndVaccineRecord(
-    val patient: Patient,
-    val vaccineRecord: VaccineRecord?
+    val patientDto: PatientDto,
+    val vaccineRecordDto: VaccineRecordDto?
 )
