@@ -18,14 +18,13 @@ class OnBoardingSliderViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun setOnBoardingRequired(shown: Boolean) = viewModelScope.launch {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             onBoardingRepository.setOnBoardingRequired(shown)
         }
-
     }
 
     fun setAppVersionCode(appVersionCode: Int) = viewModelScope.launch {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             onBoardingRepository.setAppVersionCode(appVersionCode)
         }
     }

@@ -40,18 +40,18 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
         ) { _, _ -> }.attach()
 
         binding.viewpagerOnBoardingSlides.registerOnPageChangeCallback(object :
-            ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                if (position == educationalScreenAdapter.itemCount - 1) {
-                    binding.btnNextSlide.text = getString(R.string.get_started)
-                    binding.tvSkip.visibility = View.INVISIBLE
-                } else {
-                    binding.btnNextSlide.text = getString(R.string.next)
-                    binding.tvSkip.visibility = View.VISIBLE
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    if (position == educationalScreenAdapter.itemCount - 1) {
+                        binding.btnNextSlide.text = getString(R.string.get_started)
+                        binding.tvSkip.visibility = View.INVISIBLE
+                    } else {
+                        binding.btnNextSlide.text = getString(R.string.next)
+                        binding.tvSkip.visibility = View.VISIBLE
+                    }
                 }
-            }
-        })
+            })
 
         binding.btnNextSlide.setOnClickListener {
             if (educationalScreenAdapter.itemCount == (getCurrentItem() + 1)) {

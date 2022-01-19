@@ -13,12 +13,14 @@ import java.time.Instant
  */
 @Entity(
     tableName = "vaccine_record",
-    foreignKeys = [ForeignKey(
-        entity = PatientEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["patient_id"],
-        onDelete = ForeignKey.CASCADE
-    )]
+    foreignKeys = [
+        ForeignKey(
+            entity = PatientEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["patient_id"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class VaccineRecordEntity(
     @PrimaryKey(autoGenerate = true)

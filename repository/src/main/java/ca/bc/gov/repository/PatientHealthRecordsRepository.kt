@@ -18,4 +18,3 @@ class PatientHealthRecordsRepository @Inject constructor(
             }
         }
 }
-

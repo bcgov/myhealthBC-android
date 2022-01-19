@@ -59,7 +59,6 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         setUpDovUI()
 
         initClickListeners()
-
     }
 
     private fun showLoader(value: Boolean) {
@@ -74,7 +73,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
                     showLoader(uiState.onLoading)
 
-                    if(uiState.isError){
+                    if (uiState.isError) {
                         requireContext().showError(
                             getString(R.string.error),
                             getString(R.string.error_message)
@@ -103,12 +102,19 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
             val dob = binding.edDob.text.toString()
             val dov = binding.edDov.text.toString()
 
-            if(this.validatePhnNumber(binding.edPhnNumber,
-                    getString(R.string.phn_should_be_10_digit))
-                && this.validateDatePickerData(binding.tipDob,
-                    getString(R.string.dob_required))
-                && this.validateDatePickerData(binding.tipDov,
-                    getString(R.string.dov_required))) {
+            if (this.validatePhnNumber(
+                    binding.edPhnNumber,
+                    getString(R.string.phn_should_be_10_digit)
+                ) &&
+                this.validateDatePickerData(
+                        binding.tipDob,
+                        getString(R.string.dob_required)
+                    ) &&
+                this.validateDatePickerData(
+                        binding.tipDov,
+                        getString(R.string.dov_required)
+                    )
+            ) {
 
                 viewModel.fetchVaccineRecord(phn, dob, dov)
             }
@@ -184,10 +190,10 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
                     override fun onError(error: Error?, errorMessage: String?) {
                     }
-                })
+                }
+            )
             queueITEngine.run(requireActivity())
         } catch (e: Exception) {
-
         }
     }
 }

@@ -12,7 +12,6 @@ import ca.bc.gov.shcdecoder.model.Jwks
 import ca.bc.gov.shcdecoder.model.Rule
 import ca.bc.gov.shcdecoder.model.TrustedIssuersResponse
 import ca.bc.gov.shcdecoder.model.ValidationRuleResponse
-
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -90,7 +89,7 @@ class DecoderModule {
     )
 
     companion object {
-        private const val PROD_EXPIRY_TIME = 21600000L  // 6 Hours
-        private const val TEST_EXPIRY_TIME = 120000L    // 2 Minutes
+        private const val PROD_EXPIRY_TIME = 21600000L // 6 Hours
+        private const val TEST_EXPIRY_TIME = 120000L // 2 Minutes
     }
 }

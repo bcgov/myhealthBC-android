@@ -91,7 +91,6 @@ class AddOrUpdateCardViewModel @Inject constructor(
         }
 
         _uiState.tryEmit(AddCardOptionUiState().copy(onLoading = false, state = Status.NA))
-
     }
 
     fun update(vaccineRecord: PatientVaccineRecord) = viewModelScope.launch {

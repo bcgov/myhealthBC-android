@@ -34,5 +34,4 @@ interface PatientWithVaccineRecordDao {
 
     @Update(entity = PatientEntity::class)
     suspend fun updatePatientOrder(patientOrderUpdates: List<PatientOrderUpdate>)
-
 }

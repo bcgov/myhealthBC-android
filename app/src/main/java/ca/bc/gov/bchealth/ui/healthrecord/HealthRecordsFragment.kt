@@ -35,6 +35,8 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupToolBar()
+
         optionsAdapter = HealthRecordOptionAdapter {
             when (it) {
                 OptionType.VACCINE -> {
@@ -93,6 +95,15 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                 optionsAdapter.submitList(
                     addHealthRecordsOptionsViewModel.getHealthRecordOption().toMutableList()
                 )
+            }
+        }
+    }
+
+    private fun setupToolBar() {
+        binding.toolbar.ivRightOption.apply {
+            visibility = View.VISIBLE
+            setOnClickListener {
+                findNavController().navigate(R.id.settingFragment)
             }
         }
     }
