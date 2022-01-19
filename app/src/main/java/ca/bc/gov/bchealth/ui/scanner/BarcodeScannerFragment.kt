@@ -12,6 +12,7 @@ import androidx.camera.core.TorchState
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -28,6 +29,7 @@ import ca.bc.gov.bchealth.repository.ErrorData
 import ca.bc.gov.bchealth.ui.healthpass.add.AddOrUpdateCardViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.snowplowanalytics.snowplow.Snowplow
@@ -55,6 +57,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
     private lateinit var camera: Camera
 
     private val viewModel: AddOrUpdateCardViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -89,6 +92,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                     }
 
                     if (state.state == Status.UPDATED || state.state == Status.INSERTED) {
+                        sharedViewModel.setModifiedRecordId(state.modifiedRecordId)
                         navigateToCardsList()
                     }
 

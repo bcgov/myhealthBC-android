@@ -78,8 +78,18 @@ class AddOrUpdateCardViewModel @Inject constructor(
     fun insert(vaccineRecord: PatientVaccineRecord) = viewModelScope.launch {
         _uiState.tryEmit(AddCardOptionUiState().copy(onLoading = true, state = Status.NA))
         val result = repository.insertPatientsVaccineRecord(vaccineRecord)
-        val status = if (result > 0) Status.INSERTED else Status.ERROR
-        _uiState.tryEmit(AddCardOptionUiState().copy(state = status))
+        if (result > 0) {
+            _uiState.tryEmit(
+                AddCardOptionUiState().copy(
+                    onLoading = false,
+                    state = Status.INSERTED,
+                    modifiedRecordId = result
+                )
+            )
+        } else {
+            _uiState.tryEmit(AddCardOptionUiState().copy(onLoading = false, state = Status.ERROR))
+        }
+
         _uiState.tryEmit(AddCardOptionUiState().copy(onLoading = false, state = Status.NA))
 
     }
@@ -87,8 +97,17 @@ class AddOrUpdateCardViewModel @Inject constructor(
     fun update(vaccineRecord: PatientVaccineRecord) = viewModelScope.launch {
         _uiState.tryEmit(AddCardOptionUiState().copy(onLoading = true, state = Status.NA))
         val result = repository.updatePatientVaccineRecord(vaccineRecord)
-        val status = if (result > 0) Status.UPDATED else Status.ERROR
-        _uiState.tryEmit(AddCardOptionUiState().copy(state = status))
+        if (result > 0) {
+            _uiState.tryEmit(
+                AddCardOptionUiState().copy(
+                    onLoading = false,
+                    state = Status.INSERTED,
+                    modifiedRecordId = result
+                )
+            )
+        } else {
+            _uiState.tryEmit(AddCardOptionUiState().copy(onLoading = false, state = Status.ERROR))
+        }
         _uiState.tryEmit(AddCardOptionUiState().copy(onLoading = false, state = Status.NA))
     }
 }
@@ -96,6 +115,7 @@ class AddOrUpdateCardViewModel @Inject constructor(
 data class AddCardOptionUiState(
     val onLoading: Boolean = false,
     val vaccineRecord: PatientVaccineRecord? = null,
+    val modifiedRecordId: Long = -1L,
     val state: Status = Status.NA
 )
 
