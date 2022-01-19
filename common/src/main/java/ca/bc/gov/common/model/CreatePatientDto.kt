@@ -10,6 +10,5 @@ data class CreatePatientDto(
     val lastName: String,
     val dateOfBirth: Instant,
     val phn: String? = null,
-    val patientOrder : Long
+    val patientOrder: Long
 )
-

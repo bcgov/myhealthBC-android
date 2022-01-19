@@ -110,7 +110,6 @@ class FetchFederalTravelPass : Fragment(R.layout.fragment_fetch_travel_pass) {
         if (phn.isBlank()) {
             binding.edPhnNumber.requestFocus()
             binding.edPhnNumber.error = "Invalid PHN"
-
         } else {
             // viewModel.fetchVaccineRecord("9000691304", "1965-01-14", "2021-07-15")
             viewModel.fetchVaccineRecord(
@@ -198,10 +197,10 @@ class FetchFederalTravelPass : Fragment(R.layout.fragment_fetch_travel_pass) {
 
                     override fun onError(error: Error?, errorMessage: String?) {
                     }
-                })
+                }
+            )
             queueITEngine.run(requireActivity())
         } catch (e: Exception) {
-
         }
     }
 }

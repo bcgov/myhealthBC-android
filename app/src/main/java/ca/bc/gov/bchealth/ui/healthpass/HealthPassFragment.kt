@@ -60,7 +60,8 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
             requireContext()
         )
 
-        healthPassAdapter = HealthPassAdapter(mutableListOf(),
+        healthPassAdapter = HealthPassAdapter(
+            mutableListOf(),
             qrCodeClickListener = {
                 val action =
                     HealthPassFragmentDirections.actionHealthPassFragmentToExpandQRFragment(it)
@@ -80,16 +81,17 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
                         )
                     findNavController().navigate(action)
                 }
-
-            })
-
-
-        sharedViewModel.modifiedRecordId.observe(viewLifecycleOwner, Observer {
-            if (it > 0) {
-                findNavController().navigate(R.id.action_healthPassFragment_to_healthPassesFragment)
             }
-        })
+        )
 
+        sharedViewModel.modifiedRecordId.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it > 0) {
+                    findNavController().navigate(R.id.action_healthPassFragment_to_healthPassesFragment)
+                }
+            }
+        )
 
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {

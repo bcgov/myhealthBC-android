@@ -55,4 +55,3 @@ class ManageHealthPassAdapter(
         return healthPasses.size
     }
 }
-

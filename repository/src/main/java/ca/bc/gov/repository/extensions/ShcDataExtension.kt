@@ -7,7 +7,6 @@ import ca.bc.gov.common.model.VaccineRecord
 import ca.bc.gov.common.model.patient.Patient
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.repository.model.PatientVaccineRecord
-
 import ca.bc.gov.shcdecoder.model.SHCData
 import ca.bc.gov.shcdecoder.model.VaccinationStatus
 import ca.bc.gov.shcdecoder.model.getPatient
@@ -54,7 +53,6 @@ fun SHCData.toPatientVaccineRecord(
             productName = entry.resource.vaccineCode?.coding?.firstOrNull()?.code!!,
             lotNumber = " "
         )
-
     }
 
     val record = VaccineRecord(

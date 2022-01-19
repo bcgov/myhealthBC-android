@@ -59,7 +59,6 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
         setUpDotUI()
 
         initClickListeners()
-
     }
 
     private fun showLoader(value: Boolean) {
@@ -74,7 +73,7 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
 
                     showLoader(state.onLoading)
 
-                    if(state.isError){
+                    if (state.isError) {
                         requireContext().showError(
                             getString(R.string.error),
                             getString(R.string.error_message)
@@ -102,12 +101,19 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
             val dob = binding.edtDob.text.toString()
             val dot = binding.edtDoc.text.toString()
 
-            if(this.validatePhnNumber(binding.edPhnNumber,
-                    getString(R.string.phn_should_be_10_digit))
-                && this.validateDatePickerData(binding.tipDob,
-                    getString(R.string.dob_required))
-                && this.validateDatePickerData(binding.tipDot,
-                    getString(R.string.dot_required))) {
+            if (this.validatePhnNumber(
+                    binding.edPhnNumber,
+                    getString(R.string.phn_should_be_10_digit)
+                ) &&
+                this.validateDatePickerData(
+                        binding.tipDob,
+                        getString(R.string.dob_required)
+                    ) &&
+                this.validateDatePickerData(
+                        binding.tipDot,
+                        getString(R.string.dot_required)
+                    )
+            ) {
 
                 viewModel.fetchTestRecord(phn, dob, dot)
             }
@@ -183,10 +189,10 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
 
                     override fun onError(error: Error?, errorMessage: String?) {
                     }
-                })
+                }
+            )
             queueITEngine.run(requireActivity())
         } catch (e: Exception) {
-
         }
     }
 }

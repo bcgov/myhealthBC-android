@@ -36,4 +36,3 @@ fun Fragment.validatePhnNumber(tipPhn: TextInputLayout, errorMessage: String): B
 
     return true
 }
-

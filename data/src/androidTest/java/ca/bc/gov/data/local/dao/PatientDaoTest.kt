@@ -37,16 +37,15 @@ class PatientDaoTest : BaseDataBaseTest() {
     @Test
     fun insertAndGetPatientId() = runBlocking {
 
-        val patient = CreatePatientDto("Pinakin","Kansara", Instant.now())
+        val patient = CreatePatientDto("Pinakin", "Kansara", Instant.now())
 
         patientDao.insertPatient(patient.toEntity())
 
-        val id = patientDao.getPatientId(patient.firstName, patient.lastName,patient.dateOfBirth)
+        val id = patientDao.getPatientId(patient.firstName, patient.lastName, patient.dateOfBirth)
 
         assertTrue(id!! > 0)
     }
 
     override fun tearDown() {
-
     }
 }

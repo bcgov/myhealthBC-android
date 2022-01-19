@@ -25,13 +25,18 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupToolBar()
+
         val savedStateHandle = findNavController().currentBackStackEntry!!.savedStateHandle
         savedStateHandle.getLiveData<Long>(FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS)
-            .observe(findNavController().currentBackStackEntry!!, Observer { recordId ->
-                if (recordId > 0) {
-                    findNavController().popBackStack()
+            .observe(
+                findNavController().currentBackStackEntry!!,
+                Observer { recordId ->
+                    if (recordId > 0) {
+                        findNavController().popBackStack()
+                    }
                 }
-            })
+            )
 
         optionsAdapter = HealthRecordOptionAdapter {
             when (it) {
@@ -46,5 +51,14 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         binding.rvMembers.adapter = optionsAdapter
         binding.rvMembers.layoutManager = LinearLayoutManager(requireContext())
         optionsAdapter.submitList(viewModel.getHealthRecordOption().toMutableList())
+    }
+
+    private fun setupToolBar() {
+        binding.toolbar.ivRightOption.apply {
+            visibility = View.VISIBLE
+            setOnClickListener {
+                findNavController().navigate(R.id.settingFragment)
+            }
+        }
     }
 }

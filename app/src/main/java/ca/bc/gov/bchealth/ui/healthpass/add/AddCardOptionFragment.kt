@@ -61,12 +61,14 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         savedStateHandle.getLiveData<Pair<VaccineRecordState, PatientVaccineRecord?>>(
             FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
         )
-            .observe(findNavController().currentBackStackEntry!!, Observer {
-                if (it != null) {
-                    addOrUpdateCardViewModel.processResult(it)
+            .observe(
+                findNavController().currentBackStackEntry!!,
+                Observer {
+                    if (it != null) {
+                        addOrUpdateCardViewModel.processResult(it)
+                    }
                 }
-            })
-
+            )
 
         binding.btnScanQrCode.setOnClickListener {
             findNavController().navigate(R.id.action_addCardOptionFragment_to_onBoardingFragment)

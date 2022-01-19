@@ -12,7 +12,7 @@ class ClearStorageRepository @Inject constructor(
     private val localDataSource: LocalDataSource
 ) {
 
-    suspend fun clearDataBase() = withContext(Dispatchers.IO){
+    suspend fun clearDataBase() = withContext(Dispatchers.IO) {
         localDataSource.clearDataBase()
     }
 }
