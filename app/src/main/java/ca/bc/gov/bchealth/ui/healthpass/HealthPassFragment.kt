@@ -8,8 +8,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -19,6 +21,7 @@ import androidx.transition.Scene
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentMyCardsBinding
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.bchealth.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.imageview.ShapeableImageView
@@ -38,6 +41,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
     private lateinit var healthPassAdapter: HealthPassAdapter
     private lateinit var sceneSingleHealthPass: Scene
     private lateinit var sceneNoCardPlaceHolder: Scene
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -78,6 +82,13 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
                 }
 
             })
+
+
+        sharedViewModel.modifiedRecordId.observe(viewLifecycleOwner, Observer {
+            if (it > 0) {
+                findNavController().navigate(R.id.action_healthPassFragment_to_healthPassesFragment)
+            }
+        })
 
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -290,13 +301,32 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
             val deleteIconBottom = deleteIconTop + intrinsicHeight
 
             // Draw the delete icon
-            deleteIcon.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom)
+            deleteIcon.setBounds(
+                deleteIconLeft,
+                deleteIconTop,
+                deleteIconRight,
+                deleteIconBottom
+            )
             deleteIcon.draw(c)
 
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            super.onChildDraw(
+                c,
+                recyclerView,
+                viewHolder,
+                dX,
+                dY,
+                actionState,
+                isCurrentlyActive
+            )
         }
 
-        private fun clearCanvas(c: Canvas?, left: Float, top: Float, right: Float, bottom: Float) {
+        private fun clearCanvas(
+            c: Canvas?,
+            left: Float,
+            top: Float,
+            right: Float,
+            bottom: Float
+        ) {
             c?.drawRect(left, top, right, bottom, clearPaint)
         }
     }
