@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.vaccine.VaccineDoseRepository
+import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class VaccineRecordDetailViewModel @Inject constructor(
     private val patientWithVaccineRepository: PatientWithVaccineRecordRepository,
-    private val vaccineDoseRepository: VaccineDoseRepository
+    private val vaccineDoseRepository: VaccineDoseRepository,
+    private val vaccineRecordRepository: VaccineRecordRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(VaccineRecordDetailUiState())
@@ -41,6 +43,10 @@ class VaccineRecordDetailViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun deleteVaccineRecord(vaccineRecordId: Long) = viewModelScope.launch {
+        vaccineRecordRepository.delete(vaccineRecordId = vaccineRecordId)
     }
 }
 
