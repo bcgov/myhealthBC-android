@@ -27,7 +27,7 @@ class FetchVaccineRecordRepository @Inject constructor(
         val image = base64ToInputImageConverter.convert(response.payload.qrCode.data)
         val patientVaccineRecord = processQrRepository.processQrCode(image)
         val (status, record) = patientVaccineRecord
-        record?.vaccineRecord?.federalPass = response.payload.federalVaccineProof.data
+        record?.vaccineRecordDto?.federalPass = response.payload.federalVaccineProof.data
         return Pair(status, record)
     }
 }

@@ -84,21 +84,21 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
                     binding.progressBar.isVisible = state.onLoading
 
                     state.onVaccineRecordDetail?.let { patientAndVaccineRecord ->
-                        binding.tvFullName.text = patientAndVaccineRecord.patient.firstName
+                        binding.tvFullName.text = patientAndVaccineRecord.patientDto.firstName
                             .plus(" ")
-                            .plus(patientAndVaccineRecord.patient.lastName)
+                            .plus(patientAndVaccineRecord.patientDto.lastName)
 
                         binding.tvIssueDate.text = getString(R.string.issued_on)
                             .plus(" ")
                             .plus(
-                                patientAndVaccineRecord.vaccineRecord?.qrIssueDate
+                                patientAndVaccineRecord.vaccineRecordDto?.qrIssueDate
                                     ?.toDateTimeString()
                             )
 
-                        patientAndVaccineRecord.vaccineRecord?.status
+                        patientAndVaccineRecord.vaccineRecordDto?.status
                             ?.let { status -> setUiState(status) }
 
-                        patientAndVaccineRecord.vaccineRecord?.doses
+                        patientAndVaccineRecord.vaccineRecordDto?.doseDtos
                             ?.let { doses -> adapter.submitList(doses) }
                     }
                 }

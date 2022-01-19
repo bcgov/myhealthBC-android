@@ -1,7 +1,6 @@
 package ca.bc.gov.repository
 
 import ca.bc.gov.common.model.relation.PatientTestResult
-import ca.bc.gov.repository.model.mapper.toCreatePatientDto
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.testrecord.TestRecordRepository
 import ca.bc.gov.repository.testrecord.TestResultRepository
@@ -18,7 +17,7 @@ class PatientWithTestResultRepository @Inject constructor(
 
     suspend fun insertTestResult(patientTestResult: PatientTestResult): Long {
         val patientId =
-            patientRepository.insertPatient(patientTestResult.patient.toCreatePatientDto())
+            patientRepository.insertPatient(patientTestResult.patientDto)
         val testResult = patientTestResult.testResult
         testResult.patientId = patientId
         val testResultId = testResultRepository.insertTestResult(testResult)
@@ -33,6 +32,10 @@ class PatientWithTestResultRepository @Inject constructor(
     suspend fun getPatientWithTestResult(patientId: Long, testResultId: Long): PatientTestResult {
         val patient = patientRepository.getPatient(patientId)
         val testResultWithRecords = testResultRepository.getTestResultWithRecords(testResultId)
-        return PatientTestResult(patient, testResultWithRecords.testResult, testResultWithRecords.testRecords)
+        return PatientTestResult(
+            patient,
+            testResultWithRecords.testResult,
+            testResultWithRecords.testRecords
+        )
     }
 }

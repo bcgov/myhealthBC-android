@@ -1,17 +1,8 @@
 package ca.bc.gov.repository.model.mapper
 
-import ca.bc.gov.common.model.CreatePatientDto
-import ca.bc.gov.common.model.patient.Patient
+import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.data.local.entity.PatientEntity
 
-fun Patient.toCreatePatientDto() = CreatePatientDto(
-    firstName,
-    lastName,
-    dateOfBirth,
-    phn,
-    Long.MAX_VALUE
-)
-
-fun PatientEntity.toPatient() = Patient(
+fun PatientEntity.toPatient() = PatientDto(
     id, firstName, lastName, dateOfBirth, phn
 )

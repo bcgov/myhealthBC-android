@@ -1,6 +1,6 @@
 package ca.bc.gov.data.datasource
 
-import ca.bc.gov.common.model.patient.Patient
+import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
 import ca.bc.gov.data.local.dao.PatientWithVaccineRecordDao
 import ca.bc.gov.data.local.entity.PatientOrderUpdate
@@ -19,8 +19,8 @@ class PatientWithVaccineRecordLocalDataSource @Inject constructor(
     val patientsVaccineRecord: Flow<List<PatientWithVaccineRecord>> =
         dao.getPatientsWithVaccineFlow()
 
-    suspend fun getPatientWithVaccineRecord(patient: Patient) =
-        dao.getPatientsWithVaccine(patient.firstName.uppercase(), patient.lastName.uppercase(), patient.dateOfBirth)
+    suspend fun getPatientWithVaccineRecord(patientDto: PatientDto) =
+        dao.getPatientsWithVaccine(patientDto.firstName.uppercase(), patientDto.lastName.uppercase(), patientDto.dateOfBirth)
 
     suspend fun getPatientWithVaccineRecord(patientId: Long): PatientAndVaccineRecord? =
         dao.getPatientWithVaccine(patientId)?.toDto()
