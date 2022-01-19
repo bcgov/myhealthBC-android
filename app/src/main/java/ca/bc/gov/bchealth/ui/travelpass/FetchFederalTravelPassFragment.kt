@@ -19,7 +19,6 @@ import ca.bc.gov.bchealth.ui.healthpass.add.AddOrUpdateCardViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
 import ca.bc.gov.bchealth.utils.showAlertDialog
-import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
 import ca.bc.gov.common.utils.toDate
@@ -39,10 +38,10 @@ import java.nio.charset.StandardCharsets
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
-class FetchFederalTravelPass : Fragment(R.layout.fragment_fetch_travel_pass) {
+class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_pass) {
     private val binding by viewBindings(FragmentFetchTravelPassBinding::bind)
     private val viewModel: FetchVaccineRecordViewModel by viewModels()
-    private val args: FetchFederalTravelPassArgs by navArgs()
+    private val args: FetchFederalTravelPassFragmentArgs by navArgs()
     private val addOrUpdateCardViewModel: AddOrUpdateCardViewModel by viewModels()
     private lateinit var patientData: PatientAndVaccineRecord
 
@@ -110,7 +109,6 @@ class FetchFederalTravelPass : Fragment(R.layout.fragment_fetch_travel_pass) {
         if (phn.isBlank()) {
             binding.edPhnNumber.requestFocus()
             binding.edPhnNumber.error = "Invalid PHN"
-
         } else {
             // viewModel.fetchVaccineRecord("9000691304", "1965-01-14", "2021-07-15")
             viewModel.fetchVaccineRecord(
@@ -124,21 +122,14 @@ class FetchFederalTravelPass : Fragment(R.layout.fragment_fetch_travel_pass) {
     private fun performActionBasedOnState(state: Status, record: PatientVaccineRecord) =
         when (state) {
 
-            Status.CAN_INSERT -> {
-                insert(record)
-            }
+            Status.CAN_INSERT,
+            Status.DUPLICATE,
             Status.CAN_UPDATE -> {
                 updateRecord(record)
             }
             Status.INSERTED,
             Status.UPDATED -> {
                 navigateToCardsList()
-            }
-            Status.DUPLICATE -> {
-                requireContext().showError(
-                    "Duplicate",
-                    "Duplicate hai data"
-                )
             }
             else -> {}
         }

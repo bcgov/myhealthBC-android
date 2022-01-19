@@ -54,6 +54,9 @@ class ProcessQrRepository @Inject constructor(
         val value =
             patientData.vaccineRecord.qrIssueDate.compareTo(record.vaccineRecord?.qrIssueDate!!)
         return if (value > 0) {
+            patientData.patient.id = record.patient.id
+            patientData.vaccineRecord.id = record.vaccineRecord!!.id
+            patientData.vaccineRecord.patientId = record.vaccineRecord!!.patientId
             Pair(VaccineRecordState.CAN_UPDATE, patientData)
         } else {
             Pair(VaccineRecordState.DUPLICATE, patientData)
