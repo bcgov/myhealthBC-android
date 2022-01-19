@@ -1,7 +1,6 @@
 package ca.bc.gov.data.datasource
 
-import ca.bc.gov.common.model.CreateVaccineDoseDto
-import ca.bc.gov.common.model.VaccineDose
+import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.data.local.dao.VaccineDoseDao
 import ca.bc.gov.data.local.entity.VaccineDoseEntity
 import ca.bc.gov.data.model.mapper.toDto
@@ -20,7 +19,7 @@ class VaccineDoseLocalDataSource @Inject constructor(
      * @param vaccineDoseDto
      * @return vaccineRecordId else return -1L
      */
-    suspend fun insertVaccineDose(vaccineDoseDto: CreateVaccineDoseDto): Long {
+    suspend fun insertVaccineDose(vaccineDoseDto: VaccineDoseDto): Long {
         val vaccineDoseId = vaccineDoseDao.insertVaccineDose(vaccineDoseDto.toEntity())
         if (vaccineDoseId == -1L) {
             return vaccineDoseDao.getVaccineDoseId(vaccineDoseDto.vaccineRecordId) ?: -1L
@@ -28,7 +27,7 @@ class VaccineDoseLocalDataSource @Inject constructor(
         return vaccineDoseId
     }
 
-    suspend fun insertAllVaccineDoses(doses: List<CreateVaccineDoseDto>): List<Long> {
+    suspend fun insertAllVaccineDoses(doses: List<VaccineDoseDto>): List<Long> {
         return vaccineDoseDao.insertAllVaccineDose(dose = doses.map { it.toEntity() })
     }
 
@@ -41,7 +40,7 @@ class VaccineDoseLocalDataSource @Inject constructor(
         return vaccineDoseDao.deleteVaccineDosesByRecordId(vaccineRecordId)
     }
 
-    suspend fun getVaccineDoses(vaccineRecordId: Long): List<VaccineDose> =
+    suspend fun getVaccineDoses(vaccineRecordId: Long): List<VaccineDoseDto> =
         vaccineDoseDao.getVaccineDoses(vaccineRecordId).map {
             it.toDto()
         }

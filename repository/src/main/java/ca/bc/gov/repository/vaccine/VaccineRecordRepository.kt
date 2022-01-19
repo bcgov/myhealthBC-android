@@ -1,7 +1,6 @@
 package ca.bc.gov.repository.vaccine
 
-import ca.bc.gov.common.model.CreateVaccineRecordDto
-import ca.bc.gov.common.model.VaccineRecord
+import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.data.datasource.VaccineRecordLocalDataSource
 import ca.bc.gov.repository.model.mapper.toVaccineRecord
 import javax.inject.Inject
@@ -13,11 +12,11 @@ class VaccineRecordRepository @Inject constructor(
     private val vaccineRecordLocalDataSource: VaccineRecordLocalDataSource
 ) {
 
-    suspend fun insertVaccineRecord(vaccineRecordDto: CreateVaccineRecordDto): Long =
+    suspend fun insertVaccineRecord(vaccineRecordDto: VaccineRecordDto): Long =
         vaccineRecordLocalDataSource.insertVaccineRecord(vaccineRecordDto)
 
-    suspend fun updateVaccineRecord(vaccineRecordDto: VaccineRecord): Int =
-        vaccineRecordLocalDataSource.updateVaccineRecord(vaccineRecordDto)
+    suspend fun updateVaccineRecord(vaccineRecordDtoDto: VaccineRecordDto): Int =
+        vaccineRecordLocalDataSource.updateVaccineRecord(vaccineRecordDtoDto)
 
     suspend fun getVaccineRecordId(patientId: Long): Long? =
         vaccineRecordLocalDataSource.getVaccineRecordId(patientId)

@@ -1,10 +1,10 @@
 package ca.bc.gov.repository.model
 
-import ca.bc.gov.common.model.patient.Patient
+import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.data.remote.model.base.VaccineResourcePayload
 
-fun VaccineResourcePayload.toPatient() = Patient(
+fun VaccineResourcePayload.toPatient() = PatientDto(
     id = 0,
     firstName,
     lastName,

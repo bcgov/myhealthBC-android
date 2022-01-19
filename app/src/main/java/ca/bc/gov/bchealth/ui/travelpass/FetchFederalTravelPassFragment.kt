@@ -113,8 +113,8 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
             // viewModel.fetchVaccineRecord("9000691304", "1965-01-14", "2021-07-15")
             viewModel.fetchVaccineRecord(
                 phn,
-                patientData.patient.dateOfBirth.toDate(),
-                patientData.vaccineRecord?.doses!!.last().date.toDate()
+                patientData.patientDto.dateOfBirth.toDate(),
+                patientData.vaccineRecordDto?.doseDtos!!.last().date.toDate()
             )
         }
     }

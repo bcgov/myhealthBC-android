@@ -1,7 +1,6 @@
 package ca.bc.gov.data.datasource
 
-import ca.bc.gov.common.model.CreateVaccineRecordDto
-import ca.bc.gov.common.model.VaccineRecord
+import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.data.local.dao.VaccineRecordDao
 import ca.bc.gov.data.model.mapper.toEntity
 import javax.inject.Inject
@@ -18,7 +17,7 @@ class VaccineRecordLocalDataSource @Inject constructor(
      * @param vaccineRecordDto
      * @return vaccineId of inserted record or -1L in case of error.
      */
-    suspend fun insertVaccineRecord(vaccineRecordDto: CreateVaccineRecordDto): Long {
+    suspend fun insertVaccineRecord(vaccineRecordDto: VaccineRecordDto): Long {
         var vaccineRecordId = vaccineRecordDao.insertVaccineRecord(vaccineRecordDto.toEntity())
         if (vaccineRecordId == -1L) {
             return vaccineRecordDao.getVaccineRecordId(vaccineRecordDto.patientId) ?: -1L
@@ -27,12 +26,12 @@ class VaccineRecordLocalDataSource @Inject constructor(
     }
 
     /**
-     * Update [vaccineRecordDto] in to database
-     * @param vaccineRecordDto
+     * Update [vaccineRecordDtoDto] in to database
+     * @param vaccineRecordDtoDto
      * @return updated rowNumber, 0 if no row is updated.
      */
-    suspend fun updateVaccineRecord(vaccineRecordDto: VaccineRecord): Int {
-        return vaccineRecordDao.updateVaccineRecord(vaccineRecordDto.toEntity())
+    suspend fun updateVaccineRecord(vaccineRecordDtoDto: VaccineRecordDto): Int {
+        return vaccineRecordDao.updateVaccineRecord(vaccineRecordDtoDto.toEntity())
     }
 
     suspend fun getVaccineRecordId(patientId: Long): Long? =

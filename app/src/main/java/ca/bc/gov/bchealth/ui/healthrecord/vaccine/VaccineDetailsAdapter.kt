@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemVaccineDetailsBinding
-import ca.bc.gov.common.model.VaccineDose
+import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.utils.toDateTimeString
 
 /*
 * @author amit_metri on 09,December,2021
 */
 class VaccineDetailsAdapter :
-    ListAdapter<VaccineDose, VaccineDetailsAdapter.ViewHolder>(VaccineRecordsDiffCallBacks()) {
+    ListAdapter<VaccineDoseDto, VaccineDetailsAdapter.ViewHolder>(VaccineRecordsDiffCallBacks()) {
 
     class ViewHolder(val binding: ItemVaccineDetailsBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -47,12 +47,12 @@ class VaccineDetailsAdapter :
     }
 }
 
-class VaccineRecordsDiffCallBacks : DiffUtil.ItemCallback<VaccineDose>() {
-    override fun areItemsTheSame(oldItem: VaccineDose, newItem: VaccineDose): Boolean {
+class VaccineRecordsDiffCallBacks : DiffUtil.ItemCallback<VaccineDoseDto>() {
+    override fun areItemsTheSame(oldItem: VaccineDoseDto, newItem: VaccineDoseDto): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: VaccineDose, newItem: VaccineDose): Boolean {
+    override fun areContentsTheSame(oldItem: VaccineDoseDto, newItem: VaccineDoseDto): Boolean {
         return oldItem == newItem
     }
 }
