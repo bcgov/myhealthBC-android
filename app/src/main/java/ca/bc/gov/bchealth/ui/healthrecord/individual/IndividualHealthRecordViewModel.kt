@@ -6,10 +6,9 @@ import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.repository.testrecord.TestResultRepository
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,19 +21,22 @@ class IndividualHealthRecordViewModel @Inject constructor(
     private val testResultRepository: TestResultRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(IndividualHealthRecordsUiState())
-    val uiState: StateFlow<IndividualHealthRecordsUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableSharedFlow<IndividualHealthRecordsUiState>(
+        replay = 0,
+        extraBufferCapacity = 1
+    )
+    val uiState: SharedFlow<IndividualHealthRecordsUiState> = _uiState.asSharedFlow()
 
     fun getIndividualsHealthRecord(patientId: Long) = viewModelScope.launch {
         val vaccineRecords = vaccineRecordRepository.getVaccineRecords(patientId)
         val tesRecords = testResultRepository.getTestResults(patientId)
-        _uiState.update { individualHealthRecordUiState ->
-            individualHealthRecordUiState.copy(
+        _uiState.tryEmit(
+            IndividualHealthRecordsUiState().copy(
                 onLoading = false,
                 onTestRecords = tesRecords.map { it.toUiModel() },
                 onVaccineRecord = vaccineRecords.map { it.toUiModel() }
             )
-        }
+        )
     }
 }
 

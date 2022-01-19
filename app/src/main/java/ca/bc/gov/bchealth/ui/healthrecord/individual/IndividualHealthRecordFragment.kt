@@ -67,17 +67,16 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
 
-                    if (uiState.onVaccineRecord.isNotEmpty()) {
-                        if (::vaccineRecordsAdapter.isInitialized) {
-                            vaccineRecordsAdapter.submitList(uiState.onVaccineRecord)
-                        }
+                    if (::vaccineRecordsAdapter.isInitialized) {
+                        vaccineRecordsAdapter.submitList(uiState.onVaccineRecord)
                     }
 
-                    if (uiState.onTestRecords.isNotEmpty()) {
-                        if (::testRecordsAdapter.isInitialized) {
-                            testRecordsAdapter.submitList(uiState.onTestRecords)
-                        }
+                    if (::testRecordsAdapter.isInitialized) {
+                        testRecordsAdapter.submitList(uiState.onTestRecords)
                     }
+
+                    if (uiState.onTestRecords.isEmpty() && uiState.onVaccineRecord.isEmpty())
+                        findNavController().popBackStack()
                 }
             }
         }
