@@ -49,7 +49,12 @@
         android:id="@+id/fetchVaccineRecordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment"
         android:label="FetchVaccineRecordFragment"
-        tools:layout="@layout/fragment_fetch_vaccine_record" />
+        tools:layout="@layout/fragment_fetch_vaccine_record" >
+        <argument
+            android:name="isHealthPassFlow"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
     <fragment
         android:id="@+id/fetchTestRecordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment"

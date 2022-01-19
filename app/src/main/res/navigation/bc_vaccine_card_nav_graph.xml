@@ -35,12 +35,6 @@
         android:name="ca.bc.gov.bchealth.ui.onboarding.OnBoardingSliderFragment"
         android:label="OnBoardingSliderFragment" />
 
-    <fragment
-        android:id="@+id/fetchVaccineRecordFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment"
-        android:label="fragment_fetch_vaccine_record"
-        tools:layout="@layout/fragment_fetch_vaccine_record" />
-
     <include app:graph="@navigation/health_pass" />
     <include app:graph="@navigation/health_records" />
     <include app:graph="@navigation/news_feed" />
