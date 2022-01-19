@@ -189,10 +189,10 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
 
                     override fun onError(error: Error?, errorMessage: String?) {
                     }
-                })
+                }
+            )
             queueITEngine.run(requireActivity())
         } catch (e: Exception) {
-
         }
     }
 }

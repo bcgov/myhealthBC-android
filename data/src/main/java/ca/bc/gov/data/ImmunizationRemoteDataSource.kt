@@ -16,7 +16,7 @@ class ImmunizationRemoteDataSource @Inject constructor(
     private val immunizationApi: ImmunizationApi
 ) {
 
-    //TODO: add object validation logic here
+    // TODO: add object validation logic here
     suspend fun getVaccineStatus(request: VaccineStatusRequest): VaccineStatusResponse {
         val response = safeCall { immunizationApi.getVaccineStatus(request.toMap()) }
             ?: throw MyHealthException(SERVER_ERROR, "Invalid response")

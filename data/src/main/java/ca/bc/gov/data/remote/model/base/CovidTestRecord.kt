@@ -1,7 +1,6 @@
 package ca.bc.gov.data.remote.model.base
 
 import com.google.gson.annotations.SerializedName
-import java.time.Instant
 
 /**
  * @author Pinakin Kansara

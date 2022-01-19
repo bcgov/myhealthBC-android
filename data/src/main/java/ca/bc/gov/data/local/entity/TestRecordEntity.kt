@@ -11,13 +11,15 @@ import java.time.Instant
  */
 @Entity(
     tableName = "test_record",
-    foreignKeys = [ForeignKey(
-        entity = TestResultEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["test_result_id"],
-        onDelete = ForeignKey.CASCADE,
-        onUpdate = ForeignKey.CASCADE
-    )]
+    foreignKeys = [
+        ForeignKey(
+            entity = TestResultEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["test_result_id"],
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
+        )
+    ]
 )
 data class TestRecordEntity(
     @PrimaryKey

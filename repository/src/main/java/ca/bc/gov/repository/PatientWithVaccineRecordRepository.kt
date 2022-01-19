@@ -88,8 +88,10 @@ class PatientWithVaccineRecordRepository @Inject constructor(
         )
 
     suspend fun updatePatientOrder(patientOrderMapping: List<Pair<Long, Long>>) {
-        localDataSource.updatePatientOrder(patientOrderMapping.map {
-            PatientOrderUpdate(it.first, it.second)
-        })
+        localDataSource.updatePatientOrder(
+            patientOrderMapping.map {
+                PatientOrderUpdate(it.first, it.second)
+            }
+        )
     }
 }

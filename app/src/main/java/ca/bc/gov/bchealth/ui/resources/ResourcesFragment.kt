@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.resources
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.analytics.AnalyticsAction
 import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
@@ -19,6 +20,8 @@ class ResourcesFragment : Fragment(R.layout.fragment_resources) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setupToolBar()
 
         binding.customView1.setOnClickListener {
             val url = getString(R.string.url_how_to_get_covid_vaccinated)
@@ -47,5 +50,14 @@ class ResourcesFragment : Fragment(R.layout.fragment_resources) {
         Snowplow.getDefaultTracker()?.track(
             SelfDescribingEvent.get(AnalyticsAction.ResourceLinkSelected.value, url)
         )
+    }
+
+    private fun setupToolBar() {
+        binding.toolbar.ivRightOption.apply {
+            visibility = View.VISIBLE
+            setOnClickListener {
+                findNavController().navigate(R.id.settingFragment)
+            }
+        }
     }
 }
