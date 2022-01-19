@@ -32,6 +32,8 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
 
     private lateinit var adapter: VaccineDetailsAdapter
 
+    private var vaccineRecordId: Long = -1L
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -61,10 +63,9 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
                     positiveButtonText = getString(R.string.delete),
                     negativeButtonText = getString(R.string.not_now)
                 ) {
-
-                    // binding.progressBar.visibility = View.VISIBLE
-
-                    // TODO: 11/01/22 Delete functionality to be added
+                    viewModel.deleteVaccineRecord(vaccineRecordId).invokeOnCompletion {
+                        findNavController().popBackStack()
+                    }
                 }
             }
 
@@ -84,6 +85,11 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
                     binding.progressBar.isVisible = state.onLoading
 
                     state.onVaccineRecordDetail?.let { patientAndVaccineRecord ->
+
+                        patientAndVaccineRecord.vaccineRecordDto?.id?.let {
+                            vaccineRecordId = it
+                        }
+
                         binding.tvFullName.text = patientAndVaccineRecord.patientDto.firstName
                             .plus(" ")
                             .plus(patientAndVaccineRecord.patientDto.lastName)
