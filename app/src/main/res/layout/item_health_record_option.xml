@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/space_1_x"
+    android:layout_marginTop="@dimen/space_2_x"
     android:background="@drawable/layout_shape_rectangle"
     android:clickable="true"
     android:foreground="?attr/selectableItemBackground"

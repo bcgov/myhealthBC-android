@@ -88,7 +88,9 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         }
 
         binding.btnEnterInfo.setOnClickListener {
-            findNavController().navigate(R.id.action_addCardOptionFragment_to_fetchVaccineRecordFragment)
+            val action = AddCardOptionFragmentDirections
+                .actionAddCardOptionFragmentToFetchVaccineRecordFragment(true)
+            findNavController().navigate(action)
         }
 
         binding.toolbar.apply {
