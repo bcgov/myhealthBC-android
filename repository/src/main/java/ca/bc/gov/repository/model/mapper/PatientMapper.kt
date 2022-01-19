@@ -8,7 +8,8 @@ fun Patient.toCreatePatientDto() = CreatePatientDto(
     firstName,
     lastName,
     dateOfBirth,
-    phn
+    phn,
+    Long.MAX_VALUE
 )
 
 fun PatientEntity.toPatient() = Patient(
