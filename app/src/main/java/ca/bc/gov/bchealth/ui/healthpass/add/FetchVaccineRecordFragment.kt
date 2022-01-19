@@ -12,6 +12,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineRecordBinding
 import ca.bc.gov.bchealth.ui.custom.setUpDatePickerUi
@@ -39,6 +40,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
     private val binding by viewBindings(FragmentFetchVaccineRecordBinding::bind)
     private val viewModel: FetchVaccineRecordViewModel by viewModels()
     private lateinit var savedStateHandle: SavedStateHandle
+    private val args: FetchVaccineRecordFragmentArgs by navArgs()
 
     companion object {
         private const val TAG = "FetchVaccineRecordFragment"
@@ -148,7 +150,10 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
             }
 
             tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.add_bc_vaccine_record)
+            if (args.isHealthPassFlow)
+                tvTitle.text = getString(R.string.add_a_health_pass)
+            else
+                tvTitle.text = getString(R.string.add_bc_vaccine_record)
 
             ivRightOption.visibility = View.VISIBLE
             ivRightOption.setImageResource(R.drawable.ic_help)
