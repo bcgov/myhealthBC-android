@@ -28,7 +28,7 @@ class CookiesInterceptor @Inject constructor(
             cookieStorage.store(cookies)
         }
 
-        //CHECK FOR PRIOR RESPONSE
+        // CHECK FOR PRIOR RESPONSE
         val priorResponseHeaders = response.priorResponse?.headers("Set-Cookie")
         val priorCookies = hashSetOf<String>()
         priorResponseHeaders?.forEach { header ->

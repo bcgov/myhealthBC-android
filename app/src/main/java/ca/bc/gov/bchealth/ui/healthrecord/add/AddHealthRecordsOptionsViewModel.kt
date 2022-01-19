@@ -9,9 +9,7 @@ import javax.inject.Inject
  * @author Pinakin Kansara
  */
 @HiltViewModel
-class AddHealthRecordsOptionsViewModel @Inject constructor(
-
-) : ViewModel() {
+class AddHealthRecordsOptionsViewModel @Inject constructor() : ViewModel() {
 
     fun getHealthRecordOption(): List<HealthRecordOption> = listOf(
         HealthRecordOption(

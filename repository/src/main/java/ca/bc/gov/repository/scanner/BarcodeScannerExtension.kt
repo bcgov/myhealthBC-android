@@ -13,9 +13,9 @@ suspend fun BarcodeScanner.awaitProcess(image: InputImage): String? =
         process(image)
             .addOnSuccessListener { barcodes ->
                 barcodes.firstOrNull().let { barcode ->
-                    if (barcode == null
-                        || (barcode.format != Barcode.FORMAT_QR_CODE)
-                        || barcode.rawValue == null
+                    if (barcode == null ||
+                        (barcode.format != Barcode.FORMAT_QR_CODE) ||
+                        barcode.rawValue == null
                     ) {
                         continuation.resume(null)
                     }

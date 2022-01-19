@@ -3,7 +3,6 @@ package ca.bc.gov.bchealth.ui.healthrecord.add
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.bchealth.repository.ErrorData
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.repository.FetchTestResultRepository
@@ -12,7 +11,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.replay
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -87,7 +85,6 @@ class FetchTestRecordsViewModel @Inject constructor(
                     }
                 }
             }
-
         }
 
     fun setQueItToken(token: String?) = viewModelScope.launch {

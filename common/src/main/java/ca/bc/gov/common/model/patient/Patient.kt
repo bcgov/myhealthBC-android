@@ -14,4 +14,4 @@ data class Patient(
     val lastName: String,
     val dateOfBirth: Instant,
     val phn: String? = null,
-): Parcelable
+) : Parcelable

@@ -32,10 +32,10 @@ class IndividualHealthRecordViewModel @Inject constructor(
             individualHealthRecordUiState.copy(
                 onLoading = false,
                 onTestRecords = tesRecords.map { it.toUiModel() },
-                onVaccineRecord = vaccineRecords.map { it.toUiModel() })
+                onVaccineRecord = vaccineRecords.map { it.toUiModel() }
+            )
         }
     }
-
 }
 
 data class IndividualHealthRecordsUiState(

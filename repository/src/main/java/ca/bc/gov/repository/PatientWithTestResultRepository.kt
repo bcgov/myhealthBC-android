@@ -30,9 +30,9 @@ class PatientWithTestResultRepository @Inject constructor(
         return testResultId
     }
 
-    suspend fun getPatientWithTestResult(patientId: Long,testResultId: Long): PatientTestResult {
+    suspend fun getPatientWithTestResult(patientId: Long, testResultId: Long): PatientTestResult {
         val patient = patientRepository.getPatient(patientId)
         val testResultWithRecords = testResultRepository.getTestResultWithRecords(testResultId)
-        return PatientTestResult(patient,testResultWithRecords.testResult,testResultWithRecords.testRecords)
+        return PatientTestResult(patient, testResultWithRecords.testResult, testResultWithRecords.testRecords)
     }
 }

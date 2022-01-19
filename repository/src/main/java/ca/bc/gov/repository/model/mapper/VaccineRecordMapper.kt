@@ -4,8 +4,6 @@ import ca.bc.gov.common.model.CreateVaccineRecordDto
 import ca.bc.gov.common.model.VaccineRecord
 import ca.bc.gov.data.local.entity.VaccineRecordEntity
 
-
-
 fun VaccineRecord.toCreateVaccineRecordDto(patientId: Long) = CreateVaccineRecordDto(
     id = id,
     patientId,

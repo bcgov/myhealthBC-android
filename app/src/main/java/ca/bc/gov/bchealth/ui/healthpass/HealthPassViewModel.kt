@@ -41,12 +41,14 @@ class HealthPassViewModel @Inject constructor(
         vaccineRecordRepository.delete(vaccineRecordId = vaccineRecordId)
     }
 
-    fun updateHealthPassOrder(healthPasses: List<HealthPass>)
-        = viewModelScope.launch {
-        repository.updatePatientOrder(healthPasses.mapIndexed { index, healthPass ->
-            healthPass.patientId to index.toLong()
-        })
-    }
+    fun updateHealthPassOrder(healthPasses: List<HealthPass>) =
+        viewModelScope.launch {
+            repository.updatePatientOrder(
+                healthPasses.mapIndexed { index, healthPass ->
+                    healthPass.patientId to index.toLong()
+                }
+            )
+        }
 }
 
 data class HealthPassUiState(

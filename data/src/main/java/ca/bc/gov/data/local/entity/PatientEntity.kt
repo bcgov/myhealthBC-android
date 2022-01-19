@@ -26,11 +26,11 @@ data class PatientEntity(
     @ColumnInfo(name = "time_stamp")
     val timeStamp: Instant = Instant.now(),
     @ColumnInfo(name = "patient_order", defaultValue = Long.MAX_VALUE.toString())
-    val patientOrder : Long
+    val patientOrder: Long
 )
 
 data class PatientOrderUpdate(
     val id: Long,
     @ColumnInfo(name = "patient_order")
-    val patientOrder : Long
+    val patientOrder: Long
 )

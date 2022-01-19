@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
@@ -33,6 +34,8 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setupToolBar()
 
         newsfeedAdapter = NewsfeedAdapter(newsFeeds) {
             it.link?.let { it1 ->
@@ -75,5 +78,14 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
                 binding.progressBar.visibility = View.INVISIBLE
             }
         })
+    }
+
+    private fun setupToolBar() {
+        binding.toolbar.ivRightOption.apply {
+            visibility = View.VISIBLE
+            setOnClickListener {
+                findNavController().navigate(R.id.settingFragment)
+            }
+        }
     }
 }

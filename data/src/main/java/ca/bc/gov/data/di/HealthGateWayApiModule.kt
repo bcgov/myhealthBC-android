@@ -7,7 +7,6 @@ import ca.bc.gov.data.remote.ImmunizationApi
 import ca.bc.gov.data.remote.LaboratoryApi
 import ca.bc.gov.data.remote.interceptor.CookiesInterceptor
 import ca.bc.gov.data.remote.interceptor.QueueItInterceptor
-
 import ca.bc.gov.data.remote.interceptor.UserAgentInterceptor
 import ca.bc.gov.data.utils.CookieStorage
 import com.google.gson.GsonBuilder
