@@ -47,10 +47,16 @@ fun SHCData.toPatientVaccineRecord(
         entry.resource.performer?.forEach {
             provider = it.actor.display
         }
+        val productCode =  entry.resource.vaccineCode?.coding?.last()?.code!!
+        val productName: String = if(vaccineInfo.containsKey(productCode)){
+            vaccineInfo.getOrDefault(productCode,"UNSPECIFIED COVID-19 VACCINE")
+        }else{
+            "UNSPECIFIED COVID-19 VACCINE"
+        }
         VaccineDoseDto(
             date = entry.resource.occurrenceDateTime?.toDate()!!,
             providerName = provider!!,
-            productName = entry.resource.vaccineCode?.coding?.firstOrNull()?.code!!,
+            productName = productName,
             lotNumber = " "
         )
     }
@@ -69,3 +75,18 @@ fun SHCData.toPatientVaccineRecord(
 
     return PatientVaccineRecord(toPatient(), record)
 }
+
+
+private val vaccineInfo: HashMap<String, String> = mapOf(
+    "28581000087106" to "PFIZER-BIONTECH COMIRNATY",
+    "28571000087109" to "MODERNA SPIKEVAX",
+    "28761000087108" to "ASTRAZENECA VAXZEVRIA",
+    "28961000087105" to "COVISHIELD",
+    "28951000087107" to "JANSSEN (JOHNSON & JOHNSON)",
+    "29171000087106" to "NOVAVAX",
+    "31431000087100" to "CANSINOBIO",
+    "31341000087103" to "SPUTNIK",
+    "31311000087104" to "SINOVAC-CORONAVAC ",
+    "31301000087101" to "SINOPHARM",
+    "NON-WHO" to "UNSPECIFIED COVID-19 VACCINE"
+) as HashMap<String, String>
