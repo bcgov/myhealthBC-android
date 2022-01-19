@@ -5,6 +5,7 @@ import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -20,6 +21,7 @@ import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
 import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.qr.VaccineRecordState
 import com.snowplowanalytics.snowplow.Snowplow
@@ -37,6 +39,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
     private val binding by viewBindings(FragmentAddCardOptionsBinding::bind)
 
     private val addOrUpdateCardViewModel: AddOrUpdateCardViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     private lateinit var action: ActivityResultLauncher<String>
 
@@ -73,7 +76,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 addOrUpdateCardViewModel.uiState.collect { state ->
-                    performActionBasedOnState(state.state, state.vaccineRecord)
+                    performActionBasedOnState(state)
                 }
             }
         }
@@ -98,17 +101,18 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         }
     }
 
-    private fun performActionBasedOnState(state: Status, record: PatientVaccineRecord?) =
-        when (state) {
+    private fun performActionBasedOnState(state: AddCardOptionUiState) =
+        when (state.state) {
 
             Status.CAN_INSERT -> {
-                record?.let { insert(it) }
+                state.vaccineRecord?.let { insert(it) }
             }
             Status.CAN_UPDATE -> {
-                record?.let { updateRecord(it) }
+                state.vaccineRecord?.let { updateRecord(it) }
             }
             Status.INSERTED,
             Status.UPDATED -> {
+                sharedViewModel.setModifiedRecordId(state.modifiedRecordId)
                 navigateToCardsList()
             }
             Status.DUPLICATE -> {
