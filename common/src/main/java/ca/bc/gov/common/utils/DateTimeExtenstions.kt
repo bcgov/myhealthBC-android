@@ -8,13 +8,13 @@ import java.time.format.DateTimeFormatter
 
 fun Instant.toDateTimeString(): String {
     val dateTime = LocalDateTime.ofInstant(this, ZoneOffset.UTC)
-    val formatter = DateTimeFormatter.ofPattern("MMM-dd-yyyy, HH:mm")
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd, HH:mm")
     return formatter.format(dateTime)
 }
 
 fun Instant.toDate(): String {
     val dateTime = LocalDateTime.ofInstant(this, ZoneOffset.UTC)
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd")
     return formatter.format(dateTime)
 }
 
