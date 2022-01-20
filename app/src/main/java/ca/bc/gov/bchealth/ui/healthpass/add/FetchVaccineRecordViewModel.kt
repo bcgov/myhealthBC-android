@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.exceptions.MustBeQueuedException
+import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
@@ -69,11 +70,11 @@ class FetchVaccineRecordViewModel @Inject constructor(
                             )
                         )
                     }
-                    else -> {
+                    is MyHealthException -> {
                         _uiState.tryEmit(
                             FetchVaccineRecordUiState().copy(
-                                onLoading = false,
-                                isError = true
+                                isError = true,
+                                errorCode = e.errCode
                             )
                         )
                     }
@@ -106,5 +107,6 @@ data class FetchVaccineRecordUiState(
     val queItUrl: String? = null,
     val patientData: PatientAndVaccineRecord? = null,
     val vaccineRecord: Pair<VaccineRecordState, PatientVaccineRecord?>? = null,
-    val isError: Boolean = false
+    val isError: Boolean = false,
+    val errorCode: Int = 0
 )

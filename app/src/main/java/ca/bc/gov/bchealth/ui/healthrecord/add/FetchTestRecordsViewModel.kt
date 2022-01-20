@@ -8,10 +8,9 @@ import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.repository.FetchTestResultRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,8 +23,9 @@ class FetchTestRecordsViewModel @Inject constructor(
     private val repository: FetchTestResultRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(FetchTestRecordUiState())
-    val uiState: StateFlow<FetchTestRecordUiState> = _uiState.asStateFlow()
+    private val _uiState =
+        MutableSharedFlow<FetchTestRecordUiState>(replay = 0, extraBufferCapacity = 1)
+    val uiState: SharedFlow<FetchTestRecordUiState> = _uiState.asSharedFlow()
 
     companion object {
         private const val TAG = "FetchTestRecordsViewModel"
@@ -34,54 +34,38 @@ class FetchTestRecordsViewModel @Inject constructor(
     fun fetchTestRecord(phn: String, dateOfBirth: String, collectionDate: String) =
         viewModelScope.launch {
 
-            _uiState.update { fetchTestRecordUiState ->
-                fetchTestRecordUiState.copy(
-                    onLoading = true,
-                    queItTokenUpdated = false,
-                    onMustBeQueued = false,
-                    queItUrl = null,
-                    onTestResultFetched = 0L,
-                    isError = false
+            _uiState.tryEmit(
+                FetchTestRecordUiState().copy(
+                    onLoading = true
                 )
-            }
+            )
 
             try {
                 val tesTestResultId = repository.fetchTestRecord(phn, dateOfBirth, collectionDate)
-                _uiState.update { fetchTestRecordUiState ->
-                    fetchTestRecordUiState.copy(
-                        onLoading = false,
-                        queItTokenUpdated = false,
-                        onMustBeQueued = false,
-                        queItUrl = null,
-                        onTestResultFetched = tesTestResultId,
-                        isError = false
+                _uiState.tryEmit(
+                    FetchTestRecordUiState().copy(
+                        onTestResultFetched = tesTestResultId
                     )
-                }
+                )
             } catch (e: Exception) {
                 when (e) {
                     is MustBeQueuedException -> {
-                        _uiState.update {
-                            it.copy(
+                        _uiState.tryEmit(
+                            FetchTestRecordUiState().copy(
                                 onLoading = true,
                                 queItTokenUpdated = false,
                                 onMustBeQueued = true,
-                                queItUrl = e.message,
-                                onTestResultFetched = 0L,
-                                isError = false
+                                queItUrl = e.message
                             )
-                        }
+                        )
                     }
                     is MyHealthException -> {
-                        _uiState.update {
-                            it.copy(
-                                onLoading = false,
-                                queItTokenUpdated = false,
-                                onMustBeQueued = false,
-                                queItUrl = null,
-                                onTestResultFetched = 0L,
-                                isError = true
+                        _uiState.tryEmit(
+                            FetchTestRecordUiState().copy(
+                                isError = true,
+                                errorCode = e.errCode
                             )
-                        }
+                        )
                     }
                 }
             }
@@ -90,9 +74,11 @@ class FetchTestRecordsViewModel @Inject constructor(
     fun setQueItToken(token: String?) = viewModelScope.launch {
         Log.d(TAG, "setQueItToken: token = $token")
         queueItTokenRepository.setQueItToken(token)
-        _uiState.update {
-            it.copy(onLoading = false, queItTokenUpdated = true)
-        }
+        _uiState.tryEmit(
+            FetchTestRecordUiState().copy(
+                onLoading = false, queItTokenUpdated = true
+            )
+        )
     }
 }
 
@@ -102,5 +88,6 @@ data class FetchTestRecordUiState(
     val onMustBeQueued: Boolean = false,
     val queItUrl: String? = null,
     val onTestResultFetched: Long = -1L,
-    val isError: Boolean = false
+    val isError: Boolean = false,
+    val errorCode: Int = 0
 )

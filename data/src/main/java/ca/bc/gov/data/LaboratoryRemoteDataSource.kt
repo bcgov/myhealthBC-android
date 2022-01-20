@@ -1,6 +1,7 @@
 package ca.bc.gov.data
 
 import ca.bc.gov.common.const.SERVER_ERROR
+import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.relation.PatientTestResult
@@ -8,6 +9,7 @@ import ca.bc.gov.common.model.test.TestResult
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.data.model.mapper.toTestRecord
 import ca.bc.gov.data.remote.LaboratoryApi
+import ca.bc.gov.data.remote.model.base.Action
 import ca.bc.gov.data.remote.model.request.CovidTestRequest
 import ca.bc.gov.data.remote.model.request.toMap
 import ca.bc.gov.data.utils.safeCall
@@ -30,6 +32,9 @@ class LaboratoryRemoteDataSource @Inject constructor(
             ?: throw MyHealthException(SERVER_ERROR, "Invalid Response")
 
         if (response.error != null) {
+            if (Action.MISMATCH.code.contentEquals(response.error.action?.code)) {
+                throw MyHealthException(SERVER_ERROR_DATA_MISMATCH, response.error.message)
+            }
             throw MyHealthException(SERVER_ERROR, response.error.message)
         }
 
