@@ -17,6 +17,7 @@ import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.QrCodeGeneratorRepository
 import ca.bc.gov.repository.QueueItTokenRepository
+import ca.bc.gov.repository.RecentPhnDobRepository
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.ProcessQrRepository
 import ca.bc.gov.repository.scanner.QrScanner
@@ -142,4 +143,9 @@ class RepositoriesModule {
     @Singleton
     fun providesOnBoardingRepository(preferenceStorage: EncryptedPreferenceStorage) =
         OnBoardingRepository(preferenceStorage)
+
+    @Provides
+    @Singleton
+    fun provideRecentPhnDobRepository(preferenceStorage: EncryptedPreferenceStorage) =
+        RecentPhnDobRepository(preferenceStorage)
 }

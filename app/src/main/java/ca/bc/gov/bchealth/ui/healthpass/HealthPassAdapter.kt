@@ -3,6 +3,8 @@ package ca.bc.gov.bchealth.ui.healthpass
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.databinding.ItemHealthPassCardBinding
 
@@ -10,10 +12,9 @@ import ca.bc.gov.bchealth.databinding.ItemHealthPassCardBinding
  * @author Pinakin Kansara
  */
 class HealthPassAdapter(
-    var healthPasses: MutableList<HealthPass>,
     private val qrCodeClickListener: QrCodeClickListener,
     private val federalPassClickListener: FederalPassClickListener
-) : RecyclerView.Adapter<HealthPassAdapter.ViewHolder>() {
+) : ListAdapter<HealthPass, HealthPassAdapter.ViewHolder>(HealthPassDiffCallBack()) {
 
     fun interface QrCodeClickListener {
         fun onQrCodeClicked(shcUri: String)
@@ -36,18 +37,19 @@ class HealthPassAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val healthPass = healthPasses[position]
+        val healthPass = getItem(position)
 
         holder.binding.apply {
 
             layoutQrCode.isVisible = healthPass.isExpanded
 
             holder.itemView.setOnClickListener {
-                healthPasses.forEach { pass ->
+                currentList.forEachIndexed { index, pass ->
                     pass.isExpanded = false
+                    notifyItemChanged(index)
                 }
-                healthPasses[position].isExpanded = true
-                notifyDataSetChanged()
+                getItem(position).isExpanded = true
+                notifyItemChanged(position)
             }
 
             txtFullName.text = healthPass.name
@@ -77,7 +79,19 @@ class HealthPassAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return healthPasses.size
+    class HealthPassDiffCallBack : DiffUtil.ItemCallback<HealthPass>() {
+        override fun areItemsTheSame(
+            oldItem: HealthPass,
+            newItem: HealthPass
+        ): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(
+            oldItem: HealthPass,
+            newItem: HealthPass
+        ): Boolean {
+            return oldItem.patientId == newItem.patientId
+        }
     }
 }
