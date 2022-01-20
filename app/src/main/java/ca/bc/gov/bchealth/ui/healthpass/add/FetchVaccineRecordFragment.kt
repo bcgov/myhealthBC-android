@@ -4,6 +4,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -22,6 +25,7 @@ import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
+import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
 import ca.bc.gov.common.model.analytics.AnalyticsAction
 import ca.bc.gov.common.model.analytics.AnalyticsActionData
 import com.queue_it.androidsdk.Error
@@ -44,6 +48,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
     private lateinit var savedStateHandle: SavedStateHandle
     private val args: FetchVaccineRecordFragmentArgs by navArgs()
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
+    private val recentPhnDobViewModel: RecentPhnDobViewModel by viewModels()
 
     companion object {
         private const val TAG = "FetchVaccineRecordFragment"
@@ -87,6 +92,10 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                         )
                     }
 
+                    if (uiState.queItTokenUpdated) {
+                        fetchVaccineRecord()
+                    }
+
                     if (uiState.onMustBeQueued && uiState.queItUrl != null) {
                         Log.d(TAG, "Mut be queue, url = ${uiState.queItUrl}")
                         queUser(uiState.queItUrl)
@@ -98,6 +107,11 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                             AnalyticsAction.ADD_QR,
                             AnalyticsActionData.GET
                         )
+                        if (binding.checkboxRemember.isChecked) {
+                            val phn = binding.edPhn.text.toString()
+                            val dob = binding.edDob.text.toString()
+                            recentPhnDobViewModel.setRecentPhnDobData(phn, dob)
+                        }
                         findNavController().popBackStack()
                     }
                 }
@@ -107,31 +121,34 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
     private fun initClickListeners() {
         binding.btnSubmit.setOnClickListener {
-
-            val phn = binding.edPhn.text.toString()
-            val dob = binding.edDob.text.toString()
-            val dov = binding.edDov.text.toString()
-
-            if (this.validatePhnNumber(
-                    binding.edPhnNumber,
-                    getString(R.string.phn_should_be_10_digit)
-                ) &&
-                this.validateDatePickerData(
-                        binding.tipDob,
-                        getString(R.string.dob_required)
-                    ) &&
-                this.validateDatePickerData(
-                        binding.tipDov,
-                        getString(R.string.dov_required)
-                    )
-            ) {
-
-                viewModel.fetchVaccineRecord(phn, dob, dov)
-            }
+            fetchVaccineRecord()
         }
 
         binding.btnCancel.setOnClickListener {
             findNavController().popBackStack()
+        }
+    }
+
+    private fun fetchVaccineRecord() {
+        val phn = binding.edPhn.text.toString()
+        val dob = binding.edDob.text.toString()
+        val dov = binding.edDov.text.toString()
+
+        if (this.validatePhnNumber(
+                binding.edPhnNumber,
+                getString(R.string.phn_should_be_10_digit)
+            ) &&
+            this.validateDatePickerData(
+                binding.tipDob,
+                getString(R.string.dob_required)
+            ) &&
+            this.validateDatePickerData(
+                binding.tipDov,
+                getString(R.string.dov_required)
+            )
+        ) {
+
+            viewModel.fetchVaccineRecord(phn, dob, dov)
         }
     }
 
@@ -144,7 +161,33 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
     }
 
     private fun setUpPhnUI() {
-        // TODO: 13/01/22 Autocomplete data to be implemented.
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                recentPhnDobViewModel.recentPhnDob.collect { recentPhnDob ->
+                    val (phn, dob) = recentPhnDob
+                    val phnArray = arrayOf(phn)
+
+                    val adapter: ArrayAdapter<String> = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_dropdown_item_1line,
+                        phnArray
+                    )
+
+                    val textView = binding.edPhnNumber.editText as AutoCompleteTextView
+                    textView.setAdapter(adapter)
+                    textView.onItemClickListener =
+                        AdapterView.OnItemClickListener { _, _, _, _ ->
+                            binding.tipDob.editText?.setText(dob)
+                            binding.tipDov.editText?.requestFocus()
+                        }
+
+                    binding.edPhnNumber.setEndIconDrawable(R.drawable.ic_arrow_down)
+                    binding.edPhnNumber.setEndIconOnClickListener {
+                        textView.showDropDown()
+                    }
+                }
+            }
+        }
     }
 
     private fun setupToolBar() {

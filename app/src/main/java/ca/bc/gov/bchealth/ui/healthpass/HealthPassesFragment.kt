@@ -54,7 +54,6 @@ class HealthPassesFragment : Fragment(R.layout.scene_mycards_cards_list) {
         }
 
         healthPassAdapter = HealthPassAdapter(
-            mutableListOf(),
             qrCodeClickListener = {
                 val action =
                     HealthPassesFragmentDirections.actionHealthPassesFragmentToExpandQRFragment(it)
@@ -99,19 +98,21 @@ class HealthPassesFragment : Fragment(R.layout.scene_mycards_cards_list) {
     private suspend fun collectHealthPasses() {
         viewModel.healthPasses.collect { healthPasses ->
             if (::healthPassAdapter.isInitialized) {
+                var position = 0
                 val passes = healthPasses.toMutableList()
                 if (patientId == -1L) {
                     passes.first().isExpanded = true
                 } else {
-                    passes.forEach { pass ->
-                        if (pass.patientId == patientId) {
-                            pass.isExpanded = true
+                    passes.forEachIndexed { index, healthPass ->
+                        if (healthPass.patientId == patientId) {
+                            healthPass.isExpanded = true
+                            position = index
                         }
                     }
                 }
                 sharedViewModel.setModifiedRecordId(-1L)
-                healthPassAdapter.healthPasses = passes
-                healthPassAdapter.notifyDataSetChanged()
+                healthPassAdapter.submitList(passes)
+                binding.recCardsList.layoutManager?.scrollToPosition(position)
             }
         }
     }

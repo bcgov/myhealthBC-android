@@ -18,6 +18,7 @@ class EncryptedPreferenceStorage @Inject constructor(
         private const val QUEUE_IT_TOKEN = "QUEUE_IT_TOKEN"
         private const val APP_VERSION_CODE = "APP_VERSION_CODE"
         private const val ON_BOARDING_SHOWN = "ON_BOARDING_SHOWN"
+        private const val RECENT_PHN_DOB = "RECENT_PHN_DOB"
     }
 
     var queueItToken: String?
@@ -33,6 +34,13 @@ class EncryptedPreferenceStorage @Inject constructor(
     }
 
     val appVersion: Int = encryptedSharedPreferences.getInt(APP_VERSION_CODE, 0)
+
+    val recentPhnDobData: Flow<String> = flow {
+        val data = encryptedSharedPreferences.getString(RECENT_PHN_DOB, null)
+        if (data != null) {
+            emit(data)
+        }
+    }
 
     val onBoardingRequired: Flow<Boolean> =
         flow { emit(encryptedSharedPreferences.getBoolean(ON_BOARDING_SHOWN, true)) }
@@ -51,4 +59,7 @@ class EncryptedPreferenceStorage @Inject constructor(
         encryptedSharedPreferences.edit()
             .putInt(APP_VERSION_CODE, versionCode)
             .apply()
+
+    fun setRecentPhnDob(data: String) =
+        encryptedSharedPreferences.edit().putString(RECENT_PHN_DOB, data).apply()
 }

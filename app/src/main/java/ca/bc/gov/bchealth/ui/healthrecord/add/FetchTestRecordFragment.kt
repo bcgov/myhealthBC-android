@@ -4,6 +4,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -20,6 +23,7 @@ import ca.bc.gov.bchealth.ui.custom.validatePhnNumber
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
 import com.queue_it.androidsdk.QueueListener
@@ -38,6 +42,7 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
     private val binding by viewBindings(FragmentFetchCovidTestResultBinding::bind)
     private val viewModel: FetchTestRecordsViewModel by viewModels()
     private lateinit var savedStateHandle: SavedStateHandle
+    private val recentPhnDobViewModel: RecentPhnDobViewModel by viewModels()
 
     companion object {
         private const val TAG = "FetchTestRecordFragment"
@@ -81,8 +86,17 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
                         )
                     }
 
+                    if (state.queItTokenUpdated) {
+                        fetchTestRecord()
+                    }
+
                     if (state.onTestResultFetched > 0) {
                         savedStateHandle.set(TEST_RECORD_ADDED_SUCCESS, state.onTestResultFetched)
+                        if (binding.checkboxRemember.isChecked) {
+                            val phn = binding.edPhn.text.toString()
+                            val dob = binding.edtDob.text.toString()
+                            recentPhnDobViewModel.setRecentPhnDobData(phn, dob)
+                        }
                         findNavController().popBackStack()
                     }
 
@@ -97,30 +111,37 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
     private fun initClickListeners() {
         binding.btnSubmit.setOnClickListener {
 
-            val phn = binding.edPhn.text.toString()
-            val dob = binding.edtDob.text.toString()
-            val dot = binding.edtDoc.text.toString()
-
-            if (this.validatePhnNumber(
-                    binding.edPhnNumber,
-                    getString(R.string.phn_should_be_10_digit)
-                ) &&
-                this.validateDatePickerData(
-                        binding.tipDob,
-                        getString(R.string.dob_required)
-                    ) &&
-                this.validateDatePickerData(
-                        binding.tipDot,
-                        getString(R.string.dot_required)
-                    )
-            ) {
-                viewModel.fetchTestRecord(phn, dob, dot)
-            }
+            fetchTestRecord()
         }
 
         binding.btnCancel.setOnClickListener {
             findNavController().popBackStack()
         }
+    }
+
+    private fun fetchTestRecord() {
+        val phn = binding.edPhn.text.toString()
+        val dob = binding.edtDob.text.toString()
+        val dot = binding.edtDoc.text.toString()
+
+        if (this.validatePhnNumber(
+                binding.edPhnNumber,
+                getString(R.string.phn_should_be_10_digit)
+            ) &&
+            this.validateDatePickerData(
+                binding.tipDob,
+                getString(R.string.dob_required)
+            ) &&
+            this.validateDatePickerData(
+                binding.tipDot,
+                getString(R.string.dot_required)
+            )
+        ) {
+
+            viewModel.fetchTestRecord(phn, dob, dot)
+        }
+
+
     }
 
     private fun setupToolBar() {
@@ -146,7 +167,33 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
     }
 
     private fun setUpPhnUI() {
-        // TODO: 13/01/22 Autocomplete feature needs to be implemented
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                recentPhnDobViewModel.recentPhnDob.collect { recentPhnDob ->
+                    val (phn, dob) = recentPhnDob
+                    val phnArray = arrayOf(phn)
+
+                    val adapter: ArrayAdapter<String> = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_dropdown_item_1line,
+                        phnArray
+                    )
+
+                    val textView = binding.edPhnNumber.editText as AutoCompleteTextView
+                    textView.setAdapter(adapter)
+                    textView.onItemClickListener =
+                        AdapterView.OnItemClickListener { _, _, _, _ ->
+                            binding.tipDob.editText?.setText(dob)
+                            binding.tipDot.editText?.requestFocus()
+                        }
+
+                    binding.edPhnNumber.setEndIconDrawable(R.drawable.ic_arrow_down)
+                    binding.edPhnNumber.setEndIconOnClickListener {
+                        textView.showDropDown()
+                    }
+                }
+            }
+        }
     }
 
     private fun setUpDobUI() {
