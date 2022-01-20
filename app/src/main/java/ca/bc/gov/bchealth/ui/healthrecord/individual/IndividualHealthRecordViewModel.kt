@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
+import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.testrecord.TestResultRepository
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class IndividualHealthRecordViewModel @Inject constructor(
     private val vaccineRecordRepository: VaccineRecordRepository,
-    private val testResultRepository: TestResultRepository
+    private val testResultRepository: TestResultRepository,
+    private val patientWithVaccineRepository: PatientWithVaccineRecordRepository
 ) : ViewModel() {
 
     private val _uiState = MutableSharedFlow<IndividualHealthRecordsUiState>(
@@ -38,6 +40,17 @@ class IndividualHealthRecordViewModel @Inject constructor(
             )
         )
     }
+
+    fun deleteVaccineRecord(patientId: Long) = viewModelScope.launch {
+        val patientAndVaccineRecord = patientWithVaccineRepository.getPatientWithVaccine(patientId)
+        patientAndVaccineRecord.vaccineRecordDto?.id?.let {
+            vaccineRecordRepository.delete(vaccineRecordId = it)
+        }
+    }
+
+    fun deleteTestRecord(testResultId: Long) = viewModelScope.launch {
+        testResultRepository.delete(testResultId)
+    }
 }
 
 data class IndividualHealthRecordsUiState(
@@ -53,4 +66,10 @@ data class HealthRecordItem(
     val title: Int,
     val description: Int,
     val date: String,
+    val healthRecordType: HealthRecordType
 )
+
+enum class HealthRecordType {
+    VACCINE_RECORD,
+    COVID_TEST_RECORD
+}
