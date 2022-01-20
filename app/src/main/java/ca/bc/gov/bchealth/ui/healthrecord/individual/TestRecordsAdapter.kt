@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,12 +12,18 @@ import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
  * @author Pinakin Kansara
  */
 class TestRecordsAdapter(
-    private val itemClickListener: ItemClickListener
+    private val itemClickListener: ItemClickListener,
+    private val itemDeleteListener: ItemDeleteListener,
+    var canDeleteRecord: Boolean = false
 ) :
     ListAdapter<HealthRecordItem, TestRecordsAdapter.ViewHolder>(TestRecordsDiffCallBacks()) {
 
     fun interface ItemClickListener {
         fun onItemClick(result: HealthRecordItem)
+    }
+
+    fun interface ItemDeleteListener {
+        fun onDeleteClick(record: HealthRecordItem)
     }
 
     class ViewHolder(val binding: ItemHealthRecordsAbstractBinding) :
@@ -37,6 +44,10 @@ class TestRecordsAdapter(
         holder.binding.imgIcon.setImageResource(record.icon)
         holder.itemView.setOnClickListener {
             itemClickListener.onItemClick(record)
+        }
+        holder.binding.ivUnlink.isVisible = canDeleteRecord
+        holder.binding.ivUnlink.setOnClickListener {
+            itemDeleteListener.onDeleteClick(record)
         }
     }
 }
