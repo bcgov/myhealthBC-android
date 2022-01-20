@@ -14,17 +14,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.analytics.AnalyticsAction
-import ca.bc.gov.bchealth.analytics.AnalyticsText
-import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
 import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
+import ca.bc.gov.common.model.analytics.AnalyticsAction
+import ca.bc.gov.common.model.analytics.AnalyticsActionData
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.qr.VaccineRecordState
-import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -40,6 +39,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
 
     private val addOrUpdateCardViewModel: AddOrUpdateCardViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
+    private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
 
     private lateinit var action: ActivityResultLauncher<String>
 
@@ -118,7 +118,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             Status.INSERTED,
             Status.UPDATED -> {
                 sharedViewModel.setModifiedRecordId(state.modifiedRecordId)
-                navigateToCardsList()
+                navigateToHealthPass()
             }
             Status.DUPLICATE -> {
                 requireContext().showError(
@@ -145,15 +145,9 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         addOrUpdateCardViewModel.insert(vaccineRecord)
     }
 
-    private fun navigateToCardsList() {
+    private fun navigateToHealthPass() {
         // Snowplow event
-        Snowplow.getDefaultTracker()?.track(
-            SelfDescribingEvent
-                .get(
-                    AnalyticsAction.AddQR.value,
-                    AnalyticsText.Upload.value
-                )
-        )
+        analyticsFeatureViewModel.track(AnalyticsAction.ADD_QR, AnalyticsActionData.UPLOAD)
         findNavController().navigate(R.id.action_addCardOptionFragment_to_healthPassFragment)
     }
 }

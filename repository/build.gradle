@@ -73,6 +73,11 @@ dependencies {
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0-RC3'
 
+    // Snowplow Android Tracker
+    api "com.snowplowanalytics:snowplow-android-tracker:$versions.snowplow@aar"
+    // In case 'lifecycleAutotracking' is enabled
+    api "androidx.lifecycle:lifecycle-extensions:$versions.snowplow_lifecycle"
+
     //GSOn
     implementation "com.google.code.gson:gson:$versions.gson"
 

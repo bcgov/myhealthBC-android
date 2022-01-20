@@ -159,10 +159,6 @@ dependencies {
     //DataStore
     implementation "androidx.datastore:datastore-preferences:$versions.datastore"
 
-    // Snowplow Android Tracker
-    implementation "com.snowplowanalytics:snowplow-android-tracker:$versions.snowplow@aar"
-    // In case 'lifecycleAutotracking' is enabled
-    implementation "androidx.lifecycle:lifecycle-extensions:$versions.snowplow_lifecycle"
 
     //Crypto
     implementation "androidx.security:security-crypto:$versions.crypto"
