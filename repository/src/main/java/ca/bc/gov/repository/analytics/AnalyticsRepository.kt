@@ -27,14 +27,14 @@ class AnalyticsRepository @Inject constructor(
         preferenceStorage.setAnalyticsFeature(feature)
 
     suspend fun track(action: AnalyticsAction, data: AnalyticsActionData) {
-        val payload = TrackerPayload().add(action.value, data.value)
-        val json = SelfDescribingJson(schema, payload)
+        TrackerPayload().add(action.value, data.value)
+        val json = SelfDescribingJson(schema, TrackerPayload().map)
         Snowplow.getDefaultTracker()?.track(SelfDescribing(json))
     }
 
     suspend fun track(action: AnalyticsAction, data: String) {
-        val payload = TrackerPayload().add(action.value, data)
-        val json = SelfDescribingJson(schema, payload)
+        TrackerPayload().add(action.value, data)
+        val json = SelfDescribingJson(schema, TrackerPayload().map)
         Snowplow.getDefaultTracker()?.track(SelfDescribing(json))
     }
 }

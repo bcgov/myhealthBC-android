@@ -6,6 +6,7 @@ import ca.bc.gov.bchealth.ui.healthpass.HealthPass
 import ca.bc.gov.bchealth.ui.healthpass.PassState
 import ca.bc.gov.bchealth.ui.healthrecord.PatientHealthRecord
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
@@ -58,7 +59,8 @@ fun VaccineRecordDto.toUiModel(): HealthRecordItem {
         icon = R.drawable.ic_health_record_vaccine,
         title = R.string.covid_19_vaccination,
         description = passState.status,
-        date = qrIssueDate.toDate(yyyy_MMM_dd)
+        date = qrIssueDate.toDate(yyyy_MMM_dd),
+        HealthRecordType.VACCINE_RECORD,
     )
 }
 
@@ -70,7 +72,8 @@ fun TestResult.toUiModel(): HealthRecordItem {
         icon = R.drawable.ic_health_record_covid_test,
         title = R.string.covid_19_test_result,
         description = 0,
-        date = collectionDate.toDate(yyyy_MMM_dd)
+        date = collectionDate.toDate(yyyy_MMM_dd),
+        HealthRecordType.COVID_TEST_RECORD,
     )
 }
 
