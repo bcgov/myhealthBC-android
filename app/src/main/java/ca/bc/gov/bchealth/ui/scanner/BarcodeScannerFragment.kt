@@ -19,19 +19,18 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.analytics.AnalyticsAction
-import ca.bc.gov.bchealth.analytics.AnalyticsText
-import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.barcodeanalyzer.BarcodeAnalyzer
 import ca.bc.gov.bchealth.barcodeanalyzer.ScanningResultListener
 import ca.bc.gov.bchealth.databinding.FragmentBarcodeScannerBinding
 import ca.bc.gov.bchealth.ui.healthpass.add.AddOrUpdateCardViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
+import ca.bc.gov.common.model.analytics.AnalyticsAction
+import ca.bc.gov.common.model.analytics.AnalyticsActionData
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
@@ -57,6 +56,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
 
     private val viewModel: AddOrUpdateCardViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
+    private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -92,7 +92,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
 
                     if (state.state == Status.UPDATED || state.state == Status.INSERTED) {
                         sharedViewModel.setModifiedRecordId(state.modifiedRecordId)
-                        navigateToCardsList()
+                        navigateToHealthPass()
                     }
                 }
             }
@@ -272,12 +272,9 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                 .show()
         }
 
-        private fun navigateToCardsList() {
-            // Snowplow event
-            Snowplow.getDefaultTracker()?.track(
-                SelfDescribingEvent
-                    .get(AnalyticsAction.AddQR.value, AnalyticsText.Scan.value)
-            )
-            findNavController().navigate(R.id.action_barcodeScannerFragment_to_healthPassFragment)
-        }
+    private fun navigateToHealthPass() {
+        // Snowplow event
+        analyticsFeatureViewModel.track(AnalyticsAction.ADD_QR, AnalyticsActionData.SCAN)
+        findNavController().navigate(R.id.action_barcodeScannerFragment_to_healthPassFragment)
     }
+}

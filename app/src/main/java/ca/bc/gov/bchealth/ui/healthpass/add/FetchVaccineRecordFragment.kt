@@ -21,6 +21,9 @@ import ca.bc.gov.bchealth.ui.custom.validatePhnNumber
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
+import ca.bc.gov.common.model.analytics.AnalyticsAction
+import ca.bc.gov.common.model.analytics.AnalyticsActionData
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
 import com.queue_it.androidsdk.QueueListener
@@ -40,6 +43,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
     private val viewModel: FetchVaccineRecordViewModel by viewModels()
     private lateinit var savedStateHandle: SavedStateHandle
     private val args: FetchVaccineRecordFragmentArgs by navArgs()
+    private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
 
     companion object {
         private const val TAG = "FetchVaccineRecordFragment"
@@ -90,6 +94,10 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
                     if (uiState.vaccineRecord != null) {
                         savedStateHandle.set(VACCINE_RECORD_ADDED_SUCCESS, uiState.vaccineRecord)
+                        analyticsFeatureViewModel.track(
+                            AnalyticsAction.ADD_QR,
+                            AnalyticsActionData.GET
+                        )
                         findNavController().popBackStack()
                     }
                 }
@@ -109,13 +117,13 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                     getString(R.string.phn_should_be_10_digit)
                 ) &&
                 this.validateDatePickerData(
-                        binding.tipDob,
-                        getString(R.string.dob_required)
-                    ) &&
+                    binding.tipDob,
+                    getString(R.string.dob_required)
+                ) &&
                 this.validateDatePickerData(
-                        binding.tipDov,
-                        getString(R.string.dov_required)
-                    )
+                    binding.tipDov,
+                    getString(R.string.dov_required)
+                )
             ) {
 
                 viewModel.fetchVaccineRecord(phn, dob, dov)
