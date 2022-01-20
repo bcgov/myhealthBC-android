@@ -27,7 +27,6 @@ import com.queue_it.androidsdk.QueueListener
 import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
@@ -61,6 +60,8 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         setUpDovUI()
 
         initClickListeners()
+
+        observeCovidTestResult()
     }
 
     private fun showLoader(value: Boolean) {
@@ -80,7 +81,6 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                             getString(R.string.error),
                             getString(R.string.error_message)
                         )
-                        this.cancel()
                     }
 
                     if (uiState.onMustBeQueued && uiState.queItUrl != null) {
@@ -120,8 +120,6 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
                 viewModel.fetchVaccineRecord(phn, dob, dov)
             }
-
-            observeCovidTestResult()
         }
 
         binding.btnCancel.setOnClickListener {

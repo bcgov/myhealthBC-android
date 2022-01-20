@@ -3,11 +3,13 @@ package ca.bc.gov.bchealth.ui.travelpass
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
@@ -18,10 +20,9 @@ import ca.bc.gov.bchealth.databinding.FragmentFetchTravelPassBinding
 import ca.bc.gov.bchealth.ui.healthpass.add.AddOrUpdateCardViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
-import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
-import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.toBirthDateForNetworkCall
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
@@ -70,6 +71,9 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
+
+                    showLoader(uiState.onLoading)
+
                     if (uiState.queItTokenUpdated) {
                         fetchTravelPass()
                     }
@@ -94,14 +98,20 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 addOrUpdateCardViewModel.uiState.collect { state ->
-                    if (state.vaccineRecord != null) {
-                        performActionBasedOnState(state.state, state.vaccineRecord!!)
-                    }
+
+                    showLoader(state.onLoading)
+
+                    performActionBasedOnState(state.state, state.vaccineRecord)
                 }
             }
         }
 
         viewModel.getPatientWithVaccineRecord(args.patientId)
+    }
+
+    private fun showLoader(value: Boolean) {
+        binding.btnSubmit.isEnabled = !value
+        binding.progressBar.isVisible = value
     }
 
     private fun fetchTravelPass() {
@@ -110,46 +120,34 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
             binding.edPhnNumber.requestFocus()
             binding.edPhnNumber.error = "Invalid PHN"
         } else {
-            // viewModel.fetchVaccineRecord("9000691304", "1965-01-14", "2021-07-15")
             viewModel.fetchVaccineRecord(
                 phn,
-                patientData.patientDto.dateOfBirth.toDate(),
-                patientData.vaccineRecordDto?.doseDtos!!.last().date.toDate()
+                patientData.patientDto.dateOfBirth.toBirthDateForNetworkCall(),
+                patientData.vaccineRecordDto?.doseDtos!!.last().date.toBirthDateForNetworkCall()
             )
         }
     }
 
-    private fun performActionBasedOnState(state: Status, record: PatientVaccineRecord) =
+    private fun performActionBasedOnState(state: Status, record: PatientVaccineRecord?) =
         when (state) {
-
             Status.CAN_INSERT,
             Status.DUPLICATE,
             Status.CAN_UPDATE -> {
-                updateRecord(record)
+                record?.let { updateRecord(it) }
             }
             Status.INSERTED,
             Status.UPDATED -> {
-                navigateToCardsList()
+                record?.vaccineRecordDto?.federalPass?.let { showTravelPass(it) }
             }
-            else -> {}
+            else -> {
+            }
         }
 
     private fun updateRecord(vaccineRecord: PatientVaccineRecord) {
-        requireContext().showAlertDialog(
-            title = getString(R.string.replace_health_pass_title),
-            message = getString(R.string.replace_health_pass_message),
-            positiveButtonText = getString(R.string.replace),
-            negativeButtonText = getString(R.string.not_now)
-        ) {
-            addOrUpdateCardViewModel.update(vaccineRecord)
-        }
+        addOrUpdateCardViewModel.update(vaccineRecord)
     }
 
-    private fun insert(vaccineRecord: PatientVaccineRecord) {
-        addOrUpdateCardViewModel.insert(vaccineRecord)
-    }
-
-    private fun navigateToCardsList() {
+    private fun showTravelPass(federalPass: String) {
         // Snowplow event
         Snowplow.getDefaultTracker()?.track(
             SelfDescribingEvent
@@ -158,7 +156,14 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
                     AnalyticsText.Upload.value
                 )
         )
-        findNavController().popBackStack()
+        val action = FetchFederalTravelPassFragmentDirections
+            .actionFetchFederalTravelPassToTravelPassFragment(federalPass)
+
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.fetchFederalTravelPass, true)
+            .build()
+
+        findNavController().navigate(action, navOptions)
     }
 
     private fun queUser(value: String) {

@@ -52,10 +52,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                 addOrUpdateCardViewModel.processQRCode(it)
             }
         }
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         val savedStateHandle: SavedStateHandle =
             findNavController().currentBackStackEntry!!.savedStateHandle
         savedStateHandle.getLiveData<Pair<VaccineRecordState, PatientVaccineRecord?>>(
@@ -69,6 +66,10 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                     }
                 }
             )
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.btnScanQrCode.setOnClickListener {
             findNavController().navigate(R.id.action_addCardOptionFragment_to_onBoardingFragment)

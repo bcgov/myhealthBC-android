@@ -47,10 +47,10 @@ fun SHCData.toPatientVaccineRecord(
         entry.resource.performer?.forEach {
             provider = it.actor.display
         }
-        val productCode =  entry.resource.vaccineCode?.coding?.last()?.code!!
-        val productName: String = if(vaccineInfo.containsKey(productCode)){
-            vaccineInfo.getOrDefault(productCode,"UNSPECIFIED COVID-19 VACCINE")
-        }else{
+        val productCode = entry.resource.vaccineCode?.coding?.last()?.code!!
+        val productName: String = if (vaccineInfo.containsKey(productCode)) {
+            vaccineInfo.getOrDefault(productCode, "UNSPECIFIED COVID-19 VACCINE")
+        } else {
             "UNSPECIFIED COVID-19 VACCINE"
         }
         VaccineDoseDto(
@@ -75,7 +75,6 @@ fun SHCData.toPatientVaccineRecord(
 
     return PatientVaccineRecord(toPatient(), record)
 }
-
 
 private val vaccineInfo: HashMap<String, String> = mapOf(
     "28581000087106" to "PFIZER-BIONTECH COMIRNATY",

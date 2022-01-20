@@ -24,7 +24,7 @@ class AddOrUpdateCardViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState =
-        MutableSharedFlow<AddCardOptionUiState>(replay = 0, extraBufferCapacity = 1)
+        MutableSharedFlow<AddCardOptionUiState>(replay = 1, extraBufferCapacity = 1)
     val uiState: SharedFlow<AddCardOptionUiState> = _uiState.asSharedFlow()
 
     fun processQRCode(uri: Uri) = viewModelScope.launch {
@@ -89,8 +89,6 @@ class AddOrUpdateCardViewModel @Inject constructor(
         } else {
             _uiState.tryEmit(AddCardOptionUiState().copy(onLoading = false, state = Status.ERROR))
         }
-
-        _uiState.tryEmit(AddCardOptionUiState().copy(onLoading = false, state = Status.NA))
     }
 
     fun update(vaccineRecord: PatientVaccineRecord) = viewModelScope.launch {
@@ -101,13 +99,13 @@ class AddOrUpdateCardViewModel @Inject constructor(
                 AddCardOptionUiState().copy(
                     onLoading = false,
                     state = Status.INSERTED,
-                    modifiedRecordId = result
+                    modifiedRecordId = result,
+                    vaccineRecord = vaccineRecord
                 )
             )
         } else {
             _uiState.tryEmit(AddCardOptionUiState().copy(onLoading = false, state = Status.ERROR))
         }
-        _uiState.tryEmit(AddCardOptionUiState().copy(onLoading = false, state = Status.NA))
     }
 }
 
