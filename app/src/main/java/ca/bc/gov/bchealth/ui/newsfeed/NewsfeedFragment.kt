@@ -11,14 +11,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.analytics.AnalyticsAction
-import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.databinding.FragmentNewsfeedBinding
 import ca.bc.gov.bchealth.model.rss.Newsfeed
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
-import com.snowplowanalytics.snowplow.Snowplow
+import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
+import ca.bc.gov.common.model.analytics.AnalyticsAction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -31,6 +30,7 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
     private val binding by viewBindings(FragmentNewsfeedBinding::bind)
 
     private val viewModel: NewsfeedViewModel by viewModels()
+    private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,11 +40,8 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
         newsfeedAdapter = NewsfeedAdapter(newsFeeds) {
             it.link?.let { it1 ->
                 requireActivity().redirect(it1)
-
                 // Snowplow event
-                Snowplow.getDefaultTracker()?.track(
-                    SelfDescribingEvent.get(AnalyticsAction.NewsLinkSelected.value, it1)
-                )
+                analyticsFeatureViewModel.track(AnalyticsAction.NEWS_FEED_SELECTED, it1)
             }
         }
 

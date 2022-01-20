@@ -3,20 +3,21 @@ package ca.bc.gov.bchealth.ui.resources
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.analytics.AnalyticsAction
-import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.databinding.FragmentResourcesBinding
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
-import com.snowplowanalytics.snowplow.Snowplow
+import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
+import ca.bc.gov.common.model.analytics.AnalyticsAction
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ResourcesFragment : Fragment(R.layout.fragment_resources) {
 
     private val binding by viewBindings(FragmentResourcesBinding::bind)
+    private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,9 +48,7 @@ class ResourcesFragment : Fragment(R.layout.fragment_resources) {
 
     private fun seedAnalyticsData(url: String) {
         // Snowplow event
-        Snowplow.getDefaultTracker()?.track(
-            SelfDescribingEvent.get(AnalyticsAction.ResourceLinkSelected.value, url)
-        )
+        analyticsFeatureViewModel.track(AnalyticsAction.RESOURCE_CLICK, url)
     }
 
     private fun setupToolBar() {

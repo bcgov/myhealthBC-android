@@ -12,13 +12,13 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.analytics.AnalyticsAction
-import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.databinding.FragmentManageHealthPassesBinding
 import ca.bc.gov.bchealth.ui.healthpass.HealthPassViewModel
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
+import ca.bc.gov.common.model.analytics.AnalyticsAction
+import ca.bc.gov.common.model.analytics.AnalyticsActionData
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.Collections
@@ -31,6 +31,7 @@ class ManageHealthPassFragment : Fragment(R.layout.fragment_manage_health_passes
     private val viewModel: HealthPassViewModel by viewModels()
     private val binding by viewBindings(FragmentManageHealthPassesBinding::bind)
     private lateinit var manageHealthPassAdapter: ManageHealthPassAdapter
+    private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -132,10 +133,7 @@ class ManageHealthPassFragment : Fragment(R.layout.fragment_manage_health_passes
             .setPositiveButton(getString(R.string.unlink)) { dialog, _ ->
 
                 // Snowplow event
-                Snowplow.getDefaultTracker()?.track(
-                    SelfDescribingEvent
-                        .get(AnalyticsAction.RemoveCard.value, "")
-                )
+                analyticsFeatureViewModel.track(AnalyticsAction.REMOVE_CARD, AnalyticsActionData.NA)
 
                 viewModel.deleteHealthPass(vaccineRecordId)
                 dialog.dismiss()

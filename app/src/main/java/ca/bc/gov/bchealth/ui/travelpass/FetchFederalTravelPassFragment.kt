@@ -13,14 +13,14 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.analytics.AnalyticsAction
-import ca.bc.gov.bchealth.analytics.AnalyticsText
-import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.databinding.FragmentFetchTravelPassBinding
 import ca.bc.gov.bchealth.ui.healthpass.add.AddOrUpdateCardViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
+import ca.bc.gov.common.model.analytics.AnalyticsAction
+import ca.bc.gov.common.model.analytics.AnalyticsActionData
 import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.yyyy_MM_dd
@@ -30,7 +30,6 @@ import com.queue_it.androidsdk.QueueITEngine
 import com.queue_it.androidsdk.QueueListener
 import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
-import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.net.URLDecoder
@@ -46,6 +45,7 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
     private val args: FetchFederalTravelPassFragmentArgs by navArgs()
     private val addOrUpdateCardViewModel: AddOrUpdateCardViewModel by viewModels()
     private lateinit var patientData: PatientAndVaccineRecord
+    private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -150,13 +150,8 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
 
     private fun showTravelPass(federalPass: String) {
         // Snowplow event
-        Snowplow.getDefaultTracker()?.track(
-            SelfDescribingEvent
-                .get(
-                    AnalyticsAction.AddQR.value,
-                    AnalyticsText.Upload.value
-                )
-        )
+        // Snowplow event
+        analyticsFeatureViewModel.track(AnalyticsAction.ADD_QR, AnalyticsActionData.UPLOAD)
         val action = FetchFederalTravelPassFragmentDirections
             .actionFetchFederalTravelPassToTravelPassFragment(federalPass)
 

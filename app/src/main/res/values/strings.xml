@@ -87,7 +87,7 @@
     <string name="bc_vaccine_card_unlinked">BC vaccine pass unlinked.</string>
     <string name="edit">Edit</string>
     <string name="travel_pass">Canadian COVID-19 proof</string>
-    <string name="get_federal_proof_of_vaccination">Get federal proof of vaccination</string>
+    <string name="get_federal_proof_of_vaccination">Get Canadian COVID-19 proof of vaccination</string>
     <string name="show_federal_proof_of_vaccination">Show Canadian COVID-19 proof of vaccination</string>
     <string name="domestic_and_international_travel">Domestic and international travel</string>
     <string name="find_phn_on_care_card_or_the_back_of_driver_s_license">Find PHN on care card or the back of driver’s license.</string>
