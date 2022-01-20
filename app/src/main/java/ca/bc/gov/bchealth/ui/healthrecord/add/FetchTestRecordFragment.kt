@@ -20,6 +20,7 @@ import ca.bc.gov.bchealth.ui.custom.validatePhnNumber
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
 import com.queue_it.androidsdk.QueueListener
@@ -75,10 +76,7 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
                     showLoader(state.onLoading)
 
                     if (state.isError) {
-                        requireContext().showError(
-                            getString(state.errorData.title),
-                            getString(state.errorData.message)
-                        )
+                        handleError(state)
                     }
 
                     if (state.onTestResultFetched > 0) {
@@ -91,6 +89,20 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
                     }
                 }
             }
+        }
+    }
+
+    private fun handleError(state: FetchTestRecordUiState) {
+        if (state.errorCode == SERVER_ERROR_DATA_MISMATCH) {
+            requireContext().showError(
+                getString(R.string.error_data_mismatch_title),
+                getString(R.string.error_test_result_data_mismatch_message)
+            )
+        } else {
+            requireContext().showError(
+                getString(R.string.error),
+                getString(R.string.error_message)
+            )
         }
     }
 

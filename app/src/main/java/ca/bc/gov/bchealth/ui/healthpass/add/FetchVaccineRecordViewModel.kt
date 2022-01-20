@@ -3,11 +3,8 @@ package ca.bc.gov.bchealth.ui.healthpass.add
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.bchealth.R
-import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.MyHealthException
-import ca.bc.gov.common.model.ErrorData
 import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
@@ -74,23 +71,12 @@ class FetchVaccineRecordViewModel @Inject constructor(
                         )
                     }
                     is MyHealthException -> {
-                        if (e.errCode == SERVER_ERROR_DATA_MISMATCH) {
-                            _uiState.tryEmit(
-                                FetchVaccineRecordUiState().copy(
-                                    isError = true,
-                                    errorData = ErrorData(
-                                        R.string.error_data_mismatch_title,
-                                        R.string.error_vaccine_data_mismatch_message
-                                    )
-                                )
+                        _uiState.tryEmit(
+                            FetchVaccineRecordUiState().copy(
+                                isError = true,
+                                errorCode = e.errCode
                             )
-                        } else {
-                            _uiState.tryEmit(
-                                FetchVaccineRecordUiState().copy(
-                                    isError = true
-                                )
-                            )
-                        }
+                        )
                     }
                 }
             }
@@ -122,8 +108,5 @@ data class FetchVaccineRecordUiState(
     val patientData: PatientAndVaccineRecord? = null,
     val vaccineRecord: Pair<VaccineRecordState, PatientVaccineRecord?>? = null,
     val isError: Boolean = false,
-    val errorData: ErrorData = ErrorData(
-        R.string.error,
-        R.string.error_message
-    )
+    val errorCode: Int = 0
 )
