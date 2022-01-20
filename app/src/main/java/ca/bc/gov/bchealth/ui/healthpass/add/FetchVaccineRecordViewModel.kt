@@ -12,10 +12,9 @@ import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.qr.VaccineRecordState
 import ca.bc.gov.repository.vaccine.VaccineDoseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,22 +33,18 @@ class FetchVaccineRecordViewModel @Inject constructor(
         private const val TAG = "FetchVaccineRecordViewModel"
     }
 
-    private val _uiState = MutableStateFlow(FetchVaccineRecordUiState())
-    val uiState: StateFlow<FetchVaccineRecordUiState> = _uiState.asStateFlow()
+    private val _uiState =
+        MutableSharedFlow<FetchVaccineRecordUiState>(replay = 0, extraBufferCapacity = 1)
+    val uiState: SharedFlow<FetchVaccineRecordUiState> = _uiState.asSharedFlow()
 
     fun fetchVaccineRecord(phn: String, dateOfBirth: String, dateOfVaccine: String) =
         viewModelScope.launch {
 
-            _uiState.update { fetchTestRecordUiState ->
-                fetchTestRecordUiState.copy(
-                    onLoading = true,
-                    queItTokenUpdated = false,
-                    onMustBeQueued = false,
-                    queItUrl = null,
-                    vaccineRecord = null,
-                    isError = false
+            _uiState.tryEmit(
+                FetchVaccineRecordUiState().copy(
+                    onLoading = true
                 )
-            }
+            )
 
             try {
                 val vaccineRecord = fetchVaccineRecordRepository.fetchVaccineRecord(
@@ -57,41 +52,30 @@ class FetchVaccineRecordViewModel @Inject constructor(
                     dateOfBirth,
                     dateOfVaccine
                 )
-                _uiState.update { fetchVaccineRecordUiState ->
-                    fetchVaccineRecordUiState.copy(
+                _uiState.tryEmit(
+                    FetchVaccineRecordUiState().copy(
                         onLoading = false,
-                        queItTokenUpdated = false,
-                        onMustBeQueued = false,
-                        queItUrl = null,
-                        vaccineRecord = vaccineRecord,
-                        isError = false
+                        vaccineRecord = vaccineRecord
                     )
-                }
+                )
             } catch (e: Exception) {
                 when (e) {
                     is MustBeQueuedException -> {
-                        _uiState.update {
-                            it.copy(
+                        _uiState.tryEmit(
+                            FetchVaccineRecordUiState().copy(
                                 onLoading = false,
-                                queItTokenUpdated = false,
                                 onMustBeQueued = true,
                                 queItUrl = e.message,
-                                vaccineRecord = null,
-                                isError = false
                             )
-                        }
+                        )
                     }
                     else -> {
-                        _uiState.update {
-                            it.copy(
+                        _uiState.tryEmit(
+                            FetchVaccineRecordUiState().copy(
                                 onLoading = false,
-                                queItTokenUpdated = false,
-                                onMustBeQueued = false,
-                                queItUrl = null,
-                                vaccineRecord = null,
                                 isError = true
                             )
-                        }
+                        )
                     }
                 }
             }
@@ -100,18 +84,18 @@ class FetchVaccineRecordViewModel @Inject constructor(
     fun setQueItToken(token: String?) = viewModelScope.launch {
         Log.d(TAG, "setQueItToken: token = $token")
         queueItTokenRepository.setQueItToken(token)
-        _uiState.update {
-            it.copy(onLoading = false, queItTokenUpdated = true)
-        }
+        _uiState.tryEmit(
+            FetchVaccineRecordUiState().copy(onLoading = false, queItTokenUpdated = true)
+        )
     }
 
     fun getPatientWithVaccineRecord(patientId: Long) = viewModelScope.launch {
         val record = patientWithVaccineRecordRepository.getPatientWithVaccine(patientId)
         val vaccineDoses = vaccineDoseRepository.getVaccineDoses(record.vaccineRecordDto!!.id)
         record.vaccineRecordDto?.doseDtos = vaccineDoses
-        _uiState.update {
-            it.copy(onLoading = false, patientData = record)
-        }
+        _uiState.tryEmit(
+            FetchVaccineRecordUiState().copy(onLoading = false, patientData = record)
+        )
     }
 }
 
