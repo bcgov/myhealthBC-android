@@ -12,6 +12,8 @@ import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.test.TestResult
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
+import ca.bc.gov.common.utils.yyyy_MMM_dd
+import ca.bc.gov.common.utils.yyyy_MMM_dd_HH_mm
 import ca.bc.gov.repository.model.PatientVaccineRecord
 
 fun PatientVaccineRecord.toUiModel(): HealthPass {
@@ -36,7 +38,8 @@ fun PatientVaccineRecord.toUiModel(): HealthPass {
         patientId = patientDto.id,
         vaccineRecordId = vaccineRecordDto.id,
         name = "${patientDto.firstName} ${patientDto.lastName}",
-        qrIssuedDate = "Issued on ${vaccineRecordDto.qrIssueDate.toDateTimeString()}",
+        qrIssuedDate = "Issued on ${vaccineRecordDto.qrIssueDate
+            .toDateTimeString(yyyy_MMM_dd_HH_mm)}",
         shcUri = vaccineRecordDto.shcUri,
         qrCode = vaccineRecordDto.qrCodeImage,
         state = passState,
@@ -55,7 +58,7 @@ fun VaccineRecordDto.toUiModel(): HealthRecordItem {
         icon = R.drawable.ic_health_record_vaccine,
         title = R.string.covid_19_vaccination,
         description = passState.status,
-        date = qrIssueDate.toDate()
+        date = qrIssueDate.toDate(yyyy_MMM_dd)
     )
 }
 
@@ -67,7 +70,7 @@ fun TestResult.toUiModel(): HealthRecordItem {
         icon = R.drawable.ic_health_record_covid_test,
         title = R.string.covid_19_test_result,
         description = 0,
-        date = collectionDate.toDate()
+        date = collectionDate.toDate(yyyy_MMM_dd)
     )
 }
 

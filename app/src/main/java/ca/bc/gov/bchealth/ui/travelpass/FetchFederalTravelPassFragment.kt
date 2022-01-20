@@ -22,7 +22,8 @@ import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
-import ca.bc.gov.common.utils.toBirthDateForNetworkCall
+import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
@@ -122,8 +123,8 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
         } else {
             viewModel.fetchVaccineRecord(
                 phn,
-                patientData.patientDto.dateOfBirth.toBirthDateForNetworkCall(),
-                patientData.vaccineRecordDto?.doseDtos!!.last().date.toBirthDateForNetworkCall()
+                patientData.patientDto.dateOfBirth.toDate(yyyy_MM_dd),
+                patientData.vaccineRecordDto?.doseDtos!!.last().date.toDate(yyyy_MM_dd)
             )
         }
     }

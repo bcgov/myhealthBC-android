@@ -18,6 +18,7 @@ import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.utils.toDateTimeString
+import ca.bc.gov.common.utils.yyyy_MMM_dd_HH_mm
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -98,7 +99,7 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
                             .plus(" ")
                             .plus(
                                 patientAndVaccineRecord.vaccineRecordDto?.qrIssueDate
-                                    ?.toDateTimeString()
+                                    ?.toDateTimeString(yyyy_MMM_dd_HH_mm)
                             )
 
                         patientAndVaccineRecord.vaccineRecordDto?.status
