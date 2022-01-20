@@ -22,7 +22,6 @@ import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
-import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.model.analytics.AnalyticsAction
 import ca.bc.gov.common.model.analytics.AnalyticsActionData
 import com.queue_it.androidsdk.Error
@@ -81,8 +80,11 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
                     showLoader(uiState.onLoading)
 
-                    if (uiState.isError) {
-                        handleError(uiState)
+                    if (uiState.errorData != null) {
+                        requireContext().showError(
+                            getString(uiState.errorData.title),
+                            getString(uiState.errorData.message)
+                        )
                     }
 
                     if (uiState.onMustBeQueued && uiState.queItUrl != null) {
@@ -100,20 +102,6 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                     }
                 }
             }
-        }
-    }
-
-    private fun handleError(state: FetchVaccineRecordUiState) {
-        if (state.errorCode == SERVER_ERROR_DATA_MISMATCH) {
-            requireContext().showError(
-                getString(R.string.error_data_mismatch_title),
-                getString(R.string.error_vaccine_data_mismatch_message)
-            )
-        } else {
-            requireContext().showError(
-                getString(R.string.error),
-                getString(R.string.error_message)
-            )
         }
     }
 
