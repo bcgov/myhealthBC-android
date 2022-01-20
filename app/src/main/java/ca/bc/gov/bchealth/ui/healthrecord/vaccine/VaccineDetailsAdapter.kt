@@ -8,8 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemVaccineDetailsBinding
 import ca.bc.gov.common.model.VaccineDoseDto
-import ca.bc.gov.common.utils.toDateTimeString
-import ca.bc.gov.common.utils.yyyy_MMM_dd_HH_mm
+import ca.bc.gov.common.utils.toDate
 
 /*
 * @author amit_metri on 09,December,2021
@@ -37,7 +36,7 @@ class VaccineDetailsAdapter :
                 .plus(" ")
                 .plus(position + 1)
 
-            tvOccurrenceDate.text = vaccineData.date.toDateTimeString(yyyy_MMM_dd_HH_mm)
+            tvOccurrenceDate.text = vaccineData.date.toDate()
 
             tvProduct.text = vaccineData.productName
 

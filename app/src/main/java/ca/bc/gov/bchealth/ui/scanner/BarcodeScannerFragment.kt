@@ -24,6 +24,7 @@ import ca.bc.gov.bchealth.barcodeanalyzer.ScanningResultListener
 import ca.bc.gov.bchealth.databinding.FragmentBarcodeScannerBinding
 import ca.bc.gov.bchealth.ui.healthpass.add.AddOrUpdateCardViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
+import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -93,6 +94,13 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                     if (state.state == Status.UPDATED || state.state == Status.INSERTED) {
                         sharedViewModel.setModifiedRecordId(state.modifiedRecordId)
                         navigateToHealthPass()
+                    }
+
+                    if(state.state == Status.ERROR){
+                        requireContext().showError(
+                            getString(R.string.error_invalid_qr_code_title),
+                            getString(R.string.error_invalid_qr_code_message)
+                        )
                     }
                 }
             }

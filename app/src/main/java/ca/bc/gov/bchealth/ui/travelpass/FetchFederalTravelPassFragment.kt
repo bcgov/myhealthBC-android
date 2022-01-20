@@ -3,6 +3,8 @@ package ca.bc.gov.bchealth.ui.travelpass
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -19,6 +21,7 @@ import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
+import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
 import ca.bc.gov.common.model.analytics.AnalyticsAction
 import ca.bc.gov.common.model.analytics.AnalyticsActionData
 import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
@@ -46,6 +49,7 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
     private val addOrUpdateCardViewModel: AddOrUpdateCardViewModel by viewModels()
     private lateinit var patientData: PatientAndVaccineRecord
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
+    private val recentPhnDobViewModel: RecentPhnDobViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -68,6 +72,8 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
         binding.btnCancel.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        setUpPhnUI()
 
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -110,6 +116,30 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
         viewModel.getPatientWithVaccineRecord(args.patientId)
     }
 
+    private fun setUpPhnUI() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                recentPhnDobViewModel.recentPhnDob.collect { recentPhnDob ->
+                    val (phn, dob) = recentPhnDob
+                    val phnArray = arrayOf(phn)
+
+                    val adapter: ArrayAdapter<String> = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_dropdown_item_1line,
+                        phnArray
+                    )
+
+                    val textView = binding.edPhnNumber.editText as AutoCompleteTextView
+                    textView.setAdapter(adapter)
+                    binding.edPhnNumber.setEndIconDrawable(R.drawable.ic_arrow_down)
+                    binding.edPhnNumber.setEndIconOnClickListener {
+                        textView.showDropDown()
+                    }
+                }
+            }
+        }
+    }
+
     private fun showLoader(value: Boolean) {
         binding.btnSubmit.isEnabled = !value
         binding.progressBar.isVisible = value
@@ -149,7 +179,6 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
     }
 
     private fun showTravelPass(federalPass: String) {
-        // Snowplow event
         // Snowplow event
         analyticsFeatureViewModel.track(AnalyticsAction.ADD_QR, AnalyticsActionData.UPLOAD)
         val action = FetchFederalTravelPassFragmentDirections

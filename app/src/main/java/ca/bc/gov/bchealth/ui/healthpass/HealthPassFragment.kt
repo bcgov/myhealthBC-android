@@ -61,7 +61,6 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
         )
 
         healthPassAdapter = HealthPassAdapter(
-            mutableListOf(),
             qrCodeClickListener = {
                 val action =
                     HealthPassFragmentDirections.actionHealthPassFragmentToExpandQRFragment(it)
@@ -178,8 +177,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
         if (::healthPassAdapter.isInitialized) {
             val passes = healthPasses.toMutableList().subList(0, 1)
             passes.first().isExpanded = true
-            healthPassAdapter.healthPasses = passes
-            healthPassAdapter.notifyDataSetChanged()
+            healthPassAdapter.submitList(passes)
         }
         val recHealthPasses: RecyclerView =
             sceneSingleHealthPass.sceneRoot.findViewById(R.id.rec_cards_list)
@@ -226,10 +224,10 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
         ) {
 
             var hardDelete = true
-            val deletePass: HealthPass = cardsTemp[viewHolder.adapterPosition]
-            val position = viewHolder.adapterPosition
+            val deletePass: HealthPass = cardsTemp[viewHolder.bindingAdapterPosition]
+            val position = viewHolder.bindingAdapterPosition
 
-            healthPassAdapter.healthPasses.removeAt(position)
+            healthPassAdapter.currentList.removeAt(position)
             healthPassAdapter.notifyItemRemoved(position)
 
             val snackBar = Snackbar.make(
@@ -240,7 +238,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
                     getString(R.string.undo)
                 ) {
                     hardDelete = false
-                    healthPassAdapter.healthPasses.add(position, deletePass)
+                    healthPassAdapter.currentList.add(position, deletePass)
                     healthPassAdapter.notifyItemInserted(position)
                 }
             snackBar.addCallback(object : Snackbar.Callback() {

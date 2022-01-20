@@ -36,30 +36,34 @@ class ProcessQrRepository @Inject constructor(
     }
 
     suspend fun processQRCode(shcUri: String): Pair<VaccineRecordState, PatientVaccineRecord?> {
-        if (!shcVerifier.hasValidSignature(shcUri)) {
+        try {
+            if (!shcVerifier.hasValidSignature(shcUri)) {
+                return Pair(VaccineRecordState.INVALID, null)
+            }
+            val (status, shcData) = shcVerifier.getStatus(shcUri)
+            if (status == VaccinationStatus.INVALID) {
+                return Pair(VaccineRecordState.INVALID, null)
+            }
+            val patient = shcData.toPatient()
+            val patientsVaccineRecord =
+                withContext(Dispatchers.IO) { localDataSource.getPatientWithVaccineRecord(patient) }
+            val patientData = shcData.toPatientVaccineRecord(shcUri, status)
+            if (patientsVaccineRecord.isNullOrEmpty() || patientsVaccineRecord.last().vaccineRecord == null) {
+                return Pair(VaccineRecordState.CAN_INSERT, patientData)
+            }
+            val record = patientsVaccineRecord.last()
+            val value =
+                patientData.vaccineRecordDto.qrIssueDate.compareTo(record.vaccineRecord?.qrIssueDate!!)
+            return if (value > 0) {
+                patientData.patientDto.id = record.patient.id
+                patientData.vaccineRecordDto.id = record.vaccineRecord!!.id
+                patientData.vaccineRecordDto.patientId = record.vaccineRecord!!.patientId
+                Pair(VaccineRecordState.CAN_UPDATE, patientData)
+            } else {
+                Pair(VaccineRecordState.DUPLICATE, patientData)
+            }
+        }catch (e: Exception){
             return Pair(VaccineRecordState.INVALID, null)
-        }
-        val (status, shcData) = shcVerifier.getStatus(shcUri)
-        if (status == VaccinationStatus.INVALID) {
-            return Pair(VaccineRecordState.INVALID, null)
-        }
-        val patient = shcData.toPatient()
-        val patientsVaccineRecord =
-            withContext(Dispatchers.IO) { localDataSource.getPatientWithVaccineRecord(patient) }
-        val patientData = shcData.toPatientVaccineRecord(shcUri, status)
-        if (patientsVaccineRecord.isNullOrEmpty() || patientsVaccineRecord.last().vaccineRecord == null) {
-            return Pair(VaccineRecordState.CAN_INSERT, patientData)
-        }
-        val record = patientsVaccineRecord.last()
-        val value =
-            patientData.vaccineRecordDto.qrIssueDate.compareTo(record.vaccineRecord?.qrIssueDate!!)
-        return if (value > 0) {
-            patientData.patientDto.id = record.patient.id
-            patientData.vaccineRecordDto.id = record.vaccineRecord!!.id
-            patientData.vaccineRecordDto.patientId = record.vaccineRecord!!.patientId
-            Pair(VaccineRecordState.CAN_UPDATE, patientData)
-        } else {
-            Pair(VaccineRecordState.DUPLICATE, patientData)
         }
     }
 }

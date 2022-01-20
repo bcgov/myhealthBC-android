@@ -89,9 +89,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         }
 
         binding.btnEnterInfo.setOnClickListener {
-            val action = AddCardOptionFragmentDirections
-                .actionAddCardOptionFragmentToFetchVaccineRecordFragment(true)
-            findNavController().navigate(action)
+            findNavController().navigate(R.id.fetchVaccineRecordFragment)
         }
 
         binding.toolbar.apply {
@@ -106,7 +104,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         }
     }
 
-    private fun performActionBasedOnState(state: AddCardOptionUiState) =
+    private fun performActionBasedOnState(state: AddCardOptionUiState) {
         when (state.state) {
 
             Status.CAN_INSERT -> {
@@ -126,9 +124,18 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                     getString(R.string.error_duplicate_message)
                 )
             }
+
+            Status.ERROR -> {
+                requireContext().showError(
+                    getString(R.string.error_invalid_qr_code_title),
+                    getString(R.string.error_invalid_qr_code_message)
+                )
+            }
+
             else -> {
             }
         }
+    }
 
     private fun updateRecord(vaccineRecord: PatientVaccineRecord) {
         requireContext().showAlertDialog(
