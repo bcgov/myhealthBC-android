@@ -80,7 +80,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
                     showLoader(uiState.onLoading)
 
-                    if (uiState.isError) {
+                    if (uiState.errorData != null) {
                         requireContext().showError(
                             getString(uiState.errorData.title),
                             getString(uiState.errorData.message)

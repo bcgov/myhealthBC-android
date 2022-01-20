@@ -74,7 +74,7 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
 
                     showLoader(state.onLoading)
 
-                    if (state.isError) {
+                    if (state.errorData != null) {
                         requireContext().showError(
                             getString(state.errorData.title),
                             getString(state.errorData.message)

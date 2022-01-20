@@ -38,7 +38,7 @@ class FetchTestRecordsViewModel @Inject constructor(
         viewModelScope.launch {
 
             _uiState.tryEmit(
-                FetchTestRecordUiState().copy(
+                FetchTestRecordUiState(
                     onLoading = true
                 )
             )
@@ -46,7 +46,7 @@ class FetchTestRecordsViewModel @Inject constructor(
             try {
                 val tesTestResultId = repository.fetchTestRecord(phn, dateOfBirth, collectionDate)
                 _uiState.tryEmit(
-                    FetchTestRecordUiState().copy(
+                    FetchTestRecordUiState(
                         onTestResultFetched = tesTestResultId
                     )
                 )
@@ -54,7 +54,7 @@ class FetchTestRecordsViewModel @Inject constructor(
                 when (e) {
                     is MustBeQueuedException -> {
                         _uiState.tryEmit(
-                            FetchTestRecordUiState().copy(
+                            FetchTestRecordUiState(
                                 onLoading = true,
                                 queItTokenUpdated = false,
                                 onMustBeQueued = true,
@@ -65,8 +65,7 @@ class FetchTestRecordsViewModel @Inject constructor(
                     is MyHealthException -> {
                         if (e.errCode == SERVER_ERROR_DATA_MISMATCH) {
                             _uiState.tryEmit(
-                                FetchTestRecordUiState().copy(
-                                    isError = true,
+                                FetchTestRecordUiState(
                                     errorData = ErrorData(
                                         R.string.error_data_mismatch_title,
                                         R.string.error_test_result_data_mismatch_message
@@ -75,8 +74,11 @@ class FetchTestRecordsViewModel @Inject constructor(
                             )
                         } else {
                             _uiState.tryEmit(
-                                FetchTestRecordUiState().copy(
-                                    isError = true
+                                FetchTestRecordUiState(
+                                    errorData = ErrorData(
+                                        R.string.error,
+                                        R.string.error_message
+                                    )
                                 )
                             )
                         }
@@ -89,7 +91,7 @@ class FetchTestRecordsViewModel @Inject constructor(
         Log.d(TAG, "setQueItToken: token = $token")
         queueItTokenRepository.setQueItToken(token)
         _uiState.tryEmit(
-            FetchTestRecordUiState().copy(
+            FetchTestRecordUiState(
                 onLoading = false, queItTokenUpdated = true
             )
         )
@@ -103,8 +105,5 @@ data class FetchTestRecordUiState(
     val queItUrl: String? = null,
     val onTestResultFetched: Long = -1L,
     val isError: Boolean = false,
-    val errorData: ErrorData = ErrorData(
-        R.string.error,
-        R.string.error_message
-    )
+    val errorData: ErrorData? = null
 )

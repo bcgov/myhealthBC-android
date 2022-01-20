@@ -45,7 +45,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
         viewModelScope.launch {
 
             _uiState.tryEmit(
-                FetchVaccineRecordUiState().copy(
+                FetchVaccineRecordUiState(
                     onLoading = true
                 )
             )
@@ -57,7 +57,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
                     dateOfVaccine
                 )
                 _uiState.tryEmit(
-                    FetchVaccineRecordUiState().copy(
+                    FetchVaccineRecordUiState(
                         onLoading = false,
                         vaccineRecord = vaccineRecord
                     )
@@ -66,7 +66,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
                 when (e) {
                     is MustBeQueuedException -> {
                         _uiState.tryEmit(
-                            FetchVaccineRecordUiState().copy(
+                            FetchVaccineRecordUiState(
                                 onLoading = false,
                                 onMustBeQueued = true,
                                 queItUrl = e.message,
@@ -76,8 +76,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
                     is MyHealthException -> {
                         if (e.errCode == SERVER_ERROR_DATA_MISMATCH) {
                             _uiState.tryEmit(
-                                FetchVaccineRecordUiState().copy(
-                                    isError = true,
+                                FetchVaccineRecordUiState(
                                     errorData = ErrorData(
                                         R.string.error_data_mismatch_title,
                                         R.string.error_vaccine_data_mismatch_message
@@ -86,8 +85,11 @@ class FetchVaccineRecordViewModel @Inject constructor(
                             )
                         } else {
                             _uiState.tryEmit(
-                                FetchVaccineRecordUiState().copy(
-                                    isError = true
+                                FetchVaccineRecordUiState(
+                                    errorData = ErrorData(
+                                        R.string.error,
+                                        R.string.error_message
+                                    )
                                 )
                             )
                         }
@@ -100,7 +102,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
         Log.d(TAG, "setQueItToken: token = $token")
         queueItTokenRepository.setQueItToken(token)
         _uiState.tryEmit(
-            FetchVaccineRecordUiState().copy(onLoading = false, queItTokenUpdated = true)
+            FetchVaccineRecordUiState(onLoading = false, queItTokenUpdated = true)
         )
     }
 
@@ -109,7 +111,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
         val vaccineDoses = vaccineDoseRepository.getVaccineDoses(record.vaccineRecordDto!!.id)
         record.vaccineRecordDto?.doseDtos = vaccineDoses
         _uiState.tryEmit(
-            FetchVaccineRecordUiState().copy(onLoading = false, patientData = record)
+            FetchVaccineRecordUiState(onLoading = false, patientData = record)
         )
     }
 }
@@ -121,9 +123,5 @@ data class FetchVaccineRecordUiState(
     val queItUrl: String? = null,
     val patientData: PatientAndVaccineRecord? = null,
     val vaccineRecord: Pair<VaccineRecordState, PatientVaccineRecord?>? = null,
-    val isError: Boolean = false,
-    val errorData: ErrorData = ErrorData(
-        R.string.error,
-        R.string.error_message
-    )
+    val errorData: ErrorData? = null
 )
