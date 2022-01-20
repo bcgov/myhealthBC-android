@@ -272,9 +272,9 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                 .show()
         }
 
-    private fun navigateToHealthPass() {
-        // Snowplow event
-        analyticsFeatureViewModel.track(AnalyticsAction.ADD_QR, AnalyticsActionData.SCAN)
-        findNavController().navigate(R.id.action_barcodeScannerFragment_to_healthPassFragment)
+        private fun navigateToHealthPass() {
+            // Snowplow event
+            analyticsFeatureViewModel.track(AnalyticsAction.ADD_QR, AnalyticsActionData.SCAN)
+            findNavController().navigate(R.id.action_barcodeScannerFragment_to_healthPassFragment)
+        }
     }
-}
