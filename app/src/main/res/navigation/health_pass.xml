@@ -99,6 +99,9 @@
         <argument
             android:name="patient_id"
             app:argType="long" />
+        <action
+            android:id="@+id/action_fetchFederalTravelPass_to_travelPassFragment"
+            app:destination="@id/travelPassFragment" />
     </fragment>
     <fragment
         android:id="@+id/travelPassFragment"

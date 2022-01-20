@@ -20,6 +20,7 @@ import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.TestRecord
 import ca.bc.gov.common.utils.toDateTimeString
+import ca.bc.gov.common.utils.yyyy_MMM_dd_HH_mm
 
 // fragment initialization parameter
 private const val ARG_PARAM1 = "param1"
@@ -54,9 +55,9 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
                 getString(R.string.tested_on)
                     .plus(" ")
                     .plus(
-                        testRecord?.resultDateTime?.toDateTimeString()
+                        testRecord?.resultDateTime?.toDateTimeString(yyyy_MMM_dd_HH_mm)
                     )
-            tvDot.text = testRecord?.resultDateTime?.toDateTimeString()
+            tvDot.text = testRecord?.resultDateTime?.toDateTimeString(yyyy_MMM_dd_HH_mm)
             tvTestStatus.text = testRecord?.testStatus
             tvTypeName.text = testRecord?.testName
             tvProviderClinic.text = testRecord?.labName

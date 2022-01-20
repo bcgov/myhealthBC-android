@@ -6,15 +6,19 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
-fun Instant.toDateTimeString(): String {
+const val yyyy_MMM_dd_HH_mm = "yyyy-MMM-dd, HH:mm"
+const val yyyy_MMM_dd = "yyyy-MMM-dd"
+const val yyyy_MM_dd = "yyyy-MM-dd"
+
+fun Instant.toDateTimeString(dateFormat: String = yyyy_MMM_dd_HH_mm): String {
     val dateTime = LocalDateTime.ofInstant(this, ZoneOffset.UTC)
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd, HH:mm")
+    val formatter = DateTimeFormatter.ofPattern(dateFormat)
     return formatter.format(dateTime)
 }
 
-fun Instant.toDate(): String {
+fun Instant.toDate(dateFormat: String = yyyy_MMM_dd): String {
     val dateTime = LocalDateTime.ofInstant(this, ZoneOffset.UTC)
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd")
+    val formatter = DateTimeFormatter.ofPattern(dateFormat)
     return formatter.format(dateTime)
 }
 
