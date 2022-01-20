@@ -80,10 +80,10 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
                     showLoader(uiState.onLoading)
 
-                    if (uiState.isError) {
+                    if (uiState.errorData != null) {
                         requireContext().showError(
-                            getString(R.string.error),
-                            getString(R.string.error_message)
+                            getString(uiState.errorData.title),
+                            getString(uiState.errorData.message)
                         )
                     }
 
@@ -117,13 +117,13 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                     getString(R.string.phn_should_be_10_digit)
                 ) &&
                 this.validateDatePickerData(
-                    binding.tipDob,
-                    getString(R.string.dob_required)
-                ) &&
+                        binding.tipDob,
+                        getString(R.string.dob_required)
+                    ) &&
                 this.validateDatePickerData(
-                    binding.tipDov,
-                    getString(R.string.dov_required)
-                )
+                        binding.tipDov,
+                        getString(R.string.dov_required)
+                    )
             ) {
 
                 viewModel.fetchVaccineRecord(phn, dob, dov)

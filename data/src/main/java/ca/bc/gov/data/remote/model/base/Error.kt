@@ -7,15 +7,16 @@ import com.google.gson.annotations.SerializedName
  */
 data class Error(
     @SerializedName("resultMessage")
-    val message: String,
+    val message: String?,
     @SerializedName("errorCode")
-    val code: String,
-    val traceId: String,
+    val code: String?,
+    val traceId: String?,
     @SerializedName("actionCode")
-    val action: Action
+    val action: Action?
 
 )
 
 enum class Action(val code: String) {
-    REFRESH("REFRESH")
+    REFRESH("REFRESH"),
+    MISMATCH("MISMATCH")
 }

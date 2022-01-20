@@ -39,8 +39,8 @@ class AnalyticsFeatureViewModel @Inject constructor(
     }
 
     fun track(action: AnalyticsAction, data: String) = viewModelScope.launch {
-        withContext(Dispatchers.IO){
-            repository.track(action,data)
+        withContext(Dispatchers.IO) {
+            repository.track(action, data)
         }
     }
 }

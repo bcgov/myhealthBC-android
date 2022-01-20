@@ -26,7 +26,6 @@ import com.queue_it.androidsdk.QueueListener
 import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
@@ -59,6 +58,8 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
         setUpDotUI()
 
         initClickListeners()
+
+        observeCovidTestResult()
     }
 
     private fun showLoader(value: Boolean) {
@@ -73,12 +74,11 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
 
                     showLoader(state.onLoading)
 
-                    if (state.isError) {
+                    if (state.errorData != null) {
                         requireContext().showError(
-                            getString(R.string.error),
-                            getString(R.string.error_message)
+                            getString(state.errorData.title),
+                            getString(state.errorData.message)
                         )
-                        this.cancel()
                     }
 
                     if (state.onTestResultFetched > 0) {
@@ -114,11 +114,8 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
                         getString(R.string.dot_required)
                     )
             ) {
-
                 viewModel.fetchTestRecord(phn, dob, dot)
             }
-
-            observeCovidTestResult()
         }
 
         binding.btnCancel.setOnClickListener {

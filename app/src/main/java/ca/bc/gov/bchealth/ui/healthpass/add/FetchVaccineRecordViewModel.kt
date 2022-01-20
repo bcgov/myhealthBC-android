@@ -3,7 +3,11 @@ package ca.bc.gov.bchealth.ui.healthpass.add
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.R
+import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.exceptions.MustBeQueuedException
+import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.model.ErrorData
 import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
@@ -41,7 +45,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
         viewModelScope.launch {
 
             _uiState.tryEmit(
-                FetchVaccineRecordUiState().copy(
+                FetchVaccineRecordUiState(
                     onLoading = true
                 )
             )
@@ -53,7 +57,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
                     dateOfVaccine
                 )
                 _uiState.tryEmit(
-                    FetchVaccineRecordUiState().copy(
+                    FetchVaccineRecordUiState(
                         onLoading = false,
                         vaccineRecord = vaccineRecord
                     )
@@ -62,20 +66,33 @@ class FetchVaccineRecordViewModel @Inject constructor(
                 when (e) {
                     is MustBeQueuedException -> {
                         _uiState.tryEmit(
-                            FetchVaccineRecordUiState().copy(
+                            FetchVaccineRecordUiState(
                                 onLoading = false,
                                 onMustBeQueued = true,
                                 queItUrl = e.message,
                             )
                         )
                     }
-                    else -> {
-                        _uiState.tryEmit(
-                            FetchVaccineRecordUiState().copy(
-                                onLoading = false,
-                                isError = true
+                    is MyHealthException -> {
+                        if (e.errCode == SERVER_ERROR_DATA_MISMATCH) {
+                            _uiState.tryEmit(
+                                FetchVaccineRecordUiState(
+                                    errorData = ErrorData(
+                                        R.string.error_data_mismatch_title,
+                                        R.string.error_vaccine_data_mismatch_message
+                                    )
+                                )
                             )
-                        )
+                        } else {
+                            _uiState.tryEmit(
+                                FetchVaccineRecordUiState(
+                                    errorData = ErrorData(
+                                        R.string.error,
+                                        R.string.error_message
+                                    )
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -85,7 +102,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
         Log.d(TAG, "setQueItToken: token = $token")
         queueItTokenRepository.setQueItToken(token)
         _uiState.tryEmit(
-            FetchVaccineRecordUiState().copy(onLoading = false, queItTokenUpdated = true)
+            FetchVaccineRecordUiState(onLoading = false, queItTokenUpdated = true)
         )
     }
 
@@ -94,7 +111,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
         val vaccineDoses = vaccineDoseRepository.getVaccineDoses(record.vaccineRecordDto!!.id)
         record.vaccineRecordDto?.doseDtos = vaccineDoses
         _uiState.tryEmit(
-            FetchVaccineRecordUiState().copy(onLoading = false, patientData = record)
+            FetchVaccineRecordUiState(onLoading = false, patientData = record)
         )
     }
 }
@@ -106,5 +123,5 @@ data class FetchVaccineRecordUiState(
     val queItUrl: String? = null,
     val patientData: PatientAndVaccineRecord? = null,
     val vaccineRecord: Pair<VaccineRecordState, PatientVaccineRecord?>? = null,
-    val isError: Boolean = false
+    val errorData: ErrorData? = null
 )
