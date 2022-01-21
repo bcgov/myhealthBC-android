@@ -53,7 +53,6 @@
     <string name="privacy_statement_info_vaccine">Your information is being collected to provide you with your COVID-19 vaccination status under s. 26(c) of the Freedom of Information and Protection of Privacy Act. Contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849 if you have any questions about this collection.</string>
     <string name="privacy_statement_info_test_result">Your information is being collected to provide you with your COVID-19 test results under s. 26(c) of the Freedom of Information and Protection of Privacy Act. Contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849 if you have any questions about this collection.</string>
     <string name="phn_number_required">Personal Health Number is required</string>
-    <string name="phn_should_be_10_digit">PHN should be 10 characters</string>
     <string name="dob_required">Date of Birth is required</string>
     <string name="enter_valid_date_format">Please enter a valid date format</string>
     <string name="dov_required">Date of vaccination is required</string>
@@ -192,4 +191,5 @@ If it has been at least 48 hours since you were tested, please contact the BC CO
 Continue to follow public health guidelines until you get your result.</string>
     <string name="error_vaccine_data_mismatch_message">Please note that it can take up to 48 hours to show your vaccination details.
         Please contact the BC COVID-19 Results Line (1‐833‐707‐2792) if vaccine records are not available even after 48 hours.</string>
+    <string name="invalid_phn">The Personal Health Number entered is not valid</string>
 </resources>

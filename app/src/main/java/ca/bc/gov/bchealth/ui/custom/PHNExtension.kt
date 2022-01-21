@@ -9,30 +9,29 @@ import com.google.android.material.textfield.TextInputLayout
 * Created by amit_metri on 13,January,2022
 */
 
-fun Fragment.validatePhnNumber(tipPhn: TextInputLayout, errorMessage: String): Boolean {
+// TODO: 21/01/22 Remove extension in Fragment
+fun Fragment.validatePhnNumber(tipPhn: TextInputLayout): Boolean {
     if (tipPhn.editText?.text.isNullOrEmpty()) {
-        tipPhn.isErrorEnabled = true
         tipPhn.error = getString(R.string.phn_number_required)
-        tipPhn.editText?.doOnTextChanged { text, _, _, _ ->
-            if (text != null && text.isNotEmpty()) {
-                tipPhn.isErrorEnabled = false
-                tipPhn.error = null
-            }
-        }
+        showErrorState(tipPhn)
         return false
     }
 
-    if (tipPhn.editText?.text?.length != 10) {
-        tipPhn.isErrorEnabled = true
-        tipPhn.error = getString(R.string.phn_should_be_10_digit)
-        tipPhn.editText?.doOnTextChanged { text, _, _, _ ->
-            if (text != null && text.isNotEmpty()) {
-                tipPhn.isErrorEnabled = false
-                tipPhn.error = null
-            }
-        }
+    if (tipPhn.editText?.text?.matches(Regex("^9[0-9]{9}\$")) == false) {
+        tipPhn.error = getString(R.string.invalid_phn)
+        showErrorState(tipPhn)
         return false
     }
 
     return true
+}
+
+private fun showErrorState(tipPhn: TextInputLayout) {
+    tipPhn.isErrorEnabled = true
+    tipPhn.editText?.doOnTextChanged { text, _, _, _ ->
+        if (text != null && text.isNotEmpty()) {
+            tipPhn.isErrorEnabled = false
+            tipPhn.error = null
+        }
+    }
 }

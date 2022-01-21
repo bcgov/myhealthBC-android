@@ -133,8 +133,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         val dov = binding.edDov.text.toString()
 
         if (this.validatePhnNumber(
-                binding.edPhnNumber,
-                getString(R.string.phn_should_be_10_digit)
+                binding.edPhnNumber
             ) &&
             this.validateDatePickerData(
                     binding.tipDob,
