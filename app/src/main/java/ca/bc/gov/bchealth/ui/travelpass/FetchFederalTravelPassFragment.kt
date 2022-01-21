@@ -180,7 +180,7 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
 
     private fun showTravelPass(federalPass: String) {
         // Snowplow event
-        analyticsFeatureViewModel.track(AnalyticsAction.ADD_QR, AnalyticsActionData.UPLOAD)
+        analyticsFeatureViewModel.track(AnalyticsAction.ADD_QR, AnalyticsActionData.GET)
         val action = FetchFederalTravelPassFragmentDirections
             .actionFetchFederalTravelPassToTravelPassFragment(federalPass)
 

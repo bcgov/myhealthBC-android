@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ca.bc.gov.bchealth.model.rss.Newsfeed
+import dagger.hilt.android.lifecycle.HiltViewModel
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
@@ -12,13 +13,15 @@ import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import javax.inject.Inject
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
 /*
 * Created by amit_metri on 21,October,2021
 */
-class NewsfeedViewModel : ViewModel() {
+@HiltViewModel
+class NewsfeedViewModel @Inject constructor() : ViewModel() {
 
     private val newsfeedMutableLiveData = MutableLiveData<MutableList<Newsfeed>>()
 

@@ -7,7 +7,6 @@ import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
 import com.snowplowanalytics.snowplow.Snowplow
 import com.snowplowanalytics.snowplow.event.SelfDescribing
 import com.snowplowanalytics.snowplow.payload.SelfDescribingJson
-import com.snowplowanalytics.snowplow.payload.TrackerPayload
 import javax.inject.Inject
 
 /**
@@ -27,14 +26,24 @@ class AnalyticsRepository @Inject constructor(
         preferenceStorage.setAnalyticsFeature(feature)
 
     suspend fun track(action: AnalyticsAction, data: AnalyticsActionData) {
-        TrackerPayload().add(action.value, data.value)
-        val json = SelfDescribingJson(schema, TrackerPayload().map)
-        Snowplow.getDefaultTracker()?.track(SelfDescribing(json))
+        Snowplow.getDefaultTracker()?.track(getEvent(action = action.value, text = data.value))
     }
 
     suspend fun track(action: AnalyticsAction, data: String) {
-        TrackerPayload().add(action.value, data)
-        val json = SelfDescribingJson(schema, TrackerPayload().map)
-        Snowplow.getDefaultTracker()?.track(SelfDescribing(json))
+        Snowplow.getDefaultTracker()?.track(getEvent(action = action.value, text = data))
+    }
+
+    private fun getEvent(action: String, text: String?): SelfDescribing {
+
+        val properties: MutableMap<String, String?> = HashMap()
+        properties["action"] = action
+        properties["text"] = text
+
+        val sdj = SelfDescribingJson(
+            schema,
+            properties
+        )
+
+        return SelfDescribing(sdj)
     }
 }
