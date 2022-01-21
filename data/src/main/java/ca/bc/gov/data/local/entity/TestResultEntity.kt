@@ -3,6 +3,7 @@ package ca.bc.gov.data.local.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.time.Instant
 
@@ -11,6 +12,7 @@ import java.time.Instant
  */
 @Entity(
     tableName = "test_result",
+    indices = [Index(value = ["patient_id","collection_date"], unique = true)],
     foreignKeys = [
         ForeignKey(
             entity = PatientEntity::class,
