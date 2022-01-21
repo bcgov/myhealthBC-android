@@ -10,8 +10,5 @@
         android:name="ca.bc.gov.bchealth.ui.newsfeed.NewsfeedFragment"
         android:label="NewsfeedFragment"
         tools:layout="@layout/fragment_newsfeed" />
-    <fragment
-        android:id="@+id/newFeatureFragment"
-        android:name="ca.bc.gov.bchealth.ui.onboarding.NewFeatureFragment"
-        android:label="NewFeatureFragment" />
+
 </navigation>

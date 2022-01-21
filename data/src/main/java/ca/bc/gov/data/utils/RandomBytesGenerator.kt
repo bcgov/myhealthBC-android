@@ -1,6 +1,6 @@
-package ca.bc.gov.bchealth.utils
+package ca.bc.gov.data.utils
 
-import ca.bc.gov.bchealth.datasource.DataStoreRepo
+import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
 import java.security.SecureRandom
 import javax.inject.Inject
 
@@ -8,16 +8,16 @@ import javax.inject.Inject
 * Created by amit_metri on 07,December,2021
 */
 class RandomBytesGenerator @Inject constructor(
-    private val dataStoreRepo: DataStoreRepo
+    private val preferenceStorage: EncryptedPreferenceStorage
 ) {
 
     fun getSecureRandom(): ByteArray {
-        return if (dataStoreRepo.passPhrase.isEmpty()) {
+        return if (preferenceStorage.passPhrase.isEmpty()) {
             val random = generateRandom()
-            dataStoreRepo.passPhrase = random
+            preferenceStorage.passPhrase = random
             random
         } else {
-            dataStoreRepo.passPhrase
+            preferenceStorage.passPhrase
         }
     }
 
