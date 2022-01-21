@@ -29,7 +29,7 @@ interface PatientDao {
     @Query(
         """
         SELECT P.*,
-        COUNT(V.patient_id) AS vaccineRecordCount, COUNT(T.patient_id) as testRecordCount FROM patient P
+        COUNT(DISTINCT V.id) AS vaccineRecordCount, COUNT(DISTINCT T.id) as testRecordCount FROM patient P
         LEFT JOIN vaccine_record V on V.patient_id = P.id
         LEFT JOIN test_result T on T.patient_id = P.id
         GROUP BY P.id

@@ -1,5 +1,6 @@
 package ca.bc.gov.repository.di
 
+import android.content.Context
 import ca.bc.gov.data.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.LocalDataSource
 import ca.bc.gov.data.datasource.PatientLocalDataSource
@@ -10,6 +11,7 @@ import ca.bc.gov.data.datasource.VaccineDoseLocalDataSource
 import ca.bc.gov.data.datasource.VaccineRecordLocalDataSource
 import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.repository.ClearStorageRepository
+import ca.bc.gov.repository.FederalTravelPassDecoderRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.PatientHealthRecordsRepository
@@ -31,6 +33,7 @@ import ca.bc.gov.shcdecoder.SHCVerifier
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -148,4 +151,9 @@ class RepositoriesModule {
     @Singleton
     fun provideRecentPhnDobRepository(preferenceStorage: EncryptedPreferenceStorage) =
         RecentPhnDobRepository(preferenceStorage)
+
+    @Provides
+    @Singleton
+    fun provideFetchTravelPassDecoderRepository(@ApplicationContext context: Context) =
+        FederalTravelPassDecoderRepository(context)
 }
