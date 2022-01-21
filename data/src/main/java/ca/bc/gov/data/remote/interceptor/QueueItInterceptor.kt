@@ -3,16 +3,15 @@ package ca.bc.gov.data.remote.interceptor
 import ca.bc.gov.common.const.MUST_QUEUED
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
-import ca.bc.gov.data.utils.CookieStorage
 import okhttp3.Interceptor
 import okhttp3.Response
+import java.io.IOException
 import javax.inject.Inject
 
 /**
  * @author Pinakin Kansara
  */
 class QueueItInterceptor @Inject constructor(
-    private val cookieStorage: CookieStorage,
     private val preferenceStorage: EncryptedPreferenceStorage
 ) : Interceptor {
 
@@ -23,6 +22,7 @@ class QueueItInterceptor @Inject constructor(
         private const val HEADER_QUEUE_IT_REDIRECT_URL = "x-queueit-redirect"
     }
 
+    @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestUrlBuilder = chain.request().url.newBuilder()
         if (preferenceStorage.queueItToken != null) {
@@ -33,16 +33,16 @@ class QueueItInterceptor @Inject constructor(
         }
 
         val originRequest = chain.request()
-        val request = chain.request().newBuilder()
+        val request = originRequest.newBuilder()
             .addHeader(HEADER_QUEUE_IT_AJAX_URL, originRequest.url.toString())
             .url(requestUrlBuilder.build())
             .build()
 
         val response = chain.proceed(request)
         if (mustQueue(response)) {
-            cookieStorage.clear()
             preferenceStorage.queueItToken = null
-            throw MustBeQueuedException(MUST_QUEUED, response.headers[HEADER_QUEUE_IT_REDIRECT_URL])
+            val responseHeaders = response.headers
+            throw MustBeQueuedException(MUST_QUEUED, responseHeaders[HEADER_QUEUE_IT_REDIRECT_URL])
         }
 
         return response

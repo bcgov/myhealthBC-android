@@ -1,5 +1,6 @@
 package ca.bc.gov.data.utils
 
+import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.MyHealthException
 import retrofit2.Response
 
@@ -14,6 +15,13 @@ suspend inline fun <T> safeCall(crossinline responseFun: suspend () -> Response<
             throw MyHealthException(1000, result.errorBody()?.toString())
         }
     } catch (e: Exception) {
-        throw MyHealthException(1000, e.message)
+        when (e) {
+            is MustBeQueuedException -> {
+                throw e
+            }
+            else -> {
+                throw MyHealthException(1000, e.message)
+            }
+        }
     }
 }

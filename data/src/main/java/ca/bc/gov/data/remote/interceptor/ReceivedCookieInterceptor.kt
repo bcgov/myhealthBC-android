@@ -9,25 +9,20 @@ import javax.inject.Inject
 /**
  * @author Pinakin Kansara
  */
-class CookiesInterceptor @Inject constructor(
+class ReceivedCookieInterceptor @Inject constructor(
     private val preferenceStorage: EncryptedPreferenceStorage
 ) : Interceptor {
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-        val requestBuilder = chain.request().newBuilder()
-        preferenceStorage.cookies?.forEach { cookie ->
-            requestBuilder.addHeader("Cookie", cookie)
-        }
-
-        /*val response = chain.proceed(requestBuilder.build())
+        val response = chain.proceed(chain.request())
         val responseHeaders = response.headers("Set-Cookie")
         val cookies = hashSetOf<String>()
         responseHeaders.forEach { header ->
             cookies.add(header)
         }
         if (cookies.isNotEmpty()) {
-            cookieStorage.store(cookies)
+            preferenceStorage.cookies = cookies
         }
 
         // CHECK FOR PRIOR RESPONSE
@@ -37,8 +32,9 @@ class CookiesInterceptor @Inject constructor(
             priorCookies.add(header)
         }
         if (priorCookies.isNotEmpty()) {
-            cookieStorage.store(priorCookies)
-        }*/
-        return chain.proceed(requestBuilder.build())
+            preferenceStorage.cookies = priorCookies
+        }
+
+        return response
     }
 }
