@@ -39,11 +39,6 @@ class ResourcesFragment : Fragment(R.layout.fragment_resources) {
             requireActivity().redirect(url)
             seedAnalyticsData(url = url)
         }
-        binding.customView4.setOnClickListener {
-            val url = getString(R.string.url_K12_daily_check)
-            requireActivity().redirect(url)
-            seedAnalyticsData(url = url)
-        }
     }
 
     private fun seedAnalyticsData(url: String) {

@@ -15,7 +15,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineRecordBinding
 import ca.bc.gov.bchealth.ui.custom.setUpDatePickerUi
@@ -46,7 +45,6 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
     private val binding by viewBindings(FragmentFetchVaccineRecordBinding::bind)
     private val viewModel: FetchVaccineRecordViewModel by viewModels()
     private lateinit var savedStateHandle: SavedStateHandle
-    private val args: FetchVaccineRecordFragmentArgs by navArgs()
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
     private val recentPhnDobViewModel: RecentPhnDobViewModel by viewModels()
 
@@ -139,13 +137,13 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                 getString(R.string.phn_should_be_10_digit)
             ) &&
             this.validateDatePickerData(
-                binding.tipDob,
-                getString(R.string.dob_required)
-            ) &&
+                    binding.tipDob,
+                    getString(R.string.dob_required)
+                ) &&
             this.validateDatePickerData(
-                binding.tipDov,
-                getString(R.string.dov_required)
-            )
+                    binding.tipDov,
+                    getString(R.string.dov_required)
+                )
         ) {
 
             viewModel.fetchVaccineRecord(phn, dob, dov)
@@ -199,10 +197,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
             }
 
             tvTitle.visibility = View.VISIBLE
-            if (args.isHealthPassFlow)
-                tvTitle.text = getString(R.string.add_a_health_pass)
-            else
-                tvTitle.text = getString(R.string.add_bc_vaccine_record)
+            tvTitle.text = getString(R.string.add_a_health_pass)
 
             ivRightOption.visibility = View.VISIBLE
             ivRightOption.setImageResource(R.drawable.ic_help)

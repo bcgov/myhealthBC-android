@@ -90,20 +90,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/customView2"
                 app:textSource="@string/label_resource_3" />
 
-            <ca.bc.gov.bchealth.widget.ResourceCustomView
-                android:id="@+id/customView4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_2_x"
-                android:layout_marginEnd="@dimen/space_4_x"
-                app:imageSource="@drawable/ic_resources_icon_4"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/customView3"
-                app:textSource="@string/label_resource_4" />
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
