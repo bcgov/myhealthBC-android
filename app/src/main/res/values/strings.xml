@@ -186,10 +186,7 @@
     <string name="error_duplicate_message">This record is already added.</string>
     <string name="error_invalid_qr_code_title">Invalid QR Code!</string>
     <string name="error_invalid_qr_code_message">Please scan an official proof of vaccination.</string>
-    <string name="error_data_mismatch_title">The information you entered does not match our records. Please try again.</string>
-    <string name="error_test_result_data_mismatch_message">Please note that it can take up to 48 hours from the time of test before a result is available.
-If it has been at least 48 hours since you were tested, please contact the BC COVID-19 Results Line (1‐833‐707‐2792) to investigate the issue.
-Continue to follow public health guidelines until you get your result.</string>
-    <string name="error_vaccine_data_mismatch_message">Please note that it can take up to 48 hours to show your vaccination details.
-        Please contact the BC COVID-19 Results Line (1‐833‐707‐2792) if vaccine records are not available even after 48 hours.</string>
+    <string name="error_data_mismatch_title">The information does not match</string>
+    <string name="error_test_result_data_mismatch_message">If it has been 48 hours from the time of your test, contact the BC COVID-19 Results Line (1‐833‐707‐2792) to investigate the issue.</string>
+    <string name="error_vaccine_data_mismatch_message">If it has been 48 hours from the time of your vaccination, contact the BC COVID-19 Results Line (1‐833‐707‐2792) to investigate the issue.</string>
 </resources>
