@@ -1,8 +1,11 @@
 package ca.bc.gov.bchealth.ui.healthpass
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -15,11 +18,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.SceneMycardsCardsListBinding
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.viewmodel.FederalTravelPassDecoderVideModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.imageview.ShapeableImageView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.io.File
 
 /**
  * @author Pinakin Kansara
@@ -32,6 +37,7 @@ class HealthPassesFragment : Fragment(R.layout.scene_mycards_cards_list) {
     private lateinit var healthPassAdapter: HealthPassAdapter
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var patientId: Long = -1L
+    private val federalTravelPassDecoderVideModel: FederalTravelPassDecoderVideModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,11 +73,7 @@ class HealthPassesFragment : Fragment(R.layout.scene_mycards_cards_list) {
                         )
                     findNavController().navigate(action)
                 } else {
-                    val action =
-                        HealthPassesFragmentDirections.actionHealthPassesFragmentToTravelPassFragment(
-                            federalPass
-                        )
-                    findNavController().navigate(action)
+                    federalTravelPassDecoderVideModel.base64ToPDFFile(federalPass)
                 }
             }
         )
@@ -93,6 +95,46 @@ class HealthPassesFragment : Fragment(R.layout.scene_mycards_cards_list) {
                 collectHealthPasses()
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                federalTravelPassDecoderVideModel.uiState.collect { uiState ->
+                    if (uiState.travelPass != null) {
+                        val (federalTravelPass, file) = uiState.travelPass
+                        if (file != null) {
+                            try {
+                                showPDF(file)
+                            } catch (e: Exception) {
+                                navigateToViewTravelPass(federalTravelPass)
+                            }
+                        } else {
+                            navigateToViewTravelPass(federalTravelPass)
+                        }
+                        federalTravelPassDecoderVideModel.federalTravelPassShown()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showPDF(file: File) {
+        val authority =
+            requireActivity().applicationContext.packageName.toString() +
+                ".fileprovider"
+        val uriToFile: Uri =
+            FileProvider.getUriForFile(requireActivity(), authority, file)
+        val shareIntent = Intent(Intent.ACTION_VIEW)
+        shareIntent.setDataAndType(uriToFile, "application/pdf")
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        requireActivity().startActivity(shareIntent)
+    }
+
+    private fun navigateToViewTravelPass(federalTravelPass: String) {
+        val action =
+            HealthPassFragmentDirections.actionHealthPassFragmentToTravelPassFragment(
+                federalTravelPass
+            )
+        findNavController().navigate(action)
     }
 
     private suspend fun collectHealthPasses() {
