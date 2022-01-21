@@ -14,9 +14,8 @@ import ca.bc.gov.bchealth.databinding.FragmentSingleTestResultBinding
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.patient.PatientDto
-import ca.bc.gov.common.model.test.TestRecord
+import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.utils.toDateTimeString
-import ca.bc.gov.common.utils.yyyy_MMM_dd_HH_mm
 
 // fragment initialization parameter
 private const val ARG_PARAM1 = "param1"
@@ -29,14 +28,14 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
 
     private val binding by viewBindings(FragmentSingleTestResultBinding::bind)
 
-    private var testRecord: TestRecord? = null
+    private var testRecordDto: TestRecordDto? = null
 
     private var patientDto: PatientDto? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            testRecord = it.getParcelable(ARG_PARAM1)
+            testRecordDto = it.getParcelable(ARG_PARAM1)
             patientDto = it.getParcelable(ARG_PARAM2)
         }
     }
@@ -46,26 +45,26 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
 
         binding.apply {
             tvFullName.text = patientDto?.firstName.plus(" ").plus(patientDto?.lastName)
-            tvTestResult.text = testRecord?.testOutcome
+            tvTestResult.text = testRecordDto?.testOutcome
             tvTestedOn.text =
                 getString(R.string.tested_on)
                     .plus(" ")
                     .plus(
-                        testRecord?.resultDateTime?.toDateTimeString(yyyy_MMM_dd_HH_mm)
+                        testRecordDto?.resultDateTime?.toDateTimeString()
                     )
-            tvDot.text = testRecord?.resultDateTime?.toDateTimeString(yyyy_MMM_dd_HH_mm)
-            tvTestStatus.text = testRecord?.testStatus
-            tvTypeName.text = testRecord?.testName
-            tvProviderClinic.text = testRecord?.labName
-            if (testRecord?.testOutcome == CovidTestResultStatus.Positive.toString() ||
-                testRecord?.testOutcome == CovidTestResultStatus.Negative.toString() ||
-                testRecord?.testOutcome == CovidTestResultStatus.Cancelled.toString()
+            tvDot.text = testRecordDto?.resultDateTime?.toDateTimeString()
+            tvTestStatus.text = testRecordDto?.testStatus
+            tvTypeName.text = testRecordDto?.testName
+            tvProviderClinic.text = testRecordDto?.labName
+            if (testRecordDto?.testOutcome == CovidTestResultStatus.Positive.toString() ||
+                testRecordDto?.testOutcome == CovidTestResultStatus.Negative.toString() ||
+                testRecordDto?.testOutcome == CovidTestResultStatus.Cancelled.toString()
             ) {
-                setResultDescription(testRecord?.resultDescription)
+                setResultDescription(testRecordDto?.resultDescription)
             }
         }
 
-        testRecord?.let { getCovidTestStatus(it) }
+        testRecordDto?.let { getCovidTestStatus(it) }
     }
 
     private fun setResultDescription(resultDescription: List<String>?) {
@@ -109,9 +108,9 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
     }
 
     private fun getCovidTestStatus(
-        testRecord: TestRecord
+        testRecordDto: TestRecordDto
     ) {
-        when (testRecord.testOutcome) {
+        when (testRecordDto.testOutcome) {
             CovidTestResultStatus.Indeterminate.toString() -> {
                 setIndeterminateState()
             }
@@ -201,7 +200,7 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
                     )
                 )
 
-            tvTestStatus.text = testRecord?.testOutcome
+            tvTestStatus.text = testRecordDto?.testOutcome
         }
     }
 
@@ -241,17 +240,16 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
         Negative,
         Positive,
         Indeterminate,
-        Cancelled,
-        Pending
+        Cancelled
     }
 
     companion object {
 
         @JvmStatic
-        fun newInstance(testRecord: TestRecord, patientDto: PatientDto) =
+        fun newInstance(testRecordDto: TestRecordDto, patientDto: PatientDto) =
             SingleTestResultFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(ARG_PARAM1, testRecord)
+                    putParcelable(ARG_PARAM1, testRecordDto)
                     putParcelable(ARG_PARAM2, patientDto)
                 }
             }

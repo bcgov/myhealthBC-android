@@ -13,7 +13,6 @@ import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
-import ca.bc.gov.common.utils.yyyy_MMM_dd_HH_mm
 import ca.bc.gov.repository.model.PatientVaccineRecord
 
 fun PatientVaccineRecord.toUiModel(): HealthPass {
@@ -40,7 +39,7 @@ fun PatientVaccineRecord.toUiModel(): HealthPass {
         name = "${patientDto.firstName} ${patientDto.lastName}",
         qrIssuedDate = "Issued on ${
         vaccineRecordDto.qrIssueDate
-            .toDateTimeString(yyyy_MMM_dd_HH_mm)
+            .toDateTimeString()
         }",
         shcUri = vaccineRecordDto.shcUri,
         qrCode = vaccineRecordDto.qrCodeImage,
