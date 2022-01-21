@@ -1,6 +1,7 @@
 package ca.bc.gov.data.local.preference
 
 import android.content.SharedPreferences
+import android.util.Base64
 import ca.bc.gov.common.model.settings.AnalyticsFeature
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -20,6 +21,7 @@ class EncryptedPreferenceStorage @Inject constructor(
         private const val ON_BOARDING_SHOWN = "ON_BOARDING_SHOWN"
         private const val RECENT_PHN_DOB = "RECENT_PHN_DOB"
         private const val COOKIE = "cookie"
+        private const val PASS_PHRASE = "RECORD"
     }
 
     var queueItToken: String?
@@ -33,6 +35,16 @@ class EncryptedPreferenceStorage @Inject constructor(
     set(value){
         encryptedSharedPreferences.edit().putStringSet(COOKIE,value).apply()
     }
+
+    var passPhrase: ByteArray
+        get() =
+            Base64.decode(encryptedSharedPreferences.getString(PASS_PHRASE, "") ?: "", Base64.DEFAULT)
+        set(value) {
+            encryptedSharedPreferences.edit().putString(
+                PASS_PHRASE,
+                Base64.encodeToString(value, Base64.DEFAULT)
+            ).apply()
+        }
 
     val analyticsFeature: Flow<AnalyticsFeature> = flow {
         val value =
