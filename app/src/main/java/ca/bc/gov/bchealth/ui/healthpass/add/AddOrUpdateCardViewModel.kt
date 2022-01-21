@@ -60,6 +60,7 @@ class AddOrUpdateCardViewModel @Inject constructor(
             VaccineRecordState.DUPLICATE -> {
                 _uiState.tryEmit(
                     AddCardOptionUiState().copy(
+                        vaccineRecord = result.second,
                         state = Status.DUPLICATE
                     )
                 )

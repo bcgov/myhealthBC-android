@@ -16,9 +16,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchTravelPassBinding
+import ca.bc.gov.bchealth.ui.custom.validatePhnNumber
 import ca.bc.gov.bchealth.ui.healthpass.add.AddOrUpdateCardViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
+import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
@@ -81,12 +83,18 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
 
                     showLoader(uiState.onLoading)
 
+                    if (uiState.errorData != null) {
+                        requireContext().showError(
+                            getString(uiState.errorData.title),
+                            getString(uiState.errorData.message)
+                        )
+                    }
+
                     if (uiState.queItTokenUpdated) {
                         fetchTravelPass()
                     }
 
                     if (uiState.onMustBeQueued && uiState.queItUrl != null) {
-
                         queUser(uiState.queItUrl)
                     }
 
@@ -147,10 +155,7 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
 
     private fun fetchTravelPass() {
         val phn = binding.edPhn.text.toString()
-        if (phn.isBlank()) {
-            binding.edPhnNumber.requestFocus()
-            binding.edPhnNumber.error = "Invalid PHN"
-        } else {
+        if (this.validatePhnNumber(binding.edPhnNumber)) {
             viewModel.fetchVaccineRecord(
                 phn,
                 patientData.patientDto.dateOfBirth.toDate(yyyy_MM_dd),
