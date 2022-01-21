@@ -31,10 +31,10 @@ class EncryptedPreferenceStorage @Inject constructor(
         }
 
     var cookies: MutableSet<String>?
-    get() = encryptedSharedPreferences.getStringSet(COOKIE, emptySet())
-    set(value){
-        encryptedSharedPreferences.edit().putStringSet(COOKIE,value).apply()
-    }
+        get() = encryptedSharedPreferences.getStringSet(COOKIE, emptySet())
+        set(value) {
+            encryptedSharedPreferences.edit().putStringSet(COOKIE, value).apply()
+        }
 
     var passPhrase: ByteArray
         get() =
