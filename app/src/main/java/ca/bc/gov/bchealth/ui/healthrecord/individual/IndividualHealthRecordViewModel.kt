@@ -42,7 +42,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
             IndividualHealthRecordsUiState().copy(
                 onLoading = false,
                 onTestRecords = testResultWithRecords.testResultWithRecordsDto.map { it.toUiModel() },
-                onVaccineRecord = vaccineRecords.map { it.toUiModel() })
+                onVaccineRecord = vaccineRecords.map { it.toUiModel() }
+            )
         )
     }
 
