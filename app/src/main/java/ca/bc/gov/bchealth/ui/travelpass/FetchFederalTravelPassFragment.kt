@@ -155,7 +155,7 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
 
     private fun fetchTravelPass() {
         val phn = binding.edPhn.text.toString()
-        if (this.validatePhnNumber(binding.edPhnNumber)) {
+        if (this.validatePhnNumber(binding.edPhnNumber, "Invalid PHN")) {
             viewModel.fetchVaccineRecord(
                 phn,
                 patientData.patientDto.dateOfBirth.toDate(yyyy_MM_dd),

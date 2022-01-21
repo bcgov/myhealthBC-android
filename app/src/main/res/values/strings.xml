@@ -53,6 +53,7 @@
     <string name="privacy_statement_info_vaccine">Your information is being collected to provide you with your COVID-19 vaccination status under s. 26(c) of the Freedom of Information and Protection of Privacy Act. Contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849 if you have any questions about this collection.</string>
     <string name="privacy_statement_info_test_result">Your information is being collected to provide you with your COVID-19 test results under s. 26(c) of the Freedom of Information and Protection of Privacy Act. Contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849 if you have any questions about this collection.</string>
     <string name="phn_number_required">Personal Health Number is required</string>
+    <string name="phn_should_be_10_digit">PHN should be 10 characters</string>
     <string name="dob_required">Date of Birth is required</string>
     <string name="enter_valid_date_format">Please enter a valid date format</string>
     <string name="dov_required">Date of vaccination is required</string>
@@ -161,7 +162,7 @@
     <string name="product">Product:</string>
     <string name="lot_number">Lot number:</string>
     <string name="dose">Dose</string>
-    <string name="covid_test_result_cancelled">There was a problem with your test. Please visit BC CDC Test Results for more information</string>
+    <string name="covid_test_result_cancelled">There was a problem with your test. Please call the BC CDC on 1234567890</string>
     <string name="covid_test_result_pending">Your test is being processed and can take up to 48 hours to complete.</string>
     <string name="pending">Pending</string>
 
@@ -188,5 +189,4 @@
     <string name="error_data_mismatch_title">The information does not match</string>
     <string name="error_test_result_data_mismatch_message">If it has been 48 hours from the time of your test, contact the BC COVID-19 Results Line (1‐833‐707‐2792) to investigate the issue.</string>
     <string name="error_vaccine_data_mismatch_message">If it has been 48 hours from the time of your vaccination, contact the BC COVID-19 Results Line (1‐833‐707‐2792) to investigate the issue.</string>
-    <string name="invalid_phn">The Personal Health Number entered is not valid</string>
 </resources>
