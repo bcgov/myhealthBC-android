@@ -8,7 +8,7 @@ import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.ErrorData
-import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
+import ca.bc.gov.common.model.relation.PatientWithVaccineRecordDto
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.QueueItTokenRepository
@@ -111,7 +111,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
         val vaccineDoses = vaccineDoseRepository.getVaccineDoses(record.vaccineRecordDto!!.id)
         record.vaccineRecordDto?.doseDtos = vaccineDoses
         _uiState.tryEmit(
-            FetchVaccineRecordUiState(onLoading = false, patientData = record)
+            FetchVaccineRecordUiState(onLoading = false, patientDataDto = record)
         )
     }
 }
@@ -121,7 +121,7 @@ data class FetchVaccineRecordUiState(
     val queItTokenUpdated: Boolean = false,
     val onMustBeQueued: Boolean = false,
     val queItUrl: String? = null,
-    val patientData: PatientAndVaccineRecord? = null,
+    val patientDataDto: PatientWithVaccineRecordDto? = null,
     val vaccineRecord: Pair<VaccineRecordState, PatientVaccineRecord?>? = null,
     val errorData: ErrorData? = null
 )

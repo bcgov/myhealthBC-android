@@ -8,8 +8,8 @@ import java.time.Instant
 data class VaccineDoseDto(
     val id: Long = 0,
     var vaccineRecordId: Long = 0,
-    var productName: String,
-    val providerName: String,
-    val lotNumber: String,
+    var productName: String?,
+    val providerName: String?,
+    val lotNumber: String?,
     val date: Instant
 )

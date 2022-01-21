@@ -2,7 +2,7 @@ package ca.bc.gov.bchealth.ui.healthrecord
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
+import ca.bc.gov.common.model.relation.PatientWithVaccineRecordDto
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.vaccine.VaccineDoseRepository
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
@@ -39,7 +39,7 @@ class VaccineRecordDetailViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     onLoading = false,
-                    onVaccineRecordDetail = patientAndVaccine
+                    onVaccineRecordDtoDetail = patientAndVaccine
                 )
             }
         }
@@ -52,5 +52,5 @@ class VaccineRecordDetailViewModel @Inject constructor(
 
 data class VaccineRecordDetailUiState(
     val onLoading: Boolean = false,
-    val onVaccineRecordDetail: PatientAndVaccineRecord? = null
+    val onVaccineRecordDtoDetail: PatientWithVaccineRecordDto? = null
 )

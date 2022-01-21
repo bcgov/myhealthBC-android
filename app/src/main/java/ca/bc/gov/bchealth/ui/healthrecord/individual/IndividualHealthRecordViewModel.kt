@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
+import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.testrecord.TestResultRepository
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
@@ -20,7 +21,8 @@ import javax.inject.Inject
 class IndividualHealthRecordViewModel @Inject constructor(
     private val vaccineRecordRepository: VaccineRecordRepository,
     private val testResultRepository: TestResultRepository,
-    private val patientWithVaccineRepository: PatientWithVaccineRecordRepository
+    private val patientWithVaccineRepository: PatientWithVaccineRecordRepository,
+    private val patientWithTestResultRepository: PatientWithTestResultRepository
 ) : ViewModel() {
 
     private val _uiState = MutableSharedFlow<IndividualHealthRecordsUiState>(
@@ -30,14 +32,17 @@ class IndividualHealthRecordViewModel @Inject constructor(
     val uiState: SharedFlow<IndividualHealthRecordsUiState> = _uiState.asSharedFlow()
 
     fun getIndividualsHealthRecord(patientId: Long) = viewModelScope.launch {
-        val vaccineRecords = vaccineRecordRepository.getVaccineRecords(patientId)
-        val tesRecords = testResultRepository.getTestResults(patientId)
+        val patientWithVaccineRecords =
+            patientWithVaccineRepository.getPatientWithVaccineRecord(patientId)
+        val testResultWithRecords =
+            patientWithTestResultRepository.getPatientWithTestRecords(patientId)
+
+        val vaccineRecords = listOfNotNull(patientWithVaccineRecords.vaccineRecordDto)
         _uiState.tryEmit(
             IndividualHealthRecordsUiState().copy(
                 onLoading = false,
-                onTestRecords = tesRecords.map { it.toUiModel() },
-                onVaccineRecord = vaccineRecords.map { it.toUiModel() }
-            )
+                onTestRecords = testResultWithRecords.testResultWithRecordsDto.map { it.toUiModel() },
+                onVaccineRecord = vaccineRecords.map { it.toUiModel() })
         )
     }
 
@@ -65,6 +70,7 @@ data class HealthRecordItem(
     val icon: Int,
     val title: Int,
     val description: Int,
+    val testOutcome: String? = null,
     val date: String,
     val healthRecordType: HealthRecordType
 )

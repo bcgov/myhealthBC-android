@@ -10,10 +10,9 @@ import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
-import ca.bc.gov.common.model.test.TestResult
+import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
-import ca.bc.gov.common.utils.yyyy_MMM_dd
 import ca.bc.gov.common.utils.yyyy_MMM_dd_HH_mm
 import ca.bc.gov.repository.model.PatientVaccineRecord
 
@@ -39,8 +38,10 @@ fun PatientVaccineRecord.toUiModel(): HealthPass {
         patientId = patientDto.id,
         vaccineRecordId = vaccineRecordDto.id,
         name = "${patientDto.firstName} ${patientDto.lastName}",
-        qrIssuedDate = "Issued on ${vaccineRecordDto.qrIssueDate
-            .toDateTimeString(yyyy_MMM_dd_HH_mm)}",
+        qrIssuedDate = "Issued on ${
+            vaccineRecordDto.qrIssueDate
+                .toDateTimeString(yyyy_MMM_dd_HH_mm)
+        }",
         shcUri = vaccineRecordDto.shcUri,
         qrCode = vaccineRecordDto.qrCodeImage,
         state = passState,
@@ -53,26 +54,31 @@ fun VaccineRecordDto.toUiModel(): HealthRecordItem {
 
     val passState = getHealthPassStateResources(status)
 
+    val date = doseDtos.maxOf { it.date }
     return HealthRecordItem(
         patientId = patientId,
         testResultId = -1L,
         icon = R.drawable.ic_health_record_vaccine,
         title = R.string.covid_19_vaccination,
         description = passState.status,
-        date = qrIssueDate.toDate(yyyy_MMM_dd),
+        testOutcome = null,
+        date = date.toDate(),
         HealthRecordType.VACCINE_RECORD,
     )
 }
 
-fun TestResult.toUiModel(): HealthRecordItem {
+fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
 
+    val testOutcome = testRecordDtos.maxByOrNull { it.resultDateTime }?.testOutcome
+    val date = testRecordDtos.maxOf { it.resultDateTime }
     return HealthRecordItem(
-        patientId = patientId,
-        testResultId = id,
+        patientId = testResultDto.patientId,
+        testResultId = testResultDto.id,
         icon = R.drawable.ic_health_record_covid_test,
         title = R.string.covid_19_test_result,
         description = 0,
-        date = collectionDate.toDate(yyyy_MMM_dd),
+        testOutcome = testOutcome,
+        date = date.toDate(),
         HealthRecordType.COVID_TEST_RECORD,
     )
 }
@@ -92,9 +98,11 @@ fun getHealthPassStateResources(state: ImmunizationStatus): PassState = when (st
 fun PatientWithHealthRecordCount.toUiModel(): PatientHealthRecord {
 
     val firstName =
-        patientDto.firstName.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+        patientDto.firstName.lowercase()
+            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     val lastName =
-        patientDto.lastName.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+        patientDto.lastName.lowercase()
+            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     return PatientHealthRecord(
         patientId = patientDto.id,
         name = "$firstName $lastName",

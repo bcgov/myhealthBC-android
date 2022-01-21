@@ -1,7 +1,7 @@
 package ca.bc.gov.data.datasource
 
-import ca.bc.gov.common.model.relation.TestResultWithRecords
-import ca.bc.gov.common.model.test.TestResult
+import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
+import ca.bc.gov.common.model.test.TestResultDto
 import ca.bc.gov.data.local.dao.TestResultDao
 import ca.bc.gov.data.model.mapper.toDto
 import ca.bc.gov.data.model.mapper.toEntity
@@ -15,23 +15,23 @@ class TestResultLocalDataSource @Inject constructor(
 ) {
 
     /**
-     * @param testResult
+     * @param testResultDto
      * @return return resultId or -1L
      */
-    suspend fun insertTestResult(testResult: TestResult): Long {
-        val testResultId = testResultDao.insertTestResult(testResult.toEntity())
+    suspend fun insertTestResult(testResultDto: TestResultDto): Long {
+        val testResultId = testResultDao.insertTestResult(testResultDto.toEntity())
         if (testResultId == -1L) {
-            return testResultDao.getTestResultId(testResult.patientId) ?: -1L
+            return testResultDao.getTestResultId(testResultDto.patientId) ?: -1L
         }
         return testResultId
     }
 
-    suspend fun getTestResults(patientId: Long): List<TestResult> =
+    suspend fun getTestResults(patientId: Long): List<TestResultDto> =
         testResultDao.getTestResults(patientId).map {
             it.toDto()
         }
 
-    suspend fun getTestResultWithRecords(testResultId: Long): TestResultWithRecords =
+    suspend fun getTestResultWithRecords(testResultId: Long): TestResultWithRecordsDto =
         testResultDao.getTestResultWithRecord(testResultId).toDto()
 
     suspend fun delete(testResultId: Long): Int = testResultDao.delete(testResultId)

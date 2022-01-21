@@ -55,9 +55,9 @@ fun SHCData.toPatientVaccineRecord(
         }
         VaccineDoseDto(
             date = entry.resource.occurrenceDateTime?.toDate()!!,
-            providerName = provider!!,
+            providerName = provider,
             productName = productName,
-            lotNumber = " "
+            lotNumber = entry.resource.lotNumber
         )
     }
 

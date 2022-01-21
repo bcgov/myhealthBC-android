@@ -1,7 +1,8 @@
 package ca.bc.gov.data.datasource
 
+import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.patient.PatientDto
-import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
+import ca.bc.gov.common.model.relation.PatientWithVaccineRecordDto
 import ca.bc.gov.data.local.dao.PatientWithVaccineRecordDao
 import ca.bc.gov.data.local.entity.PatientOrderUpdate
 import ca.bc.gov.data.local.entity.relations.PatientWithVaccineRecord
@@ -20,10 +21,17 @@ class PatientWithVaccineRecordLocalDataSource @Inject constructor(
         dao.getPatientsWithVaccineFlow()
 
     suspend fun getPatientWithVaccineRecord(patientDto: PatientDto) =
-        dao.getPatientsWithVaccine(patientDto.firstName.uppercase(), patientDto.lastName.uppercase(), patientDto.dateOfBirth)
+        dao.getPatientsWithVaccine(
+            patientDto.firstName.uppercase(),
+            patientDto.lastName.uppercase(),
+            patientDto.dateOfBirth
+        )
 
-    suspend fun getPatientWithVaccineRecord(patientId: Long): PatientAndVaccineRecord? =
+    suspend fun getPatientWithVaccineRecord(patientId: Long): PatientWithVaccineRecordDto? =
         dao.getPatientWithVaccine(patientId)?.toDto()
+
+    suspend fun getVaccineDoses(vaccineRecordId: Long): List<VaccineDoseDto> =
+        dao.getVaccineDoses(vaccineRecordId).map { it.toDto() }
 
     suspend fun updatePatientOrder(patientOrderUpdates: List<PatientOrderUpdate>) =
         dao.updatePatientOrder(patientOrderUpdates)

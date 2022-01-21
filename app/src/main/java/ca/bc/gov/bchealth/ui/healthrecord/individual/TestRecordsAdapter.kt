@@ -40,7 +40,8 @@ class TestRecordsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val record = getItem(position)
         holder.binding.tvVaccineName.setText(record.title)
-        holder.binding.tvVaccineStatus.text = record.date
+        val detail = "${record.testOutcome} • ${record.date}"
+        holder.binding.tvVaccineStatus.text = detail
         holder.binding.imgIcon.setImageResource(record.icon)
         holder.itemView.setOnClickListener {
             itemClickListener.onItemClick(record)
