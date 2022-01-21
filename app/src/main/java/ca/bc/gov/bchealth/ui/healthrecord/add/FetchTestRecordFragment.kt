@@ -125,8 +125,7 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
         val dot = binding.edtDoc.text.toString()
 
         if (this.validatePhnNumber(
-                binding.edPhnNumber,
-                getString(R.string.phn_should_be_10_digit)
+                binding.edPhnNumber
             ) &&
             this.validateDatePickerData(
                     binding.tipDob,
