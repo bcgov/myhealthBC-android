@@ -6,7 +6,6 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
 
 /**
@@ -42,7 +41,7 @@ class VaccineRecordsAdapter(
         val record = getItem(position)
         holder.binding.tvVaccineName.setText(record.title)
         val description =
-            "${holder.itemView.context.getString(R.string.vaccinated)} • ${record.date}"
+            "${record.date}"
         holder.binding.tvVaccineStatus.text = description
         holder.binding.imgIcon.setImageResource(record.icon)
         holder.itemView.setOnClickListener {

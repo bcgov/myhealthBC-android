@@ -1,6 +1,8 @@
 package ca.bc.gov.repository
 
-import ca.bc.gov.common.model.relation.PatientTestResult
+import ca.bc.gov.common.model.relation.PatientTestResultDto
+import ca.bc.gov.common.model.relation.PatientWithTestRecordDto
+import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.testrecord.TestRecordRepository
 import ca.bc.gov.repository.testrecord.TestResultRepository
@@ -15,13 +17,13 @@ class PatientWithTestResultRepository @Inject constructor(
     private val testRecordRepository: TestRecordRepository
 ) {
 
-    suspend fun insertTestResult(patientTestResult: PatientTestResult): Long {
+    suspend fun insertTestResult(patientTestResult: PatientTestResultDto): Long {
         val patientId =
             patientRepository.insertPatient(patientTestResult.patientDto)
-        val testResult = patientTestResult.testResult
+        val testResult = patientTestResult.testResultDto
         testResult.patientId = patientId
         val testResultId = testResultRepository.insertTestResult(testResult)
-        val records = patientTestResult.records
+        val records = patientTestResult.recordDtos
         records.forEach { testRecord ->
             testRecord.testResultId = testResultId
         }
@@ -29,13 +31,26 @@ class PatientWithTestResultRepository @Inject constructor(
         return testResultId
     }
 
-    suspend fun getPatientWithTestResult(patientId: Long, testResultId: Long): PatientTestResult {
+    suspend fun getPatientWithTestResult(
+        patientId: Long,
+        testResultId: Long
+    ): PatientTestResultDto {
         val patient = patientRepository.getPatient(patientId)
         val testResultWithRecords = testResultRepository.getTestResultWithRecords(testResultId)
-        return PatientTestResult(
+        return PatientTestResultDto(
             patient,
-            testResultWithRecords.testResult,
-            testResultWithRecords.testRecords
+            testResultWithRecords.testResultDto,
+            testResultWithRecords.testRecordDtos
         )
+    }
+
+    suspend fun getPatientWithTestRecords(patientId: Long): PatientWithTestRecordDto {
+        val patient = patientRepository.getPatient(patientId)
+        val testResult = testResultRepository.getTestResults(patientId)
+        val resultWithRecords = testResult.map { result ->
+            val testRecords = testRecordRepository.getTestRecords(result.id)
+            TestResultWithRecordsDto(result, testRecords)
+        }
+        return PatientWithTestRecordDto(patient, resultWithRecords)
     }
 }

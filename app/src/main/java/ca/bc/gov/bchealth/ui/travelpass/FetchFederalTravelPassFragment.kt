@@ -26,7 +26,7 @@ import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
 import ca.bc.gov.common.model.analytics.AnalyticsAction
 import ca.bc.gov.common.model.analytics.AnalyticsActionData
-import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
+import ca.bc.gov.common.model.relation.PatientWithVaccineRecordDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.model.PatientVaccineRecord
@@ -49,7 +49,7 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
     private val viewModel: FetchVaccineRecordViewModel by viewModels()
     private val args: FetchFederalTravelPassFragmentArgs by navArgs()
     private val addOrUpdateCardViewModel: AddOrUpdateCardViewModel by viewModels()
-    private lateinit var patientData: PatientAndVaccineRecord
+    private lateinit var patientDataDto: PatientWithVaccineRecordDto
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
     private val recentPhnDobViewModel: RecentPhnDobViewModel by viewModels()
 
@@ -102,8 +102,8 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
                         addOrUpdateCardViewModel.processResult(uiState.vaccineRecord)
                     }
 
-                    if (uiState.patientData != null) {
-                        patientData = uiState.patientData
+                    if (uiState.patientDataDto != null) {
+                        patientDataDto = uiState.patientDataDto
                     }
                 }
             }
@@ -158,8 +158,8 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
         if (this.validatePhnNumber(binding.edPhnNumber)) {
             viewModel.fetchVaccineRecord(
                 phn,
-                patientData.patientDto.dateOfBirth.toDate(yyyy_MM_dd),
-                patientData.vaccineRecordDto?.doseDtos!!.last().date.toDate(yyyy_MM_dd)
+                patientDataDto.patientDto.dateOfBirth.toDate(yyyy_MM_dd),
+                patientDataDto.vaccineRecordDto?.doseDtos!!.last().date.toDate(yyyy_MM_dd)
             )
         }
     }

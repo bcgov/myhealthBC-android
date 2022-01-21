@@ -6,6 +6,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import ca.bc.gov.data.local.entity.PatientEntity
 import ca.bc.gov.data.local.entity.PatientOrderUpdate
+import ca.bc.gov.data.local.entity.VaccineDoseEntity
 import ca.bc.gov.data.local.entity.relations.PatientWithVaccineRecord
 import kotlinx.coroutines.flow.Flow
 import java.time.Instant
@@ -31,6 +32,9 @@ interface PatientWithVaccineRecordDao {
     @Transaction
     @Query("SELECT * FROM patient ORDER BY patient_order ASC")
     fun getPatientsWithVaccineFlow(): Flow<List<PatientWithVaccineRecord>>
+
+    @Query("SELECT * FROM vaccine_dose WHERE vaccine_record_id = :vaccineRecordId")
+    suspend fun getVaccineDoses(vaccineRecordId: Long): List<VaccineDoseEntity>
 
     @Update(entity = PatientEntity::class)
     suspend fun updatePatientOrder(patientOrderUpdates: List<PatientOrderUpdate>)

@@ -2,7 +2,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.covidtests
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.common.model.relation.PatientTestResult
+import ca.bc.gov.common.model.relation.PatientTestResultDto
 import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.testrecord.TestResultRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,5 +43,5 @@ class TestResultDetailsViewModel @Inject constructor(
 
 data class TestResultDetailUiState(
     val onLoading: Boolean = false,
-    val onTestResultDetail: PatientTestResult? = null
+    val onTestResultDetail: PatientTestResultDto? = null
 )

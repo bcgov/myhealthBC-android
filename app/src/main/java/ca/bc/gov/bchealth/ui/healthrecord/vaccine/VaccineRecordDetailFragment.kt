@@ -85,7 +85,7 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
 
                     binding.progressBar.isVisible = state.onLoading
 
-                    state.onVaccineRecordDetail?.let { patientAndVaccineRecord ->
+                    state.onVaccineRecordDtoDetail?.let { patientAndVaccineRecord ->
 
                         patientAndVaccineRecord.vaccineRecordDto?.id?.let {
                             vaccineRecordId = it
