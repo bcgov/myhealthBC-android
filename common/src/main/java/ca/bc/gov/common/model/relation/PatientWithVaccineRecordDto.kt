@@ -6,7 +6,7 @@ import ca.bc.gov.common.model.patient.PatientDto
 /**
  * @author Pinakin Kansara
  */
-data class PatientAndVaccineRecord(
+data class PatientWithVaccineRecordDto(
     val patientDto: PatientDto,
     val vaccineRecordDto: VaccineRecordDto?
 )

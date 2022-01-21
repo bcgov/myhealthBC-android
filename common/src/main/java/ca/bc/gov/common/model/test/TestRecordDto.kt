@@ -9,7 +9,7 @@ import java.time.Instant
  */
 
 @Parcelize
-data class TestRecord(
+data class TestRecordDto(
     var id: String,
     var testResultId: Long = 0,
     val labName: String,

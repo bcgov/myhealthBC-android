@@ -2,7 +2,7 @@ package ca.bc.gov.repository
 
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
-import ca.bc.gov.common.model.relation.PatientAndVaccineRecord
+import ca.bc.gov.common.model.relation.PatientWithVaccineRecordDto
 import ca.bc.gov.data.datasource.PatientWithVaccineRecordLocalDataSource
 import ca.bc.gov.data.local.entity.PatientOrderUpdate
 import ca.bc.gov.repository.model.PatientVaccineRecord
@@ -82,10 +82,22 @@ class PatientWithVaccineRecordRepository @Inject constructor(
         return patientId
     }
 
-    suspend fun getPatientWithVaccine(patientId: Long): PatientAndVaccineRecord =
+    suspend fun getPatientWithVaccine(patientId: Long): PatientWithVaccineRecordDto =
         localDataSource.getPatientWithVaccineRecord(patientId) ?: throw MyHealthException(
             DATABASE_ERROR, "No record found for patient id=  $patientId"
         )
+
+    suspend fun getPatientWithVaccineRecord(patientId: Long): PatientWithVaccineRecordDto {
+        val dto = localDataSource.getPatientWithVaccineRecord(patientId) ?: throw MyHealthException(
+            DATABASE_ERROR, "No record found for patient id=  $patientId"
+        )
+
+        if (dto.vaccineRecordDto != null) {
+            val dosesDto = localDataSource.getVaccineDoses(dto.vaccineRecordDto?.id!!)
+            dto.vaccineRecordDto?.doseDtos = dosesDto
+        }
+        return dto
+    }
 
     suspend fun updatePatientOrder(patientOrderMapping: List<Pair<Long, Long>>) {
         localDataSource.updatePatientOrder(

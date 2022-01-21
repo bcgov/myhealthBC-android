@@ -16,7 +16,7 @@ import ca.bc.gov.bchealth.databinding.FragmentTestResultDetailBinding
 import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.patient.PatientDto
-import ca.bc.gov.common.model.test.TestRecord
+import ca.bc.gov.common.model.test.TestRecordDto
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -54,24 +54,24 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
 
                     state.onTestResultDetail.let { patientTestResult ->
 
-                        patientTestResult?.records?.let { initUi(it, patientTestResult.patientDto) }
+                        patientTestResult?.recordDtos?.let { initUi(it, patientTestResult.patientDto) }
                     }
                 }
             }
         }
     }
 
-    private fun initUi(testRecords: List<TestRecord>, patientDto: PatientDto) {
+    private fun initUi(testRecordDtos: List<TestRecordDto>, patientDto: PatientDto) {
 
         val covidTestResultsAdapter = CovidTestResultsAdapter(
             this,
-            testRecords,
+            testRecordDtos,
             patientDto
         )
 
         binding.viewpagerCovidTestResults.adapter = covidTestResultsAdapter
 
-        if (testRecords.size > 1) {
+        if (testRecordDtos.size > 1) {
 
             binding.tabCovidTestResults.visibility = View.VISIBLE
 
@@ -116,15 +116,15 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
 
     class CovidTestResultsAdapter(
         fragment: Fragment,
-        private val testRecords: List<TestRecord>,
+        private val testRecordDtos: List<TestRecordDto>,
         private val patientDto: PatientDto
     ) : FragmentStateAdapter(fragment) {
 
-        override fun getItemCount(): Int = testRecords.size
+        override fun getItemCount(): Int = testRecordDtos.size
 
         override fun createFragment(position: Int): Fragment {
 
-            return SingleTestResultFragment.newInstance(testRecords[position], patientDto)
+            return SingleTestResultFragment.newInstance(testRecordDtos[position], patientDto)
         }
     }
 }

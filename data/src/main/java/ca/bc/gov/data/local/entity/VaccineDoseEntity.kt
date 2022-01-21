@@ -27,10 +27,10 @@ data class VaccineDoseEntity(
     @ColumnInfo(name = "vaccine_record_id")
     var vaccineRecordId: Long,
     @ColumnInfo(name = "product_name")
-    val productName: String,
+    val productName: String?,
     @ColumnInfo(name = "provider_name")
-    val providerName: String,
+    val providerName: String?,
     @ColumnInfo(name = "lot_number")
-    val lotNumber: String,
+    val lotNumber: String?,
     val date: Instant
 )

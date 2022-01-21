@@ -4,8 +4,8 @@ import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.patient.PatientDto
-import ca.bc.gov.common.model.relation.PatientTestResult
-import ca.bc.gov.common.model.test.TestResult
+import ca.bc.gov.common.model.relation.PatientTestResultDto
+import ca.bc.gov.common.model.test.TestResultDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.data.model.mapper.toTestRecord
 import ca.bc.gov.data.remote.LaboratoryApi
@@ -27,7 +27,7 @@ class LaboratoryRemoteDataSource @Inject constructor(
      *  so we have to add phn and dob in order to record data in DB properly.
      *  This can be done on repository layer or data source layer.
      */
-    suspend fun getCovidTests(request: CovidTestRequest): PatientTestResult {
+    suspend fun getCovidTests(request: CovidTestRequest): PatientTestResultDto {
         val response = safeCall { laboratoryApi.getCovidTests(request.toMap()) }
             ?: throw MyHealthException(SERVER_ERROR, "Invalid Response")
 
@@ -46,13 +46,13 @@ class LaboratoryRemoteDataSource @Inject constructor(
             phn = request.phn
         )
 
-        val testResult = TestResult(
+        val testResult = TestResultDto(
             collectionDate = request.collectionDate.toDate()
         )
 
         val records = response.payload.covidTestRecords.map { record ->
             record.toTestRecord()
         }
-        return PatientTestResult(patient, testResult, records)
+        return PatientTestResultDto(patient, testResult, records)
     }
 }

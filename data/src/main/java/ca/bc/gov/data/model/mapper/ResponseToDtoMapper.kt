@@ -1,10 +1,10 @@
 package ca.bc.gov.data.model.mapper
 
-import ca.bc.gov.common.model.test.TestRecord
+import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.data.remote.model.base.CovidTestRecord
 
-fun CovidTestRecord.toTestRecord() = TestRecord(
+fun CovidTestRecord.toTestRecord() = TestRecordDto(
     id = reportId,
     labName = labName,
     collectionDateTime = collectionDateTime.toDateTime(),
