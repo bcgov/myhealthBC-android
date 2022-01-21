@@ -7,8 +7,8 @@ import ca.bc.gov.data.remote.ImmunizationApi
 import ca.bc.gov.data.remote.LaboratoryApi
 import ca.bc.gov.data.remote.interceptor.CookiesInterceptor
 import ca.bc.gov.data.remote.interceptor.QueueItInterceptor
+import ca.bc.gov.data.remote.interceptor.ReceivedCookieInterceptor
 import ca.bc.gov.data.remote.interceptor.UserAgentInterceptor
-import ca.bc.gov.data.utils.CookieStorage
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -19,7 +19,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 /**
  * @author Pinakin Kansara
@@ -29,17 +28,17 @@ import javax.inject.Singleton
 class HealthGateWayApiModule {
 
     @Provides
-    @Singleton
-    fun provideCookieStorage() = CookieStorage()
+    fun provideCookieInterceptor(encryptedPreferenceStorage: EncryptedPreferenceStorage) =
+        CookiesInterceptor(encryptedPreferenceStorage)
 
     @Provides
-    fun provideCookieInterceptor(cookieStorage: CookieStorage) = CookiesInterceptor(cookieStorage)
+    fun providerReceivedCookieInterceptor(preferenceStorage: EncryptedPreferenceStorage) =
+        ReceivedCookieInterceptor(preferenceStorage)
 
     @Provides
     fun providesQueueItInterceptor(
-        cookieStorage: CookieStorage,
         preferenceStorage: EncryptedPreferenceStorage
-    ) = QueueItInterceptor(cookieStorage, preferenceStorage)
+    ) = QueueItInterceptor(preferenceStorage)
 
     @Provides
     fun providesUserAgentInterceptor(@ApplicationContext context: Context) = UserAgentInterceptor(
@@ -55,11 +54,13 @@ class HealthGateWayApiModule {
     fun providesOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
         cookiesInterceptor: CookiesInterceptor,
-        queueItInterceptor: QueueItInterceptor
+        queueItInterceptor: QueueItInterceptor,
+        receivedCookieInterceptor: ReceivedCookieInterceptor
     ) = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
-        .addInterceptor(cookiesInterceptor)
         .addInterceptor(queueItInterceptor)
+        .addInterceptor(cookiesInterceptor)
+        .addInterceptor(receivedCookieInterceptor)
+        .addInterceptor(loggingInterceptor)
         .hostnameVerifier { _, _ ->
             return@hostnameVerifier true
         }

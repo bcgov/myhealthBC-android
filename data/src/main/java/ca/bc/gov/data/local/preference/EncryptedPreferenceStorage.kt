@@ -19,6 +19,7 @@ class EncryptedPreferenceStorage @Inject constructor(
         private const val APP_VERSION_CODE = "APP_VERSION_CODE"
         private const val ON_BOARDING_SHOWN = "ON_BOARDING_SHOWN"
         private const val RECENT_PHN_DOB = "RECENT_PHN_DOB"
+        private const val COOKIE = "cookie"
     }
 
     var queueItToken: String?
@@ -26,6 +27,12 @@ class EncryptedPreferenceStorage @Inject constructor(
         set(value) {
             encryptedSharedPreferences.edit().putString(QUEUE_IT_TOKEN, value).apply()
         }
+
+    var cookies: MutableSet<String>?
+    get() = encryptedSharedPreferences.getStringSet(COOKIE, emptySet())
+    set(value){
+        encryptedSharedPreferences.edit().putStringSet(COOKIE,value).apply()
+    }
 
     val analyticsFeature: Flow<AnalyticsFeature> = flow {
         val value =
