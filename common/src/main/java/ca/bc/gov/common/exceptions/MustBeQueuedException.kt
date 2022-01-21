@@ -1,6 +1,8 @@
 package ca.bc.gov.common.exceptions
 
+import java.io.IOException
+
 class MustBeQueuedException(
-    errCode: Int,
+    val errCode: Int,
     message: String? = null
-) : MyHealthException(errCode, message)
+) : IOException(message)
