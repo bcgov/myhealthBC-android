@@ -34,7 +34,7 @@ fun TestRecordEntity.toDto() = TestRecordDto(
     testOutcome,
     testStatus,
     resultTitle,
-    resultDescription.split(" "),
+    resultDescription.split("|"),
     resultLink
 )
 

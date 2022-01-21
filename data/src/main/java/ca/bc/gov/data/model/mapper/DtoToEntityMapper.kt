@@ -66,5 +66,5 @@ fun TestRecordDto.toEntity() = TestRecordEntity(
     testStatus = testStatus,
     resultTitle = resultTitle,
     resultLink = resultLink,
-    resultDescription = resultDescription.joinToString { " " }
+    resultDescription = resultDescription.joinToString("|")
 )
