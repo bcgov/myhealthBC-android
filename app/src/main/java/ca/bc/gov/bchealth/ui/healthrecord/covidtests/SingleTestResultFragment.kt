@@ -126,8 +126,31 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
             tvFullName.visibility = View.GONE
             tvTestResult.visibility = View.GONE
             tvTestedOn.visibility = View.GONE
+
             tvInfo.visibility = View.VISIBLE
-            tvInfo.text = getString(R.string.covid_test_result_cancelled)
+            val builder = SpannableStringBuilder(getString(R.string.covid_test_result_cancelled))
+            val redirectOnClick = object : ClickableSpan() {
+                override fun onClick(view: View) {
+                    requireContext().redirect(getString(R.string.bc_cdc_test_results))
+                }
+            }
+
+            builder.setSpan(
+                redirectOnClick,
+                49,
+                68,
+                0
+            )
+
+            builder.setSpan(
+                ForegroundColorSpan(resources.getColor(R.color.blue, null)),
+                49,
+                68,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            tvInfo.movementMethod = LinkMovementMethod.getInstance()
+            tvInfo.setText(builder, TextView.BufferType.SPANNABLE)
+
             rectBackground
                 .setBackgroundColor(
                     resources.getColor(
