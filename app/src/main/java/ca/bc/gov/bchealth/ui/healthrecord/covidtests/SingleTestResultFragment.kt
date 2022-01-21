@@ -1,13 +1,9 @@
 package ca.bc.gov.bchealth.ui.healthrecord.covidtests
 
-import android.content.Intent
-import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
-import android.text.style.BulletSpan
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
@@ -18,7 +14,7 @@ import ca.bc.gov.bchealth.databinding.FragmentSingleTestResultBinding
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.patient.PatientDto
-import ca.bc.gov.common.model.test.TestRecordDto
+import ca.bc.gov.common.model.test.TestRecord
 import ca.bc.gov.common.utils.toDateTimeString
 import ca.bc.gov.common.utils.yyyy_MMM_dd_HH_mm
 
@@ -33,14 +29,14 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
 
     private val binding by viewBindings(FragmentSingleTestResultBinding::bind)
 
-    private var testRecordDto: TestRecordDto? = null
+    private var testRecord: TestRecord? = null
 
     private var patientDto: PatientDto? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            testRecordDto = it.getParcelable(ARG_PARAM1)
+            testRecord = it.getParcelable(ARG_PARAM1)
             patientDto = it.getParcelable(ARG_PARAM2)
         }
     }
@@ -50,26 +46,72 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
 
         binding.apply {
             tvFullName.text = patientDto?.firstName.plus(" ").plus(patientDto?.lastName)
-            tvTestResult.text = testRecordDto?.testOutcome
+            tvTestResult.text = testRecord?.testOutcome
             tvTestedOn.text =
                 getString(R.string.tested_on)
                     .plus(" ")
                     .plus(
-                        testRecordDto?.resultDateTime?.toDateTimeString()
+                        testRecord?.resultDateTime?.toDateTimeString(yyyy_MMM_dd_HH_mm)
                     )
-            tvDot.text = testRecordDto?.resultDateTime?.toDateTimeString()
-            tvTestStatus.text = testRecordDto?.testStatus
-            tvTypeName.text = testRecordDto?.testName
-            tvProviderClinic.text = testRecordDto?.labName
+            tvDot.text = testRecord?.resultDateTime?.toDateTimeString(yyyy_MMM_dd_HH_mm)
+            tvTestStatus.text = testRecord?.testStatus
+            tvTypeName.text = testRecord?.testName
+            tvProviderClinic.text = testRecord?.labName
+            if (testRecord?.testOutcome == CovidTestResultStatus.Positive.toString() ||
+                testRecord?.testOutcome == CovidTestResultStatus.Negative.toString() ||
+                testRecord?.testOutcome == CovidTestResultStatus.Cancelled.toString()
+            ) {
+                setResultDescription(testRecord?.resultDescription)
+            }
         }
 
-        testRecordDto?.let { getCovidTestStatus(it) }
+        testRecord?.let { getCovidTestStatus(it) }
+    }
+
+    private fun setResultDescription(resultDescription: List<String>?) {
+
+        val builder = SpannableStringBuilder(
+            resultDescription
+                ?.joinToString("\n\n")
+                .plus(" ")
+                .plus(getString(R.string.understanding_test_results))
+        )
+
+        val redirectOnClick = object : ClickableSpan() {
+            override fun onClick(view: View) {
+                requireContext().redirect(getString(R.string.understanding_test_results_url))
+            }
+        }
+
+        val totalChars = resultDescription?.joinToString("\n\n")?.length
+
+        totalChars?.let { count ->
+            builder.setSpan(
+                redirectOnClick,
+                count + 1,
+                count + 28,
+                0
+            )
+        }
+
+        totalChars?.let { count ->
+            builder.setSpan(
+                ForegroundColorSpan(resources.getColor(R.color.blue, null)),
+                count + 1,
+                count + 28,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        binding.tvResultDesc.visibility = View.VISIBLE
+        binding.tvResultDescTitle.visibility = View.VISIBLE
+        binding.tvResultDesc.movementMethod = LinkMovementMethod.getInstance()
+        binding.tvResultDesc.setText(builder, TextView.BufferType.SPANNABLE)
     }
 
     private fun getCovidTestStatus(
-        testRecordDto: TestRecordDto
+        testRecord: TestRecord
     ) {
-        when (testRecordDto.testOutcome) {
+        when (testRecord.testOutcome) {
             CovidTestResultStatus.Indeterminate.toString() -> {
                 setIndeterminateState()
             }
@@ -159,7 +201,7 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
                     )
                 )
 
-            tvTestStatus.text = testRecordDto?.testOutcome
+            tvTestStatus.text = testRecord?.testOutcome
         }
     }
 
@@ -193,88 +235,6 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
                     )
                 )
         }
-
-        showInstructions()
-    }
-
-    private fun showInstructions() {
-
-        val instructions = listOf(
-            getString(R.string.instruction_1),
-            getString(R.string.instruction_2),
-            getString(R.string.instruction_3),
-            getString(R.string.instruction_4),
-            getString(R.string.instruction_5)
-        )
-
-        val builder = SpannableStringBuilder()
-
-        instructions.forEachIndexed { index, item ->
-
-            builder.append(
-                item + "\n",
-                BulletSpan(30, Color.BLACK),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-
-            if (index == 4) {
-
-                setupDialer(builder)
-
-                setUpRedirection(builder)
-            }
-        }
-
-        binding.tvInstructions.visibility = View.VISIBLE
-        binding.tvInstructionsDetail.visibility = View.VISIBLE
-        binding.tvInstructionsDetail.movementMethod = LinkMovementMethod.getInstance()
-        binding.tvInstructionsDetail.setText(builder, TextView.BufferType.SPANNABLE)
-    }
-
-    private fun setUpRedirection(builder: SpannableStringBuilder) {
-        val redirectOnClick = object : ClickableSpan() {
-            override fun onClick(view: View) {
-                requireContext().redirect(getString(R.string.understanding_test_results))
-            }
-        }
-
-        builder.setSpan(
-            redirectOnClick,
-            269,
-            295,
-            0
-        )
-
-        builder.setSpan(
-            ForegroundColorSpan(resources.getColor(R.color.blue, null)),
-            269,
-            295,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-    }
-
-    private fun setupDialer(builder: SpannableStringBuilder) {
-        val dialOnClick = object : ClickableSpan() {
-            override fun onClick(view: View) {
-                val intent = Intent(Intent.ACTION_DIAL)
-                intent.data = Uri.parse("tel:811")
-                startActivity(intent)
-            }
-        }
-
-        builder.setSpan(
-            dialOnClick,
-            215,
-            220,
-            0
-        )
-
-        builder.setSpan(
-            ForegroundColorSpan(resources.getColor(R.color.blue, null)),
-            215,
-            220,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
     }
 
     enum class CovidTestResultStatus {
@@ -287,10 +247,10 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
     companion object {
 
         @JvmStatic
-        fun newInstance(testRecordDto: TestRecordDto, patientDto: PatientDto) =
+        fun newInstance(testRecord: TestRecord, patientDto: PatientDto) =
             SingleTestResultFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(ARG_PARAM1, testRecordDto)
+                    putParcelable(ARG_PARAM1, testRecord)
                     putParcelable(ARG_PARAM2, patientDto)
                 }
             }

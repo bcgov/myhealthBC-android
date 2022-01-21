@@ -2,6 +2,7 @@ package ca.bc.gov.data
 
 import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
+import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.relation.PatientTestResultDto
@@ -34,6 +35,9 @@ class LaboratoryRemoteDataSource @Inject constructor(
         if (response.error != null) {
             if (Action.MISMATCH.code.contentEquals(response.error.action?.code)) {
                 throw MyHealthException(SERVER_ERROR_DATA_MISMATCH, response.error.message)
+            }
+            if ("Error parsing phn" == response.error.message) {
+                throw MyHealthException(SERVER_ERROR_INCORRECT_PHN, response.error.message)
             }
             throw MyHealthException(SERVER_ERROR, response.error.message)
         }
