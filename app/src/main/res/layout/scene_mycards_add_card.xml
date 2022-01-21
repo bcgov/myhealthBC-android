@@ -6,7 +6,7 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_health_passes"
-        style="?textAppearanceHeadline1"
+        style="?textAppearanceHeadline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"

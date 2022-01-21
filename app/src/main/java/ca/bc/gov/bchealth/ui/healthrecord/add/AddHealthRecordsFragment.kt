@@ -54,7 +54,6 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                 }
             )
 
-
         savedStateHandle.getLiveData<Pair<VaccineRecordState, PatientVaccineRecord?>>(
             FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
         )

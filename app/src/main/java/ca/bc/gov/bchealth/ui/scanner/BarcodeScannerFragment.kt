@@ -96,7 +96,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                         navigateToHealthPass()
                     }
 
-                    if(state.state == Status.ERROR){
+                    if (state.state == Status.ERROR) {
                         requireContext().showError(
                             getString(R.string.error_invalid_qr_code_title),
                             getString(R.string.error_invalid_qr_code_message)
