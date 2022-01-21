@@ -13,8 +13,7 @@
 
     <!--Resources-->
     <string name="resources">Resources</string>
-    <string name="resource_screen_message">Find useful information and learn how to get vaccinated or tested for COVID-19.
-        \n\nThe following websites are official B.C. government resources.</string>
+    <string name="resource_screen_message">Get COVID-19 information from official Government of B.C. sources.</string>
     <string name="label_resource_1">Get vaccinated</string>
     <string name="label_resource_2">Get a COVID-19 test</string>
     <string name="label_resource_3">COVID-19 self-assessment</string>
@@ -85,8 +84,8 @@
     <string name="bc_vaccine_card_unlinked">BC vaccine card unlinked.</string>
     <string name="edit">Edit</string>
     <string name="travel_pass">Federal proof of vaccination</string>
-    <string name="get_federal_proof_of_vaccination">Get Canadian COVID-19 proof of vaccination</string>
-    <string name="show_federal_proof_of_vaccination">Show Canadian COVID-19 proof of vaccination</string>
+    <string name="get_federal_proof_of_vaccination">Get federal proof of vaccination</string>
+    <string name="show_federal_proof_of_vaccination">Show federal proof of vaccination</string>
     <string name="domestic_and_international_travel">Domestic and international travel</string>
     <string name="find_phn_on_care_card_or_the_back_of_driver_s_license">Find PHN on care card or the back of driver’s license.</string>
     <string name="get_federal_travel_pass">Get Canadian COVID-19 proof</string>
@@ -140,12 +139,7 @@
         Monitor your health and contact a health care provider or call 8-1-1 if you are concerned about your symptoms.\n
         Go to Understanding Test Results for more information.
     </string>
-    <string name="instruction_1">You need to self-isolate now.</string>
-    <string name="instruction_2">The people you live with will also need to self-isolate if they are not fully vaccinated.</string>
-    <string name="instruction_3">Public health will contact you.</string>
-    <string name="instruction_4">Monitor your health and contact a health care provider or call 8-1-1 if you are concerned about your symptoms.</string>
-    <string name="instruction_5">Go to Understanding Test Results for more information.</string>
-    <string name="instructions">Instructions</string>
+   <string name="understanding_test_results">Understanding Test Results.</string>
     <string name="tested_on">Tested on</string>
     <string name="name">Name</string>
     <string name="date_of_testing">Date of Testing</string>
@@ -164,6 +158,7 @@
     <string name="covid_test_result_cancelled">There was a problem with your test. Please visit BC CDC Test Results for more information</string>
     <string name="covid_test_result_pending">Your test is being processed and can take up to 48 hours to complete.</string>
     <string name="pending">Pending</string>
+    <string name="result_description">Result Description:</string>
 
     <!--Miscellaneous-->
     <string name="coming_soon">Coming soon!</string>
@@ -187,6 +182,7 @@
     <string name="error_invalid_qr_code_message">Please scan an official proof of vaccination.</string>
     <string name="error_data_mismatch_title">The information does not match</string>
     <string name="error_test_result_data_mismatch_message">If it has been 48 hours from the time of your test, contact the BC COVID-19 Results Line (1‐833‐707‐2792) to investigate the issue.</string>
-    <string name="error_vaccine_data_mismatch_message">If it has been 48 hours from the time of your vaccination, contact the BC COVID-19 Results Line (1‐833‐707‐2792) to investigate the issue.</string>
+    <string name="error_vaccine_data_mismatch_message">The information you entered does not match our records. Please try again.</string>
     <string name="invalid_phn">The Personal Health Number entered is not valid</string>
+    <string name="error_incorrect_phn">There was an error with your Personal Health Number. Please check that it is correct and try again.</string>
 </resources>

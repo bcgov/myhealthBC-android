@@ -108,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
                 android:layout_marginTop="@dimen/space_2_x"
-                android:text="@string/instructions"
+                android:text=""
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cardView" />
@@ -144,7 +144,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_dot_title"
-                style="?textAppearanceBody1"
+                style="?textAppearanceHeadline3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -155,7 +155,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_dot"
-                style="?textAppearanceHeadline3"
+                style="?textAppearanceBody1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -167,7 +167,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_test_status_title"
-                style="?textAppearanceBody1"
+                style="?textAppearanceHeadline3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -178,7 +178,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_test_status"
-                style="?textAppearanceHeadline3"
+                style="?textAppearanceBody1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -190,7 +190,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_type_name_title"
-                style="?textAppearanceBody1"
+                style="?textAppearanceHeadline3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -201,7 +201,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_type_name"
-                style="?textAppearanceHeadline3"
+                style="?textAppearanceBody1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -213,7 +213,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_provider_clinic_title"
-                style="?textAppearanceBody1"
+                style="?textAppearanceHeadline3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -224,7 +224,31 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_provider_clinic"
+                style="?textAppearanceBody1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_provider_clinic_title"
+                tools:text="Care Point Medical Centre – Joyce" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_result_desc_title"
                 style="?textAppearanceHeadline3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginTop="@dimen/space_2_x"
+                android:text="@string/result_description"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_provider_clinic" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_result_desc"
+                style="?textAppearanceBody1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -233,8 +257,12 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_provider_clinic_title"
-                tools:text="Care Point Medical Centre – Joyce" />
+                android:visibility="invisible"
+                android:autoLink="web|phone"
+                android:linksClickable="true"
+                android:textIsSelectable="true"
+                app:layout_constraintTop_toBottomOf="@+id/tv_result_desc_title"
+                tools:text="Description" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
