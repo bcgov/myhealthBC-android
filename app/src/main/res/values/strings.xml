@@ -188,4 +188,5 @@
     <string name="error_data_mismatch_title">The information does not match</string>
     <string name="error_test_result_data_mismatch_message">If it has been 48 hours from the time of your test, contact the BC COVID-19 Results Line (1‐833‐707‐2792) to investigate the issue.</string>
     <string name="error_vaccine_data_mismatch_message">If it has been 48 hours from the time of your vaccination, contact the BC COVID-19 Results Line (1‐833‐707‐2792) to investigate the issue.</string>
+    <string name="invalid_phn">The Personal Health Number entered is not valid</string>
 </resources>
