@@ -15,10 +15,9 @@
     <string name="resources">Resources</string>
     <string name="resource_screen_message">Find useful information and learn how to get vaccinated or tested for COVID-19.
         \n\nThe following websites are official B.C. government resources.</string>
-    <string name="label_resource_1">Get vaccinated for COVID-19</string>
-    <string name="label_resource_2">Get tested for COVID-19</string>
-    <string name="label_resource_3">COVID-19 self assessment</string>
-    <string name="label_resource_4">K-12 Daily Check</string>
+    <string name="label_resource_1">Get vaccinated</string>
+    <string name="label_resource_2">Get a COVID-19 test</string>
+    <string name="label_resource_3">COVID-19 self-assessment</string>
     <string name="health_resources">Health resources</string>
 
     <!--Settings-->
@@ -36,8 +35,8 @@
 
     <!--Add card-->
     <string name="add_card">Add Card</string>
-    <string name="no_cards_message">You don\'t have any card yet</string>
-    <string name="title_add_card">Add your BC Vaccine Card and Canadian COVID-19 proof of vaccination containing a QR code.</string>
+    <string name="no_cards_message">You don’t have any documents yet</string>
+    <string name="title_add_card">Please select one of the following options to add a proof of vaccination document containing a QR code</string>
     <string name="scan_qr_code">Scan QR using your camera</string>
     <string name="use_image_of_qr">Upload from your device</string>
     <string name="enter_information">Enter information</string>
@@ -49,7 +48,7 @@
     <string name="scan_next">Scan next</string>
     <string name="personal_health_number">Personal Health Number (PHN)</string>
     <string name="date_of_birth">Date of Birth (yyyy-mm-dd)</string>
-    <string name="date_of_vaccination">Date of Vaccination (yyyy-mm-dd)</string>
+    <string name="date_of_vaccination">Date of vaccination (yyyy-mm-dd)</string>
     <string name="select_date">Select date</string>
     <string name="privacy_statement_info_vaccine">Your information is being collected to provide you with your COVID-19 vaccination status under s. 26(c) of the Freedom of Information and Protection of Privacy Act. Contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849 if you have any questions about this collection.</string>
     <string name="privacy_statement_info_test_result">Your information is being collected to provide you with your COVID-19 test results under s. 26(c) of the Freedom of Information and Protection of Privacy Act. Contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849 if you have any questions about this collection.</string>
@@ -58,18 +57,18 @@
     <string name="dob_required">Date of Birth is required</string>
     <string name="enter_valid_date_format">Please enter a valid date format</string>
     <string name="dov_required">Date of vaccination is required</string>
-    <string name="add_a_health_pass">Add a health pass</string>
+    <string name="add_a_health_pass">Add proof of vaccination</string>
     <string name="remember_my_phn_and_dob_for_next_time">Remember my PHN and DoB for next time.</string>
     <string name="replace">Replace</string>
     <string name="replace_health_pass_title">Proof of vaccination is updated.</string>
-    <string name="replace_health_pass_message">Would you like to replace the health pass?</string>
+    <string name="replace_health_pass_message">Would you like to replace the vaccine card?</string>
     <string name="add_the_date_of_vaccination_for_any_dose">Add the date of vaccination for any dose.</string>
 
     <!--Health Passes-->
-    <string name="passes">Passes</string>
+    <string name="passes">Proofs</string>
     <string name="bc_vaccine_card">BC Vaccine Card</string>
-    <string name="bc_vaccine_passes">BC vaccine passes</string>
-    <string name="health_passes_message">Save your BC Vaccine Card and Canadian  COVID-19 proof of vaccination here.</string>
+    <string name="bc_vaccine_passes">BC Vaccine Cards</string>
+    <string name="health_passes_message">An easy way to access and show proof of vaccination documents.\n\nAdd documents for yourself, or a family member.</string>
     <string name="vaccinated">Vaccinated</string>
     <string name="health_passes_message_1">Save a <b><font face='@font/bc_sans_bold'>BC Vaccine Card</font></b> and <b><font face='@font/bc_sans_bold'>Federal Proof of Vaccination</font></b> here.</string>
     <string name="partially_vaccinated">Partially vaccinated</string>
@@ -82,18 +81,18 @@
     <string name="unlink_card">Unlink Card</string>
     <string name="unlink">Unlink</string>
     <string name="issued_on">Issued on</string>
-    <string name="view_all">View All</string>
+    <string name="view_all">View all</string>
     <string name="undo">Undo</string>
-    <string name="bc_vaccine_card_unlinked">BC vaccine pass unlinked.</string>
+    <string name="bc_vaccine_card_unlinked">BC vaccine card unlinked.</string>
     <string name="edit">Edit</string>
-    <string name="travel_pass">Canadian COVID-19 proof</string>
+    <string name="travel_pass">Federal proof of vaccination</string>
     <string name="get_federal_proof_of_vaccination">Get Canadian COVID-19 proof of vaccination</string>
     <string name="show_federal_proof_of_vaccination">Show Canadian COVID-19 proof of vaccination</string>
     <string name="domestic_and_international_travel">Domestic and international travel</string>
     <string name="find_phn_on_care_card_or_the_back_of_driver_s_license">Find PHN on care card or the back of driver’s license.</string>
     <string name="get_federal_travel_pass">Get Canadian COVID-19 proof</string>
     <string name="health_records">Health records</string>
-    <string name="health_passes">Health passes</string>
+    <string name="health_passes">Proof of vaccination</string>
 
     <!-- In app updates -->
     <string name="update_success">Update Success!</string>
@@ -105,15 +104,15 @@
 
     <!--Educational screens text at on-boarding experience-->
     <string name="next">Next</string>
-    <string name="get_started">Get Started</string>
-    <string name="onboarding_health_passes_title">Health passes</string>
-    <string name="onboarding_health_passes_desc">Keep you and your family’s BC Vaccine Card and Canadian COVID-19 proof of vaccination in a single place</string>
+    <string name="get_started">Get started</string>
+    <string name="onboarding_health_passes_title">Proof of vaccination</string>
+    <string name="onboarding_health_passes_desc">Keep your BC Vaccine Card and federal COVID-19 proof of vaccination document in a single place</string>
     <string name="onboarding_health_records_title">Health records</string>
     <string name="onboarding_health_records_desc">Easily access your COVID-19 health records</string>
     <string name="onboarding_health_resources_title">Health resources</string>
     <string name="onboarding_health_resources_desc">Find COVID-19 health information and testing resources</string>
     <string name="onboarding_news_feed_title">News feed</string>
-    <string name="onboarding_news_feed_desc">Get the latest BC government COVID-19 news</string>
+    <string name="onboarding_news_feed_desc">Get the latest COVID-19 news from  the Government of B.C.</string>
     <string name="new_string">New</string>
     <string name="ok_camel_case">Ok</string>
     <string name="skip">Skip</string>
@@ -121,13 +120,13 @@
     <!--Health Records-->
     <string name="view_the_details_of_all_your_covid_19_health_records">View the details of all your COVID-19 Health Records</string>
     <string name="records">Records</string>
-    <string name="get_vaccination_records">Get vaccination records</string>
-    <string name="access_to_the_details_of_you_and_your_family_s_covid_19_vaccination_records">Access to the details of you and your family’s COVID-19 Vaccination Records</string>
-    <string name="get_covid_19_test_results">Get COVID-19 test results</string>
-    <string name="access_to_the_details_of_you_and_your_family_s_covid_19_test_results">Access to the details of you and your family’s COVID-19 Test Results</string>
+    <string name="get_vaccination_records">Vaccination records</string>
+    <string name="access_to_the_details_of_you_and_your_family_s_covid_19_vaccination_records">Add COVID-19 vaccination records for you and your family</string>
+    <string name="get_covid_19_test_results">COVID-19 test results</string>
+    <string name="access_to_the_details_of_you_and_your_family_s_covid_19_test_results">Add COVID-19 test results for you and your family</string>
     <string name="add_bc_vaccine_record">Add a BC vaccine record</string>
     <string name="add_covid_test_result">Add COVID-19 test result</string>
-    <string name="date_of_test">Date of Test (yyyy-mm-dd)</string>
+    <string name="date_of_test">Date of test (yyyy-mm-dd)</string>
     <string name="member_records_toolbar_title">\'s records</string>
     <string name="space_records">" records"</string>
     <string name="space_record">" record"</string>
@@ -157,7 +156,7 @@
     <string name="provider_clinic">Provider / Clinic:</string>
     <string name="delete_hc_record_title">Delete Record</string>
     <string name="delete_individual_covid_test_record_message">This action cannot be undone. You will be required to enter your health information again to access the record.</string>
-    <string name="delete_individual_vaccine_record_message">Health pass linked to this record will be removed. You will be required to enter your health information again to access the record.</string>
+    <string name="delete_individual_vaccine_record_message">Vaccine card linked to this record will be removed. You will be required to enter your health information again to access the record.</string>
     <string name="vaccination_record">Vaccination record</string>
     <string name="date">Date:</string>
     <string name="product">Product:</string>

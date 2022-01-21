@@ -62,7 +62,7 @@ class ProcessQrRepository @Inject constructor(
             } else {
                 Pair(VaccineRecordState.DUPLICATE, patientData)
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             return Pair(VaccineRecordState.INVALID, null)
         }
     }

@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.healthPassFragment,
+                R.id.healthPassesFragment,
                 R.id.addCardOptionFragment,
                 R.id.healthRecordsFragment,
                 R.id.settingFragment,

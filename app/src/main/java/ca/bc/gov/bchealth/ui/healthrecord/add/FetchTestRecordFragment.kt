@@ -129,19 +129,17 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
                 getString(R.string.phn_should_be_10_digit)
             ) &&
             this.validateDatePickerData(
-                binding.tipDob,
-                getString(R.string.dob_required)
-            ) &&
+                    binding.tipDob,
+                    getString(R.string.dob_required)
+                ) &&
             this.validateDatePickerData(
-                binding.tipDot,
-                getString(R.string.dot_required)
-            )
+                    binding.tipDot,
+                    getString(R.string.dot_required)
+                )
         ) {
 
             viewModel.fetchTestRecord(phn, dob, dot)
         }
-
-
     }
 
     private fun setupToolBar() {
