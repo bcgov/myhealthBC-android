@@ -18,9 +18,11 @@ import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.common.model.analytics.AnalyticsAction
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
 
     private lateinit var newsfeedAdapter: NewsfeedAdapter
