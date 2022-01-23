@@ -7,7 +7,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
 import ca.bc.gov.common.exceptions.MustBeQueuedException
-import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.exceptions.MyHealthNetworkException
 import ca.bc.gov.common.model.ErrorData
 import ca.bc.gov.common.model.relation.PatientWithVaccineRecordDto
 import ca.bc.gov.repository.FetchVaccineRecordRepository
@@ -74,7 +74,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
                             )
                         )
                     }
-                    is MyHealthException -> {
+                    is MyHealthNetworkException -> {
                         when (e.errCode) {
                             SERVER_ERROR_DATA_MISMATCH -> {
                                 _uiState.tryEmit(
