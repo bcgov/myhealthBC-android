@@ -1,7 +1,8 @@
 package ca.bc.gov.data.utils
 
+import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.exceptions.MustBeQueuedException
-import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.exceptions.MyHealthNetworkException
 import retrofit2.Response
 
 suspend inline fun <T> safeCall(crossinline responseFun: suspend () -> Response<T>): T? {
@@ -12,7 +13,10 @@ suspend inline fun <T> safeCall(crossinline responseFun: suspend () -> Response<
         if (result.isSuccessful) {
             result.body()
         } else {
-            throw MyHealthException(1000, result.errorBody()?.toString())
+            throw MyHealthNetworkException(
+                errCode = SERVER_ERROR,
+                message = result.errorBody()?.toString()
+            )
         }
     } catch (e: Exception) {
         when (e) {
@@ -20,7 +24,7 @@ suspend inline fun <T> safeCall(crossinline responseFun: suspend () -> Response<
                 throw e
             }
             else -> {
-                throw MyHealthException(1000, e.message)
+                throw MyHealthNetworkException(errCode = SERVER_ERROR, message = e.message)
             }
         }
     }
