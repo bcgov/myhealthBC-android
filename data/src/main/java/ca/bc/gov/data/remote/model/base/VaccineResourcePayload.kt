@@ -11,15 +11,15 @@ data class VaccineResourcePayload(
     @SerializedName("retryin")
     val retryInMilli: Long,
     @SerializedName("personalhealthnumber")
-    val phn: String,
+    val phn: String?,
     @SerializedName("firstname")
-    val firstName: String,
+    val firstName: String?,
     @SerializedName("lastname")
-    val lastName: String,
+    val lastName: String?,
     @SerializedName("birthdate")
-    val birthDate: String,
+    val birthDate: String?,
     @SerializedName("vaccinedate")
-    val vaccineDate: String,
+    val vaccineDate: String?,
     val doses: Int,
     val state: Int,
     val qrCode: Media,

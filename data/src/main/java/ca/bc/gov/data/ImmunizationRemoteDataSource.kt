@@ -19,7 +19,6 @@ class ImmunizationRemoteDataSource @Inject constructor(
     private val immunizationApi: ImmunizationApi
 ) {
 
-    // TODO: add object validation logic here
     suspend fun getVaccineStatus(request: VaccineStatusRequest): VaccineStatusResponse {
         val response = safeCall { immunizationApi.getVaccineStatus(request.toMap()) }
             ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid response")
@@ -33,6 +32,34 @@ class ImmunizationRemoteDataSource @Inject constructor(
             }
             throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
         }
+        if (!isResponseValid(response)) {
+            throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
+        }
         return response
+    }
+
+    private fun isResponseValid(response: VaccineStatusResponse): Boolean {
+        var isValid = false
+        with(response.payload) {
+            isValid = when {
+                firstName.isNullOrBlank()
+                    || lastName.isNullOrBlank()
+                    || phn.isNullOrBlank()
+                    || birthDate.isNullOrBlank()
+                    || vaccineDate.isNullOrBlank()
+                    || qrCode.data.isNullOrBlank()
+                    || qrCode.encoding.isNullOrBlank()
+                    || qrCode.mediaType.isNullOrBlank()
+                    || federalVaccineProof.data.isNullOrBlank()
+                    || federalVaccineProof.mediaType.isNullOrBlank()
+                    || federalVaccineProof.encoding.isNullOrBlank() -> {
+                    false
+                }
+                else -> {
+                    true
+                }
+            }
+        }
+        return isValid
     }
 }

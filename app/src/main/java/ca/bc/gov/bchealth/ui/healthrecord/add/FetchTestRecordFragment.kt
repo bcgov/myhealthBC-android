@@ -65,10 +65,6 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
         initClickListeners()
 
         observeCovidTestResult()
-
-        binding.edPhnNumber.editText?.setText("9875023209")
-        binding.tipDob.editText?.setText("1955-10-23")
-        binding.tipDot.editText?.setText("2021-04-11")
     }
 
     private fun showLoader(value: Boolean) {

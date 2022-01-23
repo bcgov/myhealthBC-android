@@ -46,6 +46,7 @@ class QueueItInterceptor @Inject constructor(
         var response: Response?
         var body: ResponseBody? = null
         var stringBody: String? = null
+        var loaded = false
         do {
             response = chain.proceed(request)
             if (mustQueue(response)) {
@@ -62,20 +63,17 @@ class QueueItInterceptor @Inject constructor(
                 stringBody = body?.string()
                 val json = Gson().fromJson(stringBody, JsonObject::class.java)
                 val payload = json.getAsJsonObject("resourcePayload")
-                val loaded = payload.get("loaded").asBoolean
+                loaded = payload.get("loaded").asBoolean
                 val retryInMillis = payload.get("retryin").asLong
-                if (!loaded && retryCount <2) {
-                    response = null
+                if (!loaded && retryInMillis > 0) {
                     Thread.sleep(retryInMillis)
-                    retryCount++
-                }else{
-                    throw IOException("Exception")
                 }
+                retryCount++
             }
-        } while (response == null && retryCount <3)
+        } while (!loaded && retryCount < 3)
 
-        if (response == null) {
-            response = chain.proceed(request)
+        if (!loaded || response == null) {
+            throw IOException("Getting cached data from health gateway")
         }
 
         val newBody = stringBody?.toResponseBody(body?.contentType())

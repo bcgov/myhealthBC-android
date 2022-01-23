@@ -13,11 +13,16 @@ import ca.bc.gov.bchealth.databinding.ItemHealthPassCardBinding
  */
 class HealthPassAdapter(
     private val qrCodeClickListener: QrCodeClickListener,
-    private val federalPassClickListener: FederalPassClickListener
+    private val federalPassClickListener: FederalPassClickListener,
+    private val itemClickListener: ItemClickListener
 ) : ListAdapter<HealthPass, HealthPassAdapter.ViewHolder>(HealthPassDiffCallBack()) {
 
     fun interface QrCodeClickListener {
         fun onQrCodeClicked(shcUri: String)
+    }
+
+    fun interface ItemClickListener {
+        fun onItemClicked(pass: HealthPass)
     }
 
     fun interface FederalPassClickListener {
@@ -44,12 +49,7 @@ class HealthPassAdapter(
             layoutQrCode.isVisible = healthPass.isExpanded
 
             holder.itemView.setOnClickListener {
-                currentList.forEachIndexed { index, pass ->
-                    pass.isExpanded = false
-                    notifyItemChanged(index)
-                }
-                getItem(position).isExpanded = true
-                notifyItemChanged(position)
+                itemClickListener.onItemClicked(healthPass)
             }
 
             txtFullName.text = healthPass.name
