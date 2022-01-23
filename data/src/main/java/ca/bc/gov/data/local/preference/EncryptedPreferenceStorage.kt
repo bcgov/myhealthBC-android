@@ -81,4 +81,6 @@ class EncryptedPreferenceStorage @Inject constructor(
 
     fun setRecentPhnDob(data: String) =
         encryptedSharedPreferences.edit().putString(RECENT_PHN_DOB, data).apply()
+
+    fun clear() = encryptedSharedPreferences.edit().clear().apply()
 }
