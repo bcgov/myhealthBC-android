@@ -115,8 +115,9 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
                 addOrUpdateCardViewModel.uiState.collect { state ->
 
                     showLoader(state.onLoading)
-
-                    performActionBasedOnState(state.state, state.vaccineRecord)
+                    if (state.state != null) {
+                        performActionBasedOnState(state.state, state.vaccineRecord)
+                    }
                 }
             }
         }

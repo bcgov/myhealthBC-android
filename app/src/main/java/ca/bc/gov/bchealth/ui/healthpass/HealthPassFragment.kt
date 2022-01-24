@@ -259,8 +259,6 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
     inner class SwipeToDeleteCallBack(healthPasses: List<HealthPass>) :
         ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
-        private val cardsTemp = healthPasses.toMutableList()
-
         override fun onMove(
             recyclerView: androidx.recyclerview.widget.RecyclerView,
             viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder,
@@ -275,10 +273,9 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
         ) {
 
             var hardDelete = true
-            val deletePass: HealthPass = cardsTemp[viewHolder.bindingAdapterPosition]
             val position = viewHolder.bindingAdapterPosition
-
             val list = healthPassAdapter.currentList.toMutableList()
+            val deletePass: HealthPass = list[position]
             list.removeAt(position)
             healthPassAdapter.submitList(list)
             healthPassAdapter.notifyItemRemoved(position)

@@ -80,18 +80,22 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
 
                     if (state.state == Status.CAN_INSERT) {
                         viewModel.insert(state.vaccineRecord!!)
+                        viewModel.resetStatus()
                     }
 
                     if (state.state == Status.CAN_UPDATE) {
                         showCardReplacementDialog(state.vaccineRecord!!)
+                        viewModel.resetStatus()
                     }
 
                     if (state.state == Status.DUPLICATE) {
                         showDuplicateRecordDialog()
+                        viewModel.resetStatus()
                     }
 
                     if (state.state == Status.UPDATED || state.state == Status.INSERTED) {
                         sharedViewModel.setModifiedRecordId(state.modifiedRecordId)
+                        viewModel.resetStatus()
                         navigateToHealthPass()
                     }
 
@@ -100,6 +104,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                             getString(R.string.error_invalid_qr_code_title),
                             getString(R.string.error_invalid_qr_code_message)
                         )
+                        viewModel.resetStatus()
                     }
                 }
             }
