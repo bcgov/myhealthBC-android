@@ -58,7 +58,8 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
             tvProviderClinic.text = testRecordDto?.labName
             if (testRecordDto?.testOutcome == CovidTestResultStatus.Positive.toString() ||
                 testRecordDto?.testOutcome == CovidTestResultStatus.Negative.toString() ||
-                testRecordDto?.testOutcome == CovidTestResultStatus.Cancelled.toString()
+                testRecordDto?.testOutcome == CovidTestResultStatus.Cancelled.toString() ||
+                testRecordDto?.testOutcome == CovidTestResultStatus.Indeterminate.toString()
             ) {
                 setResultDescription(testRecordDto?.resultDescription)
             }
