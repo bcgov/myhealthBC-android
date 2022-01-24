@@ -68,7 +68,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
                     is MustBeQueuedException -> {
                         _uiState.tryEmit(
                             FetchVaccineRecordUiState(
-                                onLoading = false,
+                                onLoading = true,
                                 onMustBeQueued = true,
                                 queItUrl = e.message,
                             )

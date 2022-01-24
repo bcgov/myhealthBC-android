@@ -209,13 +209,13 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                 binding.edPhnNumber
             ) &&
             this.validateDatePickerData(
-                binding.tipDob,
-                getString(R.string.dob_required)
-            ) &&
+                    binding.tipDob,
+                    getString(R.string.dob_required)
+                ) &&
             this.validateDatePickerData(
-                binding.tipDov,
-                getString(R.string.dov_required)
-            )
+                    binding.tipDov,
+                    getString(R.string.dov_required)
+                )
         ) {
 
             viewModel.fetchVaccineRecord(phn, dob, dov)

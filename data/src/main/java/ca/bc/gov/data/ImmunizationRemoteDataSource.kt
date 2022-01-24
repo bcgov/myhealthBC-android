@@ -24,6 +24,9 @@ class ImmunizationRemoteDataSource @Inject constructor(
             ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid response")
 
         if (response.error != null) {
+            if (response.error.action == null) {
+                throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
+            }
             if (Action.MISMATCH.code == response.error.action?.code) {
                 throw MyHealthNetworkException(SERVER_ERROR_DATA_MISMATCH, response.error.message)
             }
@@ -40,26 +43,27 @@ class ImmunizationRemoteDataSource @Inject constructor(
 
     private fun isResponseValid(response: VaccineStatusResponse): Boolean {
         var isValid = false
-        with(response.payload) {
-            isValid = when {
-                firstName.isNullOrBlank() ||
-                    lastName.isNullOrBlank() ||
-                    phn.isNullOrBlank() ||
-                    birthDate.isNullOrBlank() ||
-                    vaccineDate.isNullOrBlank() ||
-                    qrCode.data.isNullOrBlank() ||
-                    qrCode.encoding.isNullOrBlank() ||
-                    qrCode.mediaType.isNullOrBlank() ||
-                    federalVaccineProof.data.isNullOrBlank() ||
-                    federalVaccineProof.mediaType.isNullOrBlank() ||
-                    federalVaccineProof.encoding.isNullOrBlank() -> {
-                    false
-                }
-                else -> {
-                    true
+        if (response.payload != null)
+            with(response.payload) {
+                isValid = when {
+                    firstName.isNullOrBlank() ||
+                        lastName.isNullOrBlank() ||
+                        phn.isNullOrBlank() ||
+                        birthDate.isNullOrBlank() ||
+                        vaccineDate.isNullOrBlank() ||
+                        qrCode.data.isNullOrBlank() ||
+                        qrCode.encoding.isNullOrBlank() ||
+                        qrCode.mediaType.isNullOrBlank() ||
+                        federalVaccineProof.data.isNullOrBlank() ||
+                        federalVaccineProof.mediaType.isNullOrBlank() ||
+                        federalVaccineProof.encoding.isNullOrBlank() -> {
+                        false
+                    }
+                    else -> {
+                        true
+                    }
                 }
             }
-        }
         return isValid
     }
 }
