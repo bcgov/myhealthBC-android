@@ -79,7 +79,9 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 addOrUpdateCardViewModel.uiState.collect { state ->
-                    performActionBasedOnState(state)
+                    if(state.state != null){
+                        performActionBasedOnState(state)
+                    }
                 }
             }
         }
@@ -109,30 +111,34 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
 
             Status.CAN_INSERT -> {
                 state.vaccineRecord?.let { insert(it) }
+                addOrUpdateCardViewModel.resetStatus()
             }
             Status.CAN_UPDATE -> {
                 state.vaccineRecord?.let { updateRecord(it) }
+                addOrUpdateCardViewModel.resetStatus()
             }
             Status.INSERTED,
             Status.UPDATED -> {
                 sharedViewModel.setModifiedRecordId(state.modifiedRecordId)
                 navigateToHealthPass()
+                addOrUpdateCardViewModel.resetStatus()
             }
             Status.DUPLICATE -> {
+
                 requireContext().showError(
                     getString(R.string.error_duplicate_title),
                     getString(R.string.error_duplicate_message)
                 )
+                addOrUpdateCardViewModel.resetStatus()
             }
 
             Status.ERROR -> {
+
                 requireContext().showError(
                     getString(R.string.error_invalid_qr_code_title),
                     getString(R.string.error_invalid_qr_code_message)
                 )
-            }
-
-            else -> {
+                addOrUpdateCardViewModel.resetStatus()
             }
         }
     }
@@ -155,6 +161,6 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
     private fun navigateToHealthPass() {
         // Snowplow event
         analyticsFeatureViewModel.track(AnalyticsAction.ADD_QR, AnalyticsActionData.UPLOAD)
-        findNavController().navigate(R.id.action_addCardOptionFragment_to_healthPassFragment)
+        findNavController().popBackStack()
     }
 }
