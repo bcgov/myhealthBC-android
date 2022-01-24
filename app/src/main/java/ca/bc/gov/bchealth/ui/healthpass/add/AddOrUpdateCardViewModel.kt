@@ -66,10 +66,10 @@ class AddOrUpdateCardViewModel @Inject constructor(
         }
     }
 
-    fun resetStatus(){
+    fun resetStatus() {
         _uiState.update { state ->
             state.copy(
-                onLoading = false,vaccineRecord = null, modifiedRecordId = -1L,state = null
+                onLoading = false, vaccineRecord = null, modifiedRecordId = -1L, state = null
             )
         }
     }
