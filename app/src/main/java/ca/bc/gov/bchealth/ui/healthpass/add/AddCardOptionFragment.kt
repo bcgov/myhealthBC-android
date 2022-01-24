@@ -23,7 +23,6 @@ import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.common.model.analytics.AnalyticsAction
 import ca.bc.gov.common.model.analytics.AnalyticsActionData
 import ca.bc.gov.repository.model.PatientVaccineRecord
-import ca.bc.gov.repository.qr.VaccineRecordState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -55,14 +54,16 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
 
         val savedStateHandle: SavedStateHandle =
             findNavController().currentBackStackEntry!!.savedStateHandle
-        savedStateHandle.getLiveData<Pair<VaccineRecordState, PatientVaccineRecord?>>(
+        savedStateHandle.getLiveData<Long>(
             FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
         )
             .observe(
                 findNavController().currentBackStackEntry!!,
                 Observer {
-                    if (it != null) {
-                        addOrUpdateCardViewModel.processResult(it)
+                    if (it > 0) {
+                        sharedViewModel.setModifiedRecordId(it)
+                        savedStateHandle.remove<Long>(FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS)
+                        findNavController().popBackStack()
                     }
                 }
             )
@@ -79,7 +80,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 addOrUpdateCardViewModel.uiState.collect { state ->
-                    if(state.state != null){
+                    if (state.state != null) {
                         performActionBasedOnState(state)
                     }
                 }

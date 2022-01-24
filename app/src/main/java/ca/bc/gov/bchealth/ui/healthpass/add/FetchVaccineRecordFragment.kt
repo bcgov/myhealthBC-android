@@ -21,12 +21,15 @@ import ca.bc.gov.bchealth.ui.custom.setUpDatePickerUi
 import ca.bc.gov.bchealth.ui.custom.validateDatePickerData
 import ca.bc.gov.bchealth.ui.custom.validatePhnNumber
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
 import ca.bc.gov.common.model.analytics.AnalyticsAction
 import ca.bc.gov.common.model.analytics.AnalyticsActionData
+import ca.bc.gov.repository.model.PatientVaccineRecord
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
 import com.queue_it.androidsdk.QueueListener
@@ -47,6 +50,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
     private lateinit var savedStateHandle: SavedStateHandle
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
     private val recentPhnDobViewModel: RecentPhnDobViewModel by viewModels()
+    private val addOrUpdateCardViewModel: AddOrUpdateCardViewModel by viewModels()
 
     companion object {
         private const val TAG = "FetchVaccineRecordFragment"
@@ -56,7 +60,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
-        savedStateHandle.set(VACCINE_RECORD_ADDED_SUCCESS, null)
+        savedStateHandle.set(VACCINE_RECORD_ADDED_SUCCESS, -1L)
 
         setupToolBar()
 
@@ -69,6 +73,84 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         initClickListeners()
 
         observeCovidTestResult()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                addOrUpdateCardViewModel.uiState.collect { state ->
+                    if (state.state != null) {
+                        performActionBasedOnState(state)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun performActionBasedOnState(state: AddCardOptionUiState) {
+        when (state.state) {
+
+            Status.CAN_INSERT -> {
+                state.vaccineRecord?.let { insert(it) }
+                addOrUpdateCardViewModel.resetStatus()
+            }
+            Status.CAN_UPDATE -> {
+                state.vaccineRecord?.let { updateRecord(it) }
+                addOrUpdateCardViewModel.resetStatus()
+            }
+            Status.INSERTED,
+            Status.UPDATED -> {
+                savedStateHandle.set(VACCINE_RECORD_ADDED_SUCCESS, state.modifiedRecordId)
+                analyticsFeatureViewModel.track(
+                    AnalyticsAction.ADD_QR,
+                    AnalyticsActionData.GET
+                )
+                if (binding.checkboxRemember.isChecked) {
+                    val phn = binding.edPhn.text.toString()
+                    val dob = binding.edDob.text.toString()
+                    recentPhnDobViewModel.setRecentPhnDobData(phn, dob)
+                }
+                findNavController().popBackStack()
+                addOrUpdateCardViewModel.resetStatus()
+            }
+            Status.DUPLICATE -> {
+                showErrorDialog(R.string.error_duplicate_title, R.string.error_duplicate_message)
+            }
+
+            Status.ERROR -> {
+                showErrorDialog(
+                    R.string.error_invalid_qr_code_title,
+                    R.string.error_invalid_qr_code_message
+                )
+            }
+        }
+    }
+
+    private fun showErrorDialog(title: Int, message: Int) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(title))
+            .setCancelable(false)
+            .setMessage(getString(message))
+            .setPositiveButton(getString(R.string.btn_ok)) { dialog, _ ->
+                addOrUpdateCardViewModel.resetStatus()
+                findNavController().popBackStack()
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun updateRecord(vaccineRecord: PatientVaccineRecord) {
+        requireContext().showAlertDialog(
+            title = getString(R.string.replace_health_pass_title),
+            message = getString(R.string.replace_health_pass_message),
+            positiveButtonText = getString(R.string.replace),
+            negativeButtonText = getString(R.string.not_now)
+        ) {
+            addOrUpdateCardViewModel.update(vaccineRecord)
+        }
+    }
+
+    private fun insert(vaccineRecord: PatientVaccineRecord) {
+        addOrUpdateCardViewModel.insert(vaccineRecord)
     }
 
     private fun showLoader(value: Boolean) {
@@ -100,17 +182,8 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                     }
 
                     if (uiState.vaccineRecord != null) {
-                        savedStateHandle.set(VACCINE_RECORD_ADDED_SUCCESS, uiState.vaccineRecord)
-                        analyticsFeatureViewModel.track(
-                            AnalyticsAction.ADD_QR,
-                            AnalyticsActionData.GET
-                        )
-                        if (binding.checkboxRemember.isChecked) {
-                            val phn = binding.edPhn.text.toString()
-                            val dob = binding.edDob.text.toString()
-                            recentPhnDobViewModel.setRecentPhnDobData(phn, dob)
-                        }
-                        findNavController().popBackStack()
+                        // savedStateHandle.set(VACCINE_RECORD_ADDED_SUCCESS, uiState.vaccineRecord)
+                        addOrUpdateCardViewModel.processResult(uiState.vaccineRecord)
                     }
                 }
             }
@@ -136,13 +209,13 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                 binding.edPhnNumber
             ) &&
             this.validateDatePickerData(
-                    binding.tipDob,
-                    getString(R.string.dob_required)
-                ) &&
+                binding.tipDob,
+                getString(R.string.dob_required)
+            ) &&
             this.validateDatePickerData(
-                    binding.tipDov,
-                    getString(R.string.dov_required)
-                )
+                binding.tipDov,
+                getString(R.string.dov_required)
+            )
         ) {
 
             viewModel.fetchVaccineRecord(phn, dob, dov)
