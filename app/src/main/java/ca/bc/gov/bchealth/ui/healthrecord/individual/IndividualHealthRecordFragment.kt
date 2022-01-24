@@ -1,5 +1,6 @@
 package ca.bc.gov.bchealth.ui.healthrecord.individual
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -15,8 +16,15 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
 import ca.bc.gov.bchealth.utils.showAlertDialog
 import ca.bc.gov.bchealth.utils.viewBindings
+import com.queue_it.androidsdk.Error
+import com.queue_it.androidsdk.QueueITEngine
+import com.queue_it.androidsdk.QueueListener
+import com.queue_it.androidsdk.QueuePassedInfo
+import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 /**
  * @author Pinakin Kansara
@@ -30,6 +38,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private lateinit var testRecordsAdapter: TestRecordsAdapter
     private lateinit var concatAdapter: ConcatAdapter
     private val args: IndividualHealthRecordFragmentArgs by navArgs()
+    private var patientId: Long = -1L
+    private var testResultId: Long = -1L
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,8 +66,21 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         testRecordsAdapter.submitList(uiState.onTestRecords)
                     }
 
+                    if (uiState.updatedTestResultId > 0) {
+                        viewModel.getIndividualsHealthRecord(args.patientId)
+                        return@collect
+                    }
+
+                    if (uiState.queItTokenUpdated) {
+                        requestUpdate(patientId, testResultId)
+                    }
+
                     if (uiState.onTestRecords.isEmpty() && uiState.onVaccineRecord.isEmpty())
                         findNavController().popBackStack()
+
+                    if (uiState.onMustBeQueued && uiState.queItUrl != null) {
+                        queUser(uiState.queItUrl)
+                    }
                 }
             }
         }
@@ -88,12 +111,23 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             },
             { testResult ->
                 showHealthRecordDeleteDialog(testResult)
-            }
+            },
+            { patientId, testResult ->
+                requestUpdate(patientId, testResult)
+            },
+            isUpdateRequested = true,
+            canDeleteRecord = false
         )
 
         concatAdapter = ConcatAdapter(vaccineRecordsAdapter, testRecordsAdapter)
         binding.rvHealthRecords.adapter = concatAdapter
         binding.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
+    }
+
+    private fun requestUpdate(patientId: Long, testResultId: Long) {
+        this.patientId = patientId
+        this.testResultId = testResultId
+        viewModel.requestUpdate(patientId, testResultId)
     }
 
     private fun setupToolbar() {
@@ -165,6 +199,41 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     ).invokeOnCompletion { viewModel.getIndividualsHealthRecord(args.patientId) }
                 }
             }
+        }
+    }
+
+    private fun queUser(value: String) {
+        try {
+            val uri = Uri.parse(URLDecoder.decode(value, StandardCharsets.UTF_8.name()))
+            val customerId = uri.getQueryParameter("c")
+            val waitingRoomId = uri.getQueryParameter("e")
+            QueueService.IsTest = false
+            val queueITEngine = QueueITEngine(
+                requireActivity(),
+                customerId,
+                waitingRoomId,
+                "",
+                "",
+                object : QueueListener() {
+                    override fun onQueuePassed(queuePassedInfo: QueuePassedInfo?) {
+                        viewModel.setQueItToken(queuePassedInfo?.queueItToken)
+                    }
+
+                    override fun onQueueViewWillOpen() {
+                    }
+
+                    override fun onQueueDisabled() {
+                    }
+
+                    override fun onQueueItUnavailable() {
+                    }
+
+                    override fun onError(error: Error?, errorMessage: String?) {
+                    }
+                }
+            )
+            queueITEngine.run(requireActivity())
+        } catch (e: Exception) {
         }
     }
 }

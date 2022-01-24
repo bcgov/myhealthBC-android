@@ -42,17 +42,17 @@ class ImmunizationRemoteDataSource @Inject constructor(
         var isValid = false
         with(response.payload) {
             isValid = when {
-                firstName.isNullOrBlank()
-                    || lastName.isNullOrBlank()
-                    || phn.isNullOrBlank()
-                    || birthDate.isNullOrBlank()
-                    || vaccineDate.isNullOrBlank()
-                    || qrCode.data.isNullOrBlank()
-                    || qrCode.encoding.isNullOrBlank()
-                    || qrCode.mediaType.isNullOrBlank()
-                    || federalVaccineProof.data.isNullOrBlank()
-                    || federalVaccineProof.mediaType.isNullOrBlank()
-                    || federalVaccineProof.encoding.isNullOrBlank() -> {
+                firstName.isNullOrBlank() ||
+                    lastName.isNullOrBlank() ||
+                    phn.isNullOrBlank() ||
+                    birthDate.isNullOrBlank() ||
+                    vaccineDate.isNullOrBlank() ||
+                    qrCode.data.isNullOrBlank() ||
+                    qrCode.encoding.isNullOrBlank() ||
+                    qrCode.mediaType.isNullOrBlank() ||
+                    federalVaccineProof.data.isNullOrBlank() ||
+                    federalVaccineProof.mediaType.isNullOrBlank() ||
+                    federalVaccineProof.encoding.isNullOrBlank() -> {
                     false
                 }
                 else -> {
