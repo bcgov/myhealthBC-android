@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class VaccineStatusResponse(
     @SerializedName("resourcePayload")
-    val payload: VaccineResourcePayload,
+    val payload: VaccineResourcePayload?,
     val totalResultCount: Int,
     val pageIndex: Int,
     val pageSize: Int,

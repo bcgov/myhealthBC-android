@@ -24,6 +24,9 @@ class QueueItInterceptor @Inject constructor(
         private const val HEADER_QUEUE_IT_TOKEN = "queueittoken"
         private const val HEADER_QUEUE_IT_AJAX_URL = "x-queueit-ajaxpageurl"
         private const val HEADER_QUEUE_IT_REDIRECT_URL = "x-queueit-redirect"
+        private const val RESOURCE_PAYLOAD = "resourcePayload"
+        private const val LOADED = "loaded"
+        private const val RETRY_IN = "retryin"
     }
 
     @Throws(IOException::class)
@@ -62,9 +65,12 @@ class QueueItInterceptor @Inject constructor(
                 body = response.body
                 stringBody = body?.string()
                 val json = Gson().fromJson(stringBody, JsonObject::class.java)
-                val payload = json.getAsJsonObject("resourcePayload")
-                loaded = payload.get("loaded").asBoolean
-                val retryInMillis = payload.get("retryin").asLong
+                if (json.get(RESOURCE_PAYLOAD).isJsonNull) {
+                    throw IOException("Bad response!")
+                }
+                val payload = json.getAsJsonObject(RESOURCE_PAYLOAD) ?: throw IOException("Bad response!")
+                loaded = payload.get(LOADED).asBoolean
+                val retryInMillis = payload.get(RETRY_IN).asLong
                 if (!loaded && retryInMillis > 0) {
                     Thread.sleep(retryInMillis)
                 }
