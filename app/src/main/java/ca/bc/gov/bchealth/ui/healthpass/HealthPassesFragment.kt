@@ -78,12 +78,12 @@ class HealthPassesFragment : Fragment(R.layout.scene_mycards_cards_list) {
             },
             itemClickListener = { healthPass ->
                 healthPassAdapter.currentList.forEachIndexed { index, pass ->
-                    if(healthPass.patientId == pass.patientId){
+                    if (healthPass.patientId == pass.patientId) {
                         pass.isExpanded = true
                         patientId = pass.patientId
                         healthPassAdapter.notifyItemChanged(index)
-                    }else {
-                        pass.isExpanded= false
+                    } else {
+                        pass.isExpanded = false
                         healthPassAdapter.notifyItemChanged(index)
                     }
                 }

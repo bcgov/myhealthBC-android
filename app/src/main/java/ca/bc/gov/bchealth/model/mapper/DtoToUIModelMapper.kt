@@ -69,9 +69,9 @@ fun VaccineRecordDto.toUiModel(): HealthRecordItem {
 fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
 
     val testRecordDto = testRecordDtos.maxByOrNull { it.resultDateTime }
-    val testStatus = if(testRecordDto?.testStatus.equals("Pending",true)){
+    val testStatus = if (testRecordDto?.testStatus.equals("Pending", true)) {
         testRecordDto?.testStatus
-    }else{
+    } else {
         testRecordDto?.testOutcome
     }
     val date = testRecordDtos.maxOf { it.resultDateTime }
