@@ -75,6 +75,18 @@ class HealthPassesFragment : Fragment(R.layout.scene_mycards_cards_list) {
                 } else {
                     federalTravelPassDecoderVideModel.base64ToPDFFile(federalPass)
                 }
+            },
+            itemClickListener = { healthPass ->
+                healthPassAdapter.currentList.forEachIndexed { index, pass ->
+                    if(healthPass.patientId == pass.patientId){
+                        pass.isExpanded = true
+                        patientId = pass.patientId
+                        healthPassAdapter.notifyItemChanged(index)
+                    }else {
+                        pass.isExpanded= false
+                        healthPassAdapter.notifyItemChanged(index)
+                    }
+                }
             }
         )
         binding.recCardsList.adapter = healthPassAdapter

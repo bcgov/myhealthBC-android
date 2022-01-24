@@ -13,6 +13,6 @@ data class PatientDto(
     val firstName: String,
     val lastName: String,
     val dateOfBirth: Instant,
-    val phn: String? = null,
+    var phn: String? = null,
     val patientOrder: Long = Long.MAX_VALUE
 ) : Parcelable

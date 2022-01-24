@@ -3,7 +3,7 @@ package ca.bc.gov.data
 import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
-import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.exceptions.MyHealthNetworkException
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.relation.PatientTestResultDto
 import ca.bc.gov.common.model.test.TestResultDto
@@ -30,16 +30,16 @@ class LaboratoryRemoteDataSource @Inject constructor(
      */
     suspend fun getCovidTests(request: CovidTestRequest): PatientTestResultDto {
         val response = safeCall { laboratoryApi.getCovidTests(request.toMap()) }
-            ?: throw MyHealthException(SERVER_ERROR, "Invalid Response")
+            ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
 
         if (response.error != null) {
             if (Action.MISMATCH.code == response.error.action?.code) {
-                throw MyHealthException(SERVER_ERROR_DATA_MISMATCH, response.error.message)
+                throw MyHealthNetworkException(SERVER_ERROR_DATA_MISMATCH, response.error.message)
             }
             if ("Error parsing phn" == response.error.message) {
-                throw MyHealthException(SERVER_ERROR_INCORRECT_PHN, response.error.message)
+                throw MyHealthNetworkException(SERVER_ERROR_INCORRECT_PHN, response.error.message)
             }
-            throw MyHealthException(SERVER_ERROR, response.error.message)
+            throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
         }
 
         val patientNameArray = response.payload.covidTestRecords.first().name.split(" ")

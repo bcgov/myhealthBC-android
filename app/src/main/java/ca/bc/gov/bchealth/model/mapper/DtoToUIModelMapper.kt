@@ -68,15 +68,21 @@ fun VaccineRecordDto.toUiModel(): HealthRecordItem {
 
 fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
 
-    val testOutcome = testRecordDtos.maxByOrNull { it.resultDateTime }?.testOutcome
+    val testRecordDto = testRecordDtos.maxByOrNull { it.resultDateTime }
+    val testStatus = if(testRecordDto?.testStatus.equals("Pending",true)){
+        testRecordDto?.testStatus
+    }else{
+        testRecordDto?.testOutcome
+    }
     val date = testRecordDtos.maxOf { it.resultDateTime }
+
     return HealthRecordItem(
         patientId = testResultDto.patientId,
         testResultId = testResultDto.id,
         icon = R.drawable.ic_health_record_covid_test,
         title = R.string.covid_19_test_result,
         description = 0,
-        testOutcome = testOutcome,
+        testOutcome = testStatus,
         date = date.toDate(),
         HealthRecordType.COVID_TEST_RECORD,
     )
@@ -97,11 +103,9 @@ fun getHealthPassStateResources(state: ImmunizationStatus): PassState = when (st
 fun PatientWithHealthRecordCount.toUiModel(): PatientHealthRecord {
 
     val firstName =
-        patientDto.firstName.lowercase()
-            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+        patientDto.firstName
     val lastName =
-        patientDto.lastName.lowercase()
-            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+        patientDto.lastName
     return PatientHealthRecord(
         patientId = patientDto.id,
         name = "$firstName $lastName",

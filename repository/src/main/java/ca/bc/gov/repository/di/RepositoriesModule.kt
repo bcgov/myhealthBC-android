@@ -139,8 +139,11 @@ class RepositoriesModule {
 
     @Provides
     @Singleton
-    fun providesClearStorageRepository(localDataSource: LocalDataSource) =
-        ClearStorageRepository(localDataSource)
+    fun providesClearStorageRepository(
+        localDataSource: LocalDataSource,
+        preferenceStorage: EncryptedPreferenceStorage
+    ) =
+        ClearStorageRepository(localDataSource, preferenceStorage)
 
     @Provides
     @Singleton

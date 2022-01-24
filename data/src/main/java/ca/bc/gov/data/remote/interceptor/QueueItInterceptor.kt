@@ -3,8 +3,12 @@ package ca.bc.gov.data.remote.interceptor
 import ca.bc.gov.common.const.MUST_QUEUED
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import okhttp3.Interceptor
 import okhttp3.Response
+import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import java.io.IOException
 import javax.inject.Inject
 
@@ -38,14 +42,44 @@ class QueueItInterceptor @Inject constructor(
             .url(requestUrlBuilder.build())
             .build()
 
-        val response = chain.proceed(request)
-        if (mustQueue(response)) {
-            preferenceStorage.queueItToken = null
-            val responseHeaders = response.headers
-            throw MustBeQueuedException(MUST_QUEUED, responseHeaders[HEADER_QUEUE_IT_REDIRECT_URL])
+        var retryCount = 0
+        var response: Response?
+        var body: ResponseBody? = null
+        var stringBody: String? = null
+        var loaded = false
+        do {
+            response = chain.proceed(request)
+            if (mustQueue(response)) {
+                preferenceStorage.queueItToken = null
+                val responseHeaders = response.headers
+                throw MustBeQueuedException(
+                    MUST_QUEUED,
+                    responseHeaders[HEADER_QUEUE_IT_REDIRECT_URL]
+                )
+            }
+
+            if (response.isSuccessful) {
+                body = response.body
+                stringBody = body?.string()
+                val json = Gson().fromJson(stringBody, JsonObject::class.java)
+                val payload = json.getAsJsonObject("resourcePayload")
+                loaded = payload.get("loaded").asBoolean
+                val retryInMillis = payload.get("retryin").asLong
+                if (!loaded && retryInMillis > 0) {
+                    Thread.sleep(retryInMillis)
+                }
+                retryCount++
+            }
+        } while (!loaded && retryCount < 3)
+
+        if (!loaded || response == null) {
+            throw IOException("Getting cached data from health gateway")
         }
 
-        return response
+        val newBody = stringBody?.toResponseBody(body?.contentType())
+
+        return response.newBuilder()
+            .body(newBody).build()
     }
 
     private fun mustQueue(response: Response) = response.headers.names().contains(

@@ -82,6 +82,17 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
                 } else {
                     federalTravelPassDecoderVideModel.base64ToPDFFile(federalPass)
                 }
+            },
+            itemClickListener = { healthPass ->
+                healthPassAdapter.currentList.forEachIndexed { index, pass ->
+                    if (healthPass.patientId == pass.patientId) {
+                        pass.isExpanded = true
+                        healthPassAdapter.notifyItemChanged(index)
+                    } else {
+                        pass.isExpanded = false
+                        healthPassAdapter.notifyItemChanged(index)
+                    }
+                }
             }
         )
 
@@ -100,10 +111,8 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
                     if (it) {
                         findNavController().navigate(R.id.onBoardingSliderFragment)
                     } else {
-                        viewLifecycleOwner.lifecycleScope.launch {
-                            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                                collectHealthPasses()
-                            }
+                        launch {
+                            collectHealthPasses()
                         }
                     }
                 }
@@ -282,7 +291,9 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
                     getString(R.string.undo)
                 ) {
                     hardDelete = false
-                    healthPassAdapter.currentList.add(position, deletePass)
+                    val currentList = healthPassAdapter.currentList.toMutableList()
+                    currentList.add(position, deletePass)
+                    healthPassAdapter.submitList(currentList)
                     healthPassAdapter.notifyItemInserted(position)
                 }
             snackBar.addCallback(object : Snackbar.Callback() {

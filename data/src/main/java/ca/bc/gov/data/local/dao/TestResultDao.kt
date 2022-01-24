@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import ca.bc.gov.data.local.entity.TestResultEntity
 import ca.bc.gov.data.local.entity.relations.TestResultWithRecord
+import java.time.Instant
 
 /**
  * @author Pinakin Kansara
@@ -17,8 +18,8 @@ interface TestResultDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTestResult(testResultEntity: TestResultEntity): Long
 
-    @Query("SELECT id FROM test_result WHERE patient_id = :patientId")
-    suspend fun getTestResultId(patientId: Long): Long?
+    @Query("SELECT id FROM test_result WHERE patient_id = :patientId AND collection_date = :collectionDate")
+    suspend fun getTestResultId(patientId: Long, collectionDate: Instant): Long?
 
     @Query("SELECT * FROM test_result WHERE patient_id = :patientId")
     suspend fun getTestResults(patientId: Long): List<TestResultEntity>

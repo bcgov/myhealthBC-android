@@ -17,5 +17,6 @@ class SettingsViewModel @Inject constructor(
 
     fun deleteAllRecordsAndSavedData() = viewModelScope.launch {
         clearStorageRepository.clearDataBase()
+        clearStorageRepository.clearPreferences()
     }
 }
