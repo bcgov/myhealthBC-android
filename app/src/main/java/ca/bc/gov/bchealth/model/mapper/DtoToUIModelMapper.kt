@@ -103,9 +103,11 @@ fun getHealthPassStateResources(state: ImmunizationStatus): PassState = when (st
 fun PatientWithHealthRecordCount.toUiModel(): PatientHealthRecord {
 
     val firstName =
-        patientDto.firstName
+        patientDto.firstName.lowercase()
+            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     val lastName =
-        patientDto.lastName
+        patientDto.lastName.lowercase()
+            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     return PatientHealthRecord(
         patientId = patientDto.id,
         name = "$firstName $lastName",
