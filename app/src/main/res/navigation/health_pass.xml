@@ -63,9 +63,7 @@
         <action
             android:id="@+id/action_addCardOptionFragment_to_onBoardingFragment"
             app:destination="@id/onBoardingFragment" />
-        <action
-            android:id="@+id/action_addCardOptionFragment_to_healthPassFragment"
-            app:popUpTo="@id/healthPassFragment" />
+
     </fragment>
 
 
