@@ -18,7 +18,7 @@ class ClearStorageRepository @Inject constructor(
         localDataSource.clearDataBase()
     }
 
-    suspend fun clearPreferences() = withContext(Dispatchers.IO){
+    suspend fun clearPreferences() = withContext(Dispatchers.IO) {
         preferenceStorage.clear()
     }
 }
