@@ -27,7 +27,7 @@ class PreferenceStorageModule {
     fun provideEncryptedPreferenceStorage(@ApplicationContext context: Context, key: MasterKey) =
         EncryptedSharedPreferences.create(
             context,
-            "_preferences",
+            "my_health_preferences",
             key,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM

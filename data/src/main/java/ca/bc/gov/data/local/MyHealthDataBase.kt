@@ -21,7 +21,7 @@ import ca.bc.gov.data.local.entity.VaccineRecordEntity
  */
 @Database(
     entities = [PatientEntity::class, VaccineRecordEntity::class, TestResultEntity::class, TestRecordEntity::class, VaccineDoseEntity::class],
-    version = 2,
+    version = 1,
     exportSchema = true
 )
 @TypeConverters(DateTimeConverter::class)
