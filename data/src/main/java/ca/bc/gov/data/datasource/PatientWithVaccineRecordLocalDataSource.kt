@@ -22,8 +22,8 @@ class PatientWithVaccineRecordLocalDataSource @Inject constructor(
 
     suspend fun getPatientWithVaccineRecord(patientDto: PatientDto) =
         dao.getPatientsWithVaccine(
-            patientDto.firstName,
-            patientDto.lastName,
+            patientDto.firstName.uppercase(),
+            patientDto.lastName.uppercase(),
             patientDto.dateOfBirth
         )
 

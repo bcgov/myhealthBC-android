@@ -104,7 +104,6 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
         }
         binding.tvResultDesc.visibility = View.VISIBLE
         binding.tvResultDescTitle.visibility = View.VISIBLE
-        binding.tvResultDesc.movementMethod = LinkMovementMethod.getInstance()
         binding.tvResultDesc.setText(builder, TextView.BufferType.SPANNABLE)
     }
 
