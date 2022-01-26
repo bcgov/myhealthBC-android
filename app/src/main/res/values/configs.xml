@@ -15,5 +15,6 @@
     <string name="retrofit_url_immunization">https://dev.healthgateway.gov.bc.ca/</string>
 
     <!--Covid test result-->
-    <string name="understanding_test_results">http://www.bccdc.ca/results</string>
+    <string name="understanding_test_results_url">http://www.bccdc.ca/results</string>
+    <string name="bc_cdc_test_results">"http://www.bccdc.ca/health-info/diseases-conditions/covid-19/testing/test-results"</string>
 </resources>

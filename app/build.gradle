@@ -31,7 +31,7 @@ android {
 
     buildTypes {
         release {
-            debuggable true
+            debuggable false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -56,11 +56,11 @@ android {
 
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '1.8'
     }
 
     buildFeatures {
@@ -69,6 +69,10 @@ android {
 
     testOptions {
         unitTests.returnDefaultValues = true
+    }
+
+    hilt {
+        enableAggregatingTask = true
     }
 }
 
@@ -79,6 +83,8 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
 
     implementation "com.google.android.material:material:$versions.material"
+
+    implementation "androidx.recyclerview:recyclerview:$versions.recycler"
 
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
 
@@ -100,6 +106,8 @@ dependencies {
 
     //Dagger Hilt
     implementation "com.google.dagger:hilt-android:$versions.hilt"
+    implementation project(path: ':repository')
+    implementation project(path: ':common')
 
     kapt "com.google.dagger:hilt-compiler:$versions.hilt"
 
@@ -151,10 +159,6 @@ dependencies {
     //DataStore
     implementation "androidx.datastore:datastore-preferences:$versions.datastore"
 
-    // Snowplow Android Tracker
-    implementation "com.snowplowanalytics:snowplow-android-tracker:$versions.snowplow@aar"
-    // In case 'lifecycleAutotracking' is enabled
-    implementation "androidx.lifecycle:lifecycle-extensions:$versions.snowplow_lifecycle"
 
     //Crypto
     implementation "androidx.security:security-crypto:$versions.crypto"

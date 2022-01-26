@@ -6,16 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".ui.resources.ResourcesFragment">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/layout_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_resource"
-        style="?textAppearanceHeadline1"
+        style="?textAppearanceHeadline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginTop="@dimen/space_4_x"
         android:text="@string/health_resources"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_resource_message"
@@ -23,7 +30,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginTop="@dimen/space_3_x"
+        android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginEnd="@dimen/space_2_x"
         android:text="@string/resource_screen_message"
         app:layout_constraintEnd_toEndOf="parent"
@@ -82,20 +89,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/customView2"
                 app:textSource="@string/label_resource_3" />
-
-            <ca.bc.gov.bchealth.widget.ResourceCustomView
-                android:id="@+id/customView4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_2_x"
-                android:layout_marginEnd="@dimen/space_4_x"
-                app:imageSource="@drawable/ic_resources_icon_4"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/customView3"
-                app:textSource="@string/label_resource_4" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

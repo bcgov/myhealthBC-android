@@ -20,63 +20,37 @@ import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
+/**
+ * @author Pinakin Kansara
+ */
 @AndroidEntryPoint
 class TravelPassFragment : Fragment(R.layout.fragment_travel_pass) {
-
     private val binding by viewBindings(FragmentTravelPassBinding::bind)
-
-    private val args: TravelPassFragmentArgs by navArgs()
-
     private lateinit var travelPassAdapter: TravelPassAdapter
-
     private lateinit var pdfRenderer: PdfRenderer
-
+    private val args: TravelPassFragmentArgs by navArgs()
     private lateinit var fileForSharing: File
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         setToolBar()
 
-        if (!args.healthCardDto.federalPass.isNullOrEmpty()) {
-
-            try {
-                // Save the file in app's internal memory
-                val decodedByteArray: ByteArray =
-                    Base64.decode(args.healthCardDto.federalPass, Base64.DEFAULT)
-
-                val filename = tempFileName
-
-                kotlin.runCatching {
-                    requireContext().openFileOutput(filename, Context.MODE_PRIVATE).use {
-                        it.write(decodedByteArray)
-                    }
-                }
-
-                /*
-                * Use PdfRenderer API to load the PDF locally
-                * */
-                val internalStorageFiles = requireContext().filesDir
-
-                internalStorageFiles?.listFiles()?.forEach { file ->
-
-                    if (file.name == tempFileName) {
-
-                        fileForSharing = file
-
-                        val parcelFileDescriptor =
-                            ParcelFileDescriptor.open(
-                                file,
-                                ParcelFileDescriptor.MODE_READ_ONLY
-                            )
-                        pdfRenderer = PdfRenderer(parcelFileDescriptor)
-
-                        setRecyclerView(pdfRenderer)
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
+        try {
+            val byteArray = Base64.decode(args.travelPass, Base64.DEFAULT)
+            fileForSharing = File.createTempFile("travelPass", ".pdf", requireContext().filesDir)
+            requireContext().openFileOutput(fileForSharing.name, Context.MODE_PRIVATE).use {
+                it.write(byteArray)
             }
+            val parcelFileDescriptor =
+                ParcelFileDescriptor.open(
+                    fileForSharing,
+                    ParcelFileDescriptor.MODE_READ_ONLY
+                )
+            pdfRenderer = PdfRenderer(parcelFileDescriptor)
+
+            setRecyclerView(pdfRenderer)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -115,11 +89,11 @@ class TravelPassFragment : Fragment(R.layout.fragment_travel_pass) {
                         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                         shareIntent.putExtra(
                             Intent.EXTRA_SUBJECT,
-                            args.healthCardDto.name + ": Travel Pass"
+                            "Travel Pass"
                         )
                         shareIntent.putExtra(
                             Intent.EXTRA_TEXT,
-                            args.healthCardDto.name + ": Travel Pass"
+                            "Travel Pass"
                         )
                         requireActivity().startActivity(shareIntent)
                     } catch (e: Exception) {
@@ -134,9 +108,5 @@ class TravelPassFragment : Fragment(R.layout.fragment_travel_pass) {
     override fun onDestroy() {
         super.onDestroy()
         pdfRenderer.close()
-    }
-
-    companion object {
-        const val tempFileName = "Travel_Pass.pdf"
     }
 }

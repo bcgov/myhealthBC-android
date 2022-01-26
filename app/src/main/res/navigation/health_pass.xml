@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/healthPassFragment"
+    android:id="@+id/health_pass">
+
+    <fragment
+        android:id="@+id/healthPassFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthpass.HealthPassFragment"
+        tools:layout="@layout/scene_mycards_single_card"
+        android:label="HealthPassFragment">
+        <action
+            android:id="@+id/action_healthPassFragment_to_healthPassesFragment"
+            app:destination="@id/healthPassesFragment" />
+        <action
+            android:id="@+id/action_healthPassFragment_to_addCardOptionFragment"
+            app:destination="@id/addCardOptionFragment" />
+        <action
+            android:id="@+id/action_healthPassFragment_to_expandQRFragment"
+            app:destination="@id/expandQRFragment" />
+        <action
+            android:id="@+id/action_healthPassFragment_to_fetchFederalTravelPass"
+            app:destination="@id/fetchFederalTravelPass" />
+        <action
+            android:id="@+id/action_healthPassFragment_to_travelPassFragment"
+            app:destination="@id/travelPassFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/healthPassesFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthpass.HealthPassesFragment"
+        tools:layout="@layout/fragment_health_records"
+        android:label="HealthPassesFragment">
+        <action
+            android:id="@+id/action_healthPassesFragment_to_manageHealthPassFragment"
+            app:destination="@id/manageHealthPassFragment" />
+        <action
+            android:id="@+id/action_healthPassesFragment_to_expandQRFragment"
+            app:destination="@id/expandQRFragment" />
+        <action
+            android:id="@+id/action_healthPassesFragment_to_fetchFederalTravelPass"
+            app:destination="@id/fetchFederalTravelPass" />
+        <action
+            android:id="@+id/action_healthPassesFragment_to_travelPassFragment"
+            app:destination="@id/travelPassFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/manageHealthPassFragment"
+        tools:layout="@layout/fragment_manage_health_passes"
+        android:name="ca.bc.gov.bchealth.ui.healthpass.manage.ManageHealthPassFragment"
+        android:label="ManageHealthPassFragment">
+        <action
+            android:id="@+id/action_manageHealthPassFragment_to_healthPassFragment"
+            app:popUpTo="@id/healthPassFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addCardOptionFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthpass.add.AddCardOptionFragment"
+        android:label="AddCardOptionFragment">
+        <action
+            android:id="@+id/action_addCardOptionFragment_to_onBoardingFragment"
+            app:destination="@id/onBoardingFragment" />
+
+    </fragment>
+
+
+    <dialog
+        android:id="@+id/expandQRFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthpass.ExpandQRFragment"
+        android:label="ExpandQRFragment">
+        <argument
+            android:name="shcUri"
+            app:argType="string" />
+    </dialog>
+    <fragment
+        android:id="@+id/fetchFederalTravelPass"
+        tools:layout="@layout/fragment_fetch_travel_pass"
+        android:name="ca.bc.gov.bchealth.ui.travelpass.FetchFederalTravelPassFragment"
+        android:label="FetchFederalTravelPass">
+        <argument
+            android:name="patient_id"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_fetchFederalTravelPass_to_travelPassFragment"
+            app:destination="@id/travelPassFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/travelPassFragment"
+        android:name="ca.bc.gov.bchealth.ui.travelpass.TravelPassFragment"
+        android:label="FragmentTravelPass"
+        tools:layout="@layout/fragment_travel_pass">
+        <argument
+            android:name="travel_pass"
+            app:argType="string" />
+    </fragment>
+</navigation>

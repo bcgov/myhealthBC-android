@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/health_records"
+    app:startDestination="@id/healthRecordsFragment">
+
+    <fragment
+        android:id="@+id/healthRecordsFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.HealthRecordsFragment"
+        android:label="HealthRecordsFragment"
+        tools:layout="@layout/fragment_health_records">
+        <action
+            android:id="@+id/action_healthRecordsFragment_to_individualHealthRecordFragment"
+            app:destination="@id/individualHealthRecordFragment" />
+        <action
+            android:id="@+id/action_healthRecordsFragment_to_addHealthRecordsFragment"
+            app:popUpTo="@id/healthRecordsFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/addHealthRecordsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addHealthRecordsFragment"
+        tools:layout="@layout/scene_health_records_add"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.add.AddHealthRecordsFragment"
+        android:label="AddHealthRecordsFragment" />
+    <fragment
+        android:id="@+id/individualHealthRecordFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.IndividualHealthRecordFragment"
+        android:label="IndividualHealthRecordFragment"
+        tools:layout="@layout/fragment_individual_health_record" >
+
+        <argument
+            android:name="patient_id"
+            app:argType="long" />
+
+        <argument
+            android:name="patient_name"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_testResultDetailFragment"
+            app:destination="@id/testResultDetailFragment" />
+
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_vaccineRecordDetailFragment"
+            app:destination="@id/vaccineRecordDetailFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/fetchTestRecordFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment"
+        android:label="FetchTestRecordFragment"
+        tools:layout="@layout/fragment_fetch_covid_test_result" />
+    <fragment
+        android:id="@+id/testResultDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.covidtests.TestResultDetailFragment"
+        android:label="TestResultDetailFragment" >
+        <argument
+            android:name="patient_id"
+            app:argType="long" />
+        <argument
+            android:name="testResult_id"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/vaccineRecordDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.vaccine.VaccineRecordDetailFragment"
+        android:label="fragment_vaccine_record_detail"
+        tools:layout="@layout/fragment_vaccine_record_detail" >
+        <argument
+            android:name="patientId"
+            app:argType="long" />
+    </fragment>
+
+</navigation>

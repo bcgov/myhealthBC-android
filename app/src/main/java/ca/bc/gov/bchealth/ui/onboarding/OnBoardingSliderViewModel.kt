@@ -2,9 +2,11 @@ package ca.bc.gov.bchealth.ui.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.bchealth.datasource.DataStoreRepo
+import ca.bc.gov.repository.OnBoardingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /*
@@ -12,14 +14,18 @@ import javax.inject.Inject
 */
 @HiltViewModel
 class OnBoardingSliderViewModel @Inject constructor(
-    private val dataStoreRepo: DataStoreRepo
+    private val onBoardingRepository: OnBoardingRepository
 ) : ViewModel() {
 
-    fun setOnBoardingShown(shown: Boolean) = viewModelScope.launch {
-        dataStoreRepo.setOnBoardingShown(shown)
+    fun setOnBoardingRequired(shown: Boolean) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            onBoardingRepository.setOnBoardingRequired(shown)
+        }
     }
 
-    fun setNewFeatureShown(shown: Boolean) = viewModelScope.launch {
-        dataStoreRepo.setNewFeatureShown(shown)
+    fun setAppVersionCode(appVersionCode: Int) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            onBoardingRepository.setAppVersionCode(appVersionCode)
+        }
     }
 }

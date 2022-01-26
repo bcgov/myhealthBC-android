@@ -12,32 +12,29 @@ import androidx.camera.core.TorchState
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.analytics.AnalyticsAction
-import ca.bc.gov.bchealth.analytics.AnalyticsText
-import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.barcodeanalyzer.BarcodeAnalyzer
 import ca.bc.gov.bchealth.barcodeanalyzer.ScanningResultListener
-import ca.bc.gov.bchealth.data.local.entity.HealthCard
 import ca.bc.gov.bchealth.databinding.FragmentBarcodeScannerBinding
-import ca.bc.gov.bchealth.repository.ErrorData
-import ca.bc.gov.bchealth.repository.Response
-import ca.bc.gov.bchealth.ui.mycards.MyCardsViewModel
-import ca.bc.gov.bchealth.utils.SHCDecoder
+import ca.bc.gov.bchealth.ui.healthpass.add.AddOrUpdateCardViewModel
+import ca.bc.gov.bchealth.ui.healthpass.add.Status
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
+import ca.bc.gov.bchealth.viewmodel.SharedViewModel
+import ca.bc.gov.common.model.analytics.AnalyticsAction
+import ca.bc.gov.common.model.analytics.AnalyticsActionData
+import ca.bc.gov.repository.model.PatientVaccineRecord
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import javax.inject.Inject
 
 /**
  * [BarcodeScannerFragment]
@@ -57,10 +54,9 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
 
     private lateinit var camera: Camera
 
-    private val myCardsViewModel: MyCardsViewModel by viewModels()
-
-    @Inject
-    lateinit var shcDecoder: SHCDecoder
+    private val viewModel: AddOrUpdateCardViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
+    private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -73,34 +69,42 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
         viewLifecycleOwner.lifecycleScope.launch {
 
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
-                launch {
-                    initCamera()
-                }
+                initCamera()
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                myCardsViewModel.responseFlow.collect {
-                    when (it) {
-                        is Response.Success -> {
 
-                            val pair = it.data as Pair<*, *>
-                            if (pair.second as Boolean) {
-                                showCardReplacementDialog(pair.first as HealthCard)
-                            } else {
-                                navigateToCardsList()
-                            }
-                        }
-                        is Response.Error -> {
-                            showError(
-                                it.errorData?.errorTitle.toString(),
-                                it.errorData?.errorMessage.toString()
-                            )
-                        }
-                        is Response.Loading -> {
-                        }
+                viewModel.uiState.collect { state ->
+
+                    if (state.state == Status.CAN_INSERT) {
+                        viewModel.insert(state.vaccineRecord!!)
+                        viewModel.resetStatus()
+                    }
+
+                    if (state.state == Status.CAN_UPDATE) {
+                        showCardReplacementDialog(state.vaccineRecord!!)
+                        viewModel.resetStatus()
+                    }
+
+                    if (state.state == Status.DUPLICATE) {
+                        showDuplicateRecordDialog()
+                        viewModel.resetStatus()
+                    }
+
+                    if (state.state == Status.UPDATED || state.state == Status.INSERTED) {
+                        sharedViewModel.setModifiedRecordId(state.modifiedRecordId)
+                        viewModel.resetStatus()
+                        navigateToHealthPass()
+                    }
+
+                    if (state.state == Status.ERROR) {
+                        showError(
+                            getString(R.string.error_invalid_qr_code_title),
+                            getString(R.string.error_invalid_qr_code_message)
+                        )
+                        viewModel.resetStatus()
                     }
                 }
             }
@@ -218,15 +222,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
             // When barcode is not supported
             imageAnalysis.clearAnalyzer()
 
-            try {
-                shcDecoder.getImmunizationStatus(shcUri)
-                myCardsViewModel.saveCard(shcUri)
-            } catch (e: Exception) {
-                showError(
-                    ErrorData.INVALID_QR.errorTitle.toString(),
-                    ErrorData.INVALID_QR.errorMessage.toString()
-                )
-            }
+            viewModel.processQRCode(shcUri)
         }
 
         override fun onFailure() {
@@ -237,8 +233,8 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
             imageAnalysis.clearAnalyzer()
 
             showError(
-                ErrorData.INVALID_QR.errorTitle.toString(),
-                ErrorData.INVALID_QR.errorMessage.toString()
+                getString(R.string.error_invalid_qr_code_title),
+                getString(R.string.error_invalid_qr_code_message)
             )
         }
 
@@ -257,17 +253,27 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                 .show()
         }
 
-        private fun showCardReplacementDialog(healthCard: HealthCard) {
+        private fun showDuplicateRecordDialog() {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(getString(R.string.error_duplicate_title))
+                .setCancelable(false)
+                .setMessage(getString(R.string.error_duplicate_message))
+                .setPositiveButton(getString(R.string.btn_ok)) { dialog, _ ->
+                    // Attach analyzer again to start analysis.
+                    imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this))
+
+                    dialog.dismiss()
+                }
+                .show()
+        }
+
+        private fun showCardReplacementDialog(vaccineRecord: PatientVaccineRecord) {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(R.string.replace_health_pass_title))
                 .setCancelable(false)
                 .setMessage(getString(R.string.replace_health_pass_message))
                 .setPositiveButton(getString(R.string.replace)) { dialog, _ ->
-
-                    myCardsViewModel.replaceExitingHealthPass(healthCard).invokeOnCompletion {
-                        dialog.dismiss()
-                        navigateToCardsList()
-                    }
+                    viewModel.update(vaccineRecord)
                 }.setNegativeButton(getString(R.string.not_now)) { dialog, _ ->
 
                     // Attach analyzer again to start analysis.
@@ -278,13 +284,9 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                 .show()
         }
 
-        private fun navigateToCardsList() {
+        private fun navigateToHealthPass() {
             // Snowplow event
-            Snowplow.getDefaultTracker()?.track(
-                SelfDescribingEvent
-                    .get(AnalyticsAction.AddQR.value, AnalyticsText.Scan.value)
-            )
-
-            findNavController().popBackStack(R.id.myCardsFragment, false)
+            analyticsFeatureViewModel.track(AnalyticsAction.ADD_QR, AnalyticsActionData.SCAN)
+            findNavController().navigate(R.id.action_barcodeScannerFragment_to_healthPassFragment)
         }
     }

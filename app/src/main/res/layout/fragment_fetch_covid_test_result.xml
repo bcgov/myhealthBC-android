@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.addcard.FetchVaccineCardFragment">
+    tools:context=".ui.healthrecord.add.FetchTestRecordFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -64,7 +64,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/ed_phn_number" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/ed_dob"
+                android:id="@+id/tip_dob"
                 style="@style/BC_VAX.Widget.App.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -82,12 +82,14 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
+                    android:id="@+id/edt_dob"
+                    android:inputType="date"
                     android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/ed_dot"
+                android:id="@+id/tip_dot"
                 style="@style/BC_VAX.Widget.App.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -101,10 +103,12 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ed_dob">
+                app:layout_constraintTop_toBottomOf="@+id/tip_dob">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
+                    android:id="@+id/edt_doc"
+                    android:inputType="date"
                     android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -122,7 +126,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ed_dot" />
+                app:layout_constraintTop_toBottomOf="@+id/tip_dot" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_privacy_statement"
@@ -134,7 +138,7 @@
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:autoLink="email|phone"
                 android:linksClickable="true"
-                android:text="@string/privacy_statement_info"
+                android:text="@string/privacy_statement_info_test_result"
                 android:textAlignment="textStart"
                 android:textColorLink="@color/blue"
                 android:textIsSelectable="true"

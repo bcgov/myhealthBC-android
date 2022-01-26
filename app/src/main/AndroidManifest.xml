@@ -34,6 +34,7 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.BCVaccineCardAndroid" />
+
         <activity android:name="com.queue_it.androidsdk.QueueActivity" />
 
         <provider

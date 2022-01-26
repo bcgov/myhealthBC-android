@@ -4,9 +4,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavOptions
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentOnboardingSliderBinding
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -17,11 +18,17 @@ import dagger.hilt.android.AndroidEntryPoint
 class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
 
     private val binding by viewBindings(FragmentOnboardingSliderBinding::bind)
-
     private val viewModel: OnBoardingSliderViewModel by viewModels()
+    private lateinit var savedStateHandle: SavedStateHandle
+
+    companion object {
+        const val ON_BOARDING_SHOWN_SUCCESS = "ON_BOARDING_SHOWN_SUCCESS"
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
+        savedStateHandle.set(ON_BOARDING_SHOWN_SUCCESS, false)
 
         val educationalScreenAdapter = EducationalScreenAdapter(this)
 
@@ -64,13 +71,10 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
     }
 
     private fun navigateToHealthPasses() {
-        viewModel.setOnBoardingShown(true).invokeOnCompletion {
-            viewModel.setNewFeatureShown(true).invokeOnCompletion {
-                val navOptions = NavOptions.Builder()
-                    .setPopUpTo(R.id.onBoardingSliderFragment, true)
-                    .build()
-                findNavController().navigate(R.id.myCardsFragment, null, navOptions)
-            }
+        savedStateHandle.set(ON_BOARDING_SHOWN_SUCCESS, true)
+        viewModel.setOnBoardingRequired(false)
+        viewModel.setAppVersionCode(BuildConfig.VERSION_CODE).invokeOnCompletion {
+            findNavController().popBackStack()
         }
     }
 }

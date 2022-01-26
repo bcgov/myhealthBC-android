@@ -5,15 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/layout_toolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -21,7 +12,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -77,7 +68,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_health_pass_message"
                 tools:text="3 passes" />
 
-            <androidx.recyclerview.widget.RecyclerView
+            <ca.bc.gov.bchealth.widget.RecyclerView
                 android:id="@+id/rec_cards_list"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -88,7 +79,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_number_of_passes"
                 tools:itemCount="10"
-                tools:listitem="@layout/item_mycards_cards_list" />
+                tools:listitem="@layout/item_health_pass_card" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_view_all"

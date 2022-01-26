@@ -1,0 +1,107 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        minSdk 27
+        targetSdk 31
+
+        testInstrumentationRunner "ca.bc.gov.data.HiltTestRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "version"
+    productFlavors {
+
+        dev {
+            dimension "version"
+            resValue "string", "issuer_url", "https://phsasmarthealthcard-dev.azurewebsites.net/v1/trusted/.well-known/issuers.json"
+            resValue "string", "rules_url", "https://ds9mwekyyprcy.cloudfront.net/rules.json"
+            resValue "string", "default_issuer_json", "phsasmarthealthcard-dev.azurewebsites.net~v1~trusted~.well-known~issuers.json"
+            resValue "string", "default_rules_json", "ds9mwekyyprcy.cloudfront.net~rules.json"
+        }
+
+        stage {
+            dimension "version"
+            resValue "string", "issuer_url", "https://phsasmarthealthcard-dev.azurewebsites.net/v1/trusted/.well-known/issuers.json"
+            resValue "string", "rules_url", "https://phsasmarthealthcard-dev.azurewebsites.net/v1/Covid19Proof/.well-known/rules.json"
+            resValue "string", "default_issuer_json", "phsasmarthealthcard-dev.azurewebsites.net~v1~trusted~.well-known~issuers.json"
+            resValue "string", "default_rules_json", "phsasmarthealthcard-dev.azurewebsites.net~v1~Covid19Proof~.well-known~rules.json"
+        }
+
+        prod {
+            dimension "version"
+            resValue "string", "issuer_url", "https://smarthealthcard.phsa.ca/v1/trusted/.well-known/issuers.json"
+            resValue "string", "rules_url", "https://smarthealthcard.phsa.ca/v1/Covid19Proof/.well-known/rules.json"
+            resValue "string", "default_issuer_json", "smarthealthcard.phsa.ca~v1~trusted~.well-known~issuers.json"
+            resValue "string", "default_rules_json", "smarthealthcard.phsa.ca~v1~Covid19Proof~.well-known~rules.json"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    implementation "androidx.core:core-ktx:$versions.core_ktx"
+    implementation "androidx.appcompat:appcompat:$versions.appcompat"
+
+    implementation project(path: ':data')
+    implementation project(path: ':common')
+
+    implementation "ca.bc.gov:shcdecoder:1.1.8"
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0-RC3'
+
+    // Snowplow Android Tracker
+    api "com.snowplowanalytics:snowplow-android-tracker:$versions.snowplow@aar"
+    // In case 'lifecycleAutotracking' is enabled
+    api "androidx.lifecycle:lifecycle-extensions:$versions.snowplow_lifecycle"
+
+    //GSOn
+    implementation "com.google.code.gson:gson:$versions.gson"
+
+    //JWT library
+    api "io.jsonwebtoken:jjwt-api:$versions.jjwt"
+    implementation "io.jsonwebtoken:jjwt-impl:$versions.jjwt"
+    implementation("io.jsonwebtoken:jjwt-orgjson:$versions.jjwt") {
+        exclude group: 'org.json', module: 'json' //provided by Android natively
+    }
+
+    implementation "org.bouncycastle:bcprov-jdk15on:$versions.bouncycastle"
+
+    //Google BarcodeScanner
+    //TODO:- we may replace it with dynamic model download library
+    //implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:16.2.1'
+    implementation "com.google.mlkit:barcode-scanning:$versions.barcode_scanning"
+
+    //dagger hilt
+    implementation "com.google.dagger:hilt-android:$versions.hilt"
+    kapt "com.google.dagger:hilt-compiler:$versions.hilt"
+
+    testImplementation "junit:junit:$versions.junit"
+    androidTestImplementation "androidx.test.ext:junit:$versions.ext_junit"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
+    androidTestImplementation "androidx.arch.core:core-testing:$versions.androidx_test"
+    testImplementation "org.mockito:mockito-inline:$versions.mockito"
+}

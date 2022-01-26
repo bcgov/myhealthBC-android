@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.databinding.ItemTravelPassPageBinding
 
-/*
-* Created by amit_metri on 11,November,2021
-*/
+/**
+ * @author Pinakin Kansara
+ */
 class TravelPassAdapter(private val pdfRenderer: PdfRenderer) :
     RecyclerView.Adapter<TravelPassAdapter.ViewHolder>() {
 
