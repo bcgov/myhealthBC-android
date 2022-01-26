@@ -28,6 +28,16 @@
     <string name="delete_all_records_and_saved_data">Delete all records and saved data</string>
     <string name="delete_data">Delete data</string>
     <string name="delete_data_message">Are you sure you want to delete all records and saved data?</string>
+    <string name="profile_settings">Profile &amp; settings</string>
+    <string name="security_and_data"><![CDATA[Security & data]]></string>
+    <string name="view_profile"><![CDATA[View profile >]]></string>
+    <string name="data">Data</string>
+    <string name="delete_all_records_desc">Log out of BC Services Card account and delete every records and saved personal information from My Health BC</string>
+    <string name="logins">Logins</string>
+    <string name="log_in_with_bc_services_card_desc">When logged in, recrods will be automatically added and updated</string>
+    <string name="logout_dialog_title">Log out of BC Service Card</string>
+    <string name="logout_dialog_message">All records under the account will be removed.</string>
+    <string name="log_out">Log out</string>
 
     <!--News feed-->
     <string name="news_feed">News feed</string>
@@ -139,7 +149,7 @@
         Monitor your health and contact a health care provider or call 8-1-1 if you are concerned about your symptoms.\n
         Go to Understanding Test Results for more information.
     </string>
-   <string name="understanding_test_results">Understanding Test Results.</string>
+    <string name="understanding_test_results">Understanding Test Results.</string>
     <string name="tested_on">Tested on</string>
     <string name="name">Name</string>
     <string name="date_of_testing">Date of Testing</string>
@@ -179,6 +189,19 @@
     <string name="federal_proof">federal proof</string>
     <string name="torch">torch</string>
 
+    <!-- Login -->
+    <string name="leaving_my_health_bc">Leaving My Health BC</string>
+    <string name="login_info_message"><![CDATA[<p>You will be temporarily redirected to <b>Health Gateway</b> to login with your BC Services Card.</p>
+                    <p>You will then be automatically returned to the <b>My Health BC</b> mobile app.</p>]]></string>
+    <string name="btn_continue">Continue</string>
+    <string name="go_to_health_gateway">Go to Health Gateway</string>
+    <string name="tv_login_title">Access health records</string>
+    <string name="tv_login_message">Log in with BC Service Card to access all your health records in My Health BC.</string>
+    <string name="log_in_with_bc_services_card">Log in with BC Services Card</string>
+    <string name="incorrect_credentials">Please enter valid credentials</string>
+    <string name="login_success_title">Log in successful</string>
+    <string name="login_success_message">Your records will be automatically added and updated in My Health BC.</string>
+
     <!--ERROR-->
     <string name="error">Error!</string>
     <string name="error_message">Something went wrong. Please retry.</string>
@@ -191,4 +214,5 @@
     <string name="error_vaccine_data_mismatch_message">The information you entered does not match our records. Please try again.</string>
     <string name="invalid_phn">The Personal Health Number entered is not valid</string>
     <string name="error_incorrect_phn">There was an error with your Personal Health Number. Please check that it is correct and try again.</string>
+
 </resources>

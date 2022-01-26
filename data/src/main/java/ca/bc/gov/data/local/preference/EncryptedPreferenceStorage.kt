@@ -22,6 +22,7 @@ class EncryptedPreferenceStorage @Inject constructor(
         private const val RECENT_PHN_DOB = "RECENT_PHN_DOB"
         private const val COOKIE = "cookie"
         private const val PASS_PHRASE = "RECORD"
+        private const val AUTH_STATE = "STATE"
     }
 
     var queueItToken: String?
@@ -38,7 +39,10 @@ class EncryptedPreferenceStorage @Inject constructor(
 
     var passPhrase: ByteArray
         get() =
-            Base64.decode(encryptedSharedPreferences.getString(PASS_PHRASE, "") ?: "", Base64.DEFAULT)
+            Base64.decode(
+                encryptedSharedPreferences.getString(PASS_PHRASE, "") ?: "",
+                Base64.DEFAULT
+            )
         set(value) {
             encryptedSharedPreferences.edit().putString(
                 PASS_PHRASE,
@@ -83,4 +87,12 @@ class EncryptedPreferenceStorage @Inject constructor(
         encryptedSharedPreferences.edit().putString(RECENT_PHN_DOB, data).apply()
 
     fun clear() = encryptedSharedPreferences.edit().clear().apply()
+
+    var authState: String?
+        get() = encryptedSharedPreferences.getString(AUTH_STATE, null)
+        set(value) {
+            encryptedSharedPreferences.edit().putString(
+                AUTH_STATE, value
+            ).apply()
+        }
 }
