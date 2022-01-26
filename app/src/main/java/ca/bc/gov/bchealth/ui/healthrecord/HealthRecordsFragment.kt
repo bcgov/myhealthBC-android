@@ -10,12 +10,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHealthRecordsBinding
-import ca.bc.gov.bchealth.ui.healthrecord.add.AddHealthRecordsOptionsViewModel
-import ca.bc.gov.bchealth.ui.healthrecord.add.OptionType
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -28,31 +25,20 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
 
     private val binding by viewBindings(FragmentHealthRecordsBinding::bind)
     private val viewModel: HealthRecordsViewModel by viewModels()
-    private val addHealthRecordsOptionsViewModel: AddHealthRecordsOptionsViewModel by viewModels()
     private lateinit var adapter: HealthRecordsAdapter
-    private lateinit var optionsAdapter: HealthRecordOptionAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupToolBar()
 
-        optionsAdapter = HealthRecordOptionAdapter {
-            when (it) {
-                OptionType.VACCINE -> {
-                    findNavController().navigate(R.id.fetchVaccineRecordFragment)
-                }
-                OptionType.TEST -> {
-                    findNavController().navigate(R.id.fetchTestRecordFragment)
-                }
-            }
-        }
         adapter = HealthRecordsAdapter {
             val action =
-                HealthRecordsFragmentDirections.actionHealthRecordsFragmentToIndividualHealthRecordFragment(
-                    it.patientId.toLong(),
-                    it.name
-                )
+                HealthRecordsFragmentDirections
+                    .actionHealthRecordsFragmentToIndividualHealthRecordFragment(
+                        it.patientId.toLong(),
+                        it.name
+                    )
             findNavController().navigate(action)
         }
 
@@ -89,12 +75,7 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                 binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), 2)
                 adapter.submitList(records)
             } else {
-                binding.ivAddHealthRecord.visibility = View.GONE
-                binding.rvMembers.adapter = optionsAdapter
-                binding.rvMembers.layoutManager = LinearLayoutManager(requireContext())
-                optionsAdapter.submitList(
-                    addHealthRecordsOptionsViewModel.getHealthRecordOption().toMutableList()
-                )
+                findNavController().navigate(R.id.addHealthRecordsFragment)
             }
         }
     }
@@ -103,7 +84,7 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         binding.toolbar.ivRightOption.apply {
             visibility = View.VISIBLE
             setOnClickListener {
-                findNavController().navigate(R.id.settingFragment)
+                findNavController().navigate(R.id.profileFragment)
             }
         }
     }
