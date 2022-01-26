@@ -29,6 +29,7 @@ class HealthPassViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HealthPassUiState())
     val uiState: StateFlow<HealthPassUiState> = _uiState.asStateFlow()
     var isAuthenticationRequired: Boolean = true
+    var isBcscLoginRequiredPostBiometrics: Boolean = false
     val healthPasses = repository.patientsVaccineRecord.map { records ->
         records.map { record ->
             record.toUiModel()
@@ -38,6 +39,7 @@ class HealthPassViewModel @Inject constructor(
     fun launchCheck() = viewModelScope.launch {
         when {
             onBoardingRepository.onBoardingRequired -> {
+                isBcscLoginRequiredPostBiometrics = true
                 _uiState.update { state ->
                     state.copy(isLoading = false, isOnBoardingRequired = true)
                 }

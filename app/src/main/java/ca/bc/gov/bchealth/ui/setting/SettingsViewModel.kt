@@ -12,7 +12,7 @@ import javax.inject.Inject
 */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val clearStorageRepository: ClearStorageRepository
+    private val clearStorageRepository: ClearStorageRepository,
 ) : ViewModel() {
 
     fun deleteAllRecordsAndSavedData() = viewModelScope.launch {

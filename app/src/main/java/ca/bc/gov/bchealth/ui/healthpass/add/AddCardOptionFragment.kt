@@ -35,7 +35,6 @@ import kotlinx.coroutines.launch
 class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
 
     private val binding by viewBindings(FragmentAddCardOptionsBinding::bind)
-
     private val addOrUpdateCardViewModel: AddOrUpdateCardViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
