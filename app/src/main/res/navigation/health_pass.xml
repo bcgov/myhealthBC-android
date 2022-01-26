@@ -5,6 +5,8 @@
     app:startDestination="@id/healthPassFragment"
     android:id="@+id/health_pass">
 
+    <include app:graph="@navigation/bcsc_auth" />
+
     <fragment
         android:id="@+id/healthPassFragment"
         android:name="ca.bc.gov.bchealth.ui.healthpass.HealthPassFragment"
@@ -25,6 +27,9 @@
         <action
             android:id="@+id/action_healthPassFragment_to_travelPassFragment"
             app:destination="@id/travelPassFragment" />
+        <action
+            android:id="@+id/action_healthPassFragment_to_bcscAuthFragment"
+            app:destination="@id/bcsc_auth" />
     </fragment>
 
     <fragment
@@ -96,4 +101,5 @@
             android:name="travel_pass"
             app:argType="string" />
     </fragment>
+
 </navigation>
