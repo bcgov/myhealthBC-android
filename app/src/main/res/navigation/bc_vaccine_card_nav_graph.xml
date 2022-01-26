@@ -60,10 +60,5 @@
             android:id="@+id/action_profileFragment_to_bcscAuthFragment"
             app:destination="@id/bcsc_auth" />
     </fragment>
-    <fragment
-        android:id="@+id/biometricsAuthenticationFragment"
-        tools:layout="@layout/fragment_biometric_authentication"
-        android:name="ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment"
-        android:label="BiometricsAuthenticationFragment" />
 
 </navigation>

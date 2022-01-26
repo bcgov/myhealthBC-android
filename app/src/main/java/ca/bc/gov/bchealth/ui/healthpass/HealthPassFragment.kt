@@ -25,8 +25,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Scene
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHelathPassBinding
-import ca.bc.gov.bchealth.ui.auth.BioMetricState
-import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment.Companion.BIOMETRIC_STATE
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment.Companion.BCSC_AUTH_SUCCESS
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -61,24 +59,6 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
 
         setupToolBar()
 
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BioMetricState>(
-            BIOMETRIC_STATE
-        )?.observe(viewLifecycleOwner) {
-            when (it) {
-                BioMetricState.SUCCESS -> {
-                    viewModel.onAuthenticationRequired(false)
-                    if (viewModel.isBcscLoginRequiredPostBiometrics) {
-                        sharedViewModel.destinationId = 0
-                        checkLogin()
-                        viewModel.isBcscLoginRequiredPostBiometrics = false
-                    }
-                }
-                else -> {
-                    findNavController().popBackStack()
-                }
-            }
-        }
-
         val savedStateHandle: SavedStateHandle =
             findNavController().currentBackStackEntry!!.savedStateHandle
         savedStateHandle.getLiveData<Boolean>(
@@ -87,8 +67,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
             .observe(viewLifecycleOwner, {
                 if (it) {
                     savedStateHandle.set(BCSC_AUTH_SUCCESS, false)
-                    if (sharedViewModel.destinationId > 0)
-                        findNavController().navigate(R.id.addCardOptionFragment)
+                    findNavController().navigate(R.id.addCardOptionFragment)
                 }
             })
 
@@ -145,50 +124,37 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
             }
         )
 
-        viewModel.launchCheck()
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.onBoardingRequired.collect {
+                    if (it) {
+                        findNavController().navigate(R.id.onBoardingSliderFragment)
+                    } else {
+                        launch {
+                            collectHealthPasses()
+                        }
+                    }
+                }
+            }
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    onBoardingFlow()
-                }
-                launch {
-                    collectHealthPasses()
-                }
-                launch {
-                    collectUiState()
-                }
-            }
-        }
-    }
-
-    private suspend fun onBoardingFlow() {
-        viewModel.uiState.collect { uiState ->
-            if (uiState.isOnBoardingRequired) {
-                findNavController().navigate(R.id.onBoardingSliderFragment)
-                viewModel.onBoardingShown()
-            }
-
-            if (uiState.isAuthenticationRequired) {
-                findNavController().navigate(R.id.biometricsAuthenticationFragment)
-            }
-        }
-    }
-
-    private suspend fun collectUiState() {
-        federalTravelPassDecoderVideModel.uiState.collect { uiState ->
-            if (uiState.travelPass != null) {
-                val (federalTravelPass, file) = uiState.travelPass
-                if (file != null) {
-                    try {
-                        showPDF(file)
-                    } catch (e: Exception) {
-                        navigateToViewTravelPass(federalTravelPass)
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                federalTravelPassDecoderVideModel.uiState.collect { uiState ->
+                    if (uiState.travelPass != null) {
+                        val (federalTravelPass, file) = uiState.travelPass
+                        if (file != null) {
+                            try {
+                                showPDF(file)
+                            } catch (e: Exception) {
+                                navigateToViewTravelPass(federalTravelPass)
+                            }
+                        } else {
+                            navigateToViewTravelPass(federalTravelPass)
+                        }
+                        federalTravelPassDecoderVideModel.federalTravelPassShown()
                     }
-                } else {
-                    navigateToViewTravelPass(federalTravelPass)
                 }
-                federalTravelPassDecoderVideModel.federalTravelPassShown()
             }
         }
     }
@@ -252,7 +218,6 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
         val btnAddHealthPass: ShapeableImageView =
             sceneSingleHealthPass.sceneRoot.findViewById(R.id.iv_add_card)
         btnAddHealthPass.setOnClickListener {
-            sharedViewModel.destinationId = R.id.addCardOptionFragment
             checkLogin()
         }
     }
@@ -302,12 +267,12 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
         val btnAddCardOptions: MaterialButton =
             sceneNoCardPlaceHolder.sceneRoot.findViewById(R.id.btn_add_card)
         btnAddCardOptions.setOnClickListener {
-            sharedViewModel.destinationId = R.id.addCardOptionFragment
             checkLogin()
         }
     }
 
     private fun checkLogin() {
+        sharedViewModel.destinationId = R.id.addCardOptionFragment
         bcscAuthViewModel.checkLogin()
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -320,8 +285,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                         return@collect
                     } else {
                         if (it.isLoggedIn) {
-                            if (sharedViewModel.destinationId > 0)
-                                findNavController().navigate(sharedViewModel.destinationId)
+                            findNavController().navigate(sharedViewModel.destinationId)
                         } else {
                             findNavController()
                                 .navigate(R.id.action_healthPassFragment_to_bcscAuthFragment)
