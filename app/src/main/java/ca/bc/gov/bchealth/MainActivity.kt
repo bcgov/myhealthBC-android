@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.addCardOptionFragment,
                 R.id.healthRecordsFragment,
                 R.id.settingFragment,
+                R.id.profileFragment,
                 R.id.resourcesFragment,
                 R.id.individualHealthRecordFragment,
                 R.id.vaccineRecordDetailFragment,

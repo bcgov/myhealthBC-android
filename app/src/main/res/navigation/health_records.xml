@@ -5,6 +5,8 @@
     android:id="@+id/health_records"
     app:startDestination="@id/healthRecordsFragment">
 
+    <include app:graph="@navigation/bcsc_auth" />
+
     <fragment
         android:id="@+id/healthRecordsFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.HealthRecordsFragment"
@@ -24,7 +26,11 @@
         android:id="@+id/addHealthRecordsFragment"
         tools:layout="@layout/scene_health_records_add"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.add.AddHealthRecordsFragment"
-        android:label="AddHealthRecordsFragment" />
+        android:label="AddHealthRecordsFragment" >
+        <action
+            android:id="@+id/action_addHealthRecordsFragment_to_bcscAuthFragment"
+            app:destination="@id/bcsc_auth" />
+    </fragment>
     <fragment
         android:id="@+id/individualHealthRecordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.IndividualHealthRecordFragment"

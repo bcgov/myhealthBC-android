@@ -20,7 +20,11 @@
         android:id="@+id/settingFragment"
         android:name="ca.bc.gov.bchealth.ui.setting.SettingFragment"
         android:label="fragment_setting"
-        tools:layout="@layout/fragment_setting" />
+        tools:layout="@layout/fragment_setting" >
+        <action
+            android:id="@+id/action_settingFragment_to_bcscAuthInfoFragment"
+            app:destination="@id/bcsc_auth" />
+    </fragment>
     <fragment
         android:id="@+id/barcodeScannerFragment"
         android:name="ca.bc.gov.bchealth.ui.scanner.BarcodeScannerFragment"
@@ -45,6 +49,17 @@
     <include app:graph="@navigation/health_records" />
     <include app:graph="@navigation/news_feed" />
     <include app:graph="@navigation/resources" />
+    <include app:graph="@navigation/bcsc_auth" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="ca.bc.gov.bchealth.ui.setting.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_bcscAuthFragment"
+            app:destination="@id/bcsc_auth" />
+    </fragment>
     <fragment
         android:id="@+id/biometricsAuthenticationFragment"
         tools:layout="@layout/fragment_biometric_authentication"

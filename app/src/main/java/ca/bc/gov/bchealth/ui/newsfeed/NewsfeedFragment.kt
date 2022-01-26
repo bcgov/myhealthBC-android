@@ -26,11 +26,8 @@ import kotlinx.coroutines.launch
 class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
 
     private lateinit var newsfeedAdapter: NewsfeedAdapter
-
     private var newsFeeds: MutableList<Newsfeed> = mutableListOf()
-
     private val binding by viewBindings(FragmentNewsfeedBinding::bind)
-
     private val viewModel: NewsfeedViewModel by viewModels()
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
 
@@ -85,7 +82,7 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
         binding.toolbar.ivRightOption.apply {
             visibility = View.VISIBLE
             setOnClickListener {
-                findNavController().navigate(R.id.settingFragment)
+                findNavController().navigate(R.id.profileFragment)
             }
         }
     }
