@@ -90,9 +90,7 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
                             vaccineRecordId = it
                         }
 
-                        binding.tvFullName.text = patientAndVaccineRecord.patientDto.firstName
-                            .plus(" ")
-                            .plus(patientAndVaccineRecord.patientDto.lastName)
+                        binding.tvFullName.text = patientAndVaccineRecord.patientDto.fullName
 
                         binding.tvIssueDate.text = getString(R.string.issued_on)
                             .plus(" ")

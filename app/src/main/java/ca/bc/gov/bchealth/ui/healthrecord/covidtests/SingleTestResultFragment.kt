@@ -44,7 +44,7 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            tvFullName.text = patientDto?.firstName.plus(" ").plus(patientDto?.lastName)
+            tvFullName.text = patientDto?.fullName
             tvTestResult.text = testRecordDto?.testOutcome
             tvTestedOn.text =
                 getString(R.string.tested_on)

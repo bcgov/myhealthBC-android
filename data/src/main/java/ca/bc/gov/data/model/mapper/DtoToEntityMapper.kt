@@ -13,8 +13,7 @@ import ca.bc.gov.data.local.entity.VaccineRecordEntity
 
 fun PatientDto.toEntity() = PatientEntity(
     id,
-    firstName = firstName.uppercase(),
-    lastName = lastName.uppercase(),
+    fullName,
     dateOfBirth = dateOfBirth,
     phn = phn,
     patientOrder = Long.MAX_VALUE

@@ -36,7 +36,7 @@ fun PatientVaccineRecord.toUiModel(): HealthPass {
     return HealthPass(
         patientId = patientDto.id,
         vaccineRecordId = vaccineRecordDto.id,
-        name = "${patientDto.firstName} ${patientDto.lastName}",
+        name = patientDto.fullName.uppercase(),
         qrIssuedDate = "Issued on ${
         vaccineRecordDto.qrIssueDate
             .toDateTimeString()
@@ -101,16 +101,9 @@ fun getHealthPassStateResources(state: ImmunizationStatus): PassState = when (st
 }
 
 fun PatientWithHealthRecordCount.toUiModel(): PatientHealthRecord {
-
-    val firstName =
-        patientDto.firstName.lowercase()
-            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-    val lastName =
-        patientDto.lastName.lowercase()
-            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     return PatientHealthRecord(
         patientId = patientDto.id,
-        name = "$firstName $lastName",
+        name = patientDto.fullName,
         totalRecord = vaccineRecordCount + testResultCount
     )
 }
