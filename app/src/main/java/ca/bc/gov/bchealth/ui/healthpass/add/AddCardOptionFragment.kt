@@ -77,8 +77,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 addOrUpdateCardViewModel.uiState.collect { state ->
                     if (state.state != null) {
                         performActionBasedOnState(state)

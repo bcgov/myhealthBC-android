@@ -246,6 +246,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun onBCSCLoginClick() {
-        //Do nothing
+        // Do nothing
     }
 }

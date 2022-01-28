@@ -13,8 +13,9 @@ class OnBoardingRepository @Inject constructor(
     suspend fun setAppVersionCode(appVersionCode: Int) =
         preferenceStorage.setAppVersion(appVersionCode)
 
-    suspend fun setOnBoardingRequired(onBoardingShown: Boolean) =
-        preferenceStorage.setIsOnBoardingShown(onBoardingShown)
-
-    val onBoardingRequired = preferenceStorage.onBoardingRequired
+    var onBoardingRequired: Boolean
+        get() = preferenceStorage.onBoardingRequired
+        set(value) {
+            preferenceStorage.onBoardingRequired = value
+        }
 }

@@ -166,6 +166,12 @@
     <string name="login_to_view_hidden_records_msg">Log in again with your BC Services Card to view all the records</string>
     <string name="log_in_with_bc_services_card">Log in with BC Services Card</string>
 
+    <!--BIOMETRICS-->
+    <string name="btn_use_biometrics">Use biometrics</string>
+    <string name="tv_biometric_heading">Protect your personal information</string>
+    <string name="dialog_biometric_description">Log in using your biometric credential</string>
+    <string name="biometric_description">Your records contain your personal information. Unlock My Health BC with biometric authentication.</string>
+
     <!--Miscellaneous-->
     <string name="coming_soon">Coming soon!</string>
     <string name="back">Back</string>
@@ -179,6 +185,10 @@
     <string name="federal_proof">federal proof</string>
     <string name="torch">torch</string>
 
+    <string name="dialog_btn_not_now">Not now</string>
+    <string name="dialog_btn_settings">Settings</string>
+    <string name="dialog_button_ok">Ok</string>
+
     <!--ERROR-->
     <string name="error">Error!</string>
     <string name="error_message">Something went wrong. Please retry.</string>
@@ -191,4 +201,9 @@
     <string name="error_vaccine_data_mismatch_message">The information you entered does not match our records. Please try again.</string>
     <string name="invalid_phn">The Personal Health Number entered is not valid</string>
     <string name="error_incorrect_phn">There was an error with your Personal Health Number. Please check that it is correct and try again.</string>
+    <string name="error_biometric_enrollment_title">Enable Biometric</string>
+    <string name="error_biometric_enrollment_message">Enable Biometric message</string>
+    <string name="error_biometric_authentication_title">Authentication error</string>
+    <string name="error_biometric_no_hardware">Unable to find supported hardware to perform biometric authentication.</string>
+    <string name="error_biometric_unknown">Unable to perform authentication at the moment try again later.</string>
 </resources>

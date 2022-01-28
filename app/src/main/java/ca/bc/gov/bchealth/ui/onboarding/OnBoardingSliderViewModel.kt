@@ -19,7 +19,7 @@ class OnBoardingSliderViewModel @Inject constructor(
 
     fun setOnBoardingRequired(shown: Boolean) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
-            onBoardingRepository.setOnBoardingRequired(shown)
+            onBoardingRepository.onBoardingRequired = shown
         }
     }
 

@@ -38,7 +38,10 @@ class EncryptedPreferenceStorage @Inject constructor(
 
     var passPhrase: ByteArray
         get() =
-            Base64.decode(encryptedSharedPreferences.getString(PASS_PHRASE, "") ?: "", Base64.DEFAULT)
+            Base64.decode(
+                encryptedSharedPreferences.getString(PASS_PHRASE, "") ?: "",
+                Base64.DEFAULT
+            )
         set(value) {
             encryptedSharedPreferences.edit().putString(
                 PASS_PHRASE,
@@ -61,23 +64,23 @@ class EncryptedPreferenceStorage @Inject constructor(
         }
     }
 
-    val onBoardingRequired: Flow<Boolean> =
-        flow { emit(encryptedSharedPreferences.getBoolean(ON_BOARDING_SHOWN, true)) }
+    var onBoardingRequired: Boolean
+        get() = encryptedSharedPreferences.getBoolean(ON_BOARDING_SHOWN, true)
+        set(value) {
+            encryptedSharedPreferences.edit()
+                .putBoolean(ON_BOARDING_SHOWN, value)
+                .apply()
+        }
 
     fun setAnalyticsFeature(feature: AnalyticsFeature) =
         encryptedSharedPreferences.edit()
             .putInt(ANALYTICS_FEATURE, feature.value)
             .apply()
 
-    fun setIsOnBoardingShown(onBoardingShown: Boolean) =
-        encryptedSharedPreferences.edit()
-            .putBoolean(ON_BOARDING_SHOWN, onBoardingShown)
-            .apply()
-
-    fun setAppVersion(versionCode: Int) =
+    suspend fun setAppVersion(versionCode: Int) =
         encryptedSharedPreferences.edit()
             .putInt(APP_VERSION_CODE, versionCode)
-            .apply()
+            .commit()
 
     fun setRecentPhnDob(data: String) =
         encryptedSharedPreferences.edit().putString(RECENT_PHN_DOB, data).apply()
