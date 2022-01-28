@@ -45,6 +45,11 @@
     <include app:graph="@navigation/health_records" />
     <include app:graph="@navigation/news_feed" />
     <include app:graph="@navigation/resources" />
+    <fragment
+        android:id="@+id/biometricsAuthenticationFragment"
+        tools:layout="@layout/fragment_biometric_authentication"
+        android:name="ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment"
+        android:label="BiometricsAuthenticationFragment" />
 
     <fragment
         android:id="@+id/profileFragment"
