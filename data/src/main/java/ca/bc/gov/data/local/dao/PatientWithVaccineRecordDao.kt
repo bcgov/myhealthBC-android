@@ -18,10 +18,9 @@ import java.time.Instant
 interface PatientWithVaccineRecordDao {
 
     @Transaction
-    @Query("SELECT * FROM patient WHERE first_name = :firstName AND last_name = :lastName AND dob = :dateOfBirth ")
+    @Query("SELECT * FROM patient WHERE full_name = :fullName AND dob = :dateOfBirth ")
     suspend fun getPatientsWithVaccine(
-        firstName: String,
-        lastName: String,
+        fullName: String,
         dateOfBirth: Instant
     ): List<PatientWithVaccineRecord>
 

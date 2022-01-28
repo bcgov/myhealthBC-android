@@ -19,8 +19,8 @@ interface PatientDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPatient(patientEntity: PatientEntity): Long
 
-    @Query("SELECT id FROM patient WHERE first_name = :firstName AND last_name = :lastName AND dob = :dateOdBirth")
-    suspend fun getPatientId(firstName: String, lastName: String, dateOdBirth: Instant): Long?
+    @Query("SELECT id FROM patient WHERE full_name = :fullName AND dob = :dateOdBirth")
+    suspend fun getPatientId(fullName: String, dateOdBirth: Instant): Long?
 
     @Query("SELECT * FROM patient where id = :patientId")
     suspend fun getPatient(patientId: Long): PatientEntity

@@ -54,7 +54,6 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                 }
             )
 
-
         optionsAdapter = HealthRecordOptionAdapter {
             when (it) {
                 OptionType.VACCINE -> {
