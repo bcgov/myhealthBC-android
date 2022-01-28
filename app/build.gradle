@@ -111,6 +111,8 @@ dependencies {
 
     kapt "com.google.dagger:hilt-compiler:$versions.hilt"
 
+    implementation "androidx.biometric:biometric-ktx:$versions.biometric"
+
     //ROOM
     implementation "androidx.room:room-runtime:$versions.room"
     kapt "androidx.room:room-compiler:$versions.room"

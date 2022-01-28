@@ -8,11 +8,11 @@ import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,14 +28,36 @@ class HealthPassViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(HealthPassUiState())
     val uiState: StateFlow<HealthPassUiState> = _uiState.asStateFlow()
-
+    var isAuthenticationRequired: Boolean = true
     val healthPasses = repository.patientsVaccineRecord.map { records ->
         records.map { record ->
             record.toUiModel()
         }
     }
 
-    val onBoardingRequired: Flow<Boolean> = onBoardingRepository.onBoardingRequired
+    fun launchCheck() = viewModelScope.launch {
+        when {
+            onBoardingRepository.onBoardingRequired -> {
+                _uiState.update { state ->
+                    state.copy(isLoading = false, isOnBoardingRequired = true)
+                }
+            }
+            isAuthenticationRequired -> {
+                _uiState.update { state -> state.copy(isAuthenticationRequired = true) }
+            }
+        }
+    }
+
+    fun onBoardingShown() {
+        _uiState.update {
+            it.copy(isOnBoardingRequired = false)
+        }
+    }
+
+    fun onAuthenticationRequired(isRequired: Boolean) {
+        isAuthenticationRequired = isRequired
+        _uiState.update { state -> state.copy(isAuthenticationRequired = isRequired) }
+    }
 
     fun deleteHealthPass(vaccineRecordId: Long) = viewModelScope.launch {
         vaccineRecordRepository.delete(vaccineRecordId = vaccineRecordId)
@@ -54,7 +76,7 @@ class HealthPassViewModel @Inject constructor(
 data class HealthPassUiState(
     val isLoading: Boolean = false,
     val isOnBoardingRequired: Boolean = false,
-    val healthPasses: List<HealthPass> = emptyList()
+    val isAuthenticationRequired: Boolean = false
 )
 
 data class HealthPass(

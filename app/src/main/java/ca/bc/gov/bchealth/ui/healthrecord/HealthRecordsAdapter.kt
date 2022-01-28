@@ -46,7 +46,7 @@ class HealthRecordsAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when(holder) {
+        when (holder) {
             is MemberViewHolder -> {
                 val record = getItem(position)
                 val totalRecords: String = if (record.totalRecord == 1)

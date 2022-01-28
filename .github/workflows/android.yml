@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - develop
-      - feature/modularise
+      - feature/bcsc
   push:
     branches:
       - main
@@ -51,6 +51,7 @@ jobs:
           path: app/build/outputs/apk/prod/debug/app-prod-debug.apk
 
       - name: upload dev APK to firebase
+        id: fb_dev
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
@@ -59,6 +60,7 @@ jobs:
           file: app/build/outputs/apk/dev/debug/app-dev-debug.apk
 
       - name: upload stage APK to firebase
+        id: fb_stage
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
@@ -67,9 +69,19 @@ jobs:
           file: app/build/outputs/apk/stage/debug/app-stage-debug.apk
 
       - name: upload prod APK to firebase
+        id: fb_prod
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
           token: ${{secrets.FIREBASE_TOKEN}}
           groups: freshworks.io
           file: app/build/outputs/apk/prod/debug/app-prod-debug.apk
+
+      - name: slack notification
+        uses: rtCamp/action-slack-notify@v2.1.0
+        env:
+          SLACK_WEBHOOK: ${{secrets.SLACK_WEB_HOOK}}
+          SLACK_CHANNEL: bc-vaccine-card
+          SLACK_USERNAME: "QA"
+          SLACK_TITLE: "Firebase build uploaded"
+          SLACK_MESSAGE: 'New build is available for testing: ${{steps.fb_dev}}'
