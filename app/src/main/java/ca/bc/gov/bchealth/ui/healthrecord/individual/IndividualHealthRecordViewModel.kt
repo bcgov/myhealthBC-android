@@ -138,6 +138,10 @@ data class HealthRecordItem(
     val healthRecordType: HealthRecordType
 )
 
+data class HiddenRecordItem(
+    val countOfRecords: Int
+)
+
 enum class HealthRecordType {
     VACCINE_RECORD,
     COVID_TEST_RECORD

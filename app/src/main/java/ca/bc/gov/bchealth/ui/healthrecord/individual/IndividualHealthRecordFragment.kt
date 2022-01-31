@@ -52,6 +52,12 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         setupObserver()
 
         viewModel.getIndividualsHealthRecord(args.patientId)
+
+        hiddenHealthRecordAdapter.submitList(getDummyData())
+    }
+
+    private fun getDummyData(): ArrayList<HiddenRecordItem> {
+        return arrayListOf(HiddenRecordItem(1))
     }
 
     private fun setupObserver() {
@@ -120,7 +126,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             canDeleteRecord = false
         )
 
-        hiddenHealthRecordAdapter = HiddenHealthRecordAdapter { onBCSCLoginClick() }
+        hiddenHealthRecordAdapter = HiddenHealthRecordAdapter({ onBCSCLoginClick() }, requireContext())
         concatAdapter = ConcatAdapter(hiddenHealthRecordAdapter, vaccineRecordsAdapter, testRecordsAdapter)
         binding.rvHealthRecords.adapter = concatAdapter
         binding.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
