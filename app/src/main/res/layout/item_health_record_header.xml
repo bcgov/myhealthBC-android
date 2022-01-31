@@ -45,7 +45,7 @@
         android:layout_marginEnd="@dimen/space_2_x"
         android:layout_marginBottom="@dimen/space_2_x"
         android:contentDescription="@string/add_card"
-        android:src="@drawable/ic_record_placeholder"
+        android:src="@drawable/ic_health_record_vaccine"
         app:shapeAppearance="@style/ShapeRounded"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -159,10 +159,7 @@
     <string name="covid_test_result_pending">Your test is being processed and can take up to 48 hours to complete.</string>
     <string name="pending">Pending</string>
     <string name="result_description">Result Description:</string>
-    <plurals name="hidden_records_count">
-        <item quantity="one">%1$d hidden record</item>
-        <item quantity="other">%1$d hidden records</item>
-    </plurals>
+    <string name="hidden_records_count">6 hidden records</string>
     <string name="login_to_view_hidden_records_msg">Log in again with your BC Services Card to view all the records</string>
     <string name="log_in_with_bc_services_card">Log in with BC Services Card</string>
 

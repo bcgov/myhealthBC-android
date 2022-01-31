@@ -2,14 +2,11 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemLoginForHiddenRecordsBinding
 
 class HiddenHealthRecordAdapter(private val loginClickListener: ItemClickListener) :
-    ListAdapter<HiddenRecordItem, HiddenHealthRecordAdapter.ViewHolder>(HiddenRecordDiffCallBacks()) {
+    RecyclerView.Adapter<HiddenHealthRecordAdapter.ViewHolder>() {
 
     fun interface ItemClickListener {
         fun onItemClick()
@@ -27,22 +24,13 @@ class HiddenHealthRecordAdapter(private val loginClickListener: ItemClickListene
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val record = getItem(position)
-        holder.binding.tvRecordsCount.text =
-            holder.itemView.context.resources.getQuantityString(R.plurals.hidden_records_count, record.countOfRecords, record.countOfRecords)
 
         holder.binding.btnLogin.setOnClickListener {
             loginClickListener.onItemClick()
         }
     }
-}
 
-class HiddenRecordDiffCallBacks : DiffUtil.ItemCallback<HiddenRecordItem>() {
-    override fun areItemsTheSame(oldItem: HiddenRecordItem, newItem: HiddenRecordItem): Boolean {
-        return oldItem == newItem
-    }
-
-    override fun areContentsTheSame(oldItem: HiddenRecordItem, newItem: HiddenRecordItem): Boolean {
-        return oldItem.countOfRecords == newItem.countOfRecords
+    override fun getItemCount(): Int {
+        return 1
     }
 }
