@@ -23,6 +23,10 @@ import kotlinx.coroutines.launch
 /**
  * @author Pinakin Kansara
  */
+
+private const val GRID_SPAN_COUNT = 2
+private const val LIST_SPAN_COUNT = 1
+
 @AndroidEntryPoint
 class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
 
@@ -86,7 +90,15 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
             if (records.isNotEmpty()) {
                 binding.ivAddHealthRecord.visibility = View.VISIBLE
                 binding.rvMembers.adapter = adapter
-                binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), 2)
+                binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), 2).apply {
+                    spanSizeLookup =
+                        object : GridLayoutManager.SpanSizeLookup() {
+                            override fun getSpanSize(position: Int) = when (position) {
+                                0 -> GRID_SPAN_COUNT
+                                else -> LIST_SPAN_COUNT
+                            }
+                        }
+                }
                 adapter.submitList(records)
             } else {
                 binding.ivAddHealthRecord.visibility = View.GONE
