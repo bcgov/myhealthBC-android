@@ -126,7 +126,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             canDeleteRecord = false
         )
 
-        hiddenHealthRecordAdapter = HiddenHealthRecordAdapter { onBCSCLoginClick() }
+        hiddenHealthRecordAdapter = HiddenHealthRecordAdapter({ onBCSCLoginClick() }, requireContext())
         concatAdapter = ConcatAdapter(hiddenHealthRecordAdapter, vaccineRecordsAdapter, testRecordsAdapter)
         binding.rvHealthRecords.adapter = concatAdapter
         binding.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
