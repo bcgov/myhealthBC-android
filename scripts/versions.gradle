@@ -8,7 +8,7 @@ versions.appcompat = '1.4.0'
 versions.core_ktx = "1.7.0"
 versions.constraint_layout = "2.1.2"
 versions.swipe_refresh_layout = "1.1.0"
-versions.room = "2.4.1"
+versions.room = "2.4.0-alpha03"
 versions.material = "1.4.0"
 versions.recycler = "1.2.1"
 
@@ -50,10 +50,8 @@ versions.spotless = "5.14.3"
 
 versions.crypto = "1.1.0-alpha03"
 
-versions.shcdecoder = "1.1.13"
-
 versions.sqlcipher = "4.5.0"
-versions.sqlite = "2.2.0"
+versions.sqlite = "2.1.0"
 
 versions.junit = "4.13.2"
 versions.ext_junit = "1.1.3"
