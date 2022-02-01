@@ -1,6 +1,5 @@
 package ca.bc.gov.bchealth.ui.healthrecord.individual
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -9,10 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemLoginForHiddenRecordsBinding
 
-class HiddenHealthRecordAdapter(
-    private val loginClickListener: ItemClickListener,
-    private val context: Context
-) :
+class HiddenHealthRecordAdapter(private val loginClickListener: ItemClickListener) :
     ListAdapter<HiddenRecordItem, HiddenHealthRecordAdapter.ViewHolder>(HiddenRecordDiffCallBacks()) {
 
     fun interface ItemClickListener {
@@ -33,7 +29,7 @@ class HiddenHealthRecordAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val record = getItem(position)
         holder.binding.tvRecordsCount.text =
-            context.resources.getQuantityString(R.plurals.hidden_records_count, record.countOfRecords, record.countOfRecords)
+            holder.itemView.context.resources.getQuantityString(R.plurals.hidden_records_count, record.countOfRecords, record.countOfRecords)
 
         holder.binding.btnLogin.setOnClickListener {
             loginClickListener.onItemClick()
