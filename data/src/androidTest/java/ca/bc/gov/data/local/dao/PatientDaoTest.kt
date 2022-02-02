@@ -59,7 +59,7 @@ class PatientDaoTest : BaseDataBaseTest() {
 
         //Then
         val insertedPatientId =
-            patientDao.getPatientId(patient.firstName, patient.lastName, patient.dateOfBirth)
+            patientDao.getPatientId(patient.fullName, patient.dateOfBirth)
         Assert.assertEquals(patient.id, insertedPatientId)
     }
 

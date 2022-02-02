@@ -52,8 +52,7 @@ abstract class BaseDataBaseTest {
     protected fun getPatient1() =
         PatientEntity(
             id = 1,
-            firstName = "Random",
-            lastName = "random",
+            fullName = "Random random",
             dateOfBirth = Instant.now(),
             phn = "12333456",
             timeStamp = Instant.now(),
@@ -63,8 +62,7 @@ abstract class BaseDataBaseTest {
     protected fun getPatient2() =
         PatientEntity(
             id = 2,
-            firstName = "Rashmi",
-            lastName = "Bambhania",
+            fullName = "Rashmi Bambhania",
             dateOfBirth = Instant.now(),
             phn = "12333456",
             timeStamp = Instant.now(),
