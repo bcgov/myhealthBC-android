@@ -20,8 +20,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentBiometricAuthenticationBinding
+import ca.bc.gov.bchealth.utils.AppAlertDialog
 import ca.bc.gov.bchealth.utils.viewBindings
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.Executor
 
@@ -124,37 +124,34 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
     }
 
     private fun showNoHardwareDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.error_biometric_authentication_title)
-            .setMessage(R.string.error_biometric_no_hardware)
-            .setCancelable(false)
-            .setNegativeButton(R.string.dialog_button_ok) { dialog, _ ->
+        AppAlertDialog.showConfirmationAlertDialog(
+            context = requireContext(),
+            title = getString(R.string.error_biometric_authentication_title),
+            msg = getString(R.string.error_biometric_no_hardware),
+            positiveBtnMsg = getString(R.string.dialog_button_ok),
+            positiveBtnCallback = {
                 requireActivity().finishAndRemoveTask()
-                dialog.dismiss()
-            }.show()
+            },
+        )
     }
 
     private fun showAuthenticationErrorDialog(errorMessage: String) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.error_biometric_authentication_title)
-            .setMessage(errorMessage)
-            .setCancelable(false)
-            .setNegativeButton(R.string.dialog_button_ok) { dialog, _ ->
-                dialog.dismiss()
-            }.show()
+        AppAlertDialog.showConfirmationAlertDialog(
+            context = requireContext(),
+            title = getString(R.string.error_biometric_authentication_title),
+            msg = errorMessage,
+            positiveBtnMsg = getString(R.string.dialog_button_ok)
+        )
     }
 
     private fun showUserNotEnrolledDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.error_biometric_enrollment_title)
-            .setMessage(R.string.error_biometric_enrollment_message)
-            .setCancelable(false)
-            .setNegativeButton(R.string.dialog_btn_not_now) { dialog, _ ->
-                requireActivity().finishAndRemoveTask()
-                dialog.dismiss()
-            }
-            .setPositiveButton(R.string.dialog_btn_settings) { dialog, _ ->
-
+        AppAlertDialog.showConfirmationAlertDialog(
+            context = requireContext(),
+            title = getString(R.string.error_biometric_enrollment_title),
+            msg = getString(R.string.error_biometric_enrollment_message),
+            positiveBtnMsg = getString(R.string.dialog_btn_settings),
+            negativeBtnMsg = getString(R.string.dialog_btn_not_now),
+            positiveBtnCallback = {
                 var enrollIntent: Intent?
                 when {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
@@ -173,8 +170,11 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
                     }
                 }
                 startForResult.launch(enrollIntent)
-                dialog.dismiss()
-            }.show()
+            },
+            negativeBtnCallback = {
+                requireActivity().finishAndRemoveTask()
+            }
+        )
     }
 }
 
