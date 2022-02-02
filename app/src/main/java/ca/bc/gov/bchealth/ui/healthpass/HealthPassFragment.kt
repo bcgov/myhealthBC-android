@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Scene
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentMyCardsBinding
+import ca.bc.gov.bchealth.ui.auth.BioMetricState
+import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.FederalTravelPassDecoderVideModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -51,6 +53,19 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BioMetricState>(
+            BiometricsAuthenticationFragment.BIOMETRIC_STATE
+        )?.observe(viewLifecycleOwner) {
+            when (it) {
+                BioMetricState.SUCCESS -> {
+                    viewModel.onAuthenticationRequired(false)
+                }
+                else -> {
+                    findNavController().popBackStack()
+                }
+            }
+        }
 
         setupToolBar()
 
@@ -105,37 +120,50 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
             }
         )
 
+        viewModel.launchCheck()
+
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onBoardingRequired.collect {
-                    if (it) {
-                        findNavController().navigate(R.id.onBoardingSliderFragment)
-                    } else {
-                        launch {
-                            collectHealthPasses()
-                        }
-                    }
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    onBoardingFlow()
+                }
+                launch {
+                    collectHealthPasses()
+                }
+                launch {
+                    collectUiState()
                 }
             }
         }
+    }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                federalTravelPassDecoderVideModel.uiState.collect { uiState ->
-                    if (uiState.travelPass != null) {
-                        val (federalTravelPass, file) = uiState.travelPass
-                        if (file != null) {
-                            try {
-                                showPDF(file)
-                            } catch (e: Exception) {
-                                navigateToViewTravelPass(federalTravelPass)
-                            }
-                        } else {
-                            navigateToViewTravelPass(federalTravelPass)
-                        }
-                        federalTravelPassDecoderVideModel.federalTravelPassShown()
+    private suspend fun onBoardingFlow() {
+        viewModel.uiState.collect { uiState ->
+            if (uiState.isOnBoardingRequired) {
+                findNavController().navigate(R.id.onBoardingSliderFragment)
+                viewModel.onBoardingShown()
+            }
+
+            if (uiState.isAuthenticationRequired) {
+                findNavController().navigate(R.id.biometricsAuthenticationFragment)
+            }
+        }
+    }
+
+    private suspend fun collectUiState() {
+        federalTravelPassDecoderVideModel.uiState.collect { uiState ->
+            if (uiState.travelPass != null) {
+                val (federalTravelPass, file) = uiState.travelPass
+                if (file != null) {
+                    try {
+                        showPDF(file)
+                    } catch (e: Exception) {
+                        navigateToViewTravelPass(federalTravelPass)
                     }
+                } else {
+                    navigateToViewTravelPass(federalTravelPass)
                 }
+                federalTravelPassDecoderVideModel.federalTravelPassShown()
             }
         }
     }
