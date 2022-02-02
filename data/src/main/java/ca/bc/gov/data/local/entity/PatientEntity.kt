@@ -11,15 +11,13 @@ import java.time.Instant
  */
 @Entity(
     tableName = "patient",
-    indices = [Index(value = ["first_name", "last_name", "dob"], unique = true)]
+    indices = [Index(value = ["full_name", "dob"], unique = true)]
 )
 data class PatientEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    @ColumnInfo(name = "first_name")
-    val firstName: String,
-    @ColumnInfo(name = "last_name")
-    val lastName: String,
+    @ColumnInfo(name = "full_name")
+    val fullName: String,
     @ColumnInfo(name = "dob")
     val dateOfBirth: Instant,
     val phn: String? = null,

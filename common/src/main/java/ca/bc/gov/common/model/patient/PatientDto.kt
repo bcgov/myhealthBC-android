@@ -10,8 +10,7 @@ import java.time.Instant
 @Parcelize
 data class PatientDto(
     var id: Long = 0,
-    val firstName: String,
-    val lastName: String,
+    val fullName: String,
     val dateOfBirth: Instant,
     var phn: String? = null,
     val patientOrder: Long = Long.MAX_VALUE

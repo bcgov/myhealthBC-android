@@ -5,8 +5,8 @@ import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.relation.PatientWithVaccineRecordDto
 import ca.bc.gov.data.datasource.PatientWithVaccineRecordLocalDataSource
 import ca.bc.gov.data.local.entity.PatientOrderUpdate
+import ca.bc.gov.data.model.mapper.toDto
 import ca.bc.gov.repository.model.PatientVaccineRecord
-import ca.bc.gov.repository.model.mapper.toPatient
 import ca.bc.gov.repository.model.mapper.toVaccineRecord
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.vaccine.VaccineDoseRepository
@@ -36,7 +36,7 @@ class PatientWithVaccineRecordRepository @Inject constructor(
                 vaccineRecord.qrCodeImage =
                     qrCodeGeneratorRepository.generateQRCode(vaccineRecord.shcUri!!)
                 PatientVaccineRecord(
-                    record.patient.toPatient(),
+                    record.patient.toDto(),
                     vaccineRecord
                 )
             }

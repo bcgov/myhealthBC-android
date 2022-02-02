@@ -2,9 +2,9 @@ package ca.bc.gov.bchealth.ui.onboarding
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import ca.bc.gov.bchealth.BuildConfig
@@ -19,16 +19,16 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
 
     private val binding by viewBindings(FragmentOnboardingSliderBinding::bind)
     private val viewModel: OnBoardingSliderViewModel by viewModels()
-    private lateinit var savedStateHandle: SavedStateHandle
 
-    companion object {
-        const val ON_BOARDING_SHOWN_SUCCESS = "ON_BOARDING_SHOWN_SUCCESS"
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            requireActivity().finishAndRemoveTask()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
-        savedStateHandle.set(ON_BOARDING_SHOWN_SUCCESS, false)
 
         val educationalScreenAdapter = EducationalScreenAdapter(this)
 
@@ -71,9 +71,8 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
     }
 
     private fun navigateToHealthPasses() {
-        savedStateHandle.set(ON_BOARDING_SHOWN_SUCCESS, true)
-        viewModel.setOnBoardingRequired(false)
-        viewModel.setAppVersionCode(BuildConfig.VERSION_CODE).invokeOnCompletion {
+        viewModel.setAppVersionCode(BuildConfig.VERSION_CODE)
+        viewModel.setOnBoardingRequired(false).invokeOnCompletion {
             findNavController().popBackStack()
         }
     }

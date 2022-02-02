@@ -13,14 +13,19 @@ import ca.bc.gov.shcdecoder.model.getPatient
 import java.time.Instant
 
 private const val IMMUNIZATION = "Immunization"
-private const val PATIENT = "Patient"
-private const val CONDITION = "Condition"
 
 fun SHCData.toPatient(): PatientDto {
     val patient = getPatient()
+    val fullNameBuilder = StringBuilder()
+    if (patient.firstName != null) {
+        fullNameBuilder.append(patient.firstName)
+        fullNameBuilder.append(" ")
+    }
+    if (patient.lastName != null) {
+        fullNameBuilder.append(patient.lastName)
+    }
     return PatientDto(
-        firstName = patient.firstName!!,
-        lastName = patient.lastName!!,
+        fullName = fullNameBuilder.toString(),
         dateOfBirth = patient.dateOfBirth?.toDate()!!,
     )
 }

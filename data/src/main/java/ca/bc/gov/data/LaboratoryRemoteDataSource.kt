@@ -42,10 +42,8 @@ class LaboratoryRemoteDataSource @Inject constructor(
             throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
         }
 
-        val patientNameArray = response.payload.covidTestRecords.first().name.split(" ")
         val patient = PatientDto(
-            firstName = patientNameArray[0],
-            lastName = patientNameArray[1],
+            fullName = response.payload.covidTestRecords.first().name,
             dateOfBirth = request.dateOfBirth.toDate(),
             phn = request.phn
         )
