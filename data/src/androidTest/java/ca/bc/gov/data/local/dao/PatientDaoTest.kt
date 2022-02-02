@@ -25,39 +25,38 @@ class PatientDaoTest : BaseDataBaseTest() {
 
     @Test
     fun insertPatient() = runBlocking {
-        //Given
+        // Given
         val patient = getPatient1()
 
-        //When
+        // When
         val result = patientDao.insertPatient(patient)
 
-        //Then
+        // Then
         Assert.assertEquals(1, result)
     }
 
-
     @Test
     fun insertDuplicatePatient() = runBlocking {
-        //Given
+        // Given
         val patient = getPatient1()
 
-        //When
+        // When
         patientDao.insertPatient(patient)
         val result = patientDao.insertPatient(patient)
 
-        //Then
+        // Then
         Assert.assertNotEquals(1, result)
     }
 
     @Test
     fun checkPatientId() = runBlocking {
-        //Given
+        // Given
         val patient = getPatient1()
 
-        //When
+        // When
         patientDao.insertPatient(patient)
 
-        //Then
+        // Then
         val insertedPatientId =
             patientDao.getPatientId(patient.fullName, patient.dateOfBirth)
         Assert.assertEquals(patient.id, insertedPatientId)
@@ -65,13 +64,13 @@ class PatientDaoTest : BaseDataBaseTest() {
 
     @Test
     fun checkPatient() = runBlocking {
-        //Given
+        // Given
         val patient = getPatient1()
 
-        //When
+        // When
         patientDao.insertPatient(patient)
 
-        //Then
+        // Then
         val insertedPatient =
             patientDao.getPatient(patient.id)
         Assert.assertEquals(patient, insertedPatient)
@@ -79,7 +78,7 @@ class PatientDaoTest : BaseDataBaseTest() {
 
     @Test
     fun checkPatientWithRecordCountFlow() = runBlocking {
-        //Given
+        // Given
         val patient1 = getPatient1()
         val patient2 = getPatient2()
         val vaccineRecord1 = getVaccineRecord1()
@@ -88,7 +87,7 @@ class PatientDaoTest : BaseDataBaseTest() {
         val testResult2 = getTestResult2()
         val testResult3 = getTestResult3()
 
-        //When
+        // When
         patientDao.insertPatient(patient1)
         patientDao.insertPatient(patient2)
         vaccineRecordDao.insertVaccineRecord(vaccineRecord1)
@@ -97,7 +96,7 @@ class PatientDaoTest : BaseDataBaseTest() {
         testResultDao.insertTestResult(testResult2)
         testResultDao.insertTestResult(testResult3)
 
-        //Then
+        // Then
         val result = patientDao.getPatientWithRecordCountFlow().first()
         Assert.assertTrue(result.contains(getPatientWithHealthRecordCount1(patient1)))
         Assert.assertTrue(result.contains(getPatientWithHealthRecordCount2(patient2)))
