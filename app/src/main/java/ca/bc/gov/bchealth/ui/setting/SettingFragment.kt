@@ -7,11 +7,11 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSettingBinding
+import ca.bc.gov.bchealth.utils.AppAlertDialog
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.common.model.settings.AnalyticsFeature
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -66,17 +66,16 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     }
 
     private fun showAlertDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.delete_data))
-            .setCancelable(false)
-            .setMessage(getString(R.string.delete_data_message))
-            .setPositiveButton(getString(R.string.delete)) { dialog, _ ->
+        AppAlertDialog.showConfirmationAlertDialog(
+            context = requireContext(),
+            title = getString(R.string.delete_data),
+            msg = getString(R.string.delete_data_message),
+            positiveBtnMsg = getString(R.string.delete),
+            negativeBtnMsg = getString(R.string.cancel),
+            positiveBtnCallback = {
                 deleteAllRecordsAndSavedData()
-                dialog.dismiss()
-            }.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
             }
-            .show()
+        )
     }
 
     private fun deleteAllRecordsAndSavedData() {
