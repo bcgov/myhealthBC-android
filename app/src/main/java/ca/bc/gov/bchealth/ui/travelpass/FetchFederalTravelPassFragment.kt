@@ -20,7 +20,7 @@ import ca.bc.gov.bchealth.ui.custom.validatePhnNumber
 import ca.bc.gov.bchealth.ui.healthpass.add.AddOrUpdateCardViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
-import ca.bc.gov.bchealth.utils.showError
+import ca.bc.gov.bchealth.utils.AppAlertDialog
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
@@ -84,9 +84,11 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
                     showLoader(uiState.onLoading)
 
                     if (uiState.errorData != null) {
-                        requireContext().showError(
-                            getString(uiState.errorData.title),
-                            getString(uiState.errorData.message)
+                        AppAlertDialog.showConfirmationAlertDialog(
+                            context = requireContext(),
+                            title = getString(uiState.errorData.title),
+                            msg = getString(uiState.errorData.message),
+                            positiveBtnMsg = getString(android.R.string.ok)
                         )
                     }
 

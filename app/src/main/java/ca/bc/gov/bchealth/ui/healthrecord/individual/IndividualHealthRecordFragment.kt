@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
-import ca.bc.gov.bchealth.utils.showAlertDialog
+import ca.bc.gov.bchealth.utils.AppAlertDialog
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
@@ -183,29 +183,33 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         when (healthRecordItem.healthRecordType) {
 
             HealthRecordType.VACCINE_RECORD -> {
-                requireContext().showAlertDialog(
+                AppAlertDialog.showConfirmationAlertDialog(
+                    context = requireContext(),
                     title = getString(R.string.delete_hc_record_title),
-                    message = getString(R.string.delete_individual_vaccine_record_message),
-                    positiveButtonText = getString(R.string.delete),
-                    negativeButtonText = getString(R.string.not_now)
-                ) {
-                    viewModel.deleteVaccineRecord(
-                        healthRecordItem.patientId
-                    ).invokeOnCompletion { viewModel.getIndividualsHealthRecord(args.patientId) }
-                }
+                    msg = getString(R.string.delete_individual_vaccine_record_message),
+                    positiveBtnMsg = getString(R.string.delete),
+                    negativeBtnMsg = getString(R.string.not_now),
+                    positiveBtnCallback = {
+                        viewModel.deleteVaccineRecord(
+                            healthRecordItem.patientId
+                        ).invokeOnCompletion { viewModel.getIndividualsHealthRecord(args.patientId) }
+                    }
+                )
             }
 
             HealthRecordType.COVID_TEST_RECORD -> {
-                requireContext().showAlertDialog(
+                AppAlertDialog.showConfirmationAlertDialog(
+                    context = requireContext(),
                     title = getString(R.string.delete_hc_record_title),
-                    message = getString(R.string.delete_individual_covid_test_record_message),
-                    positiveButtonText = getString(R.string.delete),
-                    negativeButtonText = getString(R.string.not_now)
-                ) {
-                    viewModel.deleteTestRecord(
-                        healthRecordItem.testResultId
-                    ).invokeOnCompletion { viewModel.getIndividualsHealthRecord(args.patientId) }
-                }
+                    msg = getString(R.string.delete_individual_covid_test_record_message),
+                    positiveBtnMsg = getString(R.string.delete),
+                    negativeBtnMsg = getString(R.string.not_now),
+                    positiveBtnCallback = {
+                        viewModel.deleteTestRecord(
+                            healthRecordItem.testResultId
+                        ).invokeOnCompletion { viewModel.getIndividualsHealthRecord(args.patientId) }
+                    }
+                )
             }
         }
     }

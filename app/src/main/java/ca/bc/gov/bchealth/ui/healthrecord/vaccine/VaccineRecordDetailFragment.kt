@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentVaccineRecordDetailBinding
 import ca.bc.gov.bchealth.ui.healthrecord.VaccineRecordDetailViewModel
-import ca.bc.gov.bchealth.utils.showAlertDialog
+import ca.bc.gov.bchealth.utils.AppAlertDialog
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.utils.toDateTimeString
@@ -57,16 +57,18 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
             tvRightOption.text = getString(R.string.delete)
             tvRightOption.setOnClickListener {
 
-                requireContext().showAlertDialog(
+                AppAlertDialog.showConfirmationAlertDialog(
+                    context = requireContext(),
                     title = getString(R.string.delete_hc_record_title),
-                    message = getString(R.string.delete_individual_vaccine_record_message),
-                    positiveButtonText = getString(R.string.delete),
-                    negativeButtonText = getString(R.string.not_now)
-                ) {
-                    viewModel.deleteVaccineRecord(vaccineRecordId).invokeOnCompletion {
-                        findNavController().popBackStack()
+                    msg = getString(R.string.delete_individual_vaccine_record_message),
+                    positiveBtnMsg = getString(R.string.delete),
+                    negativeBtnMsg = getString(R.string.not_now),
+                    positiveBtnCallback = {
+                        viewModel.deleteVaccineRecord(vaccineRecordId).invokeOnCompletion {
+                            findNavController().popBackStack()
+                        }
                     }
-                }
+                )
             }
 
             line1.visibility = View.VISIBLE
