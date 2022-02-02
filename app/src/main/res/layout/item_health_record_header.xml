@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/layout_shape_rectangle"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_member_name"
+        style="?textAppearanceSubtitle1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_2_x"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginEnd="@dimen/space_2_x"
+        android:ellipsize="end"
+        android:lines="2"
+        android:maxLines="2"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Jean Smith" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_number_of_health_records"
+        style="?textAppearanceHeadline4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_2_x"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_health_record"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/iv_health_record"
+        tools:text="3 records" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_health_record"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginEnd="@dimen/space_2_x"
+        android:layout_marginBottom="@dimen/space_2_x"
+        android:contentDescription="@string/add_card"
+        android:src="@drawable/ic_record_placeholder"
+        app:shapeAppearance="@style/ShapeRounded"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_member_name" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
