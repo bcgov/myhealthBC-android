@@ -78,14 +78,12 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
             BCSC_AUTH_STATUS
         )?.observe(viewLifecycleOwner, {
+            findNavController().currentBackStackEntry?.savedStateHandle?.remove<BcscAuthState>(
+                BCSC_AUTH_STATUS
+            )
             when (it) {
-                BcscAuthState.SUCCESS -> {
-                    findNavController().currentBackStackEntry?.savedStateHandle
-                        ?.set(BCSC_AUTH_STATUS, BcscAuthState.NO_ACTION)
-                }
+                BcscAuthState.SUCCESS -> {}
                 BcscAuthState.NOT_NOW -> {
-                    findNavController().currentBackStackEntry?.savedStateHandle
-                        ?.set(BCSC_AUTH_STATUS, BcscAuthState.NO_ACTION)
                     val destinationId = sharedViewModel.destinationId
                     if (destinationId > 0) {
                         findNavController().navigate(destinationId)
