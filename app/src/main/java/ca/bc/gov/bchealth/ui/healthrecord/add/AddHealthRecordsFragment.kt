@@ -33,20 +33,16 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
     private val viewModel: AddHealthRecordsOptionsViewModel by viewModels()
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private var destinationId = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupToolBar()
 
-        val savedStateHandle = findNavController().currentBackStackEntry!!.savedStateHandle
-        savedStateHandle.getLiveData<Long>(FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS)
-            .observe(
-                findNavController().currentBackStackEntry!!,
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS)
+            ?.observe(
+                viewLifecycleOwner,
                 Observer { recordId ->
                     if (recordId > 0) {
                         findNavController().popBackStack()
@@ -54,38 +50,37 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                 }
             )
 
-        savedStateHandle.getLiveData<Long>(
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
             FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
-        )
-            .observe(
-                findNavController().currentBackStackEntry!!,
-                Observer {
-                    if (it > 0) {
-                        savedStateHandle.remove<Long>(
-                            FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
-                        )
-                        findNavController().popBackStack()
-                    }
+        )?.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it > 0) {
+                    findNavController().currentBackStackEntry?.savedStateHandle?.remove<Long>(
+                        FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
+                    )
+                    findNavController().popBackStack()
                 }
-            )
+            }
+        )
 
-        savedStateHandle.getLiveData<Boolean>(
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
             BcscAuthFragment.BCSC_AUTH_SUCCESS
-        )
-            .observe(viewLifecycleOwner, {
-                if (it) {
-                    savedStateHandle.set(BcscAuthFragment.BCSC_AUTH_SUCCESS, false)
-                    findNavController().navigate(sharedViewModel.destinationId)
-                }
-            })
+        )?.observe(viewLifecycleOwner, {
+            if (it) {
+                findNavController().currentBackStackEntry?.savedStateHandle
+                    ?.set(BcscAuthFragment.BCSC_AUTH_SUCCESS, false)
+                findNavController().navigate(destinationId)
+            }
+        })
 
         optionsAdapter = HealthRecordOptionAdapter {
             when (it) {
                 OptionType.VACCINE -> {
-                    sharedViewModel.destinationId = R.id.fetchVaccineRecordFragment
+                    destinationId = R.id.fetchVaccineRecordFragment
                 }
                 OptionType.TEST -> {
-                    sharedViewModel.destinationId = R.id.fetchTestRecordFragment
+                    destinationId = R.id.fetchTestRecordFragment
                 }
             }
             checkLogin()
@@ -93,6 +88,29 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         binding.rvMembers.adapter = optionsAdapter
         binding.rvMembers.layoutManager = LinearLayoutManager(requireContext())
         optionsAdapter.submitList(viewModel.getHealthRecordOption().toMutableList())
+    }
+
+    private fun observeBcscLogin() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                bcscAuthViewModel.authStatus.collect {
+
+                    binding.progressBar.isVisible = it.showLoading
+
+                    if (it.showLoading) {
+                        return@collect
+                    } else {
+                        if (it.isLoggedIn) {
+                            findNavController().navigate(destinationId)
+                        } else {
+                            sharedViewModel.destinationId = destinationId
+                            findNavController()
+                                .navigate(R.id.action_healthRecordsFragment_to_bcscAuthInfoFragment)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setupToolBar() {
@@ -106,25 +124,6 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
 
     private fun checkLogin() {
         bcscAuthViewModel.checkLogin()
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                bcscAuthViewModel.authStatus.collect {
-
-                    binding.progressBar.isVisible = it.showLoading
-
-                    if (it.showLoading) {
-                        return@collect
-                    } else {
-                        if (it.isLoggedIn) {
-                            findNavController().navigate(sharedViewModel.destinationId)
-                        } else {
-                            findNavController()
-                                .navigate(R.id.action_addHealthRecordsFragment_to_bcscAuthFragment)
-                        }
-                    }
-                }
-            }
-        }
+        observeBcscLogin()
     }
 }

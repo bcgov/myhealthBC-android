@@ -11,7 +11,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -41,7 +40,6 @@ import java.nio.charset.StandardCharsets
 class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_result) {
     private val binding by viewBindings(FragmentFetchCovidTestResultBinding::bind)
     private val viewModel: FetchTestRecordsViewModel by viewModels()
-    private lateinit var savedStateHandle: SavedStateHandle
     private val recentPhnDobViewModel: RecentPhnDobViewModel by viewModels()
 
     companion object {
@@ -51,8 +49,8 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
-        savedStateHandle.set(TEST_RECORD_ADDED_SUCCESS, -1L)
+        findNavController().previousBackStackEntry?.savedStateHandle
+            ?.set(TEST_RECORD_ADDED_SUCCESS, -1L)
 
         setupToolBar()
 
@@ -74,7 +72,7 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
 
     private fun observeCovidTestResult() {
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
 
                     showLoader(state.onLoading)
@@ -93,7 +91,8 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
                     }
 
                     if (state.onTestResultFetched > 0) {
-                        savedStateHandle.set(TEST_RECORD_ADDED_SUCCESS, state.onTestResultFetched)
+                        findNavController().previousBackStackEntry?.savedStateHandle
+                            ?.set(TEST_RECORD_ADDED_SUCCESS, state.onTestResultFetched)
                         if (binding.checkboxRemember.isChecked) {
                             val phn = binding.edPhn.text.toString()
                             val dob = binding.edtDob.text.toString()
@@ -167,7 +166,7 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
 
     private fun setUpPhnUI() {
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 recentPhnDobViewModel.recentPhnDob.collect { recentPhnDob ->
                     val (phn, dob) = recentPhnDob
                     val phnArray = arrayOf(phn)
@@ -217,7 +216,11 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
                 "",
                 object : QueueListener() {
                     override fun onQueuePassed(queuePassedInfo: QueuePassedInfo?) {
-                        Log.d(TAG, "onQueuePassed: updatedToken ${queuePassedInfo?.queueItToken}")
+                        Log.d(
+                            TAG,
+                            "onQueuePassed: updatedToken " +
+                                "${queuePassedInfo?.queueItToken}"
+                        )
                         viewModel.setQueItToken(queuePassedInfo?.queueItToken)
                     }
 

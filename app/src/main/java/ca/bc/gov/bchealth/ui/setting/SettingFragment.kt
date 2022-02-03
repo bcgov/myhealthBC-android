@@ -132,7 +132,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
                 showLogoutDialog()
             } else {
                 sharedViewModel.destinationId = 0
-                findNavController().navigate(R.id.action_settingFragment_to_bcscAuthInfoFragment)
+                findNavController().navigate(R.id.bcscAuthInfoFragment)
             }
         }
     }

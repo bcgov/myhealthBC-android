@@ -47,6 +47,9 @@ class HealthPassViewModel @Inject constructor(
             isAuthenticationRequired -> {
                 _uiState.update { state -> state.copy(isAuthenticationRequired = true) }
             }
+            isBcscLoginRequiredPostBiometrics -> {
+                _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = true) }
+            }
         }
     }
 
@@ -59,6 +62,11 @@ class HealthPassViewModel @Inject constructor(
     fun onAuthenticationRequired(isRequired: Boolean) {
         isAuthenticationRequired = isRequired
         _uiState.update { state -> state.copy(isAuthenticationRequired = isRequired) }
+    }
+
+    fun onBcscLoginRequired(isRequired: Boolean) {
+        isBcscLoginRequiredPostBiometrics = isRequired
+        _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = isRequired) }
     }
 
     fun deleteHealthPass(vaccineRecordId: Long) = viewModelScope.launch {
@@ -78,7 +86,8 @@ class HealthPassViewModel @Inject constructor(
 data class HealthPassUiState(
     val isLoading: Boolean = false,
     val isOnBoardingRequired: Boolean = false,
-    val isAuthenticationRequired: Boolean = false
+    val isAuthenticationRequired: Boolean = false,
+    val isBcscLoginRequiredPostBiometrics: Boolean = false
 )
 
 data class HealthPass(

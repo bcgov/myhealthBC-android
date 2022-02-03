@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
@@ -21,30 +20,21 @@ class BcscAuthInfoFragment : Fragment(R.layout.fragment_bcsc_auth_info) {
     private val binding by viewBindings(FragmentBcscAuthInfoBinding::bind)
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val savedStateHandle: SavedStateHandle =
-            findNavController().currentBackStackEntry!!.savedStateHandle
-        savedStateHandle.getLiveData<Boolean>(
-            BCSC_AUTH_SUCCESS
-        )
-            .observe(findNavController().currentBackStackEntry!!, {
-                if (it) {
-                    findNavController().previousBackStackEntry!!.savedStateHandle
-                        .set(BCSC_AUTH_SUCCESS, true)
-                    findNavController().popBackStack()
-                }
-            })
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
+            BCSC_AUTH_SUCCESS
+        )?.observe(viewLifecycleOwner, {
+            if (it) {
+                findNavController().previousBackStackEntry?.savedStateHandle
+                    ?.set(BCSC_AUTH_SUCCESS, true)
+                findNavController().popBackStack()
+            }
+        })
+
         binding.btnNotNow.setOnClickListener {
-
             val destinationId = sharedViewModel.destinationId
-
             if (destinationId > 0) {
                 val navOptions = NavOptions.Builder()
                     .setPopUpTo(R.id.bcscAuthInfoFragment, true)

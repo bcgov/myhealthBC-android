@@ -112,7 +112,6 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$versions.hilt"
     implementation project(path: ':repository')
     implementation project(path: ':common')
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     kapt "com.google.dagger:hilt-compiler:$versions.hilt"
 

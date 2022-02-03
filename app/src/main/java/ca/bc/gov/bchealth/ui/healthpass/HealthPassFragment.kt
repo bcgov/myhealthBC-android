@@ -16,7 +16,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -25,6 +24,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Scene
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHelathPassBinding
+import ca.bc.gov.bchealth.ui.auth.BioMetricState
+import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment.Companion.BIOMETRIC_STATE
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment.Companion.BCSC_AUTH_SUCCESS
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -59,17 +60,28 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
 
         setupToolBar()
 
-        val savedStateHandle: SavedStateHandle =
-            findNavController().currentBackStackEntry!!.savedStateHandle
-        savedStateHandle.getLiveData<Boolean>(
-            BCSC_AUTH_SUCCESS
-        )
-            .observe(viewLifecycleOwner, {
-                if (it) {
-                    savedStateHandle.set(BCSC_AUTH_SUCCESS, false)
-                    findNavController().navigate(R.id.addCardOptionFragment)
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BioMetricState>(
+            BIOMETRIC_STATE
+        )?.observe(viewLifecycleOwner) {
+            when (it) {
+                BioMetricState.SUCCESS -> {
+                    viewModel.onAuthenticationRequired(false)
+                    viewModel.launchCheck()
                 }
-            })
+                else -> {
+                    findNavController().popBackStack()
+                }
+            }
+        }
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
+            BCSC_AUTH_SUCCESS
+        )?.observe(viewLifecycleOwner, {
+            if (it) {
+                findNavController().currentBackStackEntry?.savedStateHandle
+                    ?.set(BCSC_AUTH_SUCCESS, false)
+            }
+        })
 
         sceneSingleHealthPass = Scene.getSceneForLayout(
             binding.sceneRoot,
@@ -124,37 +136,76 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
             }
         )
 
+        viewModel.launchCheck()
+
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onBoardingRequired.collect {
-                    if (it) {
-                        findNavController().navigate(R.id.onBoardingSliderFragment)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    onBoardingFlow()
+                }
+                launch {
+                    collectHealthPasses()
+                }
+                launch {
+                    collectUiState()
+                }
+            }
+        }
+    }
+
+    private fun observeBcscLogin() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                bcscAuthViewModel.authStatus.collect {
+                    binding.progressBar.isVisible = it.showLoading
+                    if (it.showLoading) {
+                        return@collect
                     } else {
-                        launch {
-                            collectHealthPasses()
+                        if (it.isLoggedIn) {
+                            findNavController().navigate(R.id.addCardOptionFragment)
+                        } else {
+                            sharedViewModel.destinationId = R.id.addCardOptionFragment
+                            findNavController()
+                                .navigate(R.id.action_healthPassFragment_to_bcscAuthInfoFragment)
                         }
                     }
                 }
             }
         }
+    }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                federalTravelPassDecoderVideModel.uiState.collect { uiState ->
-                    if (uiState.travelPass != null) {
-                        val (federalTravelPass, file) = uiState.travelPass
-                        if (file != null) {
-                            try {
-                                showPDF(file)
-                            } catch (e: Exception) {
-                                navigateToViewTravelPass(federalTravelPass)
-                            }
-                        } else {
-                            navigateToViewTravelPass(federalTravelPass)
-                        }
-                        federalTravelPassDecoderVideModel.federalTravelPassShown()
+    private suspend fun onBoardingFlow() {
+        viewModel.uiState.collect { uiState ->
+            if (uiState.isOnBoardingRequired) {
+                findNavController().navigate(R.id.onBoardingSliderFragment)
+                viewModel.onBoardingShown()
+            }
+
+            if (uiState.isAuthenticationRequired) {
+                findNavController().navigate(R.id.biometricsAuthenticationFragment)
+            }
+
+            if (uiState.isBcscLoginRequiredPostBiometrics) {
+                findNavController().navigate(R.id.action_healthPassFragment_to_bcscAuthInfoFragment)
+                viewModel.onBcscLoginRequired(false)
+            }
+        }
+    }
+
+    private suspend fun collectUiState() {
+        federalTravelPassDecoderVideModel.uiState.collect { uiState ->
+            if (uiState.travelPass != null) {
+                val (federalTravelPass, file) = uiState.travelPass
+                if (file != null) {
+                    try {
+                        showPDF(file)
+                    } catch (e: Exception) {
+                        navigateToViewTravelPass(federalTravelPass)
                     }
+                } else {
+                    navigateToViewTravelPass(federalTravelPass)
                 }
+                federalTravelPassDecoderVideModel.federalTravelPassShown()
             }
         }
     }
@@ -272,28 +323,8 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
     }
 
     private fun checkLogin() {
-        sharedViewModel.destinationId = R.id.addCardOptionFragment
         bcscAuthViewModel.checkLogin()
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                bcscAuthViewModel.authStatus.collect {
-
-                    binding.progressBar.isVisible = it.showLoading
-
-                    if (it.showLoading) {
-                        return@collect
-                    } else {
-                        if (it.isLoggedIn) {
-                            findNavController().navigate(sharedViewModel.destinationId)
-                        } else {
-                            findNavController()
-                                .navigate(R.id.action_healthPassFragment_to_bcscAuthFragment)
-                        }
-                    }
-                }
-            }
-        }
+        observeBcscLogin()
     }
 
     private fun navigateToViewAllHealthPasses() {

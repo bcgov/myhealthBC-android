@@ -51,7 +51,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
             btnLogin.setOnClickListener {
                 sharedViewModel.destinationId = 0
-                findNavController().navigate(R.id.action_profileFragment_to_bcscAuthFragment)
+                findNavController().navigate(R.id.bcscAuthInfoFragment)
             }
         }
     }
@@ -73,7 +73,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         bcscAuthViewModel.checkLogin()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 bcscAuthViewModel.authStatus.collect {
 
                     binding.progressBar.isVisible = it.showLoading
