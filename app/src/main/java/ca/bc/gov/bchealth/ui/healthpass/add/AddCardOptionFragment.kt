@@ -9,7 +9,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -38,7 +37,6 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
     private val addOrUpdateCardViewModel: AddOrUpdateCardViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
-
     private lateinit var action: ActivityResultLauncher<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,26 +48,24 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                 addOrUpdateCardViewModel.processQRCode(it)
             }
         }
-
-        val savedStateHandle: SavedStateHandle =
-            findNavController().currentBackStackEntry!!.savedStateHandle
-        savedStateHandle.getLiveData<Long>(
-            FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
-        )
-            .observe(
-                findNavController().currentBackStackEntry!!,
-                Observer {
-                    if (it > 0) {
-                        sharedViewModel.setModifiedRecordId(it)
-                        savedStateHandle.remove<Long>(FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS)
-                        findNavController().popBackStack()
-                    }
-                }
-            )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
+            FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
+        )?.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it > 0) {
+                    sharedViewModel.setModifiedRecordId(it)
+                    findNavController().currentBackStackEntry?.savedStateHandle
+                        ?.remove<Long>(FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS)
+                    findNavController().popBackStack()
+                }
+            }
+        )
 
         binding.btnScanQrCode.setOnClickListener {
             findNavController().navigate(R.id.action_addCardOptionFragment_to_onBoardingFragment)

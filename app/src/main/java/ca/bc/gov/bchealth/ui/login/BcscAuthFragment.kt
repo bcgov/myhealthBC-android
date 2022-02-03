@@ -11,7 +11,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -36,12 +35,10 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
     ) { activityResult ->
         processAuthResponse(activityResult)
     }
-    private lateinit var savedStateHandle: SavedStateHandle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
-        savedStateHandle.set(BCSC_AUTH_SUCCESS, false)
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(BCSC_AUTH_SUCCESS, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -114,7 +111,8 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             .setCancelable(false)
             .setMessage(getString(R.string.login_success_message))
             .setPositiveButton(getString(R.string.ok_camel_case)) { dialog, _ ->
-                savedStateHandle.set(BCSC_AUTH_SUCCESS, true)
+                findNavController().previousBackStackEntry?.savedStateHandle
+                    ?.set(BCSC_AUTH_SUCCESS, true)
                 findNavController().popBackStack()
                 dialog.dismiss()
             }

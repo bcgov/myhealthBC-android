@@ -15,15 +15,11 @@
             app:destination="@id/barcodeScannerFragment" />
     </fragment>
 
-
     <fragment
         android:id="@+id/settingFragment"
         android:name="ca.bc.gov.bchealth.ui.setting.SettingFragment"
         android:label="fragment_setting"
         tools:layout="@layout/fragment_setting" >
-        <action
-            android:id="@+id/action_settingFragment_to_bcscAuthInfoFragment"
-            app:destination="@id/bcsc_auth" />
     </fragment>
     <fragment
         android:id="@+id/barcodeScannerFragment"
@@ -49,21 +45,32 @@
     <include app:graph="@navigation/health_records" />
     <include app:graph="@navigation/news_feed" />
     <include app:graph="@navigation/resources" />
-    <include app:graph="@navigation/bcsc_auth" />
 
     <fragment
         android:id="@+id/profileFragment"
         android:name="ca.bc.gov.bchealth.ui.setting.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile">
-        <action
-            android:id="@+id/action_profileFragment_to_bcscAuthFragment"
-            app:destination="@id/bcsc_auth" />
+        tools:layout="@layout/fragment_profile" >
     </fragment>
     <fragment
         android:id="@+id/biometricsAuthenticationFragment"
         tools:layout="@layout/fragment_biometric_authentication"
         android:name="ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment"
         android:label="BiometricsAuthenticationFragment" />
+
+    <fragment
+        android:id="@+id/bcscAuthInfoFragment"
+        android:name="ca.bc.gov.bchealth.ui.login.BcscAuthInfoFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_bcsc_auth_info" >
+        <action
+            android:id="@+id/action_bcscAuthInfoFragment_to_bcscAuthFragment"
+            app:destination="@id/bcscAuthFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/bcscAuthFragment"
+        android:name="ca.bc.gov.bchealth.ui.login.BcscAuthFragment"
+        android:label="fragment_login_info"
+        tools:layout="@layout/fragment_bcsc_auth" />
 
 </navigation>
