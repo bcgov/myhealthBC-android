@@ -25,9 +25,6 @@
         tools:layout="@layout/scene_health_records_add"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.add.AddHealthRecordsFragment"
         android:label="AddHealthRecordsFragment">
-        <action
-            android:id="@+id/action_healthRecordsFragment_to_bcscAuthInfoFragment"
-            app:destination="@id/navigation" />
     </fragment>
     <fragment
         android:id="@+id/individualHealthRecordFragment"
@@ -78,10 +75,5 @@
             android:name="patientId"
             app:argType="long" />
     </fragment>
-
-    <navigation android:id="@+id/navigation"
-        app:startDestination="@id/bcsc_auth">
-        <include app:graph="@navigation/bcsc_auth" />
-    </navigation>
 
 </navigation>

@@ -38,7 +38,8 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(BCSC_AUTH_SUCCESS, false)
+        findNavController().previousBackStackEntry?.savedStateHandle
+            ?.set(BCSC_AUTH_STATUS, BcscAuthState.NO_ACTION)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -112,7 +113,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             .setMessage(getString(R.string.login_success_message))
             .setPositiveButton(getString(R.string.ok_camel_case)) { dialog, _ ->
                 findNavController().previousBackStackEntry?.savedStateHandle
-                    ?.set(BCSC_AUTH_SUCCESS, true)
+                    ?.set(BCSC_AUTH_STATUS, BcscAuthState.SUCCESS)
                 findNavController().popBackStack()
                 dialog.dismiss()
             }
@@ -144,6 +145,12 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
     }
 
     companion object {
-        const val BCSC_AUTH_SUCCESS = "BCSC_AUTH_SUCCESS"
+        const val BCSC_AUTH_STATUS = "BCSC_AUTH_SUCCESS"
     }
+}
+
+enum class BcscAuthState {
+    SUCCESS,
+    NO_ACTION,
+    NOT_NOW
 }

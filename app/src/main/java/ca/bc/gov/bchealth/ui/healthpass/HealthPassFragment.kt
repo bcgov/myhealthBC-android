@@ -26,7 +26,8 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHelathPassBinding
 import ca.bc.gov.bchealth.ui.auth.BioMetricState
 import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment.Companion.BIOMETRIC_STATE
-import ca.bc.gov.bchealth.ui.login.BcscAuthFragment.Companion.BCSC_AUTH_SUCCESS
+import ca.bc.gov.bchealth.ui.login.BcscAuthFragment.Companion.BCSC_AUTH_STATUS
+import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.FederalTravelPassDecoderVideModel
@@ -74,12 +75,25 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
             }
         }
 
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
-            BCSC_AUTH_SUCCESS
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
+            BCSC_AUTH_STATUS
         )?.observe(viewLifecycleOwner, {
-            if (it) {
-                findNavController().currentBackStackEntry?.savedStateHandle
-                    ?.set(BCSC_AUTH_SUCCESS, false)
+            when (it) {
+                BcscAuthState.SUCCESS -> {
+                    findNavController().currentBackStackEntry?.savedStateHandle
+                        ?.set(BCSC_AUTH_STATUS, BcscAuthState.NO_ACTION)
+                }
+                BcscAuthState.NOT_NOW -> {
+                    findNavController().currentBackStackEntry?.savedStateHandle
+                        ?.set(BCSC_AUTH_STATUS, BcscAuthState.NO_ACTION)
+                    val destinationId = sharedViewModel.destinationId
+                    if (destinationId > 0) {
+                        findNavController().navigate(destinationId)
+                    } else {
+                        findNavController().popBackStack()
+                    }
+                }
+                else -> {}
             }
         })
 
@@ -166,7 +180,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                         } else {
                             sharedViewModel.destinationId = R.id.addCardOptionFragment
                             findNavController()
-                                .navigate(R.id.action_healthPassFragment_to_bcscAuthInfoFragment)
+                                .navigate(R.id.bcscAuthInfoFragment)
                         }
                     }
                 }
@@ -186,7 +200,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
             }
 
             if (uiState.isBcscLoginRequiredPostBiometrics) {
-                findNavController().navigate(R.id.action_healthPassFragment_to_bcscAuthInfoFragment)
+                findNavController().navigate(R.id.bcscAuthInfoFragment)
                 viewModel.onBcscLoginRequired(false)
             }
         }
