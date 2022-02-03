@@ -299,7 +299,6 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                 "",
                 object : QueueListener() {
                     override fun onQueuePassed(queuePassedInfo: QueuePassedInfo?) {
-                        Log.d(TAG, "onQueuePassed: updatedToken ${queuePassedInfo?.queueItToken}")
                         viewModel.setQueItToken(queuePassedInfo?.queueItToken)
                     }
 

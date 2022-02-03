@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.ui.healthrecord.add
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -216,11 +215,6 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
                 "",
                 object : QueueListener() {
                     override fun onQueuePassed(queuePassedInfo: QueuePassedInfo?) {
-                        Log.d(
-                            TAG,
-                            "onQueuePassed: updatedToken " +
-                                "${queuePassedInfo?.queueItToken}"
-                        )
                         viewModel.setQueItToken(queuePassedInfo?.queueItToken)
                     }
 
