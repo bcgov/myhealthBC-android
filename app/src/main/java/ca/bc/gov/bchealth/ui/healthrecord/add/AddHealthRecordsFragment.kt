@@ -67,15 +67,13 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
             BcscAuthFragment.BCSC_AUTH_STATUS
         )?.observe(viewLifecycleOwner, {
+            findNavController().currentBackStackEntry?.savedStateHandle
+                ?.remove<BcscAuthState>(BcscAuthFragment.BCSC_AUTH_STATUS)
             when (it) {
                 BcscAuthState.SUCCESS -> {
-                    findNavController().currentBackStackEntry?.savedStateHandle
-                        ?.set(BcscAuthFragment.BCSC_AUTH_STATUS, BcscAuthState.NO_ACTION)
                     findNavController().navigate(sharedViewModel.destinationId)
                 }
                 BcscAuthState.NOT_NOW -> {
-                    findNavController().currentBackStackEntry?.savedStateHandle
-                        ?.set(BcscAuthFragment.BCSC_AUTH_STATUS, BcscAuthState.NO_ACTION)
                     val destinationId = sharedViewModel.destinationId
                     if (destinationId > 0) {
                         findNavController().navigate(destinationId)
