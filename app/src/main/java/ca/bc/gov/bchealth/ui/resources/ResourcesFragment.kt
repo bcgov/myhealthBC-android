@@ -50,7 +50,7 @@ class ResourcesFragment : Fragment(R.layout.fragment_resources) {
         binding.toolbar.ivRightOption.apply {
             visibility = View.VISIBLE
             setOnClickListener {
-                findNavController().navigate(R.id.settingFragment)
+                findNavController().navigate(R.id.profileFragment)
             }
         }
     }

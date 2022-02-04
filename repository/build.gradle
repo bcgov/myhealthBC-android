@@ -33,6 +33,7 @@ android {
             resValue "string", "rules_url", "https://ds9mwekyyprcy.cloudfront.net/bc-rules.json"
             resValue "string", "default_issuer_json", "phsasmarthealthcard-dev.azurewebsites.net~v1~trusted~.well-known~issuers.json"
             resValue "string", "default_rules_json", "ds9mwekyyprcy.cloudfront.net~bc-rules.json"
+            resValue "string", "auth_issuer_end_point", "https://dev.oidc.gov.bc.ca/auth/realms/ff09qn3f"
         }
 
         stage {
@@ -41,6 +42,7 @@ android {
             resValue "string", "rules_url", "https://phsasmarthealthcard-dev.azurewebsites.net/v1/Covid19Proof/.well-known/rules.json"
             resValue "string", "default_issuer_json", "phsasmarthealthcard-dev.azurewebsites.net~v1~trusted~.well-known~issuers.json"
             resValue "string", "default_rules_json", "phsasmarthealthcard-dev.azurewebsites.net~v1~Covid19Proof~.well-known~rules.json"
+            resValue "string", "auth_issuer_end_point", "https://dev.oidc.gov.bc.ca/auth/realms/ff09qn3f"
         }
 
         prod {
@@ -49,6 +51,7 @@ android {
             resValue "string", "rules_url", "https://smarthealthcard.phsa.ca/v1/Covid19Proof/.well-known/rules.json"
             resValue "string", "default_issuer_json", "smarthealthcard.phsa.ca~v1~trusted~.well-known~issuers.json"
             resValue "string", "default_rules_json", "smarthealthcard.phsa.ca~v1~Covid19Proof~.well-known~rules.json"
+            resValue "string", "auth_issuer_end_point", "https://oidc.gov.bc.ca/auth/realms/ff09qn3f"
         }
     }
 
@@ -98,6 +101,9 @@ dependencies {
     //dagger hilt
     implementation "com.google.dagger:hilt-android:$versions.hilt"
     kapt "com.google.dagger:hilt-compiler:$versions.hilt"
+
+    //app auth
+    implementation "net.openid:appauth:$versions.appauth"
 
     testImplementation "junit:junit:$versions.junit"
     androidTestImplementation "androidx.test.ext:junit:$versions.ext_junit"

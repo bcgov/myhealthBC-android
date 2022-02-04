@@ -19,4 +19,6 @@ class SharedViewModel @Inject constructor() : ViewModel() {
     fun setModifiedRecordId(patientId: Long) {
         _modifiedRecordId.value = patientId
     }
+
+    var destinationId: Int = 0
 }

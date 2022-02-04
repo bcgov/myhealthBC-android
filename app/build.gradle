@@ -27,6 +27,10 @@ android {
                         "room.expandProjection": "true"]
             }
         }
+
+        manifestPlaceholders = [
+                'appAuthRedirectScheme': 'myhealthbc'
+        ]
     }
 
     buildTypes {
