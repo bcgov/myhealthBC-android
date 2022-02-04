@@ -17,7 +17,7 @@ import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentCameraPermissionBinding
-import ca.bc.gov.bchealth.utils.AppAlertDialog
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -92,7 +92,7 @@ class CameraPermissionFragment : Fragment(R.layout.fragment_camera_permission) {
     }
 
     private fun showRationalDialog() {
-        AppAlertDialog.showConfirmationAlertDialog(
+        AlertDialogHelper.showAlertDialog(
             context = requireContext(),
             title = getString(R.string.camera_permission_required_title),
             msg = getString(R.string.camera_permission_message),

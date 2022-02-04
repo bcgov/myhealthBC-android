@@ -4,20 +4,21 @@ import android.content.Context
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-object AppAlertDialog {
+object AlertDialogHelper {
     private lateinit var dialogAlert: AlertDialog
 
     private fun isDialogShowing(): Boolean =
         this::dialogAlert.isInitialized && dialogAlert.isShowing
 
-    fun showConfirmationAlertDialog(
+    fun showAlertDialog(
         context: Context,
         title: String,
         msg: String,
         positiveBtnMsg: String,
         negativeBtnMsg: String? = null,
         positiveBtnCallback: (() -> Unit)? = null,
-        negativeBtnCallback: (() -> Unit)? = null
+        negativeBtnCallback: (() -> Unit)? = null,
+        isCancelable: Boolean = false
     ) {
         if (isDialogShowing()) {
             return
@@ -34,7 +35,7 @@ object AppAlertDialog {
                 negativeBtnCallback?.invoke()
                 dialog.dismiss()
             }
-            .setCancelable(false)
+            .setCancelable(isCancelable)
             .show()
     }
 }

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentVaccineRecordDetailBinding
 import ca.bc.gov.bchealth.ui.healthrecord.VaccineRecordDetailViewModel
-import ca.bc.gov.bchealth.utils.AppAlertDialog
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.utils.toDateTimeString
@@ -57,7 +57,7 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
             tvRightOption.text = getString(R.string.delete)
             tvRightOption.setOnClickListener {
 
-                AppAlertDialog.showConfirmationAlertDialog(
+                AlertDialogHelper.showAlertDialog(
                     context = requireContext(),
                     title = getString(R.string.delete_hc_record_title),
                     msg = getString(R.string.delete_individual_vaccine_record_message),

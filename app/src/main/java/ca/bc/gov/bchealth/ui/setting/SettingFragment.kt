@@ -7,7 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSettingBinding
-import ca.bc.gov.bchealth.utils.AppAlertDialog
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
@@ -66,7 +66,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     }
 
     private fun showAlertDialog() {
-        AppAlertDialog.showConfirmationAlertDialog(
+        AlertDialogHelper.showAlertDialog(
             context = requireContext(),
             title = getString(R.string.delete_data),
             msg = getString(R.string.delete_data_message),

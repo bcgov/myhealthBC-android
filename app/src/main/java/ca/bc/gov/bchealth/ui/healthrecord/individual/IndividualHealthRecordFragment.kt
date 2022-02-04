@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
-import ca.bc.gov.bchealth.utils.AppAlertDialog
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
@@ -183,7 +183,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         when (healthRecordItem.healthRecordType) {
 
             HealthRecordType.VACCINE_RECORD -> {
-                AppAlertDialog.showConfirmationAlertDialog(
+                AlertDialogHelper.showAlertDialog(
                     context = requireContext(),
                     title = getString(R.string.delete_hc_record_title),
                     msg = getString(R.string.delete_individual_vaccine_record_message),
@@ -198,7 +198,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             }
 
             HealthRecordType.COVID_TEST_RECORD -> {
-                AppAlertDialog.showConfirmationAlertDialog(
+                AlertDialogHelper.showAlertDialog(
                     context = requireContext(),
                     title = getString(R.string.delete_hc_record_title),
                     msg = getString(R.string.delete_individual_covid_test_record_message),

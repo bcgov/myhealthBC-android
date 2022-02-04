@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentManageHealthPassesBinding
 import ca.bc.gov.bchealth.ui.healthpass.HealthPassViewModel
-import ca.bc.gov.bchealth.utils.AppAlertDialog
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.common.model.analytics.AnalyticsAction
@@ -126,7 +126,7 @@ class ManageHealthPassFragment : Fragment(R.layout.fragment_manage_health_passes
     }
 
     private fun confirmUnlinking(vaccineRecordId: Long) {
-        AppAlertDialog.showConfirmationAlertDialog(
+        AlertDialogHelper.showAlertDialog(
             context = requireContext(),
             title = getString(R.string.unlink_card),
             msg = getString(R.string.do_you_want_to_unlink),

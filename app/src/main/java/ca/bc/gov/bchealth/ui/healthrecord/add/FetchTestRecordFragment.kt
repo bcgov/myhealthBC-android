@@ -20,7 +20,7 @@ import ca.bc.gov.bchealth.databinding.FragmentFetchCovidTestResultBinding
 import ca.bc.gov.bchealth.ui.custom.setUpDatePickerUi
 import ca.bc.gov.bchealth.ui.custom.validateDatePickerData
 import ca.bc.gov.bchealth.ui.custom.validatePhnNumber
-import ca.bc.gov.bchealth.utils.AppAlertDialog
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
@@ -80,11 +80,11 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
                     showLoader(state.onLoading)
 
                     if (state.errorData != null) {
-                        AppAlertDialog.showConfirmationAlertDialog(
+                        AlertDialogHelper.showAlertDialog(
                             context = requireContext(),
                             title = getString(state.errorData.title),
                             msg = getString(state.errorData.message),
-                            positiveBtnMsg = getString(android.R.string.ok)
+                            positiveBtnMsg = getString(R.string.btn_ok)
                         )
                     }
 
