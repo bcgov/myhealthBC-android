@@ -15,7 +15,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
-import ca.bc.gov.bchealth.utils.AppAlertDialog
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -124,11 +124,11 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             }
             Status.DUPLICATE -> {
 
-                AppAlertDialog.showConfirmationAlertDialog(
+                AlertDialogHelper.showAlertDialog(
                     context = requireContext(),
                     title = getString(R.string.error_duplicate_title),
                     msg = getString(R.string.error_duplicate_message),
-                    positiveBtnMsg = getString(android.R.string.ok),
+                    positiveBtnMsg = getString(R.string.btn_ok),
                     positiveBtnCallback = {
                         addOrUpdateCardViewModel.resetStatus()
                     }
@@ -136,11 +136,11 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             }
 
             Status.ERROR -> {
-                AppAlertDialog.showConfirmationAlertDialog(
+                AlertDialogHelper.showAlertDialog(
                     context = requireContext(),
                     title = getString(R.string.error_invalid_qr_code_title),
                     msg = getString(R.string.error_invalid_qr_code_message),
-                    positiveBtnMsg = getString(android.R.string.ok),
+                    positiveBtnMsg = getString(R.string.btn_ok),
                     positiveBtnCallback = {
                         addOrUpdateCardViewModel.resetStatus()
                     }
@@ -150,7 +150,7 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
     }
 
     private fun updateRecord(vaccineRecord: PatientVaccineRecord) {
-        AppAlertDialog.showConfirmationAlertDialog(
+        AlertDialogHelper.showAlertDialog(
             context = requireContext(),
             title = getString(R.string.replace_health_pass_title),
             msg = getString(R.string.replace_health_pass_message),

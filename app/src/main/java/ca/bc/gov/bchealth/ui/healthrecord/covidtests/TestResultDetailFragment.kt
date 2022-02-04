@@ -13,7 +13,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentTestResultDetailBinding
-import ca.bc.gov.bchealth.utils.AppAlertDialog
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.TestRecordDto
@@ -96,7 +96,7 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
             tvRightOption.visibility = View.VISIBLE
             tvRightOption.text = getString(R.string.delete)
             tvRightOption.setOnClickListener {
-                AppAlertDialog.showConfirmationAlertDialog(
+                AlertDialogHelper.showAlertDialog(
                     context = requireContext(),
                     title = getString(R.string.delete_hc_record_title),
                     msg = getString(R.string.delete_individual_covid_test_record_message),

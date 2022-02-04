@@ -20,7 +20,7 @@ import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineRecordBinding
 import ca.bc.gov.bchealth.ui.custom.setUpDatePickerUi
 import ca.bc.gov.bchealth.ui.custom.validateDatePickerData
 import ca.bc.gov.bchealth.ui.custom.validatePhnNumber
-import ca.bc.gov.bchealth.utils.AppAlertDialog
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
@@ -115,18 +115,18 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
             }
 
             Status.ERROR -> {
-                AppAlertDialog.showConfirmationAlertDialog(
+                AlertDialogHelper.showAlertDialog(
                     context = requireContext(),
                     title = getString(R.string.error_invalid_qr_code_title),
                     msg = getString(R.string.error_invalid_qr_code_message),
-                    positiveBtnMsg = getString(android.R.string.ok),
+                    positiveBtnMsg = getString(R.string.btn_ok)
                 )
             }
         }
     }
 
     private fun showErrorDialog(title: Int, message: Int) {
-        AppAlertDialog.showConfirmationAlertDialog(
+        AlertDialogHelper.showAlertDialog(
             context = requireContext(),
             title = getString(title),
             msg = getString(message),
@@ -139,7 +139,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
     }
 
     private fun updateRecord(vaccineRecord: PatientVaccineRecord) {
-        AppAlertDialog.showConfirmationAlertDialog(
+        AlertDialogHelper.showAlertDialog(
             context = requireContext(),
             title = getString(R.string.replace_health_pass_title),
             msg = getString(R.string.replace_health_pass_message),
@@ -168,11 +168,11 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                     showLoader(uiState.onLoading)
 
                     if (uiState.errorData != null) {
-                        AppAlertDialog.showConfirmationAlertDialog(
+                        AlertDialogHelper.showAlertDialog(
                             context = requireContext(),
                             title = getString(uiState.errorData.title),
                             msg = getString(uiState.errorData.message),
-                            positiveBtnMsg = getString(android.R.string.ok)
+                            positiveBtnMsg = getString(R.string.btn_ok)
                         )
                     }
 

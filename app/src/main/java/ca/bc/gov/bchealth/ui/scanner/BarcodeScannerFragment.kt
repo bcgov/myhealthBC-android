@@ -24,7 +24,7 @@ import ca.bc.gov.bchealth.barcodeanalyzer.ScanningResultListener
 import ca.bc.gov.bchealth.databinding.FragmentBarcodeScannerBinding
 import ca.bc.gov.bchealth.ui.healthpass.add.AddOrUpdateCardViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
-import ca.bc.gov.bchealth.utils.AppAlertDialog
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -183,7 +183,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
         }
 
         private fun showNoCameraAlertDialog() {
-            AppAlertDialog.showConfirmationAlertDialog(
+            AlertDialogHelper.showAlertDialog(
                 context = requireContext(),
                 title = getString(R.string.bc_no_rear_camera_title),
                 msg = getString(R.string.bc_nor_rear_camera_message),
@@ -239,7 +239,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
         }
 
         private fun showError(title: String, message: String) {
-            AppAlertDialog.showConfirmationAlertDialog(
+            AlertDialogHelper.showAlertDialog(
                 context = requireContext(),
                 title = title,
                 msg = message,
@@ -252,7 +252,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
         }
 
         private fun showDuplicateRecordDialog() {
-            AppAlertDialog.showConfirmationAlertDialog(
+            AlertDialogHelper.showAlertDialog(
                 context = requireContext(),
                 title = getString(R.string.error_duplicate_title),
                 msg = getString(R.string.error_duplicate_message),
@@ -265,7 +265,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
         }
 
         private fun showCardReplacementDialog(vaccineRecord: PatientVaccineRecord) {
-            AppAlertDialog.showConfirmationAlertDialog(
+            AlertDialogHelper.showAlertDialog(
                 context = requireContext(),
                 title = getString(R.string.replace_health_pass_title),
                 msg = getString(R.string.replace_health_pass_message),

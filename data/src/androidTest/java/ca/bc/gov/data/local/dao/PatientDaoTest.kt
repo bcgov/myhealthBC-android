@@ -1,6 +1,7 @@
 package ca.bc.gov.data.local.dao
 
 import ca.bc.gov.data.local.BaseDataBaseTest
+import ca.bc.gov.data.local.entity.PatientEntity
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -32,7 +33,7 @@ class PatientDaoTest : BaseDataBaseTest() {
         val result = patientDao.insertPatient(patient)
 
         // Then
-        Assert.assertEquals(1, result)
+        Assert.assertTrue(result > 0)
     }
 
     @Test
@@ -45,7 +46,7 @@ class PatientDaoTest : BaseDataBaseTest() {
         val result = patientDao.insertPatient(patient)
 
         // Then
-        Assert.assertNotEquals(1, result)
+        Assert.assertEquals(-1, result)
     }
 
     @Test
@@ -73,7 +74,7 @@ class PatientDaoTest : BaseDataBaseTest() {
         // Then
         val insertedPatient =
             patientDao.getPatient(patient.id)
-        Assert.assertEquals(patient, insertedPatient)
+        assertPatientData(patient, insertedPatient)
     }
 
     @Test
@@ -100,6 +101,16 @@ class PatientDaoTest : BaseDataBaseTest() {
         val result = patientDao.getPatientWithRecordCountFlow().first()
         Assert.assertTrue(result.contains(getPatientWithHealthRecordCount1(patient1)))
         Assert.assertTrue(result.contains(getPatientWithHealthRecordCount2(patient2)))
+    }
+
+    private fun assertPatientData(expectedPatient: PatientEntity, insertedPatient: PatientEntity) {
+        Assert.assertEquals(expectedPatient, insertedPatient)
+        Assert.assertEquals(expectedPatient.id, insertedPatient.id)
+        Assert.assertEquals(expectedPatient.fullName, insertedPatient.fullName)
+        Assert.assertEquals(expectedPatient.dateOfBirth, insertedPatient.dateOfBirth)
+        Assert.assertEquals(expectedPatient.patientOrder, insertedPatient.patientOrder)
+        Assert.assertEquals(expectedPatient.phn, insertedPatient.phn)
+        Assert.assertEquals(expectedPatient.timeStamp, insertedPatient.timeStamp)
     }
 
     override fun tearDown() {
