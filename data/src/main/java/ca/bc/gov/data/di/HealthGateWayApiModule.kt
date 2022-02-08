@@ -5,6 +5,7 @@ import ca.bc.gov.data.R
 import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.remote.ImmunizationApi
 import ca.bc.gov.data.remote.LaboratoryApi
+import ca.bc.gov.data.remote.MedicationApi
 import ca.bc.gov.data.remote.PatientApi
 import ca.bc.gov.data.remote.interceptor.CookiesInterceptor
 import ca.bc.gov.data.remote.interceptor.QueueItInterceptor
@@ -93,6 +94,10 @@ class HealthGateWayApiModule {
     @Provides
     fun providesLaboratoryApi(retrofit: Retrofit): LaboratoryApi =
         retrofit.create(LaboratoryApi::class.java)
+
+    @Provides
+    fun providesMedicationApi(retrofit: Retrofit): MedicationApi =
+        retrofit.create(MedicationApi::class.java)
 
     @Provides
     fun providesPatientApi(retrofit: Retrofit): PatientApi =

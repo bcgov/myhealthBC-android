@@ -1,4 +1,4 @@
-package ca.bc.gov.data.remote.model.base
+package ca.bc.gov.data.remote.model.base.vaccine
 
 import com.google.gson.annotations.SerializedName
 
