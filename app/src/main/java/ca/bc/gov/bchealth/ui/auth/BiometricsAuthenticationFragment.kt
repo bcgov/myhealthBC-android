@@ -50,8 +50,6 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
         startForResult =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
                 if (result.resultCode == Activity.RESULT_OK) {
-                    val intent = result.data
-                    // Handle the Intent
                 }
             }
     }
@@ -99,8 +97,13 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    val errorMessage = "$errorCode, $errString"
-                    showAuthenticationErrorDialog(errorMessage)
+                    when (errorCode) {
+                        BiometricPrompt.ERROR_USER_CANCELED -> {}
+                        else -> {
+                            val errorMessage = "$errorCode, $errString"
+                            showAuthenticationErrorDialog(errorMessage)
+                        }
+                    }
                 }
 
                 override fun onAuthenticationFailed() {
