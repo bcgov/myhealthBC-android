@@ -4,10 +4,13 @@ import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
 import ca.bc.gov.common.exceptions.MyHealthNetworkException
+import ca.bc.gov.common.model.AuthenticatedCovidTestDto
+import ca.bc.gov.common.model.OrderDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.relation.PatientTestResultDto
 import ca.bc.gov.common.model.test.TestResultDto
 import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.data.model.mapper.toPayloadDto
 import ca.bc.gov.data.model.mapper.toTestRecord
 import ca.bc.gov.data.remote.LaboratoryApi
 import ca.bc.gov.data.remote.model.base.Action
@@ -56,5 +59,22 @@ class LaboratoryRemoteDataSource @Inject constructor(
             record.toTestRecord()
         }
         return PatientTestResultDto(patient, testResult, records)
+    }
+
+    suspend fun getAuthenticatedCovidTests(token: String, hdid: String): AuthenticatedCovidTestDto {
+        val response = safeCall { laboratoryApi.getAuthenticatedCovidTests("Bearer $token", hdid) }
+            ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
+
+        if (response.error != null) {
+            if (Action.MISMATCH.code == response.error.action?.code) {
+                throw MyHealthNetworkException(SERVER_ERROR_DATA_MISMATCH, response.error.message)
+            }
+            if ("Error parsing phn" == response.error.message) {
+                throw MyHealthNetworkException(SERVER_ERROR_INCORRECT_PHN, response.error.message)
+            }
+            throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
+        }
+
+        return response.payload.toPayloadDto()
     }
 }

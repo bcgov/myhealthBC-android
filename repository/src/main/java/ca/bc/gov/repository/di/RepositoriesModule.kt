@@ -2,6 +2,7 @@ package ca.bc.gov.repository.di
 
 import android.content.Context
 import ca.bc.gov.data.ImmunizationRemoteDataSource
+import ca.bc.gov.data.PatientRemoteDataSource
 import ca.bc.gov.data.datasource.LocalDataSource
 import ca.bc.gov.data.datasource.PatientLocalDataSource
 import ca.bc.gov.data.datasource.PatientWithVaccineRecordLocalDataSource
@@ -15,6 +16,7 @@ import ca.bc.gov.repository.FederalTravelPassDecoderRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.PatientHealthRecordsRepository
+import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.QrCodeGeneratorRepository
@@ -170,4 +172,9 @@ class RepositoriesModule {
         context,
         encryptedPreferenceStorage
     )
+
+    @Provides
+    @Singleton
+    fun providesPatientWithBCSCLoginRepository(patientRemoteDataSource: PatientRemoteDataSource) =
+        PatientWithBCSCLoginRepository(patientRemoteDataSource)
 }

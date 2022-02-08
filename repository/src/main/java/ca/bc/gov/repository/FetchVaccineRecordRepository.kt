@@ -31,4 +31,17 @@ class FetchVaccineRecordRepository @Inject constructor(
         record?.patientDto?.phn = response.payload?.phn
         return Pair(status, record)
     }
+
+    suspend fun fetchAuthenticatedVaccineRecord(
+        token: String, hdid: String
+    ): Pair<VaccineRecordState, PatientVaccineRecord?> {
+        val response =
+            immunizationRemoteDataSource.getAuthenticatedVaccineStatus(token, hdid)
+        val image = base64ToInputImageConverter.convert(response.payload?.qrCode?.data!!)
+        val patientVaccineRecord = processQrRepository.processQrCode(image)
+        val (status, record) = patientVaccineRecord
+        record?.vaccineRecordDto?.federalPass = response.payload?.federalVaccineProof?.data
+        record?.patientDto?.phn = response.payload?.phn
+        return Pair(status, record)
+    }
 }

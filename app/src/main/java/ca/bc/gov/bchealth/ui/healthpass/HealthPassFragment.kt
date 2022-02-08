@@ -8,6 +8,7 @@ import android.graphics.PorterDuffXfermode
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
@@ -29,6 +30,7 @@ import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment.Companion.BIO
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment.Companion.BCSC_AUTH_STATUS
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
+import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.FederalTravelPassDecoderVideModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -68,6 +70,10 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                 BioMetricState.SUCCESS -> {
                     viewModel.onAuthenticationRequired(false)
                     viewModel.launchCheck()
+                    //will throw hostname not verified error if not logged in with BCSC
+                    viewModel.fetchPatient()
+                    viewModel.fetchAuthenticatedVaccineRecord()
+                    viewModel.fetchAuthenticatedTestRecord()
                 }
                 else -> {
                     findNavController().popBackStack()
@@ -161,6 +167,23 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                 launch {
                     collectUiState()
                 }
+                launch {
+                    collectPatientUiState()
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.fetchVaccineRecordUiState.collect { uiState ->
+
+                    if (uiState.errorData != null) {
+                        requireContext().showError(
+                            getString(uiState.errorData.title),
+                            getString(uiState.errorData.message)
+                        )
+                    }
+                }
             }
         }
     }
@@ -218,6 +241,15 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                     navigateToViewTravelPass(federalTravelPass)
                 }
                 federalTravelPassDecoderVideModel.federalTravelPassShown()
+            }
+        }
+    }
+//not required to handle response, added temporarily
+    private suspend fun collectPatientUiState() {
+        viewModel.fetchPatientUiState.collect { uiState ->
+            if (uiState.errorData != null) {
+                Toast.makeText(requireContext(), uiState.errorData.message, Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
