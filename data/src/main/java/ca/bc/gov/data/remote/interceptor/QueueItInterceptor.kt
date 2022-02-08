@@ -10,6 +10,7 @@ import okhttp3.Response
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import java.io.IOException
+import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -69,8 +70,13 @@ class QueueItInterceptor @Inject constructor(
                     throw IOException("Bad response!")
                 }
                 val payload = json.getAsJsonObject(RESOURCE_PAYLOAD) ?: throw IOException("Bad response!")
-                loaded = payload.get(LOADED).asBoolean
-                val retryInMillis = payload.get(RETRY_IN).asLong
+                var retryInMillis = 0L
+                try {
+                    loaded = payload.get(LOADED).asBoolean
+                    retryInMillis = payload.get(RETRY_IN).asLong
+                } catch (e: Exception) {
+                    loaded = true
+                }
                 if (!loaded && retryInMillis > 0) {
                     Thread.sleep(retryInMillis)
                 }

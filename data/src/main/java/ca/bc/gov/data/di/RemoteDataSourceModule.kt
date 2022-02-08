@@ -2,8 +2,10 @@ package ca.bc.gov.data.di
 
 import ca.bc.gov.data.ImmunizationRemoteDataSource
 import ca.bc.gov.data.LaboratoryRemoteDataSource
+import ca.bc.gov.data.PatientRemoteDataSource
 import ca.bc.gov.data.remote.ImmunizationApi
 import ca.bc.gov.data.remote.LaboratoryApi
+import ca.bc.gov.data.remote.PatientApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,4 +28,9 @@ class RemoteDataSourceModule {
     @Singleton
     fun providesLaboratoryRemoteDataSource(laboratoryApi: LaboratoryApi) =
         LaboratoryRemoteDataSource(laboratoryApi)
+
+    @Provides
+    @Singleton
+    fun providesPatientRemoteDataSource(patientApi: PatientApi) =
+        PatientRemoteDataSource(patientApi)
 }
