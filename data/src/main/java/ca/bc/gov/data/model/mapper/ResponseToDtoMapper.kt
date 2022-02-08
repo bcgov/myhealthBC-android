@@ -5,8 +5,8 @@ import ca.bc.gov.common.utils.formatInPattern
 import ca.bc.gov.common.utils.formattedStringToDateTime
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTime
-import ca.bc.gov.data.remote.model.base.CovidTestRecord
 import ca.bc.gov.data.remote.model.base.LabResult
+import ca.bc.gov.data.remote.model.base.covidtest.CovidTestRecord
 
 fun CovidTestRecord.toTestRecord() = TestRecordDto(
     id = reportId,
