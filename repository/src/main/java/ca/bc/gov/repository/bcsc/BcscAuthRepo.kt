@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Base64
 import androidx.core.net.toUri
 import ca.bc.gov.common.const.AUTH_ERROR
+import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.repository.R
@@ -130,12 +131,23 @@ class BcscAuthRepo(
             return Pair(BEARER.plus(accessToken), hdId)
     }
 
+    suspend fun getAuthParameters(): Pair<String, String> {
+        val authState = getAuthState() ?: throw MyHealthException(AUTH_ERROR_DO_LOGIN, "Login again!")
+        val accessToken = awaitPerformActionWithFreshTokens(applicationContext, authState)
+        val json = decodeAccessToken(accessToken)
+        val hdId = json.get(HDID).toString()
+        if (hdId.isEmpty())
+            throw MyHealthException(AUTH_ERROR_DO_LOGIN, "Invalid access token!")
+        else
+            return Pair(hdId, BEARER.plus(" ").plus(accessToken))
+    }
+
     suspend fun getUserName(): String {
         var userName = "Not available!"
         try {
             val authState = getAuthState() ?: throw MyHealthException(AUTH_ERROR, "Login again!")
             val json = authState.accessToken?.let { decodeAccessToken(it) }
-            userName = json?.get("name").toString()
+            userName = json?.get(NAME).toString()
         } catch (e: java.lang.Exception) {
             // NA
         }
@@ -145,7 +157,7 @@ class BcscAuthRepo(
     @Throws(Exception::class)
     private fun decodeAccessToken(JWTEncodedAccessToken: String): JSONObject {
         if (JWTEncodedAccessToken.isEmpty()) {
-            throw MyHealthException(AUTH_ERROR, "Invalid access token!")
+            throw MyHealthException(AUTH_ERROR_DO_LOGIN, "Invalid access token!")
         }
         val split = JWTEncodedAccessToken.split("\\.".toRegex()).toTypedArray()
         return JSONObject(getJson(split[1]))
@@ -163,6 +175,8 @@ class BcscAuthRepo(
         private val params = mapOf("kc_idp_hint" to "bcsc")
         private const val SCOPE = "openid email profile"
         private const val PROMPT = "login"
-        private const val BEARER = "Bearer "
+        private const val HDID = "hdid"
+        private const val NAME = "name"
+        private const val BEARER = "Bearer"
     }
 }

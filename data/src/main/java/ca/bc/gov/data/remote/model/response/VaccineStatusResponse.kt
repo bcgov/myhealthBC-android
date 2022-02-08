@@ -2,7 +2,7 @@ package ca.bc.gov.data.remote.model.response
 
 import ca.bc.gov.data.remote.model.base.Error
 import ca.bc.gov.data.remote.model.base.Status
-import ca.bc.gov.data.remote.model.base.VaccineResourcePayload
+import ca.bc.gov.data.remote.model.base.vaccine.VaccineResourcePayload
 import com.google.gson.annotations.SerializedName
 
 /**
