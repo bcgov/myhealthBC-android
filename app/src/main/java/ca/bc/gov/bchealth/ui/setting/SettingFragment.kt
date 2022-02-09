@@ -15,10 +15,7 @@ import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSettingBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
-import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
-import ca.bc.gov.bchealth.utils.showAlertDialog
-import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -50,9 +47,11 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
             isLoggedIn = false
             binding.switchLogin.isChecked = false
         } else {
-            requireContext().showError(
-                getString(R.string.error),
-                getString(R.string.error_message)
+            AlertDialogHelper.showAlertDialog(
+                context = requireContext(),
+                title = getString(R.string.error),
+                msg = getString(R.string.error_message),
+                positiveBtnMsg = getString(R.string.dialog_button_ok)
             )
         }
     }
@@ -140,32 +139,34 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     }
 
     private fun showLogoutDialog() {
-        requireContext().showAlertDialog(
+        AlertDialogHelper.showAlertDialog(
+            context = requireContext(),
             title = getString(R.string.logout_dialog_title),
-            message = getString(R.string.logout_dialog_message),
-            positiveButtonText = getString(R.string.log_out),
-            negativeButtonText = getString(R.string.cancel)
-        ) {
-            bcscAuthViewModel.getEndSessionIntent()
+            msg = getString(R.string.logout_dialog_message),
+            positiveBtnMsg = getString(R.string.log_out),
+            negativeBtnMsg = getString(R.string.cancel),
+            positiveBtnCallback = {
+                bcscAuthViewModel.getEndSessionIntent()
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    bcscAuthViewModel.authStatus.collect {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        bcscAuthViewModel.authStatus.collect {
 
-                        showLoader(it.showLoading)
+                            showLoader(it.showLoading)
 
-                        if (it.isError) {
-                            bcscAuthViewModel.resetAuthStatus()
-                        }
+                            if (it.isError) {
+                                bcscAuthViewModel.resetAuthStatus()
+                            }
 
-                        if (it.authRequestIntent != null) {
-                            logoutResultLauncher.launch(it.authRequestIntent)
-                            bcscAuthViewModel.resetAuthStatus()
+                            if (it.authRequestIntent != null) {
+                                logoutResultLauncher.launch(it.authRequestIntent)
+                                bcscAuthViewModel.resetAuthStatus()
+                            }
                         }
                     }
                 }
             }
-        }
+        )
     }
 
     private fun showAlertDialog() {
@@ -179,15 +180,6 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
                 deleteAllRecordsAndSavedData()
             }
         )
-
-        requireContext().showAlertDialog(
-            title = getString(R.string.delete_data),
-            message = getString(R.string.delete_data_message),
-            positiveButtonText = getString(R.string.delete),
-            negativeButtonText = getString(R.string.cancel)
-        ) {
-            deleteAllRecordsAndSavedData()
-        }
     }
 
     private fun deleteAllRecordsAndSavedData() {
