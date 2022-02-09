@@ -14,8 +14,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
-import ca.bc.gov.bchealth.utils.showAlertDialog
-import ca.bc.gov.bchealth.utils.showError
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -120,33 +119,42 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             }
             Status.DUPLICATE -> {
 
-                requireContext().showError(
-                    getString(R.string.error_duplicate_title),
-                    getString(R.string.error_duplicate_message)
+                AlertDialogHelper.showAlertDialog(
+                    context = requireContext(),
+                    title = getString(R.string.error_duplicate_title),
+                    msg = getString(R.string.error_duplicate_message),
+                    positiveBtnMsg = getString(R.string.btn_ok),
+                    positiveBtnCallback = {
+                        addOrUpdateCardViewModel.resetStatus()
+                    }
                 )
-                addOrUpdateCardViewModel.resetStatus()
             }
 
             Status.ERROR -> {
-
-                requireContext().showError(
-                    getString(R.string.error_invalid_qr_code_title),
-                    getString(R.string.error_invalid_qr_code_message)
+                AlertDialogHelper.showAlertDialog(
+                    context = requireContext(),
+                    title = getString(R.string.error_invalid_qr_code_title),
+                    msg = getString(R.string.error_invalid_qr_code_message),
+                    positiveBtnMsg = getString(R.string.btn_ok),
+                    positiveBtnCallback = {
+                        addOrUpdateCardViewModel.resetStatus()
+                    }
                 )
-                addOrUpdateCardViewModel.resetStatus()
             }
         }
     }
 
     private fun updateRecord(vaccineRecord: PatientVaccineRecord) {
-        requireContext().showAlertDialog(
+        AlertDialogHelper.showAlertDialog(
+            context = requireContext(),
             title = getString(R.string.replace_health_pass_title),
-            message = getString(R.string.replace_health_pass_message),
-            positiveButtonText = getString(R.string.replace),
-            negativeButtonText = getString(R.string.not_now)
-        ) {
-            addOrUpdateCardViewModel.update(vaccineRecord)
-        }
+            msg = getString(R.string.replace_health_pass_message),
+            positiveBtnMsg = getString(R.string.replace),
+            negativeBtnMsg = getString(R.string.not_now),
+            positiveBtnCallback = {
+                addOrUpdateCardViewModel.update(vaccineRecord)
+            }
+        )
     }
 
     private fun insert(vaccineRecord: PatientVaccineRecord) {

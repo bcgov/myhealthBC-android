@@ -2,13 +2,11 @@ package ca.bc.gov.data.local.dao
 
 import ca.bc.gov.data.local.BaseDataBaseTest
 import ca.bc.gov.data.local.entity.PatientEntity
-import ca.bc.gov.data.model.CreatePatientDto
-import ca.bc.gov.data.model.toEntity
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertTrue
+import org.junit.Assert
 import org.junit.Test
-import java.time.Instant
 
 /**
  * @author Pinakin Kansara
@@ -16,34 +14,103 @@ import java.time.Instant
 @HiltAndroidTest
 class PatientDaoTest : BaseDataBaseTest() {
 
-    lateinit var patientDao: PatientDao
-    lateinit var patientAndVaccineRecordDao: PatientAndVaccineRecordDao
+    private lateinit var patientDao: PatientDao
+    private lateinit var vaccineRecordDao: VaccineRecordDao
+    private lateinit var testResultDao: TestResultDao
 
     override fun onCreate() {
         patientDao = db.getPatientDao()
-        patientAndVaccineRecordDao = db.getPatientAndVaccineRecordDao()
+        vaccineRecordDao = db.getVaccineRecordDao()
+        testResultDao = db.getTestResultDao()
     }
 
     @Test
-    fun sampleTest() = runBlocking {
+    fun insertPatient() = runBlocking {
+        // Given
+        val patient = getPatient1()
 
-        val patient =
-            PatientEntity(firstName = "Pinakin", lastName = "kansara", dateOfBirth = Instant.now())
-        val id = patientDao.insertPatient(patient)
+        // When
+        val result = patientDao.insertPatient(patient)
 
-        assertTrue(id > 0)
+        // Then
+        Assert.assertTrue(result > 0)
     }
 
     @Test
-    fun insertAndGetPatientId() = runBlocking {
+    fun insertDuplicatePatient() = runBlocking {
+        // Given
+        val patient = getPatient1()
 
-        val patient = CreatePatientDto("Pinakin", "Kansara", Instant.now())
+        // When
+        patientDao.insertPatient(patient)
+        val result = patientDao.insertPatient(patient)
 
-        patientDao.insertPatient(patient.toEntity())
+        // Then
+        Assert.assertEquals(-1, result)
+    }
 
-        val id = patientDao.getPatientId(patient.firstName, patient.lastName, patient.dateOfBirth)
+    @Test
+    fun checkPatientId() = runBlocking {
+        // Given
+        val patient = getPatient1()
 
-        assertTrue(id!! > 0)
+        // When
+        patientDao.insertPatient(patient)
+
+        // Then
+        val insertedPatientId =
+            patientDao.getPatientId(patient.fullName, patient.dateOfBirth)
+        Assert.assertEquals(patient.id, insertedPatientId)
+    }
+
+    @Test
+    fun checkPatient() = runBlocking {
+        // Given
+        val patient = getPatient1()
+
+        // When
+        patientDao.insertPatient(patient)
+
+        // Then
+        val insertedPatient =
+            patientDao.getPatient(patient.id)
+        assertPatientData(patient, insertedPatient)
+    }
+
+    @Test
+    fun checkPatientWithRecordCountFlow() = runBlocking {
+        // Given
+        val patient1 = getPatient1()
+        val patient2 = getPatient2()
+        val vaccineRecord1 = getVaccineRecord1()
+        val vaccineRecord2 = getVaccineRecord2()
+        val testResult1 = getTestResult1()
+        val testResult2 = getTestResult2()
+        val testResult3 = getTestResult3()
+
+        // When
+        patientDao.insertPatient(patient1)
+        patientDao.insertPatient(patient2)
+        vaccineRecordDao.insertVaccineRecord(vaccineRecord1)
+        vaccineRecordDao.insertVaccineRecord(vaccineRecord2)
+        testResultDao.insertTestResult(testResult1)
+        testResultDao.insertTestResult(testResult2)
+        testResultDao.insertTestResult(testResult3)
+
+        // Then
+        val result = patientDao.getPatientWithRecordCountFlow().first()
+        Assert.assertTrue(result.contains(getPatientWithHealthRecordCount1(patient1)))
+        Assert.assertTrue(result.contains(getPatientWithHealthRecordCount2(patient2)))
+    }
+
+    private fun assertPatientData(expectedPatient: PatientEntity, insertedPatient: PatientEntity) {
+        Assert.assertEquals(expectedPatient, insertedPatient)
+        Assert.assertEquals(expectedPatient.id, insertedPatient.id)
+        Assert.assertEquals(expectedPatient.fullName, insertedPatient.fullName)
+        Assert.assertEquals(expectedPatient.dateOfBirth, insertedPatient.dateOfBirth)
+        Assert.assertEquals(expectedPatient.patientOrder, insertedPatient.patientOrder)
+        Assert.assertEquals(expectedPatient.phn, insertedPatient.phn)
+        Assert.assertEquals(expectedPatient.timeStamp, insertedPatient.timeStamp)
     }
 
     override fun tearDown() {

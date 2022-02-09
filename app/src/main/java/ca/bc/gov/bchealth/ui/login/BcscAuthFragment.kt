@@ -16,7 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentBcscAuthBinding
-import ca.bc.gov.bchealth.utils.showError
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -121,9 +121,11 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
     }
 
     private fun respondToError() {
-        requireContext().showError(
-            getString(R.string.error),
-            getString(R.string.error_message),
+        AlertDialogHelper.showAlertDialog(
+            context = requireContext(),
+            title = getString(R.string.error),
+            msg = getString(R.string.error_message),
+            positiveBtnMsg = getString(R.string.dialog_button_ok)
         )
     }
 

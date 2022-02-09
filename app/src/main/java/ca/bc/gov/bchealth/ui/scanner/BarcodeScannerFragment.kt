@@ -24,13 +24,13 @@ import ca.bc.gov.bchealth.barcodeanalyzer.ScanningResultListener
 import ca.bc.gov.bchealth.databinding.FragmentBarcodeScannerBinding
 import ca.bc.gov.bchealth.ui.healthpass.add.AddOrUpdateCardViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.common.model.analytics.AnalyticsAction
 import ca.bc.gov.common.model.analytics.AnalyticsActionData
 import ca.bc.gov.repository.model.PatientVaccineRecord
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
@@ -183,17 +183,17 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
         }
 
         private fun showNoCameraAlertDialog() {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.bc_no_rear_camera_title))
-                .setCancelable(false)
-                .setMessage(getString(R.string.bc_nor_rear_camera_message))
-                .setNegativeButton(getString(R.string.exit)) { dialog, which ->
+            AlertDialogHelper.showAlertDialog(
+                context = requireContext(),
+                title = getString(R.string.bc_no_rear_camera_title),
+                msg = getString(R.string.bc_nor_rear_camera_message),
+                positiveBtnMsg = getString(R.string.exit),
+                positiveBtnCallback = {
                     if (!findNavController().popBackStack() || !findNavController().navigateUp()) {
                         requireActivity().finish()
                     }
-                    dialog.dismiss()
                 }
-                .show()
+            )
         }
 
         private fun enableFlashControl() {
@@ -239,49 +239,46 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
         }
 
         private fun showError(title: String, message: String) {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(title)
-                .setCancelable(false)
-                .setMessage(message)
-                .setPositiveButton(getString(R.string.scan_next)) { dialog, which ->
-
+            AlertDialogHelper.showAlertDialog(
+                context = requireContext(),
+                title = title,
+                msg = message,
+                positiveBtnMsg = getString(R.string.scan_next),
+                positiveBtnCallback = {
                     // Attach analyzer again to start analysis.
                     imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this))
-
-                    dialog.dismiss()
                 }
-                .show()
+            )
         }
 
         private fun showDuplicateRecordDialog() {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.error_duplicate_title))
-                .setCancelable(false)
-                .setMessage(getString(R.string.error_duplicate_message))
-                .setPositiveButton(getString(R.string.btn_ok)) { dialog, _ ->
+            AlertDialogHelper.showAlertDialog(
+                context = requireContext(),
+                title = getString(R.string.error_duplicate_title),
+                msg = getString(R.string.error_duplicate_message),
+                positiveBtnMsg = getString(R.string.btn_ok),
+                positiveBtnCallback = {
                     // Attach analyzer again to start analysis.
                     imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this))
-
-                    dialog.dismiss()
                 }
-                .show()
+            )
         }
 
         private fun showCardReplacementDialog(vaccineRecord: PatientVaccineRecord) {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.replace_health_pass_title))
-                .setCancelable(false)
-                .setMessage(getString(R.string.replace_health_pass_message))
-                .setPositiveButton(getString(R.string.replace)) { dialog, _ ->
+            AlertDialogHelper.showAlertDialog(
+                context = requireContext(),
+                title = getString(R.string.replace_health_pass_title),
+                msg = getString(R.string.replace_health_pass_message),
+                positiveBtnMsg = getString(R.string.replace),
+                negativeBtnMsg = getString(R.string.not_now),
+                positiveBtnCallback = {
                     viewModel.update(vaccineRecord)
-                }.setNegativeButton(getString(R.string.not_now)) { dialog, _ ->
-
+                },
+                negativeBtnCallback = {
                     // Attach analyzer again to start analysis.
                     imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this))
-
-                    dialog.dismiss()
                 }
-                .show()
+            )
         }
 
         private fun navigateToHealthPass() {
