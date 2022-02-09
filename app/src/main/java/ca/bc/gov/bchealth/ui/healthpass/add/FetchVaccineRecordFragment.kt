@@ -11,7 +11,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -45,7 +44,6 @@ import java.nio.charset.StandardCharsets
 class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_record) {
     private val binding by viewBindings(FragmentFetchVaccineRecordBinding::bind)
     private val viewModel: FetchVaccineRecordViewModel by viewModels()
-    private lateinit var savedStateHandle: SavedStateHandle
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
     private val recentPhnDobViewModel: RecentPhnDobViewModel by viewModels()
     private val addOrUpdateCardViewModel: AddOrUpdateCardViewModel by viewModels()
@@ -57,8 +55,8 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
-        savedStateHandle.set(VACCINE_RECORD_ADDED_SUCCESS, -1L)
+        findNavController().previousBackStackEntry?.savedStateHandle
+            ?.set(VACCINE_RECORD_ADDED_SUCCESS, -1L)
 
         setupToolBar()
 
@@ -97,7 +95,8 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
             }
             Status.INSERTED,
             Status.UPDATED -> {
-                savedStateHandle.set(VACCINE_RECORD_ADDED_SUCCESS, state.modifiedRecordId)
+                findNavController().previousBackStackEntry?.savedStateHandle
+                    ?.set(VACCINE_RECORD_ADDED_SUCCESS, state.modifiedRecordId)
                 analyticsFeatureViewModel.track(
                     AnalyticsAction.ADD_QR,
                     AnalyticsActionData.GET
@@ -236,7 +235,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
     private fun setUpPhnUI() {
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 recentPhnDobViewModel.recentPhnDob.collect { recentPhnDob ->
                     val (phn, dob) = recentPhnDob
                     val phnArray = arrayOf(phn)
@@ -300,7 +299,6 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                 "",
                 object : QueueListener() {
                     override fun onQueuePassed(queuePassedInfo: QueuePassedInfo?) {
-                        Log.d(TAG, "onQueuePassed: updatedToken ${queuePassedInfo?.queueItToken}")
                         viewModel.setQueItToken(queuePassedInfo?.queueItToken)
                     }
 

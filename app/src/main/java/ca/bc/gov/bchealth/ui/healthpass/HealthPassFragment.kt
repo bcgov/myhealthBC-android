@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -22,9 +23,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Scene
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.databinding.FragmentMyCardsBinding
+import ca.bc.gov.bchealth.databinding.FragmentHelathPassBinding
 import ca.bc.gov.bchealth.ui.auth.BioMetricState
-import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment
+import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment.Companion.BIOMETRIC_STATE
+import ca.bc.gov.bchealth.ui.login.BcscAuthFragment.Companion.BCSC_AUTH_STATUS
+import ca.bc.gov.bchealth.ui.login.BcscAuthState
+import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.FederalTravelPassDecoderVideModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -41,25 +45,29 @@ import java.io.File
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
-class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
+class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
 
     private val viewModel: HealthPassViewModel by viewModels()
-    private val binding by viewBindings(FragmentMyCardsBinding::bind)
+    private val binding by viewBindings(FragmentHelathPassBinding::bind)
     private lateinit var healthPassAdapter: HealthPassAdapter
     private lateinit var sceneSingleHealthPass: Scene
     private lateinit var sceneNoCardPlaceHolder: Scene
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val federalTravelPassDecoderVideModel: FederalTravelPassDecoderVideModel by viewModels()
+    private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupToolBar()
+
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BioMetricState>(
-            BiometricsAuthenticationFragment.BIOMETRIC_STATE
+            BIOMETRIC_STATE
         )?.observe(viewLifecycleOwner) {
             when (it) {
                 BioMetricState.SUCCESS -> {
                     viewModel.onAuthenticationRequired(false)
+                    viewModel.launchCheck()
                 }
                 else -> {
                     findNavController().popBackStack()
@@ -67,7 +75,25 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
             }
         }
 
-        setupToolBar()
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
+            BCSC_AUTH_STATUS
+        )?.observe(viewLifecycleOwner, {
+            findNavController().currentBackStackEntry?.savedStateHandle?.remove<BcscAuthState>(
+                BCSC_AUTH_STATUS
+            )
+            when (it) {
+                BcscAuthState.SUCCESS -> {}
+                BcscAuthState.NOT_NOW -> {
+                    val destinationId = sharedViewModel.destinationId
+                    if (destinationId > 0) {
+                        findNavController().navigate(destinationId)
+                    } else {
+                        findNavController().popBackStack()
+                    }
+                }
+                else -> {}
+            }
+        })
 
         sceneSingleHealthPass = Scene.getSceneForLayout(
             binding.sceneRoot,
@@ -90,9 +116,10 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
             federalPassClickListener = { patientId, federalPass ->
                 if (federalPass.isNullOrBlank()) {
                     val action =
-                        HealthPassFragmentDirections.actionHealthPassFragmentToFetchFederalTravelPass(
-                            patientId
-                        )
+                        HealthPassFragmentDirections
+                            .actionHealthPassFragmentToFetchFederalTravelPass(
+                                patientId
+                            )
                     findNavController().navigate(action)
                 } else {
                     federalTravelPassDecoderVideModel.base64ToPDFFile(federalPass)
@@ -115,7 +142,8 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
             viewLifecycleOwner,
             Observer {
                 if (it > 0) {
-                    findNavController().navigate(R.id.action_healthPassFragment_to_healthPassesFragment)
+                    findNavController()
+                        .navigate(R.id.action_healthPassFragment_to_healthPassesFragment)
                 }
             }
         )
@@ -137,6 +165,27 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
         }
     }
 
+    private fun observeBcscLogin() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                bcscAuthViewModel.authStatus.collect {
+                    binding.progressBar.isVisible = it.showLoading
+                    if (it.showLoading) {
+                        return@collect
+                    } else {
+                        if (it.isLoggedIn) {
+                            findNavController().navigate(R.id.addCardOptionFragment)
+                        } else {
+                            sharedViewModel.destinationId = R.id.addCardOptionFragment
+                            findNavController()
+                                .navigate(R.id.bcscAuthInfoFragment)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private suspend fun onBoardingFlow() {
         viewModel.uiState.collect { uiState ->
             if (uiState.isOnBoardingRequired) {
@@ -146,6 +195,11 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
 
             if (uiState.isAuthenticationRequired) {
                 findNavController().navigate(R.id.biometricsAuthenticationFragment)
+            }
+
+            if (uiState.isBcscLoginRequiredPostBiometrics) {
+                findNavController().navigate(R.id.bcscAuthInfoFragment)
+                viewModel.onBcscLoginRequired(false)
             }
         }
     }
@@ -205,7 +259,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
         binding.toolbar.ivRightOption.apply {
             visibility = View.VISIBLE
             setOnClickListener {
-                findNavController().navigate(R.id.settingFragment)
+                findNavController().navigate(R.id.profileFragment)
             }
         }
     }
@@ -227,7 +281,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
         val btnAddHealthPass: ShapeableImageView =
             sceneSingleHealthPass.sceneRoot.findViewById(R.id.iv_add_card)
         btnAddHealthPass.setOnClickListener {
-            findNavController().navigate(R.id.addCardOptionFragment)
+            checkLogin()
         }
     }
 
@@ -276,8 +330,13 @@ class HealthPassFragment : Fragment(R.layout.fragment_my_cards) {
         val btnAddCardOptions: MaterialButton =
             sceneNoCardPlaceHolder.sceneRoot.findViewById(R.id.btn_add_card)
         btnAddCardOptions.setOnClickListener {
-            findNavController().navigate(R.id.addCardOptionFragment)
+            checkLogin()
         }
+    }
+
+    private fun checkLogin() {
+        bcscAuthViewModel.checkLogin()
+        observeBcscLogin()
     }
 
     private fun navigateToViewAllHealthPasses() {

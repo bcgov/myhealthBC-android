@@ -16,7 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.databinding.SceneMycardsCardsListBinding
+import ca.bc.gov.bchealth.databinding.FragmentHelathPassesBinding
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.FederalTravelPassDecoderVideModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -30,10 +30,10 @@ import java.io.File
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
-class HealthPassesFragment : Fragment(R.layout.scene_mycards_cards_list) {
+class HealthPassesFragment : Fragment(R.layout.fragment_helath_passes) {
 
     private val viewModel: HealthPassViewModel by viewModels()
-    private val binding by viewBindings(SceneMycardsCardsListBinding::bind)
+    private val binding by viewBindings(FragmentHelathPassesBinding::bind)
     private lateinit var healthPassAdapter: HealthPassAdapter
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var patientId: Long = -1L

@@ -20,6 +20,7 @@ import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.QrCodeGeneratorRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.RecentPhnDobRepository
+import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.ProcessQrRepository
 import ca.bc.gov.repository.scanner.QrScanner
@@ -159,4 +160,14 @@ class RepositoriesModule {
     @Singleton
     fun provideFetchTravelPassDecoderRepository(@ApplicationContext context: Context) =
         FederalTravelPassDecoderRepository(context)
+
+    @Provides
+    @Singleton
+    fun provideBcscAuthRepository(
+        @ApplicationContext context: Context,
+        encryptedPreferenceStorage: EncryptedPreferenceStorage
+    ) = BcscAuthRepo(
+        context,
+        encryptedPreferenceStorage
+    )
 }

@@ -29,6 +29,7 @@ class HealthPassViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HealthPassUiState())
     val uiState: StateFlow<HealthPassUiState> = _uiState.asStateFlow()
     var isAuthenticationRequired: Boolean = true
+    var isBcscLoginRequiredPostBiometrics: Boolean = false
     val healthPasses = repository.patientsVaccineRecord.map { records ->
         records.map { record ->
             record.toUiModel()
@@ -38,12 +39,16 @@ class HealthPassViewModel @Inject constructor(
     fun launchCheck() = viewModelScope.launch {
         when {
             onBoardingRepository.onBoardingRequired -> {
+                isBcscLoginRequiredPostBiometrics = true
                 _uiState.update { state ->
                     state.copy(isLoading = false, isOnBoardingRequired = true)
                 }
             }
             isAuthenticationRequired -> {
                 _uiState.update { state -> state.copy(isAuthenticationRequired = true) }
+            }
+            isBcscLoginRequiredPostBiometrics -> {
+                _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = true) }
             }
         }
     }
@@ -57,6 +62,11 @@ class HealthPassViewModel @Inject constructor(
     fun onAuthenticationRequired(isRequired: Boolean) {
         isAuthenticationRequired = isRequired
         _uiState.update { state -> state.copy(isAuthenticationRequired = isRequired) }
+    }
+
+    fun onBcscLoginRequired(isRequired: Boolean) {
+        isBcscLoginRequiredPostBiometrics = isRequired
+        _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = isRequired) }
     }
 
     fun deleteHealthPass(vaccineRecordId: Long) = viewModelScope.launch {
@@ -76,7 +86,8 @@ class HealthPassViewModel @Inject constructor(
 data class HealthPassUiState(
     val isLoading: Boolean = false,
     val isOnBoardingRequired: Boolean = false,
-    val isAuthenticationRequired: Boolean = false
+    val isAuthenticationRequired: Boolean = false,
+    val isBcscLoginRequiredPostBiometrics: Boolean = false
 )
 
 data class HealthPass(

@@ -24,7 +24,8 @@
         android:id="@+id/addHealthRecordsFragment"
         tools:layout="@layout/scene_health_records_add"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.add.AddHealthRecordsFragment"
-        android:label="AddHealthRecordsFragment" />
+        android:label="AddHealthRecordsFragment">
+    </fragment>
     <fragment
         android:id="@+id/individualHealthRecordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.IndividualHealthRecordFragment"
