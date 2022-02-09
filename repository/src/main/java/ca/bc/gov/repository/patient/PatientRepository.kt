@@ -19,4 +19,7 @@ class PatientRepository @Inject constructor(
 
     suspend fun getPatient(patientId: Long): PatientDto =
         patientLocalDataSource.getPatient(patientId)
+
+    suspend fun insertAuthenticatedPatient(patientDto: PatientDto): Long =
+        patientLocalDataSource.insertAuthenticatedPatient(patientDto)
 }

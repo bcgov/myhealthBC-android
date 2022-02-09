@@ -16,7 +16,7 @@ import ca.bc.gov.data.local.entity.relations.PatientWithVaccineRecord
 import ca.bc.gov.data.local.entity.relations.TestResultWithRecord
 
 fun PatientEntity.toDto() = PatientDto(
-    id, fullName, dateOfBirth, phn
+    id, fullName, dateOfBirth, phn, dataSource = dataSource
 )
 
 fun TestResultEntity.toDto() = TestResultDto(

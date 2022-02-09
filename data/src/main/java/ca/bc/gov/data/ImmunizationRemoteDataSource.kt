@@ -57,9 +57,9 @@ class ImmunizationRemoteDataSource @Inject constructor(
             }
             throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
         }
-        if (!isResponseValid(response)) {
-            throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
-        }
+        // if (!isResponseValid(response)) {
+        //     throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
+        // }
         return response
     }
 

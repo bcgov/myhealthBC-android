@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.login
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.repository.FetchAuthenticatedRecordsRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BcscAuthViewModel @Inject constructor(
     private val bcscAuthRepo: BcscAuthRepo,
+    private val fetchAuthenticatedRecordsRepository: FetchAuthenticatedRecordsRepository
 ) : ViewModel() {
 
     private val _authStatus = MutableStateFlow(AuthStatus())
@@ -63,6 +65,9 @@ class BcscAuthViewModel @Inject constructor(
                     showLoading = false,
                     isLoggedIn = isLoggedSuccess
                 )
+            }
+            if (isLoggedSuccess) {
+                fetchAuthenticatedRecordsRepository.fetchAuthenticatedRecords()
             }
         } catch (e: Exception) {
             _authStatus.update {
