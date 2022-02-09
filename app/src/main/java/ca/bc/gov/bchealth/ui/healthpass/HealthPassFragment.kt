@@ -70,10 +70,6 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                 BioMetricState.SUCCESS -> {
                     viewModel.onAuthenticationRequired(false)
                     viewModel.launchCheck()
-                    //will throw hostname not verified error if not logged in with BCSC
-                    viewModel.fetchPatient()
-                    viewModel.fetchAuthenticatedVaccineRecord()
-                    viewModel.fetchAuthenticatedTestRecord()
                 }
                 else -> {
                     findNavController().popBackStack()
@@ -165,23 +161,6 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                 launch {
                     collectUiState()
                 }
-                launch {
-                    collectPatientUiState()
-                }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.fetchVaccineRecordUiState.collect { uiState ->
-
-                    if (uiState.errorData != null) {
-                        requireContext().showError(
-                            getString(uiState.errorData.title),
-                            getString(uiState.errorData.message)
-                        )
-                    }
-                }
             }
         }
     }
@@ -238,15 +217,6 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                     navigateToViewTravelPass(federalTravelPass)
                 }
                 federalTravelPassDecoderVideModel.federalTravelPassShown()
-            }
-        }
-    }
-//not required to handle response, added temporarily
-    private suspend fun collectPatientUiState() {
-        viewModel.fetchPatientUiState.collect { uiState ->
-            if (uiState.errorData != null) {
-                Toast.makeText(requireContext(), uiState.errorData.message, Toast.LENGTH_SHORT)
-                    .show()
             }
         }
     }

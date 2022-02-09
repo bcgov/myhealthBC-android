@@ -2,6 +2,7 @@ package ca.bc.gov.repository
 
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.relation.PatientWithVaccineRecordDto
 import ca.bc.gov.data.datasource.PatientWithVaccineRecordLocalDataSource
 import ca.bc.gov.data.local.entity.PatientOrderUpdate
@@ -59,6 +60,21 @@ class PatientWithVaccineRecordRepository @Inject constructor(
         }
         val dosesId =
             vaccineDoseRepository.insertAllVaccineDose(patientVaccineRecord.vaccineRecordDto.doseDtos)
+        return patientId
+    }
+
+    suspend fun insertAuthenticatedPatientsVaccineRecord(patientVaccineRecord: PatientVaccineRecord): Long {
+        patientVaccineRecord.patientDto.dataSource = DataSource.BCSC
+        val patientId = patientRepository.insertAuthenticatedPatient(patientVaccineRecord.patientDto)
+        patientVaccineRecord.vaccineRecordDto.patientId = patientId
+        val vaccineRecordId = vaccineRecordRepository.insertAuthenticatedVaccineRecord(
+            patientVaccineRecord.vaccineRecordDto
+        )
+        patientVaccineRecord.vaccineRecordDto.doseDtos.forEach { vaccineDose ->
+            vaccineDose.vaccineRecordId = vaccineRecordId
+            vaccineDose.dataSource = DataSource.BCSC
+        }
+        vaccineDoseRepository.insertAllAuthenticatedVaccineDose(patientVaccineRecord.vaccineRecordDto.id, patientVaccineRecord.vaccineRecordDto.doseDtos)
         return patientId
     }
 

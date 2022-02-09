@@ -26,7 +26,7 @@ fun SHCData.toPatient(): PatientDto {
     }
     return PatientDto(
         fullName = fullNameBuilder.toString(),
-        dateOfBirth = patient.dateOfBirth?.toDate()!!,
+        dateOfBirth = patient.dateOfBirth?.toDate()!!
     )
 }
 
@@ -74,8 +74,7 @@ fun SHCData.toPatientVaccineRecord(
         federalPass = null,
         shcUri = shcUri,
         status = status.toImmunizationStatus(),
-        qrCodeImage = null,
-        mode = DataSource.QR_CODE
+        qrCodeImage = null
     )
 
     return PatientVaccineRecord(toPatient(), record)

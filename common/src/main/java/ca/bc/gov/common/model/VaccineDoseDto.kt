@@ -11,5 +11,6 @@ data class VaccineDoseDto(
     var productName: String?,
     val providerName: String?,
     val lotNumber: String?,
-    val date: Instant
+    val date: Instant,
+    var dataSource: DataSource = DataSource.PUBLIC_API
 )

@@ -13,6 +13,7 @@ import ca.bc.gov.data.datasource.VaccineRecordLocalDataSource
 import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.FederalTravelPassDecoderRepository
+import ca.bc.gov.repository.FetchAuthenticatedRecordsRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.PatientHealthRecordsRepository
@@ -177,4 +178,8 @@ class RepositoriesModule {
     @Singleton
     fun providesPatientWithBCSCLoginRepository(patientRemoteDataSource: PatientRemoteDataSource) =
         PatientWithBCSCLoginRepository(patientRemoteDataSource)
+
+    @Provides
+    @Singleton
+    fun providesFetchAuthenticatedRecordsRepository(@ApplicationContext context: Context) = FetchAuthenticatedRecordsRepository(context)
 }

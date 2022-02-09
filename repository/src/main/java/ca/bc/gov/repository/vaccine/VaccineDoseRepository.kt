@@ -22,4 +22,7 @@ class VaccineDoseRepository @Inject constructor(
 
     suspend fun getVaccineDoses(vaccineRecordId: Long): List<VaccineDoseDto> =
         localDataSource.getVaccineDoses(vaccineRecordId)
+
+    suspend fun insertAllAuthenticatedVaccineDose(id: Long, doses: List<VaccineDoseDto>): List<Long> =
+        localDataSource.insertAllAuthenticatedVaccineDose(id, doses)
 }

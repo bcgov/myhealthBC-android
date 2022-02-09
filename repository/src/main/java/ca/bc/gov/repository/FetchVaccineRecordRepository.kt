@@ -1,5 +1,6 @@
 package ca.bc.gov.repository
 
+import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.data.ImmunizationRemoteDataSource
 import ca.bc.gov.data.remote.model.request.VaccineStatusRequest
 import ca.bc.gov.repository.model.PatientVaccineRecord
@@ -42,6 +43,7 @@ class FetchVaccineRecordRepository @Inject constructor(
         val (status, record) = patientVaccineRecord
         record?.vaccineRecordDto?.federalPass = response.payload?.federalVaccineProof?.data
         record?.patientDto?.phn = response.payload?.phn
+        record?.vaccineRecordDto?.mode = DataSource.BCSC
         return Pair(status, record)
     }
 }

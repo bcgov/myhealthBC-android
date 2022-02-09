@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import ca.bc.gov.common.model.DataSource
 import java.time.Instant
 
 /**
@@ -32,5 +33,6 @@ data class VaccineDoseEntity(
     val providerName: String?,
     @ColumnInfo(name = "lot_number")
     val lotNumber: String?,
-    val date: Instant
+    val date: Instant,
+    val dataSource: DataSource = DataSource.PUBLIC_API
 )

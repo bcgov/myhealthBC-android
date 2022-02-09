@@ -53,4 +53,12 @@ class PatientLocalDataSource @Inject constructor(
     }
 
     suspend fun getPatient(patientId: Long): PatientDto = patientDao.getPatient(patientId).toDto()
+
+    suspend fun insertAuthenticatedPatient(patientDto: PatientDto): Long {
+        val patientId = patientDao.getPatientId(patientDto.fullName, patientDto.dateOfBirth) ?: -1L
+        if (patientId != -1L) {
+            patientDao.deletePatientById(patientId)
+        }
+        return patientDao.insertPatient(patientDto.toEntity())
+    }
 }

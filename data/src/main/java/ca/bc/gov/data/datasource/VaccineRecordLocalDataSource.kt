@@ -25,6 +25,14 @@ class VaccineRecordLocalDataSource @Inject constructor(
         return vaccineRecordId
     }
 
+    suspend fun insertAuthenticatedVaccineRecord(vaccineRecordDto: VaccineRecordDto): Long {
+        val vaccineRecordId = vaccineRecordDao.getVaccineRecordId(vaccineRecordDto.patientId) ?: -1L
+        if (vaccineRecordId != -1L) {
+            vaccineRecordDao.delete(vaccineRecordId)
+        }
+        return vaccineRecordDao.insertVaccineRecord(vaccineRecordDto.toEntity())
+    }
+
     /**
      * Update [vaccineRecordDtoDto] in to database
      * @param vaccineRecordDtoDto

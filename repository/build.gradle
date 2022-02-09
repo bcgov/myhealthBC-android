@@ -105,6 +105,11 @@ dependencies {
     //app auth
     implementation "net.openid:appauth:$versions.appauth"
 
+    //work manager
+    api "androidx.work:work-runtime-ktx:$versions.work"
+    api "androidx.hilt:hilt-work:$versions.hilt_work"
+    kapt "androidx.hilt:hilt-compiler:$versions.hilt_work"
+
     testImplementation "junit:junit:$versions.junit"
     androidTestImplementation "androidx.test.ext:junit:$versions.ext_junit"
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
