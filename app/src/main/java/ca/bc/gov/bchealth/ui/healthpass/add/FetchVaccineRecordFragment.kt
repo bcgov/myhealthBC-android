@@ -16,10 +16,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineRecordBinding
-import ca.bc.gov.bchealth.ui.custom.setUpDatePickerUi
-import ca.bc.gov.bchealth.ui.custom.validateDatePickerData
-import ca.bc.gov.bchealth.ui.custom.validatePhnNumber
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.DatePickerHelper
+import ca.bc.gov.bchealth.utils.PhnHelper
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
@@ -208,29 +207,41 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         val dob = binding.edDob.text.toString()
         val dov = binding.edDov.text.toString()
 
-        if (this.validatePhnNumber(
-                binding.edPhnNumber
+        if (PhnHelper().validatePhnData(
+                binding.edPhnNumber,
+                requireContext()
             ) &&
-            this.validateDatePickerData(
+            DatePickerHelper().validateDatePickerData(
                     binding.tipDob,
+                    requireContext(),
                     getString(R.string.dob_required)
                 ) &&
-            this.validateDatePickerData(
+            DatePickerHelper().validateDatePickerData(
                     binding.tipDov,
+                    requireContext(),
                     getString(R.string.dov_required)
                 )
         ) {
-
             viewModel.fetchVaccineRecord(phn, dob, dov)
         }
     }
 
     private fun setUpDovUI() {
-        this.setUpDatePickerUi(binding.tipDov, "DATE_OF_VACCINATION")
+        DatePickerHelper().initializeDatePicker(
+            binding.tipDov,
+            getString(R.string.select_date),
+            parentFragmentManager,
+            "DATE_OF_VACCINATION"
+        )
     }
 
     private fun setUpDobUI() {
-        this.setUpDatePickerUi(binding.tipDob, "DATE_OF_BIRTH")
+        DatePickerHelper().initializeDatePicker(
+            binding.tipDob,
+            getString(R.string.select_date),
+            parentFragmentManager,
+            "DATE_OF_BIRTH"
+        )
     }
 
     private fun setUpPhnUI() {

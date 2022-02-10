@@ -1,6 +1,7 @@
 package ca.bc.gov.data.datasource
 
 import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.utils.toUniquePatientName
 import ca.bc.gov.data.local.dao.PatientDao
@@ -59,6 +60,8 @@ class PatientLocalDataSource @Inject constructor(
     }
 
     suspend fun getPatient(patientId: Long): PatientDto = patientDao.getPatient(patientId).toDto()
+
+    suspend fun getPatientList(): Flow<PatientListDto> = patientDao.getPatientList().map { it.toDto() }
 
     suspend fun insertAuthenticatedPatient(patientDto: PatientDto): Long {
         val patientList = patientDao.getPatientByDob(patientDto.dateOfBirth)

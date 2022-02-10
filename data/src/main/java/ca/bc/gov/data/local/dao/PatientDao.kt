@@ -40,6 +40,9 @@ interface PatientDao {
     )
     fun getPatientWithRecordCountFlow(): Flow<List<PatientWithHealthRecordCount>>
 
+    @Query("SELECT * FROM patient")
+    fun getPatientList(): Flow<List<PatientEntity>>
+
     @Query("DELETE FROM patient WHERE id = :patientId")
     suspend fun deletePatientById(patientId: Long): Int
 }
