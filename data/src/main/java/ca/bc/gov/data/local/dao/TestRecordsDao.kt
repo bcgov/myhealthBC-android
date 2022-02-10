@@ -12,10 +12,10 @@ import ca.bc.gov.data.local.entity.TestRecordEntity
 @Dao
 interface TestRecordsDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTestRecord(testRecordEntity: TestRecordEntity): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTestRecords(testRecords: List<TestRecordEntity>): List<Long>
 
     @Query("SELECT * FROM test_record WHERE test_result_id = :testResultId")

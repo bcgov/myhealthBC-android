@@ -4,18 +4,21 @@ import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
 import ca.bc.gov.common.exceptions.MyHealthNetworkException
-import ca.bc.gov.common.model.AuthenticatedCovidTestDto
-import ca.bc.gov.common.model.OrderDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.relation.PatientTestResultDto
+import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
+import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
+import ca.bc.gov.common.utils.formatInPattern
+import ca.bc.gov.common.utils.formattedStringToDateTime
 import ca.bc.gov.common.utils.toDate
-import ca.bc.gov.data.model.mapper.toPayloadDto
 import ca.bc.gov.data.model.mapper.toTestRecord
 import ca.bc.gov.data.remote.LaboratoryApi
 import ca.bc.gov.data.remote.model.base.Action
 import ca.bc.gov.data.remote.model.request.CovidTestRequest
 import ca.bc.gov.data.remote.model.request.toMap
+import ca.bc.gov.data.remote.model.response.AuthenticatedCovidTestResponse
+import ca.bc.gov.data.remote.model.response.VaccineStatusResponse
 import ca.bc.gov.data.utils.safeCall
 import javax.inject.Inject
 
@@ -61,7 +64,10 @@ class LaboratoryRemoteDataSource @Inject constructor(
         return PatientTestResultDto(patient, testResult, records)
     }
 
-    suspend fun getAuthenticatedCovidTests(token: String, hdid: String): AuthenticatedCovidTestDto {
+    suspend fun getAuthenticatedCovidTests(
+        token: String,
+        hdid: String
+    ): List<TestResultWithRecordsDto> {
         val response = safeCall { laboratoryApi.getAuthenticatedCovidTests("Bearer $token", hdid) }
             ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
 
@@ -75,6 +81,26 @@ class LaboratoryRemoteDataSource @Inject constructor(
             throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
         }
 
-        return response.payload.toPayloadDto()
+        val list = arrayListOf<TestResultWithRecordsDto>()
+        for (i in response.payload.orders.indices) {
+            if (!response.payload.orders[i].labResults.isNullOrEmpty()
+                && response.payload.orders[i].labResults!![0].collectedDateTime != null) {
+                val testResult = TestResultDto(
+                    collectionDate = response.payload.orders[i].labResults!![0].collectedDateTime!!.formatInPattern().toDate()
+                )
+                var records = emptyList<TestRecordDto>()
+                for (j in response.payload.orders[i].labResults!!.indices) {
+                    records = response.payload.orders[i].labResults!!.map { labResult ->
+                        labResult.toTestRecord()
+                    }
+                }
+                records.map { record ->
+                    record.labName = response.payload.orders[i].reportingLab ?: ""
+                }
+                list.add(TestResultWithRecordsDto(testResult, records))
+            }
+        }
+
+        return list
     }
 }

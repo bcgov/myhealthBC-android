@@ -129,6 +129,10 @@ class BcscAuthViewModel @Inject constructor(
                     userName = userName
                 )
             }
+            //for testing
+            // if (isLoggedSuccess) {
+            //     fetchAuthenticatedRecordsRepository.fetchAuthenticatedRecords()
+            // }
         } catch (e: Exception) {
             _authStatus.update {
                 it.copy(

@@ -36,8 +36,7 @@ class PatientRemoteDataSource @Inject constructor(private val patientApi: Patien
                         personalHealthNumber.isNullOrBlank() ||
                         firstName.isNullOrBlank() ||
                         lastName.isNullOrBlank() ||
-                        birthDate.isNullOrBlank() ||
-                        gender.isNullOrBlank() -> {
+                        birthDate.isNullOrBlank() -> {
                         false
                     }
                     else -> {

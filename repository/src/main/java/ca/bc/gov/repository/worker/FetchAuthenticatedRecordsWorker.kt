@@ -1,6 +1,7 @@
 package ca.bc.gov.repository.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -11,6 +12,7 @@ import ca.bc.gov.common.exceptions.MyHealthNetworkException
 import ca.bc.gov.repository.FetchTestResultRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
+import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.patient.PatientRepository
@@ -28,15 +30,17 @@ class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
     private val fetchTestResultRepository: FetchTestResultRepository,
     private val bcscAuthRepo: BcscAuthRepo,
     private val patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
-    private val patientRepository: PatientRepository
+    private val patientRepository: PatientRepository,
+    private val patientWithTestResultRepository: PatientWithTestResultRepository
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
+        var patientId: Long
         val pair = bcscAuthRepo.getHdId()
         try {
             withContext(Dispatchers.IO) {
                 val patient = patientWithBCSCLoginRepository.getPatient(pair.first, pair.second)
-                patientRepository.insertAuthenticatedPatient(patient)
+                patientId = patientRepository.insertAuthenticatedPatient(patient)
             }
         } catch (e: Exception) {
             return when (e) {
@@ -56,7 +60,7 @@ class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
                 )
                 response.second?.let {
                     patientWithVaccineRecordRepository.insertAuthenticatedPatientsVaccineRecord(
-                        it
+                        patientId, it
                     )
                 }
             }
@@ -81,11 +85,17 @@ class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
             withContext(Dispatchers.IO) {
                 val response =
                     fetchTestResultRepository.fetchAuthenticatedTestRecord(pair.first, pair.second)
+                for (i in response.indices) {
+                    patientWithTestResultRepository.insertAuthenticatedTestResult(
+                        patientId,
+                        response[i]
+                    )
+                }
             }
         } catch (e: Exception) {
+            Log.i("RASHMI", "Exception ${e.message}")
             when (e) {
                 is MustBeQueuedException -> {
-                    //call api again
                     Result.failure()
                 }
                 is MyHealthNetworkException -> {
@@ -100,6 +110,9 @@ class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
                             Result.failure()
                         }
                     }
+                }
+                else -> {
+                    Result.failure()
                 }
             }
         }

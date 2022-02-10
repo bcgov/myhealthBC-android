@@ -10,6 +10,7 @@ class FetchAuthenticatedRecordsRepository(private val context: Context) {
     fun fetchAuthenticatedRecords() {
         val workRequest = OneTimeWorkRequestBuilder<FetchAuthenticatedRecordsWorker>()
             .build()
-        WorkManager.getInstance(context).enqueue(workRequest)
+        val workManager = WorkManager.getInstance(context)
+        workManager.enqueue(workRequest)
     }
 }

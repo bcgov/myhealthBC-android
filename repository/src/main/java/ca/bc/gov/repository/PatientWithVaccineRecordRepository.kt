@@ -63,10 +63,11 @@ class PatientWithVaccineRecordRepository @Inject constructor(
         return patientId
     }
 
-    suspend fun insertAuthenticatedPatientsVaccineRecord(patientVaccineRecord: PatientVaccineRecord): Long {
-        patientVaccineRecord.patientDto.dataSource = DataSource.BCSC
-        val patientId = patientRepository.insertAuthenticatedPatient(patientVaccineRecord.patientDto)
+    suspend fun insertAuthenticatedPatientsVaccineRecord(patientId: Long, patientVaccineRecord: PatientVaccineRecord): Long {
+        // patientVaccineRecord.patientDto.authenticationStatus = AuthenticationStatus.AUTHENTICATED
+        // val patientId = patientRepository.insertAuthenticatedPatient(patientVaccineRecord.patientDto)
         patientVaccineRecord.vaccineRecordDto.patientId = patientId
+        patientVaccineRecord.vaccineRecordDto.mode = DataSource.BCSC
         val vaccineRecordId = vaccineRecordRepository.insertAuthenticatedVaccineRecord(
             patientVaccineRecord.vaccineRecordDto
         )
