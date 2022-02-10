@@ -2,7 +2,6 @@ package ca.bc.gov.data.di
 
 import ca.bc.gov.data.datasource.LocalDataSource
 import ca.bc.gov.data.datasource.PatientLocalDataSource
-import ca.bc.gov.data.datasource.PatientWithVaccineRecordLocalDataSource
 import ca.bc.gov.data.datasource.TestRecordLocalDataSource
 import ca.bc.gov.data.datasource.TestResultLocalDataSource
 import ca.bc.gov.data.datasource.VaccineDoseLocalDataSource
@@ -35,12 +34,6 @@ class LocalDataSourceModule {
     @Singleton
     fun providesVaccineDoseLocalDataSource(db: MyHealthDataBase) =
         VaccineDoseLocalDataSource(db.getVaccineDoseDao())
-
-    @Provides
-    @Singleton
-    fun providesPatientWithVaccineRecordLocalDataSource(
-        db: MyHealthDataBase
-    ) = PatientWithVaccineRecordLocalDataSource(db.getPatientWithVaccineRecordDao())
 
     @Provides
     @Singleton

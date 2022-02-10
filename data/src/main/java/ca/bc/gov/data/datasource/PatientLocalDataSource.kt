@@ -3,7 +3,10 @@ package ca.bc.gov.data.datasource
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.utils.toUniquePatientName
+import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.data.local.dao.PatientDao
+import ca.bc.gov.data.local.entity.PatientEntity
+import ca.bc.gov.data.local.entity.PatientOrderUpdate
 import ca.bc.gov.data.model.mapper.toDto
 import ca.bc.gov.data.model.mapper.toEntity
 import kotlinx.coroutines.flow.Flow
@@ -17,8 +20,15 @@ class PatientLocalDataSource @Inject constructor(
     private val patientDao: PatientDao
 ) {
 
+    val patientWithVaccineAndDoses: Flow<List<PatientWithVaccineAndDosesDto>> =
+        patientDao.getPatientWithVaccineAndDosesFlow().map { patientWithVaccineAndDoses ->
+            patientWithVaccineAndDoses.map { patient ->
+                patient.toDto()
+            }
+        }
+
     val patientWithRecordCount: Flow<List<PatientWithHealthRecordCount>> =
-        patientDao.getPatientWithRecordCountFlow().map { patientWithRecordCounts ->
+        patientDao.getPatientWithHealthRecordCountFlow().map { patientWithRecordCounts ->
             patientWithRecordCounts.map {
                 PatientWithHealthRecordCount(
                     it.patientEntity.toDto(),
@@ -49,17 +59,6 @@ class PatientLocalDataSource @Inject constructor(
         }
     }
 
-    /**
-     * Update [patientDao] record in database
-     * @param patientDto
-     * @return patientId if success else -1L
-     */
-    suspend fun updatePatient(patientDto: PatientDto): Long {
-        return insertPatient(patientDto)
-    }
-
-    suspend fun getPatient(patientId: Long): PatientDto = patientDao.getPatient(patientId).toDto()
-
     suspend fun insertAuthenticatedPatient(patientDto: PatientDto): Long {
         val patientList = patientDao.getPatientByDob(patientDto.dateOfBirth)
         return if (patientList.isNullOrEmpty()) {
@@ -67,7 +66,7 @@ class PatientLocalDataSource @Inject constructor(
         } else {
             for (i in patientList.indices) {
                 if (patientList[i].fullName.toUniquePatientName()
-                    .equals(patientDto.fullName.toUniquePatientName(), true)
+                        .equals(patientDto.fullName.toUniquePatientName(), true)
                 ) {
                     patientDao.deletePatientById(patientList[i].id)
                 }
@@ -75,4 +74,25 @@ class PatientLocalDataSource @Inject constructor(
             patientDao.insertPatient(patientDto.toEntity())
         }
     }
+
+    /**
+     * Update [patientDao] record in database
+     * @param patientDto
+     * @return patientId if success else -1L
+     */
+    suspend fun update(patientDto: PatientDto): Long {
+        return insertPatient(patientDto)
+    }
+
+    suspend fun updatePatientsOrder(patientOrderUpdates: List<PatientOrderUpdate>) =
+        patientDao.updatePatientsOrder(patientOrderUpdates)
+
+    suspend fun getPatient(patientId: Long): PatientDto = patientDao.getPatient(patientId).toDto()
+
+    suspend fun getPatientWithVaccineAndDoses(patientId: Long): PatientWithVaccineAndDosesDto? =
+        patientDao.getPatientWithVaccineAndDoses(patientId)?.toDto()
+
+    suspend fun getPatientWithVaccineAndDoses(patient: PatientEntity): List<PatientWithVaccineAndDosesDto> =
+        patientDao.getPatientWithVaccineAndDoses(patient.fullName, patient.dateOfBirth)
+            .map { it.toDto() }
 }

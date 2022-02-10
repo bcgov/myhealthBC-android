@@ -20,7 +20,7 @@ class PatientWithTestResultRepository @Inject constructor(
 
     suspend fun insertTestResult(patientTestResult: PatientTestResultDto): Long {
         val patientId =
-            patientRepository.insertPatient(patientTestResult.patientDto)
+            patientRepository.insert(patientTestResult.patientDto)
         val testResult = patientTestResult.testResultDto
         testResult.patientId = patientId
         val testResultId = testResultRepository.insertTestResult(testResult)

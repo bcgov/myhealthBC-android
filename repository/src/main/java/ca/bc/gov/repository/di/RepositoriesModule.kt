@@ -4,7 +4,6 @@ import android.content.Context
 import ca.bc.gov.data.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.LocalDataSource
 import ca.bc.gov.data.datasource.PatientLocalDataSource
-import ca.bc.gov.data.datasource.PatientWithVaccineRecordLocalDataSource
 import ca.bc.gov.data.datasource.TestRecordLocalDataSource
 import ca.bc.gov.data.datasource.TestResultLocalDataSource
 import ca.bc.gov.data.datasource.VaccineDoseLocalDataSource
@@ -65,9 +64,9 @@ class RepositoriesModule {
         qrScanner: QrScanner,
         uriToImage: UriToImage,
         shcVerifier: SHCVerifier,
-        localDataSource: PatientWithVaccineRecordLocalDataSource
+        patientRepository: PatientRepository
     ) = ProcessQrRepository(
-        qrScanner, uriToImage, shcVerifier, localDataSource
+        qrScanner, uriToImage, shcVerifier, patientRepository
     )
 
     @Provides
@@ -82,8 +81,11 @@ class RepositoriesModule {
 
     @Provides
     @Singleton
-    fun providesPatientRepository(localDataSource: PatientLocalDataSource) =
-        PatientRepository(localDataSource)
+    fun providesPatientRepository(
+        localDataSource: PatientLocalDataSource,
+        qrCodeGeneratorRepository: QrCodeGeneratorRepository
+    ) =
+        PatientRepository(localDataSource, qrCodeGeneratorRepository)
 
     @Provides
     @Singleton
@@ -113,17 +115,13 @@ class RepositoriesModule {
     @Provides
     @Singleton
     fun providesPatientWithVaccineRepository(
-        localDataSource: PatientWithVaccineRecordLocalDataSource,
         patientRepository: PatientRepository,
         vaccineRecordRepository: VaccineRecordRepository,
-        vaccineDoseRepository: VaccineDoseRepository,
-        qrCodeGeneratorRepository: QrCodeGeneratorRepository
+        vaccineDoseRepository: VaccineDoseRepository
     ) = PatientWithVaccineRecordRepository(
-        localDataSource,
         patientRepository,
         vaccineRecordRepository,
-        vaccineDoseRepository,
-        qrCodeGeneratorRepository
+        vaccineDoseRepository
     )
 
     @Provides

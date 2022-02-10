@@ -28,16 +28,6 @@ fun VaccineDoseDto.toEntity() = VaccineDoseEntity(
     date = date
 )
 
-fun VaccineRecordEntity.toEntity() = VaccineRecordEntity(
-    id,
-    patientId = patientId,
-    qrIssueDate = qrIssueDate,
-    status = status,
-    shcUri = shcUri,
-    federalPass = federalPass,
-    dataSource = dataSource
-)
-
 fun TestResultDto.toEntity() = TestResultEntity(
     id,
     patientId,
@@ -50,7 +40,7 @@ fun VaccineRecordDto.toEntity() = VaccineRecordEntity(
     patientId,
     qrIssueDate,
     status,
-    shcUri!!,
+    shcUri,
     federalPass,
     mode
 )
