@@ -43,7 +43,6 @@ class FetchVaccineRecordRepository @Inject constructor(
         val (status, record) = patientVaccineRecord
         record?.vaccineRecordDto?.federalPass = response.payload?.federalVaccineProof?.data
         record?.patientDto?.phn = response.payload?.phn
-        record?.vaccineRecordDto?.mode = DataSource.BCSC
         return Pair(status, record)
     }
 }

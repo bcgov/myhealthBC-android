@@ -13,8 +13,8 @@ data class LabResult(
     val outOfRange: Boolean,
     val receivedDateTime: String,
     val resultDateTime: String,
-    val resultDescription: List<String?>,
-    val resultLink: String?,
+    val resultDescription: List<String>,
+    val resultLink: String = "",
     val testStatus: String?,
     val testType: String?
 )

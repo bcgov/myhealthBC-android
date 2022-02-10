@@ -1,6 +1,6 @@
 package ca.bc.gov.repository
 
-import ca.bc.gov.common.model.DataSource
+import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.data.PatientRemoteDataSource
@@ -20,12 +20,13 @@ class PatientWithBCSCLoginRepository @Inject constructor(
         }
         if (patient.lastName != null) {
             fullNameBuilder.append(patient.lastName)
+            // fullNameBuilder.append("ThisIsaSecondName ThisIsaThirddName PROTERVITY")
         }
         return PatientDto(
             fullName = fullNameBuilder.toString(),
-            dateOfBirth = patient.birthDate?.toDateTime()!!,
+            dateOfBirth = patient.birthDate!!.toDateTime(),
             phn = patient.personalHealthNumber,
-            dataSource = DataSource.BCSC
+            authenticationStatus = AuthenticationStatus.AUTHENTICATED
         )
     }
 }

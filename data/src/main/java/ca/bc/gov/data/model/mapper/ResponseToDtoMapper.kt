@@ -4,6 +4,9 @@ import ca.bc.gov.common.model.AuthenticatedCovidTestDto
 import ca.bc.gov.common.model.LabResultDto
 import ca.bc.gov.common.model.OrderDto
 import ca.bc.gov.common.model.test.TestRecordDto
+import ca.bc.gov.common.utils.formatInPattern
+import ca.bc.gov.common.utils.formattedStringToDateTime
+import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.data.remote.model.base.AuthenticatedCovidTestPayload
 import ca.bc.gov.data.remote.model.base.CovidTestRecord
@@ -58,4 +61,18 @@ fun LabResult.toLabResultDto() = LabResultDto(
     resultLink = resultLink,
     testStatus = testStatus,
     testType = testType
+)
+
+fun LabResult.toTestRecord() = TestRecordDto(
+    id = id,
+    labName = "",
+    collectionDateTime = collectedDateTime!!.formatInPattern().toDate(),
+    resultDateTime = resultDateTime.formattedStringToDateTime(),
+    testName = loIncName ?: "",
+    testOutcome = labResultOutcome ?: "",
+    testType = testType,
+    testStatus = testStatus ?: "",
+    resultTitle = "",
+    resultDescription = resultDescription,
+    resultLink = resultLink
 )
