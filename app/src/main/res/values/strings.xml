@@ -207,4 +207,22 @@
     <string name="error_biometric_authentication_title">Authentication error</string>
     <string name="error_biometric_no_hardware">Unable to find supported hardware to perform biometric authentication.</string>
     <string name="error_biometric_unknown">Unable to perform authentication at the moment try again later.</string>
+
+    <!--Timeline View-->
+    <string name="type">Type</string>
+    <string name="time">Time</string>
+    <string name="immunization">Immunization</string>
+    <string name="medications">Medications</string>
+    <string name="covid_19">COVID-19</string>
+    <string name="show_results">Show results</string>
+    <string name="filter_by_type">Filter by type</string>
+    <string name="clear">Clear</string>
+    <string name="_2022">2022</string>
+    <string name="_2021">2021</string>
+    <string name="_2020">2020</string>
+    <string name="before_2020">Before 2020</string>
+    <string name="all_records_from">All records from</string>
+    <string name="from_yyyy_mm_dd">From (yyyy-mm-dd)</string>
+    <string name="to_yyyy_mm_dd">To (yyyy-mm-dd)</string>
+    <string name="timeline">Timeline</string>
 </resources>

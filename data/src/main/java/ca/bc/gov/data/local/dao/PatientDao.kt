@@ -80,6 +80,9 @@ interface PatientDao {
     @Query("SELECT * FROM patient")
     fun getPatientWithTestResultsAndRecordsFlow(): Flow<List<PatientWithTestResultsAndRecords>>
 
+    @Query("SELECT * FROM patient")
+    fun getPatientList(): Flow<List<PatientEntity>>
+
     @Query("DELETE FROM patient WHERE id = :patientId")
     suspend fun deletePatientById(patientId: Long): Int
 }

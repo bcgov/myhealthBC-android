@@ -15,10 +15,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchCovidTestResultBinding
-import ca.bc.gov.bchealth.ui.custom.setUpDatePickerUi
-import ca.bc.gov.bchealth.ui.custom.validateDatePickerData
-import ca.bc.gov.bchealth.ui.custom.validatePhnNumber
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.DatePickerHelper
+import ca.bc.gov.bchealth.utils.PhnHelper
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
@@ -124,15 +123,18 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
         val dob = binding.edtDob.text.toString()
         val dot = binding.edtDoc.text.toString()
 
-        if (this.validatePhnNumber(
-                binding.edPhnNumber
+        if (PhnHelper().validatePhnData(
+                binding.edPhnNumber,
+                requireContext()
             ) &&
-            this.validateDatePickerData(
+            DatePickerHelper().validateDatePickerData(
                     binding.tipDob,
+                    requireContext(),
                     getString(R.string.dob_required)
                 ) &&
-            this.validateDatePickerData(
+            DatePickerHelper().validateDatePickerData(
                     binding.tipDot,
+                    requireContext(),
                     getString(R.string.dot_required)
                 )
         ) {
@@ -194,11 +196,21 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
     }
 
     private fun setUpDobUI() {
-        this.setUpDatePickerUi(binding.tipDob, "DATE_OF_BIRTH")
+        DatePickerHelper().initializeDatePicker(
+            binding.tipDob,
+            getString(R.string.select_date),
+            parentFragmentManager,
+            "DATE_OF_BIRTH"
+        )
     }
 
     private fun setUpDotUI() {
-        this.setUpDatePickerUi(binding.tipDot, "DATE_OF_TEST")
+        DatePickerHelper().initializeDatePicker(
+            binding.tipDot,
+            getString(R.string.select_date),
+            parentFragmentManager,
+            "DATE_OF_TEST"
+        )
     }
 
     private fun queUser(value: String) {

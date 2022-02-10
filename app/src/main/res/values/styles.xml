@@ -86,4 +86,16 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="BC_VAX.Widget.OutlinedBox.ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
+
+    </style>
+
+    <style name="BC_VAX.CheckBox" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
+        <item name="fontFamily">@font/bc_sans_regular</item>
+        <item name="android:fontFamily">@font/bc_sans_regular</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:colorAccent">@color/blue</item>
+        <item name="boxStrokeColor">@color/blue</item>
+    </style>
+
 </resources>

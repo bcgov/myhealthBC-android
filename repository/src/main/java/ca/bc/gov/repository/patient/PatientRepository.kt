@@ -3,11 +3,13 @@ package ca.bc.gov.repository.patient
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsAndPatientDto
 import ca.bc.gov.data.datasource.PatientLocalDataSource
+import kotlinx.coroutines.flow.Flow
 import ca.bc.gov.data.local.entity.PatientEntity
 import ca.bc.gov.data.local.entity.PatientOrderUpdate
 import ca.bc.gov.repository.QrCodeGeneratorRepository
@@ -60,6 +62,9 @@ class PatientRepository @Inject constructor(
 
     suspend fun getPatient(patientId: Long): PatientDto =
         patientLocalDataSource.getPatient(patientId)
+
+    suspend fun getPatientList(): Flow<PatientListDto> =
+        patientLocalDataSource.getPatientList()
 
     suspend fun getPatientWithVaccineAndDoses(patientId: Long): PatientWithVaccineAndDosesDto =
         patientLocalDataSource.getPatientWithVaccineAndDoses(patientId) ?: throw MyHealthException(
