@@ -3,8 +3,9 @@ package ca.bc.gov.data.model.mapper
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.patient.PatientDto
-import ca.bc.gov.common.model.relation.PatientWithVaccineRecordDto
+import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
+import ca.bc.gov.common.model.relation.VaccineWithDosesDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
 import ca.bc.gov.data.local.entity.PatientEntity
@@ -12,8 +13,9 @@ import ca.bc.gov.data.local.entity.TestRecordEntity
 import ca.bc.gov.data.local.entity.TestResultEntity
 import ca.bc.gov.data.local.entity.VaccineDoseEntity
 import ca.bc.gov.data.local.entity.VaccineRecordEntity
-import ca.bc.gov.data.local.entity.relations.PatientWithVaccineRecord
+import ca.bc.gov.data.local.entity.relations.PatientWithVaccineAndDoses
 import ca.bc.gov.data.local.entity.relations.TestResultWithRecord
+import ca.bc.gov.data.local.entity.relations.VaccineRecordWithDose
 
 fun PatientEntity.toDto() = PatientDto(
     id, fullName, dateOfBirth, phn, authenticationStatus = authenticationStatus
@@ -60,7 +62,12 @@ fun TestResultWithRecord.toDto() = TestResultWithRecordsDto(
     testRecordDtos = testRecords.map { it.toDto() }
 )
 
-fun PatientWithVaccineRecord.toDto() = PatientWithVaccineRecordDto(
-    patientDto = patient.toDto(),
-    vaccineRecordDto = vaccineRecord?.toDto()
+fun VaccineRecordWithDose.toDto() = VaccineWithDosesDto(
+    vaccineRecordEntity.toDto(),
+    doses = vaccineDoses.map { it.toDto() }
+)
+
+fun PatientWithVaccineAndDoses.toDto() = PatientWithVaccineAndDosesDto(
+    patient = patient.toDto(),
+    vaccineWithDoses = vaccineRecordWithDose?.toDto()
 )

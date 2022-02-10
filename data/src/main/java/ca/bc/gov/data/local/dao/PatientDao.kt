@@ -5,8 +5,11 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import ca.bc.gov.data.local.entity.PatientEntity
+import ca.bc.gov.data.local.entity.PatientOrderUpdate
 import ca.bc.gov.data.local.entity.relations.PatientWithHealthRecordCount
+import ca.bc.gov.data.local.entity.relations.PatientWithVaccineAndDoses
 import kotlinx.coroutines.flow.Flow
 import java.time.Instant
 
@@ -17,7 +20,10 @@ import java.time.Instant
 interface PatientDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertPatient(patientEntity: PatientEntity): Long
+    suspend fun insert(patientEntity: PatientEntity): Long
+
+    @Update(entity = PatientEntity::class)
+    suspend fun updatePatientsOrder(patientOrderUpdates: List<PatientOrderUpdate>)
 
     @Query("SELECT id FROM patient WHERE full_name = :fullName AND dob = :dateOdBirth")
     suspend fun getPatientId(fullName: String, dateOdBirth: Instant): Long?
@@ -29,6 +35,17 @@ interface PatientDao {
     suspend fun getPatient(patientId: Long): PatientEntity
 
     @Transaction
+    @Query("SELECT * FROM patient WHERE id = :patientId")
+    suspend fun getPatientWithVaccineAndDoses(patientId: Long): PatientWithVaccineAndDoses?
+
+    @Transaction
+    @Query("SELECT * FROM patient WHERE full_name = :fullName AND dob = :dateOfBirth ")
+    suspend fun getPatientWithVaccineAndDoses(
+        fullName: String,
+        dateOfBirth: Instant
+    ): List<PatientWithVaccineAndDoses>
+
+    @Transaction
     @Query(
         """
         SELECT P.*,
@@ -38,7 +55,11 @@ interface PatientDao {
         GROUP BY P.id
     """
     )
-    fun getPatientWithRecordCountFlow(): Flow<List<PatientWithHealthRecordCount>>
+    fun getPatientWithHealthRecordCountFlow(): Flow<List<PatientWithHealthRecordCount>>
+
+    @Transaction
+    @Query("SELECT * FROM patient ORDER BY patient_order ASC")
+    fun getPatientWithVaccineAndDosesFlow(): Flow<List<PatientWithVaccineAndDoses>>
 
     @Query("DELETE FROM patient WHERE id = :patientId")
     suspend fun deletePatientById(patientId: Long): Int

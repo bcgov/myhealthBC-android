@@ -30,7 +30,7 @@ class PatientDaoTest : BaseDataBaseTest() {
         val patient = getPatient1()
 
         // When
-        val result = patientDao.insertPatient(patient)
+        val result = patientDao.insert(patient)
 
         // Then
         Assert.assertTrue(result > 0)
@@ -42,8 +42,8 @@ class PatientDaoTest : BaseDataBaseTest() {
         val patient = getPatient1()
 
         // When
-        patientDao.insertPatient(patient)
-        val result = patientDao.insertPatient(patient)
+        patientDao.insert(patient)
+        val result = patientDao.insert(patient)
 
         // Then
         Assert.assertEquals(-1, result)
@@ -55,7 +55,7 @@ class PatientDaoTest : BaseDataBaseTest() {
         val patient = getPatient1()
 
         // When
-        patientDao.insertPatient(patient)
+        patientDao.insert(patient)
 
         // Then
         val insertedPatientId =
@@ -69,7 +69,7 @@ class PatientDaoTest : BaseDataBaseTest() {
         val patient = getPatient1()
 
         // When
-        patientDao.insertPatient(patient)
+        patientDao.insert(patient)
 
         // Then
         val insertedPatient =
@@ -89,8 +89,8 @@ class PatientDaoTest : BaseDataBaseTest() {
         val testResult3 = getTestResult3()
 
         // When
-        patientDao.insertPatient(patient1)
-        patientDao.insertPatient(patient2)
+        patientDao.insert(patient1)
+        patientDao.insert(patient2)
         vaccineRecordDao.insertVaccineRecord(vaccineRecord1)
         vaccineRecordDao.insertVaccineRecord(vaccineRecord2)
         testResultDao.insertTestResult(testResult1)
@@ -98,7 +98,7 @@ class PatientDaoTest : BaseDataBaseTest() {
         testResultDao.insertTestResult(testResult3)
 
         // Then
-        val result = patientDao.getPatientWithRecordCountFlow().first()
+        val result = patientDao.getPatientWithHealthRecordCountFlow().first()
         Assert.assertTrue(result.contains(getPatientWithHealthRecordCount1(patient1)))
         Assert.assertTrue(result.contains(getPatientWithHealthRecordCount2(patient2)))
     }

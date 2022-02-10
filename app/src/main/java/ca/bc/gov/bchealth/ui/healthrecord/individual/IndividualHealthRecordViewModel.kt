@@ -8,7 +8,6 @@ import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.FetchTestResultRepository
 import ca.bc.gov.repository.PatientWithTestResultRepository
-import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.testrecord.TestRecordRepository
@@ -28,7 +27,6 @@ import javax.inject.Inject
 class IndividualHealthRecordViewModel @Inject constructor(
     private val vaccineRecordRepository: VaccineRecordRepository,
     private val testResultRepository: TestResultRepository,
-    private val patientWithVaccineRepository: PatientWithVaccineRecordRepository,
     private val patientWithTestResultRepository: PatientWithTestResultRepository,
     private val patientRepository: PatientRepository,
     private val testRecordRepository: TestRecordRepository,
@@ -44,11 +42,11 @@ class IndividualHealthRecordViewModel @Inject constructor(
 
     fun getIndividualsHealthRecord(patientId: Long) = viewModelScope.launch {
         val patientWithVaccineRecords =
-            patientWithVaccineRepository.getPatientWithVaccineRecord(patientId)
+            patientRepository.getPatientWithVaccineAndDoses(patientId)
         val testResultWithRecords =
             patientWithTestResultRepository.getPatientWithTestRecords(patientId)
 
-        val vaccineRecords = listOfNotNull(patientWithVaccineRecords.vaccineRecordDto)
+        val vaccineRecords = listOfNotNull(patientWithVaccineRecords.vaccineWithDoses)
         _uiState.tryEmit(
             IndividualHealthRecordsUiState().copy(
                 onLoading = false,
@@ -60,8 +58,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
     }
 
     fun deleteVaccineRecord(patientId: Long) = viewModelScope.launch {
-        val patientAndVaccineRecord = patientWithVaccineRepository.getPatientWithVaccine(patientId)
-        patientAndVaccineRecord.vaccineRecordDto?.id?.let {
+        val patientAndVaccineRecord = patientRepository.getPatientWithVaccineAndDoses(patientId)
+        patientAndVaccineRecord.vaccineWithDoses?.vaccine?.id?.let {
             vaccineRecordRepository.delete(vaccineRecordId = it)
         }
     }

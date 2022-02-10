@@ -13,7 +13,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentVaccineRecordDetailBinding
-import ca.bc.gov.bchealth.ui.healthrecord.VaccineRecordDetailViewModel
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.ImmunizationStatus
@@ -88,23 +87,23 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
 
                     state.onVaccineRecordDtoDetail?.let { patientAndVaccineRecord ->
 
-                        patientAndVaccineRecord.vaccineRecordDto?.id?.let {
+                        patientAndVaccineRecord.vaccineWithDoses?.vaccine?.id?.let {
                             vaccineRecordId = it
                         }
 
-                        binding.tvFullName.text = patientAndVaccineRecord.patientDto.fullName
+                        binding.tvFullName.text = patientAndVaccineRecord.patient.fullName
 
                         binding.tvIssueDate.text = getString(R.string.issued_on)
                             .plus(" ")
                             .plus(
-                                patientAndVaccineRecord.vaccineRecordDto?.qrIssueDate
+                                patientAndVaccineRecord.vaccineWithDoses?.vaccine?.qrIssueDate
                                     ?.toDateTimeString()
                             )
 
-                        patientAndVaccineRecord.vaccineRecordDto?.status
+                        patientAndVaccineRecord.vaccineWithDoses?.vaccine?.status
                             ?.let { status -> setUiState(status) }
 
-                        patientAndVaccineRecord.vaccineRecordDto?.doseDtos
+                        patientAndVaccineRecord.vaccineWithDoses?.vaccine?.doseDtos
                             ?.let { doses -> adapter.submitList(doses) }
                     }
                 }
