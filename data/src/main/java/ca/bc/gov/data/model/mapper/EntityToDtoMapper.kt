@@ -11,6 +11,8 @@ import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsAndPatientDto
+import ca.bc.gov.common.model.patient.PatientListDto
+import ca.bc.gov.common.model.relation.PatientWithVaccineRecordDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
 import ca.bc.gov.common.model.test.TestRecordDto
@@ -143,4 +145,8 @@ fun MedicationWithSummaryAndPharmacy.toDto() = MedicationWithSummaryAndPharmacyD
 fun PatientWithMedicationRecords.toDto() = PatientWithMedicationRecordDto(
     patient.toDto(),
     medicationRecord = medicationRecord.map { it.toDto() }
+)
+
+fun List<PatientEntity>.toDto() = PatientListDto(
+    patientDtos = this.map { it.toDto() }
 )
