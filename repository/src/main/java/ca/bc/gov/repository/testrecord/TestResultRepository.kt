@@ -18,11 +18,5 @@ class TestResultRepository @Inject constructor(
     suspend fun insertAuthenticatedTestResult(testResultDto: TestResultDto): Long =
         localDataSource.insertAuthenticatedTestResult(testResultDto)
 
-    suspend fun getTestResults(patientId: Long): List<TestResultDto> =
-        localDataSource.getTestResults(patientId)
-
-    suspend fun getTestResultWithRecords(testResultId: Long): TestResultWithRecordsDto =
-        localDataSource.getTestResultWithRecords(testResultId)
-
     suspend fun delete(testResultId: Long): Int = localDataSource.delete(testResultId)
 }

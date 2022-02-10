@@ -39,7 +39,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private lateinit var hiddenHealthRecordAdapter: HiddenHealthRecordAdapter
     private lateinit var concatAdapter: ConcatAdapter
     private val args: IndividualHealthRecordFragmentArgs by navArgs()
-    private var patientId: Long = -1L
     private var testResultId: Long = -1L
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,7 +78,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     }
 
                     if (uiState.queItTokenUpdated) {
-                        requestUpdate(patientId, testResultId)
+                        requestUpdate(testResultId)
                     }
 
                     if (uiState.onTestRecords.isEmpty() && uiState.onVaccineRecord.isEmpty())
@@ -120,7 +119,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 showHealthRecordDeleteDialog(testResult)
             },
             { patientId, testResult ->
-                requestUpdate(patientId, testResult)
+                requestUpdate(testResult)
             },
             isUpdateRequested = true,
             canDeleteRecord = false
@@ -132,10 +131,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         binding.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
     }
 
-    private fun requestUpdate(patientId: Long, testResultId: Long) {
-        this.patientId = patientId
+    private fun requestUpdate(testResultId: Long) {
         this.testResultId = testResultId
-        viewModel.requestUpdate(patientId, testResultId)
+        viewModel.requestUpdate(testResultId)
     }
 
     private fun setupToolbar() {

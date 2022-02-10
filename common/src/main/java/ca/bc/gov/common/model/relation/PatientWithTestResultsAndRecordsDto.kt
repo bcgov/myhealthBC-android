@@ -5,7 +5,7 @@ import ca.bc.gov.common.model.patient.PatientDto
 /**
  * @author Pinakin Kansara
  */
-data class PatientWithTestRecordDto(
+data class PatientWithTestResultsAndRecordsDto(
     val patient: PatientDto,
-    val testResultWithRecordsDto: List<TestResultWithRecordsDto>
+    val testResultWithRecords: List<TestResultWithRecordsDto> = emptyList()
 )

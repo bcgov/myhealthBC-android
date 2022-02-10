@@ -68,17 +68,17 @@ fun VaccineWithDosesDto.toUiModel(): HealthRecordItem {
 
 fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
 
-    val testRecordDto = testRecordDtos.maxByOrNull { it.resultDateTime }
+    val testRecordDto = testRecords.maxByOrNull { it.resultDateTime }
     val testStatus = if (testRecordDto?.testStatus.equals("Pending", true)) {
         testRecordDto?.testStatus
     } else {
         testRecordDto?.testOutcome
     }
-    val date = testRecordDtos.maxOf { it.resultDateTime }
+    val date = testRecords.maxOf { it.resultDateTime }
 
     return HealthRecordItem(
-        patientId = testResultDto.patientId,
-        testResultId = testResultDto.id,
+        patientId = testResult.patientId,
+        testResultId = testResult.id,
         icon = R.drawable.ic_health_record_covid_test,
         title = R.string.covid_19_test_result,
         description = 0,

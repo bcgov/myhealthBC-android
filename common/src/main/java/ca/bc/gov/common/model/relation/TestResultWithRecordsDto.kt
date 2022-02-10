@@ -7,6 +7,6 @@ import ca.bc.gov.common.model.test.TestResultDto
  * @author Pinakin Kansara
  */
 data class TestResultWithRecordsDto(
-    val testResultDto: TestResultDto,
-    val testRecordDtos: List<TestRecordDto> = emptyList()
+    val testResult: TestResultDto,
+    val testRecords: List<TestRecordDto> = emptyList()
 )

@@ -122,9 +122,6 @@ class FetchVaccineRecordViewModel @Inject constructor(
 
     fun getPatientWithVaccineRecord(patientId: Long) = viewModelScope.launch {
         val record = patientRepository.getPatientWithVaccineAndDoses(patientId)
-        val vaccineDoses =
-            vaccineDoseRepository.getVaccineDoses(record.vaccineWithDoses?.vaccine?.id!!)
-        record.vaccineWithDoses?.vaccine?.doseDtos = vaccineDoses
         _uiState.tryEmit(
             FetchVaccineRecordUiState(onLoading = false, patientDataDto = record)
         )

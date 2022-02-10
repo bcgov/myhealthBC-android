@@ -3,7 +3,6 @@ package ca.bc.gov.data.datasource
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.data.local.dao.VaccineDoseDao
 import ca.bc.gov.data.local.entity.VaccineDoseEntity
-import ca.bc.gov.data.model.mapper.toDto
 import ca.bc.gov.data.model.mapper.toEntity
 import javax.inject.Inject
 
@@ -46,9 +45,4 @@ class VaccineDoseLocalDataSource @Inject constructor(
     suspend fun deleteVaccineDose(vaccineRecordId: Long): Int {
         return vaccineDoseDao.deleteVaccineDosesByRecordId(vaccineRecordId)
     }
-
-    suspend fun getVaccineDoses(vaccineRecordId: Long): List<VaccineDoseDto> =
-        vaccineDoseDao.getVaccineDoses(vaccineRecordId).map {
-            it.toDto()
-        }
 }
