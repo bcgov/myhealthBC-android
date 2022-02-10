@@ -7,7 +7,6 @@ import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.FetchTestResultRepository
-import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.testrecord.TestRecordRepository
@@ -27,7 +26,6 @@ import javax.inject.Inject
 class IndividualHealthRecordViewModel @Inject constructor(
     private val vaccineRecordRepository: VaccineRecordRepository,
     private val testResultRepository: TestResultRepository,
-    private val patientWithTestResultRepository: PatientWithTestResultRepository,
     private val patientRepository: PatientRepository,
     private val testRecordRepository: TestRecordRepository,
     private val queueItTokenRepository: QueueItTokenRepository,
@@ -44,13 +42,13 @@ class IndividualHealthRecordViewModel @Inject constructor(
         val patientWithVaccineRecords =
             patientRepository.getPatientWithVaccineAndDoses(patientId)
         val testResultWithRecords =
-            patientWithTestResultRepository.getPatientWithTestRecords(patientId)
+            patientRepository.getPatientWithTestResultsAndRecords(patientId)
 
         val vaccineRecords = listOfNotNull(patientWithVaccineRecords.vaccineWithDoses)
         _uiState.tryEmit(
             IndividualHealthRecordsUiState().copy(
                 onLoading = false,
-                onTestRecords = testResultWithRecords.testResultWithRecordsDto
+                onTestRecords = testResultWithRecords.testResultWithRecords
                     .map { it.toUiModel() },
                 onVaccineRecord = vaccineRecords.map { it.toUiModel() }
             )
@@ -68,13 +66,15 @@ class IndividualHealthRecordViewModel @Inject constructor(
         testResultRepository.delete(testResultId)
     }
 
-    fun requestUpdate(patientId: Long, testResultId: Long) = viewModelScope.launch {
-        val patient = patientRepository.getPatient(patientId)
-        val testRecord = testRecordRepository.getTestRecords(testResultId)
+    fun requestUpdate(testResultId: Long) = viewModelScope.launch {
+        val testResultWithRecordsAndPatient =
+            patientRepository.getPatientWithTestResultAndRecords(testResultId)
         updateTestResult(
-            patient.phn,
-            patient.dateOfBirth.toDate(yyyy_MM_dd),
-            testRecord.firstOrNull()?.collectionDateTime?.toDate(yyyy_MM_dd)
+            testResultWithRecordsAndPatient.patient.phn,
+            testResultWithRecordsAndPatient.patient.dateOfBirth.toDate(yyyy_MM_dd),
+            testResultWithRecordsAndPatient.testResultWithRecords.testRecords.firstOrNull()?.collectionDateTime?.toDate(
+                yyyy_MM_dd
+            )
         )
     }
 

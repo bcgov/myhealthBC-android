@@ -8,6 +8,8 @@ import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.relation.PatientTestResultDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.model.test.TestRecordDto
+import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
+import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.model.test.TestResultDto
 import ca.bc.gov.common.utils.formatInPattern
 import ca.bc.gov.common.utils.toDate
@@ -31,7 +33,7 @@ class LaboratoryRemoteDataSource @Inject constructor(
      *  so we have to add phn and dob in order to record data in DB properly.
      *  This can be done on repository layer or data source layer.
      */
-    suspend fun getCovidTests(request: CovidTestRequest): PatientTestResultDto {
+    suspend fun getCovidTests(request: CovidTestRequest): PatientWithTestResultsAndRecordsDto {
         val response = safeCall { laboratoryApi.getCovidTests(request.toMap()) }
             ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
 
@@ -58,7 +60,12 @@ class LaboratoryRemoteDataSource @Inject constructor(
         val records = response.payload.covidTestRecords.map { record ->
             record.toTestRecord()
         }
-        return PatientTestResultDto(patient, testResult, records)
+
+        val testResultWithTesRecord = TestResultWithRecordsDto(
+            testResult,
+            records
+        )
+        return PatientWithTestResultsAndRecordsDto(patient, listOfNotNull(testResultWithTesRecord))
     }
 
     suspend fun getAuthenticatedCovidTests(
@@ -78,7 +85,8 @@ class LaboratoryRemoteDataSource @Inject constructor(
                 response.payload.orders[i].labResults!![0].collectedDateTime != null
             ) {
                 val testResult = TestResultDto(
-                    collectionDate = response.payload.orders[i].labResults!![0].collectedDateTime!!.formatInPattern().toDate()
+                    collectionDate = response.payload.orders[i].labResults!![0].collectedDateTime!!.formatInPattern()
+                        .toDate()
                 )
                 var records = emptyList<TestRecordDto>()
                 for (j in response.payload.orders[i].labResults!!.indices) {

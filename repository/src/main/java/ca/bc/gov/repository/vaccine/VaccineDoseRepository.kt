@@ -17,12 +17,9 @@ class VaccineDoseRepository @Inject constructor(
     suspend fun insertVaccineDose(dose: VaccineDoseDto): Long =
         localDataSource.insertVaccineDose(dose)
 
-    suspend fun deleteVaccineDose(vaccineRecordId: Long): Int =
-        localDataSource.deleteVaccineDose(vaccineRecordId)
-
-    suspend fun getVaccineDoses(vaccineRecordId: Long): List<VaccineDoseDto> =
-        localDataSource.getVaccineDoses(vaccineRecordId)
-
     suspend fun insertAllAuthenticatedVaccineDose(doses: List<VaccineDoseDto>): List<Long> =
         localDataSource.insertAllAuthenticatedVaccineDose(doses)
+
+    suspend fun deleteVaccineDose(vaccineRecordId: Long): Int =
+        localDataSource.deleteVaccineDose(vaccineRecordId)
 }

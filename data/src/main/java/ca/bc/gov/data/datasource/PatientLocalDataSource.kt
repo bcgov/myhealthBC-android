@@ -2,8 +2,10 @@ package ca.bc.gov.data.datasource
 
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
+import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.utils.toUniquePatientName
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
+import ca.bc.gov.common.model.relation.TestResultWithRecordsAndPatientDto
 import ca.bc.gov.data.local.dao.PatientDao
 import ca.bc.gov.data.local.entity.PatientEntity
 import ca.bc.gov.data.local.entity.PatientOrderUpdate
@@ -50,7 +52,7 @@ class PatientLocalDataSource @Inject constructor(
         } else {
             for (i in patientList.indices) {
                 if (patientList[i].fullName.toUniquePatientName()
-                    .equals(patientDto.fullName.toUniquePatientName(), true)
+                        .equals(patientDto.fullName.toUniquePatientName(), true)
                 ) {
                     return patientList[i].id
                 }
@@ -95,4 +97,10 @@ class PatientLocalDataSource @Inject constructor(
     suspend fun getPatientWithVaccineAndDoses(patient: PatientEntity): List<PatientWithVaccineAndDosesDto> =
         patientDao.getPatientWithVaccineAndDoses(patient.fullName, patient.dateOfBirth)
             .map { it.toDto() }
+
+    suspend fun getPatientWithTestResultsAndRecords(patientId: Long): PatientWithTestResultsAndRecordsDto? =
+        patientDao.getPatientWithTestResultsAndRecords(patientId)?.toDto()
+
+    suspend fun getPatientWithTestResultAndRecords(testResultId: Long): TestResultWithRecordsAndPatientDto? =
+        patientDao.getPatientWithTestResultAndRecords(testResultId)?.toDto()
 }

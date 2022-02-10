@@ -13,7 +13,6 @@ import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.FederalTravelPassDecoderRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.OnBoardingRepository
-import ca.bc.gov.repository.PatientHealthRecordsRepository
 import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.QrCodeGeneratorRepository
@@ -46,12 +45,7 @@ class RepositoriesModule {
 
     @Provides
     fun providesBase64ToImageConverter() = Base64ToInputImageConverter()
-
-    @Provides
-    @Singleton
-    fun providesPatientHealthRecordsRepository(localDataSource: PatientLocalDataSource) =
-        PatientHealthRecordsRepository(localDataSource)
-
+    
     @Provides
     @Singleton
     fun providesQueueItTokenRepository(

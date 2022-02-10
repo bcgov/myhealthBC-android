@@ -3,7 +3,9 @@ package ca.bc.gov.repository.patient
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
+import ca.bc.gov.common.model.relation.TestResultWithRecordsAndPatientDto
 import ca.bc.gov.data.datasource.PatientLocalDataSource
 import ca.bc.gov.data.local.entity.PatientEntity
 import ca.bc.gov.data.local.entity.PatientOrderUpdate
@@ -34,6 +36,13 @@ class PatientRepository @Inject constructor(
             }
         }
 
+    val patientHealthRecords =
+        patientLocalDataSource.patientWithRecordCount.map { patientHealthRecords ->
+            patientHealthRecords.filter { record ->
+                (record.vaccineRecordCount + record.testResultCount) > 0
+            }
+        }
+
     suspend fun insert(patientDto: PatientDto): Long =
         patientLocalDataSource.insertPatient(patientDto)
 
@@ -58,6 +67,18 @@ class PatientRepository @Inject constructor(
 
     suspend fun getPatientWithVaccineAndDoses(patient: PatientEntity): List<PatientWithVaccineAndDosesDto> =
         patientLocalDataSource.getPatientWithVaccineAndDoses(patient)
+
+    suspend fun getPatientWithTestResultsAndRecords(patientId: Long): PatientWithTestResultsAndRecordsDto =
+        patientLocalDataSource.getPatientWithTestResultsAndRecords(patientId)
+            ?: throw MyHealthException(
+                DATABASE_ERROR, "No record found for patient id=  $patientId"
+            )
+
+    suspend fun getPatientWithTestResultAndRecords(testResultId: Long): TestResultWithRecordsAndPatientDto =
+        patientLocalDataSource.getPatientWithTestResultAndRecords(testResultId)
+            ?: throw MyHealthException(
+                DATABASE_ERROR, "No record found for testResult id=  $testResultId"
+            )
 
     suspend fun insertAuthenticatedPatient(patientDto: PatientDto): Long =
         patientLocalDataSource.insertAuthenticatedPatient(patientDto)
