@@ -13,8 +13,8 @@ fun String.toUniquePatientName(): String {
     var uniqueName = this
     val nameList = this.split(" ")
     if (nameList.isNotEmpty() && nameList.size > 1) {
-        val firstName = nameList[0]
-        val lastInitial = nameList[nameList.size - 1].toCharArray()[0].toString()
+        val firstName = nameList.first()
+        val lastInitial = nameList.lastOrNull()?.toCharArray()?.first()?.toString() ?: ""
         uniqueName = "$firstName $lastInitial"
     }
     return uniqueName

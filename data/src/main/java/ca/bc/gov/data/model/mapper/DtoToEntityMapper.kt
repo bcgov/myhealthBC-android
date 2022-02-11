@@ -18,8 +18,7 @@ fun PatientDto.toEntity() = PatientEntity(
     dateOfBirth = dateOfBirth,
     phn = phn,
     patientOrder = Long.MAX_VALUE,
-    authenticationStatus = authenticationStatus,
-    uniqueName = fullName.toUniquePatientName()
+    authenticationStatus = authenticationStatus
 )
 
 fun VaccineDoseDto.toEntity() = VaccineDoseEntity(
