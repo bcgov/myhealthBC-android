@@ -77,8 +77,6 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                     val destinationId = sharedViewModel.destinationId
                     if (destinationId > 0) {
                         findNavController().navigate(destinationId)
-                    } else {
-                        findNavController().popBackStack()
                     }
                 }
                 else -> {}
@@ -103,7 +101,7 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
 
     private fun observeBcscLogin() {
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 bcscAuthViewModel.authStatus.collect {
 
                     binding.progressBar.isVisible = it.showLoading

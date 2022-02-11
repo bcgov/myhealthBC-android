@@ -87,8 +87,6 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                     val destinationId = sharedViewModel.destinationId
                     if (destinationId > 0) {
                         findNavController().navigate(destinationId)
-                    } else {
-                        findNavController().popBackStack()
                     }
                 }
                 else -> {}
@@ -177,8 +175,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                             findNavController().navigate(R.id.addCardOptionFragment)
                         } else {
                             sharedViewModel.destinationId = R.id.addCardOptionFragment
-                            findNavController()
-                                .navigate(R.id.bcscAuthInfoFragment)
+                            findNavController().navigate(R.id.bcscAuthInfoFragment)
                         }
                     }
                 }
