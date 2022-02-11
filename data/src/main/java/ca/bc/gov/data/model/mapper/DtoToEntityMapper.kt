@@ -5,6 +5,7 @@ import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
+import ca.bc.gov.common.utils.toUniquePatientName
 import ca.bc.gov.data.local.entity.PatientEntity
 import ca.bc.gov.data.local.entity.TestRecordEntity
 import ca.bc.gov.data.local.entity.TestResultEntity
@@ -17,7 +18,8 @@ fun PatientDto.toEntity() = PatientEntity(
     dateOfBirth = dateOfBirth,
     phn = phn,
     patientOrder = Long.MAX_VALUE,
-    authenticationStatus = authenticationStatus
+    authenticationStatus = authenticationStatus,
+    uniqueName = fullName.toUniquePatientName()
 )
 
 fun VaccineDoseDto.toEntity() = VaccineDoseEntity(

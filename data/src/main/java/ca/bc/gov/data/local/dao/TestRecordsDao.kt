@@ -20,4 +20,7 @@ interface TestRecordsDao {
 
     @Query("SELECT * FROM test_record WHERE test_result_id = :testResultId")
     suspend fun getTestRecords(testResultId: Long): List<TestRecordEntity>
+
+    @Query("DELETE FROM test_record WHERE test_result_id = :testResultId")
+    suspend fun deleteTestRecordById(testResultId: Long): Int
 }

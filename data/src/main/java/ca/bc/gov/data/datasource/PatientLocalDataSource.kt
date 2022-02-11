@@ -2,6 +2,7 @@ package ca.bc.gov.data.datasource
 
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
+import ca.bc.gov.common.utils.toUniquePatientName
 import ca.bc.gov.data.local.dao.PatientDao
 import ca.bc.gov.data.model.mapper.toDto
 import ca.bc.gov.data.model.mapper.toEntity
@@ -36,7 +37,7 @@ class PatientLocalDataSource @Inject constructor(
         val patientId = patientDao.insertPatient(patientDto.toEntity())
         if (patientId == -1L) {
             return patientDao.getPatientId(
-                patientDto.fullName,
+                patientDto.fullName.toUniquePatientName(),
                 patientDto.dateOfBirth
             ) ?: -1L
         }
@@ -55,7 +56,7 @@ class PatientLocalDataSource @Inject constructor(
     suspend fun getPatient(patientId: Long): PatientDto = patientDao.getPatient(patientId).toDto()
 
     suspend fun insertAuthenticatedPatient(patientDto: PatientDto): Long {
-        val patientId = patientDao.getPatientId(patientDto.fullName, patientDto.dateOfBirth) ?: -1L
+        val patientId = patientDao.getPatientId(patientDto.fullName.toUniquePatientName(), patientDto.dateOfBirth) ?: -1L
         if (patientId != -1L) {
             patientDao.deletePatientById(patientId)
         }

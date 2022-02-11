@@ -27,8 +27,11 @@ class VaccineDoseLocalDataSource @Inject constructor(
         return vaccineDoseId
     }
 
-    suspend fun insertAllVaccineDoses(doses: List<VaccineDoseDto>): List<Long> {
-        return vaccineDoseDao.insertAllVaccineDose(dose = doses.map { it.toEntity() })
+    suspend fun insertAllVaccineDoses(id: Long, doses: List<VaccineDoseDto>) {
+        val vaccineDoses = vaccineDoseDao.getVaccineDoses(id)
+        if (vaccineDoses.isEmpty()) {
+            vaccineDoseDao.insertAllVaccineDose(dose = doses.map { it.toEntity() })
+        }
     }
 
     suspend fun insertAllAuthenticatedVaccineDose(id: Long, doses: List<VaccineDoseDto>): List<Long> {
