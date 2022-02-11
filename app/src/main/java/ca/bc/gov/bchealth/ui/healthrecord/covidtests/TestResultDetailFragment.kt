@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -28,9 +29,8 @@ import kotlinx.coroutines.launch
 class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) {
 
     private val binding by viewBindings(FragmentTestResultDetailBinding::bind)
-
     private val viewModel: TestResultDetailsViewModel by viewModels()
-
+    private val testResultSharedViewModel: TestResultSharedViewModel by activityViewModels()
     private val args: TestResultDetailFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,14 +46,10 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
     private fun observeDetails() {
 
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-
                     binding.progressBar.isVisible = state.onLoading
-
                     state.onTestResultDetail.let { patientTestResult ->
-
                         patientTestResult?.recordDtos?.let { initUi(it, patientTestResult.patientDto) }
                     }
                 }
@@ -72,9 +68,7 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
         binding.viewpagerCovidTestResults.adapter = covidTestResultsAdapter
 
         if (testRecordDtos.size > 1) {
-
             binding.tabCovidTestResults.visibility = View.VISIBLE
-
             TabLayoutMediator(
                 binding.tabCovidTestResults,
                 binding.viewpagerCovidTestResults
@@ -116,7 +110,7 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
         }
     }
 
-    class CovidTestResultsAdapter(
+    inner class CovidTestResultsAdapter(
         fragment: Fragment,
         private val testRecordDtos: List<TestRecordDto>,
         private val patientDto: PatientDto
@@ -125,8 +119,9 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
         override fun getItemCount(): Int = testRecordDtos.size
 
         override fun createFragment(position: Int): Fragment {
-
-            return SingleTestResultFragment.newInstance(testRecordDtos[position], patientDto)
+            testResultSharedViewModel.testRecordDto = testRecordDtos[position]
+            testResultSharedViewModel.patientDto = patientDto
+            return SingleTestResultFragment()
         }
     }
 }

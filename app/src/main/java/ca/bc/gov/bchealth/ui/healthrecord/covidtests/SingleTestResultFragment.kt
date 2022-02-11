@@ -9,6 +9,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSingleTestResultBinding
 import ca.bc.gov.bchealth.utils.redirect
@@ -17,27 +18,20 @@ import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.utils.toDateTimeString
 
-// fragment initialization parameter
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 /**
  * @author amit metri
  */
 class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) {
 
     private val binding by viewBindings(FragmentSingleTestResultBinding::bind)
-
     private var testRecordDto: TestRecordDto? = null
-
     private var patientDto: PatientDto? = null
+    private val testResultSharedViewModel: TestResultSharedViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            testRecordDto = it.getParcelable(ARG_PARAM1)
-            patientDto = it.getParcelable(ARG_PARAM2)
-        }
+        testRecordDto = testResultSharedViewModel.testRecordDto
+        patientDto = testResultSharedViewModel.patientDto
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -241,17 +235,5 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
         Positive,
         Indeterminate,
         Cancelled
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun newInstance(testRecordDto: TestRecordDto, patientDto: PatientDto) =
-            SingleTestResultFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(ARG_PARAM1, testRecordDto)
-                    putParcelable(ARG_PARAM2, patientDto)
-                }
-            }
     }
 }
