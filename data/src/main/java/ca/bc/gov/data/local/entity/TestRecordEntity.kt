@@ -47,6 +47,6 @@ data class TestRecordEntity(
     val resultDescription: String,
     @ColumnInfo(name = "result_link")
     val resultLink: String,
-    @ColumnInfo(name = "data_source")
+    @ColumnInfo(name = "data_source", defaultValue = "")
     var dataSource: DataSource = DataSource.PUBLIC_API
 )
