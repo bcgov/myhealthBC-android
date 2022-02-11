@@ -34,5 +34,6 @@ data class VaccineDoseEntity(
     @ColumnInfo(name = "lot_number")
     val lotNumber: String?,
     val date: Instant,
+    @ColumnInfo(name = "data_source", defaultValue = "")
     val dataSource: DataSource = DataSource.PUBLIC_API
 )
