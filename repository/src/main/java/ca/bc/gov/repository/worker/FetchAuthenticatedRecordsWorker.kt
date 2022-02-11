@@ -4,7 +4,9 @@ import android.content.Context
 import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
+import androidx.work.Data
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
 import ca.bc.gov.common.exceptions.MustBeQueuedException
@@ -20,6 +22,8 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+
+const val WORK_RESULT = "WORK_RESULT"
 
 @HiltWorker
 class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
@@ -44,6 +48,10 @@ class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
             }
         } catch (e: Exception) {
             return when (e) {
+                is MustBeQueuedException -> {
+                    val output: Data = workDataOf(WORK_RESULT to e.message)
+                    Result.failure(output)
+                }
                 is MyHealthNetworkException -> {
                     Result.failure()
                 }
@@ -79,6 +87,9 @@ class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
                         }
                     }
                 }
+                else -> {
+                    Result.failure()
+                }
             }
         }
         try {
@@ -93,11 +104,7 @@ class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
                 }
             }
         } catch (e: Exception) {
-            Log.i("RASHMI", "Exception ${e.message}")
             when (e) {
-                is MustBeQueuedException -> {
-                    Result.failure()
-                }
                 is MyHealthNetworkException -> {
                     when (e.errCode) {
                         SERVER_ERROR_DATA_MISMATCH -> {
