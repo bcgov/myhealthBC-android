@@ -42,7 +42,7 @@ class ImmunizationRemoteDataSource @Inject constructor(
     }
 
     suspend fun getAuthenticatedVaccineStatus(token: String, hdid: String): VaccineStatusResponse {
-        val response = safeCall { immunizationApi.getAuthenticatedVaccineStatus("Bearer $token", hdid) }
+        val response = safeCall { immunizationApi.getAuthenticatedVaccineStatus(token, hdid) }
             ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid response")
 
         if (response.error != null) {
