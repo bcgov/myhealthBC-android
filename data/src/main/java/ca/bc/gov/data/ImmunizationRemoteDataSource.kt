@@ -46,15 +46,6 @@ class ImmunizationRemoteDataSource @Inject constructor(
             ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid response")
 
         if (response.error != null) {
-            if (response.error.action == null) {
-                throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
-            }
-            if (Action.MISMATCH.code == response.error.action?.code) {
-                throw MyHealthNetworkException(SERVER_ERROR_DATA_MISMATCH, response.error.message)
-            }
-            if ("Error parsing phn" == response.error.message) {
-                throw MyHealthNetworkException(SERVER_ERROR_INCORRECT_PHN, response.error.message)
-            }
             throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
         }
         // if (!isResponseValid(response)) {

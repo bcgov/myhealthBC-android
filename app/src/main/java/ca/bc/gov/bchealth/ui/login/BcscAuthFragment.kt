@@ -165,25 +165,25 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                     }
 
                     override fun onQueueViewWillOpen() {
-                        //NA
+                        // NA
                     }
 
                     override fun onQueueDisabled() {
-                        //NA
+                        // NA
                     }
 
                     override fun onQueueItUnavailable() {
-                        //NA
+                        // NA
                     }
 
                     override fun onError(error: Error?, errorMessage: String?) {
-                        //NA
+                        // NA
                     }
                 }
             )
             queueITEngine.run(requireActivity())
         } catch (e: Exception) {
-            e.printStackTrace()
+            // NA
         }
     }
 
