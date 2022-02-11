@@ -10,15 +10,12 @@ import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
 import ca.bc.gov.common.utils.formatInPattern
-import ca.bc.gov.common.utils.formattedStringToDateTime
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.data.model.mapper.toTestRecord
 import ca.bc.gov.data.remote.LaboratoryApi
 import ca.bc.gov.data.remote.model.base.Action
 import ca.bc.gov.data.remote.model.request.CovidTestRequest
 import ca.bc.gov.data.remote.model.request.toMap
-import ca.bc.gov.data.remote.model.response.AuthenticatedCovidTestResponse
-import ca.bc.gov.data.remote.model.response.VaccineStatusResponse
 import ca.bc.gov.data.utils.safeCall
 import javax.inject.Inject
 

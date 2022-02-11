@@ -1,6 +1,5 @@
 package ca.bc.gov.repository
 
-import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.data.ImmunizationRemoteDataSource
 import ca.bc.gov.data.remote.model.request.VaccineStatusRequest
 import ca.bc.gov.repository.model.PatientVaccineRecord

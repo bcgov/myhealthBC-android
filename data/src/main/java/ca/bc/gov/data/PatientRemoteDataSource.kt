@@ -4,8 +4,6 @@ import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.exceptions.MyHealthNetworkException
 import ca.bc.gov.data.remote.PatientApi
 import ca.bc.gov.data.remote.model.base.PatientPayload
-import ca.bc.gov.data.remote.model.request.PatientRequest
-import ca.bc.gov.data.remote.model.request.toMap
 import ca.bc.gov.data.remote.model.response.PatientResponse
 import ca.bc.gov.data.utils.safeCall
 import javax.inject.Inject

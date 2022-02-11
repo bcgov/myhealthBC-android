@@ -3,7 +3,6 @@ package ca.bc.gov.bchealth.ui.login
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.repository.FetchAuthenticatedRecordsRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
