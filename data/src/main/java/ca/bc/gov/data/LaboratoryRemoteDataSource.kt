@@ -69,19 +69,14 @@ class LaboratoryRemoteDataSource @Inject constructor(
             ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
 
         if (response.error != null) {
-            if (Action.MISMATCH.code == response.error.action?.code) {
-                throw MyHealthNetworkException(SERVER_ERROR_DATA_MISMATCH, response.error.message)
-            }
-            if ("Error parsing phn" == response.error.message) {
-                throw MyHealthNetworkException(SERVER_ERROR_INCORRECT_PHN, response.error.message)
-            }
             throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
         }
 
         val list = arrayListOf<TestResultWithRecordsDto>()
         for (i in response.payload.orders.indices) {
-            if (!response.payload.orders[i].labResults.isNullOrEmpty()
-                && response.payload.orders[i].labResults!![0].collectedDateTime != null) {
+            if (!response.payload.orders[i].labResults.isNullOrEmpty() &&
+                response.payload.orders[i].labResults!![0].collectedDateTime != null
+            ) {
                 val testResult = TestResultDto(
                     collectionDate = response.payload.orders[i].labResults!![0].collectedDateTime!!.formatInPattern().toDate()
                 )

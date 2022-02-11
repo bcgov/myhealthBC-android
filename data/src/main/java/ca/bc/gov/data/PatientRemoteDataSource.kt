@@ -11,9 +11,8 @@ import javax.inject.Inject
 class PatientRemoteDataSource @Inject constructor(private val patientApi: PatientApi) {
 
     suspend fun getPatient(token: String, hdid: String): PatientPayload {
-        val response = safeCall { patientApi.getPatient(token = token,hdid = hdid) }
+        val response = safeCall { patientApi.getPatient(token = token, hdid = hdid) }
             ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
-
 
         if (response.error != null) {
             throw MyHealthNetworkException(SERVER_ERROR, response.error.message)

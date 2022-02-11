@@ -1,6 +1,5 @@
 package ca.bc.gov.repository.extensions
 
-import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto

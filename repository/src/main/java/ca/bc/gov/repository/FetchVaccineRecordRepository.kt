@@ -33,7 +33,8 @@ class FetchVaccineRecordRepository @Inject constructor(
     }
 
     suspend fun fetchAuthenticatedVaccineRecord(
-        token: String, hdid: String
+        token: String,
+        hdid: String
     ): Pair<VaccineRecordState, PatientVaccineRecord?> {
         val response =
             immunizationRemoteDataSource.getAuthenticatedVaccineStatus(token, hdid)
