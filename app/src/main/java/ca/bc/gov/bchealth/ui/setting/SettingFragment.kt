@@ -59,9 +59,24 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initUi()
+
+        bcscAuthViewModel.checkLogin()
+
+        observeAuthStatus()
+    }
+
+    private fun initUi() {
+
         setUpToolbar()
 
-        initUi()
+        showLoader(true)
+
+        analyticsSwitch()
+
+        binding.tvDeleteAllRecords.setOnClickListener {
+            showDeleteRecordsAlertDialog()
+        }
     }
 
     private fun setUpToolbar() {
@@ -76,14 +91,9 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         }
     }
 
-    private fun initUi() {
-
-        showLoader(true)
-
-        bcscAuthViewModel.checkLogin()
-
+    private fun observeAuthStatus() {
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 bcscAuthViewModel.authStatus.collect {
 
                     showLoader(it.showLoading)
@@ -91,14 +101,17 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
                     binding.switchLogin.isChecked = it.isLoggedIn
                     isLoggedIn = it.isLoggedIn
                     bcscLoginSwitch()
+
+                    if (it.isError) {
+                        bcscAuthViewModel.resetAuthStatus()
+                    }
+
+                    if (it.authRequestIntent != null) {
+                        logoutResultLauncher.launch(it.authRequestIntent)
+                        bcscAuthViewModel.resetAuthStatus()
+                    }
                 }
             }
-        }
-
-        analyticsSwitch()
-
-        binding.tvDeleteAllRecords.setOnClickListener {
-            showAlertDialog()
         }
     }
 
@@ -124,11 +137,8 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     }
 
     private fun bcscLoginSwitch() {
-
         binding.switchLogin.setOnClickListener {
-
             binding.switchLogin.isChecked = isLoggedIn
-
             if (isLoggedIn) {
                 showLogoutDialog()
             } else {
@@ -147,29 +157,11 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
             negativeBtnMsg = getString(R.string.cancel),
             positiveBtnCallback = {
                 bcscAuthViewModel.getEndSessionIntent()
-
-                viewLifecycleOwner.lifecycleScope.launch {
-                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        bcscAuthViewModel.authStatus.collect {
-
-                            showLoader(it.showLoading)
-
-                            if (it.isError) {
-                                bcscAuthViewModel.resetAuthStatus()
-                            }
-
-                            if (it.authRequestIntent != null) {
-                                logoutResultLauncher.launch(it.authRequestIntent)
-                                bcscAuthViewModel.resetAuthStatus()
-                            }
-                        }
-                    }
-                }
             }
         )
     }
 
-    private fun showAlertDialog() {
+    private fun showDeleteRecordsAlertDialog() {
         AlertDialogHelper.showAlertDialog(
             context = requireContext(),
             title = getString(R.string.delete_data),
