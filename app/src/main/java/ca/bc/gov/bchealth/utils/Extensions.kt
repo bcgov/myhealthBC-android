@@ -13,7 +13,6 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.graphics.drawable.toBitmap
 import ca.bc.gov.bchealth.R
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -136,42 +135,4 @@ fun Long.adjustOffset(): Date {
 fun Context.hideKeyboard(view: View) {
     val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-}
-
-/*
-* Generic error dialog
-* */
-fun Context.showError(title: String, message: String) {
-    MaterialAlertDialogBuilder(this)
-        .setTitle(title)
-        .setCancelable(false)
-        .setMessage(message)
-        .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
-            dialog.dismiss()
-        }
-        .show()
-}
-
-/*
-* Show alert dialog with positive button click action
-* */
-fun Context.showAlertDialog(
-    title: String,
-    message: String,
-    positiveButtonText: String,
-    negativeButtonText: String,
-    runnable: Runnable
-) {
-
-    MaterialAlertDialogBuilder(this)
-        .setTitle(title)
-        .setCancelable(false)
-        .setMessage(message)
-        .setPositiveButton(positiveButtonText) { dialog, _ ->
-            runnable.run()
-            dialog.dismiss()
-        }.setNegativeButton(negativeButtonText) { dialog, _ ->
-            dialog.dismiss()
-        }
-        .show()
 }

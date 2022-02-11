@@ -19,9 +19,8 @@ import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineRecordBinding
 import ca.bc.gov.bchealth.ui.custom.setUpDatePickerUi
 import ca.bc.gov.bchealth.ui.custom.validateDatePickerData
 import ca.bc.gov.bchealth.ui.custom.validatePhnNumber
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.redirect
-import ca.bc.gov.bchealth.utils.showAlertDialog
-import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
@@ -29,7 +28,6 @@ import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.analytics.AnalyticsAction
 import ca.bc.gov.common.model.analytics.AnalyticsActionData
 import ca.bc.gov.repository.model.PatientVaccineRecord
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
 import com.queue_it.androidsdk.QueueListener
@@ -117,36 +115,40 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
             }
 
             Status.ERROR -> {
-                showErrorDialog(
-                    R.string.error_invalid_qr_code_title,
-                    R.string.error_invalid_qr_code_message
+                AlertDialogHelper.showAlertDialog(
+                    context = requireContext(),
+                    title = getString(R.string.error_invalid_qr_code_title),
+                    msg = getString(R.string.error_invalid_qr_code_message),
+                    positiveBtnMsg = getString(R.string.btn_ok)
                 )
             }
         }
     }
 
     private fun showErrorDialog(title: Int, message: Int) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(title))
-            .setCancelable(false)
-            .setMessage(getString(message))
-            .setPositiveButton(getString(R.string.btn_ok)) { dialog, _ ->
+        AlertDialogHelper.showAlertDialog(
+            context = requireContext(),
+            title = getString(title),
+            msg = getString(message),
+            positiveBtnMsg = getString(R.string.btn_ok),
+            positiveBtnCallback = {
                 addOrUpdateCardViewModel.resetStatus()
                 findNavController().popBackStack()
-                dialog.dismiss()
             }
-            .show()
+        )
     }
 
     private fun updateRecord(vaccineRecord: PatientVaccineRecord) {
-        requireContext().showAlertDialog(
+        AlertDialogHelper.showAlertDialog(
+            context = requireContext(),
             title = getString(R.string.replace_health_pass_title),
-            message = getString(R.string.replace_health_pass_message),
-            positiveButtonText = getString(R.string.replace),
-            negativeButtonText = getString(R.string.not_now)
-        ) {
-            addOrUpdateCardViewModel.update(vaccineRecord)
-        }
+            msg = getString(R.string.replace_health_pass_message),
+            positiveBtnMsg = getString(R.string.replace),
+            negativeBtnMsg = getString(R.string.not_now),
+            positiveBtnCallback = {
+                addOrUpdateCardViewModel.update(vaccineRecord)
+            }
+        )
     }
 
     private fun insert(vaccineRecord: PatientVaccineRecord) {
@@ -166,9 +168,11 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                     showLoader(uiState.onLoading)
 
                     if (uiState.errorData != null) {
-                        requireContext().showError(
-                            getString(uiState.errorData.title),
-                            getString(uiState.errorData.message)
+                        AlertDialogHelper.showAlertDialog(
+                            context = requireContext(),
+                            title = getString(uiState.errorData.title),
+                            msg = getString(uiState.errorData.message),
+                            positiveBtnMsg = getString(R.string.btn_ok)
                         )
                     }
 

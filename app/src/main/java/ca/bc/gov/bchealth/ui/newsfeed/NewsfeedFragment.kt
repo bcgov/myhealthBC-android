@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentNewsfeedBinding
 import ca.bc.gov.bchealth.model.rss.Newsfeed
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.redirect
-import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.common.model.analytics.AnalyticsAction
@@ -64,9 +64,11 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
 
         viewModel.newsfeedLiveData.observe(viewLifecycleOwner, {
             if (it.isNullOrEmpty()) {
-                requireContext().showError(
-                    getString(R.string.error),
-                    getString(R.string.error_message)
+                AlertDialogHelper.showAlertDialog(
+                    context = requireContext(),
+                    title = getString(R.string.error),
+                    msg = getString(R.string.error_message),
+                    positiveBtnMsg = getString(R.string.btn_ok)
                 )
             } else {
                 newsfeedAdapter.newsFeeds = it
