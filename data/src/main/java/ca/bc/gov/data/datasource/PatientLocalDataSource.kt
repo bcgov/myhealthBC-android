@@ -34,14 +34,18 @@ class PatientLocalDataSource @Inject constructor(
      * @return if success returns patientId (primary key) else returns -1L
      */
     suspend fun insertPatient(patientDto: PatientDto): Long {
-        val patientId = patientDao.insertPatient(patientDto.toEntity())
-        if (patientId == -1L) {
-            return patientDao.getPatientId(
-                patientDto.fullName.toUniquePatientName(),
-                patientDto.dateOfBirth
-            ) ?: -1L
+        val patientList = patientDao.getPatientByDob(patientDto.dateOfBirth)
+        if (patientList.isNullOrEmpty()) {
+            return patientDao.insertPatient(patientDto.toEntity())
+        } else {
+            for (i in patientList.indices) {
+                if (patientList[i].fullName.toUniquePatientName()
+                        .equals(patientDto.fullName.toUniquePatientName(), true)) {
+                    return patientList[i].id
+                }
+            }
+            return patientDao.insertPatient(patientDto.toEntity())
         }
-        return patientId
     }
 
     /**
@@ -56,10 +60,17 @@ class PatientLocalDataSource @Inject constructor(
     suspend fun getPatient(patientId: Long): PatientDto = patientDao.getPatient(patientId).toDto()
 
     suspend fun insertAuthenticatedPatient(patientDto: PatientDto): Long {
-        val patientId = patientDao.getPatientId(patientDto.fullName.toUniquePatientName(), patientDto.dateOfBirth) ?: -1L
-        if (patientId != -1L) {
-            patientDao.deletePatientById(patientId)
+        val patientList = patientDao.getPatientByDob(patientDto.dateOfBirth)
+        return if (patientList.isNullOrEmpty()) {
+            patientDao.insertPatient(patientDto.toEntity())
+        } else {
+            for (i in patientList.indices) {
+                if (patientList[i].fullName.toUniquePatientName()
+                        .equals(patientDto.fullName.toUniquePatientName(), true)) {
+                    patientDao.deletePatientById(patientList[i].id)
+                }
+            }
+            patientDao.insertPatient(patientDto.toEntity())
         }
-        return patientDao.insertPatient(patientDto.toEntity())
     }
 }
