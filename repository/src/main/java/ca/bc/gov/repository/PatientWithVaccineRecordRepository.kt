@@ -58,8 +58,7 @@ class PatientWithVaccineRecordRepository @Inject constructor(
         patientVaccineRecord.vaccineRecordDto.doseDtos.forEach { vaccineDose ->
             vaccineDose.vaccineRecordId = vaccineRecordId
         }
-        val dosesId =
-            vaccineDoseRepository.insertAllVaccineDose(patientVaccineRecord.vaccineRecordDto.doseDtos)
+        vaccineDoseRepository.insertAllVaccineDose(vaccineRecordId, patientVaccineRecord.vaccineRecordDto.doseDtos)
         return patientId
     }
 
@@ -75,7 +74,7 @@ class PatientWithVaccineRecordRepository @Inject constructor(
             vaccineDose.vaccineRecordId = vaccineRecordId
             vaccineDose.dataSource = DataSource.BCSC
         }
-        vaccineDoseRepository.insertAllAuthenticatedVaccineDose(patientVaccineRecord.vaccineRecordDto.id, patientVaccineRecord.vaccineRecordDto.doseDtos)
+        vaccineDoseRepository.insertAllAuthenticatedVaccineDose(vaccineRecordId, patientVaccineRecord.vaccineRecordDto.doseDtos)
         return patientId
     }
 
@@ -94,8 +93,8 @@ class PatientWithVaccineRecordRepository @Inject constructor(
         patientVaccineRecord.vaccineRecordDto.doseDtos.forEach { vaccineDose ->
             vaccineDose.vaccineRecordId = vaccineRecordId
         }
-        val vaccineDoseIds =
-            vaccineDoseRepository.insertAllVaccineDose(patientVaccineRecord.vaccineRecordDto.doseDtos)
+
+        vaccineDoseRepository.insertAllVaccineDose(vaccineRecordId, patientVaccineRecord.vaccineRecordDto.doseDtos)
         return patientId
     }
 

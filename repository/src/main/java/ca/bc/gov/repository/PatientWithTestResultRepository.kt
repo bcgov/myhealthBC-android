@@ -28,7 +28,7 @@ class PatientWithTestResultRepository @Inject constructor(
         records.forEach { testRecord ->
             testRecord.testResultId = testResultId
         }
-        testRecordRepository.insertAllTestRecords(records)
+        testRecordRepository.insertAllTestRecords(testResultId, records)
         return testResultId
     }
 
@@ -42,7 +42,7 @@ class PatientWithTestResultRepository @Inject constructor(
             testRecord.testResultId = testResultId
             testRecord.dataSource = DataSource.BCSC
         }
-        testRecordRepository.insertAllTestRecords(records)
+        testRecordRepository.insertAllAuthenticatedTestRecords(testResultId, records)
         return testResultId
     }
 

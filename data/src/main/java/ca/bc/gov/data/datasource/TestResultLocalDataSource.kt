@@ -19,11 +19,11 @@ class TestResultLocalDataSource @Inject constructor(
      * @return return resultId or -1L
      */
     suspend fun insertTestResult(testResultDto: TestResultDto): Long {
-        val testResultId = testResultDao.insertTestResult(testResultDto.toEntity())
-        if (testResultId == -1L) {
-            return testResultDao.getTestResultId(testResultDto.patientId, testResultDto.collectionDate) ?: -1L
+        val testResultId = testResultDao.getTestResultId(testResultDto.patientId, testResultDto.collectionDate) ?: -1L
+        if (testResultId != -1L) {
+            return testResultId
         }
-        return testResultId
+        return testResultDao.insertTestResult(testResultDto.toEntity())
     }
 
     suspend fun insertAuthenticatedTestResult(testResultDto: TestResultDto): Long {

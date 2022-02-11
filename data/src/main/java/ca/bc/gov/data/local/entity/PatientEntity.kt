@@ -12,7 +12,7 @@ import java.time.Instant
  */
 @Entity(
     tableName = "patient",
-    indices = [Index(value = ["full_name", "dob"], unique = true)]
+    indices = [Index(value = ["unique_name", "dob"], unique = true)]
 )
 data class PatientEntity(
     @PrimaryKey(autoGenerate = true)
@@ -27,7 +27,9 @@ data class PatientEntity(
     @ColumnInfo(name = "patient_order", defaultValue = Long.MAX_VALUE.toString())
     val patientOrder: Long,
     @ColumnInfo(name = "authentication_status")
-    val authenticationStatus: AuthenticationStatus = AuthenticationStatus.NON_AUTHENTICATED
+    val authenticationStatus: AuthenticationStatus = AuthenticationStatus.NON_AUTHENTICATED,
+    @ColumnInfo(name = "unique_name")
+    val uniqueName: String,
 )
 
 data class PatientOrderUpdate(
