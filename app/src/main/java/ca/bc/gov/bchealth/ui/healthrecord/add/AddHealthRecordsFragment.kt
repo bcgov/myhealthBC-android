@@ -79,7 +79,6 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                         findNavController().navigate(destinationId)
                     }
                 }
-                else -> {}
             }
         })
 

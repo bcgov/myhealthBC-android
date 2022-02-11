@@ -97,20 +97,14 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                     viewModel.authStatus.collect {
 
                         showLoader(it.showLoading)
-
-                        if (it.isError) {
-                            respondToError()
-                            viewModel.resetAuthStatus()
-                        }
+                        handleError(it.isError)
 
                         if (it.authRequestIntent != null) {
                             authResultLauncher.launch(it.authRequestIntent)
                             viewModel.resetAuthStatus()
                         }
 
-                        if (it.startWorker) {
-                            fetchAuthenticatedRecords()
-                        }
+                        fetchAuthenticatedRecords(it.startWorker)
 
                         if (it.isLoggedIn) {
                             respondToSuccess()
@@ -126,23 +120,31 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
         }
     }
 
+    private fun handleError(isError: Boolean) {
+        if (isError) {
+            respondToError()
+            viewModel.resetAuthStatus()
+        }
+    }
     private fun initWorkManager() {
         workRequest = OneTimeWorkRequestBuilder<FetchAuthenticatedRecordsWorker>()
             .build()
         workManager = WorkManager.getInstance(requireContext())
     }
 
-    private fun fetchAuthenticatedRecords() {
-        workManager.enqueue(workRequest)
-        workManager.getWorkInfoByIdLiveData(workRequest.id)
-            .observe(viewLifecycleOwner, { info ->
-                if (info != null && info.state.isFinished) {
-                    val queItUrl = info.outputData.getString(WORK_RESULT)
-                    if (queItUrl != null) {
-                        queUser(queItUrl)
+    private fun fetchAuthenticatedRecords(startWorker: Boolean) {
+        if (startWorker) {
+            workManager.enqueue(workRequest)
+            workManager.getWorkInfoByIdLiveData(workRequest.id)
+                .observe(viewLifecycleOwner, { info ->
+                    if (info != null && info.state.isFinished) {
+                        val queItUrl = info.outputData.getString(WORK_RESULT)
+                        if (queItUrl != null) {
+                            queUser(queItUrl)
+                        }
                     }
-                }
-            })
+                })
+        }
     }
 
     private fun queUser(value: String) {
@@ -163,15 +165,19 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                     }
 
                     override fun onQueueViewWillOpen() {
+                        //NA
                     }
 
                     override fun onQueueDisabled() {
+                        //NA
                     }
 
                     override fun onQueueItUnavailable() {
+                        //NA
                     }
 
                     override fun onError(error: Error?, errorMessage: String?) {
+                        //NA
                     }
                 }
             )

@@ -1,14 +1,11 @@
 package ca.bc.gov.repository.worker
 
 import android.content.Context
-import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
-import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.MyHealthNetworkException
 import ca.bc.gov.repository.FetchTestResultRepository
@@ -17,10 +14,11 @@ import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
+import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.patient.PatientRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 const val WORK_RESULT = "WORK_RESULT"
@@ -35,14 +33,15 @@ class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
     private val bcscAuthRepo: BcscAuthRepo,
     private val patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
     private val patientRepository: PatientRepository,
-    private val patientWithTestResultRepository: PatientWithTestResultRepository
+    private val patientWithTestResultRepository: PatientWithTestResultRepository,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
         var patientId: Long
         val pair = bcscAuthRepo.getHdId()
         try {
-            withContext(Dispatchers.IO) {
+            withContext(dispatcher) {
                 val patient = patientWithBCSCLoginRepository.getPatient(pair.first, pair.second)
                 patientId = patientRepository.insertAuthenticatedPatient(patient)
             }
@@ -61,7 +60,7 @@ class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
             }
         }
         try {
-            withContext(Dispatchers.IO) {
+            withContext(dispatcher) {
                 val response = fetchVaccineRecordRepository.fetchAuthenticatedVaccineRecord(
                     pair.first,
                     pair.second
@@ -73,27 +72,10 @@ class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
                 }
             }
         } catch (e: Exception) {
-            when (e) {
-                is MyHealthNetworkException -> {
-                    return when (e.errCode) {
-                        SERVER_ERROR_DATA_MISMATCH -> {
-                            Result.failure()
-                        }
-                        SERVER_ERROR_INCORRECT_PHN -> {
-                            Result.failure()
-                        }
-                        else -> {
-                            Result.failure()
-                        }
-                    }
-                }
-                else -> {
-                    Result.failure()
-                }
-            }
+            return Result.failure()
         }
         try {
-            withContext(Dispatchers.IO) {
+            withContext(dispatcher) {
                 val response =
                     fetchTestResultRepository.fetchAuthenticatedTestRecord(pair.first, pair.second)
                 for (i in response.indices) {
@@ -104,24 +86,7 @@ class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
                 }
             }
         } catch (e: Exception) {
-            when (e) {
-                is MyHealthNetworkException -> {
-                    when (e.errCode) {
-                        SERVER_ERROR_DATA_MISMATCH -> {
-                            Result.failure()
-                        }
-                        SERVER_ERROR_INCORRECT_PHN -> {
-                            Result.failure()
-                        }
-                        else -> {
-                            Result.failure()
-                        }
-                    }
-                }
-                else -> {
-                    Result.failure()
-                }
-            }
+            return Result.failure()
         }
 
         return Result.success()
