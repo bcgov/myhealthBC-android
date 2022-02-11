@@ -40,7 +40,8 @@ class PatientLocalDataSource @Inject constructor(
         } else {
             for (i in patientList.indices) {
                 if (patientList[i].fullName.toUniquePatientName()
-                        .equals(patientDto.fullName.toUniquePatientName(), true)) {
+                    .equals(patientDto.fullName.toUniquePatientName(), true)
+                ) {
                     return patientList[i].id
                 }
             }
@@ -66,7 +67,8 @@ class PatientLocalDataSource @Inject constructor(
         } else {
             for (i in patientList.indices) {
                 if (patientList[i].fullName.toUniquePatientName()
-                        .equals(patientDto.fullName.toUniquePatientName(), true)) {
+                    .equals(patientDto.fullName.toUniquePatientName(), true)
+                ) {
                     patientDao.deletePatientById(patientList[i].id)
                 }
             }
