@@ -65,7 +65,7 @@ class LaboratoryRemoteDataSource @Inject constructor(
         token: String,
         hdid: String
     ): List<TestResultWithRecordsDto> {
-        val response = safeCall { laboratoryApi.getAuthenticatedCovidTests("Bearer $token", hdid) }
+        val response = safeCall { laboratoryApi.getAuthenticatedCovidTests(token, hdid) }
             ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
 
         if (response.error != null) {

@@ -127,7 +127,7 @@ class BcscAuthRepo(
         if (hdId.isEmpty())
             throw MyHealthException(AUTH_ERROR, "Invalid access token!")
         else
-            return Pair(accessToken, hdId)
+            return Pair(BEARER.plus(accessToken), hdId)
     }
 
     suspend fun getUserName(): String {
@@ -163,5 +163,6 @@ class BcscAuthRepo(
         private val params = mapOf("kc_idp_hint" to "bcsc")
         private const val SCOPE = "openid email profile"
         private const val PROMPT = "login"
+        private const val BEARER = "Bearer "
     }
 }

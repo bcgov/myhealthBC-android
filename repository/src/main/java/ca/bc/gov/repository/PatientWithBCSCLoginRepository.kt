@@ -20,7 +20,6 @@ class PatientWithBCSCLoginRepository @Inject constructor(
         }
         if (patient.lastName != null) {
             fullNameBuilder.append(patient.lastName)
-            // fullNameBuilder.append("ThisIsaSecondName ThisIsaThirddName PROTERVITY")
         }
         return PatientDto(
             fullName = fullNameBuilder.toString(),

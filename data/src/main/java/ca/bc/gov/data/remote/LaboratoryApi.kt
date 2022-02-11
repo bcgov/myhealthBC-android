@@ -16,7 +16,6 @@ interface LaboratoryApi {
     @GET("api/laboratoryservice/v1/api/PublicLaboratory/CovidTests")
     suspend fun getCovidTests(@HeaderMap headers: Map<String, String>): Response<CovidTestResponse>
 
-    //can create interceptor
     @GET("api/laboratoryservice/v1/api/Laboratory/Covid19Orders")
     suspend fun getAuthenticatedCovidTests(
         @Header("Authorization") token: String,
