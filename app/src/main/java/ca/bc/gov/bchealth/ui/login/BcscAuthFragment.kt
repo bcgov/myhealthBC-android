@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
+import android.util.Log
 import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -153,37 +154,32 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             val customerId = uri.getQueryParameter("c")
             val waitingRoomId = uri.getQueryParameter("e")
             QueueService.IsTest = false
-            val queueITEngine = QueueITEngine(
-                requireActivity(),
-                customerId,
-                waitingRoomId,
-                "",
-                "",
-                object : QueueListener() {
-                    override fun onQueuePassed(queuePassedInfo: QueuePassedInfo?) {
-                        viewModel.setQueItToken(queuePassedInfo?.queueItToken)
-                    }
-
-                    override fun onQueueViewWillOpen() {
-                        // NA
-                    }
-
-                    override fun onQueueDisabled() {
-                        // NA
-                    }
-
-                    override fun onQueueItUnavailable() {
-                        // NA
-                    }
-
-                    override fun onError(error: Error?, errorMessage: String?) {
-                        // NA
-                    }
-                }
-            )
+            val queueITEngine = QueueITEngine(requireActivity(), customerId, waitingRoomId, "", "", queueListener)
             queueITEngine.run(requireActivity())
         } catch (e: Exception) {
-            // NA
+            Log.i(this::class.java.name, "Exception in queUser: ${e.message}")
+        }
+    }
+
+    private val queueListener = object : QueueListener() {
+        override fun onQueuePassed(queuePassedInfo: QueuePassedInfo?) {
+            viewModel.setQueItToken(queuePassedInfo?.queueItToken)
+        }
+
+        override fun onQueueDisabled() {
+            // Do nothing
+        }
+
+        override fun onQueueViewWillOpen() {
+            // Do nothing
+        }
+
+        override fun onError(error: Error?, errorMessage: String?) {
+            // Do nothing
+        }
+
+        override fun onQueueItUnavailable() {
+            // Do nothing
         }
     }
 
