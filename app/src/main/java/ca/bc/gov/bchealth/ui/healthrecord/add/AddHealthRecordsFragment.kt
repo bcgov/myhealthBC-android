@@ -81,7 +81,6 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                         findNavController().popBackStack()
                     }
                 }
-                else -> {}
             }
         })
 

@@ -5,6 +5,7 @@ import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.ResponseBody
@@ -33,12 +34,7 @@ class QueueItInterceptor @Inject constructor(
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestUrlBuilder = chain.request().url.newBuilder()
-        if (preferenceStorage.queueItToken != null) {
-            requestUrlBuilder.addQueryParameter(
-                HEADER_QUEUE_IT_TOKEN,
-                preferenceStorage.queueItToken
-            )
-        }
+        checkQueueItTokenInPref(requestUrlBuilder)
 
         val originRequest = chain.request()
         val request = originRequest.newBuilder()
@@ -69,7 +65,8 @@ class QueueItInterceptor @Inject constructor(
                 if (json.get(RESOURCE_PAYLOAD).isJsonNull) {
                     throw IOException("Bad response!")
                 }
-                val payload = json.getAsJsonObject(RESOURCE_PAYLOAD) ?: throw IOException("Bad response!")
+                val payload =
+                    json.getAsJsonObject(RESOURCE_PAYLOAD) ?: throw IOException("Bad response!")
                 var retryInMillis = 0L
                 try {
                     loaded = payload.get(LOADED).asBoolean
@@ -77,9 +74,8 @@ class QueueItInterceptor @Inject constructor(
                 } catch (e: Exception) {
                     loaded = true
                 }
-                if (!loaded && retryInMillis > 0) {
-                    Thread.sleep(retryInMillis)
-                }
+                sleepOnRetry(loaded, retryInMillis)
+
                 retryCount++
             }
         } while (!loaded && retryCount < 3)
@@ -92,6 +88,21 @@ class QueueItInterceptor @Inject constructor(
 
         return response.newBuilder()
             .body(newBody).build()
+    }
+
+    private fun checkQueueItTokenInPref(requestUrlBuilder: HttpUrl.Builder) {
+        if (preferenceStorage.queueItToken != null) {
+            requestUrlBuilder.addQueryParameter(
+                HEADER_QUEUE_IT_TOKEN,
+                preferenceStorage.queueItToken
+            )
+        }
+    }
+
+    private fun sleepOnRetry(loaded: Boolean, retryInMillis: Long) {
+        if (!loaded && retryInMillis > 0) {
+            Thread.sleep(retryInMillis)
+        }
     }
 
     private fun mustQueue(response: Response) = response.headers.names().contains(

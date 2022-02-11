@@ -137,6 +137,7 @@ class BcscAuthRepo(
             val json = authState.accessToken?.let { decodeAccessToken(it) }
             userName = json?.get("name").toString()
         } catch (e: java.lang.Exception) {
+            //NA
         }
         return userName
     }
