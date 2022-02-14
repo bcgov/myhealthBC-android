@@ -9,6 +9,7 @@ import androidx.room.Update
 import ca.bc.gov.data.local.entity.PatientEntity
 import ca.bc.gov.data.local.entity.PatientOrderUpdate
 import ca.bc.gov.data.local.entity.relations.PatientWithHealthRecordCount
+import ca.bc.gov.data.local.entity.relations.PatientWithMedicationRecords
 import ca.bc.gov.data.local.entity.relations.PatientWithTestResultsAndRecords
 import ca.bc.gov.data.local.entity.relations.PatientWithVaccineAndDoses
 import ca.bc.gov.data.local.entity.relations.TestResultWithRecordsAndPatient
@@ -54,6 +55,10 @@ interface PatientDao {
     @Transaction
     @Query("SELECT * FROM test_result WHERE id = :testResultId")
     suspend fun getPatientWithTestResultAndRecords(testResultId: Long): TestResultWithRecordsAndPatient?
+
+    @Transaction
+    @Query("SELECT * FROM patient WHERE id = :patientId")
+    suspend fun getPatientWithMedicationRecords(patientId: Long): PatientWithMedicationRecords?
 
     @Transaction
     @Query(

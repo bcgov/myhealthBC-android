@@ -1,8 +1,10 @@
 package ca.bc.gov.data.model.mapper
 
+import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsAndPatientDto
@@ -10,11 +12,13 @@ import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
+import ca.bc.gov.data.local.entity.MedicationRecordEntity
 import ca.bc.gov.data.local.entity.PatientEntity
 import ca.bc.gov.data.local.entity.TestRecordEntity
 import ca.bc.gov.data.local.entity.TestResultEntity
 import ca.bc.gov.data.local.entity.VaccineDoseEntity
 import ca.bc.gov.data.local.entity.VaccineRecordEntity
+import ca.bc.gov.data.local.entity.relations.PatientWithMedicationRecords
 import ca.bc.gov.data.local.entity.relations.PatientWithTestResultsAndRecords
 import ca.bc.gov.data.local.entity.relations.PatientWithVaccineAndDoses
 import ca.bc.gov.data.local.entity.relations.TestResultWithRecord
@@ -84,4 +88,21 @@ fun PatientWithTestResultsAndRecords.toDto() = PatientWithTestResultsAndRecordsD
 fun TestResultWithRecordsAndPatient.toDto() = TestResultWithRecordsAndPatientDto(
     testResultWithRecords = testResultWithRecord.toDto(),
     patient = patient.toDto()
+)
+
+fun MedicationRecordEntity.toDto() = MedicationRecordDto(
+    id,
+    patientId,
+    practitionerIdentifier,
+    prescriptionStatus,
+    practitionerSurname,
+    dispenseDate,
+    directions,
+    dateEntered,
+    dataSource
+)
+
+fun PatientWithMedicationRecords.toDto() = PatientWithMedicationRecordDto(
+    patient.toDto(),
+    medicationRecord = medicationRecord.map { it.toDto() }
 )

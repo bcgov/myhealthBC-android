@@ -3,6 +3,7 @@ package ca.bc.gov.repository.patient
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsAndPatientDto
@@ -78,6 +79,12 @@ class PatientRepository @Inject constructor(
         patientLocalDataSource.getPatientWithTestResultAndRecords(testResultId)
             ?: throw MyHealthException(
                 DATABASE_ERROR, "No record found for testResult id=  $testResultId"
+            )
+
+    suspend fun getPatientWithMedicationRecords(patientId: Long): PatientWithMedicationRecordDto =
+        patientLocalDataSource.getPatientWithMedicationRecords(patientId)
+            ?: throw MyHealthException(
+                DATABASE_ERROR, "No record found for patient id=  $patientId"
             )
 
     suspend fun insertAuthenticatedPatient(patientDto: PatientDto): Long =
