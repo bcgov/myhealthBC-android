@@ -6,9 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ca.bc.gov.data.local.converter.DateTimeConverter
 import ca.bc.gov.data.local.dao.PatientDao
-import ca.bc.gov.data.local.dao.TestRecordsDao
 import ca.bc.gov.data.local.dao.TestResultDao
-import ca.bc.gov.data.local.dao.VaccineDoseDao
 import ca.bc.gov.data.local.dao.VaccineRecordDao
 import ca.bc.gov.data.local.entity.PatientEntity
 import ca.bc.gov.data.local.entity.TestRecordEntity
@@ -34,9 +32,5 @@ abstract class MyHealthDataBase : RoomDatabase() {
 
     abstract fun getVaccineRecordDao(): VaccineRecordDao
 
-    abstract fun getVaccineDoseDao(): VaccineDoseDao
-
     abstract fun getTestResultDao(): TestResultDao
-
-    abstract fun getTestRecordDao(): TestRecordsDao
 }

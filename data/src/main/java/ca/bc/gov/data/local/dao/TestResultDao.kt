@@ -4,9 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
+import ca.bc.gov.data.local.entity.TestRecordEntity
 import ca.bc.gov.data.local.entity.TestResultEntity
-import ca.bc.gov.data.local.entity.relations.TestResultWithRecord
 import java.time.Instant
 
 /**
@@ -16,11 +15,17 @@ import java.time.Instant
 interface TestResultDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertTestResult(testResultEntity: TestResultEntity): Long
+    suspend fun insert(testResultEntity: TestResultEntity): Long
 
-    @Query("SELECT id FROM test_result WHERE patient_id = :patientId AND collection_date = :collectionDate")
-    suspend fun getTestResultId(patientId: Long, collectionDate: Instant): Long?
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(testRecordEntity: TestRecordEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(testRecords: List<TestRecordEntity>): List<Long>
 
     @Query("DELETE FROM test_result WHERE id = :testResultId")
     suspend fun delete(testResultId: Long): Int
+
+    @Query("SELECT id FROM test_result WHERE patient_id = :patientId AND collection_date = :collectionDate")
+    suspend fun getTestResultId(patientId: Long, collectionDate: Instant): Long?
 }

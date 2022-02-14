@@ -4,9 +4,7 @@ import android.content.Context
 import ca.bc.gov.data.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.LocalDataSource
 import ca.bc.gov.data.datasource.PatientLocalDataSource
-import ca.bc.gov.data.datasource.TestRecordLocalDataSource
 import ca.bc.gov.data.datasource.TestResultLocalDataSource
-import ca.bc.gov.data.datasource.VaccineDoseLocalDataSource
 import ca.bc.gov.data.datasource.VaccineRecordLocalDataSource
 import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.repository.ClearStorageRepository
@@ -22,11 +20,9 @@ import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.ProcessQrRepository
 import ca.bc.gov.repository.scanner.QrScanner
-import ca.bc.gov.repository.testrecord.TestRecordRepository
 import ca.bc.gov.repository.testrecord.TestResultRepository
 import ca.bc.gov.repository.utils.Base64ToInputImageConverter
 import ca.bc.gov.repository.utils.UriToImage
-import ca.bc.gov.repository.vaccine.VaccineDoseRepository
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import ca.bc.gov.shcdecoder.SHCVerifier
 import dagger.Module
@@ -45,7 +41,7 @@ class RepositoriesModule {
 
     @Provides
     fun providesBase64ToImageConverter() = Base64ToInputImageConverter()
-    
+
     @Provides
     @Singleton
     fun providesQueueItTokenRepository(
@@ -88,19 +84,8 @@ class RepositoriesModule {
 
     @Provides
     @Singleton
-    fun provideVaccineDoseRepository(
-        localDataSource: VaccineDoseLocalDataSource
-    ) = VaccineDoseRepository(localDataSource)
-
-    @Provides
-    @Singleton
     fun providesTestResultRepository(localDataSource: TestResultLocalDataSource) =
         TestResultRepository(localDataSource)
-
-    @Provides
-    @Singleton
-    fun providesTestRecordRepository(localDataSource: TestRecordLocalDataSource) =
-        TestRecordRepository(localDataSource)
 
     @Provides
     @Singleton
@@ -110,24 +95,20 @@ class RepositoriesModule {
     @Singleton
     fun providesPatientWithVaccineRepository(
         patientRepository: PatientRepository,
-        vaccineRecordRepository: VaccineRecordRepository,
-        vaccineDoseRepository: VaccineDoseRepository
+        vaccineRecordRepository: VaccineRecordRepository
     ) = PatientWithVaccineRecordRepository(
         patientRepository,
-        vaccineRecordRepository,
-        vaccineDoseRepository
+        vaccineRecordRepository
     )
 
     @Provides
     @Singleton
     fun providesPatientWithTestResultRepository(
         patientRepository: PatientRepository,
-        testResultRepository: TestResultRepository,
-        testRecordRepository: TestRecordRepository
+        testResultRepository: TestResultRepository
     ) = PatientWithTestResultRepository(
         patientRepository,
-        testResultRepository,
-        testRecordRepository
+        testResultRepository
     )
 
     @Provides

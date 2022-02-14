@@ -9,7 +9,6 @@ import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.FetchTestResultRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.patient.PatientRepository
-import ca.bc.gov.repository.testrecord.TestRecordRepository
 import ca.bc.gov.repository.testrecord.TestResultRepository
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +26,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
     private val vaccineRecordRepository: VaccineRecordRepository,
     private val testResultRepository: TestResultRepository,
     private val patientRepository: PatientRepository,
-    private val testRecordRepository: TestRecordRepository,
     private val queueItTokenRepository: QueueItTokenRepository,
     private val fetchTestResultRepository: FetchTestResultRepository
 ) : ViewModel() {

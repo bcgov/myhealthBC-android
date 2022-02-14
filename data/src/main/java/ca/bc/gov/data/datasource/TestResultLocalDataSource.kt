@@ -1,5 +1,6 @@
 package ca.bc.gov.data.datasource
 
+import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
 import ca.bc.gov.data.local.dao.TestResultDao
 import ca.bc.gov.data.model.mapper.toEntity
@@ -13,19 +14,23 @@ class TestResultLocalDataSource @Inject constructor(
 ) {
 
     /**
-     * @param testResultDto
+     * @param testResult
      * @return return resultId or -1L
      */
-    suspend fun insertTestResult(testResultDto: TestResultDto): Long {
-        val testResultId = testResultDao.getTestResultId(testResultDto.patientId, testResultDto.collectionDate) ?: -1L
+    suspend fun insert(testResult: TestResultDto): Long {
+        val testResultId = testResultDao.getTestResultId(testResult.patientId, testResult.collectionDate) ?: -1L
         if (testResultId != -1L) {
             return testResultId
         }
-        return testResultDao.insertTestResult(testResultDto.toEntity())
+        return testResultDao.insertTestResult(testResult.toEntity())
     }
 
     suspend fun insertAuthenticatedTestResult(testResultDto: TestResultDto): Long {
         return testResultDao.insertTestResult(testResultDto.toEntity())
+    }
+
+    suspend fun insert(testRecords: List<TestRecordDto>): List<Long> {
+        return testResultDao.insert(testRecords.map { it.toEntity() })
     }
 
     suspend fun delete(testResultId: Long): Int = testResultDao.delete(testResultId)

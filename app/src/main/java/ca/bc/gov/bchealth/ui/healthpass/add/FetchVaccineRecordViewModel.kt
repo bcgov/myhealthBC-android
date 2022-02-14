@@ -15,7 +15,6 @@ import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.VaccineRecordState
-import ca.bc.gov.repository.vaccine.VaccineDoseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -30,8 +29,7 @@ import javax.inject.Inject
 class FetchVaccineRecordViewModel @Inject constructor(
     private val queueItTokenRepository: QueueItTokenRepository,
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
-    private val patientRepository: PatientRepository,
-    private val vaccineDoseRepository: VaccineDoseRepository
+    private val patientRepository: PatientRepository
 ) : ViewModel() {
 
     companion object {
