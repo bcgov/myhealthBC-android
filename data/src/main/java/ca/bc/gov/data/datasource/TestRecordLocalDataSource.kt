@@ -21,7 +21,6 @@ class TestRecordLocalDataSource @Inject constructor(
     }
 
     suspend fun insertAllAuthenticatedTestRecords(id: Long, recordDtos: List<TestRecordDto>): List<Long> {
-        testRecordsDao.deleteTestRecordById(id)
         return testRecordsDao.insertTestRecords(recordDtos.map { it.toEntity() })
     }
 

@@ -1,7 +1,6 @@
 package ca.bc.gov.common.model.test
 
 import android.os.Parcelable
-import ca.bc.gov.common.model.DataSource
 import kotlinx.parcelize.Parcelize
 import java.time.Instant
 
@@ -22,6 +21,5 @@ data class TestRecordDto(
     val testStatus: String,
     val resultTitle: String,
     val resultDescription: List<String>,
-    val resultLink: String,
-    var dataSource: DataSource = DataSource.PUBLIC_API
+    val resultLink: String
 ) : Parcelable

@@ -70,7 +70,6 @@ class PatientWithVaccineRecordRepository @Inject constructor(
         )
         patientVaccineRecord.vaccineRecordDto.doseDtos.forEach { vaccineDose ->
             vaccineDose.vaccineRecordId = vaccineRecordId
-            vaccineDose.dataSource = DataSource.BCSC
         }
         vaccineDoseRepository.insertAllAuthenticatedVaccineDose(vaccineRecordId, patientVaccineRecord.vaccineRecordDto.doseDtos)
         return patientId
