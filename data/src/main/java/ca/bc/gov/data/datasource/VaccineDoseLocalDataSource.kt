@@ -35,7 +35,6 @@ class VaccineDoseLocalDataSource @Inject constructor(
     }
 
     suspend fun insertAllAuthenticatedVaccineDose(id: Long, doses: List<VaccineDoseDto>): List<Long> {
-        vaccineDoseDao.deleteVaccineDosesByRecordId(id)
         return vaccineDoseDao.insertAllVaccineDose(dose = doses.map { it.toEntity() })
     }
     /**

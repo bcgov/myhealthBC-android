@@ -40,7 +40,6 @@ class PatientWithTestResultRepository @Inject constructor(
         val records = testResultWithRecordsDto.testRecordDtos
         records.forEach { testRecord ->
             testRecord.testResultId = testResultId
-            testRecord.dataSource = DataSource.BCSC
         }
         testRecordRepository.insertAllAuthenticatedTestRecords(testResultId, records)
         return testResultId

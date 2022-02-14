@@ -48,9 +48,9 @@ class ImmunizationRemoteDataSource @Inject constructor(
         if (response.error != null) {
             throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
         }
-        // if (!isResponseValid(response)) {
-        //     throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
-        // }
+        if (!isAuthenticatedVaccineRecordResponseValid(response)) {
+            throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
+        }
         return response
     }
 
@@ -63,6 +63,27 @@ class ImmunizationRemoteDataSource @Inject constructor(
                         lastName.isNullOrBlank() ||
                         phn.isNullOrBlank() ||
                         birthDate.isNullOrBlank() ||
+                        vaccineDate.isNullOrBlank() ||
+                        qrCode.data.isNullOrBlank() ||
+                        qrCode.encoding.isNullOrBlank() ||
+                        qrCode.mediaType.isNullOrBlank() ||
+                        federalVaccineProof.data.isNullOrBlank() ||
+                        federalVaccineProof.mediaType.isNullOrBlank() ||
+                        federalVaccineProof.encoding.isNullOrBlank() -> {
+                        false
+                    }
+                    else -> {
+                        true
+                    }
+                }
+            }
+        return isValid
+    }
+    private fun isAuthenticatedVaccineRecordResponseValid(response: VaccineStatusResponse): Boolean {
+        var isValid = false
+        if (response.payload != null)
+            with(response.payload) {
+                isValid = when {
                         vaccineDate.isNullOrBlank() ||
                         qrCode.data.isNullOrBlank() ||
                         qrCode.encoding.isNullOrBlank() ||
