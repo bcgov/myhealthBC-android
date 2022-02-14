@@ -26,7 +26,7 @@ data class PatientEntity(
     val timeStamp: Instant = Instant.now(),
     @ColumnInfo(name = "patient_order", defaultValue = Long.MAX_VALUE.toString())
     val patientOrder: Long,
-    @ColumnInfo(name = "authentication_status", defaultValue = "")
+    @ColumnInfo(name = "authentication_status", defaultValue = "2")
     val authenticationStatus: AuthenticationStatus = AuthenticationStatus.NON_AUTHENTICATED
 )
 

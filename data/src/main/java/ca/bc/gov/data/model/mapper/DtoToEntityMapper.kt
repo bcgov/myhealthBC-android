@@ -25,8 +25,7 @@ fun VaccineDoseDto.toEntity() = VaccineDoseEntity(
     productName = productName,
     providerName = providerName,
     lotNumber = lotNumber,
-    date = date,
-    dataSource = dataSource
+    date = date
 )
 
 fun VaccineRecordEntity.toEntity() = VaccineRecordEntity(
@@ -68,6 +67,5 @@ fun TestRecordDto.toEntity() = TestRecordEntity(
     testStatus = testStatus,
     resultTitle = resultTitle,
     resultLink = resultLink,
-    resultDescription = resultDescription.joinToString("|"),
-    dataSource = dataSource
+    resultDescription = resultDescription.joinToString("|")
 )
