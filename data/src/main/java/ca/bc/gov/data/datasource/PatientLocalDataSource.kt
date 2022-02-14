@@ -2,6 +2,7 @@ package ca.bc.gov.data.datasource
 
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
+import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.utils.toUniquePatientName
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
@@ -103,4 +104,7 @@ class PatientLocalDataSource @Inject constructor(
 
     suspend fun getPatientWithTestResultAndRecords(testResultId: Long): TestResultWithRecordsAndPatientDto? =
         patientDao.getPatientWithTestResultAndRecords(testResultId)?.toDto()
+
+    suspend fun getPatientWithMedicationRecords(patientId: Long): PatientWithMedicationRecordDto? =
+        patientDao.getPatientWithMedicationRecords(patientId)?.toDto()
 }

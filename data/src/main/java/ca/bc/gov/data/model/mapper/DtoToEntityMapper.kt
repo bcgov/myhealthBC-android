@@ -1,10 +1,12 @@
 package ca.bc.gov.data.model.mapper
 
+import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
+import ca.bc.gov.data.local.entity.MedicationRecordEntity
 import ca.bc.gov.data.local.entity.PatientEntity
 import ca.bc.gov.data.local.entity.TestRecordEntity
 import ca.bc.gov.data.local.entity.TestResultEntity
@@ -58,4 +60,16 @@ fun TestRecordDto.toEntity() = TestRecordEntity(
     resultTitle = resultTitle,
     resultLink = resultLink,
     resultDescription = resultDescription.joinToString("|")
+)
+
+fun MedicationRecordDto.toEntity() = MedicationRecordEntity(
+    id,
+    patientId,
+    practitionerIdentifier,
+    prescriptionStatus,
+    practitionerSurname,
+    dispenseDate,
+    directions,
+    dateEntered,
+    dataSource
 )
