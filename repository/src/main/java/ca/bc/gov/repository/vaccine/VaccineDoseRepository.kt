@@ -11,7 +11,7 @@ class VaccineDoseRepository @Inject constructor(
     private val localDataSource: VaccineDoseLocalDataSource
 ) {
 
-    suspend fun insertAllVaccineDose(id: Long, doses: List<VaccineDoseDto>) =
+    suspend fun insertAllVaccineDose(id: Long, doses: List<VaccineDoseDto>): List<Long> =
         localDataSource.insertAllVaccineDoses(id, doses)
 
     suspend fun insertVaccineDose(dose: VaccineDoseDto): Long =
@@ -23,6 +23,6 @@ class VaccineDoseRepository @Inject constructor(
     suspend fun getVaccineDoses(vaccineRecordId: Long): List<VaccineDoseDto> =
         localDataSource.getVaccineDoses(vaccineRecordId)
 
-    suspend fun insertAllAuthenticatedVaccineDose(id: Long, doses: List<VaccineDoseDto>): List<Long> =
-        localDataSource.insertAllAuthenticatedVaccineDose(id, doses)
+    suspend fun insertAllAuthenticatedVaccineDose(doses: List<VaccineDoseDto>): List<Long> =
+        localDataSource.insertAllAuthenticatedVaccineDose(doses)
 }

@@ -84,7 +84,7 @@ class ImmunizationRemoteDataSource @Inject constructor(
         if (response.payload != null)
             with(response.payload) {
                 isValid = when {
-                        vaccineDate.isNullOrBlank() ||
+                    vaccineDate.isNullOrBlank() ||
                         qrCode.data.isNullOrBlank() ||
                         qrCode.encoding.isNullOrBlank() ||
                         qrCode.mediaType.isNullOrBlank() ||
