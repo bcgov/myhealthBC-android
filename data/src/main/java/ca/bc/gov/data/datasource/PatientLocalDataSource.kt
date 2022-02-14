@@ -41,23 +41,23 @@ class PatientLocalDataSource @Inject constructor(
         }
 
     /**
-     * Inserts [patientDto] records to the database
-     * @param patientDto
+     * Inserts [patient] records to the database
+     * @param patient
      * @return if success returns patientId (primary key) else returns -1L
      */
-    suspend fun insertPatient(patientDto: PatientDto): Long {
-        val patientList = patientDao.getPatientByDob(patientDto.dateOfBirth)
+    suspend fun insertPatient(patient: PatientDto): Long {
+        val patientList = patientDao.getPatientByDob(patient.dateOfBirth)
         if (patientList.isNullOrEmpty()) {
-            return patientDao.insertPatient(patientDto.toEntity())
+            return patientDao.insertPatient(patient.toEntity())
         } else {
             for (i in patientList.indices) {
                 if (patientList[i].fullName.toUniquePatientName()
-                        .equals(patientDto.fullName.toUniquePatientName(), true)
+                        .equals(patient.fullName.toUniquePatientName(), true)
                 ) {
                     return patientList[i].id
                 }
             }
-            return patientDao.insertPatient(patientDto.toEntity())
+            return patientDao.insertPatient(patient.toEntity())
         }
     }
 
@@ -79,11 +79,11 @@ class PatientLocalDataSource @Inject constructor(
 
     /**
      * Update [patientDao] record in database
-     * @param patientDto
+     * @param patient
      * @return patientId if success else -1L
      */
-    suspend fun update(patientDto: PatientDto): Long {
-        return insertPatient(patientDto)
+    suspend fun update(patient: PatientDto): Long {
+        return insert(patient)
     }
 
     suspend fun updatePatientsOrder(patientOrderUpdates: List<PatientOrderUpdate>) =

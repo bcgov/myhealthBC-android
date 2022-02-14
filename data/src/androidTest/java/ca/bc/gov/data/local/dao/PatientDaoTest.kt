@@ -91,11 +91,11 @@ class PatientDaoTest : BaseDataBaseTest() {
         // When
         patientDao.insert(patient1)
         patientDao.insert(patient2)
-        vaccineRecordDao.insertVaccineRecord(vaccineRecord1)
-        vaccineRecordDao.insertVaccineRecord(vaccineRecord2)
-        testResultDao.insertTestResult(testResult1)
-        testResultDao.insertTestResult(testResult2)
-        testResultDao.insertTestResult(testResult3)
+        vaccineRecordDao.insert(vaccineRecord1)
+        vaccineRecordDao.insert(vaccineRecord2)
+        testResultDao.insert(testResult1)
+        testResultDao.insert(testResult2)
+        testResultDao.insert(testResult3)
 
         // Then
         val result = patientDao.getPatientWithHealthRecordCountFlow().first()

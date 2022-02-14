@@ -3,7 +3,6 @@ package ca.bc.gov.repository
 import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.repository.patient.PatientRepository
-import ca.bc.gov.repository.testrecord.TestRecordRepository
 import ca.bc.gov.repository.testrecord.TestResultRepository
 import javax.inject.Inject
 
@@ -12,8 +11,7 @@ import javax.inject.Inject
  */
 class PatientWithTestResultRepository @Inject constructor(
     private val patientRepository: PatientRepository,
-    private val testResultRepository: TestResultRepository,
-    private val testRecordRepository: TestRecordRepository
+    private val testResultRepository: TestResultRepository
 ) {
 
     suspend fun insertTestResult(patientWithTestResultsAndRecords: PatientWithTestResultsAndRecordsDto): Long {
@@ -28,7 +26,7 @@ class PatientWithTestResultRepository @Inject constructor(
             records.forEach { testRecord ->
                 testRecord.testResultId = testResultId
             }
-            testRecordRepository.insertAllTestRecords(records)
+            testResultRepository.insertAllTestRecords(records)
         }
         return testResultId
     }

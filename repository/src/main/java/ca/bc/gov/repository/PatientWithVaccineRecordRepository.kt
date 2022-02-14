@@ -1,9 +1,8 @@
 package ca.bc.gov.repository
 
 import ca.bc.gov.common.model.DataSource
-import ca.bc.gov.repository.model.PatientVaccineRecord
+nimport ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.patient.PatientRepository
-import ca.bc.gov.repository.vaccine.VaccineDoseRepository
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import javax.inject.Inject
 
@@ -12,8 +11,7 @@ import javax.inject.Inject
  */
 class PatientWithVaccineRecordRepository @Inject constructor(
     private val patientRepository: PatientRepository,
-    private val vaccineRecordRepository: VaccineRecordRepository,
-    private val vaccineDoseRepository: VaccineDoseRepository
+    private val vaccineRecordRepository: VaccineRecordRepository
 ) {
 
     /**
@@ -50,7 +48,7 @@ class PatientWithVaccineRecordRepository @Inject constructor(
         patientVaccineRecord.vaccineRecordDto.doseDtos.forEach { vaccineDose ->
             vaccineDose.vaccineRecordId = vaccineRecordId
         }
-        vaccineDoseRepository.insertAllAuthenticatedVaccineDose(patientVaccineRecord.vaccineRecordDto.doseDtos)
+        vaccineRecordRepository.insertAllAuthenticatedVaccineDose(patientVaccineRecord.vaccineRecordDto.doseDtos)
         return patientId
     }
 
@@ -58,7 +56,7 @@ class PatientWithVaccineRecordRepository @Inject constructor(
         val patientId =
             patientRepository.update(patientVaccineRecord.patientDto)
         val vaccineRecordId = vaccineRecordRepository.getVaccineRecordId(patientId) ?: return -1L
-        vaccineDoseRepository.deleteVaccineDose(vaccineRecordId)
+        vaccineRecordRepository.deleteVaccineDose(vaccineRecordId)
         val vaccineRecord = patientVaccineRecord.vaccineRecordDto
         vaccineRecord.patientId = patientId
         vaccineRecord.id = vaccineRecordId
@@ -70,7 +68,7 @@ class PatientWithVaccineRecordRepository @Inject constructor(
             vaccineDose.vaccineRecordId = vaccineRecordId
         }
 
-        vaccineDoseRepository.insertAllVaccineDose(
+        vaccineRecordRepository.insertAllVaccineDose(
             vaccineRecordId,
             patientVaccineRecord.vaccineRecordDto.doseDtos
         )

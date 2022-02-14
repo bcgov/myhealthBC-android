@@ -1,8 +1,8 @@
 package ca.bc.gov.repository.vaccine
 
+import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.data.datasource.VaccineRecordLocalDataSource
-import ca.bc.gov.repository.model.mapper.toVaccineRecord
 import javax.inject.Inject
 
 /**
@@ -13,10 +13,10 @@ class VaccineRecordRepository @Inject constructor(
 ) {
 
     suspend fun insertVaccineRecord(vaccineRecordDto: VaccineRecordDto): Long =
-        vaccineRecordLocalDataSource.insertVaccineRecord(vaccineRecordDto)
+        vaccineRecordLocalDataSource.insert(vaccineRecordDto)
 
     suspend fun updateVaccineRecord(vaccineRecordDtoDto: VaccineRecordDto): Int =
-        vaccineRecordLocalDataSource.updateVaccineRecord(vaccineRecordDtoDto)
+        vaccineRecordLocalDataSource.update(vaccineRecordDtoDto)
 
     suspend fun getVaccineRecordId(patientId: Long): Long? =
         vaccineRecordLocalDataSource.getVaccineRecordId(patientId)
@@ -26,4 +26,13 @@ class VaccineRecordRepository @Inject constructor(
 
     suspend fun insertAuthenticatedVaccineRecord(vaccineRecordDto: VaccineRecordDto): Long =
         vaccineRecordLocalDataSource.insertAuthenticatedVaccineRecord(vaccineRecordDto)
+
+    suspend fun insertAllVaccineDose(doses: List<VaccineDoseDto>): List<Long> =
+        vaccineRecordLocalDataSource.insert(doses)
+
+    suspend fun insertVaccineDose(dose: VaccineDoseDto): Long =
+        vaccineRecordLocalDataSource.insert(dose)
+
+    suspend fun deleteVaccineDose(vaccineRecordId: Long): Int =
+        vaccineRecordLocalDataSource.deleteVaccineDose(vaccineRecordId)
 }

@@ -44,7 +44,7 @@ class PatientRepository @Inject constructor(
         }
 
     suspend fun insert(patientDto: PatientDto): Long =
-        patientLocalDataSource.insertPatient(patientDto)
+        patientLocalDataSource.insert(patientDto)
 
     suspend fun update(patientDto: PatientDto): Long =
         patientLocalDataSource.update(patientDto)
