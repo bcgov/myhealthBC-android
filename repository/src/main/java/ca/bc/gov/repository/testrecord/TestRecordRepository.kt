@@ -14,8 +14,8 @@ class TestRecordRepository @Inject constructor(
     suspend fun insertAllTestRecords(id: Long, recordDtos: List<TestRecordDto>) =
         localDataSource.insertAllTestRecords(id, recordDtos)
 
-    suspend fun insertAllAuthenticatedTestRecords(id: Long, recordDtos: List<TestRecordDto>): List<Long> =
-        localDataSource.insertAllAuthenticatedTestRecords(id, recordDtos)
+    suspend fun insertAllAuthenticatedTestRecords(recordDtos: List<TestRecordDto>): List<Long> =
+        localDataSource.insertAllAuthenticatedTestRecords(recordDtos)
 
     suspend fun getTestRecords(testResultId: Long): List<TestRecordDto> =
         localDataSource.getTestRecords(testResultId)

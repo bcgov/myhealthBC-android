@@ -41,7 +41,7 @@ class PatientWithTestResultRepository @Inject constructor(
         records.forEach { testRecord ->
             testRecord.testResultId = testResultId
         }
-        testRecordRepository.insertAllAuthenticatedTestRecords(testResultId, records)
+        testRecordRepository.insertAllAuthenticatedTestRecords(records)
         return testResultId
     }
 

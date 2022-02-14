@@ -71,7 +71,7 @@ class PatientWithVaccineRecordRepository @Inject constructor(
         patientVaccineRecord.vaccineRecordDto.doseDtos.forEach { vaccineDose ->
             vaccineDose.vaccineRecordId = vaccineRecordId
         }
-        vaccineDoseRepository.insertAllAuthenticatedVaccineDose(vaccineRecordId, patientVaccineRecord.vaccineRecordDto.doseDtos)
+        vaccineDoseRepository.insertAllAuthenticatedVaccineDose(patientVaccineRecord.vaccineRecordDto.doseDtos)
         return patientId
     }
 
