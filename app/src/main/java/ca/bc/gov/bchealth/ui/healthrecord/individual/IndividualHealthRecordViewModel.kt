@@ -43,12 +43,15 @@ class IndividualHealthRecordViewModel @Inject constructor(
             patientRepository.getPatientWithTestResultsAndRecords(patientId)
 
         val vaccineRecords = listOfNotNull(patientWithVaccineRecords.vaccineWithDoses)
+
+        val patientAndMedicationRecords = patientRepository.getPatientWithMedicationRecords(patientId)
         _uiState.tryEmit(
             IndividualHealthRecordsUiState().copy(
                 onLoading = false,
                 onTestRecords = testResultWithRecords.testResultWithRecords
                     .map { it.toUiModel() },
-                onVaccineRecord = vaccineRecords.map { it.toUiModel() }
+                onVaccineRecord = vaccineRecords.map { it.toUiModel() },
+                onMedicationRecords = patientAndMedicationRecords.medicationRecord.map { it.toUiModel() }
             )
         )
     }
@@ -120,12 +123,14 @@ data class IndividualHealthRecordsUiState(
     val queItUrl: String? = null,
     val onVaccineRecord: List<HealthRecordItem> = emptyList(),
     val onTestRecords: List<HealthRecordItem> = emptyList(),
+    val onMedicationRecords: List<HealthRecordItem> = emptyList(),
     val updatedTestResultId: Long = -1L
 )
 
 data class HealthRecordItem(
     val patientId: Long,
     val testResultId: Long = -1L,
+    val medicationRecordIs: Long = -1L,
     val icon: Int,
     val title: Int,
     val description: Int,
@@ -140,5 +145,6 @@ data class HiddenRecordItem(
 
 enum class HealthRecordType {
     VACCINE_RECORD,
-    COVID_TEST_RECORD
+    COVID_TEST_RECORD,
+    MEDICATION_RECORD
 }

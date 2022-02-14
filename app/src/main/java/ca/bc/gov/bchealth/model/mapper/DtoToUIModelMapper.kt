@@ -8,6 +8,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.PatientHealthRecord
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.common.model.ImmunizationStatus
+import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
@@ -57,12 +58,28 @@ fun VaccineWithDosesDto.toUiModel(): HealthRecordItem {
     return HealthRecordItem(
         patientId = vaccine.patientId,
         testResultId = -1L,
+        medicationRecordIs = -1L,
         icon = R.drawable.ic_health_record_vaccine,
         title = R.string.covid_19_vaccination,
         description = passState.status,
         testOutcome = null,
         date = date.toDate(),
         HealthRecordType.VACCINE_RECORD,
+    )
+}
+
+fun MedicationRecordDto.toUiModel(): HealthRecordItem {
+
+    return HealthRecordItem(
+        patientId = patientId,
+        testResultId = -1L,
+        medicationRecordIs = id,
+        title = R.string.statins,
+        icon = R.drawable.ic_health_records_members_list,
+        description = -1,
+        testOutcome = null,
+        date = dispenseDate.toDate(),
+        healthRecordType = HealthRecordType.MEDICATION_RECORD
     )
 }
 
@@ -79,6 +96,7 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
     return HealthRecordItem(
         patientId = testResult.patientId,
         testResultId = testResult.id,
+        medicationRecordIs = -1L,
         icon = R.drawable.ic_health_record_covid_test,
         title = R.string.covid_19_test_result,
         description = 0,
