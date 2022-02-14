@@ -141,6 +141,7 @@
     <string name="dot_required">Date of Test is required</string>
     <string name="covid_19_test_result">COVID-19 test result</string>
     <string name="covid_19_vaccination">COVID-19 vaccination</string>
+    <string name="statins">Statins</string>
     <string name="delete">Delete</string>
     <string name="instructions_details">
         You need to self-isolate now.\n
