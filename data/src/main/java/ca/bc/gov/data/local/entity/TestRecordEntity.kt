@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import ca.bc.gov.common.model.DataSource
 import java.time.Instant
 
 /**
@@ -46,7 +45,5 @@ data class TestRecordEntity(
     @ColumnInfo(name = "result_desc")
     val resultDescription: String,
     @ColumnInfo(name = "result_link")
-    val resultLink: String,
-    @ColumnInfo(name = "data_source", defaultValue = "")
-    var dataSource: DataSource = DataSource.PUBLIC_API
+    val resultLink: String
 )

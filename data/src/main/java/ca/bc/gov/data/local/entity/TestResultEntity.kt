@@ -31,6 +31,6 @@ data class TestResultEntity(
     val patientId: Long,
     @ColumnInfo(name = "collection_date")
     val collectionDate: Instant,
-    @ColumnInfo(name = "data_source", defaultValue = "")
+    @ColumnInfo(name = "data_source", defaultValue = "2")
     var dataSource: DataSource = DataSource.PUBLIC_API
 )
