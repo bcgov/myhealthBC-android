@@ -12,7 +12,7 @@ import java.time.Instant
 data class TestRecordDto(
     var id: String,
     var testResultId: Long = 0,
-    val labName: String,
+    var labName: String,
     val collectionDateTime: Instant,
     val resultDateTime: Instant,
     val testName: String,

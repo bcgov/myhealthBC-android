@@ -2,6 +2,7 @@ package ca.bc.gov.repository
 
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.relation.PatientWithVaccineRecordDto
 import ca.bc.gov.data.datasource.PatientWithVaccineRecordLocalDataSource
 import ca.bc.gov.data.local.entity.PatientOrderUpdate
@@ -57,8 +58,20 @@ class PatientWithVaccineRecordRepository @Inject constructor(
         patientVaccineRecord.vaccineRecordDto.doseDtos.forEach { vaccineDose ->
             vaccineDose.vaccineRecordId = vaccineRecordId
         }
-        val dosesId =
-            vaccineDoseRepository.insertAllVaccineDose(patientVaccineRecord.vaccineRecordDto.doseDtos)
+        vaccineDoseRepository.insertAllVaccineDose(vaccineRecordId, patientVaccineRecord.vaccineRecordDto.doseDtos)
+        return patientId
+    }
+
+    suspend fun insertAuthenticatedPatientsVaccineRecord(patientId: Long, patientVaccineRecord: PatientVaccineRecord): Long {
+        patientVaccineRecord.vaccineRecordDto.patientId = patientId
+        patientVaccineRecord.vaccineRecordDto.mode = DataSource.BCSC
+        val vaccineRecordId = vaccineRecordRepository.insertAuthenticatedVaccineRecord(
+            patientVaccineRecord.vaccineRecordDto
+        )
+        patientVaccineRecord.vaccineRecordDto.doseDtos.forEach { vaccineDose ->
+            vaccineDose.vaccineRecordId = vaccineRecordId
+        }
+        vaccineDoseRepository.insertAllAuthenticatedVaccineDose(patientVaccineRecord.vaccineRecordDto.doseDtos)
         return patientId
     }
 
@@ -77,8 +90,8 @@ class PatientWithVaccineRecordRepository @Inject constructor(
         patientVaccineRecord.vaccineRecordDto.doseDtos.forEach { vaccineDose ->
             vaccineDose.vaccineRecordId = vaccineRecordId
         }
-        val vaccineDoseIds =
-            vaccineDoseRepository.insertAllVaccineDose(patientVaccineRecord.vaccineRecordDto.doseDtos)
+
+        vaccineDoseRepository.insertAllVaccineDose(vaccineRecordId, patientVaccineRecord.vaccineRecordDto.doseDtos)
         return patientId
     }
 

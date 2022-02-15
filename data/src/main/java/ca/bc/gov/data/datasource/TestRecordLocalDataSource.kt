@@ -13,7 +13,14 @@ class TestRecordLocalDataSource @Inject constructor(
     private val testRecordsDao: TestRecordsDao
 ) {
 
-    suspend fun insertAllTestRecords(recordDtos: List<TestRecordDto>): List<Long> {
+    suspend fun insertAllTestRecords(id: Long, recordDtos: List<TestRecordDto>) {
+        val records = testRecordsDao.getTestRecords(id)
+        if (records.isEmpty()) {
+            testRecordsDao.insertTestRecords(recordDtos.map { it.toEntity() })
+        }
+    }
+
+    suspend fun insertAllAuthenticatedTestRecords(recordDtos: List<TestRecordDto>): List<Long> {
         return testRecordsDao.insertTestRecords(recordDtos.map { it.toEntity() })
     }
 

@@ -1,6 +1,7 @@
 package ca.bc.gov.common.model.patient
 
 import android.os.Parcelable
+import ca.bc.gov.common.model.AuthenticationStatus
 import kotlinx.parcelize.Parcelize
 import java.time.Instant
 
@@ -13,5 +14,6 @@ data class PatientDto(
     val fullName: String,
     val dateOfBirth: Instant,
     var phn: String? = null,
-    val patientOrder: Long = Long.MAX_VALUE
+    val patientOrder: Long = Long.MAX_VALUE,
+    var authenticationStatus: AuthenticationStatus = AuthenticationStatus.NON_AUTHENTICATED
 ) : Parcelable

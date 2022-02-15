@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import ca.bc.gov.common.model.AuthenticationStatus
 import java.time.Instant
 
 /**
@@ -24,7 +25,9 @@ data class PatientEntity(
     @ColumnInfo(name = "time_stamp")
     val timeStamp: Instant = Instant.now(),
     @ColumnInfo(name = "patient_order", defaultValue = Long.MAX_VALUE.toString())
-    val patientOrder: Long
+    val patientOrder: Long,
+    @ColumnInfo(name = "authentication_status", defaultValue = "2")
+    val authenticationStatus: AuthenticationStatus = AuthenticationStatus.NON_AUTHENTICATED
 )
 
 data class PatientOrderUpdate(

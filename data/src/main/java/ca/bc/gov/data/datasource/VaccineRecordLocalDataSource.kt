@@ -18,11 +18,16 @@ class VaccineRecordLocalDataSource @Inject constructor(
      * @return vaccineId of inserted record or -1L in case of error.
      */
     suspend fun insertVaccineRecord(vaccineRecordDto: VaccineRecordDto): Long {
-        var vaccineRecordId = vaccineRecordDao.insertVaccineRecord(vaccineRecordDto.toEntity())
-        if (vaccineRecordId == -1L) {
-            return vaccineRecordDao.getVaccineRecordId(vaccineRecordDto.patientId) ?: -1L
+        val vaccineRecordId = vaccineRecordDao.getVaccineRecordId(vaccineRecordDto.patientId) ?: -1L
+        return if (vaccineRecordId != -1L) {
+            vaccineRecordId
+        } else {
+            vaccineRecordDao.insertVaccineRecord(vaccineRecordDto.toEntity())
         }
-        return vaccineRecordId
+    }
+
+    suspend fun insertAuthenticatedVaccineRecord(vaccineRecordDto: VaccineRecordDto): Long {
+        return vaccineRecordDao.insertVaccineRecord(vaccineRecordDto.toEntity())
     }
 
     /**

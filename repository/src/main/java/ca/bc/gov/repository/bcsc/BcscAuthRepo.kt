@@ -119,7 +119,7 @@ class BcscAuthRepo(
         setAuthState(null)
     }
 
-    suspend fun getHdId(): String {
+    suspend fun getHdId(): Pair<String, String> {
         val authState = getAuthState() ?: throw MyHealthException(AUTH_ERROR, "Login again!")
         val accessToken = awaitPerformActionWithFreshTokens(applicationContext, authState)
         val json = decodeAccessToken(accessToken)
@@ -127,7 +127,7 @@ class BcscAuthRepo(
         if (hdId.isEmpty())
             throw MyHealthException(AUTH_ERROR, "Invalid access token!")
         else
-            return hdId
+            return Pair(BEARER.plus(accessToken), hdId)
     }
 
     suspend fun getUserName(): String {
@@ -137,6 +137,7 @@ class BcscAuthRepo(
             val json = authState.accessToken?.let { decodeAccessToken(it) }
             userName = json?.get("name").toString()
         } catch (e: java.lang.Exception) {
+            // NA
         }
         return userName
     }
@@ -162,5 +163,6 @@ class BcscAuthRepo(
         private val params = mapOf("kc_idp_hint" to "bcsc")
         private const val SCOPE = "openid email profile"
         private const val PROMPT = "login"
+        private const val BEARER = "Bearer "
     }
 }

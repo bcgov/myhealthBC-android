@@ -41,6 +41,19 @@ class ImmunizationRemoteDataSource @Inject constructor(
         return response
     }
 
+    suspend fun getAuthenticatedVaccineStatus(token: String, hdid: String): VaccineStatusResponse {
+        val response = safeCall { immunizationApi.getAuthenticatedVaccineStatus(token, hdid) }
+            ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid response")
+
+        if (response.error != null) {
+            throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
+        }
+        if (!isAuthenticatedVaccineRecordResponseValid(response)) {
+            throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
+        }
+        return response
+    }
+
     private fun isResponseValid(response: VaccineStatusResponse): Boolean {
         var isValid = false
         if (response.payload != null)
@@ -51,6 +64,27 @@ class ImmunizationRemoteDataSource @Inject constructor(
                         phn.isNullOrBlank() ||
                         birthDate.isNullOrBlank() ||
                         vaccineDate.isNullOrBlank() ||
+                        qrCode.data.isNullOrBlank() ||
+                        qrCode.encoding.isNullOrBlank() ||
+                        qrCode.mediaType.isNullOrBlank() ||
+                        federalVaccineProof.data.isNullOrBlank() ||
+                        federalVaccineProof.mediaType.isNullOrBlank() ||
+                        federalVaccineProof.encoding.isNullOrBlank() -> {
+                        false
+                    }
+                    else -> {
+                        true
+                    }
+                }
+            }
+        return isValid
+    }
+    private fun isAuthenticatedVaccineRecordResponseValid(response: VaccineStatusResponse): Boolean {
+        var isValid = false
+        if (response.payload != null)
+            with(response.payload) {
+                isValid = when {
+                    vaccineDate.isNullOrBlank() ||
                         qrCode.data.isNullOrBlank() ||
                         qrCode.encoding.isNullOrBlank() ||
                         qrCode.mediaType.isNullOrBlank() ||

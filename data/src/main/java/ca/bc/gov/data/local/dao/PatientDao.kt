@@ -22,6 +22,9 @@ interface PatientDao {
     @Query("SELECT id FROM patient WHERE full_name = :fullName AND dob = :dateOdBirth")
     suspend fun getPatientId(fullName: String, dateOdBirth: Instant): Long?
 
+    @Query("SELECT * FROM patient WHERE dob = :dateOdBirth")
+    suspend fun getPatientByDob(dateOdBirth: Instant): List<PatientEntity>?
+
     @Query("SELECT * FROM patient where id = :patientId")
     suspend fun getPatient(patientId: Long): PatientEntity
 
@@ -36,4 +39,7 @@ interface PatientDao {
     """
     )
     fun getPatientWithRecordCountFlow(): Flow<List<PatientWithHealthRecordCount>>
+
+    @Query("DELETE FROM patient WHERE id = :patientId")
+    suspend fun deletePatientById(patientId: Long): Int
 }

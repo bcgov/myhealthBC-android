@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import ca.bc.gov.common.model.DataSource
 import java.time.Instant
 
 /**
@@ -29,5 +30,7 @@ data class TestResultEntity(
     @ColumnInfo(name = "patient_id")
     val patientId: Long,
     @ColumnInfo(name = "collection_date")
-    val collectionDate: Instant
+    val collectionDate: Instant,
+    @ColumnInfo(name = "data_source", defaultValue = "2")
+    var dataSource: DataSource = DataSource.PUBLIC_API
 )

@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.login
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BcscAuthViewModel @Inject constructor(
     private val bcscAuthRepo: BcscAuthRepo,
+    private val queueItTokenRepository: QueueItTokenRepository
 ) : ViewModel() {
 
     private val _authStatus = MutableStateFlow(AuthStatus())
@@ -61,7 +63,8 @@ class BcscAuthViewModel @Inject constructor(
             _authStatus.update {
                 it.copy(
                     showLoading = false,
-                    isLoggedIn = isLoggedSuccess
+                    isLoggedIn = isLoggedSuccess,
+                    startWorker = true
                 )
             }
         } catch (e: Exception) {
@@ -141,7 +144,17 @@ class BcscAuthViewModel @Inject constructor(
                 isLoggedIn = false,
                 authRequestIntent = null,
                 isError = false,
-                userName = ""
+                userName = "",
+                startWorker = false
+            )
+        }
+    }
+
+    fun setQueItToken(token: String?) = viewModelScope.launch {
+        queueItTokenRepository.setQueItToken(token)
+        _authStatus.update {
+            it.copy(
+                queItTokenUpdated = true
             )
         }
     }
@@ -152,5 +165,7 @@ data class AuthStatus(
     val isLoggedIn: Boolean = false,
     val authRequestIntent: Intent? = null,
     val isError: Boolean = false,
-    val userName: String = ""
+    val userName: String = "",
+    val startWorker: Boolean = false,
+    val queItTokenUpdated: Boolean = false
 )

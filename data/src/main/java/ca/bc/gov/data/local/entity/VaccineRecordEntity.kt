@@ -35,5 +35,5 @@ data class VaccineRecordEntity(
     @ColumnInfo(name = "federal_pass")
     val federalPass: String?,
     @ColumnInfo(name = "data_source")
-    val dataSource: DataSource
+    val dataSource: DataSource = DataSource.PUBLIC_API
 )

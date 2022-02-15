@@ -1,5 +1,6 @@
 package ca.bc.gov.repository
 
+import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.data.LaboratoryRemoteDataSource
 import ca.bc.gov.data.remote.model.request.CovidTestRequest
 import javax.inject.Inject
@@ -19,5 +20,9 @@ class FetchTestResultRepository @Inject constructor(
             )
         )
         return patientWithTestResultRepository.insertTestResult(response)
+    }
+
+    suspend fun fetchAuthenticatedTestRecord(token: String, hdid: String): List<TestResultWithRecordsDto> {
+        return laboratoryRemoteDataSource.getAuthenticatedCovidTests(token, hdid)
     }
 }
