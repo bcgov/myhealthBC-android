@@ -22,12 +22,16 @@ class TestResultLocalDataSource @Inject constructor(
         if (testResultId != -1L) {
             return testResultId
         }
-        return testResultDao.insertTestResult(testResult.toEntity())
+        return testResultDao.insert(testResult.toEntity())
     }
 
     suspend fun insertAuthenticatedTestResult(testResultDto: TestResultDto): Long {
-        return testResultDao.insertTestResult(testResultDto.toEntity())
+        return testResultDao.insert(testResultDto.toEntity())
     }
+    suspend fun insertAllAuthenticatedTestRecords(recordDtos: List<TestRecordDto>): List<Long> {
+        return testResultDao.insertTestRecords(recordDtos.map { it.toEntity() })
+    }
+
 
     suspend fun insert(testRecords: List<TestRecordDto>): List<Long> {
         return testResultDao.insert(testRecords.map { it.toEntity() })

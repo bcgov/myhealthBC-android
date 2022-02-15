@@ -23,6 +23,9 @@ interface TestResultDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(testRecords: List<TestRecordEntity>): List<Long>
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertTestRecords(testRecords: List<TestRecordEntity>): List<Long>
+
     @Query("DELETE FROM test_result WHERE id = :testResultId")
     suspend fun delete(testResultId: Long): Int
 

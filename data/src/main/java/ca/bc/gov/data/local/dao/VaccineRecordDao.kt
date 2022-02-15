@@ -40,4 +40,7 @@ interface VaccineRecordDao {
 
     @Query("SELECT id from vaccine_record where patient_id = :patientId")
     suspend fun getVaccineRecordId(patientId: Long): Long?
+
+    @Query("SELECT * FROM vaccine_dose WHERE vaccine_record_id = :vaccineRecordId")
+    suspend fun getVaccineDoses(vaccineRecordId: Long): List<VaccineDoseEntity>
 }
