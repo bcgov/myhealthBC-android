@@ -2,6 +2,7 @@ package ca.bc.gov.repository
 
 import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
+import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.testrecord.TestResultRepository
 import javax.inject.Inject
@@ -32,15 +33,15 @@ class PatientWithTestResultRepository @Inject constructor(
     }
 
     suspend fun insertAuthenticatedTestResult(patientId: Long, testResultWithRecordsDto: TestResultWithRecordsDto): Long {
-        val testResult = testResultWithRecordsDto.testResultDto
+        val testResult = testResultWithRecordsDto.testResult
         testResult.patientId = patientId
         testResult.dataSource = DataSource.BCSC
         val testResultId = testResultRepository.insertAuthenticatedTestResult(testResult)
-        val records = testResultWithRecordsDto.testRecordDtos
+        val records = testResultWithRecordsDto.testRecords
         records.forEach { testRecord ->
             testRecord.testResultId = testResultId
         }
-        testRecordRepository.insertAllAuthenticatedTestRecords(records)
+        testResultRepository.insertAllAuthenticatedTestRecords(records)
         return testResultId
     }
 }

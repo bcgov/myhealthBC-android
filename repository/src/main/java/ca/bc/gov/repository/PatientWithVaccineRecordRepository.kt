@@ -1,7 +1,7 @@
 package ca.bc.gov.repository
 
 import ca.bc.gov.common.model.DataSource
-nimport ca.bc.gov.repository.model.PatientVaccineRecord
+import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import javax.inject.Inject
@@ -29,8 +29,7 @@ class PatientWithVaccineRecordRepository @Inject constructor(
         patientVaccineRecord.vaccineRecordDto.doseDtos.forEach { vaccineDose ->
             vaccineDose.vaccineRecordId = vaccineRecordId
         }
-        vaccineDoseRepository.insertAllVaccineDose(
-            vaccineRecordId,
+        vaccineRecordRepository.insertAllVaccineDose(
             patientVaccineRecord.vaccineRecordDto.doseDtos
         )
         return patientId

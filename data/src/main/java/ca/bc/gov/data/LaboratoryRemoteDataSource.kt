@@ -5,11 +5,9 @@ import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
 import ca.bc.gov.common.exceptions.MyHealthNetworkException
 import ca.bc.gov.common.model.patient.PatientDto
-import ca.bc.gov.common.model.relation.PatientTestResultDto
-import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
-import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
+import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
 import ca.bc.gov.common.utils.formatInPattern
 import ca.bc.gov.common.utils.toDate

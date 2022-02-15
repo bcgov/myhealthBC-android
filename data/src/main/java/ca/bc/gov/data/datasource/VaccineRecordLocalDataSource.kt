@@ -24,12 +24,16 @@ class VaccineRecordLocalDataSource @Inject constructor(
         return if (vaccineRecordId != -1L) {
             vaccineRecordId
         } else {
-            vaccineRecordDao.insertVaccineRecord(vaccineRecord.toEntity())
+            vaccineRecordDao.insert(vaccineRecord.toEntity())
         }
     }
 
     suspend fun insertAuthenticatedVaccineRecord(vaccineRecordDto: VaccineRecordDto): Long {
-        return vaccineRecordDao.insertVaccineRecord(vaccineRecordDto.toEntity())
+        return vaccineRecordDao.insert(vaccineRecordDto.toEntity())
+    }
+
+    suspend fun insertAllAuthenticatedVaccineDose(doses: List<VaccineDoseDto>): List<Long> {
+        return vaccineRecordDao.insert(dose = doses.map { it.toEntity() })
     }
 
     /**
@@ -48,6 +52,15 @@ class VaccineRecordLocalDataSource @Inject constructor(
     suspend fun insert(doses: List<VaccineDoseDto>): List<Long> {
         return vaccineRecordDao.insert(dose = doses.map { it.toEntity() })
     }
+
+    suspend fun insertAllVaccineDoses(id: Long, doses: List<VaccineDoseDto>): List<Long> {
+        val vaccineDoses = vaccineRecordDao.getVaccineDoses(id)
+        if (vaccineDoses.isEmpty()) {
+            return vaccineRecordDao.insert(dose = doses.map { it.toEntity() })
+        }
+        return vaccineDoses.map { id }
+    }
+
 
     /**
      * Update [vaccineRecord] in to database

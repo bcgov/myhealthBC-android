@@ -27,8 +27,14 @@ class VaccineRecordRepository @Inject constructor(
     suspend fun insertAuthenticatedVaccineRecord(vaccineRecordDto: VaccineRecordDto): Long =
         vaccineRecordLocalDataSource.insertAuthenticatedVaccineRecord(vaccineRecordDto)
 
+    suspend fun insertAllAuthenticatedVaccineDose(doses: List<VaccineDoseDto>): List<Long> =
+        vaccineRecordLocalDataSource.insertAllAuthenticatedVaccineDose(doses)
+
     suspend fun insertAllVaccineDose(doses: List<VaccineDoseDto>): List<Long> =
         vaccineRecordLocalDataSource.insert(doses)
+
+    suspend fun insertAllVaccineDose(id: Long, doses: List<VaccineDoseDto>): List<Long> =
+        vaccineRecordLocalDataSource.insertAllVaccineDoses(id, doses)
 
     suspend fun insertVaccineDose(dose: VaccineDoseDto): Long =
         vaccineRecordLocalDataSource.insert(dose)
