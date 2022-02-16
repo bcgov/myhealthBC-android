@@ -8,5 +8,5 @@ import ca.bc.gov.common.model.patient.PatientDto
  */
 data class PatientWithMedicationRecordDto(
     val patient: PatientDto,
-    val medicationRecord: List<MedicationRecordDto>
+    val medicationRecord: List<MedicationWithSummaryAndPharmacyDto>
 )

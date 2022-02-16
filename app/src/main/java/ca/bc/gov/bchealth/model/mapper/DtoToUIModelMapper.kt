@@ -8,8 +8,8 @@ import ca.bc.gov.bchealth.ui.healthrecord.PatientHealthRecord
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.common.model.ImmunizationStatus
-import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
+import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
@@ -68,17 +68,17 @@ fun VaccineWithDosesDto.toUiModel(): HealthRecordItem {
     )
 }
 
-fun MedicationRecordDto.toUiModel(): HealthRecordItem {
+fun MedicationWithSummaryAndPharmacyDto.toUiModel(): HealthRecordItem {
 
     return HealthRecordItem(
-        patientId = patientId,
+        patientId = medicationRecord.patientId,
         testResultId = -1L,
-        medicationRecordIs = id,
+        medicationRecordIs = medicationRecord.id,
         title = R.string.statins,
         icon = R.drawable.ic_health_records_members_list,
         description = -1,
         testOutcome = null,
-        date = dispenseDate.toDate(),
+        date = medicationRecord.dispenseDate.toDate(),
         healthRecordType = HealthRecordType.MEDICATION_RECORD
     )
 }

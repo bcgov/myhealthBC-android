@@ -1,9 +1,12 @@
 package ca.bc.gov.data.model.mapper
 
+import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
+import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
@@ -12,12 +15,15 @@ import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
+import ca.bc.gov.data.local.entity.DispensingPharmacyEntity
 import ca.bc.gov.data.local.entity.MedicationRecordEntity
+import ca.bc.gov.data.local.entity.MedicationSummaryEntity
 import ca.bc.gov.data.local.entity.PatientEntity
 import ca.bc.gov.data.local.entity.TestRecordEntity
 import ca.bc.gov.data.local.entity.TestResultEntity
 import ca.bc.gov.data.local.entity.VaccineDoseEntity
 import ca.bc.gov.data.local.entity.VaccineRecordEntity
+import ca.bc.gov.data.local.entity.relations.MedicationWithSummaryAndPharmacy
 import ca.bc.gov.data.local.entity.relations.PatientWithMedicationRecords
 import ca.bc.gov.data.local.entity.relations.PatientWithTestResultsAndRecords
 import ca.bc.gov.data.local.entity.relations.PatientWithVaccineAndDoses
@@ -100,6 +106,38 @@ fun MedicationRecordEntity.toDto() = MedicationRecordDto(
     directions,
     dateEntered,
     dataSource
+)
+
+fun MedicationSummaryEntity.toDto() = MedicationSummaryDto(
+    id,
+    medicationRecordId,
+    din,
+    brandName,
+    genericName,
+    quantity,
+    maxDailyDosage,
+    drugDiscontinueDate,
+    form,
+    manufacturer,
+    strength,
+    strengthUnit,
+    isPin
+)
+
+fun DispensingPharmacyEntity.toDto() = DispensingPharmacyDto(
+    id,
+    medicationRecordId,
+    pharmacyId,
+    name,
+    addressLine1,
+    addressLine2,
+    city, province, postalCode, countryCode, phoneNumber, faxNumber
+)
+
+fun MedicationWithSummaryAndPharmacy.toDto() = MedicationWithSummaryAndPharmacyDto(
+    medicationRecord = medicationRecord.toDto(),
+    medicationSummary = medicationSummary.toDto(),
+    dispensingPharmacy = dispensingPharmacy.toDto()
 )
 
 fun PatientWithMedicationRecords.toDto() = PatientWithMedicationRecordDto(
