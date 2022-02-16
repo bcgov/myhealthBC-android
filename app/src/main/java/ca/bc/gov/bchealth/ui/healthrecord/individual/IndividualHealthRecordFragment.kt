@@ -3,7 +3,9 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -14,8 +16,10 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
+import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
 import com.queue_it.androidsdk.QueueListener
@@ -37,9 +41,12 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private lateinit var vaccineRecordsAdapter: VaccineRecordsAdapter
     private lateinit var testRecordsAdapter: TestRecordsAdapter
     private lateinit var hiddenHealthRecordAdapter: HiddenHealthRecordAdapter
+    private lateinit var medicationRecordsAdapter: MedicationRecordsAdapter
     private lateinit var concatAdapter: ConcatAdapter
     private val args: IndividualHealthRecordFragmentArgs by navArgs()
     private var testResultId: Long = -1L
+    private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,13 +57,30 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
         setupObserver()
 
-        viewModel.getIndividualsHealthRecord(args.patientId)
-
-        hiddenHealthRecordAdapter.submitList(getDummyData())
+        viewModel.checkForAuthenticatedPatient(args.patientId)
     }
 
     private fun getDummyData(): ArrayList<HiddenRecordItem> {
-        return arrayListOf(HiddenRecordItem(1))
+        return arrayListOf(HiddenRecordItem(0))
+    }
+
+    private fun observeBcscLogin() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                bcscAuthViewModel.authStatus.collect {
+                    binding.progressBar.isVisible = it.showLoading
+                    if (it.showLoading) {
+                        return@collect
+                    } else {
+                        if (it.isLoggedIn) {
+                            viewModel.getIndividualsHealthRecord(args.patientId)
+                        } else {
+                            hiddenHealthRecordAdapter.submitList(getDummyData())
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setupObserver() {
@@ -64,12 +88,29 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
 
+                    if (uiState.authenticatedPatient) {
+                        bcscAuthViewModel.checkLogin()
+                        observeBcscLogin()
+                        binding.toolbar.tvRightOption.visibility = View.INVISIBLE
+                        testRecordsAdapter.isUpdateRequested = false
+                        return@collect
+                    }
+
+                    if (uiState.nonAuthenticatedPatient) {
+                        viewModel.getIndividualsHealthRecord(args.patientId)
+                        return@collect
+                    }
+
                     if (::vaccineRecordsAdapter.isInitialized) {
                         vaccineRecordsAdapter.submitList(uiState.onVaccineRecord)
                     }
 
                     if (::testRecordsAdapter.isInitialized) {
                         testRecordsAdapter.submitList(uiState.onTestRecords)
+                    }
+
+                    if (::medicationRecordsAdapter.isInitialized) {
+                        medicationRecordsAdapter.submitList(uiState.onMedicationRecords)
                     }
 
                     if (uiState.updatedTestResultId > 0) {
@@ -125,8 +166,21 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             canDeleteRecord = false
         )
 
+        medicationRecordsAdapter = MedicationRecordsAdapter { medicationRecord ->
+            val action = IndividualHealthRecordFragmentDirections
+                .actionIndividualHealthRecordFragmentToMedicationDetailFragment(
+                    medicationRecord.medicationRecordId
+                )
+            findNavController().navigate(action)
+        }
+
         hiddenHealthRecordAdapter = HiddenHealthRecordAdapter { onBCSCLoginClick() }
-        concatAdapter = ConcatAdapter(hiddenHealthRecordAdapter, vaccineRecordsAdapter, testRecordsAdapter)
+        concatAdapter = ConcatAdapter(
+            hiddenHealthRecordAdapter,
+            vaccineRecordsAdapter,
+            testRecordsAdapter,
+            medicationRecordsAdapter
+        )
         binding.rvHealthRecords.adapter = concatAdapter
         binding.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
     }
@@ -248,6 +302,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun onBCSCLoginClick() {
-        // Do nothing
+        /*sharedViewModel.destinationId = 0
+        findNavController().navigate(R.id.bcscAuthInfoFragment)*/
     }
 }

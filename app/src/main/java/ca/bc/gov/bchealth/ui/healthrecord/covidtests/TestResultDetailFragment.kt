@@ -54,7 +54,7 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
 
                     state.onTestResultDetail.let { patientTestResult ->
 
-                        if(patientTestResult != null){
+                        if (patientTestResult != null) {
                             initUi(
                                 patientTestResult.testResultWithRecords.testRecords,
                                 patientTestResult.patient

@@ -1,6 +1,5 @@
 package ca.bc.gov.common.model.relation
 
-import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.patient.PatientDto
 
 /**

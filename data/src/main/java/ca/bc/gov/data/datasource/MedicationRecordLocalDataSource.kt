@@ -21,12 +21,8 @@ class MedicationRecordLocalDataSource @Inject constructor(
 ) {
 
     suspend fun insert(medicationRecord: MedicationRecordDto): Long {
-        var medicationRecordId =
-            medicationRecordDao.insert(medicationRecord.toEntity())
-        if (medicationRecordId == -1L) {
-            medicationRecordId =
-                medicationRecordDao.getMedicationRecordId(medicationRecord.dispenseDate) ?: -1L
-        }
+        var medicationRecordId = -1L
+        medicationRecordId = medicationRecordDao.insert(medicationRecord.toEntity())
         return medicationRecordId
     }
 
@@ -38,6 +34,6 @@ class MedicationRecordLocalDataSource @Inject constructor(
         return dispensingPharmacyDao.insert(dispensingPharmacy.toEntity())
     }
 
-    suspend fun getMedicationWithSummaryAndPharmacy(medicationRecordId: Long): MedicationWithSummaryAndPharmacyDto?
-    = medicationRecordDao.getMedicationWithSummaryAndPharmacy(medicationRecordId)?.toDto()
+    suspend fun getMedicationWithSummaryAndPharmacy(medicationRecordId: Long): MedicationWithSummaryAndPharmacyDto? =
+        medicationRecordDao.getMedicationWithSummaryAndPharmacy(medicationRecordId)?.toDto()
 }

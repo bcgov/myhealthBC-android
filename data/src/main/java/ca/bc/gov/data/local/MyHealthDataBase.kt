@@ -24,14 +24,16 @@ import ca.bc.gov.data.local.entity.VaccineRecordEntity
  * @author Pinakin Kansara
  */
 @Database(
-    entities = [PatientEntity::class,
+    entities = [
+        PatientEntity::class,
         VaccineRecordEntity::class,
         TestResultEntity::class,
         TestRecordEntity::class,
         VaccineDoseEntity::class,
         MedicationRecordEntity::class,
         MedicationSummaryEntity::class,
-        DispensingPharmacyEntity::class],
+        DispensingPharmacyEntity::class
+    ],
     version = 2,
     exportSchema = true,
     autoMigrations = [

@@ -6,13 +6,12 @@ import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsAndPatientDto
-import ca.bc.gov.common.model.patient.PatientListDto
-import ca.bc.gov.common.model.relation.PatientWithVaccineRecordDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
 import ca.bc.gov.common.model.test.TestRecordDto
@@ -32,6 +31,7 @@ import ca.bc.gov.data.local.entity.relations.PatientWithVaccineAndDoses
 import ca.bc.gov.data.local.entity.relations.TestResultWithRecord
 import ca.bc.gov.data.local.entity.relations.TestResultWithRecordsAndPatient
 import ca.bc.gov.data.local.entity.relations.VaccineRecordWithDose
+import java.time.Instant
 
 fun PatientEntity.toDto() = PatientDto(
     id, fullName, dateOfBirth, phn, authenticationStatus = authenticationStatus
@@ -118,12 +118,12 @@ fun MedicationSummaryEntity.toDto() = MedicationSummaryDto(
     genericName,
     quantity,
     maxDailyDosage,
-    drugDiscontinueDate,
+    drugDiscontinueDate ?: Instant.EPOCH,
     form,
     manufacturer,
     strength,
     strengthUnit,
-    isPin
+    isPin ?: false
 )
 
 fun DispensingPharmacyEntity.toDto() = DispensingPharmacyDto(

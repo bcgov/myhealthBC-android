@@ -39,8 +39,8 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
         vaccineRecordId = vaccineWithDoses?.vaccine?.id!!,
         name = patient.fullName.uppercase(),
         qrIssuedDate = "Issued on ${
-            vaccineWithDoses?.vaccine?.qrIssueDate
-                ?.toDateTimeString()
+        vaccineWithDoses?.vaccine?.qrIssueDate
+            ?.toDateTimeString()
         }",
         shcUri = vaccineWithDoses?.vaccine?.shcUri!!,
         qrCode = vaccineWithDoses?.vaccine?.qrCodeImage,
@@ -58,7 +58,7 @@ fun VaccineWithDosesDto.toUiModel(): HealthRecordItem {
     return HealthRecordItem(
         patientId = vaccine.patientId,
         testResultId = -1L,
-        medicationRecordIs = -1L,
+        medicationRecordId = -1L,
         icon = R.drawable.ic_health_record_vaccine,
         title = R.string.covid_19_vaccination,
         description = passState.status,
@@ -73,9 +73,9 @@ fun MedicationWithSummaryAndPharmacyDto.toUiModel(): HealthRecordItem {
     return HealthRecordItem(
         patientId = medicationRecord.patientId,
         testResultId = -1L,
-        medicationRecordIs = medicationRecord.id,
+        medicationRecordId = medicationRecord.id,
         title = R.string.statins,
-        icon = R.drawable.ic_health_records_members_list,
+        icon = R.drawable.ic_health_record_medication,
         description = -1,
         testOutcome = null,
         date = medicationRecord.dispenseDate.toDate(),
@@ -96,7 +96,7 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
     return HealthRecordItem(
         patientId = testResult.patientId,
         testResultId = testResult.id,
-        medicationRecordIs = -1L,
+        medicationRecordId = -1L,
         icon = R.drawable.ic_health_record_covid_test,
         title = R.string.covid_19_test_result,
         description = 0,

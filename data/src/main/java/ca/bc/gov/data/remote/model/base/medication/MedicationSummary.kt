@@ -8,8 +8,8 @@ data class MedicationSummary(
     val genericName: String?,
     val isPin: Boolean?,
     val manufacturer: String?,
-    val maxDailyDosage: Int?,
-    val quantity: Int?,
+    val maxDailyDosage: Float,
+    val quantity: Float,
     val strength: String?,
     val strengthUnit: String?
 )

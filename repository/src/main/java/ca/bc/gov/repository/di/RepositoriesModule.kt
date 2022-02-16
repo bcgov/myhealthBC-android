@@ -12,7 +12,6 @@ import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.FederalTravelPassDecoderRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
-import ca.bc.gov.repository.MedicationRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.PatientWithTestResultRepository
@@ -150,17 +149,11 @@ class RepositoriesModule {
 
     @Provides
     @Singleton
-    fun provideMedicationRepository(
-        medicationRemoteDataSource: MedicationRemoteDataSource,
-        bcscAuthRepo: BcscAuthRepo
-    ) = MedicationRepository(
-        medicationRemoteDataSource,
-        bcscAuthRepo
-    )
-
-    @Provides
-    @Singleton
     fun provideMedicationRecordRepository(
-        medicationRecordLocalDataSource: MedicationRecordLocalDataSource
-    ): MedicationRecordRepository = MedicationRecordRepository(medicationRecordLocalDataSource)
+        medicationRecordLocalDataSource: MedicationRecordLocalDataSource,
+        medicationRemoteDataSource: MedicationRemoteDataSource
+    ): MedicationRecordRepository = MedicationRecordRepository(
+        medicationRecordLocalDataSource,
+        medicationRemoteDataSource
+    )
 }

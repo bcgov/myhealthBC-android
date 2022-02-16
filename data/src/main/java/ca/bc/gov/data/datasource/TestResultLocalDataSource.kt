@@ -32,7 +32,6 @@ class TestResultLocalDataSource @Inject constructor(
         return testResultDao.insertTestRecords(recordDtos.map { it.toEntity() })
     }
 
-
     suspend fun insert(testRecords: List<TestRecordDto>): List<Long> {
         return testResultDao.insert(testRecords.map { it.toEntity() })
     }

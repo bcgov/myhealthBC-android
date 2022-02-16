@@ -120,17 +120,6 @@ class BcscAuthRepo(
         setAuthState(null)
     }
 
-    suspend fun getHdId(): Pair<String, String> {
-        val authState = getAuthState() ?: throw MyHealthException(AUTH_ERROR, "Login again!")
-        val accessToken = awaitPerformActionWithFreshTokens(applicationContext, authState)
-        val json = decodeAccessToken(accessToken)
-        val hdId = json.get("hdid").toString()
-        if (hdId.isEmpty())
-            throw MyHealthException(AUTH_ERROR, "Invalid access token!")
-        else
-            return Pair(BEARER.plus(accessToken), hdId)
-    }
-
     suspend fun getAuthParameters(): Pair<String, String> {
         val authState = getAuthState() ?: throw MyHealthException(AUTH_ERROR_DO_LOGIN, "Login again!")
         val accessToken = awaitPerformActionWithFreshTokens(applicationContext, authState)
@@ -139,7 +128,7 @@ class BcscAuthRepo(
         if (hdId.isEmpty())
             throw MyHealthException(AUTH_ERROR_DO_LOGIN, "Invalid access token!")
         else
-            return Pair(hdId, BEARER.plus(" ").plus(accessToken))
+            return Pair(BEARER.plus(" ").plus(accessToken), hdId)
     }
 
     suspend fun getUserName(): String {

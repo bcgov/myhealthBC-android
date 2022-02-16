@@ -3,7 +3,7 @@ package ca.bc.gov.data.remote.model.base.medication
 data class MedicationStatementPayload(
     val dateEntered: String?,
     val directions: String?,
-    val dispensedDate: String?,
+    val dispensedDate: String,
     val dispensingPharmacy: DispensingPharmacy?,
     val medicationSummary: MedicationSummary?,
     val pharmacyId: String?,

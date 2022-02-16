@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.exceptions.MustBeQueuedException
+import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.FetchTestResultRepository
@@ -36,24 +37,55 @@ class IndividualHealthRecordViewModel @Inject constructor(
     )
     val uiState: SharedFlow<IndividualHealthRecordsUiState> = _uiState.asSharedFlow()
 
-    fun getIndividualsHealthRecord(patientId: Long) = viewModelScope.launch {
-        val patientWithVaccineRecords =
-            patientRepository.getPatientWithVaccineAndDoses(patientId)
-        val testResultWithRecords =
-            patientRepository.getPatientWithTestResultsAndRecords(patientId)
-
-        val vaccineRecords = listOfNotNull(patientWithVaccineRecords.vaccineWithDoses)
-
-        val patientAndMedicationRecords = patientRepository.getPatientWithMedicationRecords(patientId)
+    fun checkForAuthenticatedPatient(patientId: Long) = viewModelScope.launch {
         _uiState.tryEmit(
-            IndividualHealthRecordsUiState().copy(
-                onLoading = false,
-                onTestRecords = testResultWithRecords.testResultWithRecords
-                    .map { it.toUiModel() },
-                onVaccineRecord = vaccineRecords.map { it.toUiModel() },
-                onMedicationRecords = patientAndMedicationRecords.medicationRecord.map { it.toUiModel() }
+            IndividualHealthRecordsUiState(
+                onLoading = true
             )
         )
+        patientRepository.getPatientList().collect() { patientListDto ->
+            val authenticatedPatient = patientListDto.patientDtos.filter {
+                it.authenticationStatus == AuthenticationStatus.AUTHENTICATED
+            }
+            if (authenticatedPatient.isNotEmpty() &&
+                authenticatedPatient.firstOrNull()?.id == patientId
+            ) {
+                _uiState.tryEmit(
+                    IndividualHealthRecordsUiState(
+                        authenticatedPatient = true
+                    )
+                )
+            } else {
+                _uiState.tryEmit(
+                    IndividualHealthRecordsUiState(
+                        nonAuthenticatedPatient = true
+                    )
+                )
+            }
+        }
+    }
+
+    fun getIndividualsHealthRecord(patientId: Long) = viewModelScope.launch {
+        try {
+            val patientWithVaccineRecords =
+                patientRepository.getPatientWithVaccineAndDoses(patientId)
+            val testResultWithRecords =
+                patientRepository.getPatientWithTestResultsAndRecords(patientId)
+
+            val vaccineRecords = listOfNotNull(patientWithVaccineRecords.vaccineWithDoses)
+
+            val patientAndMedicationRecords =
+                patientRepository.getPatientWithMedicationRecords(patientId)
+            _uiState.tryEmit(
+                IndividualHealthRecordsUiState().copy(
+                    onLoading = false,
+                    onTestRecords = testResultWithRecords.testResultWithRecords
+                        .map { it.toUiModel() },
+                    onVaccineRecord = vaccineRecords.map { it.toUiModel() },
+                    onMedicationRecords = patientAndMedicationRecords.medicationRecord.map { it.toUiModel() }
+                )
+            )
+        } catch (e: java.lang.Exception) {}
     }
 
     fun deleteVaccineRecord(patientId: Long) = viewModelScope.launch {
@@ -124,13 +156,15 @@ data class IndividualHealthRecordsUiState(
     val onVaccineRecord: List<HealthRecordItem> = emptyList(),
     val onTestRecords: List<HealthRecordItem> = emptyList(),
     val onMedicationRecords: List<HealthRecordItem> = emptyList(),
-    val updatedTestResultId: Long = -1L
+    val updatedTestResultId: Long = -1L,
+    val authenticatedPatient: Boolean = false,
+    val nonAuthenticatedPatient: Boolean = false
 )
 
 data class HealthRecordItem(
     val patientId: Long,
     val testResultId: Long = -1L,
-    val medicationRecordIs: Long = -1L,
+    val medicationRecordId: Long = -1L,
     val icon: Int,
     val title: Int,
     val description: Int,

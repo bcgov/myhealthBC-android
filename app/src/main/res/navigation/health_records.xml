@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/health_records"
-    app:startDestination="@id/timelineViewFragment">
+    app:startDestination="@id/healthRecordsFragment">
 
     <fragment
         android:id="@+id/healthRecordsFragment"
@@ -46,6 +46,9 @@
         <action
             android:id="@+id/action_individualHealthRecordFragment_to_vaccineRecordDetailFragment"
             app:destination="@id/vaccineRecordDetailFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_medicationDetailFragment"
+            app:destination="@id/medicationDetailsFragment" />
     </fragment>
 
 
@@ -89,5 +92,14 @@
         android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.TypeFilterFragment"
         android:label="fragment_type_filter"
         tools:layout="@layout/fragment_type_filter" />
+    <fragment
+        android:id="@+id/medicationDetailsFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsFragment"
+        android:label="fragment_medication_details"
+        tools:layout="@layout/fragment_medication_details" >
+        <argument
+            android:name="medicationId"
+            app:argType="long" />
+    </fragment>
 
 </navigation>
