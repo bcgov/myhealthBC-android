@@ -1,12 +1,16 @@
 package ca.bc.gov.data.model.mapper
 
+import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
+import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
+import ca.bc.gov.data.local.entity.DispensingPharmacyEntity
 import ca.bc.gov.data.local.entity.MedicationRecordEntity
+import ca.bc.gov.data.local.entity.MedicationSummaryEntity
 import ca.bc.gov.data.local.entity.PatientEntity
 import ca.bc.gov.data.local.entity.TestRecordEntity
 import ca.bc.gov.data.local.entity.TestResultEntity
@@ -72,4 +76,35 @@ fun MedicationRecordDto.toEntity() = MedicationRecordEntity(
     directions,
     dateEntered,
     dataSource
+)
+
+fun MedicationSummaryDto.toEntity() = MedicationSummaryEntity(
+    id,
+    medicationRecordId,
+    din,
+    brandName,
+    genericName,
+    quantity,
+    maxDailyDosage,
+    drugDiscontinueDate,
+    form,
+    manufacturer,
+    strength,
+    strengthUnit,
+    isPin
+)
+
+fun DispensingPharmacyDto.toEntity() = DispensingPharmacyEntity(
+    id,
+    medicationRecordId,
+    pharmacyId,
+    name,
+    addressLine1,
+    addressLine2,
+    city,
+    province,
+    postalCode,
+    countryCode,
+    phoneNumber,
+    faxNumber
 )

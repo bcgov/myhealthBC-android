@@ -39,7 +39,11 @@ class LocalDataSourceModule {
     @Singleton
     fun providesMedicationRecordLocalDataSource(
         db: MyHealthDataBase
-    ) = MedicationRecordLocalDataSource(db.getMedicationRecordDao())
+    ) = MedicationRecordLocalDataSource(
+        db.getMedicationRecordDao(),
+        db.getMedicationSummaryDao(),
+        db.getDispensingPharmacyDao()
+    )
 
     @Provides
     @Singleton

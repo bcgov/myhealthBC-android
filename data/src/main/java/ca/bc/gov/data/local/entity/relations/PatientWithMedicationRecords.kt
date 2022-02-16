@@ -16,5 +16,5 @@ data class PatientWithMedicationRecords(
         entityColumn = "patient_id",
         entity = MedicationRecordEntity::class
     )
-    val medicationRecord: List<MedicationRecordEntity> = emptyList()
+    val medicationRecord: List<MedicationWithSummaryAndPharmacy> = emptyList()
 )
