@@ -7,5 +7,4 @@ import ca.bc.gov.data.local.entity.DispensingPharmacyEntity
  * @author Pinakin Kansara
  */
 @Dao
-interface DispensingPharmacyDao : BaseDao<DispensingPharmacyEntity> {
-}
+interface DispensingPharmacyDao : BaseDao<DispensingPharmacyEntity>

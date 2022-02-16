@@ -28,14 +28,14 @@ data class MedicationRecordEntity(
     @ColumnInfo(name = "patient_id")
     val patientId: Long,
     @ColumnInfo(name = "practitioner_identifier")
-    val practitionerIdentifier: Int,
+    val practitionerIdentifier: String?,
     @ColumnInfo(name = "prescription_status")
-    val prescriptionStatus: String,
+    val prescriptionStatus: String?,
     @ColumnInfo(name = "practitioner_surname")
-    val practitionerSurname: String,
+    val practitionerSurname: String?,
     @ColumnInfo(name = "dispense_date")
     val dispenseDate: Instant,
-    val directions: String,
+    val directions: String?,
     @ColumnInfo(name = "date_entered")
     val dateEntered: Instant,
     @ColumnInfo(name = "data_source")

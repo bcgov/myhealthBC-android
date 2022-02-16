@@ -9,10 +9,10 @@ import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsAndPatientDto
 import ca.bc.gov.data.datasource.PatientLocalDataSource
-import kotlinx.coroutines.flow.Flow
 import ca.bc.gov.data.local.entity.PatientEntity
 import ca.bc.gov.data.local.entity.PatientOrderUpdate
 import ca.bc.gov.repository.QrCodeGeneratorRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 

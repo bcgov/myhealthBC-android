@@ -103,7 +103,7 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
                         patientAndVaccineRecord.vaccineWithDoses?.vaccine?.status
                             ?.let { status -> setUiState(status) }
 
-                        patientAndVaccineRecord.vaccineWithDoses?.vaccine?.doseDtos
+                        patientAndVaccineRecord.vaccineWithDoses?.doses
                             ?.let { doses -> adapter.submitList(doses) }
                     }
                 }

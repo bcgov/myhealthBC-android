@@ -7,5 +7,4 @@ import ca.bc.gov.data.local.entity.MedicationSummaryEntity
  * @author Pinakin Kansara
  */
 @Dao
-interface MedicationSummaryDao : BaseDao<MedicationSummaryEntity> {
-}
+interface MedicationSummaryDao : BaseDao<MedicationSummaryEntity>

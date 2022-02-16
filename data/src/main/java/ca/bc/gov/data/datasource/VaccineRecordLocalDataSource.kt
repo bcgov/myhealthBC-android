@@ -61,7 +61,6 @@ class VaccineRecordLocalDataSource @Inject constructor(
         return vaccineDoses.map { id }
     }
 
-
     /**
      * Update [vaccineRecord] in to database
      * @param vaccineRecord

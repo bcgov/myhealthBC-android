@@ -26,22 +26,22 @@ data class MedicationSummaryEntity(
     val id: Long = 0,
     @ColumnInfo(name = "medication_record_id")
     val medicationRecordId: Long,
-    val din: Long,
+    val din: String?,
     @ColumnInfo(name = "brand_name")
-    val brandName: String,
+    val brandName: String?,
     @ColumnInfo(name = "generic_name")
-    val genericName: String,
+    val genericName: String?,
     @ColumnInfo(name = "quantity")
-    val quantity: Int,
+    val quantity: Float,
     @ColumnInfo(name = "max_daily_dosage")
-    val maxDailyDosage: Int,
+    val maxDailyDosage: Float,
     @ColumnInfo(name = "drug_discontinue_date")
-    val drugDiscontinueDate: Instant,
-    val form: String,
-    val manufacturer: String,
-    val strength: String,
+    val drugDiscontinueDate: Instant?,
+    val form: String?,
+    val manufacturer: String?,
+    val strength: String?,
     @ColumnInfo(name = "strength_unit")
-    val strengthUnit: String,
+    val strengthUnit: String?,
     @ColumnInfo(name = "is_pin")
-    val isPin: Boolean
+    val isPin: Boolean?
 )

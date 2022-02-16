@@ -6,13 +6,13 @@ import java.time.Instant
  * @author Pinakin Kansara
  */
 data class MedicationRecordDto(
-    val id: Long,
+    val id: Long = 0,
     val patientId: Long,
-    val practitionerIdentifier: Int,
-    val prescriptionStatus: String,
-    val practitionerSurname: String,
+    val practitionerIdentifier: String?,
+    val prescriptionStatus: String?,
+    val practitionerSurname: String?,
     val dispenseDate: Instant,
-    val directions: String,
+    val directions: String?,
     val dateEntered: Instant,
     val dataSource: DataSource
 )
