@@ -37,7 +37,8 @@ class PatientLocalDataSource @Inject constructor(
                 PatientWithHealthRecordCount(
                     it.patientEntity.toDto(),
                     vaccineRecordCount = it.vaccineRecordCount,
-                    testResultCount = it.testRecordCount
+                    testResultCount = it.testRecordCount,
+                    medicationRecordCount = it.medicationRecordCount
                 )
             }
         }

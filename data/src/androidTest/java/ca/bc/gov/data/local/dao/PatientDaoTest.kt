@@ -17,11 +17,13 @@ class PatientDaoTest : BaseDataBaseTest() {
     private lateinit var patientDao: PatientDao
     private lateinit var vaccineRecordDao: VaccineRecordDao
     private lateinit var testResultDao: TestResultDao
+    private lateinit var medicationRecordDao: MedicationRecordDao
 
     override fun onCreate() {
         patientDao = db.getPatientDao()
         vaccineRecordDao = db.getVaccineRecordDao()
         testResultDao = db.getTestResultDao()
+        medicationRecordDao = db.getMedicationRecordDao()
     }
 
     @Test
@@ -87,6 +89,7 @@ class PatientDaoTest : BaseDataBaseTest() {
         val testResult1 = getTestResult1()
         val testResult2 = getTestResult2()
         val testResult3 = getTestResult3()
+        val medicationRecord = getMedicationRecord()
 
         // When
         patientDao.insert(patient1)
@@ -96,6 +99,7 @@ class PatientDaoTest : BaseDataBaseTest() {
         testResultDao.insert(testResult1)
         testResultDao.insert(testResult2)
         testResultDao.insert(testResult3)
+        medicationRecordDao.insert(medicationRecord)
 
         // Then
         val result = patientDao.getPatientWithHealthRecordCountFlow().first()
