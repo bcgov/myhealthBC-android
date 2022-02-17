@@ -42,7 +42,7 @@ class PatientRepository @Inject constructor(
     val patientHealthRecords =
         patientLocalDataSource.patientWithRecordCount.map { patientHealthRecords ->
             patientHealthRecords.filter { record ->
-                (record.vaccineRecordCount + record.testResultCount) > 0
+                (record.vaccineRecordCount + record.testResultCount + record.medicationRecordCount) > 0
             }
         }
 

@@ -3,6 +3,7 @@ package ca.bc.gov.data.local
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.ImmunizationStatus
+import ca.bc.gov.data.local.entity.MedicationRecordEntity
 import ca.bc.gov.data.local.entity.PatientEntity
 import ca.bc.gov.data.local.entity.TestResultEntity
 import ca.bc.gov.data.local.entity.VaccineRecordEntity
@@ -106,15 +107,29 @@ abstract class BaseDataBaseTest {
         collectionDate = Instant.now()
     )
 
+    protected fun getMedicationRecord() = MedicationRecordEntity(
+        id = 0,
+        patientId = 1,
+        practitionerIdentifier = "Practitioner",
+        prescriptionStatus = "Status",
+        practitionerSurname = "Practitioner Surname",
+        dispenseDate = Instant.now(),
+        directions = "Directions",
+        dateEntered = Instant.now(),
+        dataSource = DataSource.BCSC
+    )
+
     protected fun getPatientWithHealthRecordCount1(patientEntity: PatientEntity) = PatientWithHealthRecordCount(
         patientEntity = patientEntity,
         vaccineRecordCount = 2,
-        testRecordCount = 2
+        testRecordCount = 2,
+        medicationRecordCount = 1
     )
 
     protected fun getPatientWithHealthRecordCount2(patientEntity: PatientEntity) = PatientWithHealthRecordCount(
         patientEntity = patientEntity,
         vaccineRecordCount = 0,
-        testRecordCount = 1
+        testRecordCount = 1,
+        medicationRecordCount = 0
     )
 }

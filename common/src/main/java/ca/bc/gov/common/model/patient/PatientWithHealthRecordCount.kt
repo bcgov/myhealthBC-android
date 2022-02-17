@@ -6,5 +6,6 @@ package ca.bc.gov.common.model.patient
 data class PatientWithHealthRecordCount(
     val patientDto: PatientDto,
     val vaccineRecordCount: Int,
-    val testResultCount: Int
+    val testResultCount: Int,
+    val medicationRecordCount: Int
 )
