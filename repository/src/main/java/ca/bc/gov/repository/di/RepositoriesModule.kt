@@ -2,19 +2,18 @@ package ca.bc.gov.repository.di
 
 import android.content.Context
 import ca.bc.gov.data.ImmunizationRemoteDataSource
+import ca.bc.gov.data.MedicationRemoteDataSource
 import ca.bc.gov.data.datasource.LocalDataSource
+import ca.bc.gov.data.datasource.MedicationRecordLocalDataSource
 import ca.bc.gov.data.datasource.PatientLocalDataSource
-import ca.bc.gov.data.datasource.PatientWithVaccineRecordLocalDataSource
-import ca.bc.gov.data.datasource.TestRecordLocalDataSource
 import ca.bc.gov.data.datasource.TestResultLocalDataSource
-import ca.bc.gov.data.datasource.VaccineDoseLocalDataSource
 import ca.bc.gov.data.datasource.VaccineRecordLocalDataSource
 import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.FederalTravelPassDecoderRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
+import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.OnBoardingRepository
-import ca.bc.gov.repository.PatientHealthRecordsRepository
 import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.QrCodeGeneratorRepository
@@ -24,11 +23,9 @@ import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.ProcessQrRepository
 import ca.bc.gov.repository.scanner.QrScanner
-import ca.bc.gov.repository.testrecord.TestRecordRepository
 import ca.bc.gov.repository.testrecord.TestResultRepository
 import ca.bc.gov.repository.utils.Base64ToInputImageConverter
 import ca.bc.gov.repository.utils.UriToImage
-import ca.bc.gov.repository.vaccine.VaccineDoseRepository
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import ca.bc.gov.shcdecoder.SHCVerifier
 import dagger.Module
@@ -50,11 +47,6 @@ class RepositoriesModule {
 
     @Provides
     @Singleton
-    fun providesPatientHealthRecordsRepository(localDataSource: PatientLocalDataSource) =
-        PatientHealthRecordsRepository(localDataSource)
-
-    @Provides
-    @Singleton
     fun providesQueueItTokenRepository(
         preferenceStorage: EncryptedPreferenceStorage
     ) = QueueItTokenRepository(preferenceStorage)
@@ -65,9 +57,9 @@ class RepositoriesModule {
         qrScanner: QrScanner,
         uriToImage: UriToImage,
         shcVerifier: SHCVerifier,
-        localDataSource: PatientWithVaccineRecordLocalDataSource
+        patientRepository: PatientRepository
     ) = ProcessQrRepository(
-        qrScanner, uriToImage, shcVerifier, localDataSource
+        qrScanner, uriToImage, shcVerifier, patientRepository
     )
 
     @Provides
@@ -82,8 +74,11 @@ class RepositoriesModule {
 
     @Provides
     @Singleton
-    fun providesPatientRepository(localDataSource: PatientLocalDataSource) =
-        PatientRepository(localDataSource)
+    fun providesPatientRepository(
+        localDataSource: PatientLocalDataSource,
+        qrCodeGeneratorRepository: QrCodeGeneratorRepository
+    ) =
+        PatientRepository(localDataSource, qrCodeGeneratorRepository)
 
     @Provides
     @Singleton
@@ -92,19 +87,8 @@ class RepositoriesModule {
 
     @Provides
     @Singleton
-    fun provideVaccineDoseRepository(
-        localDataSource: VaccineDoseLocalDataSource
-    ) = VaccineDoseRepository(localDataSource)
-
-    @Provides
-    @Singleton
     fun providesTestResultRepository(localDataSource: TestResultLocalDataSource) =
         TestResultRepository(localDataSource)
-
-    @Provides
-    @Singleton
-    fun providesTestRecordRepository(localDataSource: TestRecordLocalDataSource) =
-        TestRecordRepository(localDataSource)
 
     @Provides
     @Singleton
@@ -113,29 +97,21 @@ class RepositoriesModule {
     @Provides
     @Singleton
     fun providesPatientWithVaccineRepository(
-        localDataSource: PatientWithVaccineRecordLocalDataSource,
         patientRepository: PatientRepository,
-        vaccineRecordRepository: VaccineRecordRepository,
-        vaccineDoseRepository: VaccineDoseRepository,
-        qrCodeGeneratorRepository: QrCodeGeneratorRepository
+        vaccineRecordRepository: VaccineRecordRepository
     ) = PatientWithVaccineRecordRepository(
-        localDataSource,
         patientRepository,
-        vaccineRecordRepository,
-        vaccineDoseRepository,
-        qrCodeGeneratorRepository
+        vaccineRecordRepository
     )
 
     @Provides
     @Singleton
     fun providesPatientWithTestResultRepository(
         patientRepository: PatientRepository,
-        testResultRepository: TestResultRepository,
-        testRecordRepository: TestRecordRepository
+        testResultRepository: TestResultRepository
     ) = PatientWithTestResultRepository(
         patientRepository,
-        testResultRepository,
-        testRecordRepository
+        testResultRepository
     )
 
     @Provides
@@ -169,5 +145,15 @@ class RepositoriesModule {
     ) = BcscAuthRepo(
         context,
         encryptedPreferenceStorage
+    )
+
+    @Provides
+    @Singleton
+    fun provideMedicationRecordRepository(
+        medicationRecordLocalDataSource: MedicationRecordLocalDataSource,
+        medicationRemoteDataSource: MedicationRemoteDataSource
+    ): MedicationRecordRepository = MedicationRecordRepository(
+        medicationRecordLocalDataSource,
+        medicationRemoteDataSource
     )
 }

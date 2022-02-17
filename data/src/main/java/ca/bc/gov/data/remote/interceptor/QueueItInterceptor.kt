@@ -65,10 +65,11 @@ class QueueItInterceptor @Inject constructor(
                 if (json.get(RESOURCE_PAYLOAD).isJsonNull) {
                     throw IOException("Bad response!")
                 }
-                val payload =
-                    json.getAsJsonObject(RESOURCE_PAYLOAD) ?: throw IOException("Bad response!")
+
                 var retryInMillis = 0L
                 try {
+                    val payload =
+                        json.getAsJsonObject(RESOURCE_PAYLOAD) ?: throw IOException("Bad response!")
                     loaded = payload.get(LOADED).asBoolean
                     retryInMillis = payload.get(RETRY_IN).asLong
                 } catch (e: Exception) {

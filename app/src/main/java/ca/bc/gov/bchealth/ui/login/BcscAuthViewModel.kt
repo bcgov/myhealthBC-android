@@ -62,9 +62,8 @@ class BcscAuthViewModel @Inject constructor(
             val isLoggedSuccess = bcscAuthRepo.processAuthResponse(data)
             _authStatus.update {
                 it.copy(
-                    showLoading = false,
-                    isLoggedIn = isLoggedSuccess,
-                    startWorker = true
+                    showLoading = true,
+                    isLoggedIn = isLoggedSuccess
                 )
             }
         } catch (e: Exception) {
@@ -144,8 +143,7 @@ class BcscAuthViewModel @Inject constructor(
                 isLoggedIn = false,
                 authRequestIntent = null,
                 isError = false,
-                userName = "",
-                startWorker = false
+                userName = ""
             )
         }
     }
@@ -154,6 +152,7 @@ class BcscAuthViewModel @Inject constructor(
         queueItTokenRepository.setQueItToken(token)
         _authStatus.update {
             it.copy(
+                showLoading = true,
                 queItTokenUpdated = true
             )
         }
@@ -166,6 +165,5 @@ data class AuthStatus(
     val authRequestIntent: Intent? = null,
     val isError: Boolean = false,
     val userName: String = "",
-    val startWorker: Boolean = false,
     val queItTokenUpdated: Boolean = false
 )

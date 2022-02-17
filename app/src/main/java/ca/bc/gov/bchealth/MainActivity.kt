@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.profileFragment,
                 R.id.resourcesFragment,
                 R.id.individualHealthRecordFragment,
+                R.id.timelineViewFragment,
                 R.id.vaccineRecordDetailFragment,
                 R.id.testResultDetailFragment,
                 R.id.addHealthRecordsFragment,

@@ -3,6 +3,7 @@ package ca.bc.gov.repository.bcsc
 import android.content.Context
 import android.net.Uri
 import ca.bc.gov.common.const.AUTH_ERROR
+import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
 import ca.bc.gov.common.exceptions.MyHealthException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.openid.appauth.AuthState
@@ -58,7 +59,9 @@ suspend fun awaitPerformActionWithFreshTokens(
         authService
     ) { accessToken, idToken, ex ->
         if (accessToken == null || idToken == null || ex != null) {
-            continuation.resumeWithException(MyHealthException(AUTH_ERROR, "Login check failed!"))
+            continuation.resumeWithException(
+                MyHealthException(AUTH_ERROR_DO_LOGIN, "Login check failed!")
+            )
         } else {
             authService.dispose()
             continuation.resume(accessToken)

@@ -38,7 +38,7 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
 
         setToolBar()
 
-        viewModel.getTestResultDetail(args.patientId, args.testResultId)
+        viewModel.getTestResultDetail(args.testResultId)
 
         observeDetails()
     }
@@ -54,24 +54,29 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
 
                     state.onTestResultDetail.let { patientTestResult ->
 
-                        patientTestResult?.recordDtos?.let { initUi(it, patientTestResult.patientDto) }
+                        if (patientTestResult != null) {
+                            initUi(
+                                patientTestResult.testResultWithRecords.testRecords,
+                                patientTestResult.patient
+                            )
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun initUi(testRecordDtos: List<TestRecordDto>, patientDto: PatientDto) {
+    private fun initUi(testRecords: List<TestRecordDto>, patientDto: PatientDto) {
 
         val covidTestResultsAdapter = CovidTestResultsAdapter(
             this,
-            testRecordDtos,
+            testRecords,
             patientDto
         )
 
         binding.viewpagerCovidTestResults.adapter = covidTestResultsAdapter
 
-        if (testRecordDtos.size > 1) {
+        if (testRecords.size > 1) {
 
             binding.tabCovidTestResults.visibility = View.VISIBLE
 

@@ -9,13 +9,12 @@ import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.MyHealthNetworkException
 import ca.bc.gov.common.model.ErrorData
-import ca.bc.gov.common.model.relation.PatientWithVaccineRecordDto
+import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.repository.FetchVaccineRecordRepository
-import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
+import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.VaccineRecordState
-import ca.bc.gov.repository.vaccine.VaccineDoseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -30,8 +29,7 @@ import javax.inject.Inject
 class FetchVaccineRecordViewModel @Inject constructor(
     private val queueItTokenRepository: QueueItTokenRepository,
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
-    private val patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
-    private val vaccineDoseRepository: VaccineDoseRepository
+    private val patientRepository: PatientRepository
 ) : ViewModel() {
 
     companion object {
@@ -121,9 +119,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
     }
 
     fun getPatientWithVaccineRecord(patientId: Long) = viewModelScope.launch {
-        val record = patientWithVaccineRecordRepository.getPatientWithVaccine(patientId)
-        val vaccineDoses = vaccineDoseRepository.getVaccineDoses(record.vaccineRecordDto!!.id)
-        record.vaccineRecordDto?.doseDtos = vaccineDoses
+        val record = patientRepository.getPatientWithVaccineAndDoses(patientId)
         _uiState.tryEmit(
             FetchVaccineRecordUiState(onLoading = false, patientDataDto = record)
         )
@@ -135,7 +131,7 @@ data class FetchVaccineRecordUiState(
     val queItTokenUpdated: Boolean = false,
     val onMustBeQueued: Boolean = false,
     val queItUrl: String? = null,
-    val patientDataDto: PatientWithVaccineRecordDto? = null,
+    val patientDataDto: PatientWithVaccineAndDosesDto? = null,
     val vaccineRecord: Pair<VaccineRecordState, PatientVaccineRecord?>? = null,
     val errorData: ErrorData? = null
 )

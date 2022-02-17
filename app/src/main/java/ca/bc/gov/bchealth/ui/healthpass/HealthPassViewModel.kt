@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.repository.OnBoardingRepository
-import ca.bc.gov.repository.PatientWithVaccineRecordRepository
+import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +21,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class HealthPassViewModel @Inject constructor(
-    private val repository: PatientWithVaccineRecordRepository,
+    private val patientRepository: PatientRepository,
     private val vaccineRecordRepository: VaccineRecordRepository,
     private val onBoardingRepository: OnBoardingRepository
 ) : ViewModel() {
@@ -30,7 +30,7 @@ class HealthPassViewModel @Inject constructor(
     val uiState: StateFlow<HealthPassUiState> = _uiState.asStateFlow()
     var isAuthenticationRequired: Boolean = true
     var isBcscLoginRequiredPostBiometrics: Boolean = false
-    val healthPasses = repository.patientsVaccineRecord.map { records ->
+    val healthPasses = patientRepository.patientWithVaccineAndDoses.map { records ->
         records.map { record ->
             record.toUiModel()
         }
@@ -75,7 +75,7 @@ class HealthPassViewModel @Inject constructor(
 
     fun updateHealthPassOrder(healthPasses: List<HealthPass>) =
         viewModelScope.launch {
-            repository.updatePatientOrder(
+            patientRepository.updatePatientsOrder(
                 healthPasses.mapIndexed { index, healthPass ->
                     healthPass.patientId to index.toLong()
                 }
