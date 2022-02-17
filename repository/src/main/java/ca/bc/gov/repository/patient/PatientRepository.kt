@@ -60,8 +60,8 @@ class PatientRepository @Inject constructor(
         )
     }
 
-    suspend fun getPatient(patientId: Long): PatientDto =
-        patientLocalDataSource.getPatient(patientId)
+    suspend fun isAuthenticatedPatient(patientId: Long): Boolean =
+        patientLocalDataSource.isAuthenticatedPatient(patientId)
 
     suspend fun getPatientList(): Flow<PatientListDto> =
         patientLocalDataSource.getPatientList()

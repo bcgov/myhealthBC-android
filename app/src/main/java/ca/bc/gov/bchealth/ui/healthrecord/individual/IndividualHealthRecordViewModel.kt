@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.exceptions.MustBeQueuedException
-import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.FetchTestResultRepository
@@ -13,9 +12,10 @@ import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.testrecord.TestResultRepository
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,36 +31,20 @@ class IndividualHealthRecordViewModel @Inject constructor(
     private val fetchTestResultRepository: FetchTestResultRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableSharedFlow<IndividualHealthRecordsUiState>(
-        replay = 0,
-        extraBufferCapacity = 1
-    )
-    val uiState: SharedFlow<IndividualHealthRecordsUiState> = _uiState.asSharedFlow()
+    private val _uiState = MutableStateFlow(IndividualHealthRecordsUiState())
+    val uiState: StateFlow<IndividualHealthRecordsUiState> = _uiState.asStateFlow()
 
     fun checkForAuthenticatedPatient(patientId: Long) = viewModelScope.launch {
-        _uiState.tryEmit(
-            IndividualHealthRecordsUiState(
-                onLoading = true
-            )
-        )
-        patientRepository.getPatientList().collect() { patientListDto ->
-            val authenticatedPatient = patientListDto.patientDtos.filter {
-                it.authenticationStatus == AuthenticationStatus.AUTHENTICATED
+        _uiState.update { state ->
+            state.copy(onLoading = false)
+        }
+        if (patientRepository.isAuthenticatedPatient(patientId)) {
+            _uiState.update { state ->
+                state.copy(authenticatedPatient = true)
             }
-            if (authenticatedPatient.isNotEmpty() &&
-                authenticatedPatient.firstOrNull()?.id == patientId
-            ) {
-                _uiState.tryEmit(
-                    IndividualHealthRecordsUiState(
-                        authenticatedPatient = true
-                    )
-                )
-            } else {
-                _uiState.tryEmit(
-                    IndividualHealthRecordsUiState(
-                        nonAuthenticatedPatient = true
-                    )
-                )
+        } else {
+            _uiState.update { state ->
+                state.copy(nonAuthenticatedPatient = true)
             }
         }
     }
@@ -76,16 +60,17 @@ class IndividualHealthRecordViewModel @Inject constructor(
 
             val patientAndMedicationRecords =
                 patientRepository.getPatientWithMedicationRecords(patientId)
-            _uiState.tryEmit(
-                IndividualHealthRecordsUiState().copy(
+            _uiState.update { state ->
+                state.copy(
                     onLoading = false,
                     onTestRecords = testResultWithRecords.testResultWithRecords
                         .map { it.toUiModel() },
                     onVaccineRecord = vaccineRecords.map { it.toUiModel() },
                     onMedicationRecords = patientAndMedicationRecords.medicationRecord.map { it.toUiModel() }
                 )
-            )
-        } catch (e: java.lang.Exception) {}
+            }
+        } catch (e: java.lang.Exception) {
+        }
     }
 
     fun deleteVaccineRecord(patientId: Long) = viewModelScope.launch {
@@ -116,23 +101,21 @@ class IndividualHealthRecordViewModel @Inject constructor(
             if (phn != null && collectionDate != null) {
                 val testResultId =
                     fetchTestResultRepository.fetchTestRecord(phn, dob, collectionDate)
-                _uiState.tryEmit(
-                    IndividualHealthRecordsUiState(
-                        updatedTestResultId = testResultId
-                    )
-                )
+                _uiState.update { state ->
+                    state.copy(updatedTestResultId = testResultId)
+                }
             }
         } catch (e: Exception) {
             when (e) {
                 is MustBeQueuedException -> {
-                    _uiState.tryEmit(
-                        IndividualHealthRecordsUiState(
+                    _uiState.update { state ->
+                        state.copy(
                             onLoading = true,
                             queItTokenUpdated = false,
                             onMustBeQueued = true,
                             queItUrl = e.message
                         )
-                    )
+                    }
                 }
             }
         }
@@ -140,11 +123,29 @@ class IndividualHealthRecordViewModel @Inject constructor(
 
     fun setQueItToken(token: String?) = viewModelScope.launch {
         queueItTokenRepository.setQueItToken(token)
-        _uiState.tryEmit(
-            IndividualHealthRecordsUiState(
-                onLoading = false, queItTokenUpdated = true
+        _uiState.update { state ->
+            state.copy(
+                onLoading = false,
+                queItTokenUpdated = true
             )
-        )
+        }
+    }
+
+    fun resetUiState() {
+        _uiState.update { state ->
+            state.copy(
+                onLoading = false,
+                queItTokenUpdated = false,
+                onMustBeQueued = false,
+                queItUrl = null,
+                onVaccineRecord = emptyList(),
+                onTestRecords = emptyList(),
+                onMedicationRecords = emptyList(),
+                updatedTestResultId = -1L,
+                authenticatedPatient = false,
+                nonAuthenticatedPatient = false
+            )
+        }
     }
 }
 
