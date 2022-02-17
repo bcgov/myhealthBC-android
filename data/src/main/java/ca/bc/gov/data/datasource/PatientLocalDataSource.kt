@@ -94,7 +94,8 @@ class PatientLocalDataSource @Inject constructor(
     suspend fun updatePatientsOrder(patientOrderUpdates: List<PatientOrderUpdate>) =
         patientDao.updatePatientsOrder(patientOrderUpdates)
 
-    suspend fun getPatient(patientId: Long): PatientDto = patientDao.getPatient(patientId).toDto()
+    suspend fun isAuthenticatedPatient(patientId: Long): Boolean =
+        patientDao.isAuthenticatedPatient(patientId) > 0
 
     suspend fun getPatientWithVaccineAndDoses(patientId: Long): PatientWithVaccineAndDosesDto? =
         patientDao.getPatientWithVaccineAndDoses(patientId)?.toDto()

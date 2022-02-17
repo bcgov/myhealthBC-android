@@ -4,6 +4,7 @@ import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import ca.bc.gov.data.local.converter.AuthenticationStatusTypeConverter
 import ca.bc.gov.data.local.converter.DateTimeConverter
 import ca.bc.gov.data.local.dao.DispensingPharmacyDao
 import ca.bc.gov.data.local.dao.MedicationRecordDao
@@ -40,7 +41,7 @@ import ca.bc.gov.data.local.entity.VaccineRecordEntity
         AutoMigration(from = 1, to = 2)
     ]
 )
-@TypeConverters(DateTimeConverter::class)
+@TypeConverters(DateTimeConverter::class, AuthenticationStatusTypeConverter::class)
 abstract class MyHealthDataBase : RoomDatabase() {
 
     abstract fun getPatientDao(): PatientDao
