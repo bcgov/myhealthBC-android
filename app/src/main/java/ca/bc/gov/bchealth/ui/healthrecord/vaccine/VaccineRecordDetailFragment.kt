@@ -15,6 +15,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentVaccineRecordDetailBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.utils.toDateTimeString
 import dagger.hilt.android.AndroidEntryPoint
@@ -91,6 +92,11 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
                             vaccineRecordId = it
                         }
 
+                        binding.toolbar.tvRightOption.isVisible =
+                            (
+                                patientAndVaccineRecord.patient.authenticationStatus
+                                    != AuthenticationStatus.AUTHENTICATED
+                                )
                         binding.tvFullName.text = patientAndVaccineRecord.patient.fullName
 
                         binding.tvIssueDate.text = getString(R.string.issued_on)
