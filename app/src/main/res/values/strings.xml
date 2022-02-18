@@ -224,7 +224,7 @@
     <string name="invalid_phn">The Personal Health Number entered is not valid</string>
     <string name="error_incorrect_phn">There was an error with your Personal Health Number. Please check that it is correct and try again.</string>
     <string name="error_biometric_enrollment_title">Enable Biometric</string>
-    <string name="error_biometric_enrollment_message">My Health BC needs permission to use Biometric or passcode for the device. Go to Settings > Biometric &amp; Passcode and change the settings to on.</string>
+    <string name="error_biometric_enrollment_message">My Health BC requires to authenticate using Biometric or passcode. Go to Settings > To enable Biometric or Passcode.</string>
     <string name="error_biometric_authentication_title">Authentication error</string>
     <string name="error_biometric_no_hardware">Unable to find supported hardware to perform biometric authentication.</string>
     <string name="error_biometric_unknown">Unable to perform authentication at the moment try again later.</string>
