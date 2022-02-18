@@ -74,7 +74,7 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
     } else {
         testRecordDto?.testOutcome
     }
-    val date = testRecordDtos.maxOf { it.resultDateTime }
+    val date = testResultDto.collectionDate
 
     return HealthRecordItem(
         patientId = testResultDto.patientId,
