@@ -166,8 +166,8 @@ data class HealthRecordItem(
     val testResultId: Long = -1L,
     val medicationRecordId: Long = -1L,
     val icon: Int,
-    val title: Int,
-    val description: Int,
+    val title: String,
+    val description: String,
     val testOutcome: String? = null,
     val date: String,
     val healthRecordType: HealthRecordType
