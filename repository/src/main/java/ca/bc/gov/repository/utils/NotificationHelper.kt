@@ -46,7 +46,6 @@ class NotificationHelper @Inject constructor(private val application: Applicatio
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(false)
-        // .setOngoing(true)
 
         with(NotificationManagerCompat.from(application)) {
             notify(BACKGROUND_WORK_NOTIFICATION_ID, notificationBuilder.build())
