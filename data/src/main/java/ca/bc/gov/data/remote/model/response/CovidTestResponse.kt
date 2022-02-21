@@ -1,8 +1,8 @@
 package ca.bc.gov.data.remote.model.response
 
-import ca.bc.gov.data.remote.model.base.CovidTestPayload
 import ca.bc.gov.data.remote.model.base.Error
 import ca.bc.gov.data.remote.model.base.Status
+import ca.bc.gov.data.remote.model.base.covidtest.CovidTestPayload
 import com.google.gson.annotations.SerializedName
 
 /**

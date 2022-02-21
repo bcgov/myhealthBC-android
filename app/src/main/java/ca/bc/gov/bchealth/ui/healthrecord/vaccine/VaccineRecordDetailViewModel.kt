@@ -1,10 +1,9 @@
-package ca.bc.gov.bchealth.ui.healthrecord
+package ca.bc.gov.bchealth.ui.healthrecord.vaccine
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.common.model.relation.PatientWithVaccineRecordDto
-import ca.bc.gov.repository.PatientWithVaccineRecordRepository
-import ca.bc.gov.repository.vaccine.VaccineDoseRepository
+import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
+import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,8 +18,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class VaccineRecordDetailViewModel @Inject constructor(
-    private val patientWithVaccineRepository: PatientWithVaccineRecordRepository,
-    private val vaccineDoseRepository: VaccineDoseRepository,
+    private val patientRepository: PatientRepository,
     private val vaccineRecordRepository: VaccineRecordRepository
 ) : ViewModel() {
 
@@ -31,11 +29,8 @@ class VaccineRecordDetailViewModel @Inject constructor(
         _uiState.update {
             it.copy(onLoading = true)
         }
-        val patientAndVaccine = patientWithVaccineRepository.getPatientWithVaccine(patientId)
-        if (patientAndVaccine.vaccineRecordDto != null) {
-            val doses = vaccineDoseRepository.getVaccineDoses(patientAndVaccine.vaccineRecordDto!!.id)
-                .sortedBy { it.date }
-            patientAndVaccine.vaccineRecordDto?.doseDtos = doses
+        val patientAndVaccine = patientRepository.getPatientWithVaccineAndDoses(patientId)
+        if (patientAndVaccine.vaccineWithDoses != null) {
             _uiState.update {
                 it.copy(
                     onLoading = false,
@@ -52,5 +47,5 @@ class VaccineRecordDetailViewModel @Inject constructor(
 
 data class VaccineRecordDetailUiState(
     val onLoading: Boolean = false,
-    val onVaccineRecordDtoDetail: PatientWithVaccineRecordDto? = null
+    val onVaccineRecordDtoDetail: PatientWithVaccineAndDosesDto? = null
 )

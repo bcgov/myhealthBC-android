@@ -10,5 +10,6 @@ data class PatientWithHealthRecordCount(
     @Embedded
     val patientEntity: PatientEntity,
     val vaccineRecordCount: Int,
-    val testRecordCount: Int
+    val testRecordCount: Int,
+    val medicationRecordCount: Int
 )

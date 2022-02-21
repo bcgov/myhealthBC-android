@@ -2,8 +2,8 @@ package ca.bc.gov.bchealth.ui.healthrecord.covidtests
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.common.model.relation.PatientTestResultDto
-import ca.bc.gov.repository.PatientWithTestResultRepository
+import ca.bc.gov.common.model.relation.TestResultWithRecordsAndPatientDto
+import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.testrecord.TestResultRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,19 +18,20 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class TestResultDetailsViewModel @Inject constructor(
-    private val patientWithTestResultRepository: PatientWithTestResultRepository,
+    private val patientRepository: PatientRepository,
     private val testResultRepository: TestResultRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TestResultDetailUiState())
     val uiState: StateFlow<TestResultDetailUiState> = _uiState.asStateFlow()
 
-    fun getTestResultDetail(patientInt: Long, testResultId: Long) = viewModelScope.launch {
+    fun getTestResultDetail(testResultId: Long) = viewModelScope.launch {
         _uiState.update {
             it.copy(onLoading = true)
         }
+
         val patientTestResult =
-            patientWithTestResultRepository.getPatientWithTestResult(patientInt, testResultId)
+            patientRepository.getPatientWithTestResultAndRecords(testResultId)
         _uiState.update {
             it.copy(onLoading = false, onTestResultDetail = patientTestResult)
         }
@@ -43,5 +44,5 @@ class TestResultDetailsViewModel @Inject constructor(
 
 data class TestResultDetailUiState(
     val onLoading: Boolean = false,
-    val onTestResultDetail: PatientTestResultDto? = null
+    val onTestResultDetail: TestResultWithRecordsAndPatientDto? = null
 )

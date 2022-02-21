@@ -16,17 +16,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchTravelPassBinding
-import ca.bc.gov.bchealth.ui.custom.validatePhnNumber
 import ca.bc.gov.bchealth.ui.healthpass.add.AddOrUpdateCardViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.PhnHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
 import ca.bc.gov.common.model.analytics.AnalyticsAction
 import ca.bc.gov.common.model.analytics.AnalyticsActionData
-import ca.bc.gov.common.model.relation.PatientWithVaccineRecordDto
+import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.model.PatientVaccineRecord
@@ -49,7 +49,7 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
     private val viewModel: FetchVaccineRecordViewModel by viewModels()
     private val args: FetchFederalTravelPassFragmentArgs by navArgs()
     private val addOrUpdateCardViewModel: AddOrUpdateCardViewModel by viewModels()
-    private lateinit var patientDataDto: PatientWithVaccineRecordDto
+    private lateinit var patientDataDto: PatientWithVaccineAndDosesDto
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
     private val recentPhnDobViewModel: RecentPhnDobViewModel by viewModels()
 
@@ -158,11 +158,11 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
 
     private fun fetchTravelPass() {
         val phn = binding.edPhn.text.toString()
-        if (this.validatePhnNumber(binding.edPhnNumber)) {
+        if (PhnHelper().validatePhnData(binding.edPhnNumber, requireContext())) {
             viewModel.fetchVaccineRecord(
                 phn,
-                patientDataDto.patientDto.dateOfBirth.toDate(yyyy_MM_dd),
-                patientDataDto.vaccineRecordDto?.doseDtos!!.last().date.toDate(yyyy_MM_dd)
+                patientDataDto.patient.dateOfBirth.toDate(yyyy_MM_dd),
+                patientDataDto.vaccineWithDoses?.vaccine?.doseDtos!!.last().date.toDate(yyyy_MM_dd)
             )
         }
     }

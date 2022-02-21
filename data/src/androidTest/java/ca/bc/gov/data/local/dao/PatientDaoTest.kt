@@ -17,11 +17,13 @@ class PatientDaoTest : BaseDataBaseTest() {
     private lateinit var patientDao: PatientDao
     private lateinit var vaccineRecordDao: VaccineRecordDao
     private lateinit var testResultDao: TestResultDao
+    private lateinit var medicationRecordDao: MedicationRecordDao
 
     override fun onCreate() {
         patientDao = db.getPatientDao()
         vaccineRecordDao = db.getVaccineRecordDao()
         testResultDao = db.getTestResultDao()
+        medicationRecordDao = db.getMedicationRecordDao()
     }
 
     @Test
@@ -30,7 +32,7 @@ class PatientDaoTest : BaseDataBaseTest() {
         val patient = getPatient1()
 
         // When
-        val result = patientDao.insertPatient(patient)
+        val result = patientDao.insert(patient)
 
         // Then
         Assert.assertTrue(result > 0)
@@ -42,8 +44,8 @@ class PatientDaoTest : BaseDataBaseTest() {
         val patient = getPatient1()
 
         // When
-        patientDao.insertPatient(patient)
-        val result = patientDao.insertPatient(patient)
+        patientDao.insert(patient)
+        val result = patientDao.insert(patient)
 
         // Then
         Assert.assertEquals(-1, result)
@@ -55,7 +57,7 @@ class PatientDaoTest : BaseDataBaseTest() {
         val patient = getPatient1()
 
         // When
-        patientDao.insertPatient(patient)
+        patientDao.insert(patient)
 
         // Then
         val insertedPatientId =
@@ -69,7 +71,7 @@ class PatientDaoTest : BaseDataBaseTest() {
         val patient = getPatient1()
 
         // When
-        patientDao.insertPatient(patient)
+        patientDao.insert(patient)
 
         // Then
         val insertedPatient =
@@ -87,18 +89,20 @@ class PatientDaoTest : BaseDataBaseTest() {
         val testResult1 = getTestResult1()
         val testResult2 = getTestResult2()
         val testResult3 = getTestResult3()
+        val medicationRecord = getMedicationRecord()
 
         // When
-        patientDao.insertPatient(patient1)
-        patientDao.insertPatient(patient2)
-        vaccineRecordDao.insertVaccineRecord(vaccineRecord1)
-        vaccineRecordDao.insertVaccineRecord(vaccineRecord2)
-        testResultDao.insertTestResult(testResult1)
-        testResultDao.insertTestResult(testResult2)
-        testResultDao.insertTestResult(testResult3)
+        patientDao.insert(patient1)
+        patientDao.insert(patient2)
+        vaccineRecordDao.insert(vaccineRecord1)
+        vaccineRecordDao.insert(vaccineRecord2)
+        testResultDao.insert(testResult1)
+        testResultDao.insert(testResult2)
+        testResultDao.insert(testResult3)
+        medicationRecordDao.insert(medicationRecord)
 
         // Then
-        val result = patientDao.getPatientWithRecordCountFlow().first()
+        val result = patientDao.getPatientWithHealthRecordCountFlow().first()
         Assert.assertTrue(result.contains(getPatientWithHealthRecordCount1(patient1)))
         Assert.assertTrue(result.contains(getPatientWithHealthRecordCount2(patient2)))
     }

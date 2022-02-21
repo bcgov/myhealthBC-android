@@ -62,7 +62,7 @@ class BcscAuthViewModel @Inject constructor(
             val isLoggedSuccess = bcscAuthRepo.processAuthResponse(data)
             _authStatus.update {
                 it.copy(
-                    showLoading = false,
+                    showLoading = true,
                     isLoggedIn = isLoggedSuccess
                 )
             }
@@ -152,6 +152,7 @@ class BcscAuthViewModel @Inject constructor(
         queueItTokenRepository.setQueItToken(token)
         _authStatus.update {
             it.copy(
+                showLoading = true,
                 queItTokenUpdated = true
             )
         }

@@ -46,6 +46,9 @@
         <action
             android:id="@+id/action_individualHealthRecordFragment_to_vaccineRecordDetailFragment"
             app:destination="@id/vaccineRecordDetailFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_medicationDetailFragment"
+            app:destination="@id/medicationDetailsFragment" />
     </fragment>
 
 
@@ -73,6 +76,29 @@
         tools:layout="@layout/fragment_vaccine_record_detail" >
         <argument
             android:name="patientId"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/timelineViewFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.TimelineViewFragment"
+        android:label="TimelineViewFragment" />
+    <fragment
+        android:id="@+id/timeFilterFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.TimeFilterFragment"
+        android:label="fragment_time_filter"
+        tools:layout="@layout/fragment_time_filter" />
+    <fragment
+        android:id="@+id/typeFilterFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.TypeFilterFragment"
+        android:label="fragment_type_filter"
+        tools:layout="@layout/fragment_type_filter" />
+    <fragment
+        android:id="@+id/medicationDetailsFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsFragment"
+        android:label="fragment_medication_details"
+        tools:layout="@layout/fragment_medication_details" >
+        <argument
+            android:name="medicationId"
             app:argType="long" />
     </fragment>
 
