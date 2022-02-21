@@ -105,9 +105,9 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                             viewModel.resetAuthStatus()
                         }
 
-                        fetchAuthenticatedRecords(it.startWorker)
 
                         if (it.isLoggedIn) {
+                            fetchAuthenticatedRecords()
                             respondToSuccess()
                             viewModel.resetAuthStatus()
                         }
@@ -133,19 +133,17 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
         workManager = WorkManager.getInstance(requireContext())
     }
 
-    private fun fetchAuthenticatedRecords(startWorker: Boolean) {
-        if (startWorker) {
-            workManager.enqueue(workRequest)
-            workManager.getWorkInfoByIdLiveData(workRequest.id)
-                .observe(viewLifecycleOwner, { info ->
-                    if (info != null && info.state.isFinished) {
-                        val queItUrl = info.outputData.getString(WORK_RESULT)
-                        if (queItUrl != null) {
-                            queUser(queItUrl)
-                        }
+    private fun fetchAuthenticatedRecords() {
+        workManager.enqueue(workRequest)
+        workManager.getWorkInfoByIdLiveData(workRequest.id)
+            .observe(viewLifecycleOwner, { info ->
+                if (info != null && info.state.isFinished) {
+                    val queItUrl = info.outputData.getString(WORK_RESULT)
+                    if (queItUrl != null) {
+                        queUser(queItUrl)
                     }
-                })
-        }
+                }
+            })
     }
 
     private fun queUser(value: String) {

@@ -6,8 +6,8 @@ import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.MustBeQueuedException
-import ca.bc.gov.common.exceptions.MyHealthNetworkException
 import ca.bc.gov.repository.FetchTestResultRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
@@ -16,6 +16,7 @@ import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.patient.PatientRepository
+import ca.bc.gov.repository.utils.NotificationHelper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,7 +26,7 @@ const val WORK_RESULT = "WORK_RESULT"
 
 @HiltWorker
 class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
-    @Assisted context: Context,
+    @Assisted private val context: Context,
     @Assisted workerParams: WorkerParameters,
     private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
@@ -34,10 +35,15 @@ class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
     private val patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
     private val patientRepository: PatientRepository,
     private val patientWithTestResultRepository: PatientWithTestResultRepository,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
+    private val notificationHelper: NotificationHelper
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
+        notificationHelper.showNotification(
+            context.getString(R.string.notification_title_while_fetching_data),
+            context.getString(R.string.notification_message_while_fetching_data)
+        )
         var patientId: Long
         val pair = bcscAuthRepo.getHdId()
         try {
@@ -46,13 +52,14 @@ class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
                 patientId = patientRepository.insertAuthenticatedPatient(patient)
             }
         } catch (e: Exception) {
+            notificationHelper.updateNotification(
+                context.getString(R.string.notification_title_when_failed),
+                context.getString(R.string.notification_message_when_failed)
+            )
             return when (e) {
                 is MustBeQueuedException -> {
                     val output: Data = workDataOf(WORK_RESULT to e.message)
                     Result.failure(output)
-                }
-                is MyHealthNetworkException -> {
-                    Result.failure()
                 }
                 else -> {
                     Result.failure()
@@ -72,6 +79,10 @@ class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
                 }
             }
         } catch (e: Exception) {
+            notificationHelper.updateNotification(
+                context.getString(R.string.notification_title_when_failed),
+                context.getString(R.string.notification_message_when_failed)
+            )
             return Result.failure()
         }
         try {
@@ -86,9 +97,16 @@ class FetchAuthenticatedRecordsWorker @AssistedInject constructor(
                 }
             }
         } catch (e: Exception) {
+            notificationHelper.updateNotification(
+                context.getString(R.string.notification_title_when_failed),
+                context.getString(R.string.notification_message_when_failed)
+            )
             return Result.failure()
         }
-
+        notificationHelper.updateNotification(
+            context.getString(R.string.notification_title_on_success),
+            context.getString(R.string.notification_message_on_success)
+        )
         return Result.success()
     }
 }

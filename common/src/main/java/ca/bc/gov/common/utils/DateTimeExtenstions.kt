@@ -26,13 +26,12 @@ fun Instant.toDate(dateFormat: String = yyyy_MMM_dd): String {
 
 fun String.toDate(): Instant = LocalDate.parse(this).atStartOfDay().toInstant(ZoneOffset.UTC)
 
-fun String.toDateTime(): Instant = LocalDateTime.parse(this).toInstant(ZoneOffset.UTC)
+fun String.toDateTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): Instant =
+    LocalDateTime.parse(this, formatter).toInstant(ZoneOffset.UTC)
 
-fun String.formattedStringToDateTime(): Instant {
-    return LocalDateTime.parse(this, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-        .toInstant(ZoneOffset.UTC)
-}
-
-fun String.formatInPattern(pattern: String = yyyy_MM_dd): String {
-    return this.formattedStringToDateTime().toDateTimeString(pattern)
+fun String.formatInPattern(
+    formatter: DateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME,
+    pattern: String = yyyy_MM_dd
+): String {
+    return this.toDateTime(formatter).toDateTimeString(pattern)
 }
