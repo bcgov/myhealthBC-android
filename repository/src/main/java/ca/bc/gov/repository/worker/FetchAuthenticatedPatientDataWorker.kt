@@ -6,16 +6,12 @@ import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.MyHealthNetworkException
-import ca.bc.gov.repository.FetchTestResultRepository
-import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.patient.PatientRepository
-import ca.bc.gov.repository.utils.NotificationHelper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -36,10 +32,6 @@ class FetchAuthenticatedPatientDataWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        notificationHelper.showNotification(
-            context.getString(R.string.notification_title_while_fetching_data),
-            context.getString(R.string.notification_message_while_fetching_data)
-        )
         var patientId: Long
         val authParameters = bcscAuthRepo.getAuthParameters()
         var output: Data = workDataOf()
@@ -59,10 +51,6 @@ class FetchAuthenticatedPatientDataWorker @AssistedInject constructor(
             }
             return Result.success(output)
         } catch (e: Exception) {
-            notificationHelper.updateNotification(
-                context.getString(R.string.notification_title_when_failed),
-                context.getString(R.string.notification_message_when_failed)
-            )
             return when (e) {
                 is MustBeQueuedException -> {
                     output = workDataOf(WORK_RESULT to e.message)

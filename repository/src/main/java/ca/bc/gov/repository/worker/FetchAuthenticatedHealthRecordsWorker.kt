@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import ca.bc.gov.common.R
 import ca.bc.gov.repository.FetchTestResultRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
@@ -11,6 +12,7 @@ import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.di.IoDispatcher
+import ca.bc.gov.repository.utils.NotificationHelper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -21,7 +23,7 @@ import kotlinx.coroutines.withContext
 */
 @HiltWorker
 class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
-    @Assisted context: Context,
+    @Assisted private val context: Context,
     @Assisted workerParams: WorkerParameters,
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
     private val fetchTestResultRepository: FetchTestResultRepository,
@@ -29,13 +31,18 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
     private val patientWithTestResultRepository: PatientWithTestResultRepository,
     private val medicationRecordRepository: MedicationRecordRepository,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
+    private val notificationHelper: NotificationHelper
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
         val patientId: Long = inputData.getLong(PATIENT_ID, -1L)
         val authParameters = bcscAuthRepo.getAuthParameters()
         if (patientId > -1L) {
+            notificationHelper.showNotification(
+                context.getString(R.string.notification_title_while_fetching_data),
+                context.getString(R.string.notification_message_while_fetching_data)
+            )
             try {
                 withContext(dispatcher) {
                     val response = fetchVaccineRecordRepository.fetchAuthenticatedVaccineRecord(
@@ -82,6 +89,10 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 // return Result.failure()
             }
         }
+        notificationHelper.showNotification(
+            context.getString(R.string.notification_title_on_success),
+            context.getString(R.string.notification_message_on_success)
+        )
         return Result.success()
     }
 }
