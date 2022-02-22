@@ -50,9 +50,9 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
                 getString(R.string.tested_on)
                     .plus(" ")
                     .plus(
-                        testRecordDto?.resultDateTime?.toDateTimeString()
+                        testRecordDto?.collectionDateTime?.toDateTimeString()
                     )
-            tvDot.text = testRecordDto?.resultDateTime?.toDateTimeString()
+            tvDot.text = testRecordDto?.collectionDateTime?.toDateTimeString()
             tvTestStatus.text = testRecordDto?.testStatus
             tvTypeName.text = testRecordDto?.testName
             tvProviderClinic.text = testRecordDto?.labName

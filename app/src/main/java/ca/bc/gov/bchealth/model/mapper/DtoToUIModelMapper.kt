@@ -7,6 +7,7 @@ import ca.bc.gov.bchealth.ui.healthpass.PassState
 import ca.bc.gov.bchealth.ui.healthrecord.PatientHealthRecord
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
+import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
@@ -46,7 +47,8 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
         qrCode = vaccineWithDoses?.vaccine?.qrCodeImage,
         state = passState,
         isExpanded = false,
-        federalTravelPassState = federalTravelPassState
+        federalTravelPassState = federalTravelPassState,
+        isAuthenticated = patient.authenticationStatus == AuthenticationStatus.AUTHENTICATED
     )
 }
 
@@ -91,7 +93,7 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
     } else {
         testRecordDto?.testOutcome
     }
-    val date = testRecords.maxOf { it.resultDateTime }
+    val date = testResult.collectionDate
 
     return HealthRecordItem(
         patientId = testResult.patientId,
