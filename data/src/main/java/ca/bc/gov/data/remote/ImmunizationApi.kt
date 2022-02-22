@@ -16,5 +16,5 @@ interface ImmunizationApi {
     suspend fun getVaccineStatus(@HeaderMap headers: Map<String, String>): Response<VaccineStatusResponse>
 
     @GET("api/immunizationservice/v1/api/AuthenticatedVaccineStatus")
-    suspend fun getAuthenticatedVaccineStatus(@Header("Authorization") token: String, @Query("hdid") hdid: String): Response<VaccineStatusResponse>
+    suspend fun getVaccineStatus(@Header("Authorization") token: String, @Query("hdid") hdid: String): Response<VaccineStatusResponse>
 }

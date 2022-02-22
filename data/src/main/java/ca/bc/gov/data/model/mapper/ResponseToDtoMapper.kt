@@ -1,5 +1,7 @@
 package ca.bc.gov.data.model.mapper
 
+import ca.bc.gov.common.const.SERVER_ERROR
+import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
@@ -9,11 +11,15 @@ import ca.bc.gov.common.utils.formatInPattern
 import ca.bc.gov.common.utils.formattedStringToDateTime
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTime
+import ca.bc.gov.data.model.MediaMetaData
+import ca.bc.gov.data.model.VaccineStatus
 import ca.bc.gov.data.remote.model.base.LabResult
 import ca.bc.gov.data.remote.model.base.covidtest.CovidTestRecord
 import ca.bc.gov.data.remote.model.base.medication.DispensingPharmacy
 import ca.bc.gov.data.remote.model.base.medication.MedicationStatementPayload
 import ca.bc.gov.data.remote.model.base.medication.MedicationSummary
+import ca.bc.gov.data.remote.model.base.vaccine.Media
+import ca.bc.gov.data.remote.model.base.vaccine.VaccineResourcePayload
 import java.time.Instant
 
 fun CovidTestRecord.toTestRecord() = TestRecordDto(
@@ -85,4 +91,16 @@ fun DispensingPharmacy.toDispensingPharmacyDto(medicationRecordId: Long) = Dispe
     countryCode = countryCode,
     phoneNumber = phoneNumber,
     faxNumber = faxNumber
+)
+
+fun Media.toMediaMetaData(): MediaMetaData = MediaMetaData(
+    mediaType = mediaType ?: throw MyHealthException(SERVER_ERROR, "Invalid Response"),
+    encoding = encoding ?: throw MyHealthException(SERVER_ERROR, "Invalid Response"),
+    data = data ?: throw MyHealthException(SERVER_ERROR, "Invalid Response"),
+)
+
+fun VaccineResourcePayload.toVaccineStatus(): VaccineStatus = VaccineStatus(
+    phn = phn,
+    qrCode = qrCode.toMediaMetaData(),
+    federalVaccineProof = federalVaccineProof.toMediaMetaData()
 )
