@@ -36,6 +36,10 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
+        val successApiMsgList = arrayListOf<String>()
+        val failApiMsgList = arrayListOf<String>()
+        val notificationMsg = StringBuilder()
+
         val patientId: Long = inputData.getLong(PATIENT_ID, -1L)
         val authParameters = bcscAuthRepo.getAuthParameters()
         if (patientId > -1L) {
@@ -55,7 +59,9 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                         )
                     }
                 }
+                successApiMsgList.add(context.getString(R.string.vaccine_records))
             } catch (e: Exception) {
+                failApiMsgList.add(context.getString(R.string.vaccine_records))
                 // return Result.failure()
                 e.printStackTrace()
             }
@@ -73,7 +79,9 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                         )
                     }
                 }
+                successApiMsgList.add(context.getString(R.string.covid_test_result))
             } catch (e: Exception) {
+                failApiMsgList.add(context.getString(R.string.covid_test_result))
                 // return Result.failure()
                 e.printStackTrace()
             }
@@ -85,14 +93,33 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                         authParameters.second
                     )
                 }
+                successApiMsgList.add(context.getString(R.string.medication_records))
             } catch (e: Exception) {
+                failApiMsgList.add(context.getString(R.string.medication_records))
                 // return Result.failure()
             }
+
+            if(successApiMsgList.isNotEmpty()) {
+                notificationMsg.append(context.getString(R.string.retrieving))
+                notificationMsg.append(successApiMsgList.first())
+                successApiMsgList.subList(1, successApiMsgList.size).forEach {
+                    notificationMsg.append(",").append(it)
+                }
+                notificationMsg.append(context.getString(R.string.successful))
+            }
+            if(failApiMsgList.isNotEmpty()) {
+                notificationMsg.append(context.getString(R.string.retrieving))
+                notificationMsg.append(failApiMsgList.first())
+                failApiMsgList.subList(1, failApiMsgList.size).forEach {
+                    notificationMsg.append(",").append(it)
+                }
+                notificationMsg.append(context.getString(R.string.failed))
+            }
+            notificationHelper.showNotification(
+                context.getString(R.string.notification_title_fetching_records_completed),
+                notificationMsg.toString()
+            )
         }
-        notificationHelper.showNotification(
-            context.getString(R.string.notification_title_on_success),
-            context.getString(R.string.notification_message_on_success)
-        )
         return Result.success()
     }
 }
