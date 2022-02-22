@@ -99,7 +99,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             val notificationMsg = prepareNotificationMsg(successApiMsgList, failApiMsgList)
-            notificationHelper.showNotification(
+            notificationHelper.updateNotification(
                 context.getString(R.string.notification_title_fetching_records_completed),
                 notificationMsg
             )
