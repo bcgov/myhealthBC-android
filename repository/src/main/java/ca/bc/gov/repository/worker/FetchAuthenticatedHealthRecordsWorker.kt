@@ -99,7 +99,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 // return Result.failure()
             }
 
-            if(successApiMsgList.isNotEmpty()) {
+            if (successApiMsgList.isNotEmpty()) {
                 notificationMsg.append(context.getString(R.string.retrieving))
                 notificationMsg.append(successApiMsgList.first())
                 successApiMsgList.subList(1, successApiMsgList.size).forEach {
@@ -107,7 +107,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 }
                 notificationMsg.append(context.getString(R.string.successful))
             }
-            if(failApiMsgList.isNotEmpty()) {
+            if (failApiMsgList.isNotEmpty()) {
                 notificationMsg.append(context.getString(R.string.retrieving))
                 notificationMsg.append(failApiMsgList.first())
                 failApiMsgList.subList(1, failApiMsgList.size).forEach {
