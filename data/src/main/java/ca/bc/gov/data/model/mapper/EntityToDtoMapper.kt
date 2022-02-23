@@ -38,7 +38,7 @@ fun PatientEntity.toDto() = PatientDto(
 )
 
 fun TestResultEntity.toDto() = TestResultDto(
-    id, patientId, collectionDate
+    id, patientId, collectionDate, dataSource
 )
 
 fun TestRecordEntity.toDto() = TestRecordDto(

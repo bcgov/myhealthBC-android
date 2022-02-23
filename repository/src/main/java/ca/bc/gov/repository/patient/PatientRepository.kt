@@ -46,6 +46,10 @@ class PatientRepository @Inject constructor(
             }
         }
 
+    suspend fun getBcscDataRecordCount(): Int {
+        return patientLocalDataSource.getBcscSourceHealthRecordCount()
+    }
+
     suspend fun insert(patientDto: PatientDto): Long =
         patientLocalDataSource.insert(patientDto)
 
@@ -59,9 +63,6 @@ class PatientRepository @Inject constructor(
             }
         )
     }
-
-    suspend fun isAuthenticatedPatient(patientId: Long): Boolean =
-        patientLocalDataSource.isAuthenticatedPatient(patientId)
 
     suspend fun getPatientList(): Flow<PatientListDto> =
         patientLocalDataSource.getPatientList()

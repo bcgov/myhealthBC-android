@@ -43,6 +43,10 @@ class PatientLocalDataSource @Inject constructor(
             }
         }
 
+    suspend fun getBcscSourceHealthRecordCount(): Int {
+        return patientDao.getBcscSourceHealthRecordCount()
+    }
+
     /**
      * Inserts [patient] records to the database
      * @param patient
@@ -64,7 +68,7 @@ class PatientLocalDataSource @Inject constructor(
         }
     }
 
-    suspend fun getPatientList(): Flow<PatientListDto> = patientDao.getPatientList().map { it.toDto() }
+    fun getPatientList(): Flow<PatientListDto> = patientDao.getPatientList().map { it.toDto() }
 
     suspend fun insertAuthenticatedPatient(patientDto: PatientDto): Long {
         val patientList = patientDao.getPatientByDob(patientDto.dateOfBirth)
@@ -94,9 +98,6 @@ class PatientLocalDataSource @Inject constructor(
     suspend fun updatePatientsOrder(patientOrderUpdates: List<PatientOrderUpdate>) =
         patientDao.updatePatientsOrder(patientOrderUpdates)
 
-    suspend fun isAuthenticatedPatient(patientId: Long): Boolean =
-        patientDao.isAuthenticatedPatient(patientId) > 0
-
     suspend fun getPatientWithVaccineAndDoses(patientId: Long): PatientWithVaccineAndDosesDto? =
         patientDao.getPatientWithVaccineAndDoses(patientId)?.toDto()
 
@@ -112,4 +113,8 @@ class PatientLocalDataSource @Inject constructor(
 
     suspend fun getPatientWithMedicationRecords(patientId: Long): PatientWithMedicationRecordDto? =
         patientDao.getPatientWithMedicationRecords(patientId)?.toDto()
+
+    suspend fun deleteBcscAuthenticatedPatientData() {
+        patientDao.deleteAuthenticatedPatient()
+    }
 }
