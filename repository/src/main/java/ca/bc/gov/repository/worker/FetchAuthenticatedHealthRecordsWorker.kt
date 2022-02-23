@@ -51,7 +51,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            if(patientId > -1L) {
+            if (patientId > -1L) {
                 try {
                     withContext(dispatcher) {
                         val response = fetchVaccineRecordRepository.fetchAuthenticatedVaccineRecord(
