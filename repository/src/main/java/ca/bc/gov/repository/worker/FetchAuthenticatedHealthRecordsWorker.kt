@@ -5,6 +5,7 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import ca.bc.gov.common.R
+import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.repository.FetchTestResultRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
@@ -12,7 +13,9 @@ import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.di.IoDispatcher
+import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.utils.NotificationHelper
+import com.google.gson.Gson
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -32,82 +35,100 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val patientWithTestResultRepository: PatientWithTestResultRepository,
     private val medicationRecordRepository: MedicationRecordRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
+    private val patientRepository: PatientRepository,
     private val notificationHelper: NotificationHelper
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        val successApiMsgList = arrayListOf<String>()
-        val failApiMsgList = arrayListOf<String>()
+        var patientId = -1L
+        val patientJson = inputData.getString(PATIENT)
 
-        val patientId: Long = inputData.getLong(PATIENT_ID, -1L)
-        val authParameters = bcscAuthRepo.getAuthParameters()
-        if (patientId > -1L) {
-            notificationHelper.showNotification(
-                context.getString(R.string.notification_title_while_fetching_data),
-                context.getString(R.string.notification_message_while_fetching_data)
-            )
+        if (!patientJson.isNullOrBlank()) {
+            // clear all records related to patient Id
+            val patient = Gson().fromJson(patientJson, PatientDto::class.java)
             try {
                 withContext(dispatcher) {
-                    val response = fetchVaccineRecordRepository.fetchAuthenticatedVaccineRecord(
-                        authParameters.first,
-                        authParameters.second
-                    )
-                    response.second?.let {
-                        patientWithVaccineRecordRepository.insertAuthenticatedPatientsVaccineRecord(
-                            patientId, it
-                        )
-                    }
+                    patientId = patientRepository.insertAuthenticatedPatient(patient)
                 }
-                successApiMsgList.add(context.getString(R.string.vaccine_records))
             } catch (e: Exception) {
-                failApiMsgList.add(context.getString(R.string.vaccine_records))
-                // return Result.failure()
                 e.printStackTrace()
             }
-            try {
-                withContext(dispatcher) {
-                    val response =
-                        fetchTestResultRepository.fetchAuthenticatedTestRecord(
-                            authParameters.first,
-                            authParameters.second
-                        )
-                    for (i in response.indices) {
-                        patientWithTestResultRepository.insertAuthenticatedTestResult(
-                            patientId,
-                            response[i]
-                        )
-                    }
-                }
-                successApiMsgList.add(context.getString(R.string.covid_test_result))
-            } catch (e: Exception) {
-                failApiMsgList.add(context.getString(R.string.covid_test_result))
-                // return Result.failure()
-                e.printStackTrace()
+            if (patientId > -1L) {
+                fetchAuthRecords(patientId)
             }
-            try {
-                withContext(dispatcher) {
-                    medicationRecordRepository.fetchMedicationStatement(
-                        patientId,
-                        authParameters.first,
-                        authParameters.second
-                    )
-                }
-                successApiMsgList.add(context.getString(R.string.medication_records))
-            } catch (e: Exception) {
-                failApiMsgList.add(context.getString(R.string.medication_records))
-                // return Result.failure()
-            }
-
-            val notificationMsg = prepareNotificationMsg(successApiMsgList, failApiMsgList)
-            notificationHelper.updateNotification(
-                context.getString(R.string.notification_title_fetching_records_completed),
-                notificationMsg
-            )
         }
         return Result.success()
     }
 
-    private fun prepareNotificationMsg(successApiMsgList: ArrayList<String>, failApiMsgList: ArrayList<String>): String {
+    private suspend fun fetchAuthRecords(patientId: Long) {
+        val successApiMsgList = arrayListOf<String>()
+        val failApiMsgList = arrayListOf<String>()
+
+        val authParameters = bcscAuthRepo.getAuthParameters()
+        notificationHelper.showNotification(
+            context.getString(R.string.notification_title_while_fetching_data),
+            context.getString(R.string.notification_message_while_fetching_data)
+        )
+        try {
+            withContext(dispatcher) {
+                val response = fetchVaccineRecordRepository.fetchAuthenticatedVaccineRecord(
+                    authParameters.first,
+                    authParameters.second
+                )
+                response.second?.let {
+                    patientWithVaccineRecordRepository.insertAuthenticatedPatientsVaccineRecord(
+                        patientId, it
+                    )
+                }
+            }
+            successApiMsgList.add(context.getString(R.string.vaccine_records))
+        } catch (e: Exception) {
+            failApiMsgList.add(context.getString(R.string.vaccine_records))
+            e.printStackTrace()
+        }
+        try {
+            withContext(dispatcher) {
+                val response =
+                    fetchTestResultRepository.fetchAuthenticatedTestRecord(
+                        authParameters.first,
+                        authParameters.second
+                    )
+                for (i in response.indices) {
+                    patientWithTestResultRepository.insertAuthenticatedTestResult(
+                        patientId,
+                        response[i]
+                    )
+                }
+            }
+            successApiMsgList.add(context.getString(R.string.covid_test_result))
+        } catch (e: Exception) {
+            failApiMsgList.add(context.getString(R.string.covid_test_result))
+            e.printStackTrace()
+        }
+        try {
+            withContext(dispatcher) {
+                medicationRecordRepository.fetchMedicationStatement(
+                    patientId,
+                    authParameters.first,
+                    authParameters.second
+                )
+            }
+            successApiMsgList.add(context.getString(R.string.medication_records))
+        } catch (e: Exception) {
+            failApiMsgList.add(context.getString(R.string.medication_records))
+        }
+
+        val notificationMsg = prepareNotificationMsg(successApiMsgList, failApiMsgList)
+        notificationHelper.updateNotification(
+            context.getString(R.string.notification_title_fetching_records_completed),
+            notificationMsg
+        )
+    }
+
+    private fun prepareNotificationMsg(
+        successApiMsgList: ArrayList<String>,
+        failApiMsgList: ArrayList<String>
+    ): String {
         val notificationMsg = StringBuilder()
         if (successApiMsgList.isNotEmpty()) {
             notificationMsg.append(context.getString(R.string.retrieving))
