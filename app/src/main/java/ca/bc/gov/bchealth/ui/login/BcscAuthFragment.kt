@@ -103,7 +103,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             viewModel.initiateLogin()
 
             viewLifecycleOwner.lifecycleScope.launch {
-                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.authStatus.collect {
 
                         showLoader(it.showLoading)

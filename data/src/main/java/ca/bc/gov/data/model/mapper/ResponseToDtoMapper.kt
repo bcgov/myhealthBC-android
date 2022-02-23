@@ -1,5 +1,6 @@
 package ca.bc.gov.data.model.mapper
 
+import ca.bc.gov.common.const.MESSAGE_INVALID_RESPONSE
 import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.DataSource
@@ -94,9 +95,9 @@ fun DispensingPharmacy.toDispensingPharmacyDto(medicationRecordId: Long) = Dispe
 )
 
 fun Media.toMediaMetaData(): MediaMetaData = MediaMetaData(
-    mediaType = mediaType ?: throw MyHealthException(SERVER_ERROR, "Invalid Response"),
-    encoding = encoding ?: throw MyHealthException(SERVER_ERROR, "Invalid Response"),
-    data = data ?: throw MyHealthException(SERVER_ERROR, "Invalid Response"),
+    mediaType = mediaType ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE),
+    encoding = encoding ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE),
+    data = data ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE),
 )
 
 fun VaccineResourcePayload.toVaccineStatus(): VaccineStatus = VaccineStatus(

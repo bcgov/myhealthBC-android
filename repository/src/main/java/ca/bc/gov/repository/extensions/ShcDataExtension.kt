@@ -1,5 +1,8 @@
 package ca.bc.gov.repository.extensions
 
+import ca.bc.gov.common.const.MESSAGE_INVALID_RESPONSE
+import ca.bc.gov.common.const.SERVER_ERROR
+import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
@@ -13,7 +16,7 @@ import java.time.Instant
 
 private const val IMMUNIZATION = "Immunization"
 
-fun SHCData.toPatient(): PatientDto {
+fun SHCData.toPatientDto(): PatientDto {
     val patient = getPatient()
     val fullNameBuilder = StringBuilder()
     if (patient.firstName != null) {
@@ -23,9 +26,12 @@ fun SHCData.toPatient(): PatientDto {
     if (patient.lastName != null) {
         fullNameBuilder.append(patient.lastName)
     }
+
+    val dateOfBirth =
+        patient.dateOfBirth ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
     return PatientDto(
         fullName = fullNameBuilder.toString(),
-        dateOfBirth = patient.dateOfBirth?.toDate()!!
+        dateOfBirth = dateOfBirth.toDate()
     )
 }
 
@@ -51,14 +57,17 @@ fun SHCData.toPatientVaccineRecord(
         entry.resource.performer?.forEach {
             provider = it.actor.display
         }
-        val productCode = entry.resource.vaccineCode?.coding?.last()?.code!!
-        val productName: String = if (vaccineInfo.containsKey(productCode)) {
+        val productCode = entry.resource.vaccineCode?.coding?.last()?.code
+        val productName: String =
             vaccineInfo.getOrDefault(productCode, "UNSPECIFIED COVID-19 VACCINE")
-        } else {
-            "UNSPECIFIED COVID-19 VACCINE"
-        }
+
+        val occurrenceDateTime = entry.resource.occurrenceDateTime ?: throw MyHealthException(
+            SERVER_ERROR,
+            MESSAGE_INVALID_RESPONSE
+        )
+
         VaccineDoseDto(
-            date = entry.resource.occurrenceDateTime?.toDate()!!,
+            date = occurrenceDateTime.toDate(),
             providerName = provider,
             productName = productName,
             lotNumber = entry.resource.lotNumber
@@ -76,7 +85,7 @@ fun SHCData.toPatientVaccineRecord(
         qrCodeImage = null
     )
 
-    return PatientVaccineRecord(toPatient(), record)
+    return PatientVaccineRecord(toPatientDto(), record)
 }
 
 private val vaccineInfo: HashMap<String, String> = mapOf(

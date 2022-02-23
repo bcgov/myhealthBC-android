@@ -1,7 +1,8 @@
 package ca.bc.gov.data
 
+import ca.bc.gov.common.const.MESSAGE_INVALID_RESPONSE
 import ca.bc.gov.common.const.SERVER_ERROR
-import ca.bc.gov.common.exceptions.MyHealthNetworkException
+import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.data.remote.MedicationApi
 import ca.bc.gov.data.remote.model.response.MedicationStatementResponse
 import ca.bc.gov.data.utils.safeCall
@@ -16,10 +17,10 @@ class MedicationRemoteDataSource @Inject constructor(
 
     suspend fun getMedicationStatement(patientId: Long, accessToken: String, hdid: String): MedicationStatementResponse {
         val response = safeCall { medicationApi.getMedicationStatement(hdid, accessToken) }
-            ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
+            ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
         if (response.error != null) {
-            throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
+            throw MyHealthException(SERVER_ERROR, response.error.message)
         }
 
         // TODO: 08/02/22 Response validations to be placed

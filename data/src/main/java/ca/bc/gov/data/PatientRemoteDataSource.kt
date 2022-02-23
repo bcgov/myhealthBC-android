@@ -1,7 +1,8 @@
 package ca.bc.gov.data
 
+import ca.bc.gov.common.const.MESSAGE_INVALID_RESPONSE
 import ca.bc.gov.common.const.SERVER_ERROR
-import ca.bc.gov.common.exceptions.MyHealthNetworkException
+import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.data.remote.PatientApi
 import ca.bc.gov.data.remote.model.base.PatientPayload
 import ca.bc.gov.data.remote.model.response.PatientResponse
@@ -12,14 +13,14 @@ class PatientRemoteDataSource @Inject constructor(private val patientApi: Patien
 
     suspend fun getPatient(token: String, hdid: String): PatientPayload {
         val response = safeCall { patientApi.getPatient(token = token, hdid = hdid) }
-            ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
+            ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
         if (response.error != null) {
-            throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
+            throw MyHealthException(SERVER_ERROR, response.error.message)
         }
 
         if (!isResponseValid(response)) {
-            throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
+            throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
         }
         return response.payload!!
     }

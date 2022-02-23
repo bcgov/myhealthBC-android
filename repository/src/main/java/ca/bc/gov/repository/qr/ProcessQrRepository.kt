@@ -2,7 +2,7 @@ package ca.bc.gov.repository.qr
 
 import android.net.Uri
 import ca.bc.gov.data.model.mapper.toEntity
-import ca.bc.gov.repository.extensions.toPatient
+import ca.bc.gov.repository.extensions.toPatientDto
 import ca.bc.gov.repository.extensions.toPatientVaccineRecord
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.patient.PatientRepository
@@ -45,7 +45,7 @@ class ProcessQrRepository @Inject constructor(
             if (status == VaccinationStatus.INVALID) {
                 return Pair(VaccineRecordState.INVALID, null)
             }
-            val patient = shcData.toPatient()
+            val patient = shcData.toPatientDto()
             val patientsVaccineRecord =
                 withContext(Dispatchers.IO) {
                     patientRepository.getPatientWithVaccineAndDoses(

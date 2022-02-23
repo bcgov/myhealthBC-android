@@ -57,12 +57,12 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
         binding.recItems.layoutManager = LinearLayoutManager(requireContext())
 
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.fetchNewsFeed(getString(R.string.url_news_feed))
             }
         }
 
-        viewModel.newsfeedLiveData.observe(viewLifecycleOwner, {
+        viewModel.newsfeedLiveData.observe(viewLifecycleOwner) {
             if (it.isNullOrEmpty()) {
                 AlertDialogHelper.showAlertDialog(
                     context = requireContext(),
@@ -75,7 +75,7 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
                 newsfeedAdapter.notifyDataSetChanged()
                 binding.progressBar.visibility = View.INVISIBLE
             }
-        })
+        }
     }
 
     private fun setupToolBar() {

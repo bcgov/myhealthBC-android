@@ -41,7 +41,7 @@ class ManageHealthPassFragment : Fragment(R.layout.fragment_manage_health_passes
         setUpRecyclerView()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 collectHealthPasses()
             }
         }

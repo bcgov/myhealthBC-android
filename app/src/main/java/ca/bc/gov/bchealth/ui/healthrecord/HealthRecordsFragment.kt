@@ -52,7 +52,7 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 collectHealthRecordsFlow()
             }
         }

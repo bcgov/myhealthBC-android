@@ -1,9 +1,10 @@
 package ca.bc.gov.data
 
+import ca.bc.gov.common.const.MESSAGE_INVALID_RESPONSE
 import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
-import ca.bc.gov.common.exceptions.MyHealthNetworkException
+import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
@@ -33,16 +34,16 @@ class LaboratoryRemoteDataSource @Inject constructor(
      */
     suspend fun getCovidTests(request: CovidTestRequest): PatientWithTestResultsAndRecordsDto {
         val response = safeCall { laboratoryApi.getCovidTests(request.toMap()) }
-            ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
+            ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
         if (response.error != null) {
             if (Action.MISMATCH.code == response.error.action?.code) {
-                throw MyHealthNetworkException(SERVER_ERROR_DATA_MISMATCH, response.error.message)
+                throw MyHealthException(SERVER_ERROR_DATA_MISMATCH, response.error.message)
             }
             if ("Error parsing phn" == response.error.message) {
-                throw MyHealthNetworkException(SERVER_ERROR_INCORRECT_PHN, response.error.message)
+                throw MyHealthException(SERVER_ERROR_INCORRECT_PHN, response.error.message)
             }
-            throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
+            throw MyHealthException(SERVER_ERROR, response.error.message)
         }
 
         val patient = PatientDto(
@@ -71,10 +72,10 @@ class LaboratoryRemoteDataSource @Inject constructor(
         hdid: String
     ): List<TestResultWithRecordsDto> {
         val response = safeCall { laboratoryApi.getAuthenticatedCovidTests(token, hdid) }
-            ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
+            ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
         if (response.error != null) {
-            throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
+            throw MyHealthException(SERVER_ERROR, response.error.message)
         }
 
         val list = arrayListOf<TestResultWithRecordsDto>()

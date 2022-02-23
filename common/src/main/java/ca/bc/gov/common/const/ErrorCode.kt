@@ -10,3 +10,5 @@ const val DATABASE_ERROR = 4000
 
 const val AUTH_ERROR = 5000
 const val AUTH_ERROR_DO_LOGIN = 5001
+
+const val MESSAGE_INVALID_RESPONSE = "Invalid response"
