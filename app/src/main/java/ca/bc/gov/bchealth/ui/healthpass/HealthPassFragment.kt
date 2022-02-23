@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -137,14 +136,13 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
         )
 
         sharedViewModel.modifiedRecordId.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (it > 0) {
-                    findNavController()
-                        .navigate(R.id.action_healthPassFragment_to_healthPassesFragment)
-                }
+            viewLifecycleOwner
+        ) {
+            if (it > 0) {
+                findNavController()
+                    .navigate(R.id.action_healthPassFragment_to_healthPassesFragment)
             }
-        )
+        }
 
         viewModel.launchCheck()
 
@@ -340,7 +338,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
         findNavController().navigate(R.id.action_healthPassFragment_to_healthPassesFragment)
     }
 
-    inner class SwipeToDeleteCallBack() :
+    inner class SwipeToDeleteCallBack :
         ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
         override fun onMove(

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordHeaderBinding
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordMemberBinding
+import ca.bc.gov.common.model.AuthenticationStatus
 
 /**
  * @author Pinakin Kansara
@@ -80,7 +81,13 @@ class HealthRecordsAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (position) {
-            0 -> ITEM_VIEW_TYPE_HEADER
+            0 -> {
+                return if (getItem(position).authStatus == AuthenticationStatus.AUTHENTICATED)
+                    ITEM_VIEW_TYPE_HEADER
+                else {
+                    ITEM_VIEW_TYPE_MEMBER
+                }
+            }
             else -> ITEM_VIEW_TYPE_MEMBER
         }
     }

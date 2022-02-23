@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHealthRecordsBinding
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.common.model.AuthenticationStatus
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -40,7 +41,7 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
             val action =
                 HealthRecordsFragmentDirections
                     .actionHealthRecordsFragmentToIndividualHealthRecordFragment(
-                        it.patientId.toLong(),
+                        it.patientId,
                         it.name
                     )
             findNavController().navigate(action)
@@ -76,14 +77,18 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
             if (records.isNotEmpty()) {
                 binding.ivAddHealthRecord.visibility = View.VISIBLE
                 binding.rvMembers.adapter = adapter
-                binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), 2).apply {
-                    spanSizeLookup =
-                        object : GridLayoutManager.SpanSizeLookup() {
-                            override fun getSpanSize(position: Int) = when (position) {
-                                0 -> GRID_SPAN_COUNT
-                                else -> LIST_SPAN_COUNT
+                if (records.any { it.authStatus == AuthenticationStatus.AUTHENTICATED }) {
+                    binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), 2).apply {
+                        spanSizeLookup =
+                            object : GridLayoutManager.SpanSizeLookup() {
+                                override fun getSpanSize(position: Int) = when (position) {
+                                    0 -> GRID_SPAN_COUNT
+                                    else -> LIST_SPAN_COUNT
+                                }
                             }
-                        }
+                    }
+                } else {
+                    binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), 2)
                 }
                 adapter.submitList(records)
             } else {

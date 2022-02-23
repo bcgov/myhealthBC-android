@@ -59,7 +59,7 @@
     <string name="date_of_birth">Date of Birth (yyyy-mm-dd)</string>
     <string name="date_of_vaccination">Date of vaccination (yyyy-mm-dd)</string>
     <string name="select_date">Select date</string>
-    <string name="privacy_statement_info_vaccine">Your information is being collected to provide you with your COVID-19 vaccination status under s. 26(c) of the Freedom of Information and Protection of Privacy Act. Contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849 if you have any questions about this collection.</string>
+    <string name="privacy_statement_info_vaccine">Your information is being collected to provide you with your COVID–19 vaccination status under s. 26(c) of the Freedom of Information and Protection of Privacy Act. Contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849 if you have any questions about this collection.</string>
     <string name="privacy_statement_info_test_result">Your information is being collected to provide you with your COVID-19 test results under s. 26(c) of the Freedom of Information and Protection of Privacy Act. Contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849 if you have any questions about this collection.</string>
     <string name="phn_number_required">Personal Health Number is required</string>
     <string name="dob_required">Date of Birth is required</string>
@@ -171,10 +171,10 @@
     <string name="pending">Pending</string>
     <string name="result_description">Result Description:</string>
     <plurals name="hidden_records_count">
-        <item quantity="one">%1$d hidden record</item>
-        <item quantity="other">%1$d hidden records</item>
+        <item quantity="one">%1$d Hidden record</item>
+        <item quantity="other">%1$d Hidden records</item>
     </plurals>
-    <string name="login_to_view_hidden_records_msg">Log in again with your BC Services Card to view all the records</string>
+    <string name="login_to_view_hidden_records_msg">Login again with your BC Services Card to view all the records</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>
