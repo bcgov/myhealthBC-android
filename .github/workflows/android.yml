@@ -75,10 +75,11 @@ jobs:
           file: app/build/outputs/apk/prod/debug/app-prod-debug.apk
 
       - name: slack notification
-        uses: rtCamp/action-slack-notify@v2.1.0
+        uses: rtCamp/action-slack-notify@v2.2.0
         env:
           SLACK_WEBHOOK: ${{secrets.SLACK_WEB_HOOK}}
+          SLACK_LINK_NAMES: true
           SLACK_CHANNEL: bc-vaccine-card
           SLACK_USERNAME: "My Health Android Bot"
           SLACK_TITLE: "Firebase build uploaded"
-          SLACK_MESSAGE: "@Aravind New build is available for testing on Firebase :-)"
+          SLACK_MESSAGE: "<@U01NY5TPAE8> New build is available for testing on Firebase :-) :rocket:"

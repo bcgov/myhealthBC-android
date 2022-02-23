@@ -48,7 +48,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             )
             try {
                 withContext(dispatcher) {
-                    val response = fetchVaccineRecordRepository.fetchAuthenticatedVaccineRecord(
+                    val response = fetchVaccineRecordRepository.fetchVaccineRecord(
                         authParameters.first,
                         authParameters.second
                     )
