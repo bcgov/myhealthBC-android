@@ -13,8 +13,8 @@ import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.di.IoDispatcher
-import ca.bc.gov.repository.utils.NotificationHelper
 import ca.bc.gov.repository.patient.PatientRepository
+import ca.bc.gov.repository.utils.NotificationHelper
 import com.google.gson.Gson
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -35,16 +35,11 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val patientWithTestResultRepository: PatientWithTestResultRepository,
     private val medicationRecordRepository: MedicationRecordRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
-    private val patientRepository: PatientRepository
-    @IoDispatcher private val dispatcher: CoroutineDispatcher,
+    private val patientRepository: PatientRepository,
     private val notificationHelper: NotificationHelper
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        val successApiMsgList = arrayListOf<String>()
-        val failApiMsgList = arrayListOf<String>()
-
-        val patientId: Long = inputData.getLong(PATIENT_ID, -1L)
         var patientId = -1L
         val patientJson = inputData.getString(PATIENT)
 
@@ -66,69 +61,14 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     }
 
     private suspend fun fetchAuthRecords(patientId: Long) {
-        val authParameters = bcscAuthRepo.getAuthParameters()
-        if (patientId > -1L) {
-            notificationHelper.showNotification(
-                context.getString(R.string.notification_title_while_fetching_data),
-                context.getString(R.string.notification_message_while_fetching_data)
-            )
-            try {
-                withContext(dispatcher) {
-                    val response = fetchVaccineRecordRepository.fetchAuthenticatedVaccineRecord(
-                        authParameters.first,
-                        authParameters.second
-                    )
-                    response.second?.let {
-                        patientWithVaccineRecordRepository.insertAuthenticatedPatientsVaccineRecord(
-                            patientId, it
-                        )
-                    }
-                }
-                successApiMsgList.add(context.getString(R.string.vaccine_records))
-            } catch (e: Exception) {
-                failApiMsgList.add(context.getString(R.string.vaccine_records))
-                // return Result.failure()
-                e.printStackTrace()
-            }
-            try {
-                withContext(dispatcher) {
-                    val response =
-                        fetchTestResultRepository.fetchAuthenticatedTestRecord(
-                            authParameters.first,
-                            authParameters.second
-                        )
-                    for (i in response.indices) {
-                        patientWithTestResultRepository.insertAuthenticatedTestResult(
-                            patientId,
-                            response[i]
-                        )
-                    }
-                }
-                successApiMsgList.add(context.getString(R.string.covid_test_result))
-            } catch (e: Exception) {
-                failApiMsgList.add(context.getString(R.string.covid_test_result))
-                // return Result.failure()
-                e.printStackTrace()
-            }
-            try {
-                withContext(dispatcher) {
-                    medicationRecordRepository.fetchMedicationStatement(
-                        patientId,
-                        authParameters.first,
-                        authParameters.second
-                    )
-                }
-                successApiMsgList.add(context.getString(R.string.medication_records))
-            } catch (e: Exception) {
-                failApiMsgList.add(context.getString(R.string.medication_records))
-                // return Result.failure()
-            }
+        val successApiMsgList = arrayListOf<String>()
+        val failApiMsgList = arrayListOf<String>()
 
-            val notificationMsg = prepareNotificationMsg(successApiMsgList, failApiMsgList)
-            notificationHelper.updateNotification(
-                context.getString(R.string.notification_title_fetching_records_completed),
-                notificationMsg
-            )
+        val authParameters = bcscAuthRepo.getAuthParameters()
+        notificationHelper.showNotification(
+            context.getString(R.string.notification_title_while_fetching_data),
+            context.getString(R.string.notification_message_while_fetching_data)
+        )
         try {
             withContext(dispatcher) {
                 val response = fetchVaccineRecordRepository.fetchAuthenticatedVaccineRecord(
@@ -141,7 +81,9 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                     )
                 }
             }
+            successApiMsgList.add(context.getString(R.string.vaccine_records))
         } catch (e: Exception) {
+            failApiMsgList.add(context.getString(R.string.vaccine_records))
             e.printStackTrace()
         }
         try {
@@ -158,7 +100,9 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                     )
                 }
             }
+            successApiMsgList.add(context.getString(R.string.covid_test_result))
         } catch (e: Exception) {
+            failApiMsgList.add(context.getString(R.string.covid_test_result))
             e.printStackTrace()
         }
         try {
@@ -169,12 +113,22 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                     authParameters.second
                 )
             }
+            successApiMsgList.add(context.getString(R.string.medication_records))
         } catch (e: Exception) {
-            e.printStackTrace()
+            failApiMsgList.add(context.getString(R.string.medication_records))
         }
+
+        val notificationMsg = prepareNotificationMsg(successApiMsgList, failApiMsgList)
+        notificationHelper.updateNotification(
+            context.getString(R.string.notification_title_fetching_records_completed),
+            notificationMsg
+        )
     }
 
-    private fun prepareNotificationMsg(successApiMsgList: ArrayList<String>, failApiMsgList: ArrayList<String>): String {
+    private fun prepareNotificationMsg(
+        successApiMsgList: ArrayList<String>,
+        failApiMsgList: ArrayList<String>
+    ): String {
         val notificationMsg = StringBuilder()
         if (successApiMsgList.isNotEmpty()) {
             notificationMsg.append(context.getString(R.string.retrieving))
