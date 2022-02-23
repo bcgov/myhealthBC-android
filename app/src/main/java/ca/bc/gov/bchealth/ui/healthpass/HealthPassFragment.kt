@@ -76,7 +76,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
 
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
             BCSC_AUTH_STATUS
-        )?.observe(viewLifecycleOwner, {
+        )?.observe(viewLifecycleOwner) {
             findNavController().currentBackStackEntry?.savedStateHandle?.remove<BcscAuthState>(
                 BCSC_AUTH_STATUS
             )
@@ -90,7 +90,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                 }
                 else -> {}
             }
-        })
+        }
 
         sceneSingleHealthPass = Scene.getSceneForLayout(
             binding.sceneRoot,
@@ -303,22 +303,22 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
     }
 
     private fun setupRecyclerView(healthPasses: List<HealthPass>) {
-        if (::healthPassAdapter.isInitialized) {
-            val passes = healthPasses.toMutableList().subList(0, 1)
-            passes.first().isExpanded = true
-            healthPassAdapter.submitList(passes)
-        }
         val recHealthPasses: RecyclerView =
             sceneSingleHealthPass.sceneRoot.findViewById(R.id.rec_cards_list)
         recHealthPasses.adapter = healthPassAdapter
         recHealthPasses.layoutManager = LinearLayoutManager(requireContext())
 
-        /*
-        * card swipe out functionality
-        * */
-        val callback = SwipeToDeleteCallBack(healthPasses)
-        val itemTouchHelper = ItemTouchHelper(callback)
-        itemTouchHelper.attachToRecyclerView(recHealthPasses)
+        if (::healthPassAdapter.isInitialized) {
+            val passes = healthPasses.toMutableList().subList(0, 1)
+            passes.first().isExpanded = true
+            healthPassAdapter.submitList(passes)
+
+            if (!passes.first().isAuthenticated) {
+                val callback = SwipeToDeleteCallBack()
+                val itemTouchHelper = ItemTouchHelper(callback)
+                itemTouchHelper.attachToRecyclerView(recHealthPasses)
+            }
+        }
     }
 
     private fun showNoCardPlaceHolder() {
@@ -339,7 +339,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
         findNavController().navigate(R.id.action_healthPassFragment_to_healthPassesFragment)
     }
 
-    inner class SwipeToDeleteCallBack(healthPasses: List<HealthPass>) :
+    inner class SwipeToDeleteCallBack() :
         ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
         override fun onMove(

@@ -15,6 +15,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentTestResultDetailBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import com.google.android.material.tabs.TabLayoutMediator
@@ -46,7 +47,7 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
     private fun observeDetails() {
 
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 viewModel.uiState.collect { state ->
 
@@ -68,6 +69,8 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
 
     private fun initUi(testRecords: List<TestRecordDto>, patientDto: PatientDto) {
 
+        binding.toolbar.tvRightOption.isVisible =
+            patientDto.authenticationStatus != AuthenticationStatus.AUTHENTICATED
         val covidTestResultsAdapter = CovidTestResultsAdapter(
             this,
             testRecords,

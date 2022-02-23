@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "a90ba1379872e251aec73d563f499983",
+    "identityHash": "8253276490a7eaa248c7e9296b719b6c",
     "entities": [
       {
         "tableName": "patient",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `full_name` TEXT NOT NULL, `dob` INTEGER NOT NULL, `phn` TEXT, `time_stamp` INTEGER NOT NULL, `patient_order` INTEGER NOT NULL DEFAULT 9223372036854775807, `authentication_status` TEXT NOT NULL DEFAULT '2')",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `full_name` TEXT NOT NULL, `dob` INTEGER NOT NULL, `phn` TEXT, `time_stamp` INTEGER NOT NULL, `patient_order` INTEGER NOT NULL DEFAULT 9223372036854775807, `authentication_status` TEXT NOT NULL DEFAULT 'NON_AUTHENTICATED')",
         "fields": [
           {
             "fieldPath": "id",
@@ -50,7 +50,7 @@
             "columnName": "authentication_status",
             "affinity": "TEXT",
             "notNull": true,
-            "defaultValue": "'2'"
+            "defaultValue": "'NON_AUTHENTICATED'"
           }
         ],
         "primaryKey": {
@@ -649,7 +649,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a90ba1379872e251aec73d563f499983')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8253276490a7eaa248c7e9296b719b6c')"
     ]
   }
 }

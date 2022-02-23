@@ -26,7 +26,6 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentBcscAuthBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
-import ca.bc.gov.repository.worker.CAN_NAVIGATE
 import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker
 import ca.bc.gov.repository.worker.FetchAuthenticatedPatientDataWorker
 import ca.bc.gov.repository.worker.PATIENT_ID
@@ -135,20 +134,20 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
         workManager = WorkManager.getInstance(requireContext())
         workManager.enqueue(workRequest)
         workManager.getWorkInfoByIdLiveData(workRequest.id)
-            .observe(viewLifecycleOwner, { info ->
+            .observe(viewLifecycleOwner) { info ->
                 if (info != null && info.state.isFinished) {
                     val queItUrl = info.outputData.getString(WORK_RESULT)
                     if (queItUrl != null) {
                         queUser(queItUrl)
                     }
 
-                    if (info.outputData.getBoolean(CAN_NAVIGATE, false)) {
+                    if (info.outputData.getLong(PATIENT_ID, 0) > 0) {
                         respondToSuccess()
                         fetchAuthenticatedRecords(info)
                         showLoader(false)
                     }
                 }
-            })
+            }
     }
 
     private fun fetchAuthenticatedRecords(info: WorkInfo) {
