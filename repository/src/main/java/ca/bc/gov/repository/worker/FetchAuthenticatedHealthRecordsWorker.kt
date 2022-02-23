@@ -3,9 +3,8 @@ package ca.bc.gov.repository.worker
 import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
-import androidx.work.Data
 import androidx.work.WorkerParameters
-import androidx.work.workDataOf
+import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.repository.FetchTestResultRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
@@ -14,6 +13,7 @@ import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.patient.PatientRepository
+import com.google.gson.Gson
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -37,22 +37,16 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        var output: Data = workDataOf()
+        var patientId = -1L
+        val patientJson = inputData.getString(PATIENT)
 
-        var patientId: Long = inputData.getLong(PATIENT_ID, -1L)
         val authParameters = bcscAuthRepo.getAuthParameters()
-        if (patientId > -1L) {
+        if (!patientJson.isNullOrBlank()) {
             // clear all records related to patient Id
+            val patient = Gson().fromJson(patientJson, PatientDto::class.java)
             try {
                 withContext(dispatcher) {
-                    val patientDto = patientRepository.getPatient(patientId)
-                    patientRepository.deletePatientById(patientId)
-                    patientId = patientRepository.insert(patientDto)
-
-                    // set new patient id for periodic work manager
-                    output = workDataOf(
-                        PATIENT_ID to patientId
-                    )
+                    patientId = patientRepository.insertAuthenticatedPatient(patient)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -103,6 +97,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 // return Result.failure()
             }
         }
-        return Result.success(output)
+        return Result.success()
     }
 }

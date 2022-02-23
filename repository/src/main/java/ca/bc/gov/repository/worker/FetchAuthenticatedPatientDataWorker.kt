@@ -12,13 +12,14 @@ import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.patient.PatientRepository
+import com.google.gson.Gson
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 const val WORK_RESULT = "WORK_RESULT"
-const val PATIENT_ID = "PATIENT_ID"
+const val PATIENT = "PATIENT"
 
 @HiltWorker
 class FetchAuthenticatedPatientDataWorker @AssistedInject constructor(
@@ -31,22 +32,19 @@ class FetchAuthenticatedPatientDataWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        var patientId: Long
         val authParameters = bcscAuthRepo.getAuthParameters()
-        var output: Data = workDataOf()
+        var output: Data
         try {
             withContext(dispatcher) {
                 val patient = patientWithBCSCLoginRepository.getPatient(
                     authParameters.first,
                     authParameters.second
                 )
-                patientId = patientRepository.insertAuthenticatedPatient(patient)
-                if (patientId > 0) {
-                    output = workDataOf(PATIENT_ID to patientId)
-                }
+                output = workDataOf(PATIENT to Gson().toJson(patient))
             }
             return Result.success(output)
         } catch (e: Exception) {
+            e.printStackTrace()
             return when (e) {
                 is MustBeQueuedException -> {
                     output = workDataOf(WORK_RESULT to e.message)
