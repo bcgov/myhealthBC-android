@@ -6,7 +6,6 @@ import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.utils.formatInPattern
-import ca.bc.gov.common.utils.formattedStringToDateTime
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.data.remote.model.base.LabResult
@@ -15,6 +14,7 @@ import ca.bc.gov.data.remote.model.base.medication.DispensingPharmacy
 import ca.bc.gov.data.remote.model.base.medication.MedicationStatementPayload
 import ca.bc.gov.data.remote.model.base.medication.MedicationSummary
 import java.time.Instant
+import java.time.format.DateTimeFormatter
 
 fun CovidTestRecord.toTestRecord() = TestRecordDto(
     id = reportId,
@@ -34,7 +34,7 @@ fun LabResult.toTestRecord() = TestRecordDto(
     id = id,
     labName = "",
     collectionDateTime = collectedDateTime!!.formatInPattern().toDate(),
-    resultDateTime = resultDateTime.formattedStringToDateTime(),
+    resultDateTime = resultDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
     testName = loIncName ?: "",
     testOutcome = labResultOutcome ?: "",
     testType = testType,
