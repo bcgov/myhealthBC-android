@@ -112,6 +112,4 @@ class PatientLocalDataSource @Inject constructor(
 
     suspend fun getPatientWithMedicationRecords(patientId: Long): PatientWithMedicationRecordDto? =
         patientDao.getPatientWithMedicationRecords(patientId)?.toDto()
-
-    suspend fun getPatient(patientId: Long): PatientDto = patientDao.getPatient(patientId).toDto()
 }
