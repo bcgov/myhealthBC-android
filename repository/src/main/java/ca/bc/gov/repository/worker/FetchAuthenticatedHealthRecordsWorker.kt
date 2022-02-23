@@ -42,18 +42,17 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         var patientId: Long = inputData.getLong(PATIENT_ID, -1L)
         val authParameters = bcscAuthRepo.getAuthParameters()
         if (patientId > -1L) {
-            //clear all records related to patient Id
+            // clear all records related to patient Id
             try {
                 withContext(dispatcher) {
                     val patientDto = patientRepository.getPatient(patientId)
                     patientRepository.deletePatientById(patientId)
                     patientId = patientRepository.insert(patientDto)
 
-                    //set new patient id for periodic work manager
+                    // set new patient id for periodic work manager
                     output = workDataOf(
                         PATIENT_ID to patientId
                     )
-
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
