@@ -51,13 +51,16 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupToolbar()
-
-        setUpRecyclerView()
+        initUI()
 
         setupObserver()
 
         viewModel.checkForAuthenticatedPatient(args.patientId)
+    }
+
+    private fun initUI() {
+        setupToolbar()
+        setUpRecyclerView()
     }
 
     private fun getDummyData(): ArrayList<HiddenRecordItem> {
@@ -93,11 +96,13 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         observeBcscLogin()
                         binding.toolbar.tvRightOption.visibility = View.INVISIBLE
                         testRecordsAdapter.isUpdateRequested = false
+                        viewModel.resetUiState()
                         return@collect
                     }
 
                     if (uiState.nonAuthenticatedPatient) {
                         viewModel.getIndividualsHealthRecord(args.patientId)
+                        viewModel.resetUiState()
                         return@collect
                     }
 
@@ -115,18 +120,18 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
                     if (uiState.updatedTestResultId > 0) {
                         viewModel.getIndividualsHealthRecord(args.patientId)
+                        viewModel.resetUiState()
                         return@collect
                     }
 
                     if (uiState.queItTokenUpdated) {
                         requestUpdate(testResultId)
+                        viewModel.resetUiState()
                     }
-
-                    if (uiState.onTestRecords.isEmpty() && uiState.onVaccineRecord.isEmpty())
-                        findNavController().popBackStack()
 
                     if (uiState.onMustBeQueued && uiState.queItUrl != null) {
                         queUser(uiState.queItUrl)
+                        viewModel.resetUiState()
                     }
                 }
             }
@@ -302,7 +307,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun onBCSCLoginClick() {
-        /*sharedViewModel.destinationId = 0
-        findNavController().navigate(R.id.bcscAuthInfoFragment)*/
+        sharedViewModel.destinationId = 0
+        findNavController().navigate(R.id.bcscAuthInfoFragment)
     }
 }
