@@ -18,7 +18,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 const val WORK_RESULT = "WORK_RESULT"
-const val CAN_NAVIGATE = "CAN_NAVIGATE"
 const val PATIENT_ID = "PATIENT_ID"
 
 @HiltWorker
@@ -42,11 +41,8 @@ class FetchAuthenticatedPatientDataWorker @AssistedInject constructor(
                     authParameters.second
                 )
                 patientId = patientRepository.insertAuthenticatedPatient(patient)
-                if (patientId > -1L) {
-                    output = workDataOf(
-                        CAN_NAVIGATE to true,
-                        PATIENT_ID to patientId
-                    )
+                if (patientId > 0) {
+                    output = workDataOf(PATIENT_ID to patientId)
                 }
             }
             return Result.success(output)

@@ -1,0 +1,40 @@
+name: Android CICD Firebase deployment
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+      - feature/bcsc
+
+jobs:
+  build:
+    name: Clean build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check out
+        uses: actions/checkout@v2
+
+      - name: setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
+      - name: clean build
+        run: ./gradlew clean build
+        env:
+          USER: ${{ secrets.USER }}
+          TOKEN: ${{ secrets.TOKEN }}
+
+      - name: slack notification
+        uses: rtCamp/action-slack-notify@v2.1.0
+        env:
+          SLACK_WEBHOOK: ${{secrets.SLACK_PR_WEB_HOOK}}
+          SLACK_CHANNEL: my-health-android-dev
+          SLACK_USERNAME: "My Health Android Bot"
+          SLACK_TITLE: "PR review requested"
+          SLACK_MESSAGE: "@here Please spare some time to review my PR :-)"

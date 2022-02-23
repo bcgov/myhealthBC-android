@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthpass.manage
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.databinding.ItemHealthPassCardBinding
 import ca.bc.gov.bchealth.ui.healthpass.HealthPass
@@ -37,7 +38,7 @@ class ManageHealthPassAdapter(
         holder.binding.apply {
             layoutQrCode.visibility = View.GONE
             icReorder.visibility = View.VISIBLE
-            imgUnlink.visibility = View.VISIBLE
+            imgUnlink.isVisible = !healthPass.isAuthenticated
             imgUnlink.setOnClickListener {
                 deleteClickListener.onDeleteClicked(healthPass.vaccineRecordId)
             }
