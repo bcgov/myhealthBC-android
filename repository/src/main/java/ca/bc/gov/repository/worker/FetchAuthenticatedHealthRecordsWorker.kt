@@ -40,7 +40,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         var patientId = -1L
         val patientJson = inputData.getString(PATIENT)
 
-        val authParameters = bcscAuthRepo.getAuthParameters()
         if (!patientJson.isNullOrBlank()) {
             // clear all records related to patient Id
             val patient = Gson().fromJson(patientJson, PatientDto::class.java)
@@ -52,53 +51,56 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 e.printStackTrace()
             }
             if (patientId > -1L) {
-                try {
-                    withContext(dispatcher) {
-                        val response = fetchVaccineRecordRepository.fetchAuthenticatedVaccineRecord(
-                            authParameters.first,
-                            authParameters.second
-                        )
-                        response.second?.let {
-                            patientWithVaccineRecordRepository.insertAuthenticatedPatientsVaccineRecord(
-                                patientId, it
-                            )
-                        }
-                    }
-                } catch (e: Exception) {
-                    // return Result.failure()
-                    e.printStackTrace()
-                }
-                try {
-                    withContext(dispatcher) {
-                        val response =
-                            fetchTestResultRepository.fetchAuthenticatedTestRecord(
-                                authParameters.first,
-                                authParameters.second
-                            )
-                        for (i in response.indices) {
-                            patientWithTestResultRepository.insertAuthenticatedTestResult(
-                                patientId,
-                                response[i]
-                            )
-                        }
-                    }
-                } catch (e: Exception) {
-                    // return Result.failure()
-                    e.printStackTrace()
-                }
-                try {
-                    withContext(dispatcher) {
-                        medicationRecordRepository.fetchMedicationStatement(
-                            patientId,
-                            authParameters.first,
-                            authParameters.second
-                        )
-                    }
-                } catch (e: Exception) {
-                    // return Result.failure()
-                }
+                fetchAuthRecords(patientId)
             }
         }
         return Result.success()
+    }
+
+    private suspend fun fetchAuthRecords(patientId: Long) {
+        val authParameters = bcscAuthRepo.getAuthParameters()
+        try {
+            withContext(dispatcher) {
+                val response = fetchVaccineRecordRepository.fetchAuthenticatedVaccineRecord(
+                    authParameters.first,
+                    authParameters.second
+                )
+                response.second?.let {
+                    patientWithVaccineRecordRepository.insertAuthenticatedPatientsVaccineRecord(
+                        patientId, it
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        try {
+            withContext(dispatcher) {
+                val response =
+                    fetchTestResultRepository.fetchAuthenticatedTestRecord(
+                        authParameters.first,
+                        authParameters.second
+                    )
+                for (i in response.indices) {
+                    patientWithTestResultRepository.insertAuthenticatedTestResult(
+                        patientId,
+                        response[i]
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        try {
+            withContext(dispatcher) {
+                medicationRecordRepository.fetchMedicationStatement(
+                    patientId,
+                    authParameters.first,
+                    authParameters.second
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }
