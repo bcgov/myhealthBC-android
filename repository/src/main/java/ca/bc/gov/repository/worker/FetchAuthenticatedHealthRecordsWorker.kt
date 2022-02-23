@@ -51,50 +51,52 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            try {
-                withContext(dispatcher) {
-                    val response = fetchVaccineRecordRepository.fetchAuthenticatedVaccineRecord(
-                        authParameters.first,
-                        authParameters.second
-                    )
-                    response.second?.let {
-                        patientWithVaccineRecordRepository.insertAuthenticatedPatientsVaccineRecord(
-                            patientId, it
-                        )
-                    }
-                }
-            } catch (e: Exception) {
-                // return Result.failure()
-                e.printStackTrace()
-            }
-            try {
-                withContext(dispatcher) {
-                    val response =
-                        fetchTestResultRepository.fetchAuthenticatedTestRecord(
+            if(patientId > -1L) {
+                try {
+                    withContext(dispatcher) {
+                        val response = fetchVaccineRecordRepository.fetchAuthenticatedVaccineRecord(
                             authParameters.first,
                             authParameters.second
                         )
-                    for (i in response.indices) {
-                        patientWithTestResultRepository.insertAuthenticatedTestResult(
+                        response.second?.let {
+                            patientWithVaccineRecordRepository.insertAuthenticatedPatientsVaccineRecord(
+                                patientId, it
+                            )
+                        }
+                    }
+                } catch (e: Exception) {
+                    // return Result.failure()
+                    e.printStackTrace()
+                }
+                try {
+                    withContext(dispatcher) {
+                        val response =
+                            fetchTestResultRepository.fetchAuthenticatedTestRecord(
+                                authParameters.first,
+                                authParameters.second
+                            )
+                        for (i in response.indices) {
+                            patientWithTestResultRepository.insertAuthenticatedTestResult(
+                                patientId,
+                                response[i]
+                            )
+                        }
+                    }
+                } catch (e: Exception) {
+                    // return Result.failure()
+                    e.printStackTrace()
+                }
+                try {
+                    withContext(dispatcher) {
+                        medicationRecordRepository.fetchMedicationStatement(
                             patientId,
-                            response[i]
+                            authParameters.first,
+                            authParameters.second
                         )
                     }
+                } catch (e: Exception) {
+                    // return Result.failure()
                 }
-            } catch (e: Exception) {
-                // return Result.failure()
-                e.printStackTrace()
-            }
-            try {
-                withContext(dispatcher) {
-                    medicationRecordRepository.fetchMedicationStatement(
-                        patientId,
-                        authParameters.first,
-                        authParameters.second
-                    )
-                }
-            } catch (e: Exception) {
-                // return Result.failure()
             }
         }
         return Result.success()
