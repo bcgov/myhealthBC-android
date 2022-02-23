@@ -17,7 +17,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.work.Data
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
@@ -41,10 +43,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
+import java.util.concurrent.TimeUnit
 
 /*
 * @auther amit_metri on 04,January,2022
 */
+const val BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME = "BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME"
+const val BACKGROUND_AUTH_RECORD_FETCH_WORK_INTERVAL = 15L
 @AndroidEntryPoint
 class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
@@ -154,11 +159,11 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
     private fun fetchAuthenticatedRecords(info: WorkInfo) {
         val patientId = info.outputData.getLong(PATIENT_ID, -1L)
         val data: Data = workDataOf(PATIENT_ID to patientId)
-        workRequest = OneTimeWorkRequestBuilder<FetchAuthenticatedHealthRecordsWorker>()
+        val workRequest = PeriodicWorkRequestBuilder<FetchAuthenticatedHealthRecordsWorker>(BACKGROUND_AUTH_RECORD_FETCH_WORK_INTERVAL, TimeUnit.MINUTES)
             .setInputData(data)
             .build()
         workManager = WorkManager.getInstance(requireContext())
-        workManager.enqueue(workRequest)
+        workManager.enqueueUniquePeriodicWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME, ExistingPeriodicWorkPolicy.KEEP, workRequest)
     }
 
     private fun queUser(value: String) {
