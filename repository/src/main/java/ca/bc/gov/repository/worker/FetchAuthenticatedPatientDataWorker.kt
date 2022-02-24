@@ -47,6 +47,7 @@ class FetchAuthenticatedPatientDataWorker @AssistedInject constructor(
             }
             return Result.success(output)
         } catch (e: Exception) {
+            e.printStackTrace()
             return when (e) {
                 is MustBeQueuedException -> {
                     output = workDataOf(WORK_RESULT to e.message)

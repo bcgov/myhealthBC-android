@@ -104,4 +104,7 @@ interface PatientDao {
             "(SELECT id FROM patient WHERE authentication_status = 'AUTHENTICATED')"
     )
     suspend fun deleteAuthenticatedPatient()
+
+    @Query("SELECT count(*) FROM patient WHERE id = :patientId AND authentication_status = 'AUTHENTICATED'")
+    suspend fun isAuthenticatedPatient(patientId: Long): Int
 }
