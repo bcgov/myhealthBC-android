@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.medication
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_RECORD
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.repository.MedicationRecordRepository
@@ -36,7 +37,8 @@ class MedicationDetailsViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     onLoading = false,
-                    medicationDetails = prePareMedicationDetails(medicationWithSummaryAndPharmacyDto)
+                    medicationDetails = prePareMedicationDetails(medicationWithSummaryAndPharmacyDto),
+                    toolbarTitle = medicationWithSummaryAndPharmacyDto.medicationSummary.brandName
                 )
             }
         } catch (e: Exception) {
@@ -118,8 +120,20 @@ class MedicationDetailsViewModel @Inject constructor(
                 medicationWithSummaryAndPharmacyDto.dispensingPharmacy.faxNumber
             )
         )
-
+        medicationDetails.add(
+            MedicationDetail(
+                "Direction for use",
+                medicationWithSummaryAndPharmacyDto.medicationRecord.directions,
+                ITEM_VIEW_TYPE_DIRECTIONS
+            )
+        )
         return medicationDetails
+    }
+
+    companion object {
+        const val ITEM_VIEW_TYPE_RECORD = 0
+        const val ITEM_VIEW_TYPE_DIRECTIONS = 1
+        const val ITEM_VIEW_TYPE_COMMENTS = 2
     }
 }
 
@@ -127,9 +141,11 @@ data class MedicationDetailUiState(
     val onLoading: Boolean = false,
     val onError: Boolean = false,
     val medicationDetails: List<MedicationDetail>? = null,
+    val toolbarTitle: String? = null,
 )
 
 data class MedicationDetail(
     val title: String,
-    val description: String? = "N/A"
+    val description: String? = "N/A",
+    val viewType: Int = ITEM_VIEW_TYPE_RECORD
 )

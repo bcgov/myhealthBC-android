@@ -47,7 +47,6 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
             }
 
             tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.statins)
 
             line1.visibility = View.VISIBLE
         }
@@ -69,6 +68,7 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
 
                     if (state.medicationDetails?.isNotEmpty() == true) {
                         medicationDetailAdapter.submitList(state.medicationDetails)
+                        binding.toolbar.tvTitle.text = state.toolbarTitle
                     }
 
                     if (state.onError) {

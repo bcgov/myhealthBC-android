@@ -62,9 +62,12 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
         setUpRecyclerView()
 
-        observeBcscLogin()
-
-        bcscAuthViewModel.checkLogin()
+        if (loginSessionStatus == null) {
+            observeBcscLogin()
+            bcscAuthViewModel.checkLogin()
+        } else {
+            viewModel.getIndividualsHealthRecord(args.patientId)
+        }
 
         setupObserver()
     }
@@ -286,7 +289,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     positiveBtnCallback = {
                         viewModel.deleteVaccineRecord(
                             healthRecordItem.patientId
-                        ).invokeOnCompletion { viewModel.getIndividualsHealthRecord(args.patientId) }
+                        )
+                            .invokeOnCompletion { viewModel.getIndividualsHealthRecord(args.patientId) }
                     }
                 )
             }
@@ -301,7 +305,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     positiveBtnCallback = {
                         viewModel.deleteTestRecord(
                             healthRecordItem.testResultId
-                        ).invokeOnCompletion { viewModel.getIndividualsHealthRecord(args.patientId) }
+                        )
+                            .invokeOnCompletion { viewModel.getIndividualsHealthRecord(args.patientId) }
                     }
                 )
             }
