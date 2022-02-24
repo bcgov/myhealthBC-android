@@ -117,4 +117,7 @@ class PatientLocalDataSource @Inject constructor(
     suspend fun deleteBcscAuthenticatedPatientData() {
         patientDao.deleteAuthenticatedPatient()
     }
+
+    suspend fun isAuthenticatedPatient(patientId: Long): Boolean =
+        patientDao.isAuthenticatedPatient(patientId) > 0
 }
