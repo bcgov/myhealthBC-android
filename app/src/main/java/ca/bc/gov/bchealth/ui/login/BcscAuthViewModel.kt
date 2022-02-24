@@ -103,7 +103,7 @@ class BcscAuthViewModel @Inject constructor(
         }
     }
 
-    fun processLogoutResponse() {
+    fun processLogoutResponse() = viewModelScope.launch {
         bcscAuthRepo.processLogoutResponse()
     }
 
@@ -119,18 +119,25 @@ class BcscAuthViewModel @Inject constructor(
             }
             val isLoggedSuccess = bcscAuthRepo.checkLogin()
             val userName = bcscAuthRepo.getUserName()
+            val loginSessionStatus = if (isLoggedSuccess) {
+                LoginSessionStatus.ACTIVE
+            } else {
+                LoginSessionStatus.EXPIRED
+            }
             _authStatus.update {
                 it.copy(
                     showLoading = false,
                     isLoggedIn = isLoggedSuccess,
-                    userName = userName
+                    userName = userName,
+                    loginSessionStatus = loginSessionStatus
                 )
             }
         } catch (e: Exception) {
             _authStatus.update {
                 it.copy(
                     showLoading = false,
-                    isLoggedIn = false
+                    isLoggedIn = false,
+                    loginSessionStatus = LoginSessionStatus.EXPIRED
                 )
             }
         }
@@ -143,7 +150,8 @@ class BcscAuthViewModel @Inject constructor(
                 isLoggedIn = false,
                 authRequestIntent = null,
                 isError = false,
-                userName = ""
+                userName = "",
+                loginSessionStatus = null
             )
         }
     }
@@ -161,9 +169,15 @@ class BcscAuthViewModel @Inject constructor(
 
 data class AuthStatus(
     val showLoading: Boolean = false,
-    val isLoggedIn: Boolean = false,
+    val isLoggedIn: Boolean = false, // Deprecated
     val authRequestIntent: Intent? = null,
     val isError: Boolean = false,
     val userName: String = "",
-    val queItTokenUpdated: Boolean = false
+    val queItTokenUpdated: Boolean = false,
+    val loginSessionStatus: LoginSessionStatus? = null
 )
+
+enum class LoginSessionStatus {
+    ACTIVE,
+    EXPIRED
+}
