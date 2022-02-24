@@ -16,10 +16,14 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
+import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
+import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
+import ca.bc.gov.bchealth.ui.login.LoginSessionStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
+import ca.bc.gov.common.model.AuthenticationStatus
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
 import com.queue_it.androidsdk.QueueListener
@@ -47,24 +51,44 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private var testResultId: Long = -1L
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
+    private var loginSessionStatus: LoginSessionStatus? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initUI()
+        handleBcscAuthResponse()
+
+        setupToolbar()
+
+        setUpRecyclerView()
+
+        observeBcscLogin()
+
+        bcscAuthViewModel.checkLogin()
 
         setupObserver()
-
-        viewModel.checkForAuthenticatedPatient(args.patientId)
     }
 
-    private fun initUI() {
-        setupToolbar()
-        setUpRecyclerView()
+    private fun handleBcscAuthResponse() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
+            BcscAuthFragment.BCSC_AUTH_STATUS
+        )?.observe(viewLifecycleOwner) {
+            findNavController().currentBackStackEntry?.savedStateHandle?.remove<BcscAuthState>(
+                BcscAuthFragment.BCSC_AUTH_STATUS
+            )
+            when (it) {
+                BcscAuthState.SUCCESS -> {
+                    findNavController().popBackStack()
+                }
+                else -> {
+                    // no implementation required}
+                }
+            }
+        }
     }
 
-    private fun getDummyData(): ArrayList<HiddenRecordItem> {
-        return arrayListOf(HiddenRecordItem(0))
+    private fun getDummyData(authenticatedRecordsCount: Int): ArrayList<HiddenRecordItem> {
+        return arrayListOf(HiddenRecordItem(authenticatedRecordsCount))
     }
 
     private fun observeBcscLogin() {
@@ -75,10 +99,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     if (it.showLoading) {
                         return@collect
                     } else {
-                        if (it.isLoggedIn) {
+                        it.loginSessionStatus?.let {
+                            loginSessionStatus = it
                             viewModel.getIndividualsHealthRecord(args.patientId)
-                        } else {
-                            hiddenHealthRecordAdapter.submitList(getDummyData())
                         }
                     }
                 }
@@ -91,47 +114,61 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
 
-                    if (uiState.authenticatedPatient) {
-                        bcscAuthViewModel.checkLogin()
-                        observeBcscLogin()
+                    if (loginSessionStatus != null) {
+                        if (loginSessionStatus == LoginSessionStatus.ACTIVE) {
+                            if (::vaccineRecordsAdapter.isInitialized) {
+                                vaccineRecordsAdapter.submitList(uiState.onVaccineRecord)
+                            }
+
+                            if (::testRecordsAdapter.isInitialized) {
+                                testRecordsAdapter.submitList(uiState.onTestRecords)
+                            }
+
+                            if (::medicationRecordsAdapter.isInitialized) {
+                                medicationRecordsAdapter.submitList(uiState.onMedicationRecords)
+                            }
+                        }
+
+                        if (loginSessionStatus == LoginSessionStatus.EXPIRED) {
+                            if (::vaccineRecordsAdapter.isInitialized) {
+                                vaccineRecordsAdapter.submitList(uiState.onNonBcscVaccineRecord)
+                            }
+
+                            if (::testRecordsAdapter.isInitialized) {
+                                testRecordsAdapter.submitList(uiState.onNonBcscTestRecords)
+                            }
+
+                            if (::medicationRecordsAdapter.isInitialized) {
+                                medicationRecordsAdapter.submitList(uiState.onNonBcscMedicationRecords)
+                            }
+
+                            if (uiState.authenticatedRecordsCount != null &&
+                                uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED &&
+                                ::hiddenHealthRecordAdapter.isInitialized
+                            ) {
+                                hiddenHealthRecordAdapter.submitList(
+                                    getDummyData(uiState.authenticatedRecordsCount)
+                                )
+                            }
+                        }
+                    }
+
+                    if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
                         binding.toolbar.tvRightOption.visibility = View.INVISIBLE
                         testRecordsAdapter.isUpdateRequested = false
-                        viewModel.resetUiState()
-                        return@collect
-                    }
-
-                    if (uiState.nonAuthenticatedPatient) {
-                        viewModel.getIndividualsHealthRecord(args.patientId)
-                        viewModel.resetUiState()
-                        return@collect
-                    }
-
-                    if (::vaccineRecordsAdapter.isInitialized) {
-                        vaccineRecordsAdapter.submitList(uiState.onVaccineRecord)
-                    }
-
-                    if (::testRecordsAdapter.isInitialized) {
-                        testRecordsAdapter.submitList(uiState.onTestRecords)
-                    }
-
-                    if (::medicationRecordsAdapter.isInitialized) {
-                        medicationRecordsAdapter.submitList(uiState.onMedicationRecords)
                     }
 
                     if (uiState.updatedTestResultId > 0) {
                         viewModel.getIndividualsHealthRecord(args.patientId)
-                        viewModel.resetUiState()
                         return@collect
                     }
 
                     if (uiState.queItTokenUpdated) {
                         requestUpdate(testResultId)
-                        viewModel.resetUiState()
                     }
 
                     if (uiState.onMustBeQueued && uiState.queItUrl != null) {
                         queUser(uiState.queItUrl)
-                        viewModel.resetUiState()
                     }
                 }
             }
@@ -267,6 +304,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         ).invokeOnCompletion { viewModel.getIndividualsHealthRecord(args.patientId) }
                     }
                 )
+            }
+            else -> {
+                // no implementation required
             }
         }
     }

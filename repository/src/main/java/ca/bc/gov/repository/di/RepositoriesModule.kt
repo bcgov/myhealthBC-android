@@ -141,10 +141,12 @@ class RepositoriesModule {
     @Singleton
     fun provideBcscAuthRepository(
         @ApplicationContext context: Context,
-        encryptedPreferenceStorage: EncryptedPreferenceStorage
+        encryptedPreferenceStorage: EncryptedPreferenceStorage,
+        patientLocalDataSource: PatientLocalDataSource
     ) = BcscAuthRepo(
         context,
-        encryptedPreferenceStorage
+        encryptedPreferenceStorage,
+        patientLocalDataSource
     )
 
     @Provides

@@ -8,6 +8,7 @@ import androidx.core.net.toUri
 import ca.bc.gov.common.const.AUTH_ERROR
 import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.data.datasource.PatientLocalDataSource
 import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.repository.R
 import net.openid.appauth.AuthState
@@ -28,6 +29,7 @@ import java.nio.charset.Charset
 class BcscAuthRepo(
     private val applicationContext: Context,
     private val encryptedPreferenceStorage: EncryptedPreferenceStorage,
+    private val patientLocalDataSource: PatientLocalDataSource
 ) {
 
     private lateinit var authState: AuthState
@@ -116,7 +118,8 @@ class BcscAuthRepo(
             )
     }
 
-    fun processLogoutResponse() {
+    suspend fun processLogoutResponse() {
+        patientLocalDataSource.deleteBcscAuthenticatedPatientData()
         setAuthState(null)
     }
 
