@@ -41,7 +41,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         val patientId: Long = inputData.getLong(PATIENT_ID, 0)
 
         if (patientId > 0 && patientRepository.isAuthenticatedPatient(patientId)) {
-            //authenticated patient is available in DB means token is not expired
+            // authenticated patient is available in DB means token is not expired
             fetchAuthRecords(patientId)
         }
         return Result.success()
