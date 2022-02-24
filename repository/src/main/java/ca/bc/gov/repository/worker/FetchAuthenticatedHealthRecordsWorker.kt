@@ -5,7 +5,6 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import ca.bc.gov.common.R
-import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.repository.FetchTestResultRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
@@ -15,7 +14,6 @@ import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.utils.NotificationHelper
-import com.google.gson.Gson
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -40,22 +38,11 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        var patientId = -1L
-        val patientJson = inputData.getString(PATIENT)
+        val patientId: Long = inputData.getLong(PATIENT_ID, 0)
 
-        if (!patientJson.isNullOrBlank()) {
-            // clear all records related to patient Id
-            val patient = Gson().fromJson(patientJson, PatientDto::class.java)
-            try {
-                withContext(dispatcher) {
-                    patientId = patientRepository.insertAuthenticatedPatient(patient)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            if (patientId > -1L) {
-                fetchAuthRecords(patientId)
-            }
+        if (patientId > 0 && patientRepository.isAuthenticatedPatient(patientId)) {
+            //authenticated patient is available in DB means token is not expired
+            fetchAuthRecords(patientId)
         }
         return Result.success()
     }
@@ -88,17 +75,10 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         }
         try {
             withContext(dispatcher) {
-                val response =
-                    fetchTestResultRepository.fetchAuthenticatedTestRecord(
-                        authParameters.first,
-                        authParameters.second
-                    )
-                for (i in response.indices) {
-                    patientWithTestResultRepository.insertAuthenticatedTestResult(
-                        patientId,
-                        response[i]
-                    )
-                }
+                fetchTestResultRepository.fetchAuthenticatedTestRecord(
+                    patientId, authParameters.first,
+                    authParameters.second
+                )
             }
             successApiMsgList.add(context.getString(R.string.covid_test_result))
         } catch (e: Exception) {

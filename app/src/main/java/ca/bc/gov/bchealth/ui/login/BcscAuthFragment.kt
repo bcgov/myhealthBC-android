@@ -16,14 +16,21 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.work.Data
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
+import androidx.work.workDataOf
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentBcscAuthBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
-import ca.bc.gov.repository.worker.FetchAuthenticatedRecordsWorker
+import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker
+import ca.bc.gov.repository.worker.FetchAuthenticatedPatientDataWorker
+import ca.bc.gov.repository.worker.PATIENT_ID
 import ca.bc.gov.repository.worker.WORK_RESULT
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.queue_it.androidsdk.Error
@@ -35,10 +42,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
+import java.util.concurrent.TimeUnit
 
 /*
 * @auther amit_metri on 04,January,2022
 */
+const val BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME = "BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME"
+const val BACKGROUND_AUTH_RECORD_FETCH_WORK_INTERVAL = 15L
 @AndroidEntryPoint
 class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
@@ -62,7 +72,6 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
         super.onViewCreated(view, savedInstanceState)
         setupToolBar()
         initUI()
-        initWorkManager()
     }
 
     private fun setupToolBar() {
@@ -105,11 +114,8 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                             viewModel.resetAuthStatus()
                         }
 
-
                         if (it.isLoggedIn) {
-                            fetchAuthenticatedRecords()
-                            respondToSuccess()
-                            viewModel.resetAuthStatus()
+                            fetchAuthenticatedPatientData()
                         }
 
                         if (it.queItTokenUpdated) {
@@ -127,23 +133,36 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             viewModel.resetAuthStatus()
         }
     }
-    private fun initWorkManager() {
-        workRequest = OneTimeWorkRequestBuilder<FetchAuthenticatedRecordsWorker>()
-            .build()
-        workManager = WorkManager.getInstance(requireContext())
-    }
 
-    private fun fetchAuthenticatedRecords() {
+    private fun fetchAuthenticatedPatientData() {
+        workRequest = OneTimeWorkRequestBuilder<FetchAuthenticatedPatientDataWorker>().build()
+        workManager = WorkManager.getInstance(requireContext())
         workManager.enqueue(workRequest)
         workManager.getWorkInfoByIdLiveData(workRequest.id)
-            .observe(viewLifecycleOwner, { info ->
+            .observe(viewLifecycleOwner) { info ->
                 if (info != null && info.state.isFinished) {
                     val queItUrl = info.outputData.getString(WORK_RESULT)
                     if (queItUrl != null) {
                         queUser(queItUrl)
                     }
+
+                    if (info.outputData.getLong(PATIENT_ID, 0) > 0) {
+                        respondToSuccess()
+                        fetchAuthenticatedRecords(info)
+                        showLoader(false)
+                    }
                 }
-            })
+            }
+    }
+
+    private fun fetchAuthenticatedRecords(info: WorkInfo) {
+        val patientId = info.outputData.getLong(PATIENT_ID, 0)
+        val data: Data = workDataOf(PATIENT_ID to patientId)
+        val workRequest = PeriodicWorkRequestBuilder<FetchAuthenticatedHealthRecordsWorker>(BACKGROUND_AUTH_RECORD_FETCH_WORK_INTERVAL, TimeUnit.MINUTES)
+            .setInputData(data)
+            .build()
+        workManager = WorkManager.getInstance(requireContext())
+        workManager.enqueueUniquePeriodicWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME, ExistingPeriodicWorkPolicy.KEEP, workRequest)
     }
 
     private fun queUser(value: String) {
@@ -152,7 +171,8 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             val customerId = uri.getQueryParameter("c")
             val waitingRoomId = uri.getQueryParameter("e")
             QueueService.IsTest = false
-            val queueITEngine = QueueITEngine(requireActivity(), customerId, waitingRoomId, "", "", queueListener)
+            val queueITEngine =
+                QueueITEngine(requireActivity(), customerId, waitingRoomId, "", "", queueListener)
             queueITEngine.run(requireActivity())
         } catch (e: Exception) {
             Log.i(this::class.java.name, "Exception in queUser: ${e.message}")

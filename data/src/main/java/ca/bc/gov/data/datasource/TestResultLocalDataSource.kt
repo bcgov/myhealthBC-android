@@ -37,4 +37,7 @@ class TestResultLocalDataSource @Inject constructor(
     }
 
     suspend fun delete(testResultId: Long): Int = testResultDao.delete(testResultId)
+
+    suspend fun deleteAuthenticatedTestRecords(patientId: Long): Int =
+        testResultDao.deleteAuthenticatedTestRecords(patientId)
 }

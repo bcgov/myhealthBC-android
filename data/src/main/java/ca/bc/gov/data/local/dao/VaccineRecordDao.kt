@@ -43,4 +43,7 @@ interface VaccineRecordDao {
 
     @Query("SELECT * FROM vaccine_dose WHERE vaccine_record_id = :vaccineRecordId")
     suspend fun getVaccineDoses(vaccineRecordId: Long): List<VaccineDoseEntity>
+
+    @Query("DELETE FROM vaccine_record WHERE patient_id = :patientId AND data_source = 'BCSC'")
+    suspend fun deleteAllAuthenticatedVaccineRecord(patientId: Long): Int
 }
