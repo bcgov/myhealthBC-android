@@ -30,7 +30,7 @@ import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker
 import ca.bc.gov.repository.worker.FetchAuthenticatedPatientDataWorker
-import ca.bc.gov.repository.worker.PATIENT
+import ca.bc.gov.repository.worker.PATIENT_ID
 import ca.bc.gov.repository.worker.WORK_RESULT
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.queue_it.androidsdk.Error
@@ -146,7 +146,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                         queUser(queItUrl)
                     }
 
-                    if (!info.outputData.getString(PATIENT).isNullOrBlank()) {
+                    if (info.outputData.getLong(PATIENT_ID, 0) > 0) {
                         respondToSuccess()
                         fetchAuthenticatedRecords(info)
                         showLoader(false)
@@ -156,8 +156,8 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
     }
 
     private fun fetchAuthenticatedRecords(info: WorkInfo) {
-        val patientJson = info.outputData.getString(PATIENT)
-        val data: Data = workDataOf(PATIENT to patientJson)
+        val patientId = info.outputData.getLong(PATIENT_ID, 0)
+        val data: Data = workDataOf(PATIENT_ID to patientId)
         val workRequest = PeriodicWorkRequestBuilder<FetchAuthenticatedHealthRecordsWorker>(BACKGROUND_AUTH_RECORD_FETCH_WORK_INTERVAL, TimeUnit.MINUTES)
             .setInputData(data)
             .build()

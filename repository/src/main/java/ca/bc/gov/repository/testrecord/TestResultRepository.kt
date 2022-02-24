@@ -25,4 +25,7 @@ class TestResultRepository @Inject constructor(
 
     suspend fun insertAllTestRecords(recordDtos: List<TestRecordDto>): List<Long> =
         localDataSource.insert(recordDtos)
+
+    suspend fun deleteAuthenticatedTestRecords(patientId: Long): Int =
+        localDataSource.deleteAuthenticatedTestRecords(patientId)
 }
