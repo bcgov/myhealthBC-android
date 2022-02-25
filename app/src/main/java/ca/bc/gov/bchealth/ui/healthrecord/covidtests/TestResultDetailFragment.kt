@@ -73,8 +73,7 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
             patientDto.authenticationStatus != AuthenticationStatus.AUTHENTICATED
         val covidTestResultsAdapter = CovidTestResultsAdapter(
             this,
-            testRecords,
-            patientDto
+            testRecords
         )
 
         binding.viewpagerCovidTestResults.adapter = covidTestResultsAdapter
@@ -124,17 +123,19 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
         }
     }
 
-    class CovidTestResultsAdapter(
+    inner class CovidTestResultsAdapter(
         fragment: Fragment,
-        private val testRecordDtos: List<TestRecordDto>,
-        private val patientDto: PatientDto
+        private val testRecordDtos: List<TestRecordDto>
     ) : FragmentStateAdapter(fragment) {
 
         override fun getItemCount(): Int = testRecordDtos.size
 
         override fun createFragment(position: Int): Fragment {
 
-            return SingleTestResultFragment.newInstance(testRecordDtos[position], patientDto)
+            return SingleTestResultFragment.newInstance(
+                testRecordDtos[position].id,
+                args.testResultId
+            )
         }
     }
 }

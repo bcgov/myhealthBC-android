@@ -34,9 +34,6 @@ interface PatientDao {
     @Query("SELECT * FROM patient WHERE dob = :dateOdBirth")
     suspend fun getPatientByDob(dateOdBirth: Instant): List<PatientEntity>?
 
-    @Query("SELECT * FROM patient where id = :patientId")
-    suspend fun getPatient(patientId: Long): PatientEntity
-
     @Transaction
     @Query("SELECT * FROM patient WHERE id = :patientId")
     suspend fun getPatientWithVaccineAndDoses(patientId: Long): PatientWithVaccineAndDoses?

@@ -7,8 +7,13 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSingleTestResultBinding
 import ca.bc.gov.bchealth.utils.redirect
@@ -16,6 +21,8 @@ import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.utils.toDateTimeString
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 // fragment initialization parameter
 private const val ARG_PARAM1 = "param1"
@@ -24,25 +31,45 @@ private const val ARG_PARAM2 = "param2"
 /**
  * @author amit metri
  */
+@AndroidEntryPoint
 class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) {
 
     private val binding by viewBindings(FragmentSingleTestResultBinding::bind)
-
-    private var testRecordDto: TestRecordDto? = null
-
-    private var patientDto: PatientDto? = null
+    private lateinit var testRecordId: String
+    private var testResultId: Long = 0
+    private val viewModel: SingleTestResultViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            testRecordDto = it.getParcelable(ARG_PARAM1)
-            patientDto = it.getParcelable(ARG_PARAM2)
+            testRecordId = it.getString(ARG_PARAM1).toString()
+            testResultId = it.getLong(ARG_PARAM2)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.getTestRecordDetail(testRecordId, testResultId)
+
+        observeTestRecordDetails()
+    }
+
+    private fun observeTestRecordDetails() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    if (state.testRecordDto != null &&
+                        state.patientDto != null
+                    ) {
+                        initUi(state.testRecordDto, state.patientDto)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun initUi(testRecordDto: TestRecordDto?, patientDto: PatientDto?) {
         binding.apply {
             tvFullName.text = patientDto?.fullName
             tvTestResult.text = testRecordDto?.testOutcome
@@ -56,16 +83,25 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
             tvTestStatus.text = testRecordDto?.testStatus
             tvTypeName.text = testRecordDto?.testName
             tvProviderClinic.text = testRecordDto?.labName
-            if (testRecordDto?.testOutcome == CovidTestResultStatus.Positive.toString() ||
-                testRecordDto?.testOutcome == CovidTestResultStatus.Negative.toString() ||
-                testRecordDto?.testOutcome == CovidTestResultStatus.Cancelled.toString() ||
-                testRecordDto?.testOutcome == CovidTestResultStatus.Indeterminate.toString()
-            ) {
-                setResultDescription(testRecordDto?.resultDescription)
-            }
         }
 
-        testRecordDto?.let { getCovidTestStatus(it) }
+        if (testRecordDto?.testOutcome == CovidTestResultStatus.Positive.toString() ||
+            testRecordDto?.testOutcome == CovidTestResultStatus.Negative.toString() ||
+            testRecordDto?.testOutcome == CovidTestResultStatus.Cancelled.toString() ||
+            testRecordDto?.testOutcome == CovidTestResultStatus.Indeterminate.toString()
+        ) {
+            setResultDescription(testRecordDto.resultDescription)
+        }
+
+        getCovidTestStatus(testRecordDto)
+
+        binding.scrollView.viewTreeObserver
+            .addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    binding.scrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    binding.scrollView.smoothScrollTo(0, 0)
+                }
+            })
     }
 
     private fun setResultDescription(resultDescription: List<String>?) {
@@ -108,14 +144,14 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
     }
 
     private fun getCovidTestStatus(
-        testRecordDto: TestRecordDto
+        testRecordDto: TestRecordDto?
     ) {
-        when (testRecordDto.testOutcome) {
+        when (testRecordDto?.testOutcome) {
             CovidTestResultStatus.Indeterminate.toString() -> {
                 setIndeterminateState()
             }
             CovidTestResultStatus.Cancelled.toString() -> {
-                setCancelledState()
+                setCancelledState(testRecordDto)
             }
             CovidTestResultStatus.Negative.toString() -> {
                 setNegativeState()
@@ -162,7 +198,7 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
         }
     }
 
-    private fun setCancelledState() {
+    private fun setCancelledState(testRecordDto: TestRecordDto) {
         binding.apply {
             tvFullName.visibility = View.GONE
             tvTestResult.visibility = View.GONE
@@ -200,7 +236,7 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
                     )
                 )
 
-            tvTestStatus.text = testRecordDto?.testOutcome
+            tvTestStatus.text = testRecordDto.testOutcome
         }
     }
 
@@ -246,11 +282,11 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
     companion object {
 
         @JvmStatic
-        fun newInstance(testRecordDto: TestRecordDto, patientDto: PatientDto) =
+        fun newInstance(testRecordId: String, testResultId: Long) =
             SingleTestResultFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(ARG_PARAM1, testRecordDto)
-                    putParcelable(ARG_PARAM2, patientDto)
+                    putString(ARG_PARAM1, testRecordId)
+                    putLong(ARG_PARAM2, testResultId)
                 }
             }
     }
