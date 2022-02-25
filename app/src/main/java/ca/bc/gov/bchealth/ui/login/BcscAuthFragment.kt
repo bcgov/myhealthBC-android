@@ -162,7 +162,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             .setInputData(data)
             .build()
         workManager = WorkManager.getInstance(requireContext())
-        workManager.enqueueUniquePeriodicWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME, ExistingPeriodicWorkPolicy.KEEP, workRequest)
+        workManager.enqueueUniquePeriodicWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME, ExistingPeriodicWorkPolicy.REPLACE, workRequest)
     }
 
     private fun queUser(value: String) {
