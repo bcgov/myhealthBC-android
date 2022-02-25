@@ -34,8 +34,8 @@ jobs:
         uses: rtCamp/action-slack-notify@v2.2.0
         env:
           SLACK_WEBHOOK: ${{secrets.SLACK_PR_WEB_HOOK}}
-          SLACK_LINK_NAMES: true
           SLACK_CHANNEL: my-health-android-dev
           SLACK_USERNAME: "My Health Android Bot"
           SLACK_TITLE: "PR review requested"
-          SLACK_MESSAGE: "<@here> Please spare some time to review my PR :-) :rocket:"
+          SLACK_LINK_NAMES: true
+          SLACK_MESSAGE: " @here Please spare some time to review my PR :-) :rocket: "
