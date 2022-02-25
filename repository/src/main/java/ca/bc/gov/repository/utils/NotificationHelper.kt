@@ -2,6 +2,7 @@ package ca.bc.gov.repository.utils
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -16,7 +17,10 @@ import javax.inject.Inject
 const val CHANNEL_ID = "my_health_channel_id"
 const val BACKGROUND_WORK_NOTIFICATION_ID = 1
 
-class NotificationHelper @Inject constructor(@ApplicationContext private val context: Context) {
+class NotificationHelper @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val launchingIntent: PendingIntent
+) {
 
     private lateinit var notificationBuilder: NotificationCompat.Builder
 
@@ -25,7 +29,7 @@ class NotificationHelper @Inject constructor(@ApplicationContext private val con
     }
 
     private fun createNotificationChannel() {
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val importance = NotificationManager.IMPORTANCE_HIGH
         val channel = NotificationChannel(
             CHANNEL_ID,
             context.getString(R.string.notification_channel_name),
@@ -45,8 +49,9 @@ class NotificationHelper @Inject constructor(@ApplicationContext private val con
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setAutoCancel(false)
+            .setAutoCancel(true)
             .setStyle(NotificationCompat.BigTextStyle())
+            .setContentIntent(launchingIntent)
 
         with(NotificationManagerCompat.from(context)) {
             notify(BACKGROUND_WORK_NOTIFICATION_ID, notificationBuilder.build())
