@@ -75,7 +75,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         }
         try {
             withContext(dispatcher) {
-                fetchTestResultRepository.fetchAuthenticatedTestRecord(
+                fetchTestResultRepository.fetchCovidTestRecord(
                     patientId, authParameters.first,
                     authParameters.second
                 )

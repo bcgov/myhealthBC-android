@@ -1,9 +1,10 @@
-package ca.bc.gov.data
+package ca.bc.gov.data.datasource.remote
 
+import ca.bc.gov.common.const.MESSAGE_INVALID_RESPONSE
 import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
-import ca.bc.gov.common.exceptions.MyHealthNetworkException
+import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
@@ -16,6 +17,7 @@ import ca.bc.gov.data.remote.LaboratoryApi
 import ca.bc.gov.data.remote.model.base.Action
 import ca.bc.gov.data.remote.model.request.CovidTestRequest
 import ca.bc.gov.data.remote.model.request.toMap
+import ca.bc.gov.data.remote.model.response.LabTestResponse
 import ca.bc.gov.data.utils.safeCall
 import javax.inject.Inject
 
@@ -33,16 +35,16 @@ class LaboratoryRemoteDataSource @Inject constructor(
      */
     suspend fun getCovidTests(request: CovidTestRequest): PatientWithTestResultsAndRecordsDto {
         val response = safeCall { laboratoryApi.getCovidTests(request.toMap()) }
-            ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
+            ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
         if (response.error != null) {
             if (Action.MISMATCH.code == response.error.action?.code) {
-                throw MyHealthNetworkException(SERVER_ERROR_DATA_MISMATCH, response.error.message)
+                throw MyHealthException(SERVER_ERROR_DATA_MISMATCH, response.error.message)
             }
             if ("Error parsing phn" == response.error.message) {
-                throw MyHealthNetworkException(SERVER_ERROR_INCORRECT_PHN, response.error.message)
+                throw MyHealthException(SERVER_ERROR_INCORRECT_PHN, response.error.message)
             }
-            throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
+            throw MyHealthException(SERVER_ERROR, response.error.message)
         }
 
         val patient = PatientDto(
@@ -66,15 +68,15 @@ class LaboratoryRemoteDataSource @Inject constructor(
         return PatientWithTestResultsAndRecordsDto(patient, listOfNotNull(testResultWithTesRecord))
     }
 
-    suspend fun getAuthenticatedCovidTests(
+    suspend fun getCovidTests(
         token: String,
         hdid: String
     ): List<TestResultWithRecordsDto> {
-        val response = safeCall { laboratoryApi.getAuthenticatedCovidTests(token, hdid) }
-            ?: throw MyHealthNetworkException(SERVER_ERROR, "Invalid Response")
+        val response = safeCall { laboratoryApi.getCovidTests(token, hdid) }
+            ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
         if (response.error != null) {
-            throw MyHealthNetworkException(SERVER_ERROR, response.error.message)
+            throw MyHealthException(SERVER_ERROR, response.error.message)
         }
 
         val list = arrayListOf<TestResultWithRecordsDto>()
@@ -100,5 +102,20 @@ class LaboratoryRemoteDataSource @Inject constructor(
         }
 
         return list
+    }
+
+    suspend fun getLabTests(
+        token: String,
+        hdid: String
+    ): LabTestResponse {
+
+        val response = safeCall { laboratoryApi.getLabTests(token, hdid) }
+            ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
+
+        if (response.error != null) {
+            throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
+        }
+
+        return response
     }
 }

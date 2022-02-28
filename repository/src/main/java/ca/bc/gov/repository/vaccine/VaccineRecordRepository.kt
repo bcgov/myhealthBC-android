@@ -2,7 +2,7 @@ package ca.bc.gov.repository.vaccine
 
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
-import ca.bc.gov.data.datasource.VaccineRecordLocalDataSource
+import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import javax.inject.Inject
 
 /**

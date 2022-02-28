@@ -8,7 +8,7 @@ import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsAndPatientDto
-import ca.bc.gov.data.datasource.PatientLocalDataSource
+import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.local.entity.PatientEntity
 import ca.bc.gov.data.local.entity.PatientOrderUpdate
 import ca.bc.gov.repository.QrCodeGeneratorRepository

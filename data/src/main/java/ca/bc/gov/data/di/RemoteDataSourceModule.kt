@@ -1,9 +1,9 @@
 package ca.bc.gov.data.di
 
-import ca.bc.gov.data.ImmunizationRemoteDataSource
-import ca.bc.gov.data.LaboratoryRemoteDataSource
-import ca.bc.gov.data.MedicationRemoteDataSource
-import ca.bc.gov.data.PatientRemoteDataSource
+import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
+import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
+import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
+import ca.bc.gov.data.datasource.remote.PatientRemoteDataSource
 import ca.bc.gov.data.remote.ImmunizationApi
 import ca.bc.gov.data.remote.LaboratoryApi
 import ca.bc.gov.data.remote.MedicationApi
