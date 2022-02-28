@@ -1,4 +1,4 @@
-package ca.bc.gov.data.datasource
+package ca.bc.gov.data.datasource.local
 
 import ca.bc.gov.data.local.MyHealthDataBase
 import javax.inject.Inject

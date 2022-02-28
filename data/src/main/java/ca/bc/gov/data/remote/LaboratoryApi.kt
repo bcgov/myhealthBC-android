@@ -2,6 +2,7 @@ package ca.bc.gov.data.remote
 
 import ca.bc.gov.data.remote.model.response.AuthenticatedCovidTestResponse
 import ca.bc.gov.data.remote.model.response.CovidTestResponse
+import ca.bc.gov.data.remote.model.response.LabTestResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -13,12 +14,24 @@ import retrofit2.http.Query
  */
 interface LaboratoryApi {
 
-    @GET("api/laboratoryservice/v1/api/PublicLaboratory/CovidTests")
+    companion object {
+        private const val HDID = "hdid"
+        private const val AUTHORIZATION = "Authorization"
+        private const val BASE_URL = "api/laboratoryservice/v1/api"
+    }
+
+    @GET("$BASE_URL/PublicLaboratory/CovidTests")
     suspend fun getCovidTests(@HeaderMap headers: Map<String, String>): Response<CovidTestResponse>
 
-    @GET("api/laboratoryservice/v1/api/Laboratory/Covid19Orders")
-    suspend fun getAuthenticatedCovidTests(
-        @Header("Authorization") token: String,
-        @Query("hdid") hdid: String
+    @GET("$BASE_URL/Laboratory/Covid19Orders")
+    suspend fun getCovidTests(
+        @Header(AUTHORIZATION) token: String,
+        @Query(HDID) hdid: String
     ): Response<AuthenticatedCovidTestResponse>
+
+    @GET("$BASE_URL/Laboratory/LaboratoryOrders")
+    suspend fun getLabTests(
+        @Header(AUTHORIZATION) token: String,
+        @Query(HDID) hdid: String
+    ): Response<LabTestResponse>
 }

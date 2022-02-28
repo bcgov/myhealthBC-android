@@ -1,13 +1,13 @@
 package ca.bc.gov.repository.di
 
 import android.content.Context
-import ca.bc.gov.data.ImmunizationRemoteDataSource
-import ca.bc.gov.data.MedicationRemoteDataSource
-import ca.bc.gov.data.datasource.LocalDataSource
-import ca.bc.gov.data.datasource.MedicationRecordLocalDataSource
-import ca.bc.gov.data.datasource.PatientLocalDataSource
-import ca.bc.gov.data.datasource.TestResultLocalDataSource
-import ca.bc.gov.data.datasource.VaccineRecordLocalDataSource
+import ca.bc.gov.data.datasource.local.LocalDataSource
+import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
+import ca.bc.gov.data.datasource.local.PatientLocalDataSource
+import ca.bc.gov.data.datasource.local.TestResultLocalDataSource
+import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
+import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
+import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
 import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.FederalTravelPassDecoderRepository

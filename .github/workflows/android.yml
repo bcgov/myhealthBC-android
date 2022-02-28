@@ -82,4 +82,4 @@ jobs:
           SLACK_USERNAME: "My Health Android Bot"
           SLACK_TITLE: "Firebase build uploaded"
           SLACK_LINK_NAMES: true
-          SLACK_MESSAGE: " @U01NY5TPAE8 New build is available for testing on Firebase :-) :rocket: "
+          SLACK_MESSAGE: " <@U01NY5TPAE8> New build is available for testing on Firebase :-) :rocket: "
