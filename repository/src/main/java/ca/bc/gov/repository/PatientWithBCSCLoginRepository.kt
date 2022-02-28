@@ -3,7 +3,7 @@ package ca.bc.gov.repository
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.utils.toDateTime
-import ca.bc.gov.data.PatientRemoteDataSource
+import ca.bc.gov.data.datasource.remote.PatientRemoteDataSource
 import javax.inject.Inject
 
 class PatientWithBCSCLoginRepository @Inject constructor(

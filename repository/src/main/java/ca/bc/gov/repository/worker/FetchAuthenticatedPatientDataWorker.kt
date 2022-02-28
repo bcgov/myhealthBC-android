@@ -7,7 +7,7 @@ import androidx.work.Data
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import ca.bc.gov.common.exceptions.MustBeQueuedException
-import ca.bc.gov.common.exceptions.MyHealthNetworkException
+import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.di.IoDispatcher
@@ -53,7 +53,7 @@ class FetchAuthenticatedPatientDataWorker @AssistedInject constructor(
                     output = workDataOf(WORK_RESULT to e.message)
                     Result.failure(output)
                 }
-                is MyHealthNetworkException -> {
+                is MyHealthException -> {
                     Result.failure()
                 }
                 else -> {

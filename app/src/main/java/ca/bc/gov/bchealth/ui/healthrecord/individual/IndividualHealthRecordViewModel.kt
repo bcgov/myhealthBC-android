@@ -110,7 +110,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
         try {
             if (phn != null && collectionDate != null) {
                 val testResultId =
-                    fetchTestResultRepository.fetchTestRecord(phn, dob, collectionDate)
+                    fetchTestResultRepository.fetchCovidTestRecord(phn, dob, collectionDate)
                 _uiState.update { state ->
                     state.copy(updatedTestResultId = testResultId)
                 }

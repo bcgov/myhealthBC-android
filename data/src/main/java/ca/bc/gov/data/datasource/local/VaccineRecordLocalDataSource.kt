@@ -1,4 +1,4 @@
-package ca.bc.gov.data.datasource
+package ca.bc.gov.data.datasource.local
 
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
