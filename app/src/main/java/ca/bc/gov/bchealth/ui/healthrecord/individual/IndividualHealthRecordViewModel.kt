@@ -6,6 +6,7 @@ import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.DataSource
+import ca.bc.gov.common.model.labtest.LabTestRecordDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.FetchTestResultRepository
@@ -48,6 +49,9 @@ class IndividualHealthRecordViewModel @Inject constructor(
 
             val patientAndMedicationRecords =
                 patientRepository.getPatientWithMedicationRecords(patientId)
+
+            val labTestRecordDto = listOfNotNull(LabTestRecordDto())
+
             _uiState.update { state ->
                 state.copy(
                     onLoading = false,
@@ -70,7 +74,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
                         .filter { it.medicationRecord.dataSource != DataSource.BCSC }
                         .map { it.toUiModel() },
                     patientAuthStatus = patientWithVaccineRecords.patient.authenticationStatus,
-                    authenticatedRecordsCount = patientRepository.getBcscDataRecordCount()
+                    authenticatedRecordsCount = patientRepository.getBcscDataRecordCount(),
+                    onLabTestRecords = labTestRecordDto.map { it.toUiModel() }
                 )
             }
         } catch (e: java.lang.Exception) {
@@ -150,7 +155,8 @@ data class IndividualHealthRecordsUiState(
     val onNonBcscMedicationRecords: List<HealthRecordItem> = emptyList(),
     val updatedTestResultId: Long = -1L,
     val authenticatedRecordsCount: Int? = null,
-    val patientAuthStatus: AuthenticationStatus? = null
+    val patientAuthStatus: AuthenticationStatus? = null,
+    val onLabTestRecords: List<HealthRecordItem> = emptyList()
 )
 
 data class HealthRecordItem(
@@ -172,5 +178,6 @@ data class HiddenRecordItem(
 enum class HealthRecordType {
     VACCINE_RECORD,
     COVID_TEST_RECORD,
-    MEDICATION_RECORD
+    MEDICATION_RECORD,
+    LAB_TEST_RECORD
 }
