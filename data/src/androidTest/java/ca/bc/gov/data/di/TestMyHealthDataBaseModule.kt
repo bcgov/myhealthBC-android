@@ -2,7 +2,7 @@ package ca.bc.gov.data.di
 
 import android.content.Context
 import androidx.room.Room
-import ca.bc.gov.data.local.MyHealthDataBase
+import ca.bc.gov.data.datasource.local.MyHealthDataBase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

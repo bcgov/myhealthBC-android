@@ -2,8 +2,8 @@ package ca.bc.gov.data.datasource.local
 
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
-import ca.bc.gov.data.local.dao.VaccineRecordDao
-import ca.bc.gov.data.local.entity.VaccineDoseEntity
+import ca.bc.gov.data.datasource.local.dao.VaccineRecordDao
+import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
 import ca.bc.gov.data.model.mapper.toEntity
 import javax.inject.Inject
 

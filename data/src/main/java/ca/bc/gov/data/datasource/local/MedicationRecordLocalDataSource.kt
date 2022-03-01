@@ -4,9 +4,9 @@ import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
-import ca.bc.gov.data.local.dao.DispensingPharmacyDao
-import ca.bc.gov.data.local.dao.MedicationRecordDao
-import ca.bc.gov.data.local.dao.MedicationSummaryDao
+import ca.bc.gov.data.datasource.local.dao.DispensingPharmacyDao
+import ca.bc.gov.data.datasource.local.dao.MedicationRecordDao
+import ca.bc.gov.data.datasource.local.dao.MedicationSummaryDao
 import ca.bc.gov.data.model.mapper.toDto
 import ca.bc.gov.data.model.mapper.toEntity
 import javax.inject.Inject

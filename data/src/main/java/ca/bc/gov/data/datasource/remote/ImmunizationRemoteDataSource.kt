@@ -5,13 +5,13 @@ import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.data.datasource.remote.api.ImmunizationApi
+import ca.bc.gov.data.datasource.remote.model.base.Action
+import ca.bc.gov.data.datasource.remote.model.request.VaccineStatusRequest
+import ca.bc.gov.data.datasource.remote.model.request.toMap
+import ca.bc.gov.data.datasource.remote.model.response.VaccineStatusResponse
 import ca.bc.gov.data.model.VaccineStatus
 import ca.bc.gov.data.model.mapper.toVaccineStatus
-import ca.bc.gov.data.remote.ImmunizationApi
-import ca.bc.gov.data.remote.model.base.Action
-import ca.bc.gov.data.remote.model.request.VaccineStatusRequest
-import ca.bc.gov.data.remote.model.request.toMap
-import ca.bc.gov.data.remote.model.response.VaccineStatusResponse
 import ca.bc.gov.data.utils.safeCall
 import javax.inject.Inject
 

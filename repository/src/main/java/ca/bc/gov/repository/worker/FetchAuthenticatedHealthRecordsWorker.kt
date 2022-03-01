@@ -12,6 +12,8 @@ import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.di.IoDispatcher
+import ca.bc.gov.repository.labtest.LabOrderRepository
+import ca.bc.gov.repository.labtest.LabTestRepository
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.utils.NotificationHelper
 import dagger.assisted.Assisted
@@ -34,7 +36,9 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val medicationRecordRepository: MedicationRecordRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
     private val patientRepository: PatientRepository,
-    private val notificationHelper: NotificationHelper
+    private val notificationHelper: NotificationHelper,
+    private val labOrderRepository: LabOrderRepository,
+    private val labTestRepository: LabTestRepository
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
@@ -96,6 +100,22 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             successApiMsgList.add(context.getString(R.string.medication_records))
         } catch (e: Exception) {
             failApiMsgList.add(context.getString(R.string.medication_records))
+        }
+
+        try {
+            withContext(dispatcher) {
+                val response =
+                    labOrderRepository.fetchLabOrders(authParameters.first, authParameters.second)
+                labOrderRepository.delete(patientId)
+                response.forEach {
+                    it.labOrder.patientId = patientId
+                    labOrderRepository.insert(it.labOrder)
+                    labTestRepository.insert(it.labTests)
+                }
+            }
+            successApiMsgList.add(context.getString(R.string.lab_orders))
+        } catch (e: Exception) {
+            failApiMsgList.add(context.getString(R.string.lab_orders))
         }
 
         val notificationMsg = prepareNotificationMsg(successApiMsgList, failApiMsgList)

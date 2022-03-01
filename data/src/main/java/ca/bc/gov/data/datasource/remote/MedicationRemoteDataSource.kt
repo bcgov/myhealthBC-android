@@ -3,8 +3,8 @@ package ca.bc.gov.data.datasource.remote
 import ca.bc.gov.common.const.MESSAGE_INVALID_RESPONSE
 import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
-import ca.bc.gov.data.remote.MedicationApi
-import ca.bc.gov.data.remote.model.response.MedicationStatementResponse
+import ca.bc.gov.data.datasource.remote.api.MedicationApi
+import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
 import ca.bc.gov.data.utils.safeCall
 import javax.inject.Inject
 

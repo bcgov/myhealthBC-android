@@ -9,6 +9,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
+import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
@@ -66,7 +67,7 @@ fun VaccineWithDosesDto.toUiModel(): HealthRecordItem {
         description = "${passState.status}",
         testOutcome = null,
         date = date.toDate(),
-        HealthRecordType.VACCINE_RECORD,
+        healthRecordType = HealthRecordType.VACCINE_RECORD,
     )
 }
 
@@ -121,7 +122,21 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
         description = "",
         testOutcome = testOutcome,
         date = date.toDate(),
-        HealthRecordType.COVID_TEST_RECORD,
+        healthRecordType = HealthRecordType.COVID_TEST_RECORD,
+    )
+}
+
+fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
+
+    return HealthRecordItem(
+        patientId = labOrder.patientId,
+        title = labOrder.commonName ?: "",
+        labOrderId = labOrder.id,
+        icon = R.drawable.ic_health_record_covid_test,
+        date = labOrder.collectionDateTime.toDate(),
+        description = "Number of tests: ${labTests.size}",
+        testOutcome = null,
+        healthRecordType = HealthRecordType.LAB_TEST
     )
 }
 
