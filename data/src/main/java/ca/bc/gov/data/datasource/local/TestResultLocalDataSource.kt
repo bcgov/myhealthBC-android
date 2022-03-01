@@ -2,7 +2,7 @@ package ca.bc.gov.data.datasource.local
 
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
-import ca.bc.gov.data.local.dao.TestResultDao
+import ca.bc.gov.data.datasource.local.dao.TestResultDao
 import ca.bc.gov.data.model.mapper.toEntity
 import javax.inject.Inject
 

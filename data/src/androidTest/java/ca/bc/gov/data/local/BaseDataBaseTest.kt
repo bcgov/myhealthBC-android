@@ -1,15 +1,20 @@
 package ca.bc.gov.data.local
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.ImmunizationStatus
-import ca.bc.gov.data.local.entity.MedicationRecordEntity
-import ca.bc.gov.data.local.entity.PatientEntity
-import ca.bc.gov.data.local.entity.TestResultEntity
-import ca.bc.gov.data.local.entity.VaccineRecordEntity
-import ca.bc.gov.data.local.entity.relations.PatientWithHealthRecordCount
+import ca.bc.gov.data.datasource.local.MyHealthDataBase
+import ca.bc.gov.data.datasource.local.entity.PatientEntity
+import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
+import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
+import ca.bc.gov.data.datasource.local.entity.labtest.LabOrderEntity
+import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
+import ca.bc.gov.data.datasource.local.entity.relations.PatientWithHealthRecordCount
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -50,6 +55,51 @@ abstract class BaseDataBaseTest {
         tearDown()
     }
 
+    protected fun getPatient(
+        id: Long = 1,
+        fullName: String = "Jhon Smith",
+        dateOfBirth: Instant = Instant.now(),
+        phn: String = "986767878",
+        timeStamp: Instant = Instant.now(),
+        patientOrder: Long = Long.MAX_VALUE,
+        authenticationStatus: AuthenticationStatus = AuthenticationStatus.AUTHENTICATED
+    ): PatientEntity {
+        val patient = mockk<PatientEntity>()
+        every { patient.id } returns id
+        every { patient.fullName } returns fullName
+        every { patient.dateOfBirth } returns dateOfBirth
+        every { patient.phn } returns phn
+        every { patient.timeStamp } returns timeStamp
+        every { patient.patientOrder } returns patientOrder
+        every { patient.authenticationStatus } returns authenticationStatus
+        return patient
+    }
+
+    protected fun getLabOrder(
+        id: String = "ccee5028-6d51-4474-ce18-08d91c31b95b",
+        patientId: Long = 1,
+        collectionDateTime: Instant = Instant.now(),
+        reportAvailable: Boolean = false,
+        commonName: String? = "Test Name",
+        orderingProvider: String? = "Ordering Provider",
+        reportId: String? = "Report ID",
+        reportingSource: String? = "Reporting Source",
+        testStatus: String? = "Test Status"
+    ): LabOrderEntity {
+
+        val labOrder = mockk<LabOrderEntity>()
+        every { labOrder.id } returns id
+        every { labOrder.patientId } returns patientId
+        every { labOrder.collectionDateTime } returns collectionDateTime
+        every { labOrder.reportAvailable } returns reportAvailable
+        every { labOrder.commonName } returns commonName
+        every { labOrder.orderingProvider } returns orderingProvider
+        every { labOrder.reportId } returns reportId
+        every { labOrder.reportingSource } returns reportingSource
+        every { labOrder.testStatus } returns testStatus
+        return labOrder
+    }
+
     protected fun getPatient1() =
         PatientEntity(
             id = 1,
@@ -79,6 +129,7 @@ abstract class BaseDataBaseTest {
         federalPass = "federalPass1",
         dataSource = DataSource.QR_CODE
     )
+
     protected fun getVaccineRecord2() = VaccineRecordEntity(
         id = 2,
         patientId = 1,
@@ -119,17 +170,19 @@ abstract class BaseDataBaseTest {
         dataSource = DataSource.BCSC
     )
 
-    protected fun getPatientWithHealthRecordCount1(patientEntity: PatientEntity) = PatientWithHealthRecordCount(
-        patientEntity = patientEntity,
-        vaccineRecordCount = 2,
-        testRecordCount = 2,
-        medicationRecordCount = 1
-    )
+    protected fun getPatientWithHealthRecordCount1(patientEntity: PatientEntity) =
+        PatientWithHealthRecordCount(
+            patientEntity = patientEntity,
+            vaccineRecordCount = 2,
+            testRecordCount = 2,
+            medicationRecordCount = 1
+        )
 
-    protected fun getPatientWithHealthRecordCount2(patientEntity: PatientEntity) = PatientWithHealthRecordCount(
-        patientEntity = patientEntity,
-        vaccineRecordCount = 0,
-        testRecordCount = 1,
-        medicationRecordCount = 0
-    )
+    protected fun getPatientWithHealthRecordCount2(patientEntity: PatientEntity) =
+        PatientWithHealthRecordCount(
+            patientEntity = patientEntity,
+            vaccineRecordCount = 0,
+            testRecordCount = 1,
+            medicationRecordCount = 0
+        )
 }

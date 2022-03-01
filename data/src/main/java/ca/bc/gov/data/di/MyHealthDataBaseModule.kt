@@ -3,8 +3,8 @@ package ca.bc.gov.data.di
 import android.content.Context
 import androidx.room.Room
 import ca.bc.gov.data.BuildConfig
-import ca.bc.gov.data.local.MyHealthDataBase
-import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.data.datasource.local.MyHealthDataBase
+import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.utils.RandomBytesGenerator
 import dagger.Module
 import dagger.Provides

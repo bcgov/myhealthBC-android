@@ -3,14 +3,15 @@ package ca.bc.gov.data.datasource.local
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
+import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsAndPatientDto
 import ca.bc.gov.common.utils.toUniquePatientName
-import ca.bc.gov.data.local.dao.PatientDao
-import ca.bc.gov.data.local.entity.PatientEntity
-import ca.bc.gov.data.local.entity.PatientOrderUpdate
+import ca.bc.gov.data.datasource.local.dao.PatientDao
+import ca.bc.gov.data.datasource.local.entity.PatientEntity
+import ca.bc.gov.data.datasource.local.entity.PatientOrderUpdate
 import ca.bc.gov.data.model.mapper.toDto
 import ca.bc.gov.data.model.mapper.toEntity
 import kotlinx.coroutines.flow.Flow
@@ -113,6 +114,9 @@ class PatientLocalDataSource @Inject constructor(
 
     suspend fun getPatientWithMedicationRecords(patientId: Long): PatientWithMedicationRecordDto? =
         patientDao.getPatientWithMedicationRecords(patientId)?.toDto()
+
+    suspend fun getPatientWithLabOrdersAndLabTests(patientId: Long): PatientWithLabOrderAndLatTestsDto? =
+        patientDao.getPatientWithLabOrderAndTests(patientId)?.toDto()
 
     suspend fun deleteBcscAuthenticatedPatientData() {
         patientDao.deleteAuthenticatedPatient()

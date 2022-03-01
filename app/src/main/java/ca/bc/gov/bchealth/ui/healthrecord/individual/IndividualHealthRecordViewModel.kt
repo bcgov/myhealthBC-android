@@ -6,7 +6,6 @@ import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.DataSource
-import ca.bc.gov.common.model.labtest.LabTestRecordDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.FetchTestResultRepository
@@ -50,7 +49,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
             val patientAndMedicationRecords =
                 patientRepository.getPatientWithMedicationRecords(patientId)
 
-            val labTestRecordDto = listOfNotNull(LabTestRecordDto())
+            val patientWithLabOrdersAndLabTests =
+                patientRepository.getPatientWithLabOrdersAndLabTests(patientId)
 
             _uiState.update { state ->
                 state.copy(
@@ -64,6 +64,9 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     onMedicationRecords = patientAndMedicationRecords.medicationRecord.map {
                         it.toUiModel()
                     },
+                    onLabTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
+                        it.toUiModel()
+                    },
                     onNonBcscTestRecords = testResultWithRecords.testResultWithRecords
                         .filter { it.testResult.dataSource != DataSource.BCSC }
                         .map { it.toUiModel() },
@@ -74,8 +77,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                         .filter { it.medicationRecord.dataSource != DataSource.BCSC }
                         .map { it.toUiModel() },
                     patientAuthStatus = patientWithVaccineRecords.patient.authenticationStatus,
-                    authenticatedRecordsCount = patientRepository.getBcscDataRecordCount(),
-                    onLabTestRecords = labTestRecordDto.map { it.toUiModel() }
+                    authenticatedRecordsCount = patientRepository.getBcscDataRecordCount()
                 )
             }
         } catch (e: java.lang.Exception) {
@@ -150,19 +152,20 @@ data class IndividualHealthRecordsUiState(
     val onVaccineRecord: List<HealthRecordItem> = emptyList(),
     val onTestRecords: List<HealthRecordItem> = emptyList(),
     val onMedicationRecords: List<HealthRecordItem> = emptyList(),
+    val onLabTestRecords: List<HealthRecordItem> = emptyList(),
     val onNonBcscVaccineRecord: List<HealthRecordItem> = emptyList(),
     val onNonBcscTestRecords: List<HealthRecordItem> = emptyList(),
     val onNonBcscMedicationRecords: List<HealthRecordItem> = emptyList(),
     val updatedTestResultId: Long = -1L,
     val authenticatedRecordsCount: Int? = null,
-    val patientAuthStatus: AuthenticationStatus? = null,
-    val onLabTestRecords: List<HealthRecordItem> = emptyList()
+    val patientAuthStatus: AuthenticationStatus? = null
 )
 
 data class HealthRecordItem(
     val patientId: Long,
     val testResultId: Long = -1L,
     val medicationRecordId: Long = -1L,
+    val labOrderId: String? = null,
     val icon: Int,
     val title: String,
     val description: String,
@@ -179,5 +182,5 @@ enum class HealthRecordType {
     VACCINE_RECORD,
     COVID_TEST_RECORD,
     MEDICATION_RECORD,
-    LAB_TEST_RECORD
+    LAB_TEST
 }

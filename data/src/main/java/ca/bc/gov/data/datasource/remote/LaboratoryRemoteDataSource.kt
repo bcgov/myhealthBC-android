@@ -5,6 +5,7 @@ import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
@@ -12,12 +13,12 @@ import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
 import ca.bc.gov.common.utils.formatInPattern
 import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.data.datasource.remote.api.LaboratoryApi
+import ca.bc.gov.data.datasource.remote.model.base.Action
+import ca.bc.gov.data.datasource.remote.model.request.CovidTestRequest
+import ca.bc.gov.data.datasource.remote.model.request.toMap
+import ca.bc.gov.data.model.mapper.toDto
 import ca.bc.gov.data.model.mapper.toTestRecord
-import ca.bc.gov.data.remote.LaboratoryApi
-import ca.bc.gov.data.remote.model.base.Action
-import ca.bc.gov.data.remote.model.request.CovidTestRequest
-import ca.bc.gov.data.remote.model.request.toMap
-import ca.bc.gov.data.remote.model.response.LabTestResponse
 import ca.bc.gov.data.utils.safeCall
 import javax.inject.Inject
 
@@ -107,7 +108,7 @@ class LaboratoryRemoteDataSource @Inject constructor(
     suspend fun getLabTests(
         token: String,
         hdid: String
-    ): LabTestResponse {
+    ): List<LabOrderWithLabTestDto> {
 
         val response = safeCall { laboratoryApi.getLabTests(token, hdid) }
             ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
@@ -116,6 +117,6 @@ class LaboratoryRemoteDataSource @Inject constructor(
             throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
         }
 
-        return response
+        return response.toDto()
     }
 }
