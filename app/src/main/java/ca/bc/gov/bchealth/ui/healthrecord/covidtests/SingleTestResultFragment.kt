@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSingleTestResultBinding
+import ca.bc.gov.bchealth.model.mapper.CovidTestResultStatus
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.patient.PatientDto
@@ -146,21 +147,27 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
     private fun getCovidTestStatus(
         testRecordDto: TestRecordDto?
     ) {
-        when (testRecordDto?.testOutcome) {
-            CovidTestResultStatus.Indeterminate.toString() -> {
-                setIndeterminateState()
-            }
-            CovidTestResultStatus.Cancelled.toString() -> {
-                setCancelledState(testRecordDto)
-            }
-            CovidTestResultStatus.Negative.toString() -> {
-                setNegativeState()
-            }
-            CovidTestResultStatus.Positive.toString() -> {
-                setPositiveState()
-            }
-            else -> {
-                setPendingState()
+
+        if (testRecordDto?.testStatus == CovidTestResultStatus.Pending.name) {
+            setPendingState()
+        } else {
+            when (testRecordDto?.testOutcome) {
+                CovidTestResultStatus.Indeterminate.name,
+                CovidTestResultStatus.IndeterminateResult.name -> {
+                    setIndeterminateState()
+                }
+                CovidTestResultStatus.Cancelled.name -> {
+                    setCancelledState(testRecordDto)
+                }
+                CovidTestResultStatus.Negative.name -> {
+                    setNegativeState()
+                }
+                CovidTestResultStatus.Positive.name -> {
+                    setPositiveState()
+                }
+                else -> {
+                    setIndeterminateState()
+                }
             }
         }
     }
@@ -184,6 +191,7 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
 
     private fun setIndeterminateState() {
         binding.apply {
+            tvTestResult.text = CovidTestResultStatus.Indeterminate.name
             tvTestResult.setTextColor(
                 resources
                     .getColor(R.color.covid_test_text_indeterminate, null)
@@ -270,13 +278,6 @@ class SingleTestResultFragment : Fragment(R.layout.fragment_single_test_result) 
                     )
                 )
         }
-    }
-
-    enum class CovidTestResultStatus {
-        Negative,
-        Positive,
-        Indeterminate,
-        Cancelled
     }
 
     companion object {
