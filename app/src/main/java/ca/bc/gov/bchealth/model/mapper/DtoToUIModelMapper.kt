@@ -67,7 +67,8 @@ fun VaccineWithDosesDto.toUiModel(): HealthRecordItem {
         description = "${passState.status}",
         testOutcome = null,
         date = date.toDate(),
-        healthRecordType = HealthRecordType.VACCINE_RECORD,
+        HealthRecordType.VACCINE_RECORD,
+        dataSource = vaccine.mode.name
     )
 }
 
@@ -82,7 +83,8 @@ fun MedicationWithSummaryAndPharmacyDto.toUiModel(): HealthRecordItem {
         description = medicationSummary.genericName ?: "",
         testOutcome = null,
         date = medicationRecord.dispenseDate.toDate(),
-        healthRecordType = HealthRecordType.MEDICATION_RECORD
+        healthRecordType = HealthRecordType.MEDICATION_RECORD,
+        dataSource = medicationRecord.dataSource.name
     )
 }
 
@@ -122,7 +124,8 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
         description = "",
         testOutcome = testOutcome,
         date = date.toDate(),
-        healthRecordType = HealthRecordType.COVID_TEST_RECORD,
+        HealthRecordType.COVID_TEST_RECORD,
+        dataSource = testResult.dataSource.name
     )
 }
 

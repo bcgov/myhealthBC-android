@@ -45,11 +45,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private val binding by viewBindings(FragmentIndividualHealthRecordBinding::bind)
     private val viewModel: IndividualHealthRecordViewModel by viewModels()
-    private lateinit var vaccineRecordsAdapter: VaccineRecordsAdapter
-    private lateinit var testRecordsAdapter: TestRecordsAdapter
     private lateinit var hiddenHealthRecordAdapter: HiddenHealthRecordAdapter
-    private lateinit var medicationRecordsAdapter: MedicationRecordsAdapter
-    private lateinit var labTestRecordsAdapter: LabTestRecordsAdapter
+    private lateinit var healthRecordsAdapter: HealthRecordsAdapter
     private lateinit var concatAdapter: ConcatAdapter
     private val args: IndividualHealthRecordFragmentArgs by navArgs()
     private var testResultId: Long = -1L
@@ -88,7 +85,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     findNavController().popBackStack()
                 }
                 else -> {
-                    // no implementation required
+                    // no implementation required}
                 }
             }
         }
@@ -113,12 +110,12 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun observeBcscLogin() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                bcscAuthViewModel.authStatus.collect {
-                    binding.progressBar.isVisible = it.showLoading
-                    if (it.showLoading) {
+                bcscAuthViewModel.authStatus.collect { authStatus ->
+                    binding.progressBar.isVisible = authStatus.showLoading
+                    if (authStatus.showLoading) {
                         return@collect
                     } else {
-                        it.loginSessionStatus?.let {
+                        authStatus.loginSessionStatus?.let {
                             loginSessionStatus = it
                             viewModel.getIndividualsHealthRecord(args.patientId)
                         }
@@ -135,34 +132,14 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
                     if (loginSessionStatus != null) {
                         if (loginSessionStatus == LoginSessionStatus.ACTIVE) {
-                            if (::vaccineRecordsAdapter.isInitialized) {
-                                vaccineRecordsAdapter.submitList(uiState.onVaccineRecord)
-                            }
-
-                            if (::testRecordsAdapter.isInitialized) {
-                                testRecordsAdapter.submitList(uiState.onTestRecords)
-                            }
-
-                            if (::medicationRecordsAdapter.isInitialized) {
-                                medicationRecordsAdapter.submitList(uiState.onMedicationRecords)
-                            }
-
-                            if (::labTestRecordsAdapter.isInitialized) {
-                                labTestRecordsAdapter.submitList(uiState.onLabTestRecords)
+                            if (::healthRecordsAdapter.isInitialized) {
+                                healthRecordsAdapter.submitList(uiState.onHealthRecords)
                             }
                         }
 
                         if (loginSessionStatus == LoginSessionStatus.EXPIRED) {
-                            if (::vaccineRecordsAdapter.isInitialized) {
-                                vaccineRecordsAdapter.submitList(uiState.onNonBcscVaccineRecord)
-                            }
-
-                            if (::testRecordsAdapter.isInitialized) {
-                                testRecordsAdapter.submitList(uiState.onNonBcscTestRecords)
-                            }
-
-                            if (::medicationRecordsAdapter.isInitialized) {
-                                medicationRecordsAdapter.submitList(uiState.onNonBcscMedicationRecords)
+                            if (::healthRecordsAdapter.isInitialized) {
+                                healthRecordsAdapter.submitList(uiState.onNonBcscHealthRecords)
                             }
 
                             if (uiState.authenticatedRecordsCount != null &&
@@ -182,7 +159,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
                     if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
                         binding.toolbar.tvRightOption.visibility = View.INVISIBLE
-                        testRecordsAdapter.isUpdateRequested = false
+                        healthRecordsAdapter.isUpdateRequested = false
                     }
 
                     if (uiState.updatedTestResultId > 0) {
@@ -203,63 +180,55 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun setUpRecyclerView() {
-        vaccineRecordsAdapter = VaccineRecordsAdapter(
-            { vaccineRecord ->
-                val action = IndividualHealthRecordFragmentDirections
-                    .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(
-                        vaccineRecord.patientId
-                    )
-                findNavController().navigate(action)
+        healthRecordsAdapter = HealthRecordsAdapter(
+            {
+                when (it.healthRecordType) {
+                    HealthRecordType.VACCINE_RECORD -> {
+                        val action = IndividualHealthRecordFragmentDirections
+                            .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(
+                                it.patientId
+                            )
+                        findNavController().navigate(action)
+                    }
+                    HealthRecordType.COVID_TEST_RECORD -> {
+                        val action = IndividualHealthRecordFragmentDirections
+                            .actionIndividualHealthRecordFragmentToTestResultDetailFragment(
+                                it.patientId,
+                                it.testResultId
+                            )
+                        findNavController().navigate(action)
+                    }
+                    HealthRecordType.MEDICATION_RECORD -> {
+                        val action = IndividualHealthRecordFragmentDirections
+                            .actionIndividualHealthRecordFragmentToMedicationDetailFragment(
+                                it.medicationRecordId
+                            )
+                        findNavController().navigate(action)
+                    }
+                }
             },
-            { vaccineRecord ->
-                showHealthRecordDeleteDialog(vaccineRecord)
-            }
-        )
-
-        testRecordsAdapter = TestRecordsAdapter(
-            { testResult ->
-                val action = IndividualHealthRecordFragmentDirections
-                    .actionIndividualHealthRecordFragmentToTestResultDetailFragment(
-                        testResult.patientId,
-                        testResult.testResultId
-                    )
-                findNavController().navigate(action)
+            {
+                when (it.healthRecordType) {
+                    HealthRecordType.VACCINE_RECORD,
+                    HealthRecordType.COVID_TEST_RECORD -> {
+                        showHealthRecordDeleteDialog(it)
+                    }
+                    HealthRecordType.MEDICATION_RECORD -> {
+                        // No implementation required
+                    }
+                }
             },
-            { testResult ->
-                showHealthRecordDeleteDialog(testResult)
-            },
-            { patientId, testResult ->
-                requestUpdate(testResult)
+            {
+                requestUpdate(it.testResultId)
             },
             isUpdateRequested = true,
             canDeleteRecord = false
         )
 
-        medicationRecordsAdapter = MedicationRecordsAdapter { medicationRecord ->
-            val action = IndividualHealthRecordFragmentDirections
-                .actionIndividualHealthRecordFragmentToMedicationDetailFragment(
-                    medicationRecord.medicationRecordId
-                )
-            findNavController().navigate(action)
-        }
-
-        labTestRecordsAdapter = LabTestRecordsAdapter { labTestRecord ->
-            labTestRecord.labOrderId?.let {
-                val action = IndividualHealthRecordFragmentDirections
-                    .actionIndividualHealthRecordFragmentToLabTestDetailFragment(
-                        it
-                    )
-                findNavController().navigate(action)
-            }
-        }
-
         hiddenHealthRecordAdapter = HiddenHealthRecordAdapter { onBCSCLoginClick() }
         concatAdapter = ConcatAdapter(
             hiddenHealthRecordAdapter,
-            vaccineRecordsAdapter,
-            testRecordsAdapter,
-            medicationRecordsAdapter,
-            labTestRecordsAdapter
+            healthRecordsAdapter
         )
         binding.rvHealthRecords.adapter = concatAdapter
         binding.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
@@ -285,20 +254,12 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 visibility = View.VISIBLE
                 text = getString(R.string.edit)
                 setOnClickListener {
-                    if (vaccineRecordsAdapter.canDeleteRecord) {
+                    if (healthRecordsAdapter.canDeleteRecord) {
                         text = getString(R.string.edit)
-                        vaccineRecordsAdapter.canDeleteRecord = false
+                        healthRecordsAdapter.canDeleteRecord = false
                     } else {
                         text = getString(R.string.done)
-                        vaccineRecordsAdapter.canDeleteRecord = true
-                    }
-
-                    if (testRecordsAdapter.canDeleteRecord) {
-                        text = getString(R.string.edit)
-                        testRecordsAdapter.canDeleteRecord = false
-                    } else {
-                        text = getString(R.string.done)
-                        testRecordsAdapter.canDeleteRecord = true
+                        healthRecordsAdapter.canDeleteRecord = true
                     }
 
                     concatAdapter.notifyItemRangeChanged(
