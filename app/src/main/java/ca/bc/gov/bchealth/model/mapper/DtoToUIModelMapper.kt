@@ -14,7 +14,6 @@ import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
-import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
 
 fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
@@ -65,8 +64,9 @@ fun VaccineWithDosesDto.toUiModel(): HealthRecordItem {
         title = "COVID-19 vaccination",
         description = "${passState.status}",
         testOutcome = null,
-        date = date.toDate(),
+        date = date,
         HealthRecordType.VACCINE_RECORD,
+        dataSource = vaccine.mode.name
     )
 }
 
@@ -80,8 +80,9 @@ fun MedicationWithSummaryAndPharmacyDto.toUiModel(): HealthRecordItem {
         icon = R.drawable.ic_health_record_medication,
         description = medicationSummary.genericName ?: "",
         testOutcome = null,
-        date = medicationRecord.dispenseDate.toDate(),
-        healthRecordType = HealthRecordType.MEDICATION_RECORD
+        date = medicationRecord.dispenseDate,
+        healthRecordType = HealthRecordType.MEDICATION_RECORD,
+        dataSource = medicationRecord.dataSource.name
     )
 }
 
@@ -103,8 +104,9 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
         title = "COVID-19 test result",
         description = "",
         testOutcome = testStatus,
-        date = date.toDate(),
+        date = date,
         HealthRecordType.COVID_TEST_RECORD,
+        dataSource = testResult.dataSource.name
     )
 }
 
