@@ -226,7 +226,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
         labTestRecordsAdapter = LabTestRecordsAdapter { labTestRecord ->
             val action = IndividualHealthRecordFragmentDirections
-                .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(
+                .actionIndividualHealthRecordFragmentToLabTestDetailFragment(
                     labTestRecord.patientId
                 )
             findNavController().navigate(action)
