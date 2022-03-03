@@ -18,17 +18,20 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import androidx.work.workDataOf
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentBcscAuthBinding
-import ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment
-import ca.bc.gov.bchealth.ui.tos.TermsOfServiceStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker
-import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker.Companion.PATIENT_ID
+import ca.bc.gov.repository.worker.FetchAuthenticatedPatientDataWorker
+import ca.bc.gov.repository.worker.PATIENT_ID
+import ca.bc.gov.repository.worker.WORK_RESULT
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
@@ -46,7 +49,6 @@ import java.util.concurrent.TimeUnit
 */
 const val BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME = "BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME"
 const val BACKGROUND_AUTH_RECORD_FETCH_WORK_INTERVAL = 15L
-
 @AndroidEntryPoint
 class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
@@ -57,20 +59,8 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
     ) { activityResult ->
         processAuthResponse(activityResult)
     }
-    private var logoutResultLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { activityResult ->
-        if (activityResult.resultCode == Activity.RESULT_OK) {
-            viewModel.processLogoutResponse()
-        } else {
-            AlertDialogHelper.showAlertDialog(
-                context = requireContext(),
-                title = getString(R.string.error),
-                msg = getString(R.string.error_message),
-                positiveBtnMsg = getString(R.string.dialog_button_ok)
-            )
-        }
-    }
+    private lateinit var workRequest: WorkRequest
+    private lateinit var workManager: WorkManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,118 +70,8 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<TermsOfServiceStatus>(
-            TermsOfServiceFragment.TERMS_OF_SERVICE_STATUS
-        )?.observe(viewLifecycleOwner) {
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<TermsOfServiceStatus>(
-                TermsOfServiceFragment.TERMS_OF_SERVICE_STATUS
-            )
-            when (it) {
-                TermsOfServiceStatus.ACCEPTED -> {
-                    viewModel.acceptTermsAndService()
-                }
-                else -> {
-                    showTosNotAcceptedDialog()
-                }
-            }
-        }
+        setupToolBar()
         initUI()
-        observeAuthentication()
-    }
-
-    private fun observeAuthentication() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.authStatus.collect {
-
-                    showLoader(it.showLoading)
-                    handleError(it.isError)
-
-                    handleLoadVerification(it)
-
-                    if (it.authRequestIntent != null) {
-                        authResultLauncher.launch(it.authRequestIntent)
-                        viewModel.resetAuthStatus()
-                    }
-
-                    val isLoginStatusActive = it.loginStatus == LoginStatus.ACTIVE
-                    if (isLoginStatusActive) {
-                        viewModel.resetAuthStatus()
-                        viewModel.checkAgeLimit()
-                    }
-
-                    handleQueueIt(it)
-
-                    handleAgeLimitCheck(it)
-
-                    handleTosCheck(it)
-
-                    handlePatientDataResponse(it)
-
-                    handleEndSessionRequest(it)
-                }
-            }
-        }
-    }
-
-    private fun handleEndSessionRequest(authStatus: AuthStatus) {
-        if (authStatus.endSessionIntent != null) {
-            logoutResultLauncher.launch(authStatus.endSessionIntent)
-            viewModel.resetAuthStatus()
-        }
-    }
-
-    private fun handleLoadVerification(authStatus: AuthStatus) {
-        if (authStatus.canInitiateBcscLogin != null) {
-            viewModel.resetAuthStatus()
-            viewModel.initiateLogin()
-        }
-    }
-
-    private fun handlePatientDataResponse(authStatus: AuthStatus) {
-        if (authStatus.patientId > 0L) {
-            viewModel.resetAuthStatus()
-            respondToSuccess()
-            fetchBcscHealthRecords(authStatus.patientId)
-        }
-    }
-
-    private fun handleAgeLimitCheck(authStatus: AuthStatus) {
-        when (authStatus.ageLimitCheck) {
-            AgeLimitCheck.PASSED -> {
-                viewModel.resetAuthStatus()
-                viewModel.isTermsOfServiceAccepted()
-            }
-            AgeLimitCheck.FAILED -> { showAgeLimitRestrictionDialog() }
-            else -> {
-            }
-        }
-    }
-
-    private fun handleTosCheck(authStatus: AuthStatus) {
-
-        if (authStatus.tosAccepted != null) {
-            viewModel.resetAuthStatus()
-            when (authStatus.tosAccepted) {
-                TOSAccepted.ACCEPTED -> {
-                    viewModel.fetchPatientData()
-                }
-                else -> {
-                    findNavController().navigate(R.id.termsOfServiceFragment)
-                }
-            }
-        }
-    }
-
-    private fun handleQueueIt(authStatus: AuthStatus) {
-        if (authStatus.onMustBeQueued && authStatus.queItUrl != null) {
-            queUser(authStatus.queItUrl)
-        }
-
-        if (authStatus.queItTokenUpdated) {
-            viewModel.resetAuthStatus()
-            viewModel.verifyLoad()
-        }
     }
 
     private fun setupToolBar() {
@@ -211,8 +91,6 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
     private fun initUI() {
 
-        setupToolBar()
-
         binding.tvLoginInfoMessage.text = Html.fromHtml(
             getString(R.string.login_info_message), Html.FROM_HTML_MODE_LEGACY
         )
@@ -222,7 +100,31 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
         }
 
         binding.btnContinue.setOnClickListener {
-            viewModel.verifyLoad()
+            viewModel.initiateLogin()
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.authStatus.collect {
+
+                        showLoader(it.showLoading)
+                        handleError(it.isError)
+
+                        if (it.authRequestIntent != null) {
+                            authResultLauncher.launch(it.authRequestIntent)
+                            viewModel.resetAuthStatus()
+                        }
+
+                        if (it.isLoggedIn) {
+                            viewModel.resetAuthStatus()
+                            fetchAuthenticatedPatientData()
+                        }
+
+                        if (it.queItTokenUpdated) {
+                            workManager.enqueue(workRequest)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -233,20 +135,36 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
         }
     }
 
-    private fun fetchBcscHealthRecords(patientId: Long) {
+    private fun fetchAuthenticatedPatientData() {
+        workRequest = OneTimeWorkRequestBuilder<FetchAuthenticatedPatientDataWorker>().build()
+        workManager = WorkManager.getInstance(requireContext())
+        workManager.enqueue(workRequest)
+        workManager.getWorkInfoByIdLiveData(workRequest.id)
+            .observe(viewLifecycleOwner) { info ->
+                showLoader(true)
+                if (info != null && info.state.isFinished) {
+                    val queItUrl = info.outputData.getString(WORK_RESULT)
+                    if (queItUrl != null) {
+                        queUser(queItUrl)
+                    }
+
+                    if (info.outputData.getLong(PATIENT_ID, 0) > 0) {
+                        respondToSuccess()
+                        fetchAuthenticatedRecords(info)
+                        showLoader(false)
+                    }
+                }
+            }
+    }
+
+    private fun fetchAuthenticatedRecords(info: WorkInfo) {
+        val patientId = info.outputData.getLong(PATIENT_ID, 0)
         val data: Data = workDataOf(PATIENT_ID to patientId)
-        val workRequest = PeriodicWorkRequestBuilder<FetchAuthenticatedHealthRecordsWorker>(
-            BACKGROUND_AUTH_RECORD_FETCH_WORK_INTERVAL,
-            TimeUnit.MINUTES
-        )
+        val workRequest = PeriodicWorkRequestBuilder<FetchAuthenticatedHealthRecordsWorker>(BACKGROUND_AUTH_RECORD_FETCH_WORK_INTERVAL, TimeUnit.MINUTES)
             .setInputData(data)
             .build()
-        val workManager = WorkManager.getInstance(requireContext())
-        workManager.enqueueUniquePeriodicWork(
-            BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME,
-            ExistingPeriodicWorkPolicy.REPLACE,
-            workRequest
-        )
+        workManager = WorkManager.getInstance(requireContext())
+        workManager.enqueueUniquePeriodicWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME, ExistingPeriodicWorkPolicy.REPLACE, workRequest)
     }
 
     private fun queUser(value: String) {
@@ -298,30 +216,6 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                 findNavController().previousBackStackEntry?.savedStateHandle
                     ?.set(BCSC_AUTH_STATUS, BcscAuthState.SUCCESS)
                 findNavController().popBackStack()
-                dialog.dismiss()
-            }
-            .show()
-    }
-
-    private fun showAgeLimitRestrictionDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.age_limit_title))
-            .setCancelable(false)
-            .setMessage(getString(R.string.age_limit_message))
-            .setPositiveButton(getString(R.string.ok_camel_case)) { dialog, _ ->
-                viewModel.getEndSessionIntent()
-                dialog.dismiss()
-            }
-            .show()
-    }
-
-    private fun showTosNotAcceptedDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.terms_of_service))
-            .setCancelable(false)
-            .setMessage(getString(R.string.terms_of_service_message))
-            .setPositiveButton(getString(R.string.ok_camel_case)) { dialog, _ ->
-                viewModel.getEndSessionIntent()
                 dialog.dismiss()
             }
             .show()
