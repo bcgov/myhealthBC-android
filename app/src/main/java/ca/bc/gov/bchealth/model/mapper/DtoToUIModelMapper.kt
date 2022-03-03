@@ -137,7 +137,7 @@ fun LabTestRecordDto.toUiModel(): HealthRecordItem {
         testResultId = -1L,
         medicationRecordId = -1L,
         title = "Lab Test Result",
-        icon = R.drawable.ic_health_record_covid_test,
+        icon = R.drawable.ic_lab_test,
         description = "",
         testOutcome = testStatus,
         date = testDate.toDate(),
