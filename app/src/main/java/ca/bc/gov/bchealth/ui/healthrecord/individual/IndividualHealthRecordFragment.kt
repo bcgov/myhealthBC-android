@@ -14,8 +14,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
+import ca.bc.gov.bchealth.ui.login.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
@@ -84,7 +87,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     findNavController().popBackStack()
                 }
                 else -> {
-                    // no implementation required}
+                    // no implementation required
                 }
             }
         }
@@ -92,6 +95,18 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private fun getDummyData(authenticatedRecordsCount: Int): ArrayList<HiddenRecordItem> {
         return arrayListOf(HiddenRecordItem(authenticatedRecordsCount))
+    }
+
+    private fun observeHealthRecordsSyncCompletion() {
+        val workRequest = WorkManager.getInstance(requireContext())
+            .getWorkInfosForUniqueWorkLiveData(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME)
+        if (!workRequest.hasObservers()) {
+            workRequest.observe(viewLifecycleOwner) {
+                if (it.firstOrNull()?.state == WorkInfo.State.ENQUEUED) {
+                    viewModel.getIndividualsHealthRecord(args.patientId)
+                }
+            }
+        }
     }
 
     private fun observeBcscLogin() {
@@ -153,6 +168,10 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                                     getDummyData(uiState.authenticatedRecordsCount)
                                 )
                             }
+                        }
+
+                        if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
+                            observeHealthRecordsSyncCompletion()
                         }
                     }
 
