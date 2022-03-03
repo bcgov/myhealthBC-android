@@ -133,7 +133,8 @@ class MedicationDetailsViewModel @Inject constructor(
     companion object {
         const val ITEM_VIEW_TYPE_RECORD = 0
         const val ITEM_VIEW_TYPE_DIRECTIONS = 1
-        const val ITEM_VIEW_TYPE_COMMENTS = 2
+        const val ITEM_VIEW_TYPE_COMMENTS_COUNT = 2
+        const val ITEM_VIEW_TYPE_COMMENTS = 3
     }
 }
 
