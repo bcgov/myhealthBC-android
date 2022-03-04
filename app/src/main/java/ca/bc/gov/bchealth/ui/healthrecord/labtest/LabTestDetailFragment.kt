@@ -9,25 +9,28 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentLabTestDetailBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
 
     private val binding by viewBindings(FragmentLabTestDetailBinding::bind)
     private val viewModel: LabTestDetailViewModel by viewModels()
     private lateinit var labTestDetailAdapter: LabTestDetailAdapter
+    private val args: LabTestDetailFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initUI()
-        viewModel.getLabTestDetails()
+        viewModel.getLabTestDetails(args.labOrderId)
         observeUiState()
     }
 
@@ -54,7 +57,6 @@ class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
         labTestDetailAdapter = LabTestDetailAdapter()
         binding.rvLabTestDetailList.apply {
             adapter = labTestDetailAdapter
-            layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
         }
     }
