@@ -106,17 +106,9 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                     labTestRepository.insert(it.labTests)
                 }
             }
-            successApiMsgList.add(context.getString(R.string.lab_orders))
         } catch (e: Exception) {
-            failApiMsgList.add(context.getString(R.string.lab_orders))
+            isApiFailed = true
         }
-
-        val notificationMsg = prepareNotificationMsg(successApiMsgList, failApiMsgList)
-        notificationHelper.updateNotification(
-            context.getString(R.string.notification_title_fetching_records_completed),
-            notificationMsg
-        )
-    }
 
         if (isApiFailed) {
             notificationHelper.updateNotification(context.getString(R.string.notification_title_on_failed))
