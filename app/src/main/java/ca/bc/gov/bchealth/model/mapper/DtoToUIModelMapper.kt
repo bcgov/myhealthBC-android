@@ -88,10 +88,27 @@ fun MedicationWithSummaryAndPharmacyDto.toUiModel(): HealthRecordItem {
 fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
 
     val testRecordDto = testRecords.maxByOrNull { it.resultDateTime }
-    val testStatus = if (testRecordDto?.testStatus.equals("Pending", true)) {
+    val testOutcome = if (testRecordDto?.testStatus.equals("Pending", true)) {
         testRecordDto?.testStatus
     } else {
-        testRecordDto?.testOutcome
+        when (testRecordDto?.testOutcome) {
+            CovidTestResultStatus.Indeterminate.name,
+            CovidTestResultStatus.IndeterminateResult.name -> {
+                CovidTestResultStatus.Indeterminate.name
+            }
+            CovidTestResultStatus.Cancelled.name -> {
+                CovidTestResultStatus.Cancelled.name
+            }
+            CovidTestResultStatus.Negative.name -> {
+                CovidTestResultStatus.Negative.name
+            }
+            CovidTestResultStatus.Positive.name -> {
+                CovidTestResultStatus.Positive.name
+            }
+            else -> {
+                CovidTestResultStatus.Indeterminate.name
+            }
+        }
     }
     val date = testResult.collectionDate
 
@@ -102,7 +119,7 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
         icon = R.drawable.ic_health_record_covid_test,
         title = "COVID-19 test result",
         description = "",
-        testOutcome = testStatus,
+        testOutcome = testOutcome,
         date = date.toDate(),
         HealthRecordType.COVID_TEST_RECORD,
     )
@@ -127,4 +144,13 @@ fun PatientWithHealthRecordCount.toUiModel(): PatientHealthRecord {
         totalRecord = vaccineRecordCount + testResultCount + medicationRecordCount,
         authStatus = patientDto.authenticationStatus
     )
+}
+
+enum class CovidTestResultStatus {
+    Negative,
+    Positive,
+    Indeterminate,
+    IndeterminateResult,
+    Cancelled,
+    Pending
 }
