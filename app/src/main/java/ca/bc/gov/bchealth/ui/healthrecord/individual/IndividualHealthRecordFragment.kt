@@ -3,7 +3,6 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -19,20 +18,12 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
-import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
-import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
-import ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment
-import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
-import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_REQUEST
-import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_UPDATED
 import ca.bc.gov.bchealth.ui.login.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
-import ca.bc.gov.bchealth.ui.login.LoginStatus
+import ca.bc.gov.bchealth.ui.login.LoginSessionStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
-import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.common.model.AuthenticationStatus
@@ -54,33 +45,17 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private val binding by viewBindings(FragmentIndividualHealthRecordBinding::bind)
     private val viewModel: IndividualHealthRecordViewModel by viewModels()
-    private lateinit var hiddenMedicationRecordsAdapter: HiddenMedicationRecordAdapter
+    private lateinit var vaccineRecordsAdapter: VaccineRecordsAdapter
+    private lateinit var testRecordsAdapter: TestRecordsAdapter
     private lateinit var hiddenHealthRecordAdapter: HiddenHealthRecordAdapter
-    private lateinit var healthRecordsAdapter: HealthRecordsAdapter
+    private lateinit var medicationRecordsAdapter: MedicationRecordsAdapter
+    private lateinit var labTestRecordsAdapter: LabTestRecordsAdapter
     private lateinit var concatAdapter: ConcatAdapter
     private val args: IndividualHealthRecordFragmentArgs by navArgs()
     private var testResultId: Long = -1L
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private var loginStatus: LoginStatus? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        requireActivity().onBackPressedDispatcher.addCallback(
-            this,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    findNavController().previousBackStackEntry?.savedStateHandle
-                        ?.set(
-                            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
-                            NavigationAction.ACTION_BACK
-                        )
-                    findNavController().popBackStack()
-                }
-            }
-        )
-    }
+    private var loginSessionStatus: LoginSessionStatus? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -91,19 +66,14 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
         setUpRecyclerView()
 
-        protectiveWordFragmentResultListener()
+        if (loginSessionStatus == null) {
+            observeBcscLogin()
+            bcscAuthViewModel.checkLogin()
+        } else {
+            viewModel.getIndividualsHealthRecord(args.patientId)
+        }
 
-        observeBcscLogin()
-
-        bcscAuthViewModel.checkLogin()
-
-        observeHealthRecords()
-
-        observeHealthRecordsSyncCompletion()
-
-        observeVaccineRecordAddition()
-
-        observeCovidTestRecordAddition()
+        setupObserver()
     }
 
     private fun handleBcscAuthResponse() {
@@ -115,8 +85,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             )
             when (it) {
                 BcscAuthState.SUCCESS -> {
-                    findNavController().previousBackStackEntry?.savedStateHandle
-                        ?.set(FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS, 1L)
                     findNavController().popBackStack()
                 }
                 else -> {
@@ -126,7 +94,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         }
     }
 
-    private fun getHiddenRecordItem(authenticatedRecordsCount: Int): ArrayList<HiddenRecordItem> {
+    private fun getDummyData(authenticatedRecordsCount: Int): ArrayList<HiddenRecordItem> {
         return arrayListOf(HiddenRecordItem(authenticatedRecordsCount))
     }
 
@@ -145,12 +113,13 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun observeBcscLogin() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                bcscAuthViewModel.authStatus.collect { authStatus ->
-                    if (authStatus.showLoading) {
+                bcscAuthViewModel.authStatus.collect {
+                    binding.progressBar.isVisible = it.showLoading
+                    if (it.showLoading) {
                         return@collect
                     } else {
-                        authStatus.loginStatus?.let {
-                            loginStatus = it
+                        it.loginSessionStatus?.let {
+                            loginSessionStatus = it
                             viewModel.getIndividualsHealthRecord(args.patientId)
                         }
                     }
@@ -159,13 +128,61 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         }
     }
 
-    private fun observeHealthRecords() {
+    private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
 
-                    if (loginStatus != null) {
-                        updateUi(uiState)
+                    if (loginSessionStatus != null) {
+                        if (loginSessionStatus == LoginSessionStatus.ACTIVE) {
+                            if (::vaccineRecordsAdapter.isInitialized) {
+                                vaccineRecordsAdapter.submitList(uiState.onVaccineRecord)
+                            }
+
+                            if (::testRecordsAdapter.isInitialized) {
+                                testRecordsAdapter.submitList(uiState.onTestRecords)
+                            }
+
+                            if (::medicationRecordsAdapter.isInitialized) {
+                                medicationRecordsAdapter.submitList(uiState.onMedicationRecords)
+                            }
+
+                            if (::labTestRecordsAdapter.isInitialized) {
+                                labTestRecordsAdapter.submitList(uiState.onLabTestRecords)
+                            }
+                        }
+
+                        if (loginSessionStatus == LoginSessionStatus.EXPIRED) {
+                            if (::vaccineRecordsAdapter.isInitialized) {
+                                vaccineRecordsAdapter.submitList(uiState.onNonBcscVaccineRecord)
+                            }
+
+                            if (::testRecordsAdapter.isInitialized) {
+                                testRecordsAdapter.submitList(uiState.onNonBcscTestRecords)
+                            }
+
+                            if (::medicationRecordsAdapter.isInitialized) {
+                                medicationRecordsAdapter.submitList(uiState.onNonBcscMedicationRecords)
+                            }
+
+                            if (uiState.authenticatedRecordsCount != null &&
+                                uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED &&
+                                ::hiddenHealthRecordAdapter.isInitialized
+                            ) {
+                                hiddenHealthRecordAdapter.submitList(
+                                    getDummyData(uiState.authenticatedRecordsCount)
+                                )
+                            }
+                        }
+
+                        if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
+                            observeHealthRecordsSyncCompletion()
+                        }
+                    }
+
+                    if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
+                        binding.toolbar.tvRightOption.visibility = View.INVISIBLE
+                        testRecordsAdapter.isUpdateRequested = false
                     }
 
                     if (uiState.updatedTestResultId > 0) {
@@ -173,160 +190,79 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         return@collect
                     }
 
-                    respondToQueueIt(uiState)
+                    if (uiState.queItTokenUpdated) {
+                        requestUpdate(testResultId)
+                    }
+
+                    if (uiState.onMustBeQueued && uiState.queItUrl != null) {
+                        queUser(uiState.queItUrl)
+                    }
                 }
-            }
-        }
-    }
-
-    private fun respondToQueueIt(uiState: IndividualHealthRecordsUiState) {
-        if (uiState.queItTokenUpdated) {
-            requestUpdate(testResultId)
-        }
-
-        if (uiState.onMustBeQueued && uiState.queItUrl != null) {
-            queUser(uiState.queItUrl)
-        }
-    }
-
-    private fun updateUi(uiState: IndividualHealthRecordsUiState) {
-        binding.progressBar.isVisible = false
-
-        updateHealthRecordsList(uiState)
-
-        if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
-            binding.ivEdit.visibility = View.GONE
-            binding.ivFilter.visibility = View.VISIBLE
-            healthRecordsAdapter.isUpdateRequested = false
-        } else {
-            binding.ivEdit.visibility = View.VISIBLE
-            binding.ivFilter.visibility = View.GONE
-            healthRecordsAdapter.isUpdateRequested = true
-        }
-    }
-
-    private fun updateHealthRecordsList(uiState: IndividualHealthRecordsUiState) {
-        if (loginStatus == LoginStatus.ACTIVE) {
-            displayBcscRecords(uiState)
-        }
-
-        if (loginStatus == LoginStatus.EXPIRED) {
-            displayNonBcscRecords(uiState)
-        }
-    }
-
-    private fun displayNonBcscRecords(uiState: IndividualHealthRecordsUiState) {
-        if (::healthRecordsAdapter.isInitialized) {
-            healthRecordsAdapter.submitList(uiState.onNonBcscHealthRecords)
-        }
-
-        if (uiState.authenticatedRecordsCount != null &&
-            uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED &&
-            ::hiddenHealthRecordAdapter.isInitialized
-        ) {
-            hiddenHealthRecordAdapter.submitList(
-                getHiddenRecordItem(uiState.authenticatedRecordsCount)
-            )
-        }
-    }
-
-    private fun displayBcscRecords(uiState: IndividualHealthRecordsUiState) {
-        if (uiState.medicationRecordsUpdated || !viewModel.isProtectiveWordRequired() || sharedViewModel.isProtectiveWordAdded) {
-            if (::healthRecordsAdapter.isInitialized) {
-                healthRecordsAdapter.submitList(uiState.onHealthRecords)
-            }
-            concatAdapter.removeAdapter(hiddenMedicationRecordsAdapter)
-        } else {
-            if (::healthRecordsAdapter.isInitialized) {
-                healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
-            }
-            if (::hiddenMedicationRecordsAdapter.isInitialized) {
-                hiddenMedicationRecordsAdapter.submitList(
-                    listOf(
-                        HiddenMedicationRecordItem(
-                            getString(R.string.hidden_medication_records),
-                            getString(R.string.enter_protective_word_to_access_medication_records)
-                        )
-                    )
-                )
             }
         }
     }
 
     private fun setUpRecyclerView() {
-        healthRecordsAdapter = HealthRecordsAdapter(
-            {
-                when (it.healthRecordType) {
-                    HealthRecordType.VACCINE_RECORD -> {
-                        val action = IndividualHealthRecordFragmentDirections
-                            .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(
-                                it.patientId
-                            )
-                        findNavController().navigate(action)
-                    }
-                    HealthRecordType.COVID_TEST_RECORD -> {
-                        val action = IndividualHealthRecordFragmentDirections
-                            .actionIndividualHealthRecordFragmentToTestResultDetailFragment(
-                                it.patientId,
-                                it.testResultId
-                            )
-                        findNavController().navigate(action)
-                    }
-                    HealthRecordType.MEDICATION_RECORD -> {
-                        val action = IndividualHealthRecordFragmentDirections
-                            .actionIndividualHealthRecordFragmentToMedicationDetailFragment(
-                                it.medicationRecordId
-                            )
-                        findNavController().navigate(action)
-                    }
-                    HealthRecordType.LAB_TEST -> {
-                        it.labOrderId?.let { it1 ->
-                            val action = IndividualHealthRecordFragmentDirections
-                                .actionIndividualHealthRecordFragmentToLabTestDetailFragment(
-                                    it1
-                                )
-                            findNavController().navigate(action)
-                        }
-                    }
-                }
+        vaccineRecordsAdapter = VaccineRecordsAdapter(
+            { vaccineRecord ->
+                val action = IndividualHealthRecordFragmentDirections
+                    .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(
+                        vaccineRecord.patientId
+                    )
+                findNavController().navigate(action)
             },
-            {
-                when (it.healthRecordType) {
-                    HealthRecordType.VACCINE_RECORD,
-                    HealthRecordType.COVID_TEST_RECORD -> {
-                        showHealthRecordDeleteDialog(it)
-                    }
-                    HealthRecordType.MEDICATION_RECORD,
-                    HealthRecordType.LAB_TEST -> {
-                        // No implementation required
-                    }
-                }
+            { vaccineRecord ->
+                showHealthRecordDeleteDialog(vaccineRecord)
+            }
+        )
+
+        testRecordsAdapter = TestRecordsAdapter(
+            { testResult ->
+                val action = IndividualHealthRecordFragmentDirections
+                    .actionIndividualHealthRecordFragmentToTestResultDetailFragment(
+                        testResult.patientId,
+                        testResult.testResultId
+                    )
+                findNavController().navigate(action)
             },
-            {
-                requestUpdate(it.testResultId)
+            { testResult ->
+                showHealthRecordDeleteDialog(testResult)
+            },
+            { patientId, testResult ->
+                requestUpdate(testResult)
             },
             isUpdateRequested = true,
             canDeleteRecord = false
         )
 
-        hiddenHealthRecordAdapter = HiddenHealthRecordAdapter { onBCSCLoginClick() }
-        hiddenMedicationRecordsAdapter = HiddenMedicationRecordAdapter { onMedicationAccessClick() }
+        medicationRecordsAdapter = MedicationRecordsAdapter { medicationRecord ->
+            val action = IndividualHealthRecordFragmentDirections
+                .actionIndividualHealthRecordFragmentToMedicationDetailFragment(
+                    medicationRecord.medicationRecordId
+                )
+            findNavController().navigate(action)
+        }
 
+        labTestRecordsAdapter = LabTestRecordsAdapter { labTestRecord ->
+           labTestRecord.labOrderId?.let {
+               val action = IndividualHealthRecordFragmentDirections
+                    .actionIndividualHealthRecordFragmentToLabTestDetailFragment(
+                        it
+                    )
+               findNavController().navigate(action)
+            }
+        }
+
+        hiddenHealthRecordAdapter = HiddenHealthRecordAdapter { onBCSCLoginClick() }
         concatAdapter = ConcatAdapter(
             hiddenHealthRecordAdapter,
-            hiddenMedicationRecordsAdapter,
-            healthRecordsAdapter
+            vaccineRecordsAdapter,
+            testRecordsAdapter,
+            medicationRecordsAdapter,
+            labTestRecordsAdapter
         )
         binding.rvHealthRecords.adapter = concatAdapter
         binding.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
-    }
-
-    private fun onMedicationAccessClick() {
-        val action = IndividualHealthRecordFragmentDirections
-            .actionIndividualHealthRecordFragmentToProtectiveWordFragment(
-                args.patientId
-            )
-        findNavController().navigate(action)
     }
 
     private fun requestUpdate(testResultId: Long) {
@@ -335,41 +271,41 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun setupToolbar() {
+        binding.toolbar.apply {
+            ivLeftOption.visibility = View.VISIBLE
+            ivLeftOption.setImageResource(R.drawable.ic_action_back)
+            ivLeftOption.setOnClickListener {
+                findNavController().popBackStack()
+            }
+            tvTitle.visibility = View.VISIBLE
+            tvTitle.text = args.patientName.plus("'s record")
+            line1.visibility = View.VISIBLE
 
-        binding.apply {
-            tvName.text = args.patientName
-            if (findNavController().previousBackStackEntry?.destination?.id ==
-                R.id.healthRecordsFragment
-            ) {
-                ivBack.visibility = View.VISIBLE
-                ivBack.setOnClickListener {
-                    findNavController().popBackStack()
+            binding.toolbar.tvRightOption.apply {
+                visibility = View.VISIBLE
+                text = getString(R.string.edit)
+                setOnClickListener {
+                    if (vaccineRecordsAdapter.canDeleteRecord) {
+                        text = getString(R.string.edit)
+                        vaccineRecordsAdapter.canDeleteRecord = false
+                    } else {
+                        text = getString(R.string.done)
+                        vaccineRecordsAdapter.canDeleteRecord = true
+                    }
+
+                    if (testRecordsAdapter.canDeleteRecord) {
+                        text = getString(R.string.edit)
+                        testRecordsAdapter.canDeleteRecord = false
+                    } else {
+                        text = getString(R.string.done)
+                        testRecordsAdapter.canDeleteRecord = true
+                    }
+
+                    concatAdapter.notifyItemRangeChanged(
+                        0,
+                        concatAdapter.itemCount
+                    )
                 }
-            } else {
-                ivBack.visibility = View.GONE
-            }
-            ivSetting.setOnClickListener {
-                findNavController().navigate(R.id.profileFragment)
-            }
-            ivAdd.setOnClickListener {
-                val action = IndividualHealthRecordFragmentDirections
-                    .actionIndividualHealthRecordFragmentToAddHealthRecordFragment(true)
-                findNavController().navigate(action)
-            }
-            ivFilter.setOnClickListener {
-                requireContext().toast("Coming soon")
-            }
-            ivEdit.setOnClickListener {
-                healthRecordsAdapter.canDeleteRecord = !healthRecordsAdapter.canDeleteRecord
-                if (healthRecordsAdapter.canDeleteRecord) {
-                    ivEdit.setImageResource(R.drawable.ic_done)
-                } else {
-                    ivEdit.setImageResource(R.drawable.ic_edit)
-                }
-                concatAdapter.notifyItemRangeChanged(
-                    0,
-                    concatAdapter.itemCount
-                )
             }
         }
     }
@@ -453,55 +389,5 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun onBCSCLoginClick() {
         sharedViewModel.destinationId = 0
         findNavController().navigate(R.id.bcscAuthInfoFragment)
-    }
-
-    private fun protectiveWordFragmentResultListener() {
-        parentFragmentManager.setFragmentResultListener(
-            KEY_MEDICATION_RECORD_REQUEST,
-            viewLifecycleOwner
-        ) { _, result ->
-            viewModel.medicationRecordsUpdated(result.get(KEY_MEDICATION_RECORD_UPDATED) as Boolean)
-        }
-    }
-
-    private fun observeCovidTestRecordAddition() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
-            FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS
-        )
-            ?.observe(
-                viewLifecycleOwner
-            ) { recordId ->
-                findNavController().currentBackStackEntry?.savedStateHandle?.remove<Long>(
-                    FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS
-                )
-                if (recordId > 0) {
-                    findNavController().previousBackStackEntry?.savedStateHandle
-                        ?.set(
-                            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
-                            NavigationAction.ACTION_RE_CHECK
-                        )
-                    findNavController().popBackStack()
-                }
-            }
-    }
-
-    private fun observeVaccineRecordAddition() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
-            FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
-        )?.observe(
-            viewLifecycleOwner
-        ) {
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<Long>(
-                FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
-            )
-            if (it > 0) {
-                findNavController().previousBackStackEntry?.savedStateHandle
-                    ?.set(
-                        HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
-                        NavigationAction.ACTION_RE_CHECK
-                    )
-                findNavController().popBackStack()
-            }
-        }
     }
 }

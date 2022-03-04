@@ -1,11 +1,9 @@
 package ca.bc.gov.bchealth.ui.healthrecord.labtest
 
 import android.content.Context
-import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -71,8 +69,6 @@ class LabTestDetailAdapter :
                     val pair = getTestResult(labTestDetail.outOfRange, holder.itemView.context)
                     tvDesc2.text = pair.first
                     tvDesc2.setTextColor(pair.second)
-                    val typeface = ResourcesCompat.getFont(holder.itemView.context, R.font.bc_sans_bold)
-                    tvDesc2.setTypeface(typeface, Typeface.BOLD)
 
                     tvTitle3.text = labTestDetail.title3
                     tvDesc3.text = labTestDetail.testStatus
@@ -84,27 +80,15 @@ class LabTestDetailAdapter :
     private fun getTestResult(outOfRange: Boolean?, context: Context): Pair<String, Int> {
         outOfRange?.let {
             return if (outOfRange) {
-                Pair(
-                    context.resources.getString(R.string.out_of_range),
-                    context.resources.getColor(
-                        R.color.error, null
-                    )
-                )
+                Pair(context.resources.getString(R.string.out_of_range), context.resources.getColor(
+                    R.color.error, null))
             } else {
-                Pair(
-                    context.resources.getString(R.string.in_range),
-                    context.resources.getColor(
-                        R.color.status_green, null
-                    )
-                )
+                Pair(context.resources.getString(R.string.in_range), context.resources.getColor(
+                    R.color.status_green, null))
             }
         } ?: run {
-            return Pair(
-                context.resources.getString(R.string.pending),
-                context.resources.getColor(
-                    R.color.text_black, null
-                )
-            )
+            return Pair("N/A", context.resources.getColor(
+                R.color.text_black, null))
         }
     }
 

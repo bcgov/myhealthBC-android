@@ -6,7 +6,6 @@ import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.DataSource
-import ca.bc.gov.common.model.labtest.LabTestRecordDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.FetchTestResultRepository
@@ -52,9 +51,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
 
             val patientWithLabOrdersAndLabTests =
                 patientRepository.getPatientWithLabOrdersAndLabTests(patientId)
-
-
-            val labTestRecordDto = listOfNotNull(LabTestRecordDto())
 
             _uiState.update { state ->
                 state.copy(

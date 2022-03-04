@@ -59,18 +59,11 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
             if (index == 0) {
                 labTestDetails.add(
                     LabTestDetail(
-                        id = labTest.id,
                         header = "Test summary",
                         title1 = "Test name:",
                         testName = labTest.batteryType,
                         title2 = "Result:",
-                        outOfRange = if (labTest.testStatus.equals("partial", true) ||
-                            labTest.testStatus.equals("cancelled", true)
-                        ) {
-                            null
-                        } else {
-                            labTest.outOfRange
-                        },
+                        outOfRange = labTest.outOfRange,
                         title3 = "Test status:",
                         testStatus = labTest.testStatus,
                         viewType = ITEM_VIEW_TYPE_LAB_TEST
@@ -79,17 +72,10 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
             } else {
                 labTestDetails.add(
                     LabTestDetail(
-                        id = labTest.id,
                         title1 = "Test name:",
                         testName = labTest.batteryType,
                         title2 = "Result:",
-                        outOfRange = if (labTest.testStatus.equals("partial", true) ||
-                            labTest.testStatus.equals("cancelled", true)
-                        ) {
-                            null
-                        } else {
-                            labTest.outOfRange
-                        },
+                        outOfRange = labTest.outOfRange,
                         title3 = "Test status:",
                         testStatus = labTest.testStatus,
                         viewType = ITEM_VIEW_TYPE_LAB_TEST

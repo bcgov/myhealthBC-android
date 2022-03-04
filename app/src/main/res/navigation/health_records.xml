@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/health_records"
-    app:startDestination="@id/healthRecordPlaceholderFragment">
+    app:startDestination="@id/healthRecordsFragment">
 
     <fragment
         android:id="@+id/healthRecordsFragment"
@@ -14,7 +14,9 @@
             android:id="@+id/action_healthRecordsFragment_to_individualHealthRecordFragment"
             app:destination="@id/individualHealthRecordFragment" />
         <action
-            android:id="@+id/action_healthRecordsFragment_to_addHealthRecordFragment"
+            android:id="@+id/action_healthRecordsFragment_to_addHealthRecordsFragment"
+            app:popUpTo="@id/healthRecordsFragment"
+            app:popUpToInclusive="true"
             app:destination="@id/addHealthRecordsFragment" />
     </fragment>
 
@@ -23,10 +25,6 @@
         tools:layout="@layout/scene_health_records_add"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.add.AddHealthRecordsFragment"
         android:label="AddHealthRecordsFragment">
-        <argument
-            android:name="isBackButtonEnabled"
-            app:argType="boolean"
-            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/individualHealthRecordFragment"
@@ -54,12 +52,6 @@
         <action
             android:id="@+id/action_individualHealthRecordFragment_to_labTestDetailFragment"
             app:destination="@id/labTestDetailFragment"/>
-        <action
-            android:id="@+id/action_individualHealthRecordFragment_to_protectiveWordFragment"
-            app:destination="@+id/protectiveWordFragment"/>
-        <action
-            android:id="@+id/action_individualHealthRecordFragment_to_addHealthRecordFragment"
-            app:destination="@id/addHealthRecordsFragment" />
     </fragment>
 
 
@@ -67,11 +59,7 @@
         android:id="@+id/fetchTestRecordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment"
         android:label="FetchTestRecordFragment"
-        tools:layout="@layout/fragment_fetch_covid_test_result" >
-        <action
-            android:id="@+id/action_fetchTestRecordFragment_to_testResultDetailFragment"
-            app:destination="@id/testResultDetailFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_fetch_covid_test_result" />
     <fragment
         android:id="@+id/testResultDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.covidtests.TestResultDetailFragment"
@@ -82,16 +70,6 @@
         <argument
             android:name="testResult_id"
             app:argType="long" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/fetchVaccineRecordFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment"
-        android:label="FetchVaccineRecordFragment"
-        tools:layout="@layout/fragment_fetch_vaccine_record" >
-        <action
-            android:id="@+id/action_fetchVaccineRecordFragment_to_vaccineRecordDetailFragment"
-            app:destination="@id/vaccineRecordDetailFragment" />
     </fragment>
 
     <fragment
@@ -133,22 +111,5 @@
         <argument
             android:name="lab_order_id"
             app:argType="string" />
-    </fragment>
-    <fragment
-        android:id="@+id/protectiveWordFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.protectiveword.ProtectiveWordFragment"
-        android:label="ProtectiveWordFragment">
-        <argument
-            android:name="patient_id"
-            app:argType="long"/>
-    </fragment>
-    <fragment
-        android:id="@+id/healthRecordPlaceholderFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment"
-        android:label="health_record_placeholder_fragment"
-        tools:layout="@layout/health_record_placeholder_fragment" >
-        <action
-            android:id="@+id/action_healthRecordsPlaceHolderFragment_to_individualHealthRecordFragment"
-            app:destination="@id/individualHealthRecordFragment" />
     </fragment>
 </navigation>

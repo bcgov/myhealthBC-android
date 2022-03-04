@@ -101,7 +101,6 @@
     <string name="get_federal_travel_pass">Get Canadian COVID-19 proof</string>
     <string name="health_records">Health records</string>
     <string name="health_passes">Proof of vaccination</string>
-    <string name="home">Home</string>
 
     <!-- In app updates -->
     <string name="update_success">Update Success!</string>
@@ -178,18 +177,6 @@
     <string name="login_to_view_hidden_records_msg">Login again with your BC Services Card to view all the records</string>
     <string name="out_of_range">Out of Range</string>
     <string name="in_range">In Range</string>
-    <string name="add_health_record_title">Manage your records</string>
-    <string name="add_health_record_message">Log in with your BC Services Card to view all the records and customize health plans</string>
-    <string name="hidden_medication_records">Medications</string>
-    <string name="enter_protective_word_to_access_medication_records">Your protective word is required to access medication records</string>
-    <string name="protective_word_for_a_pharmanet_record">protective-word-for-a-pharmanet-record</string>
-    <string name="wrong_protective_word">Invalid protective word. Try again.</string>
-    <string name="restricted_pharmanet_records">Restricted PharmaNet Records</string>
-    <string name="view_your_medication_records">View your medication records</string>
-    <string name="protective_word_desc">Please enter the protective word required to access these restricted PharmaNet records. For more information visit protective-word-for-a-pharmanet-record</string>
-    <string name="protective_word">Protective Word</string>
-    <string name="access_records">Access records</string>
-    <string name="e_g_pa6729bc">e.g. PA6729BC</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>
@@ -225,9 +212,6 @@
     <string name="incorrect_credentials">Please enter valid credentials</string>
     <string name="login_success_title">Log in successful</string>
     <string name="login_success_message">Your records will be automatically added and updated in My Health BC.</string>
-    <string name="age_limit_title">Age Restriction</string>
-    <string name="age_limit_message">You must be 12 years of age or older to use Health Gateway.</string>
-    <string name="terms_of_service_message">Terms of service must be accepted to use Health Gateway.</string>
 
     <!--ERROR-->
     <string name="error">Error!</string>
@@ -264,12 +248,4 @@
     <string name="from_yyyy_mm_dd">From (yyyy-mm-dd)</string>
     <string name="to_yyyy_mm_dd">To (yyyy-mm-dd)</string>
     <string name="timeline">Timeline</string>
-
-    <!-- Home screen -->
-    <string name="hello">Hello</string>
-    <string name="hi">Hi</string>
-
-    <!--Terms of service-->
-    <string name="terms_of_service">Terms of service</string>
-    <string name="btn_agree">Agree</string>
 </resources>
