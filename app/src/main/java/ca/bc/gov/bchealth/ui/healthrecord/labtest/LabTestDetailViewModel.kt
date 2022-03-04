@@ -59,6 +59,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
             if (index == 0) {
                 labTestDetails.add(
                     LabTestDetail(
+                        id = labTest.id,
                         header = "Test summary",
                         title1 = "Test name:",
                         testName = labTest.batteryType,
@@ -72,6 +73,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
             } else {
                 labTestDetails.add(
                     LabTestDetail(
+                        id = labTest.id,
                         title1 = "Test name:",
                         testName = labTest.batteryType,
                         title2 = "Result:",
