@@ -64,6 +64,7 @@ versions.espresso = "3.4.0"
 versions.runner = "1.2.0"
 versions.androidx_test="2.1.0"
 versions.mockito="4.1.0"
+versions.mockk = "1.12.3"
 versions.work="2.7.1"
 versions.hilt_work="1.0.0"
 

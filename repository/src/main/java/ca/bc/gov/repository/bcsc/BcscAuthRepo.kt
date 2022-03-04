@@ -8,8 +8,8 @@ import androidx.core.net.toUri
 import ca.bc.gov.common.const.AUTH_ERROR
 import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
 import ca.bc.gov.common.exceptions.MyHealthException
-import ca.bc.gov.data.datasource.PatientLocalDataSource
-import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.data.datasource.local.PatientLocalDataSource
+import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.repository.R
 import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationException

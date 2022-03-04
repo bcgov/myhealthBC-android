@@ -7,7 +7,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
 import ca.bc.gov.common.exceptions.MustBeQueuedException
-import ca.bc.gov.common.exceptions.MyHealthNetworkException
+import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.ErrorData
 import ca.bc.gov.repository.FetchTestResultRepository
 import ca.bc.gov.repository.QueueItTokenRepository
@@ -45,7 +45,7 @@ class FetchTestRecordsViewModel @Inject constructor(
             )
 
             try {
-                val tesTestResultId = repository.fetchTestRecord(phn, dateOfBirth, collectionDate)
+                val tesTestResultId = repository.fetchCovidTestRecord(phn, dateOfBirth, collectionDate)
                 _uiState.tryEmit(
                     FetchTestRecordUiState(
                         onTestResultFetched = tesTestResultId
@@ -63,7 +63,7 @@ class FetchTestRecordsViewModel @Inject constructor(
                             )
                         )
                     }
-                    is MyHealthNetworkException -> {
+                    is MyHealthException -> {
                         when (e.errCode) {
                             SERVER_ERROR_DATA_MISMATCH -> {
                                 _uiState.tryEmit(

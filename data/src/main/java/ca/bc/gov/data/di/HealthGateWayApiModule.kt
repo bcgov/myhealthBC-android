@@ -2,15 +2,15 @@ package ca.bc.gov.data.di
 
 import android.content.Context
 import ca.bc.gov.data.R
-import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
-import ca.bc.gov.data.remote.ImmunizationApi
-import ca.bc.gov.data.remote.LaboratoryApi
-import ca.bc.gov.data.remote.MedicationApi
-import ca.bc.gov.data.remote.PatientApi
-import ca.bc.gov.data.remote.interceptor.CookiesInterceptor
-import ca.bc.gov.data.remote.interceptor.QueueItInterceptor
-import ca.bc.gov.data.remote.interceptor.ReceivedCookieInterceptor
-import ca.bc.gov.data.remote.interceptor.UserAgentInterceptor
+import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.data.datasource.remote.api.ImmunizationApi
+import ca.bc.gov.data.datasource.remote.api.LaboratoryApi
+import ca.bc.gov.data.datasource.remote.api.MedicationApi
+import ca.bc.gov.data.datasource.remote.api.PatientApi
+import ca.bc.gov.data.datasource.remote.interceptor.CookiesInterceptor
+import ca.bc.gov.data.datasource.remote.interceptor.QueueItInterceptor
+import ca.bc.gov.data.datasource.remote.interceptor.ReceivedCookieInterceptor
+import ca.bc.gov.data.datasource.remote.interceptor.UserAgentInterceptor
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides

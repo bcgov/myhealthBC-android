@@ -2,7 +2,7 @@ package ca.bc.gov.repository.testrecord
 
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
-import ca.bc.gov.data.datasource.TestResultLocalDataSource
+import ca.bc.gov.data.datasource.local.TestResultLocalDataSource
 import javax.inject.Inject
 
 /**

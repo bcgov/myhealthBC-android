@@ -6,19 +6,23 @@ import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
+import ca.bc.gov.common.model.labtest.LabOrderDto
+import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
+import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.utils.formatInPattern
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTime
+import ca.bc.gov.data.datasource.remote.model.base.LabResult
+import ca.bc.gov.data.datasource.remote.model.base.covidtest.CovidTestRecord
+import ca.bc.gov.data.datasource.remote.model.base.medication.DispensingPharmacy
+import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationStatementPayload
+import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationSummary
+import ca.bc.gov.data.datasource.remote.model.base.vaccine.Media
+import ca.bc.gov.data.datasource.remote.model.base.vaccine.VaccineResourcePayload
+import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.model.MediaMetaData
 import ca.bc.gov.data.model.VaccineStatus
-import ca.bc.gov.data.remote.model.base.LabResult
-import ca.bc.gov.data.remote.model.base.covidtest.CovidTestRecord
-import ca.bc.gov.data.remote.model.base.medication.DispensingPharmacy
-import ca.bc.gov.data.remote.model.base.medication.MedicationStatementPayload
-import ca.bc.gov.data.remote.model.base.medication.MedicationSummary
-import ca.bc.gov.data.remote.model.base.vaccine.Media
-import ca.bc.gov.data.remote.model.base.vaccine.VaccineResourcePayload
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
@@ -104,3 +108,32 @@ fun VaccineResourcePayload.toVaccineStatus(): VaccineStatus = VaccineStatus(
     qrCode = qrCode.toMediaMetaData(),
     federalVaccineProof = federalVaccineProof.toMediaMetaData()
 )
+
+fun LabTestResponse.toDto(): List<LabOrderWithLabTestDto> {
+    return payload.orders.map { order ->
+        val tests = order.laboratoryTests.map { test ->
+            LabTestDto(
+                id = 0,
+                labOrderId = order.laboratoryReportId,
+                obxId = test.obxId,
+                batteryType = test.batteryType,
+                outOfRange = test.outOfRange,
+                loinc = test.loinc,
+                testStatus = test.testStatus
+            )
+        }
+        LabOrderWithLabTestDto(
+            LabOrderDto(
+                id = order.laboratoryReportId,
+                reportId = order.reportId,
+                collectionDateTime = order.collectionDateTime.toDateTime(),
+                reportingSource = order.reportingSource,
+                commonName = order.commonName,
+                orderingProvider = order.orderingProvider,
+                testStatus = order.testStatus,
+                reportingAvailable = order.reportAvailable
+            ),
+            tests
+        )
+    }
+}

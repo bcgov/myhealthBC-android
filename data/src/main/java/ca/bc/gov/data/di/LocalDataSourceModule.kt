@@ -1,11 +1,13 @@
 package ca.bc.gov.data.di
 
-import ca.bc.gov.data.datasource.LocalDataSource
-import ca.bc.gov.data.datasource.MedicationRecordLocalDataSource
-import ca.bc.gov.data.datasource.PatientLocalDataSource
-import ca.bc.gov.data.datasource.TestResultLocalDataSource
-import ca.bc.gov.data.datasource.VaccineRecordLocalDataSource
-import ca.bc.gov.data.local.MyHealthDataBase
+import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
+import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
+import ca.bc.gov.data.datasource.local.LocalDataSource
+import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
+import ca.bc.gov.data.datasource.local.MyHealthDataBase
+import ca.bc.gov.data.datasource.local.PatientLocalDataSource
+import ca.bc.gov.data.datasource.local.TestResultLocalDataSource
+import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,6 +46,18 @@ class LocalDataSourceModule {
         db.getMedicationSummaryDao(),
         db.getDispensingPharmacyDao()
     )
+
+    @Provides
+    @Singleton
+    fun providesLabOrderLocalDataSource(
+        db: MyHealthDataBase
+    ) = LabOrderLocalDataSource(db.getLabOrderDao())
+
+    @Provides
+    @Singleton
+    fun providesLabTestLocalDataSource(
+        db: MyHealthDataBase
+    ) = LabTestLocalDataSource(db.getLabTestDao())
 
     @Provides
     @Singleton
