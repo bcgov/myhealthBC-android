@@ -182,6 +182,6 @@ fun LabTestRecordDto.toUiModel(): HealthRecordItem {
         description = "",
         testOutcome = testStatus,
         date = testDate.toDate(),
-        healthRecordType = HealthRecordType.LAB_TEST_RECORD
+        healthRecordType = HealthRecordType.LAB_TEST
     )
 }

@@ -81,8 +81,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                         .filter { it.medicationRecord.dataSource != DataSource.BCSC }
                         .map { it.toUiModel() },
                     patientAuthStatus = patientWithVaccineRecords.patient.authenticationStatus,
-                    authenticatedRecordsCount = patientRepository.getBcscDataRecordCount(),
-                    onLabTestRecords = labTestRecordDto.map { it.toUiModel() }
+                    authenticatedRecordsCount = patientRepository.getBcscDataRecordCount()
                 )
             }
         } catch (e: java.lang.Exception) {
@@ -163,8 +162,7 @@ data class IndividualHealthRecordsUiState(
     val onNonBcscMedicationRecords: List<HealthRecordItem> = emptyList(),
     val updatedTestResultId: Long = -1L,
     val authenticatedRecordsCount: Int? = null,
-    val patientAuthStatus: AuthenticationStatus? = null,
-    val onLabTestRecords: List<HealthRecordItem> = emptyList()
+    val patientAuthStatus: AuthenticationStatus? = null
 )
 
 data class HealthRecordItem(
@@ -189,6 +187,4 @@ enum class HealthRecordType {
     COVID_TEST_RECORD,
     MEDICATION_RECORD,
     LAB_TEST
-    MEDICATION_RECORD,
-    LAB_TEST_RECORD
 }
