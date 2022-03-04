@@ -10,7 +10,6 @@ import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
-import ca.bc.gov.common.model.labtest.LabTestRecordDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
@@ -169,19 +168,4 @@ enum class CovidTestResultStatus {
     IndeterminateResult,
     Cancelled,
     Pending
-}
-
-fun LabTestRecordDto.toUiModel(): HealthRecordItem {
-
-    return HealthRecordItem(
-        patientId = patientId,
-        testResultId = -1L,
-        medicationRecordId = -1L,
-        title = "Lab Test Result",
-        icon = R.drawable.ic_lab_test,
-        description = "",
-        testOutcome = testStatus,
-        date = testDate.toDate(),
-        healthRecordType = HealthRecordType.LAB_TEST
-    )
 }
