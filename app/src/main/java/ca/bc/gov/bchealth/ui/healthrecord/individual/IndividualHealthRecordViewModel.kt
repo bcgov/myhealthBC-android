@@ -6,11 +6,10 @@ import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.DataSource
-import ca.bc.gov.common.model.ProtectiveWordState
+import ca.bc.gov.common.model.labtest.LabTestRecordDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.FetchTestResultRepository
-import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.testrecord.TestResultRepository
@@ -21,7 +20,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Instant
 import javax.inject.Inject
 
 /**
@@ -33,77 +31,57 @@ class IndividualHealthRecordViewModel @Inject constructor(
     private val testResultRepository: TestResultRepository,
     private val patientRepository: PatientRepository,
     private val queueItTokenRepository: QueueItTokenRepository,
-    private val fetchTestResultRepository: FetchTestResultRepository,
-    private val medicationRecordRepository: MedicationRecordRepository
+    private val fetchTestResultRepository: FetchTestResultRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(IndividualHealthRecordsUiState())
     val uiState: StateFlow<IndividualHealthRecordsUiState> = _uiState.asStateFlow()
 
     fun getIndividualsHealthRecord(patientId: Long) = viewModelScope.launch {
-
-        _uiState.update { state ->
-            state.copy(onLoading = true)
-        }
-
         try {
             val patientWithVaccineRecords =
                 patientRepository.getPatientWithVaccineAndDoses(patientId)
+
             val testResultWithRecords =
                 patientRepository.getPatientWithTestResultsAndRecords(patientId)
-            val vaccineWithDoses = listOfNotNull(patientWithVaccineRecords.vaccineWithDoses)
+
+            val vaccineRecords = listOfNotNull(patientWithVaccineRecords.vaccineWithDoses)
+
             val patientAndMedicationRecords =
                 patientRepository.getPatientWithMedicationRecords(patientId)
+
             val patientWithLabOrdersAndLabTests =
                 patientRepository.getPatientWithLabOrdersAndLabTests(patientId)
 
-            val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
-                it.toUiModel()
-            }
-            val vaccineRecords = vaccineWithDoses.map {
-                it.toUiModel()
-            }
-            val medicationRecords = patientAndMedicationRecords.medicationRecord.map {
-                it.toUiModel()
-            }
-            val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
-                it.toUiModel()
-            }
 
-            val covidTestRecordsNonBcsc = covidTestRecords
-                .filter { it.dataSource != DataSource.BCSC.name }
-            val vaccineRecordsNonBcsc = vaccineRecords
-                .filter { it.dataSource != DataSource.BCSC.name }
-            val medicationRecordsNonBcsc = medicationRecords
-                .filter { it.dataSource != DataSource.BCSC.name }
-            val labTestRecordsNonBcsc = labTestRecords
-                .filter { it.dataSource != DataSource.BCSC.name }
+            val labTestRecordDto = listOfNotNull(LabTestRecordDto())
 
             _uiState.update { state ->
                 state.copy(
                     onLoading = false,
+                    onTestRecords = testResultWithRecords.testResultWithRecords.map {
+                        it.toUiModel()
+                    },
+                    onVaccineRecord = vaccineRecords.map {
+                        it.toUiModel()
+                    },
+                    onMedicationRecords = patientAndMedicationRecords.medicationRecord.map {
+                        it.toUiModel()
+                    },
+                    onLabTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
+                        it.toUiModel()
+                    },
+                    onNonBcscTestRecords = testResultWithRecords.testResultWithRecords
+                        .filter { it.testResult.dataSource != DataSource.BCSC }
+                        .map { it.toUiModel() },
+                    onNonBcscVaccineRecord = vaccineRecords
+                        .filter { it.vaccine.mode != DataSource.BCSC }
+                        .map { it.toUiModel() },
+                    onNonBcscMedicationRecords = patientAndMedicationRecords.medicationRecord
+                        .filter { it.medicationRecord.dataSource != DataSource.BCSC }
+                        .map { it.toUiModel() },
                     patientAuthStatus = patientWithVaccineRecords.patient.authenticationStatus,
-                    authenticatedRecordsCount = patientRepository.getBcscDataRecordCount(),
-                    onHealthRecords = (
-                        covidTestRecords +
-                            vaccineRecords +
-                            medicationRecords +
-                            labTestRecords
-                        )
-                        .sortedByDescending { it.date },
-                    onNonBcscHealthRecords = (
-                        covidTestRecordsNonBcsc +
-                            vaccineRecordsNonBcsc +
-                            medicationRecordsNonBcsc +
-                            labTestRecordsNonBcsc
-                        )
-                        .sortedByDescending { it.date },
-                    healthRecordsExceptMedication = (
-                        covidTestRecords +
-                            vaccineRecords +
-                            labTestRecords
-                        )
-                        .sortedByDescending { it.date },
+                    authenticatedRecordsCount = patientRepository.getBcscDataRecordCount()
                 )
             }
         } catch (e: java.lang.Exception) {
@@ -137,10 +115,10 @@ class IndividualHealthRecordViewModel @Inject constructor(
     private suspend fun updateTestResult(phn: String?, dob: String, collectionDate: String?) {
         try {
             if (phn != null && collectionDate != null) {
-                val (_, tesTestResultId) =
+                val testResultId =
                     fetchTestResultRepository.fetchCovidTestRecord(phn, dob, collectionDate)
                 _uiState.update { state ->
-                    state.copy(updatedTestResultId = tesTestResultId)
+                    state.copy(updatedTestResultId = testResultId)
                 }
             }
         } catch (e: Exception) {
@@ -168,18 +146,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
             )
         }
     }
-
-    fun medicationRecordsUpdated(isMedicationRecordsUpdated: Boolean) {
-        _uiState.update { state ->
-            state.copy(
-                medicationRecordsUpdated = isMedicationRecordsUpdated
-            )
-        }
-    }
-
-    fun isProtectiveWordRequired(): Boolean {
-        return medicationRecordRepository.getProtectiveWordState() == ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
-    }
 }
 
 data class IndividualHealthRecordsUiState(
@@ -187,13 +153,16 @@ data class IndividualHealthRecordsUiState(
     val queItTokenUpdated: Boolean = false,
     val onMustBeQueued: Boolean = false,
     val queItUrl: String? = null,
+    val onVaccineRecord: List<HealthRecordItem> = emptyList(),
+    val onTestRecords: List<HealthRecordItem> = emptyList(),
+    val onMedicationRecords: List<HealthRecordItem> = emptyList(),
+    val onLabTestRecords: List<HealthRecordItem> = emptyList(),
+    val onNonBcscVaccineRecord: List<HealthRecordItem> = emptyList(),
+    val onNonBcscTestRecords: List<HealthRecordItem> = emptyList(),
+    val onNonBcscMedicationRecords: List<HealthRecordItem> = emptyList(),
     val updatedTestResultId: Long = -1L,
     val authenticatedRecordsCount: Int? = null,
-    val patientAuthStatus: AuthenticationStatus? = null,
-    val onHealthRecords: List<HealthRecordItem> = emptyList(),
-    val onNonBcscHealthRecords: List<HealthRecordItem> = emptyList(),
-    val healthRecordsExceptMedication: List<HealthRecordItem> = emptyList(),
-    val medicationRecordsUpdated: Boolean = false
+    val patientAuthStatus: AuthenticationStatus? = null
 )
 
 data class HealthRecordItem(
@@ -205,9 +174,8 @@ data class HealthRecordItem(
     val title: String,
     val description: String,
     val testOutcome: String? = null,
-    val date: Instant,
-    val healthRecordType: HealthRecordType,
-    val dataSource: String? = null
+    val date: String,
+    val healthRecordType: HealthRecordType
 )
 
 data class HiddenRecordItem(
@@ -220,8 +188,3 @@ enum class HealthRecordType {
     MEDICATION_RECORD,
     LAB_TEST
 }
-
-data class HiddenMedicationRecordItem(
-    val title: String,
-    val desc: String
-)

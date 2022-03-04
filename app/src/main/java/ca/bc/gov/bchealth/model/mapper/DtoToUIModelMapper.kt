@@ -10,6 +10,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
+import ca.bc.gov.common.model.labtest.LabTestRecordDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
@@ -66,9 +67,8 @@ fun VaccineWithDosesDto.toUiModel(): HealthRecordItem {
         title = "COVID-19 vaccination",
         description = "${passState.status}",
         testOutcome = null,
-        date = date,
+        date = date.toDate(),
         healthRecordType = HealthRecordType.VACCINE_RECORD,
-        dataSource = vaccine.mode.name
     )
 }
 
@@ -82,9 +82,8 @@ fun MedicationWithSummaryAndPharmacyDto.toUiModel(): HealthRecordItem {
         icon = R.drawable.ic_health_record_medication,
         description = medicationSummary.genericName ?: "",
         testOutcome = null,
-        date = medicationRecord.dispenseDate,
-        healthRecordType = HealthRecordType.MEDICATION_RECORD,
-        dataSource = medicationRecord.dataSource.name
+        date = medicationRecord.dispenseDate.toDate(),
+        healthRecordType = HealthRecordType.MEDICATION_RECORD
     )
 }
 
@@ -123,31 +122,22 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
         title = "COVID-19 test result",
         description = "",
         testOutcome = testOutcome,
-        date = date,
+        date = date.toDate(),
         healthRecordType = HealthRecordType.COVID_TEST_RECORD,
-        dataSource = testResult.dataSource.name
     )
 }
 
 fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
-    var description = ""
-    description = if (labTests.size > 1) {
-        description.plus(labTests.size).plus(" tests").plus(" • ")
-            .plus(labOrder.collectionDateTime.toDate())
-    } else {
-        description.plus(labTests.size).plus(" test").plus(" • ")
-            .plus(labOrder.collectionDateTime.toDate())
-    }
+
     return HealthRecordItem(
         patientId = labOrder.patientId,
         title = labOrder.commonName ?: "",
         labOrderId = labOrder.id,
-        icon = R.drawable.ic_lab_test,
-        date = labOrder.collectionDateTime,
-        description = description,
+        icon = R.drawable.ic_health_record_covid_test,
+        date = labOrder.collectionDateTime.toDate(),
+        description = "Number of tests: ${labTests.size}",
         testOutcome = null,
-        healthRecordType = HealthRecordType.LAB_TEST,
-        dataSource = labOrder.dataSorce.name
+        healthRecordType = HealthRecordType.LAB_TEST
     )
 }
 
@@ -167,7 +157,7 @@ fun PatientWithHealthRecordCount.toUiModel(): PatientHealthRecord {
     return PatientHealthRecord(
         patientId = patientDto.id,
         name = patientDto.fullName,
-        totalRecord = vaccineRecordCount + testResultCount + labTestCount + medicationRecordCount,
+        totalRecord = vaccineRecordCount + testResultCount + medicationRecordCount,
         authStatus = patientDto.authenticationStatus
     )
 }
@@ -179,4 +169,19 @@ enum class CovidTestResultStatus {
     IndeterminateResult,
     Cancelled,
     Pending
+}
+
+fun LabTestRecordDto.toUiModel(): HealthRecordItem {
+
+    return HealthRecordItem(
+        patientId = patientId,
+        testResultId = -1L,
+        medicationRecordId = -1L,
+        title = "Lab Test Result",
+        icon = R.drawable.ic_lab_test,
+        description = "",
+        testOutcome = testStatus,
+        date = testDate.toDate(),
+        healthRecordType = HealthRecordType.LAB_TEST
+    )
 }
