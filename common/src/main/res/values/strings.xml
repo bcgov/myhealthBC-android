@@ -4,6 +4,6 @@
     <string name="notification_channel_name">My Health</string>
     <string name="notification_channel_work">My Health Notifications</string>
     <string name="notification_title_while_fetching_data">Retrieving records.</string>
-    <string name="notification_title_on_success">Records updated.</string>
-    <string name="notification_title_on_failed">Failed to retrieve records.</string>
+    <string name="notification_title_on_success">Record updated.</string>
+    <string name="notification_title_on_failed">Fail to retrieve records.</string>
 </resources>
