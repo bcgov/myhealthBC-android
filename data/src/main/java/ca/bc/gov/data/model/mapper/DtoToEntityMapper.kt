@@ -5,17 +5,21 @@ import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
+import ca.bc.gov.common.model.labtest.LabOrderDto
+import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
-import ca.bc.gov.data.local.entity.DispensingPharmacyEntity
-import ca.bc.gov.data.local.entity.MedicationRecordEntity
-import ca.bc.gov.data.local.entity.MedicationSummaryEntity
-import ca.bc.gov.data.local.entity.PatientEntity
-import ca.bc.gov.data.local.entity.TestRecordEntity
-import ca.bc.gov.data.local.entity.TestResultEntity
-import ca.bc.gov.data.local.entity.VaccineDoseEntity
-import ca.bc.gov.data.local.entity.VaccineRecordEntity
+import ca.bc.gov.data.datasource.local.entity.PatientEntity
+import ca.bc.gov.data.datasource.local.entity.covid.test.TestRecordEntity
+import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
+import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
+import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
+import ca.bc.gov.data.datasource.local.entity.labtest.LabOrderEntity
+import ca.bc.gov.data.datasource.local.entity.labtest.LabTestEntity
+import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntity
+import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
+import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
 
 fun PatientDto.toEntity() = PatientEntity(
     id,
@@ -107,4 +111,20 @@ fun DispensingPharmacyDto.toEntity() = DispensingPharmacyEntity(
     countryCode,
     phoneNumber,
     faxNumber
+)
+
+fun LabOrderDto.toEntity() = LabOrderEntity(
+    id,
+    patientId,
+    reportId,
+    collectionDateTime,
+    reportingSource,
+    commonName,
+    orderingProvider,
+    testStatus,
+    reportingAvailable
+)
+
+fun LabTestDto.toEntity() = LabTestEntity(
+    id, labOrderId, obxId, batteryType, outOfRange, loinc, testStatus
 )

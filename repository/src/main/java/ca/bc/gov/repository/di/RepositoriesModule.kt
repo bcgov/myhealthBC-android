@@ -1,14 +1,17 @@
 package ca.bc.gov.repository.di
 
 import android.content.Context
-import ca.bc.gov.data.ImmunizationRemoteDataSource
-import ca.bc.gov.data.MedicationRemoteDataSource
-import ca.bc.gov.data.datasource.LocalDataSource
-import ca.bc.gov.data.datasource.MedicationRecordLocalDataSource
-import ca.bc.gov.data.datasource.PatientLocalDataSource
-import ca.bc.gov.data.datasource.TestResultLocalDataSource
-import ca.bc.gov.data.datasource.VaccineRecordLocalDataSource
-import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
+import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
+import ca.bc.gov.data.datasource.local.LocalDataSource
+import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
+import ca.bc.gov.data.datasource.local.PatientLocalDataSource
+import ca.bc.gov.data.datasource.local.TestResultLocalDataSource
+import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
+import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
+import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
+import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.FederalTravelPassDecoderRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
@@ -20,6 +23,8 @@ import ca.bc.gov.repository.QrCodeGeneratorRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.RecentPhnDobRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
+import ca.bc.gov.repository.labtest.LabOrderRepository
+import ca.bc.gov.repository.labtest.LabTestRepository
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.ProcessQrRepository
 import ca.bc.gov.repository.scanner.QrScanner
@@ -157,5 +162,23 @@ class RepositoriesModule {
     ): MedicationRecordRepository = MedicationRecordRepository(
         medicationRecordLocalDataSource,
         medicationRemoteDataSource
+    )
+
+    @Provides
+    @Singleton
+    fun provideLabOrderRepository(
+        laboratoryRemoteDataSource: LaboratoryRemoteDataSource,
+        labOrderLocalDataSource: LabOrderLocalDataSource
+    ): LabOrderRepository = LabOrderRepository(
+        laboratoryRemoteDataSource,
+        labOrderLocalDataSource
+    )
+
+    @Provides
+    @Singleton
+    fun provideLabTestRepository(
+        labTestLocalDataSource: LabTestLocalDataSource
+    ): LabTestRepository = LabTestRepository(
+        labTestLocalDataSource
     )
 }
