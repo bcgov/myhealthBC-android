@@ -91,7 +91,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             isApiFailed = true
         }
 
-        if(isApiFailed) {
+        if (isApiFailed) {
             notificationHelper.updateNotification(context.getString(R.string.notification_title_on_failed))
         } else {
             notificationHelper.updateNotification(context.getString(R.string.notification_title_on_success))
