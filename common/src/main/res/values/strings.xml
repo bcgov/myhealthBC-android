@@ -9,6 +9,7 @@
     <string name="vaccine_records">" vaccine records"</string>
     <string name="covid_test_result">" covid test results"</string>
     <string name="medication_records">" medication records"</string>
+    <string name="lab_orders"> lab tests</string>
     <string name="retrieving">Retrieving</string>
     <string name="successful">" is successful. "</string>
     <string name="failed">" is failed."</string>

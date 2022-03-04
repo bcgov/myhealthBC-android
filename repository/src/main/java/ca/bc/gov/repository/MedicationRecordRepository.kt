@@ -6,8 +6,8 @@ import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
-import ca.bc.gov.data.MedicationRemoteDataSource
-import ca.bc.gov.data.datasource.MedicationRecordLocalDataSource
+import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
+import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
 import ca.bc.gov.data.model.mapper.toDispensingPharmacyDto
 import ca.bc.gov.data.model.mapper.toMedicationRecordDto
 import ca.bc.gov.data.model.mapper.toMedicationSummaryDto
