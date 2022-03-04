@@ -109,7 +109,7 @@
         android:name="ca.bc.gov.bchealth.ui.healthrecord.labtest.LabTestDetailFragment"
         android:label="LabTestDetailFragment" >
         <argument
-            android:name="patient_id"
-            app:argType="long" />
+            android:name="lab_order_id"
+            app:argType="string" />
     </fragment>
 </navigation>

@@ -175,6 +175,8 @@
         <item quantity="other">%1$d Hidden records</item>
     </plurals>
     <string name="login_to_view_hidden_records_msg">Login again with your BC Services Card to view all the records</string>
+    <string name="out_of_range">Out of Range</string>
+    <string name="in_range">In Range</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>

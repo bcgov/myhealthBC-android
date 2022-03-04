@@ -133,7 +133,7 @@ fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
         patientId = labOrder.patientId,
         title = labOrder.commonName ?: "",
         labOrderId = labOrder.id,
-        icon = R.drawable.ic_health_record_covid_test,
+        icon = R.drawable.ic_lab_test,
         date = labOrder.collectionDateTime.toDate(),
         description = "Number of tests: ${labTests.size}",
         testOutcome = null,

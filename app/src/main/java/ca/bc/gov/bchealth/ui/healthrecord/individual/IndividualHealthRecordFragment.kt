@@ -244,11 +244,13 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         }
 
         labTestRecordsAdapter = LabTestRecordsAdapter { labTestRecord ->
-            val action = IndividualHealthRecordFragmentDirections
-                .actionIndividualHealthRecordFragmentToLabTestDetailFragment(
-                    labTestRecord.patientId
-                )
-            findNavController().navigate(action)
+           labTestRecord.labOrderId?.let {
+               val action = IndividualHealthRecordFragmentDirections
+                    .actionIndividualHealthRecordFragmentToLabTestDetailFragment(
+                        it
+                    )
+               findNavController().navigate(action)
+            }
         }
 
         hiddenHealthRecordAdapter = HiddenHealthRecordAdapter { onBCSCLoginClick() }
