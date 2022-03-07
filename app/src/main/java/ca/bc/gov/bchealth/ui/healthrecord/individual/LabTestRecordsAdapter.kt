@@ -11,32 +11,32 @@ import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
  * @author Pinakin Kansara
  */
 class LabTestRecordsAdapter(
-    private val itemClickListener: ItemClickListener
+    private val labTestRecordClickListener: LabTestRecordClickListener
 ) :
-    ListAdapter<HealthRecordItem, LabTestRecordsAdapter.ViewHolder>(LabTestRecordDiffCallBacks()) {
+    ListAdapter<HealthRecordItem, LabTestRecordsAdapter.LabTestRecordsViewHolder>(LabTestRecordDiffCallBacks()) {
 
-    fun interface ItemClickListener {
+    fun interface LabTestRecordClickListener {
         fun onItemClick(record: HealthRecordItem)
     }
 
-    class ViewHolder(val binding: ItemHealthRecordsAbstractBinding) :
+    class LabTestRecordsViewHolder(val binding: ItemHealthRecordsAbstractBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LabTestRecordsViewHolder {
         val view = ItemHealthRecordsAbstractBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
 
-        return ViewHolder(view)
+        return LabTestRecordsViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: LabTestRecordsViewHolder, position: Int) {
         val record = getItem(position)
         holder.binding.tvVaccineName.text = record.title
         holder.binding.tvVaccineStatus.text = record.date
         holder.binding.imgIcon.setImageResource(record.icon)
         holder.itemView.setOnClickListener {
-            itemClickListener.onItemClick(record)
+            labTestRecordClickListener.onItemClick(record)
         }
     }
 }
