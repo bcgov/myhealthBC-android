@@ -177,10 +177,6 @@
     <string name="login_to_view_hidden_records_msg">Login again with your BC Services Card to view all the records</string>
     <string name="out_of_range">Out of Range</string>
     <string name="in_range">In Range</string>
-    <plurals name="lab_test_record_count">
-        <item quantity="one">%1$d test</item>
-        <item quantity="other">%1$d tests</item>
-    </plurals>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>
