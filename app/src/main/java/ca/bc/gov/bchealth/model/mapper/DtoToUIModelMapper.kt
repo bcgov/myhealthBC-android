@@ -127,14 +127,21 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
 }
 
 fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
-
+    var description = ""
+    description = if (labTests.size > 1) {
+        description.plus(labTests.size).plus(" tests").plus(" • ")
+            .plus(labOrder.collectionDateTime.toDate())
+    } else {
+        description.plus(labTests.size).plus(" test").plus(" • ")
+            .plus(labOrder.collectionDateTime.toDate())
+    }
     return HealthRecordItem(
         patientId = labOrder.patientId,
         title = labOrder.commonName ?: "",
         labOrderId = labOrder.id,
-        icon = R.drawable.ic_health_record_covid_test,
+        icon = R.drawable.ic_lab_test,
         date = labOrder.collectionDateTime.toDate(),
-        description = "Number of tests: ${labTests.size}",
+        description = description,
         testOutcome = null,
         healthRecordType = HealthRecordType.LAB_TEST
     )

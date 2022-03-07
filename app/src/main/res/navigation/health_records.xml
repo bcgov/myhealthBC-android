@@ -49,6 +49,9 @@
         <action
             android:id="@+id/action_individualHealthRecordFragment_to_medicationDetailFragment"
             app:destination="@id/medicationDetailsFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_labTestDetailFragment"
+            app:destination="@id/labTestDetailFragment"/>
     </fragment>
 
 
@@ -101,5 +104,12 @@
             android:name="medicationId"
             app:argType="long" />
     </fragment>
-
+    <fragment
+        android:id="@+id/labTestDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.labtest.LabTestDetailFragment"
+        android:label="LabTestDetailFragment" >
+        <argument
+            android:name="lab_order_id"
+            app:argType="string" />
+    </fragment>
 </navigation>

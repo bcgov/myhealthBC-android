@@ -49,6 +49,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private lateinit var testRecordsAdapter: TestRecordsAdapter
     private lateinit var hiddenHealthRecordAdapter: HiddenHealthRecordAdapter
     private lateinit var medicationRecordsAdapter: MedicationRecordsAdapter
+    private lateinit var labTestRecordsAdapter: LabTestRecordsAdapter
     private lateinit var concatAdapter: ConcatAdapter
     private val args: IndividualHealthRecordFragmentArgs by navArgs()
     private var testResultId: Long = -1L
@@ -145,6 +146,10 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                             if (::medicationRecordsAdapter.isInitialized) {
                                 medicationRecordsAdapter.submitList(uiState.onMedicationRecords)
                             }
+
+                            if (::labTestRecordsAdapter.isInitialized) {
+                                labTestRecordsAdapter.submitList(uiState.onLabTestRecords)
+                            }
                         }
 
                         if (loginSessionStatus == LoginSessionStatus.EXPIRED) {
@@ -238,12 +243,23 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             findNavController().navigate(action)
         }
 
+        labTestRecordsAdapter = LabTestRecordsAdapter { labTestRecord ->
+            labTestRecord.labOrderId?.let {
+                val action = IndividualHealthRecordFragmentDirections
+                    .actionIndividualHealthRecordFragmentToLabTestDetailFragment(
+                        it
+                    )
+                findNavController().navigate(action)
+            }
+        }
+
         hiddenHealthRecordAdapter = HiddenHealthRecordAdapter { onBCSCLoginClick() }
         concatAdapter = ConcatAdapter(
             hiddenHealthRecordAdapter,
             vaccineRecordsAdapter,
             testRecordsAdapter,
-            medicationRecordsAdapter
+            medicationRecordsAdapter,
+            labTestRecordsAdapter
         )
         binding.rvHealthRecords.adapter = concatAdapter
         binding.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
