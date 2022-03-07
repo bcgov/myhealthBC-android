@@ -80,15 +80,27 @@ class LabTestDetailAdapter :
     private fun getTestResult(outOfRange: Boolean?, context: Context): Pair<String, Int> {
         outOfRange?.let {
             return if (outOfRange) {
-                Pair(context.resources.getString(R.string.out_of_range), context.resources.getColor(
-                    R.color.error, null))
+                Pair(
+                    context.resources.getString(R.string.out_of_range),
+                    context.resources.getColor(
+                        R.color.error, null
+                    )
+                )
             } else {
-                Pair(context.resources.getString(R.string.in_range), context.resources.getColor(
-                    R.color.status_green, null))
+                Pair(
+                    context.resources.getString(R.string.in_range),
+                    context.resources.getColor(
+                        R.color.status_green, null
+                    )
+                )
             }
         } ?: run {
-            return Pair("N/A", context.resources.getColor(
-                R.color.text_black, null))
+            return Pair(
+                "N/A",
+                context.resources.getColor(
+                    R.color.text_black, null
+                )
+            )
         }
     }
 
