@@ -3,14 +3,7 @@
     <string name="app_name">My Health BC</string>
     <string name="notification_channel_name">My Health</string>
     <string name="notification_channel_work">My Health Notifications</string>
-    <string name="notification_title_while_fetching_data">Retrieving records</string>
-    <string name="notification_message_while_fetching_data">Retrieving records is in progress</string>
-    <string name="notification_title_fetching_records_completed">Retrieving records completed</string>
-    <string name="vaccine_records">" vaccine records"</string>
-    <string name="covid_test_result">" covid test results"</string>
-    <string name="medication_records">" medication records"</string>
-    <string name="lab_orders"> lab tests</string>
-    <string name="retrieving">Retrieving</string>
-    <string name="successful">" is successful. "</string>
-    <string name="failed">" is failed."</string>
+    <string name="notification_title_while_fetching_data">Retrieving records.</string>
+    <string name="notification_title_on_success">Records updated.</string>
+    <string name="notification_title_on_failed">Failed to retrieve records.</string>
 </resources>
