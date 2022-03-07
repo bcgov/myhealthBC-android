@@ -7,6 +7,7 @@ import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestsAndPatientDto
 import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
+import ca.bc.gov.data.datasource.remote.model.response.LabTestPdfResponse
 import javax.inject.Inject
 
 /**
@@ -33,4 +34,12 @@ class LabOrderRepository @Inject constructor(
 
     suspend fun fetchLabOrders(token: String, hdid: String): List<LabOrderWithLabTestDto> =
         laboratoryRemoteDataSource.getLabTests(token, hdid)
+
+    suspend fun fetchLabTestPdf(
+        token: String,
+        hdid: String,
+        reportId: String,
+        isCovid19: Boolean
+    ): LabTestPdfResponse =
+        laboratoryRemoteDataSource.getLabTestInPdf(token, hdid, reportId, isCovid19)
 }
