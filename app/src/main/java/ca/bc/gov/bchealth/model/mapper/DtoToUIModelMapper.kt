@@ -136,7 +136,8 @@ fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
         date = labOrder.collectionDateTime.toDate(),
         description = "Number of tests: ${labTests.size}",
         testOutcome = null,
-        healthRecordType = HealthRecordType.LAB_TEST
+        healthRecordType = HealthRecordType.LAB_TEST,
+        count = labTests.size
     )
 }
 

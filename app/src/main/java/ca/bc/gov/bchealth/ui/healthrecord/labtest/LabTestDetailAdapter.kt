@@ -1,6 +1,7 @@
 package ca.bc.gov.bchealth.ui.healthrecord.labtest
 
 import android.content.Context
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,6 +70,7 @@ class LabTestDetailAdapter :
                     val pair = getTestResult(labTestDetail.outOfRange, holder.itemView.context)
                     tvDesc2.text = pair.first
                     tvDesc2.setTextColor(pair.second)
+                    tvDesc2.setTypeface(tvDesc1.typeface, Typeface.BOLD)
 
                     tvTitle3.text = labTestDetail.title3
                     tvDesc3.text = labTestDetail.testStatus

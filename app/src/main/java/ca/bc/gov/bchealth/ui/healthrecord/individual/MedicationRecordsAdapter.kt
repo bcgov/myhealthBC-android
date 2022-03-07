@@ -29,9 +29,9 @@ class MedicationRecordsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val record = getItem(position)
-        holder.binding.tvVaccineName.text = record.title
+        holder.binding.tvTitle.text = record.title
         val description = "${record.description} • ${record.date}"
-        holder.binding.tvVaccineStatus.text = description
+        holder.binding.tvDesc.text = description
         holder.binding.imgIcon.setImageResource(record.icon)
         holder.itemView.setOnClickListener {
             itemClickListener.onItemClick(record)
