@@ -171,8 +171,7 @@ data class HealthRecordItem(
     val description: String,
     val testOutcome: String? = null,
     val date: String,
-    val healthRecordType: HealthRecordType,
-    val count: Int = 0
+    val healthRecordType: HealthRecordType
 )
 
 data class HiddenRecordItem(
