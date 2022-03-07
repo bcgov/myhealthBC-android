@@ -2,48 +2,59 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
 
 /**
  * @author Pinakin Kansara
  */
-class LabTestRecordsAdapter(
-    private val labTestRecordClickListener: LabTestRecordClickListener
+class VaccineRecordsAdapter(
+    private val itemClickListener: ItemClickListener,
+    private val itemDeleteListener: ItemDeleteListener,
+    var canDeleteRecord: Boolean = false
 ) :
-    ListAdapter<HealthRecordItem, LabTestRecordsAdapter.LabTestRecordsViewHolder>(LabTestRecordDiffCallBacks()) {
+    ListAdapter<HealthRecordItem, VaccineRecordsAdapter.ViewHolder>(VaccineRecordDiffCallBacks()) {
 
-    fun interface LabTestRecordClickListener {
+    fun interface ItemClickListener {
         fun onItemClick(record: HealthRecordItem)
     }
 
-    class LabTestRecordsViewHolder(val binding: ItemHealthRecordsAbstractBinding) :
+    fun interface ItemDeleteListener {
+        fun onDeleteClick(record: HealthRecordItem)
+    }
+
+    class ViewHolder(val binding: ItemHealthRecordsAbstractBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LabTestRecordsViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = ItemHealthRecordsAbstractBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
 
-        return LabTestRecordsViewHolder(view)
+        return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: LabTestRecordsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val record = getItem(position)
         holder.binding.tvTitle.text = record.title
-        val description = "${holder.itemView.context.resources.getQuantityString(R.plurals.lab_test_record_count, record.count, record.count)} • ${record.date}"
+        val description =
+            record.date
         holder.binding.tvDesc.text = description
         holder.binding.imgIcon.setImageResource(record.icon)
         holder.itemView.setOnClickListener {
-            labTestRecordClickListener.onItemClick(record)
+            itemClickListener.onItemClick(record)
+        }
+        holder.binding.ivUnlink.isVisible = canDeleteRecord
+        holder.binding.ivUnlink.setOnClickListener {
+            itemDeleteListener.onDeleteClick(record)
         }
     }
 }
 
-class LabTestRecordDiffCallBacks : DiffUtil.ItemCallback<HealthRecordItem>() {
+class VaccineRecordDiffCallBacks : DiffUtil.ItemCallback<HealthRecordItem>() {
     override fun areItemsTheSame(oldItem: HealthRecordItem, newItem: HealthRecordItem): Boolean {
         return oldItem == newItem
     }
