@@ -13,8 +13,7 @@ import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
 import ca.bc.gov.common.utils.formatInPattern
 import ca.bc.gov.common.utils.toDate
-import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
-import ca.bc.gov.data.datasource.remote.api.HealthGatewayPublicApi
+import ca.bc.gov.data.datasource.remote.api.LaboratoryApi
 import ca.bc.gov.data.datasource.remote.model.base.Action
 import ca.bc.gov.data.datasource.remote.model.request.CovidTestRequest
 import ca.bc.gov.data.datasource.remote.model.request.toMap
@@ -28,8 +27,7 @@ import javax.inject.Inject
  * @author Pinakin Kansara
  */
 class LaboratoryRemoteDataSource @Inject constructor(
-    private val healthGatewayPublicApi: HealthGatewayPublicApi,
-    private val healthGatewayPrivateApi: HealthGatewayPrivateApi
+    private val laboratoryApi: LaboratoryApi
 ) {
 
     /**
@@ -38,7 +36,7 @@ class LaboratoryRemoteDataSource @Inject constructor(
      *  This can be done on repository layer or data source layer.
      */
     suspend fun getCovidTests(request: CovidTestRequest): PatientWithTestResultsAndRecordsDto {
-        val response = safeCall { healthGatewayPublicApi.getCovidTests(request.toMap()) }
+        val response = safeCall { laboratoryApi.getCovidTests(request.toMap()) }
             ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
         if (response.error != null) {
@@ -76,7 +74,7 @@ class LaboratoryRemoteDataSource @Inject constructor(
         token: String,
         hdid: String
     ): List<TestResultWithRecordsDto> {
-        val response = safeCall { healthGatewayPrivateApi.getCovidTests(token, hdid) }
+        val response = safeCall { laboratoryApi.getCovidTests(token, hdid) }
             ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
         if (response.error != null) {
@@ -113,7 +111,7 @@ class LaboratoryRemoteDataSource @Inject constructor(
         hdid: String
     ): List<LabOrderWithLabTestDto> {
 
-        val response = safeCall { healthGatewayPrivateApi.getLabTests(token, hdid) }
+        val response = safeCall { laboratoryApi.getLabTests(token, hdid) }
             ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
         if (response.error != null) {
@@ -131,7 +129,7 @@ class LaboratoryRemoteDataSource @Inject constructor(
     ): LabTestPdfResponse {
 
         val response = safeCall {
-            healthGatewayPrivateApi.getLabTestReportPdf(
+            laboratoryApi.getLabTestInPdf(
                 token,
                 hdid,
                 reportId,
