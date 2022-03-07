@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
 
 /**
@@ -32,8 +33,9 @@ class LabTestRecordsAdapter(
 
     override fun onBindViewHolder(holder: LabTestRecordsViewHolder, position: Int) {
         val record = getItem(position)
-        holder.binding.tvVaccineName.text = record.title
-        holder.binding.tvVaccineStatus.text = record.date
+        holder.binding.tvTitle.text = record.title
+        val description = "${holder.itemView.context.resources.getQuantityString(R.plurals.lab_test_record_count, record.count, record.count)} • ${record.date}"
+        holder.binding.tvDesc.text = description
         holder.binding.imgIcon.setImageResource(record.icon)
         holder.itemView.setOnClickListener {
             labTestRecordClickListener.onItemClick(record)
