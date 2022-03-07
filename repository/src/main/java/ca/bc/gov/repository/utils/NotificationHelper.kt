@@ -1,5 +1,7 @@
 package ca.bc.gov.repository.utils
 
+import android.app.Notification.DEFAULT_SOUND
+import android.app.Notification.DEFAULT_VIBRATE
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -43,12 +45,12 @@ class NotificationHelper @Inject constructor(
         notificationManager.createNotificationChannel(channel)
     }
 
-    fun showNotification(title: String, message: String) {
+    fun showNotification(title: String) {
         notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.mipmap.ic_notification)
             .setContentTitle(title)
-            .setContentText(message)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setDefaults(DEFAULT_SOUND or DEFAULT_VIBRATE)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
             .setAutoCancel(true)
             .setStyle(NotificationCompat.BigTextStyle())
             .setContentIntent(launchingIntent)
@@ -58,10 +60,9 @@ class NotificationHelper @Inject constructor(
         }
     }
 
-    fun updateNotification(title: String, message: String) {
+    fun updateNotification(title: String) {
         notificationBuilder
             .setContentTitle(title)
-            .setContentText(message)
 
         with(NotificationManagerCompat.from(context)) {
             notify(BACKGROUND_WORK_NOTIFICATION_ID, notificationBuilder.build())
