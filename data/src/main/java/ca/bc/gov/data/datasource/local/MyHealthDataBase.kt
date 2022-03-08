@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ca.bc.gov.data.datasource.local.converter.AuthenticationStatusTypeConverter
 import ca.bc.gov.data.datasource.local.converter.DateTimeConverter
+import ca.bc.gov.data.datasource.local.dao.CommentDao
 import ca.bc.gov.data.datasource.local.dao.DispensingPharmacyDao
 import ca.bc.gov.data.datasource.local.dao.LabOrderDao
 import ca.bc.gov.data.datasource.local.dao.LabTestDao
@@ -15,6 +16,7 @@ import ca.bc.gov.data.datasource.local.dao.PatientDao
 import ca.bc.gov.data.datasource.local.dao.TestResultDao
 import ca.bc.gov.data.datasource.local.dao.VaccineRecordDao
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
+import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
 import ca.bc.gov.data.datasource.local.entity.covid.test.TestRecordEntity
 import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
@@ -39,7 +41,8 @@ import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
         MedicationSummaryEntity::class,
         DispensingPharmacyEntity::class,
         LabOrderEntity::class,
-        LabTestEntity::class
+        LabTestEntity::class,
+        CommentEntity::class
     ],
     version = 2,
     exportSchema = true,
@@ -65,4 +68,6 @@ abstract class MyHealthDataBase : RoomDatabase() {
     abstract fun getLabOrderDao(): LabOrderDao
 
     abstract fun getLabTestDao(): LabTestDao
+
+    abstract fun getCommentDao(): CommentDao
 }

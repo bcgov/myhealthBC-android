@@ -5,6 +5,7 @@ import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
+import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestsAndPatientDto
@@ -22,6 +23,7 @@ import ca.bc.gov.common.model.relation.VaccineWithDosesDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
+import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
 import ca.bc.gov.data.datasource.local.entity.covid.test.TestRecordEntity
 import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
@@ -111,7 +113,7 @@ fun TestResultWithRecordsAndPatient.toDto() = TestResultWithRecordsAndPatientDto
 fun MedicationRecordEntity.toDto() = MedicationRecordDto(
     id,
     patientId,
-    practitionerIdentifier,
+    prescriptionIdentifier,
     prescriptionStatus,
     practitionerSurname,
     dispenseDate,
@@ -190,4 +192,17 @@ fun LabOrderWithLabTests.toDto() = LabOrderWithLabTestDto(
 fun LabOrderWithLabTestsAndPatient.toDto() = LabOrderWithLabTestsAndPatientDto(
     labOrderWithLabTest = labOrderWithLabTests.toDto(),
     patient = patient.toDto()
+)
+
+fun CommentEntity.toDto() = CommentDto(
+    id,
+    userProfileId,
+    text,
+    entryTypeCode,
+    parentEntryId,
+    version,
+    createdDateTime,
+    createdBy,
+    updatedDateTime,
+    updatedBy
 )

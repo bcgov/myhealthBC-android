@@ -28,8 +28,8 @@ data class MedicationRecordEntity(
     val id: Long,
     @ColumnInfo(name = "patient_id")
     val patientId: Long,
-    @ColumnInfo(name = "practitioner_identifier")
-    val practitionerIdentifier: String?,
+    @ColumnInfo(name = "prescription_identifier")
+    val prescriptionIdentifier: String?,
     @ColumnInfo(name = "prescription_status")
     val prescriptionStatus: String?,
     @ColumnInfo(name = "practitioner_surname")

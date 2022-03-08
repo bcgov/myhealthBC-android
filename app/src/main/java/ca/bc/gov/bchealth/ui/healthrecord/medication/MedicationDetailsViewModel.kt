@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_RECORD
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.repository.CommentRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.lang.Exception
+import java.time.Instant
 import javax.inject.Inject
 
 /*
@@ -20,7 +21,8 @@ import javax.inject.Inject
 */
 @HiltViewModel
 class MedicationDetailsViewModel @Inject constructor(
-    private val medicationRecordRepository: MedicationRecordRepository
+    private val medicationRecordRepository: MedicationRecordRepository,
+    private val commentRepository: CommentRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MedicationDetailUiState())
@@ -34,11 +36,20 @@ class MedicationDetailsViewModel @Inject constructor(
             val medicationWithSummaryAndPharmacyDto = medicationRecordRepository
                 .getMedicationWithSummaryAndPharmacy(medicationId)
 
+            val comment =
+                commentRepository
+                    .getComments(
+                        medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
+                    )
+            val comments = mutableListOf<Comment>(Comment("${comment.size} Comments", Instant.now()))
+            comments.addAll(comment.map { Comment(it.text, it.createdDateTime) })
+
             _uiState.update {
                 it.copy(
                     onLoading = false,
                     medicationDetails = prePareMedicationDetails(medicationWithSummaryAndPharmacyDto),
-                    toolbarTitle = medicationWithSummaryAndPharmacyDto.medicationSummary.brandName
+                    toolbarTitle = medicationWithSummaryAndPharmacyDto.medicationSummary.brandName,
+                    comments = comments
                 )
             }
         } catch (e: Exception) {
@@ -143,10 +154,16 @@ data class MedicationDetailUiState(
     val onError: Boolean = false,
     val medicationDetails: List<MedicationDetail>? = null,
     val toolbarTitle: String? = null,
+    val comments: List<Comment> = emptyList()
 )
 
 data class MedicationDetail(
     val title: String,
     val description: String? = "N/A",
     val viewType: Int = ITEM_VIEW_TYPE_RECORD
+)
+
+data class Comment(
+    val text: String?,
+    val date: Instant,
 )
