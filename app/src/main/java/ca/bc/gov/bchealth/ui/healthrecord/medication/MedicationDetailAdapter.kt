@@ -5,12 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ca.bc.gov.bchealth.databinding.ItemCommentBinding
-import ca.bc.gov.bchealth.databinding.ItemCommentsCountBinding
 import ca.bc.gov.bchealth.databinding.ItemMedicationDetailBinding
 import ca.bc.gov.bchealth.databinding.ItemMedicationDetailDirectionsBinding
-import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_COMMENTS
-import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_COMMENTS_COUNT
 import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_DIRECTIONS
 import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_RECORD
 
@@ -26,12 +22,6 @@ class MedicationDetailAdapter :
     class DirectionsViewHolder(val binding: ItemMedicationDetailDirectionsBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    class CommentsCountViewHolder(val binding: ItemCommentsCountBinding) :
-        RecyclerView.ViewHolder(binding.root)
-
-    class CommentsViewHolder(val binding: ItemCommentBinding) :
-        RecyclerView.ViewHolder(binding.root)
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             ITEM_VIEW_TYPE_RECORD -> {
@@ -45,18 +35,6 @@ class MedicationDetailAdapter :
                     LayoutInflater.from(parent.context), parent, false
                 )
                 DirectionsViewHolder(binding)
-            }
-            ITEM_VIEW_TYPE_COMMENTS_COUNT -> {
-                val binding = ItemCommentsCountBinding.inflate(
-                    LayoutInflater.from(parent.context), parent, false
-                )
-                CommentsCountViewHolder(binding)
-            }
-            ITEM_VIEW_TYPE_COMMENTS -> {
-                val binding = ItemCommentBinding.inflate(
-                    LayoutInflater.from(parent.context), parent, false
-                )
-                CommentsViewHolder(binding)
             }
             else -> throw ClassCastException("Unknown viewType $viewType")
         }
@@ -75,19 +53,6 @@ class MedicationDetailAdapter :
                 holder.binding.apply {
                     tvTitle.text = medicationDetail.title
                     tvDesc.text = medicationDetail.description
-                }
-            }
-            is CommentsCountViewHolder -> {
-                holder.binding.apply {
-                    tvCommentsCount.text = medicationDetail.title
-                        .plus(" ")
-                        .plus(medicationDetail.description)
-                }
-            }
-            is CommentsViewHolder -> {
-                holder.binding.apply {
-                    tvComment.text = medicationDetail.title
-                    tvDateTime.text = medicationDetail.description
                 }
             }
         }

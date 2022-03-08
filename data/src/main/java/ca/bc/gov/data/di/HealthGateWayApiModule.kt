@@ -3,10 +3,8 @@ package ca.bc.gov.data.di
 import android.content.Context
 import ca.bc.gov.data.R
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
-import ca.bc.gov.data.datasource.remote.api.ImmunizationApi
-import ca.bc.gov.data.datasource.remote.api.LaboratoryApi
-import ca.bc.gov.data.datasource.remote.api.MedicationApi
-import ca.bc.gov.data.datasource.remote.api.PatientApi
+import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
+import ca.bc.gov.data.datasource.remote.api.HealthGatewayPublicApi
 import ca.bc.gov.data.datasource.remote.interceptor.CookiesInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.QueueItInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.ReceivedCookieInterceptor
@@ -88,18 +86,10 @@ class HealthGateWayApiModule {
             .build()
 
     @Provides
-    fun providesImmunizationApi(retrofit: Retrofit): ImmunizationApi =
-        retrofit.create(ImmunizationApi::class.java)
+    fun providesHealthGateWayPrivateApi(retrofit: Retrofit): HealthGatewayPrivateApi =
+        retrofit.create(HealthGatewayPrivateApi::class.java)
 
     @Provides
-    fun providesLaboratoryApi(retrofit: Retrofit): LaboratoryApi =
-        retrofit.create(LaboratoryApi::class.java)
-
-    @Provides
-    fun providesMedicationApi(retrofit: Retrofit): MedicationApi =
-        retrofit.create(MedicationApi::class.java)
-
-    @Provides
-    fun providesPatientApi(retrofit: Retrofit): PatientApi =
-        retrofit.create(PatientApi::class.java)
+    fun providesHealthGateWayPublicApi(retrofit: Retrofit): HealthGatewayPublicApi =
+        retrofit.create(HealthGatewayPublicApi::class.java)
 }
