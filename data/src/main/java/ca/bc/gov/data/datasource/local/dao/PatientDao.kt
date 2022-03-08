@@ -64,9 +64,11 @@ interface PatientDao {
         SELECT P.*,
         COUNT(DISTINCT V.id) AS vaccineRecordCount,
         COUNT(DISTINCT T.id) as testRecordCount,
+        COUNT(DISTINCT L.id) as labTestCount,
         COUNT (DISTINCT M.id) as medicationRecordCount FROM patient P
         LEFT JOIN vaccine_record V on V.patient_id = P.id
         LEFT JOIN test_result T on T.patient_id = P.id
+        LEFT JOIN lab_order L on L.patient_id = P.id
         LEFT JOIN medication_record M on M.patient_id = P.id
         GROUP BY P.id ORDER BY P.authentication_status
     """
@@ -78,6 +80,7 @@ interface PatientDao {
         "SELECT" +
             " (SELECT COUNT(*) FROM test_result WHERE data_source = 'BCSC') +" +
             " (SELECT COUNT(*) FROM vaccine_record WHERE data_source = 'BCSC') +" +
+            " (SELECT COUNT(*) FROM lab_order) +" +
             " (SELECT COUNT(*) FROM medication_record WHERE data_source = 'BCSC') as SumCount"
     )
     suspend fun getBcscSourceHealthRecordCount(): Int
