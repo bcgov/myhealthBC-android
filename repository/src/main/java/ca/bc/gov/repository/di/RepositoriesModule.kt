@@ -11,11 +11,9 @@ import ca.bc.gov.data.datasource.local.TestResultLocalDataSource
 import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.CommentRemoteDataSource
-import ca.bc.gov.data.datasource.remote.ConfigRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
-import ca.bc.gov.data.datasource.remote.TermsOfServiceRemoteDataSource
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.CommentRepository
 import ca.bc.gov.repository.FederalTravelPassDecoderRepository
@@ -27,7 +25,6 @@ import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.QrCodeGeneratorRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.RecentPhnDobRepository
-import ca.bc.gov.repository.TermsOfServiceRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.labtest.LabTestRepository
@@ -153,25 +150,21 @@ class RepositoriesModule {
     fun provideBcscAuthRepository(
         @ApplicationContext context: Context,
         encryptedPreferenceStorage: EncryptedPreferenceStorage,
-        patientLocalDataSource: PatientLocalDataSource,
-        configRemoteDataSource: ConfigRemoteDataSource
+        patientLocalDataSource: PatientLocalDataSource
     ) = BcscAuthRepo(
         context,
         encryptedPreferenceStorage,
-        patientLocalDataSource,
-        configRemoteDataSource
+        patientLocalDataSource
     )
 
     @Provides
     @Singleton
     fun provideMedicationRecordRepository(
         medicationRecordLocalDataSource: MedicationRecordLocalDataSource,
-        medicationRemoteDataSource: MedicationRemoteDataSource,
-        encryptedPreferenceStorage: EncryptedPreferenceStorage
+        medicationRemoteDataSource: MedicationRemoteDataSource
     ): MedicationRecordRepository = MedicationRecordRepository(
         medicationRecordLocalDataSource,
-        medicationRemoteDataSource,
-        encryptedPreferenceStorage
+        medicationRemoteDataSource
     )
 
     @Provides
@@ -200,10 +193,4 @@ class RepositoriesModule {
         bcscAuthRepo: BcscAuthRepo
     ): CommentRepository =
         CommentRepository(commentRemoteDataSource, commentLocalDataSource, bcscAuthRepo)
-
-    @Provides
-    @Singleton
-    fun provideTermsOfServiceRepository(
-        termsOfServiceRemoteDataSource: TermsOfServiceRemoteDataSource
-    ): TermsOfServiceRepository = TermsOfServiceRepository(termsOfServiceRemoteDataSource)
 }

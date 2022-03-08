@@ -1,21 +1,15 @@
 package ca.bc.gov.data.datasource.remote.api
 
-import ca.bc.gov.data.datasource.remote.model.request.UserProfileRequest
 import ca.bc.gov.data.datasource.remote.model.response.AuthenticatedCovidTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestPdfResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
 import ca.bc.gov.data.datasource.remote.model.response.PatientResponse
-import ca.bc.gov.data.datasource.remote.model.response.ProfileValidationResponse
-import ca.bc.gov.data.datasource.remote.model.response.TermsOfServiceResponse
-import ca.bc.gov.data.datasource.remote.model.response.UserProfileResponse
 import ca.bc.gov.data.datasource.remote.model.response.VaccineStatusResponse
 import retrofit2.Response
-import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -71,8 +65,7 @@ interface HealthGatewayPrivateApi {
     @GET("$BASE_MEDICATION_SERVICE/MedicationStatement/{$HDID}")
     suspend fun getMedicationStatement(
         @Path(HDID) hdid: String,
-        @Header(AUTHORIZATION) accessToken: String,
-        @Header("protectiveWord") protectiveWord: String?
+        @Header(AUTHORIZATION) accessToken: String
     ): Response<MedicationStatementResponse>
 
     @GET("$BASE_USER_PROFILE_SERVICE/{$HDID}/Comment/Entry")
@@ -81,26 +74,4 @@ interface HealthGatewayPrivateApi {
         @Header(AUTHORIZATION) accessToken: String,
         @Query("parentEntryId") parentEntryId: String?
     ): Response<CommentResponse>
-
-    @GET("$BASE_USER_PROFILE_SERVICE/{$HDID}/Validate")
-    suspend fun checkAgeLimit(
-        @Path(HDID) hdid: String,
-        @Header(AUTHORIZATION) accessToken: String
-    ): Response<ProfileValidationResponse>
-
-    @GET("$BASE_USER_PROFILE_SERVICE/{$HDID}")
-    suspend fun getUserProfile(
-        @Path(HDID) hdid: String,
-        @Header(AUTHORIZATION) accessToken: String
-    ): Response<UserProfileResponse>
-
-    @GET("$BASE_USER_PROFILE_SERVICE/termsofservice")
-    suspend fun getTermsOfService(): Response<TermsOfServiceResponse>
-
-    @POST("$BASE_USER_PROFILE_SERVICE/{$HDID}")
-    suspend fun updateUserProfile(
-        @Path(HDID) hdid: String,
-        @Header(AUTHORIZATION) accessToken: String,
-        @Body profileRequest: UserProfileRequest
-    ): Response<UserProfileResponse>
 }

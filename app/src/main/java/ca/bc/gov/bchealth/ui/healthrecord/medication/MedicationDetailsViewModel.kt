@@ -41,11 +41,9 @@ class MedicationDetailsViewModel @Inject constructor(
                     .getComments(
                         medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
                     )
-            val comments = mutableListOf<Comment>()
-            if (comment.isNotEmpty()) {
-                comments.add(Comment("${comment.size} Comments", Instant.now()))
-                comments.addAll(comment.map { Comment(it.text, it.createdDateTime) })
-            }
+            val comments = mutableListOf<Comment>(Comment("${comment.size} Comments", Instant.now()))
+            comments.addAll(comment.map { Comment(it.text, it.createdDateTime) })
+
             _uiState.update {
                 it.copy(
                     onLoading = false,

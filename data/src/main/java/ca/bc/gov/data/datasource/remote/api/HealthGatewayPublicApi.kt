@@ -2,7 +2,6 @@ package ca.bc.gov.data.datasource.remote.api
 
 import ca.bc.gov.data.datasource.remote.model.response.CovidTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.VaccineStatusResponse
-import ca.bc.gov.data.datasource.remote.model.response.VerifyLoadResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.HeaderMap
@@ -17,7 +16,6 @@ interface HealthGatewayPublicApi {
         private const val AUTHORIZATION = "Authorization"
         private const val BASE_IMMUNIZATION_SERVICE = "api/immunizationservice/v1/api"
         private const val BASE_LABORATORY_SERVICE = "api/laboratoryservice/v1/api"
-        private const val BASE_CONFIG = "v1/api"
     }
 
     @GET("$BASE_IMMUNIZATION_SERVICE/PublicVaccineStatus")
@@ -25,7 +23,4 @@ interface HealthGatewayPublicApi {
 
     @GET("$BASE_LABORATORY_SERVICE/PublicLaboratory/CovidTests")
     suspend fun getCovidTests(@HeaderMap headers: Map<String, String>): Response<CovidTestResponse>
-
-    @GET("$BASE_CONFIG/MobileConfiguration")
-    suspend fun verifyLoad(): Response<VerifyLoadResponse>
 }
