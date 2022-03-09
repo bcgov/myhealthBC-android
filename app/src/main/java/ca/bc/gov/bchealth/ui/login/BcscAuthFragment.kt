@@ -115,6 +115,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                         }
 
                         if (it.isLoggedIn) {
+                            viewModel.resetAuthStatus()
                             fetchAuthenticatedPatientData()
                         }
 
@@ -140,6 +141,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
         workManager.enqueue(workRequest)
         workManager.getWorkInfoByIdLiveData(workRequest.id)
             .observe(viewLifecycleOwner) { info ->
+                showLoader(true)
                 if (info != null && info.state.isFinished) {
                     val queItUrl = info.outputData.getString(WORK_RESULT)
                     if (queItUrl != null) {
