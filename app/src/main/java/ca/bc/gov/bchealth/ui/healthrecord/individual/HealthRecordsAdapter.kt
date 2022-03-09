@@ -48,8 +48,8 @@ class HealthRecordsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val record = getItem(position)
-        holder.binding.tvVaccineName.text = record.title
-        val description: String
+        holder.binding.tvTitle.text = record.title
+        var description = ""
         holder.binding.imgIcon.setImageResource(record.icon)
         when (record.healthRecordType) {
             HealthRecordType.VACCINE_RECORD -> {
@@ -83,9 +83,12 @@ class HealthRecordsAdapter(
             HealthRecordType.MEDICATION_RECORD -> {
                 description = "${record.description} • ${record.date.toDate()}"
             }
+            HealthRecordType.LAB_TEST -> {
+                description = record.description
+            }
         }
 
-        holder.binding.tvVaccineStatus.text = description
+        holder.binding.tvDesc.text = description
         holder.itemView.setOnClickListener {
             itemClickListener.onItemClick(record)
         }

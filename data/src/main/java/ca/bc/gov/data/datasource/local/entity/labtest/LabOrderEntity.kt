@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import java.time.Instant
 
@@ -40,5 +41,7 @@ data class LabOrderEntity(
     @ColumnInfo(name = "test_status")
     val testStatus: String? = null,
     @ColumnInfo(name = "report_available")
-    val reportAvailable: Boolean = false
+    val reportAvailable: Boolean = false,
+    @ColumnInfo(name = "data_source")
+    val dataSource: DataSource = DataSource.BCSC
 )

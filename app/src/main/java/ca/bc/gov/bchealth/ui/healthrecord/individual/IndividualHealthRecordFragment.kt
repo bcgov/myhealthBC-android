@@ -205,6 +205,15 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                             )
                         findNavController().navigate(action)
                     }
+                    HealthRecordType.LAB_TEST -> {
+                        it.labOrderId?.let { it1 ->
+                            val action = IndividualHealthRecordFragmentDirections
+                                .actionIndividualHealthRecordFragmentToLabTestDetailFragment(
+                                    it1
+                                )
+                            findNavController().navigate(action)
+                        }
+                    }
                 }
             },
             {
@@ -213,7 +222,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     HealthRecordType.COVID_TEST_RECORD -> {
                         showHealthRecordDeleteDialog(it)
                     }
-                    HealthRecordType.MEDICATION_RECORD -> {
+                    HealthRecordType.MEDICATION_RECORD,
+                    HealthRecordType.LAB_TEST -> {
                         // No implementation required
                     }
                 }

@@ -46,6 +46,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
             val vaccineWithDoses = listOfNotNull(patientWithVaccineRecords.vaccineWithDoses)
             val patientAndMedicationRecords =
                 patientRepository.getPatientWithMedicationRecords(patientId)
+            val patientWithLabOrdersAndLabTests =
+                patientRepository.getPatientWithLabOrdersAndLabTests(patientId)
 
             val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
                 it.toUiModel()
@@ -56,6 +58,9 @@ class IndividualHealthRecordViewModel @Inject constructor(
             val medicationRecords = patientAndMedicationRecords.medicationRecord.map {
                 it.toUiModel()
             }
+            val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
+                it.toUiModel()
+            }
 
             val covidTestRecordsNonBcsc = covidTestRecords
                 .filter { it.dataSource != DataSource.BCSC.name }
@@ -63,18 +68,26 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 .filter { it.dataSource != DataSource.BCSC.name }
             val medicationRecordsNonBcsc = medicationRecords
                 .filter { it.dataSource != DataSource.BCSC.name }
+            val labTestRecordsNonBcsc = labTestRecords
+                .filter { it.dataSource != DataSource.BCSC.name }
 
             _uiState.update { state ->
                 state.copy(
                     onLoading = false,
                     patientAuthStatus = patientWithVaccineRecords.patient.authenticationStatus,
                     authenticatedRecordsCount = patientRepository.getBcscDataRecordCount(),
-                    onHealthRecords = (covidTestRecords + vaccineRecords + medicationRecords)
+                    onHealthRecords = (
+                        covidTestRecords +
+                            vaccineRecords +
+                            medicationRecords +
+                            labTestRecords
+                        )
                         .sortedByDescending { it.date },
                     onNonBcscHealthRecords = (
                         covidTestRecordsNonBcsc +
                             vaccineRecordsNonBcsc +
-                            medicationRecordsNonBcsc
+                            medicationRecordsNonBcsc +
+                            labTestRecordsNonBcsc
                         )
                         .sortedByDescending { it.date }
                 )
@@ -111,7 +124,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
         try {
             if (phn != null && collectionDate != null) {
                 val testResultId =
-                    fetchTestResultRepository.fetchTestRecord(phn, dob, collectionDate)
+                    fetchTestResultRepository.fetchCovidTestRecord(phn, dob, collectionDate)
                 _uiState.update { state ->
                     state.copy(updatedTestResultId = testResultId)
                 }
@@ -159,6 +172,7 @@ data class HealthRecordItem(
     val patientId: Long,
     val testResultId: Long = -1L,
     val medicationRecordId: Long = -1L,
+    val labOrderId: String? = null,
     val icon: Int,
     val title: String,
     val description: String,
@@ -175,5 +189,6 @@ data class HiddenRecordItem(
 enum class HealthRecordType {
     VACCINE_RECORD,
     COVID_TEST_RECORD,
-    MEDICATION_RECORD
+    MEDICATION_RECORD,
+    LAB_TEST
 }
