@@ -85,42 +85,29 @@ dependencies {
     implementation "androidx.core:core-ktx:$versions.core_ktx"
 
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
-
     implementation "com.google.android.material:material:$versions.material"
-
     implementation "androidx.recyclerview:recyclerview:$versions.recycler"
-
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
-
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swipe_refresh_layout"
 
     //Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$versions.navigation"
-
     implementation "androidx.navigation:navigation-ui-ktx:$versions.navigation"
-
     implementation "androidx.navigation:navigation-runtime-ktx:$versions.navigation"
 
     //JatPack LiveData ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.viewmodel"
-
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.livedata"
-
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle"
 
     //Dagger Hilt
     implementation "com.google.dagger:hilt-android:$versions.hilt"
     implementation project(path: ':repository')
     implementation project(path: ':common')
-
     kapt "com.google.dagger:hilt-compiler:$versions.hilt"
 
+    //Biometric
     implementation "androidx.biometric:biometric-ktx:$versions.biometric"
-
-    //ROOM
-    implementation "androidx.room:room-runtime:$versions.room"
-    kapt "androidx.room:room-compiler:$versions.room"
-    implementation "androidx.room:room-ktx:$versions.room"
 
     //Google BarcodeScanner
     //TODO:- we may replace it with dynamic model download library
@@ -130,48 +117,17 @@ dependencies {
     //Camerax
     //TODO: decide on usage of lifecycle, view and extensions lib
     implementation "androidx.camera:camera-camera2:$versions.camerax"
-
     implementation "androidx.camera:camera-lifecycle:$versions.camerax"
-
     implementation "androidx.camera:camera-view:$versions.camerax_view"
-
     implementation "androidx.camera:camera-extensions:$versions.camerax_extensions"
 
-    //GSOn
-    implementation "com.google.code.gson:gson:$versions.gson"
-
-    //JWT library
-    api "io.jsonwebtoken:jjwt-api:$versions.jjwt"
-    implementation "io.jsonwebtoken:jjwt-impl:$versions.jjwt"
-    implementation("io.jsonwebtoken:jjwt-orgjson:$versions.jjwt") {
-        exclude group: 'org.json', module: 'json' //provided by Android natively
-    }
-
-    implementation "org.bouncycastle:bcprov-jdk15on:$versions.bouncycastle"
-
+    //Custom chrome tab
     implementation "androidx.browser:browser:$versions.browser"
 
     implementation "com.google.android.play:core-ktx:$versions.play"
 
-    //networking
-    implementation "com.google.code.gson:gson:$versions.gson"
-    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
-    implementation "com.squareup.retrofit2:converter-gson:$versions.converter_gson"
-    implementation "com.squareup.okhttp3:logging-interceptor:$versions.logging_interceptor"
-
     //Queue.it
     implementation "com.queue-it.androidsdk:library-androidx:$versions.queue_it"
-
-    //DataStore
-    implementation "androidx.datastore:datastore-preferences:$versions.datastore"
-
-
-    //Crypto
-    implementation "androidx.security:security-crypto:$versions.crypto"
-
-    //SqlCipher
-    implementation "net.zetetic:android-database-sqlcipher:$versions.sqlcipher"
-    implementation "androidx.sqlite:sqlite-ktx:$versions.sqlite"
 
     // https://stackoverflow.com/questions/29402155/android-unit-test-not-mocked
     testImplementation 'org.json:json:20210307'
