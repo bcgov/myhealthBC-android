@@ -14,8 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHealthRecordsBinding
-import ca.bc.gov.bchealth.ui.healthrecord.individual.HiddenHealthRecordAdapter
-import ca.bc.gov.bchealth.ui.healthrecord.individual.HiddenRecordItem
+import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.AuthenticationStatus
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,7 +33,7 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
     private val binding by viewBindings(FragmentHealthRecordsBinding::bind)
     private val viewModel: HealthRecordsViewModel by viewModels()
     private lateinit var adapter: HealthRecordsAdapter
-    private lateinit var hiddenHealthRecordAdapter: HiddenHealthRecordAdapter
+    private lateinit var hiddenMedicationRecordsAdapter: HiddenMedicationRecordAdapter
     private lateinit var concatAdapter: ConcatAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,15 +50,13 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                     )
             findNavController().navigate(action)
         }
-        hiddenHealthRecordAdapter = HiddenHealthRecordAdapter {  }
+        hiddenMedicationRecordsAdapter = HiddenMedicationRecordAdapter { onMedicationAccessClick() }
+
         concatAdapter = ConcatAdapter(
-            hiddenHealthRecordAdapter,
+            hiddenMedicationRecordsAdapter,
             adapter
         )
         binding.rvMembers.adapter = concatAdapter
-        hiddenHealthRecordAdapter.submitList(
-            getDummyData(2)
-        )
 
         binding.ivAddHealthRecord.setOnClickListener {
             findNavController().navigate(R.id.addHealthRecordsFragment)
@@ -86,15 +83,18 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         }
     }
 
-    private fun getDummyData(authenticatedRecordsCount: Int): ArrayList<HiddenRecordItem> {
-        return arrayListOf(HiddenRecordItem(authenticatedRecordsCount))
+    private fun onMedicationAccessClick() {
+        val isProtectiveWordRequired = viewModel.isProtectiveWordRequired()
+        if (isProtectiveWordRequired) {
+            findNavController().navigate(R.id.protectiveWordFragment)
+        }
     }
 
     private suspend fun collectHealthRecordsFlow() {
         viewModel.patientHealthRecords.collect { records ->
             if (records.isNotEmpty()) {
                 binding.ivAddHealthRecord.visibility = View.VISIBLE
-                binding.rvMembers.adapter = concatAdapter
+                // binding.rvMembers.adapter = concatAdapter
                 if (records.any { it.authStatus == AuthenticationStatus.AUTHENTICATED }) {
                     binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), GRID_SPAN_COUNT).apply {
                         spanSizeLookup =
@@ -112,13 +112,6 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
             } else {
                 findNavController().navigate(R.id.addHealthRecordsFragment)
             }
-        }
-    }
-
-    private fun observeWorkManager() {
-        val isProtectiveWordRequired = viewModel.isProtectiveWordRequired()
-        if(isProtectiveWordRequired) {
-            findNavController().navigate(R.id.protectiveWordFragment)
         }
     }
 
