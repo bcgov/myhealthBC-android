@@ -14,22 +14,13 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class HealthRecordsViewModel @Inject constructor(
-    repository: PatientRepository,
-    private val medicationRecordRepository: MedicationRecordRepository
+    repository: PatientRepository
 ) : ViewModel() {
 
     val patientHealthRecords = repository.patientHealthRecords.map { records ->
         records.map { record ->
             record.toUiModel()
         }
-    }
-
-    fun getProtectiveWord(): String? {
-        return medicationRecordRepository.getProtectiveWord()
-    }
-
-    fun isProtectiveWordRequired(): Boolean {
-        return medicationRecordRepository.isProtectiveWordRequired()
     }
 }
 

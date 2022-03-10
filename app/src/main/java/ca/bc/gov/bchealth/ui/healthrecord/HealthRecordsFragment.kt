@@ -33,8 +33,6 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
     private val binding by viewBindings(FragmentHealthRecordsBinding::bind)
     private val viewModel: HealthRecordsViewModel by viewModels()
     private lateinit var adapter: HealthRecordsAdapter
-    private lateinit var hiddenMedicationRecordsAdapter: HiddenMedicationRecordAdapter
-    private lateinit var concatAdapter: ConcatAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,13 +48,6 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                     )
             findNavController().navigate(action)
         }
-        hiddenMedicationRecordsAdapter = HiddenMedicationRecordAdapter { onMedicationAccessClick() }
-
-        concatAdapter = ConcatAdapter(
-            hiddenMedicationRecordsAdapter,
-            adapter
-        )
-        binding.rvMembers.adapter = concatAdapter
 
         binding.ivAddHealthRecord.setOnClickListener {
             findNavController().navigate(R.id.addHealthRecordsFragment)
@@ -83,18 +74,11 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         }
     }
 
-    private fun onMedicationAccessClick() {
-        val isProtectiveWordRequired = viewModel.isProtectiveWordRequired()
-        if (isProtectiveWordRequired) {
-            findNavController().navigate(R.id.protectiveWordFragment)
-        }
-    }
-
     private suspend fun collectHealthRecordsFlow() {
         viewModel.patientHealthRecords.collect { records ->
             if (records.isNotEmpty()) {
                 binding.ivAddHealthRecord.visibility = View.VISIBLE
-                // binding.rvMembers.adapter = concatAdapter
+                binding.rvMembers.adapter = adapter
                 if (records.any { it.authStatus == AuthenticationStatus.AUTHENTICATED }) {
                     binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), GRID_SPAN_COUNT).apply {
                         spanSizeLookup =

@@ -2,11 +2,17 @@ package ca.bc.gov.bchealth.ui.healthrecord.protectiveword
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.databinding.ItemHiddenMedicationRecordsBinding
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HiddenRecordDiffCallBacks
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HiddenMedicationRecordItem
 
 class HiddenMedicationRecordAdapter(private val accessClickListener: ItemClickListener) :
-    RecyclerView.Adapter<HiddenMedicationRecordAdapter.HiddenMedicationRecordViewHolder>() {
+    ListAdapter<HiddenMedicationRecordItem, HiddenMedicationRecordAdapter.HiddenMedicationRecordViewHolder>(
+        HiddenMedicationRecordDiffCallBacks()
+    ) {
 
     fun interface ItemClickListener {
         fun onItemClick()
@@ -33,8 +39,15 @@ class HiddenMedicationRecordAdapter(private val accessClickListener: ItemClickLi
             accessClickListener.onItemClick()
         }
     }
+}
 
-    override fun getItemCount(): Int {
-        return 1
+
+class HiddenMedicationRecordDiffCallBacks : DiffUtil.ItemCallback<HiddenMedicationRecordItem>() {
+    override fun areItemsTheSame(oldItem: HiddenMedicationRecordItem, newItem: HiddenMedicationRecordItem): Boolean {
+        return oldItem == newItem
+    }
+
+    override fun areContentsTheSame(oldItem: HiddenMedicationRecordItem, newItem: HiddenMedicationRecordItem): Boolean {
+        return oldItem.title == newItem.title
     }
 }

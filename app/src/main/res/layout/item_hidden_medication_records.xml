@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/space_4_x"
+    android:layout_marginEnd="@dimen/space_4_x"
     android:padding="@dimen/space_2_x"
     android:layout_marginTop="@dimen/space_2_x"
     android:background="@drawable/layout_shape_round">
@@ -13,7 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/blue"
-        android:text="Hidden medication records"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -30,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title"
-        android:text="Enter protective word to access your medication records." />
+        />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_access"

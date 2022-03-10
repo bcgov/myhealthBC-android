@@ -18,6 +18,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
+import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
 import ca.bc.gov.bchealth.ui.login.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
@@ -45,6 +46,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private val binding by viewBindings(FragmentIndividualHealthRecordBinding::bind)
     private val viewModel: IndividualHealthRecordViewModel by viewModels()
+    private lateinit var hiddenMedicationRecordsAdapter: HiddenMedicationRecordAdapter
     private lateinit var hiddenHealthRecordAdapter: HiddenHealthRecordAdapter
     private lateinit var healthRecordsAdapter: HealthRecordsAdapter
     private lateinit var concatAdapter: ConcatAdapter
@@ -132,8 +134,25 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
                     if (loginSessionStatus != null) {
                         if (loginSessionStatus == LoginSessionStatus.ACTIVE) {
-                            if (::healthRecordsAdapter.isInitialized) {
-                                healthRecordsAdapter.submitList(uiState.onHealthRecords)
+                            val isProtectiveWordRequired = viewModel.isProtectiveWordRequired()
+                            if (isProtectiveWordRequired) {
+                                if (::healthRecordsAdapter.isInitialized) {
+                                    healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
+                                }
+                            } else {
+                                if (::healthRecordsAdapter.isInitialized) {
+                                    healthRecordsAdapter.submitList(uiState.onHealthRecords)
+                                }
+                            }
+                            if (::hiddenMedicationRecordsAdapter.isInitialized) {
+                                hiddenMedicationRecordsAdapter.submitList(
+                                    listOf(
+                                        HiddenMedicationRecordItem(
+                                            "Hidden medication records",
+                                            "Enter protective word to access your medication records."
+                                        )
+                                    )
+                                )
                             }
                         }
 
@@ -236,12 +255,26 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         )
 
         hiddenHealthRecordAdapter = HiddenHealthRecordAdapter { onBCSCLoginClick() }
+        hiddenMedicationRecordsAdapter = HiddenMedicationRecordAdapter { onMedicationAccessClick() }
+
         concatAdapter = ConcatAdapter(
             hiddenHealthRecordAdapter,
+            hiddenMedicationRecordsAdapter,
             healthRecordsAdapter
         )
         binding.rvHealthRecords.adapter = concatAdapter
         binding.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
+    }
+
+    private fun onMedicationAccessClick() {
+        val isProtectiveWordRequired = viewModel.isProtectiveWordRequired()
+        if (isProtectiveWordRequired) {
+            val action = IndividualHealthRecordFragmentDirections
+                .actionIndividualHealthRecordFragmentToProtectiveWordFragment(
+                    args.patientId
+                )
+            findNavController().navigate(action)
+        }
     }
 
     private fun requestUpdate(testResultId: Long) {
