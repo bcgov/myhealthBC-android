@@ -22,4 +22,7 @@ interface MedicationRecordDao : BaseDao<MedicationRecordEntity> {
 
     @Query("DELETE FROM medication_record WHERE patient_id = :patientId AND data_source = 'BCSC'")
     suspend fun deleteAuthenticatedMedicationRecords(patientId: Long): Int
+
+    @Query("SELECT COUNT(*) FROM medication_record WHERE patient_id = :patientId ")
+    suspend fun getCountOfMedicationRecords(patientId: Long): Long
 }

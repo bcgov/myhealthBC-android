@@ -69,6 +69,9 @@ class MedicationRecordRepository @Inject constructor(
                 DATABASE_ERROR, "No record found for medicationRecord id=  $medicalRecordId"
             )
 
+    suspend fun isMedicationRecordsAvailableForPatient(patientId: Long): Boolean =
+        medicationRecordLocalDataSource.isMedicationRecordsAvailableForPatient(patientId)
+
     fun getProtectiveWord(): String? {
         return encryptedPreferenceStorage.protectiveWord
     }
