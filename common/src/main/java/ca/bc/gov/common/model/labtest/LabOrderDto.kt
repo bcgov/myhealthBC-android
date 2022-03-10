@@ -1,5 +1,6 @@
 package ca.bc.gov.common.model.labtest
 
+import ca.bc.gov.common.model.DataSource
 import java.time.Instant
 
 /**
@@ -14,5 +15,6 @@ data class LabOrderDto(
     val commonName: String? = null,
     val orderingProvider: String? = null,
     val testStatus: String? = null,
-    val reportingAvailable: Boolean = false
+    val reportingAvailable: Boolean = false,
+    val dataSorce: DataSource = DataSource.BCSC
 )

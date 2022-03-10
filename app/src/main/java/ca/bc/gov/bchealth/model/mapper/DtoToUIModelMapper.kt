@@ -66,8 +66,9 @@ fun VaccineWithDosesDto.toUiModel(): HealthRecordItem {
         title = "COVID-19 vaccination",
         description = "${passState.status}",
         testOutcome = null,
-        date = date.toDate(),
+        date = date,
         healthRecordType = HealthRecordType.VACCINE_RECORD,
+        dataSource = vaccine.mode.name
     )
 }
 
@@ -81,8 +82,9 @@ fun MedicationWithSummaryAndPharmacyDto.toUiModel(): HealthRecordItem {
         icon = R.drawable.ic_health_record_medication,
         description = medicationSummary.genericName ?: "",
         testOutcome = null,
-        date = medicationRecord.dispenseDate.toDate(),
-        healthRecordType = HealthRecordType.MEDICATION_RECORD
+        date = medicationRecord.dispenseDate,
+        healthRecordType = HealthRecordType.MEDICATION_RECORD,
+        dataSource = medicationRecord.dataSource.name
     )
 }
 
@@ -121,8 +123,9 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
         title = "COVID-19 test result",
         description = "",
         testOutcome = testOutcome,
-        date = date.toDate(),
+        date = date,
         healthRecordType = HealthRecordType.COVID_TEST_RECORD,
+        dataSource = testResult.dataSource.name
     )
 }
 
@@ -140,10 +143,11 @@ fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
         title = labOrder.commonName ?: "",
         labOrderId = labOrder.id,
         icon = R.drawable.ic_lab_test,
-        date = labOrder.collectionDateTime.toDate(),
+        date = labOrder.collectionDateTime,
         description = description,
         testOutcome = null,
-        healthRecordType = HealthRecordType.LAB_TEST
+        healthRecordType = HealthRecordType.LAB_TEST,
+        dataSource = labOrder.dataSorce.name
     )
 }
 
