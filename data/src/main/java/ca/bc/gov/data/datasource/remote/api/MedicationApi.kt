@@ -14,6 +14,7 @@ interface MedicationApi {
     @GET("api/medicationservice/v1/api/MedicationStatement/{hdid}")
     suspend fun getMedicationStatement(
         @Path("hdid") hdid: String,
-        @Header("Authorization") accessToken: String
+        @Header("Authorization") accessToken: String,
+        @Header("protectiveWord") protectiveWord: String?
     ): Response<MedicationStatementResponse>
 }
