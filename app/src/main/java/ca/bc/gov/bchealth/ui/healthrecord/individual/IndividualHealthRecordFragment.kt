@@ -19,6 +19,8 @@ import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
+import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_REQUEST
+import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_UPDATED
 import ca.bc.gov.bchealth.ui.login.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
@@ -55,6 +57,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var loginSessionStatus: LoginSessionStatus? = null
+    private var medicationRecordsUpdated = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,7 +74,12 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         } else {
             viewModel.getIndividualsHealthRecord(args.patientId)
         }
-
+        parentFragmentManager.setFragmentResultListener(
+            KEY_MEDICATION_RECORD_REQUEST,
+            viewLifecycleOwner
+        ) { _, result ->
+            medicationRecordsUpdated = result.get(KEY_MEDICATION_RECORD_UPDATED) as Boolean
+        }
         setupObserver()
     }
 
@@ -134,25 +142,25 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
                     if (loginSessionStatus != null) {
                         if (loginSessionStatus == LoginSessionStatus.ACTIVE) {
-                            val isProtectiveWordRequired = viewModel.isProtectiveWordRequired()
-                            if (isProtectiveWordRequired) {
-                                if (::healthRecordsAdapter.isInitialized) {
-                                    healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
-                                }
-                            } else {
+                            if(medicationRecordsUpdated || !viewModel.isProtectiveWordRequired()) {
                                 if (::healthRecordsAdapter.isInitialized) {
                                     healthRecordsAdapter.submitList(uiState.onHealthRecords)
                                 }
-                            }
-                            if (::hiddenMedicationRecordsAdapter.isInitialized) {
-                                hiddenMedicationRecordsAdapter.submitList(
-                                    listOf(
-                                        HiddenMedicationRecordItem(
-                                            "Hidden medication records",
-                                            "Enter protective word to access your medication records."
+                                concatAdapter.removeAdapter(hiddenMedicationRecordsAdapter)
+                            } else {
+                                if (::healthRecordsAdapter.isInitialized) {
+                                    healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
+                                }
+                                if (::hiddenMedicationRecordsAdapter.isInitialized) {
+                                    hiddenMedicationRecordsAdapter.submitList(
+                                        listOf(
+                                            HiddenMedicationRecordItem(
+                                                "Hidden medication records",
+                                                "Enter protective word to access your medication records."
+                                            )
                                         )
                                     )
-                                )
+                                }
                             }
                         }
 
