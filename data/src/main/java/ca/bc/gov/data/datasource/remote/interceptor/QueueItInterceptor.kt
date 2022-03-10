@@ -13,6 +13,7 @@ import okhttp3.Response
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import java.io.IOException
+import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -30,10 +31,6 @@ class QueueItInterceptor @Inject constructor(
         private const val RESOURCE_PAYLOAD = "resourcePayload"
         private const val LOADED = "loaded"
         private const val RETRY_IN = "retryin"
-        private const val RESULT_ERROR = "resultError"
-        private const val ACTION_CODE = "actionCode"
-        private const val PROTECTED = "PROTECTED"
-        private const val BAD_RESPONSE = "Bad response!"
     }
 
     @Throws(IOException::class)
@@ -68,14 +65,30 @@ class QueueItInterceptor @Inject constructor(
                 stringBody = body?.string()
                 val json = Gson().fromJson(stringBody, JsonObject::class.java)
 
-                if (request.url.toString().contains("MobileConfiguration", true)) {
-                    loaded = true
-                } else {
-                    loaded = checkForLoadedFlag(json)
-                    retryCount++
+                if (json.get(RESOURCE_PAYLOAD).isJsonNull) {
+                    val resultError = json.getAsJsonObject("resultError") ?: throw IOException("Bad response!")
+                    if(resultError.get("actionCode").asString == "PROTECTED") {
+                        throw ProtectiveWordException(
+                            PROTECTIVE_WORD_ERROR_CODE,
+                            "Record protected by keyword"
+                        )
+                    } else {
+                        throw IOException("Bad response!")
+                    }
                 }
-            } else {
-                return response
+
+                var retryInMillis = 0L
+                try {
+                    val payload =
+                        json.getAsJsonObject(RESOURCE_PAYLOAD) ?: throw IOException("Bad response!")
+                    loaded = payload.get(LOADED).asBoolean
+                    retryInMillis = payload.get(RETRY_IN).asLong
+                } catch (e: Exception) {
+                    loaded = true
+                }
+                sleepOnRetry(loaded, retryInMillis)
+
+                retryCount++
             }
         } while (!loaded && retryCount < 3)
 
@@ -87,25 +100,6 @@ class QueueItInterceptor @Inject constructor(
 
         return response.newBuilder()
             .body(newBody).build()
-    }
-
-    private fun checkForLoadedFlag(json: JsonObject): Boolean {
-        var loaded: Boolean
-        if (json.get(RESOURCE_PAYLOAD).isJsonNull) {
-            checkException(json)
-        }
-        var retryInMillis = 0L
-        try {
-            val payload =
-                json.getAsJsonObject(RESOURCE_PAYLOAD)
-                    ?: throw IOException(BAD_RESPONSE)
-            loaded = payload.get(LOADED).asBoolean
-            retryInMillis = payload.get(RETRY_IN).asLong
-        } catch (e: Exception) {
-            loaded = true
-        }
-        sleepOnRetry(loaded, retryInMillis)
-        return loaded
     }
 
     private fun checkQueueItTokenInPref(requestUrlBuilder: HttpUrl.Builder) {
@@ -126,19 +120,4 @@ class QueueItInterceptor @Inject constructor(
     private fun mustQueue(response: Response) = response.headers.names().contains(
         HEADER_QUEUE_IT_REDIRECT_URL
     )
-
-    private fun checkException(json: JsonObject) {
-        val resultError = json.getAsJsonObject(RESULT_ERROR) ?: throw IOException(
-            BAD_RESPONSE
-        )
-        if (resultError.get(ACTION_CODE) != null) {
-            if (resultError.get(ACTION_CODE)?.asString == PROTECTED)
-                throw ProtectiveWordException(
-                    PROTECTIVE_WORD_ERROR_CODE,
-                    "Record protected by keyword"
-                )
-        } else {
-            throw IOException(BAD_RESPONSE)
-        }
-    }
 }

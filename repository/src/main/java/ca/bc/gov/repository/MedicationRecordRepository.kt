@@ -12,6 +12,7 @@ import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
 import ca.bc.gov.data.model.mapper.toDispensingPharmacyDto
 import ca.bc.gov.data.model.mapper.toMedicationRecordDto
 import ca.bc.gov.data.model.mapper.toMedicationSummaryDto
+import net.openid.appauth.AuthState
 import javax.inject.Inject
 
 /**
@@ -33,9 +34,9 @@ class MedicationRecordRepository @Inject constructor(
         protectiveWord: String?
     ) {
         val response = medicationRemoteDataSource.getMedicationStatement(
-            accessToken, hdid, protectiveWord
+            patientId, accessToken, hdid, protectiveWord
         )
-        medicationRecordLocalDataSource.deletePatientMedicationRecords(patientId)
+        medicationRecordLocalDataSource.deleteAuthenticatedMedicationRecords(patientId)
 
         response.payload?.forEach { medicationStatementPayload ->
             val medicationRecordId = insert(
@@ -68,15 +69,16 @@ class MedicationRecordRepository @Inject constructor(
                 DATABASE_ERROR, "No record found for medicationRecord id=  $medicalRecordId"
             )
 
-    suspend fun isMedicationRecordsAvailableForPatient(patientId: Long): Boolean =
-        medicationRecordLocalDataSource.isMedicationRecordsAvailableForPatient(patientId)
-
     fun getProtectiveWord(): String? {
         return encryptedPreferenceStorage.protectiveWord
     }
 
-    fun getProtectiveWordState(): Int {
-        return encryptedPreferenceStorage.protectiveWordState
+    fun isProtectiveWordRequired(): Boolean {
+        return encryptedPreferenceStorage.protectiveWordRequired
+    }
+
+    fun clearIsProtectiveWordRequired() {
+        encryptedPreferenceStorage.protectiveWordRequired = false
     }
 
     fun saveProtectiveWord(word: String) {

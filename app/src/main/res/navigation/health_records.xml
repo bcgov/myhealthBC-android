@@ -112,4 +112,9 @@
             android:name="lab_order_id"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/protectiveWordFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.protectiveword.ProtectiveWordFragment"
+        android:label="ProtectiveWordFragment">
+    </fragment>
 </navigation>

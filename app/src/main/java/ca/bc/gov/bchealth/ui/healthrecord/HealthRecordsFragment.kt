@@ -3,22 +3,21 @@ package ca.bc.gov.bchealth.ui.healthrecord
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
-import androidx.activity.OnBackPressedCallback
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHealthRecordsBinding
-import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment.Companion.VACCINE_RECORD_ADDED_SUCCESS
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment.Companion.PLACE_HOLDER_NAVIGATION
-import ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment.Companion.TEST_RECORD_ADDED_SUCCESS
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HiddenHealthRecordAdapter
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HiddenRecordItem
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.common.model.AuthenticationStatus
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -26,37 +25,22 @@ import kotlinx.coroutines.launch
  * @author Pinakin Kansara
  */
 
+private const val GRID_SPAN_COUNT = 2
+private const val LIST_SPAN_COUNT = 1
+
 @AndroidEntryPoint
 class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
 
     private val binding by viewBindings(FragmentHealthRecordsBinding::bind)
     private val viewModel: HealthRecordsViewModel by viewModels()
     private lateinit var adapter: HealthRecordsAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        requireActivity().onBackPressedDispatcher.addCallback(
-            this,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    findNavController().previousBackStackEntry?.savedStateHandle
-                        ?.set(
-                            PLACE_HOLDER_NAVIGATION,
-                            NavigationAction.ACTION_BACK
-                        )
-                    findNavController().popBackStack()
-                }
-            }
-        )
-    }
+    private lateinit var hiddenHealthRecordAdapter: HiddenHealthRecordAdapter
+    private lateinit var concatAdapter: ConcatAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeVaccineRecordAddition()
-
-        observeCovidTestRecordAddition()
+        setupToolBar()
 
         adapter = HealthRecordsAdapter {
             val action =
@@ -67,11 +51,18 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                     )
             findNavController().navigate(action)
         }
+        hiddenHealthRecordAdapter = HiddenHealthRecordAdapter {  }
+        concatAdapter = ConcatAdapter(
+            hiddenHealthRecordAdapter,
+            adapter
+        )
+        binding.rvMembers.adapter = concatAdapter
+        hiddenHealthRecordAdapter.submitList(
+            getDummyData(2)
+        )
 
         binding.ivAddHealthRecord.setOnClickListener {
-            val action = HealthRecordsFragmentDirections
-                .actionHealthRecordsFragmentToAddHealthRecordFragment(true)
-            findNavController().navigate(action)
+            findNavController().navigate(R.id.addHealthRecordsFragment)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -95,85 +86,45 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         }
     }
 
-    private fun observeCovidTestRecordAddition() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
-            TEST_RECORD_ADDED_SUCCESS
-        )
-            ?.observe(
-                viewLifecycleOwner
-            ) { recordId ->
-                findNavController().currentBackStackEntry?.savedStateHandle?.remove<Long>(
-                    TEST_RECORD_ADDED_SUCCESS
-                )
-                if (recordId > 0) {
-                    findNavController().previousBackStackEntry?.savedStateHandle
-                        ?.set(
-                            PLACE_HOLDER_NAVIGATION,
-                            NavigationAction.ACTION_RE_CHECK
-                        )
-                    findNavController().popBackStack()
-                }
-            }
-    }
-
-    private fun observeVaccineRecordAddition() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
-            VACCINE_RECORD_ADDED_SUCCESS
-        )?.observe(
-            viewLifecycleOwner
-        ) {
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<Long>(
-                VACCINE_RECORD_ADDED_SUCCESS
-            )
-            if (it > 0) {
-                findNavController().previousBackStackEntry?.savedStateHandle
-                    ?.set(
-                        PLACE_HOLDER_NAVIGATION,
-                        NavigationAction.ACTION_RE_CHECK
-                    )
-                findNavController().popBackStack()
-            }
-        }
-    }
-
-    private fun initUi() {
-        binding.ivAddHealthRecord.visibility = View.VISIBLE
-        binding.tvTitle1.visibility = View.VISIBLE
-        binding.tvMessage.visibility = View.VISIBLE
-        setupToolBar()
+    private fun getDummyData(authenticatedRecordsCount: Int): ArrayList<HiddenRecordItem> {
+        return arrayListOf(HiddenRecordItem(authenticatedRecordsCount))
     }
 
     private suspend fun collectHealthRecordsFlow() {
         viewModel.patientHealthRecords.collect { records ->
-            binding.progressBar.isVisible = false
             if (records.isNotEmpty()) {
-                if (records.size == 1) {
-                    findNavController().previousBackStackEntry?.savedStateHandle
-                        ?.set(
-                            PLACE_HOLDER_NAVIGATION,
-                            NavigationAction.ACTION_RE_CHECK
-                        )
-                    findNavController().popBackStack()
+                binding.ivAddHealthRecord.visibility = View.VISIBLE
+                binding.rvMembers.adapter = concatAdapter
+                if (records.any { it.authStatus == AuthenticationStatus.AUTHENTICATED }) {
+                    binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), GRID_SPAN_COUNT).apply {
+                        spanSizeLookup =
+                            object : GridLayoutManager.SpanSizeLookup() {
+                                override fun getSpanSize(position: Int) = when (position) {
+                                    0 -> GRID_SPAN_COUNT
+                                    else -> LIST_SPAN_COUNT
+                                }
+                            }
+                    }
                 } else {
-                    initUi()
-                    binding.rvMembers.adapter = adapter
-                    binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), 2)
-                    adapter.submitList(records)
+                    binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), GRID_SPAN_COUNT)
                 }
+                adapter.submitList(records)
             } else {
-                findNavController().previousBackStackEntry?.savedStateHandle
-                    ?.set(
-                        PLACE_HOLDER_NAVIGATION,
-                        NavigationAction.ACTION_RE_CHECK
-                    )
-                findNavController().popBackStack()
+                findNavController().navigate(R.id.addHealthRecordsFragment)
             }
+        }
+    }
+
+    private fun observeWorkManager() {
+        val isProtectiveWordRequired = viewModel.isProtectiveWordRequired()
+        if(isProtectiveWordRequired) {
+            findNavController().navigate(R.id.protectiveWordFragment)
         }
     }
 
     private fun setupToolBar() {
         binding.toolbar.ivRightOption.apply {
-            isVisible = true
+            visibility = View.VISIBLE
             setOnClickListener {
                 findNavController().navigate(R.id.profileFragment)
             }
