@@ -1,7 +1,9 @@
 package ca.bc.gov.data.datasource.remote.interceptor
 
 import ca.bc.gov.common.const.MUST_QUEUED
+import ca.bc.gov.common.const.PROTECTIVE_WORD_ERROR_CODE
 import ca.bc.gov.common.exceptions.MustBeQueuedException
+import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -62,8 +64,17 @@ class QueueItInterceptor @Inject constructor(
                 body = response.body
                 stringBody = body?.string()
                 val json = Gson().fromJson(stringBody, JsonObject::class.java)
+
                 if (json.get(RESOURCE_PAYLOAD).isJsonNull) {
-                    throw IOException("Bad response!")
+                    val resultError = json.getAsJsonObject("resultError") ?: throw IOException("Bad response!")
+                    if(resultError.get("actionCode").asString == "PROTECTED") {
+                        throw ProtectiveWordException(
+                            PROTECTIVE_WORD_ERROR_CODE,
+                            "Record protected by keyword"
+                        )
+                    } else {
+                        throw IOException("Bad response!")
+                    }
                 }
 
                 var retryInMillis = 0L
