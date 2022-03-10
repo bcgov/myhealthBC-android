@@ -84,7 +84,7 @@ class VaccineRecordLocalDataSource @Inject constructor(
     suspend fun getVaccineRecordId(patientId: Long): Long? =
         vaccineRecordDao.getVaccineRecordId(patientId)
 
-    suspend fun deleteAuthenticatedVaccineRecords(patientId: Long): Int {
-        return vaccineRecordDao.deleteAllAuthenticatedVaccineRecord(patientId)
+    suspend fun deletePatientVaccineRecords(patientId: Long): Int {
+        return vaccineRecordDao.deletePatientVaccineRecords(patientId)
     }
 }
