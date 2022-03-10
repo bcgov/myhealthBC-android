@@ -26,7 +26,7 @@ class ProtectiveWordFragment : Fragment(R.layout.fragment_protective_word) {
         binding.btnContinue.setOnClickListener {
             if(viewModel.isProtectiveWordValid(binding.etProtectiveWord.text.toString())) {
                 viewModel.saveProtectiveWord(binding.etProtectiveWord.text.toString())
-                viewModel.clearIsProtectiveWordRequired()
+                // viewModel.clearIsProtectiveWordRequired()
                 findNavController().popBackStack()
             } else {
                 binding.etProtectiveWord.error = "Invalid protective word. Try again."
