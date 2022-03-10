@@ -38,6 +38,11 @@ class IndividualHealthRecordViewModel @Inject constructor(
     val uiState: StateFlow<IndividualHealthRecordsUiState> = _uiState.asStateFlow()
 
     fun getIndividualsHealthRecord(patientId: Long) = viewModelScope.launch {
+
+        _uiState.update { state ->
+            state.copy(onLoading = true)
+        }
+
         try {
             val patientWithVaccineRecords =
                 patientRepository.getPatientWithVaccineAndDoses(patientId)
