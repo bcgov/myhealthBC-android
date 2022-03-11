@@ -14,79 +14,95 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_title"
-        style="?textAppearanceHeadline3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_4_x"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginEnd="@dimen/space_4_x"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:textColor="@color/text_black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        android:text="View your medication records"
-        />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_desc"
-        style="?textAppearanceBody1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_1_x"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginEnd="@dimen/space_4_x"
-        android:gravity="start"
-        android:textAlignment="textStart"
-        android:textColor="@color/primary_blue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title"
-        android:text="Please enter the protective word required to access these restricted PharmaNet records. For more information visit protective-word-for-a-pharmanet-record"
-        />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_protective_word_title"
-        style="?textAppearanceHeadline3"
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_4_x"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginEnd="@dimen/space_4_x"
-        android:gravity="start"
-        android:textAlignment="textStart"
-        android:textColor="@color/grey"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_desc"
-        android:text="Protective Word"
-        />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tl_protective_word"
-        style="@style/BC_VAX.Widget.App.TextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginTop="@dimen/space_1_x"
-        android:layout_marginEnd="@dimen/space_4_x"
-        app:errorEnabled="true"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/space_1_x"
+        app:layout_constraintBottom_toTopOf="@+id/btn_continue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_protective_word_title">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_protective_word"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:inputType="text"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_title"
+                style="?textAppearanceHeadline3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_4_x"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textColor="@color/text_black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="View your medication records"
+                />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_desc"
+                style="?textAppearanceBody1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_1_x"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:gravity="start"
+                android:textAlignment="textStart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title"
+                android:text="Please enter the protective word required to access these restricted PharmaNet records. For more information visit protective-word-for-a-pharmanet-record"
+                />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_protective_word_title"
+                style="?textAppearanceHeadline3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_4_x"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:gravity="start"
+                android:textAlignment="textStart"
+                android:textColor="@color/grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_desc"
+                android:text="Protective Word"
+                />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tl_protective_word"
+                style="@style/BC_VAX.Widget.App.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginTop="@dimen/space_1_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                app:errorEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_protective_word_title">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_protective_word"
+                    android:layout_width="match_parent"
+                    android:inputType="text"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_continue"
@@ -96,7 +112,7 @@
         android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
-        android:layout_marginBottom="@dimen/space_2_x"
+        android:layout_marginBottom="@dimen/space_1_x"
         android:text="@string/btn_continue"
         app:layout_constraintBottom_toTopOf="@+id/btn_cancel"
         app:layout_constraintEnd_toEndOf="parent"
@@ -108,7 +124,7 @@
         style="@style/BC_VAX.Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginTop="@dimen/space_1_x"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
         android:layout_marginBottom="@dimen/space_2_x"

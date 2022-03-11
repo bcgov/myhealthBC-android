@@ -35,6 +35,9 @@ class HiddenMedicationRecordAdapter(private val accessClickListener: ItemClickLi
     }
 
     override fun onBindViewHolder(holder: HiddenMedicationRecordViewHolder, position: Int) {
+        val record = getItem(position)
+        holder.binding.tvTitle.text = record.title
+        holder.binding.tvDesc.text = record.desc
         holder.binding.btnAccess.setOnClickListener {
             accessClickListener.onItemClick()
         }
