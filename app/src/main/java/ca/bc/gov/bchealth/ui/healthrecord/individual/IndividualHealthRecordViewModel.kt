@@ -7,6 +7,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.labtest.LabTestDetailViewModel
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.DataSource
+import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.FetchTestResultRepository
@@ -164,12 +165,16 @@ class IndividualHealthRecordViewModel @Inject constructor(
         }
     }
 
-    fun getProtectiveWord(): String? {
-        return medicationRecordRepository.getProtectiveWord()
+    fun medicationRecordsUpdated(isMedicationRecordsUpdated: Boolean) {
+        _uiState.update { state ->
+            state.copy(
+                medicationRecordsUpdated = isMedicationRecordsUpdated
+            )
+        }
     }
 
     fun isProtectiveWordRequired(): Boolean {
-        return medicationRecordRepository.isProtectiveWordRequired()
+        return medicationRecordRepository.getProtectiveWordState() == ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
     }
 }
 
@@ -183,7 +188,8 @@ data class IndividualHealthRecordsUiState(
     val patientAuthStatus: AuthenticationStatus? = null,
     val onHealthRecords: List<HealthRecordItem> = emptyList(),
     val onNonBcscHealthRecords: List<HealthRecordItem> = emptyList(),
-    val healthRecordsExceptMedication: List<HealthRecordItem> = emptyList()
+    val healthRecordsExceptMedication: List<HealthRecordItem> = emptyList(),
+    val medicationRecordsUpdated: Boolean = false
 )
 
 data class HealthRecordItem(

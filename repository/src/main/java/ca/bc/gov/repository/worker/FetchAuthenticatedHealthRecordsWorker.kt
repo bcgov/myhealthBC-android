@@ -6,6 +6,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.ProtectiveWordException
+import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.repository.FetchTestResultRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
@@ -97,9 +98,10 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
         } catch (e: Exception) {
             if(e is ProtectiveWordException) {
-                encryptedPreferenceStorage.protectiveWordRequired = true
+                encryptedPreferenceStorage.protectiveWordRequired = ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
+            } else {
+                isApiFailed = true
             }
-            isApiFailed = true
         }
 
         try {
