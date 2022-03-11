@@ -15,6 +15,8 @@ import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentProtectiveWordBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.makeLinks
+import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,6 +36,10 @@ class ProtectiveWordFragment : Fragment(R.layout.fragment_protective_word) {
         super.onViewCreated(view, savedInstanceState)
 
         setUpToolbar()
+
+        binding.tvDesc.makeLinks(Pair("protective-word-for-a-pharmanet-record", View.OnClickListener {
+            requireContext().redirect(getString(R.string.bc_cdc_test_results))
+        }))
 
         binding.btnContinue.setOnClickListener {
             viewModel.fetchMedicationRecords(args.patientId, binding.etProtectiveWord.text.toString())
@@ -69,7 +75,7 @@ class ProtectiveWordFragment : Fragment(R.layout.fragment_protective_word) {
                     }
 
                     if (fetchMedicationUiState.wrongProtectiveWord) {
-                        binding.etProtectiveWord.error = "Invalid protective word. Try again."
+                        binding.tlProtectiveWord.error = "Invalid protective word. Try again."
                     }
 
                     if (fetchMedicationUiState.isRecordsUpdated) {
