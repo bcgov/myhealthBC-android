@@ -92,7 +92,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                     patientId,
                     authParameters.first,
                     authParameters.second,
-                    null
+                    encryptedPreferenceStorage.protectiveWord
                 )
             }
         } catch (e: Exception) {
