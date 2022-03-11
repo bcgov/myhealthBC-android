@@ -76,12 +76,8 @@ class MedicationRecordRepository @Inject constructor(
         return encryptedPreferenceStorage.protectiveWord
     }
 
-    fun isProtectiveWordRequired(): Boolean {
+    fun getProtectiveWordState() : Int {
         return encryptedPreferenceStorage.protectiveWordRequired
-    }
-
-    fun clearIsProtectiveWordRequired() {
-        encryptedPreferenceStorage.protectiveWordRequired = false
     }
 
     fun saveProtectiveWord(word: String) {

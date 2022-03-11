@@ -57,7 +57,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var loginSessionStatus: LoginSessionStatus? = null
-    private var medicationRecordsUpdated = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,12 +73,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         } else {
             viewModel.getIndividualsHealthRecord(args.patientId)
         }
-        parentFragmentManager.setFragmentResultListener(
-            KEY_MEDICATION_RECORD_REQUEST,
-            viewLifecycleOwner
-        ) { _, result ->
-            medicationRecordsUpdated = result.get(KEY_MEDICATION_RECORD_UPDATED) as Boolean
-        }
+        protectiveWordFragmentResultListener()
         setupObserver()
     }
 
@@ -142,41 +136,11 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
                     if (loginSessionStatus != null) {
                         if (loginSessionStatus == LoginSessionStatus.ACTIVE) {
-                            if(medicationRecordsUpdated || !viewModel.isProtectiveWordRequired()) {
-                                if (::healthRecordsAdapter.isInitialized) {
-                                    healthRecordsAdapter.submitList(uiState.onHealthRecords)
-                                }
-                                concatAdapter.removeAdapter(hiddenMedicationRecordsAdapter)
-                            } else {
-                                if (::healthRecordsAdapter.isInitialized) {
-                                    healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
-                                }
-                                if (::hiddenMedicationRecordsAdapter.isInitialized) {
-                                    hiddenMedicationRecordsAdapter.submitList(
-                                        listOf(
-                                            HiddenMedicationRecordItem(
-                                                "Hidden medication records",
-                                                "Enter protective word to access your medication records."
-                                            )
-                                        )
-                                    )
-                                }
-                            }
+                            updateUIForActiveLoginSession(uiState)
                         }
 
                         if (loginSessionStatus == LoginSessionStatus.EXPIRED) {
-                            if (::healthRecordsAdapter.isInitialized) {
-                                healthRecordsAdapter.submitList(uiState.onNonBcscHealthRecords)
-                            }
-
-                            if (uiState.authenticatedRecordsCount != null &&
-                                uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED &&
-                                ::hiddenHealthRecordAdapter.isInitialized
-                            ) {
-                                hiddenHealthRecordAdapter.submitList(
-                                    getDummyData(uiState.authenticatedRecordsCount)
-                                )
-                            }
+                            updateUIForExpiredLoginSession(uiState)
                         }
 
                         if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
@@ -203,6 +167,44 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     }
                 }
             }
+        }
+    }
+
+    private fun updateUIForActiveLoginSession(uiState: IndividualHealthRecordsUiState) {
+        if (uiState.medicationRecordsUpdated || !viewModel.isProtectiveWordRequired()) {
+            if (::healthRecordsAdapter.isInitialized) {
+                healthRecordsAdapter.submitList(uiState.onHealthRecords)
+            }
+            concatAdapter.removeAdapter(hiddenMedicationRecordsAdapter)
+        } else {
+            if (::healthRecordsAdapter.isInitialized) {
+                healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
+            }
+            if (::hiddenMedicationRecordsAdapter.isInitialized) {
+                hiddenMedicationRecordsAdapter.submitList(
+                    listOf(
+                        HiddenMedicationRecordItem(
+                            "Hidden medication records",
+                            "Enter protective word to access your medication records."
+                        )
+                    )
+                )
+            }
+        }
+    }
+
+    private fun updateUIForExpiredLoginSession(uiState: IndividualHealthRecordsUiState) {
+        if (::healthRecordsAdapter.isInitialized) {
+            healthRecordsAdapter.submitList(uiState.onNonBcscHealthRecords)
+        }
+
+        if (uiState.authenticatedRecordsCount != null &&
+            uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED &&
+            ::hiddenHealthRecordAdapter.isInitialized
+        ) {
+            hiddenHealthRecordAdapter.submitList(
+                getDummyData(uiState.authenticatedRecordsCount)
+            )
         }
     }
 
@@ -381,25 +383,39 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     }
 
                     override fun onQueueViewWillOpen() {
+                        //NA
                     }
 
                     override fun onQueueDisabled() {
+                        //NA
                     }
 
                     override fun onQueueItUnavailable() {
+                        //NA
                     }
 
                     override fun onError(error: Error?, errorMessage: String?) {
+                        //NA
                     }
                 }
             )
             queueITEngine.run(requireActivity())
         } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     private fun onBCSCLoginClick() {
         sharedViewModel.destinationId = 0
         findNavController().navigate(R.id.bcscAuthInfoFragment)
+    }
+
+    private fun protectiveWordFragmentResultListener() {
+        parentFragmentManager.setFragmentResultListener(
+            KEY_MEDICATION_RECORD_REQUEST,
+            viewLifecycleOwner
+        ) { _, result ->
+            viewModel.medicationRecordsUpdated(result.get(KEY_MEDICATION_RECORD_UPDATED) as Boolean)
+        }
     }
 }

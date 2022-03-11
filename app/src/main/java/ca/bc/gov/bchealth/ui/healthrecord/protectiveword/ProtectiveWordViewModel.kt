@@ -25,14 +25,6 @@ class ProtectiveWordViewModel @Inject constructor
     private val _uiState = MutableSharedFlow<FetchMedicationUiState>(extraBufferCapacity = 1)
     val uiState: SharedFlow<FetchMedicationUiState> = _uiState.asSharedFlow()
 
-    fun clearIsProtectiveWordRequired() {
-        return medicationRecordRepository.clearIsProtectiveWordRequired()
-    }
-
-    fun getProtectiveWord(): String? {
-        return medicationRecordRepository.getProtectiveWord()
-    }
-
     private fun saveProtectiveWord(word: String) {
         medicationRecordRepository.saveProtectiveWord(word)
     }

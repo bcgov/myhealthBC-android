@@ -2,6 +2,7 @@ package ca.bc.gov.data.datasource.local.preference
 
 import android.content.SharedPreferences
 import android.util.Base64
+import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.settings.AnalyticsFeature
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -104,9 +105,9 @@ class EncryptedPreferenceStorage @Inject constructor(
             encryptedSharedPreferences.edit().putString(PROTECTIVE_WORD, value).apply()
         }
 
-    var protectiveWordRequired: Boolean
-        get() = encryptedSharedPreferences.getBoolean(PROTECTIVE_WORD_REQUIRED, false)
+    var protectiveWordRequired: Int
+        get() = encryptedSharedPreferences.getInt(PROTECTIVE_WORD_REQUIRED, ProtectiveWordState.PROTECTIVE_WORD_NOT_REQUIRED.value)
         set(value) {
-            encryptedSharedPreferences.edit().putBoolean(PROTECTIVE_WORD_REQUIRED, value).apply()
+            encryptedSharedPreferences.edit().putInt(PROTECTIVE_WORD_REQUIRED, value).apply()
         }
 }
