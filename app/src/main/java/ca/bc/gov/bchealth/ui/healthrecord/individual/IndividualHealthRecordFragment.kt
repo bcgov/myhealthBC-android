@@ -24,6 +24,7 @@ import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginSessionStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.common.model.AuthenticationStatus
@@ -111,7 +112,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 bcscAuthViewModel.authStatus.collect { authStatus ->
-                    binding.progressBar.isVisible = authStatus.showLoading
                     if (authStatus.showLoading) {
                         return@collect
                     } else {
@@ -131,6 +131,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 viewModel.uiState.collect { uiState ->
 
                     if (loginSessionStatus != null) {
+
+                        binding.progressBar.isVisible = false
+
                         if (loginSessionStatus == LoginSessionStatus.ACTIVE) {
                             if (::healthRecordsAdapter.isInitialized) {
                                 healthRecordsAdapter.submitList(uiState.onHealthRecords)
@@ -158,7 +161,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     }
 
                     if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
-                        binding.toolbar.tvRightOption.visibility = View.INVISIBLE
+                        binding.ivEdit.visibility = View.GONE
                         healthRecordsAdapter.isUpdateRequested = false
                     }
 
@@ -250,33 +253,28 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun setupToolbar() {
-        binding.toolbar.apply {
-            ivLeftOption.visibility = View.VISIBLE
-            ivLeftOption.setImageResource(R.drawable.ic_action_back)
-            ivLeftOption.setOnClickListener {
+
+        binding.apply {
+            tvName.text = args.patientName
+            ivBack.setOnClickListener {
                 findNavController().popBackStack()
             }
-            tvTitle.visibility = View.VISIBLE
-            tvTitle.text = args.patientName.plus("'s record")
-            line1.visibility = View.VISIBLE
+            ivSetting.setOnClickListener {
+                findNavController().navigate(R.id.profileFragment)
+            }
+            ivAdd.setOnClickListener {
+                findNavController().navigate(R.id.addHealthRecordsFragment)
+            }
+            ivFilter.setOnClickListener {
+                requireContext().toast("Coming soon")
+            }
+            ivEdit.setOnClickListener {
+                healthRecordsAdapter.canDeleteRecord = !healthRecordsAdapter.canDeleteRecord
 
-            binding.toolbar.tvRightOption.apply {
-                visibility = View.VISIBLE
-                text = getString(R.string.edit)
-                setOnClickListener {
-                    if (healthRecordsAdapter.canDeleteRecord) {
-                        text = getString(R.string.edit)
-                        healthRecordsAdapter.canDeleteRecord = false
-                    } else {
-                        text = getString(R.string.done)
-                        healthRecordsAdapter.canDeleteRecord = true
-                    }
-
-                    concatAdapter.notifyItemRangeChanged(
-                        0,
-                        concatAdapter.itemCount
-                    )
-                }
+                concatAdapter.notifyItemRangeChanged(
+                    0,
+                    concatAdapter.itemCount
+                )
             }
         }
     }
