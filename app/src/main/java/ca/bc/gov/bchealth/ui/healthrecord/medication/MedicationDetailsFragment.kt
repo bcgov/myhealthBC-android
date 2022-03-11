@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentMedicationDetailsBinding
@@ -25,6 +26,8 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
     private val args: MedicationDetailsFragmentArgs by navArgs()
     private val viewModel: MedicationDetailsViewModel by viewModels()
     private lateinit var medicationDetailAdapter: MedicationDetailAdapter
+    private lateinit var commentsAdapter: CommentsAdapter
+    private lateinit var concatAdapter: ConcatAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,9 +56,11 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
     }
 
     private fun setUpRecyclerView() {
+        commentsAdapter = CommentsAdapter()
         medicationDetailAdapter = MedicationDetailAdapter()
+        concatAdapter = ConcatAdapter(medicationDetailAdapter, commentsAdapter)
         val recyclerView = binding.rvMedicationDetailList
-        recyclerView.adapter = medicationDetailAdapter
+        recyclerView.adapter = concatAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
@@ -69,6 +74,10 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
                     if (state.medicationDetails?.isNotEmpty() == true) {
                         medicationDetailAdapter.submitList(state.medicationDetails)
                         binding.toolbar.tvTitle.text = state.toolbarTitle
+                    }
+
+                    if (state.comments.isNotEmpty()) {
+                        commentsAdapter.submitList(state.comments)
                     }
 
                     if (state.onError) {

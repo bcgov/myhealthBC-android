@@ -26,7 +26,7 @@ class MedicationRecordRepository @Inject constructor(
 
     suspend fun fetchMedicationStatement(patientId: Long, accessToken: String, hdid: String) {
         val response = medicationRemoteDataSource.getMedicationStatement(
-            patientId, accessToken, hdid
+            accessToken, hdid
         )
         medicationRecordLocalDataSource.deleteAuthenticatedMedicationRecords(patientId)
 

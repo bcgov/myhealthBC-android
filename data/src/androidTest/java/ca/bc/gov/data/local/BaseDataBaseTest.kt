@@ -6,6 +6,7 @@ import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.data.datasource.local.MyHealthDataBase
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
+import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
 import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
 import ca.bc.gov.data.datasource.local.entity.labtest.LabOrderEntity
@@ -20,6 +21,7 @@ import org.junit.Before
 import org.junit.Rule
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -100,6 +102,32 @@ abstract class BaseDataBaseTest {
         return labOrder
     }
 
+    protected fun getComment(
+        id: String = UUID.randomUUID().toString(),
+        userProfileId: String = UUID.randomUUID().toString(),
+        text: String = "Sample Comment",
+        entryTypeCode: String = "Med",
+        parentEntryId: String = UUID.randomUUID().toString(),
+        version: Int = 0,
+        createdDateTime: Instant = Instant.now(),
+        createdBy: String = "Created By Pinakin",
+        updateDateTime: Instant = Instant.now(),
+        updatedBy: String = "Updated By Pinakin"
+    ): CommentEntity {
+        val comment = mockk<CommentEntity>()
+        every { comment.id } returns id
+        every { comment.userProfileId } returns userProfileId
+        every { comment.text } returns text
+        every { comment.entryTypeCode } returns entryTypeCode
+        every { comment.parentEntryId } returns parentEntryId
+        every { comment.version } returns version
+        every { comment.createdDateTime } returns createdDateTime
+        every { comment.createdBy } returns createdBy
+        every { comment.updatedDateTime } returns updateDateTime
+        every { comment.updatedBy } returns updatedBy
+        return comment
+    }
+
     protected fun getPatient1() =
         PatientEntity(
             id = 1,
@@ -161,7 +189,7 @@ abstract class BaseDataBaseTest {
     protected fun getMedicationRecord() = MedicationRecordEntity(
         id = 0,
         patientId = 1,
-        practitionerIdentifier = "Practitioner",
+        prescriptionIdentifier = "Practitioner",
         prescriptionStatus = "Status",
         practitionerSurname = "Practitioner Surname",
         dispenseDate = Instant.now(),

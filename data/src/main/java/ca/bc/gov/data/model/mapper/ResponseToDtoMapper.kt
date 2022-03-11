@@ -6,6 +6,7 @@ import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
+import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabTestDto
@@ -14,12 +15,14 @@ import ca.bc.gov.common.utils.formatInPattern
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.data.datasource.remote.model.base.LabResult
+import ca.bc.gov.data.datasource.remote.model.base.comment.CommentPayload
 import ca.bc.gov.data.datasource.remote.model.base.covidtest.CovidTestRecord
 import ca.bc.gov.data.datasource.remote.model.base.medication.DispensingPharmacy
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationStatementPayload
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationSummary
 import ca.bc.gov.data.datasource.remote.model.base.vaccine.Media
 import ca.bc.gov.data.datasource.remote.model.base.vaccine.VaccineResourcePayload
+import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.model.MediaMetaData
 import ca.bc.gov.data.model.VaccineStatus
@@ -57,7 +60,7 @@ fun LabResult.toTestRecord() = TestRecordDto(
 fun MedicationStatementPayload.toMedicationRecordDto(patientId: Long) = MedicationRecordDto(
     id = 0,
     patientId = patientId,
-    practitionerIdentifier = prescriptionIdentifier,
+    prescriptionIdentifier = prescriptionIdentifier,
     prescriptionStatus = prescriptionStatus.toString(),
     practitionerSurname = practitionerSurname,
     dispenseDate = dispensedDate.toDateTime(),
@@ -136,4 +139,21 @@ fun LabTestResponse.toDto(): List<LabOrderWithLabTestDto> {
             tests
         )
     }
+}
+
+fun CommentPayload.toDto() = CommentDto(
+    id,
+    userProfileId,
+    text,
+    entryTypeCode,
+    parentEntryId,
+    version,
+    createdDateTime = createdDateTime.toDateTime(),
+    createdBy,
+    updatedDateTime = updatedDateTime.toDateTime(),
+    updatedBy
+)
+
+fun CommentResponse.toDto(): List<CommentDto> {
+    return payload.map { it.toDto() }
 }

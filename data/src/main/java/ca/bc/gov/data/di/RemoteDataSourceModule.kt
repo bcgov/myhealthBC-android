@@ -1,13 +1,12 @@
 package ca.bc.gov.data.di
 
+import ca.bc.gov.data.datasource.remote.CommentRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.PatientRemoteDataSource
-import ca.bc.gov.data.datasource.remote.api.ImmunizationApi
-import ca.bc.gov.data.datasource.remote.api.LaboratoryApi
-import ca.bc.gov.data.datasource.remote.api.MedicationApi
-import ca.bc.gov.data.datasource.remote.api.PatientApi
+import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
+import ca.bc.gov.data.datasource.remote.api.HealthGatewayPublicApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,21 +22,33 @@ class RemoteDataSourceModule {
 
     @Provides
     @Singleton
-    fun providesImmunizationRemoteDataSource(immunizationApi: ImmunizationApi) =
-        ImmunizationRemoteDataSource(immunizationApi)
+    fun providesImmunizationRemoteDataSource(
+        healthGatewayPrivateApi: HealthGatewayPrivateApi,
+        healthGatewayPublicApi: HealthGatewayPublicApi
+    ) =
+        ImmunizationRemoteDataSource(healthGatewayPrivateApi, healthGatewayPublicApi)
 
     @Provides
     @Singleton
-    fun providesLaboratoryRemoteDataSource(laboratoryApi: LaboratoryApi) =
-        LaboratoryRemoteDataSource(laboratoryApi)
+    fun providesLaboratoryRemoteDataSource(
+        healthGatewayPrivateApi: HealthGatewayPrivateApi,
+        healthGatewayPublicApi: HealthGatewayPublicApi
+    ) =
+        LaboratoryRemoteDataSource(healthGatewayPublicApi, healthGatewayPrivateApi)
 
     @Provides
     @Singleton
-    fun providesMedicationRemoteDataSource(medicationApi: MedicationApi) =
-        MedicationRemoteDataSource(medicationApi)
+    fun providesMedicationRemoteDataSource(healthGatewayPrivateApi: HealthGatewayPrivateApi) =
+        MedicationRemoteDataSource(healthGatewayPrivateApi)
 
     @Provides
     @Singleton
-    fun providesPatientRemoteDataSource(patientApi: PatientApi) =
-        PatientRemoteDataSource(patientApi)
+    fun providesPatientRemoteDataSource(healthGatewayPrivateApi: HealthGatewayPrivateApi) =
+        PatientRemoteDataSource(healthGatewayPrivateApi)
+
+    @Provides
+    @Singleton
+    fun provideCommentRemoteDataSource(
+        healthGatewayPrivateApi: HealthGatewayPrivateApi
+    ) = CommentRemoteDataSource(healthGatewayPrivateApi)
 }
