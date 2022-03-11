@@ -38,7 +38,7 @@ class ProtectiveWordFragment : Fragment(R.layout.fragment_protective_word) {
         setUpToolbar()
 
         binding.tvDesc.makeLinks(Pair("protective-word-for-a-pharmanet-record", View.OnClickListener {
-            requireContext().redirect(getString(R.string.bc_cdc_test_results))
+            requireContext().redirect("https://www2.gov.bc.ca/gov/content/health/health-drug-coverage/pharmacare-for-bc-residents/pharmanet/protective-word-for-a-pharmanet-record")
         }))
 
         binding.btnContinue.setOnClickListener {
