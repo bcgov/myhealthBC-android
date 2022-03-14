@@ -7,6 +7,7 @@ import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
+import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
 import ca.bc.gov.data.model.mapper.toDispensingPharmacyDto
 import ca.bc.gov.data.model.mapper.toMedicationRecordDto
@@ -18,15 +19,21 @@ import javax.inject.Inject
  */
 class MedicationRecordRepository @Inject constructor(
     private val medicationRecordLocalDataSource: MedicationRecordLocalDataSource,
-    private val medicationRemoteDataSource: MedicationRemoteDataSource
+    private val medicationRemoteDataSource: MedicationRemoteDataSource,
+    private val encryptedPreferenceStorage: EncryptedPreferenceStorage
 ) {
 
     suspend fun insert(medicationRecords: MedicationRecordDto): Long =
         medicationRecordLocalDataSource.insert(medicationRecords)
 
-    suspend fun fetchMedicationStatement(patientId: Long, accessToken: String, hdid: String) {
+    suspend fun fetchMedicationStatement(
+        patientId: Long,
+        accessToken: String,
+        hdid: String,
+        protectiveWord: String?
+    ) {
         val response = medicationRemoteDataSource.getMedicationStatement(
-            accessToken, hdid
+            accessToken, hdid, protectiveWord
         )
         medicationRecordLocalDataSource.deleteAuthenticatedMedicationRecords(patientId)
 
@@ -35,11 +42,15 @@ class MedicationRecordRepository @Inject constructor(
                 medicationStatementPayload.toMedicationRecordDto(patientId = patientId)
             )
             if (medicationRecordId != -1L) {
-                medicationStatementPayload.medicationSummary?.toMedicationSummaryDto(medicationRecordId)
+                medicationStatementPayload.medicationSummary?.toMedicationSummaryDto(
+                    medicationRecordId
+                )
                     ?.let { insert(it) }
             }
             if (medicationRecordId != -1L) {
-                medicationStatementPayload.dispensingPharmacy?.toDispensingPharmacyDto(medicationRecordId)
+                medicationStatementPayload.dispensingPharmacy?.toDispensingPharmacyDto(
+                    medicationRecordId
+                )
                     ?.let { insert(it) }
             }
         }
@@ -56,4 +67,19 @@ class MedicationRecordRepository @Inject constructor(
             ?: throw MyHealthException(
                 DATABASE_ERROR, "No record found for medicationRecord id=  $medicalRecordId"
             )
+
+    suspend fun isMedicationRecordsAvailableForPatient(patientId: Long): Boolean =
+        medicationRecordLocalDataSource.isMedicationRecordsAvailableForPatient(patientId)
+
+    fun getProtectiveWord(): String? {
+        return encryptedPreferenceStorage.protectiveWord
+    }
+
+    fun getProtectiveWordState() : Int {
+        return encryptedPreferenceStorage.protectiveWordState
+    }
+
+    fun saveProtectiveWord(word: String) {
+        encryptedPreferenceStorage.protectiveWord = word
+    }
 }
