@@ -177,6 +177,11 @@
     <string name="login_to_view_hidden_records_msg">Login again with your BC Services Card to view all the records</string>
     <string name="out_of_range">Out of Range</string>
     <string name="in_range">In Range</string>
+    <string name="hidden_medication_records">Hidden medication records</string>
+    <string name="enter_protective_word_to_access_medication_records">Enter protective word to access your medication records.</string>
+    <string name="protective_word_for_a_pharmanet_record">protective-word-for-a-pharmanet-record</string>
+    <string name="wrong_protective_word">Invalid protective word. Try again.</string>
+    <string name="restricted_pharmanet_records">Restricted PharmaNet Records</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>

@@ -95,7 +95,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         }
     }
 
-    private fun getDummyData(authenticatedRecordsCount: Int): ArrayList<HiddenRecordItem> {
+    private fun getHiddenRecordItem(authenticatedRecordsCount: Int): ArrayList<HiddenRecordItem> {
         return arrayListOf(HiddenRecordItem(authenticatedRecordsCount))
     }
 
@@ -184,8 +184,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 hiddenMedicationRecordsAdapter.submitList(
                     listOf(
                         HiddenMedicationRecordItem(
-                            "Hidden medication records",
-                            "Enter protective word to access your medication records."
+                            getString(R.string.hidden_medication_records),
+                            getString(R.string.enter_protective_word_to_access_medication_records)
                         )
                     )
                 )
@@ -203,7 +203,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             ::hiddenHealthRecordAdapter.isInitialized
         ) {
             hiddenHealthRecordAdapter.submitList(
-                getDummyData(uiState.authenticatedRecordsCount)
+                getHiddenRecordItem(uiState.authenticatedRecordsCount)
             )
         }
     }
@@ -277,14 +277,11 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun onMedicationAccessClick() {
-        val isProtectiveWordRequired = viewModel.isProtectiveWordRequired()
-        if (isProtectiveWordRequired) {
-            val action = IndividualHealthRecordFragmentDirections
-                .actionIndividualHealthRecordFragmentToProtectiveWordFragment(
-                    args.patientId
-                )
-            findNavController().navigate(action)
-        }
+        val action = IndividualHealthRecordFragmentDirections
+            .actionIndividualHealthRecordFragmentToProtectiveWordFragment(
+                args.patientId
+            )
+        findNavController().navigate(action)
     }
 
     private fun requestUpdate(testResultId: Long) {

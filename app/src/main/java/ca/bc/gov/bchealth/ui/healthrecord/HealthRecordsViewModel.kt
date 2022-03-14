@@ -3,7 +3,6 @@ package ca.bc.gov.bchealth.ui.healthrecord
 import androidx.lifecycle.ViewModel
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.model.AuthenticationStatus
-import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.patient.PatientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map
