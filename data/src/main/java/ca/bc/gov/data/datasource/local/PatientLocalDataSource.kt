@@ -73,9 +73,9 @@ class PatientLocalDataSource @Inject constructor(
     fun getPatientList(): Flow<PatientListDto> = patientDao.getPatientList().map { it.toDto() }
 
     suspend fun insertAuthenticatedPatient(patientDto: PatientDto): Long {
+        patientDao.deleteAuthenticatedPatient()
         val patientList = patientDao.getPatientByDob(patientDto.dateOfBirth)
         return if (patientList.isNullOrEmpty()) {
-            patientDao.deleteAuthenticatedPatient()
             patientDao.insert(patientDto.toEntity())
         } else {
             for (i in patientList.indices) {

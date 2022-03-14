@@ -43,7 +43,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:text="View your medication records"
+                android:text="@string/view_your_medication_records"
                 />
 
             <com.google.android.material.textview.MaterialTextView
@@ -59,7 +59,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_title"
-                android:text="Please enter the protective word required to access these restricted PharmaNet records. For more information visit protective-word-for-a-pharmanet-record"
+                android:text="@string/protective_word_desc"
                 />
 
             <com.google.android.material.textview.MaterialTextView
@@ -76,7 +76,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_desc"
-                android:text="Protective Word"
+                android:text="@string/protective_word"
                 />
 
             <com.google.android.material.textfield.TextInputLayout

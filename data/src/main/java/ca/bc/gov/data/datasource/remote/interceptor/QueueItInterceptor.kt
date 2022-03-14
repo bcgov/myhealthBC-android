@@ -31,6 +31,10 @@ class QueueItInterceptor @Inject constructor(
         private const val RESOURCE_PAYLOAD = "resourcePayload"
         private const val LOADED = "loaded"
         private const val RETRY_IN = "retryin"
+        private const val RESULT_ERROR = "resultError"
+        private const val ACTION_CODE = "actionCode"
+        private const val PROTECTED = "PROTECTED"
+        private const val BAD_RESPONSE = "Bad response!"
     }
 
     @Throws(IOException::class)
@@ -66,21 +70,22 @@ class QueueItInterceptor @Inject constructor(
                 val json = Gson().fromJson(stringBody, JsonObject::class.java)
 
                 if (json.get(RESOURCE_PAYLOAD).isJsonNull) {
-                    val resultError = json.getAsJsonObject("resultError") ?: throw IOException("Bad response!")
-                    if(resultError.get("actionCode").asString == "PROTECTED") {
+                    val resultError = json.getAsJsonObject(RESULT_ERROR) ?: throw IOException(
+                        BAD_RESPONSE)
+                    if(resultError.get(ACTION_CODE).asString == PROTECTED) {
                         throw ProtectiveWordException(
                             PROTECTIVE_WORD_ERROR_CODE,
                             "Record protected by keyword"
                         )
                     } else {
-                        throw IOException("Bad response!")
+                        throw IOException(BAD_RESPONSE)
                     }
                 }
 
                 var retryInMillis = 0L
                 try {
                     val payload =
-                        json.getAsJsonObject(RESOURCE_PAYLOAD) ?: throw IOException("Bad response!")
+                        json.getAsJsonObject(RESOURCE_PAYLOAD) ?: throw IOException(BAD_RESPONSE)
                     loaded = payload.get(LOADED).asBoolean
                     retryInMillis = payload.get(RETRY_IN).asLong
                 } catch (e: Exception) {

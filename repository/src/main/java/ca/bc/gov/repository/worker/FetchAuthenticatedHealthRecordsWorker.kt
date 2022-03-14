@@ -98,7 +98,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
         } catch (e: Exception) {
             if(e is ProtectiveWordException) {
-                encryptedPreferenceStorage.protectiveWordRequired = ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
+                encryptedPreferenceStorage.protectiveWordState = ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
             } else {
                 isApiFailed = true
             }
