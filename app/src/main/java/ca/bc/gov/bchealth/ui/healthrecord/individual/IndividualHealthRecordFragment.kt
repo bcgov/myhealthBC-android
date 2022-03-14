@@ -378,25 +378,20 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     }
 
                     override fun onQueueViewWillOpen() {
-                        // NA
                     }
 
                     override fun onQueueDisabled() {
-                        // NA
                     }
 
                     override fun onQueueItUnavailable() {
-                        // NA
                     }
 
                     override fun onError(error: Error?, errorMessage: String?) {
-                        // NA
                     }
                 }
             )
             queueITEngine.run(requireActivity())
         } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 
