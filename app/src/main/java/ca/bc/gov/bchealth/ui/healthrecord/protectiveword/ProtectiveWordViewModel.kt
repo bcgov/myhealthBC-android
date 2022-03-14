@@ -16,8 +16,7 @@ import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
-class ProtectiveWordViewModel @Inject constructor
-    (
+class ProtectiveWordViewModel @Inject constructor(
     private val medicationRecordRepository: MedicationRecordRepository,
     private val bcscAuthRepo: BcscAuthRepo
 ) : ViewModel() {
@@ -40,8 +39,8 @@ class ProtectiveWordViewModel @Inject constructor
     fun fetchMedicationRecords(patientId: Long, protectiveWord: String) {
         viewModelScope.launch {
             val isRecordsAvailable = medicationRecordRepository.isMedicationRecordsAvailableForPatient(patientId)
-            if(isRecordsAvailable) {
-                if(isProtectiveWordValid(protectiveWord)) {
+            if (isRecordsAvailable) {
+                if (isProtectiveWordValid(protectiveWord)) {
                     _uiState.tryEmit(
                         FetchMedicationUiState(
                             isRecordsUpdated = true

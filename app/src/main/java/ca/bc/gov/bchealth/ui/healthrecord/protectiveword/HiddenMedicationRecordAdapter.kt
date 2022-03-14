@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.databinding.ItemHiddenMedicationRecordsBinding
-import ca.bc.gov.bchealth.ui.healthrecord.individual.HiddenRecordDiffCallBacks
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HiddenMedicationRecordItem
 
 class HiddenMedicationRecordAdapter(private val accessClickListener: ItemClickListener) :
@@ -43,7 +42,6 @@ class HiddenMedicationRecordAdapter(private val accessClickListener: ItemClickLi
         }
     }
 }
-
 
 class HiddenMedicationRecordDiffCallBacks : DiffUtil.ItemCallback<HiddenMedicationRecordItem>() {
     override fun areItemsTheSame(oldItem: HiddenMedicationRecordItem, newItem: HiddenMedicationRecordItem): Boolean {
