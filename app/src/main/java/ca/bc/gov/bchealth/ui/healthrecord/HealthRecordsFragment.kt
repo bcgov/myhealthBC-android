@@ -3,27 +3,25 @@ package ca.bc.gov.bchealth.ui.healthrecord
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHealthRecordsBinding
 import ca.bc.gov.bchealth.utils.viewBindings
-import ca.bc.gov.common.model.AuthenticationStatus
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 /**
  * @author Pinakin Kansara
  */
-
-private const val GRID_SPAN_COUNT = 2
-private const val LIST_SPAN_COUNT = 1
 
 @AndroidEntryPoint
 class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
@@ -34,8 +32,6 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setupToolBar()
 
         adapter = HealthRecordsAdapter {
             val action =
@@ -72,25 +68,35 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         }
     }
 
+    private fun initUi() {
+        binding.ivAddHealthRecord.visibility = View.VISIBLE
+        binding.tvTitle1.visibility = View.VISIBLE
+        binding.tvMessage.visibility = View.VISIBLE
+        setupToolBar()
+    }
+
     private suspend fun collectHealthRecordsFlow() {
         viewModel.patientHealthRecords.collect { records ->
+            binding.progressBar.isVisible = false
             if (records.isNotEmpty()) {
-                binding.ivAddHealthRecord.visibility = View.VISIBLE
-                binding.rvMembers.adapter = adapter
-                if (records.any { it.authStatus == AuthenticationStatus.AUTHENTICATED }) {
-                    binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), GRID_SPAN_COUNT).apply {
-                        spanSizeLookup =
-                            object : GridLayoutManager.SpanSizeLookup() {
-                                override fun getSpanSize(position: Int) = when (position) {
-                                    0 -> GRID_SPAN_COUNT
-                                    else -> LIST_SPAN_COUNT
-                                }
-                            }
-                    }
+                if (records.size == 1) {
+                    val navOptions = NavOptions.Builder()
+                        .setPopUpTo(R.id.healthRecordsFragment, true)
+                        .build()
+
+                    val action =
+                        HealthRecordsFragmentDirections
+                            .actionHealthRecordsFragmentToIndividualHealthRecordFragment(
+                                records.first().patientId,
+                                records.first().name
+                            )
+                    findNavController().navigate(action, navOptions)
                 } else {
-                    binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), GRID_SPAN_COUNT)
+                    initUi()
+                    binding.rvMembers.adapter = adapter
+                    binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), 2)
+                    adapter.submitList(records)
                 }
-                adapter.submitList(records)
             } else {
                 findNavController().navigate(R.id.addHealthRecordsFragment)
             }
@@ -99,7 +105,7 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
 
     private fun setupToolBar() {
         binding.toolbar.ivRightOption.apply {
-            visibility = View.VISIBLE
+            isVisible = true
             setOnClickListener {
                 findNavController().navigate(R.id.profileFragment)
             }
