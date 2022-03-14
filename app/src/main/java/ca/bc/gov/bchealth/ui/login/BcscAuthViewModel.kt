@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.login
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class BcscAuthViewModel @Inject constructor(
     private val bcscAuthRepo: BcscAuthRepo,
-    private val queueItTokenRepository: QueueItTokenRepository
+    private val queueItTokenRepository: QueueItTokenRepository,
+    private val clearStorageRepository: ClearStorageRepository
 ) : ViewModel() {
 
     private val _authStatus = MutableStateFlow(AuthStatus())
@@ -60,6 +62,9 @@ class BcscAuthViewModel @Inject constructor(
                 )
             }
             val isLoggedSuccess = bcscAuthRepo.processAuthResponse(data)
+            if (isLoggedSuccess) {
+                clearStorageRepository.clearMedicationPreferences()
+            }
             _authStatus.update {
                 it.copy(
                     showLoading = false,
