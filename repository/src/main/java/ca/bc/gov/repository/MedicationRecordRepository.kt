@@ -75,7 +75,7 @@ class MedicationRecordRepository @Inject constructor(
         return encryptedPreferenceStorage.protectiveWord
     }
 
-    fun getProtectiveWordState() : Int {
+    fun getProtectiveWordState(): Int {
         return encryptedPreferenceStorage.protectiveWordState
     }
 

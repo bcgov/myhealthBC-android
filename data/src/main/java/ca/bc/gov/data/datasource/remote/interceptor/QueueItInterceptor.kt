@@ -70,16 +70,7 @@ class QueueItInterceptor @Inject constructor(
                 val json = Gson().fromJson(stringBody, JsonObject::class.java)
 
                 if (json.get(RESOURCE_PAYLOAD).isJsonNull) {
-                    val resultError = json.getAsJsonObject(RESULT_ERROR) ?: throw IOException(
-                        BAD_RESPONSE)
-                    if(resultError.get(ACTION_CODE).asString == PROTECTED) {
-                        throw ProtectiveWordException(
-                            PROTECTIVE_WORD_ERROR_CODE,
-                            "Record protected by keyword"
-                        )
-                    } else {
-                        throw IOException(BAD_RESPONSE)
-                    }
+                    checkException(json)
                 }
 
                 var retryInMillis = 0L
@@ -125,4 +116,18 @@ class QueueItInterceptor @Inject constructor(
     private fun mustQueue(response: Response) = response.headers.names().contains(
         HEADER_QUEUE_IT_REDIRECT_URL
     )
+
+    private fun checkException(json: JsonObject) {
+        val resultError = json.getAsJsonObject(RESULT_ERROR) ?: throw IOException(
+            BAD_RESPONSE
+        )
+        if (resultError.get(ACTION_CODE).asString == PROTECTED) {
+            throw ProtectiveWordException(
+                PROTECTIVE_WORD_ERROR_CODE,
+                "Record protected by keyword"
+            )
+        } else {
+            throw IOException(BAD_RESPONSE)
+        }
+    }
 }
