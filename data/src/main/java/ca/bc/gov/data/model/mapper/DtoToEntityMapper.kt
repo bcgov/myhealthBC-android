@@ -5,12 +5,14 @@ import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
+import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
+import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
 import ca.bc.gov.data.datasource.local.entity.covid.test.TestRecordEntity
 import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
@@ -73,7 +75,7 @@ fun TestRecordDto.toEntity() = TestRecordEntity(
 fun MedicationRecordDto.toEntity() = MedicationRecordEntity(
     id,
     patientId,
-    practitionerIdentifier,
+    prescriptionIdentifier,
     prescriptionStatus,
     practitionerSurname,
     dispenseDate,
@@ -127,4 +129,17 @@ fun LabOrderDto.toEntity() = LabOrderEntity(
 
 fun LabTestDto.toEntity() = LabTestEntity(
     id, labOrderId, obxId, batteryType, outOfRange, loinc, testStatus
+)
+
+fun CommentDto.toEntity() = CommentEntity(
+    id,
+    userProfileId,
+    text,
+    entryTypeCode,
+    parentEntryId,
+    version,
+    createdDateTime,
+    createdBy,
+    updatedDateTime,
+    updatedBy
 )

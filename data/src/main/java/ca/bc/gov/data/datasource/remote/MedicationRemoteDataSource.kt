@@ -4,6 +4,7 @@ import ca.bc.gov.common.const.MESSAGE_INVALID_RESPONSE
 import ca.bc.gov.common.const.PROTECTIVE_WORD_ERROR_CODE
 import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.data.datasource.remote.api.MedicationApi
 import ca.bc.gov.data.datasource.remote.model.base.Action
@@ -15,15 +16,17 @@ import javax.inject.Inject
 * Created by amit_metri on 08,February,2022
 */
 class MedicationRemoteDataSource @Inject constructor(
-    private val medicationApi: MedicationApi
+    private val healthGatewayPrivateApi: HealthGatewayPrivateApi
 ) {
 
     suspend fun getMedicationStatement(
-        patientId: Long,
         accessToken: String,
         hdid: String,
         protectiveWord: String?
     ): MedicationStatementResponse {
+        val response =
+            safeCall { healthGatewayPrivateApi.getMedicationStatement(hdid, accessToken) }
+                ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
         val response = safeCall { medicationApi.getMedicationStatement(hdid, accessToken, protectiveWord) }
             ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 

@@ -35,6 +35,7 @@ class MedicationRecordRepository @Inject constructor(
     ) {
         val response = medicationRemoteDataSource.getMedicationStatement(
             patientId, accessToken, hdid, protectiveWord
+            accessToken, hdid
         )
         medicationRecordLocalDataSource.deleteAuthenticatedMedicationRecords(patientId)
 

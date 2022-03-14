@@ -1,6 +1,7 @@
 package ca.bc.gov.repository.di
 
 import android.content.Context
+import ca.bc.gov.data.datasource.local.CommentLocalDataSource
 import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
 import ca.bc.gov.data.datasource.local.LocalDataSource
@@ -9,10 +10,12 @@ import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.TestResultLocalDataSource
 import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.data.datasource.remote.CommentRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
 import ca.bc.gov.repository.ClearStorageRepository
+import ca.bc.gov.repository.CommentRepository
 import ca.bc.gov.repository.FederalTravelPassDecoderRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
@@ -183,4 +186,13 @@ class RepositoriesModule {
     ): LabTestRepository = LabTestRepository(
         labTestLocalDataSource
     )
+
+    @Provides
+    @Singleton
+    fun provideCommentRepository(
+        commentLocalDataSource: CommentLocalDataSource,
+        commentRemoteDataSource: CommentRemoteDataSource,
+        bcscAuthRepo: BcscAuthRepo
+    ): CommentRepository =
+        CommentRepository(commentRemoteDataSource, commentLocalDataSource, bcscAuthRepo)
 }
