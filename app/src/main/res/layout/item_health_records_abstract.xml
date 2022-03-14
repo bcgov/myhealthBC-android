@@ -27,9 +27,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/space_2_x"
             android:layout_marginTop="@dimen/space_2_x"
+            android:layout_marginBottom="@dimen/space_2_x"
             android:src="@drawable/ic_resources_icon_1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_title"

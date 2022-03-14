@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_1_x"
         android:textColor="@color/text_black"
+        android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title"
@@ -31,7 +32,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_login"
-        style="@style/HealthGateway.Widget.MaterialComponents.Button2"
+        style="@style/BC_VAX.Widget.MaterialComponents.Button2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_1_x"
