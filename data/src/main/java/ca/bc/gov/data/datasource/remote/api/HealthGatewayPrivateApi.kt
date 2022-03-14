@@ -65,7 +65,8 @@ interface HealthGatewayPrivateApi {
     @GET("$BASE_MEDICATION_SERVICE/MedicationStatement/{$HDID}")
     suspend fun getMedicationStatement(
         @Path(HDID) hdid: String,
-        @Header(AUTHORIZATION) accessToken: String
+        @Header(AUTHORIZATION) accessToken: String,
+        @Header("protectiveWord") protectiveWord: String?
     ): Response<MedicationStatementResponse>
 
     @GET("$BASE_USER_PROFILE_SERVICE/{$HDID}/Comment/Entry")

@@ -12,7 +12,6 @@ import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
 import ca.bc.gov.data.model.mapper.toDispensingPharmacyDto
 import ca.bc.gov.data.model.mapper.toMedicationRecordDto
 import ca.bc.gov.data.model.mapper.toMedicationSummaryDto
-import net.openid.appauth.AuthState
 import javax.inject.Inject
 
 /**
@@ -34,8 +33,7 @@ class MedicationRecordRepository @Inject constructor(
         protectiveWord: String?
     ) {
         val response = medicationRemoteDataSource.getMedicationStatement(
-            patientId, accessToken, hdid, protectiveWord
-            accessToken, hdid
+            accessToken, hdid, protectiveWord
         )
         medicationRecordLocalDataSource.deleteAuthenticatedMedicationRecords(patientId)
 
