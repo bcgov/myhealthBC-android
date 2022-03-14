@@ -182,6 +182,10 @@
     <string name="protective_word_for_a_pharmanet_record">protective-word-for-a-pharmanet-record</string>
     <string name="wrong_protective_word">Invalid protective word. Try again.</string>
     <string name="restricted_pharmanet_records">Restricted PharmaNet Records</string>
+    <string name="view_your_medication_records">View your medication records</string>
+    <string name="protective_word_desc">Please enter the protective word required to access these restricted PharmaNet records. For more information visit protective-word-for-a-pharmanet-record</string>
+    <string name="protective_word">Protective Word</string>
+    <string name="access_records">Access records</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>

@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_1_x"
-        android:text="Access records"
+        android:text="@string/access_records"
         app:icon="@drawable/ic_lock"
         app:layout_constraintTop_toBottomOf="@+id/tv_desc"
         app:layout_constraintEnd_toEndOf="parent"
