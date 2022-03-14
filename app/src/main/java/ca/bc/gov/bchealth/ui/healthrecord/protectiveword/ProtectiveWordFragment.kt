@@ -1,11 +1,11 @@
 package ca.bc.gov.bchealth.ui.healthrecord.protectiveword
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -37,9 +37,14 @@ class ProtectiveWordFragment : Fragment(R.layout.fragment_protective_word) {
 
         setUpToolbar()
 
-        binding.tvDesc.makeLinks(Pair(getString(R.string.protective_word_for_a_pharmanet_record), View.OnClickListener {
-            requireContext().redirect("https://www2.gov.bc.ca/gov/content/health/health-drug-coverage/pharmacare-for-bc-residents/pharmanet/protective-word-for-a-pharmanet-record")
-        }))
+        binding.tvDesc.makeLinks(
+            Pair(
+                getString(R.string.protective_word_for_a_pharmanet_record),
+                View.OnClickListener {
+                    requireContext().redirect("https://www2.gov.bc.ca/gov/content/health/health-drug-coverage/pharmacare-for-bc-residents/pharmanet/protective-word-for-a-pharmanet-record")
+                }
+            )
+        )
 
         binding.btnContinue.setOnClickListener {
             viewModel.fetchMedicationRecords(args.patientId, binding.etProtectiveWord.text.toString())
