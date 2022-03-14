@@ -8,16 +8,31 @@
     tools:context=".ui.healthrecord.individual.IndividualHealthRecordFragment"
     app:layoutDescription="@xml/fragment_individual_health_record_scene">
 
+    <androidx.constraintlayout.utils.widget.MockView
+        android:id="@+id/mockView1"
+        android:visibility="invisible"
+        android:layout_width="@dimen/space_4_x"
+        android:layout_height="@dimen/space_4_x"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.utils.widget.MockView
+        android:id="@+id/mockView2"
+        android:visibility="invisible"
+        android:layout_width="@dimen/space_2_x"
+        android:layout_height="@dimen/space_2_x"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/mockView1" />
+
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:src="@drawable/ic_action_back"
         android:background="?attr/selectableItemBackground"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginTop="@dimen/space_2_x" />
+        app:layout_constraintTop_toBottomOf="@+id/mockView2"
+        app:layout_constraintStart_toEndOf="@+id/mockView1" />
 
     <androidx.constraintlayout.utils.widget.MockView
         android:layout_width="@dimen/space_4_x"
@@ -79,9 +94,9 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@+id/iv_back"
+        app:layout_constraintTop_toBottomOf="@+id/iv_setting"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/space_1_x"
+        android:layout_marginTop="@dimen/space_4_x"
         tools:text="JEAN SMITH"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/space_4_x"

@@ -114,7 +114,8 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                             viewModel.resetAuthStatus()
                         }
 
-                        if (it.isLoggedIn) {
+                        val isLoginStatusActive = it.loginStatus == LoginStatus.ACTIVE
+                        if (isLoginStatusActive) {
                             viewModel.resetAuthStatus()
                             fetchAuthenticatedPatientData()
                         }
