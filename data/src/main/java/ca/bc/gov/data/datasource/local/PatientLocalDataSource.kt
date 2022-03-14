@@ -77,7 +77,6 @@ class PatientLocalDataSource @Inject constructor(
         patientDao.deleteAuthenticatedPatient()
         val patientList = patientDao.getPatientByDob(patientDto.dateOfBirth)
         return if (patientList.isNullOrEmpty()) {
-            patientDao.deleteAuthenticatedPatient()
             patientDao.insert(patientDto.toEntity())
         } else {
             for (i in patientList.indices) {
