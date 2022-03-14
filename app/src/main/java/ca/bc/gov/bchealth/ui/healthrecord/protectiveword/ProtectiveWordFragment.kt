@@ -37,7 +37,7 @@ class ProtectiveWordFragment : Fragment(R.layout.fragment_protective_word) {
 
         setUpToolbar()
 
-        binding.tvDesc.makeLinks(Pair("protective-word-for-a-pharmanet-record", View.OnClickListener {
+        binding.tvDesc.makeLinks(Pair(getString(R.string.protective_word_for_a_pharmanet_record), View.OnClickListener {
             requireContext().redirect("https://www2.gov.bc.ca/gov/content/health/health-drug-coverage/pharmacare-for-bc-residents/pharmanet/protective-word-for-a-pharmanet-record")
         }))
 
@@ -68,7 +68,7 @@ class ProtectiveWordFragment : Fragment(R.layout.fragment_protective_word) {
                     }
 
                     if (fetchMedicationUiState.wrongProtectiveWord) {
-                        binding.tlProtectiveWord.error = "Invalid protective word. Try again."
+                        binding.tlProtectiveWord.error = getString(R.string.wrong_protective_word)
                     }
 
                     if (fetchMedicationUiState.isRecordsUpdated) {
@@ -92,7 +92,7 @@ class ProtectiveWordFragment : Fragment(R.layout.fragment_protective_word) {
 
     private fun setUpToolbar() {
         binding.toolbar.tvTitle.show()
-        binding.toolbar.tvTitle.text = "Restricted PharmaNet Records"
+        binding.toolbar.tvTitle.text = getString(R.string.restricted_pharmanet_records)
         binding.toolbar.ivLeftOption.apply {
             this.show()
             setImageResource(R.drawable.ic_scanner_close)
