@@ -37,6 +37,9 @@ class MedicationRecordLocalDataSource @Inject constructor(
     suspend fun getMedicationWithSummaryAndPharmacy(medicationRecordId: Long): MedicationWithSummaryAndPharmacyDto? =
         medicationRecordDao.getMedicationWithSummaryAndPharmacy(medicationRecordId)?.toDto()
 
+    suspend fun isMedicationRecordsAvailableForPatient(patientId: Long): Boolean =
+        medicationRecordDao.getCountOfMedicationRecords(patientId) > 0
+
     suspend fun deletePatientMedicationRecords(patientId: Long): Int =
         medicationRecordDao.deletePatientMedicationRecords(patientId)
 }
