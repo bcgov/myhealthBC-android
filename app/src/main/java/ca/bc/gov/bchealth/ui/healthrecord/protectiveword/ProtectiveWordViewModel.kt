@@ -21,7 +21,7 @@ class ProtectiveWordViewModel @Inject constructor(
     private val bcscAuthRepo: BcscAuthRepo
 ) : ViewModel() {
 
-    private val _uiState = MutableSharedFlow<FetchMedicationUiState>(extraBufferCapacity = 1)
+    private val _uiState = MutableSharedFlow<FetchMedicationUiState>()
     val uiState: SharedFlow<FetchMedicationUiState> = _uiState.asSharedFlow()
 
     private fun saveProtectiveWord(word: String) {
@@ -41,20 +41,20 @@ class ProtectiveWordViewModel @Inject constructor(
             val isRecordsAvailable = medicationRecordRepository.isMedicationRecordsAvailableForPatient(patientId)
             if (isRecordsAvailable) {
                 if (isProtectiveWordValid(protectiveWord)) {
-                    _uiState.tryEmit(
+                    _uiState.emit(
                         FetchMedicationUiState(
                             isRecordsUpdated = true
                         )
                     )
                 } else {
-                    _uiState.tryEmit(
+                    _uiState.emit(
                         FetchMedicationUiState(
                             wrongProtectiveWord = true
                         )
                     )
                 }
             } else {
-                _uiState.tryEmit(
+                _uiState.emit(
                     FetchMedicationUiState(
                         onLoading = true
                     )
@@ -68,7 +68,7 @@ class ProtectiveWordViewModel @Inject constructor(
                         protectiveWord
                     )
                     saveProtectiveWord(protectiveWord)
-                    _uiState.tryEmit(
+                    _uiState.emit(
                         FetchMedicationUiState(
                             onLoading = false,
                             isRecordsUpdated = true
@@ -77,7 +77,7 @@ class ProtectiveWordViewModel @Inject constructor(
                 } catch (e: Exception) {
                     when (e) {
                         is ProtectiveWordException -> {
-                            _uiState.tryEmit(
+                            _uiState.emit(
                                 FetchMedicationUiState(
                                     onLoading = false,
                                     wrongProtectiveWord = true
@@ -85,7 +85,7 @@ class ProtectiveWordViewModel @Inject constructor(
                             )
                         }
                         else -> {
-                            _uiState.tryEmit(
+                            _uiState.emit(
                                 FetchMedicationUiState(
                                     onLoading = false,
                                     errorData = ErrorData(
