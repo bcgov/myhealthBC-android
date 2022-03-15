@@ -8,11 +8,11 @@ import ca.bc.gov.common.model.ErrorData
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,8 +21,8 @@ class ProtectiveWordViewModel @Inject constructor(
     private val bcscAuthRepo: BcscAuthRepo
 ) : ViewModel() {
 
-    private val _uiState = MutableSharedFlow<FetchMedicationUiState>()
-    val uiState: SharedFlow<FetchMedicationUiState> = _uiState.asSharedFlow()
+    private val _uiState = MutableStateFlow(FetchMedicationUiState())
+    val uiState: StateFlow<FetchMedicationUiState> = _uiState.asStateFlow()
 
     private fun saveProtectiveWord(word: String) {
         medicationRecordRepository.saveProtectiveWord(word)
@@ -41,24 +41,24 @@ class ProtectiveWordViewModel @Inject constructor(
             val isRecordsAvailable = medicationRecordRepository.isMedicationRecordsAvailableForPatient(patientId)
             if (isRecordsAvailable) {
                 if (isProtectiveWordValid(protectiveWord)) {
-                    _uiState.emit(
-                        FetchMedicationUiState(
+                    _uiState.update { state ->
+                        state.copy(
                             isRecordsUpdated = true
                         )
-                    )
+                    }
                 } else {
-                    _uiState.emit(
-                        FetchMedicationUiState(
+                    _uiState.update { state ->
+                        state.copy(
                             wrongProtectiveWord = true
                         )
-                    )
+                    }
                 }
             } else {
-                _uiState.emit(
-                    FetchMedicationUiState(
+                _uiState.update { state ->
+                    state.copy(
                         onLoading = true
                     )
-                )
+                }
                 try {
                     val authParameters = bcscAuthRepo.getAuthParameters()
                     medicationRecordRepository.fetchMedicationStatement(
@@ -68,32 +68,32 @@ class ProtectiveWordViewModel @Inject constructor(
                         protectiveWord
                     )
                     saveProtectiveWord(protectiveWord)
-                    _uiState.emit(
-                        FetchMedicationUiState(
+                    _uiState.update { state ->
+                        state.copy(
                             onLoading = false,
                             isRecordsUpdated = true
                         )
-                    )
+                    }
                 } catch (e: Exception) {
                     when (e) {
                         is ProtectiveWordException -> {
-                            _uiState.emit(
-                                FetchMedicationUiState(
+                            _uiState.update { state ->
+                                state.copy(
                                     onLoading = false,
                                     wrongProtectiveWord = true
                                 )
-                            )
+                            }
                         }
                         else -> {
-                            _uiState.emit(
-                                FetchMedicationUiState(
+                            _uiState.update { state ->
+                                state.copy(
                                     onLoading = false,
                                     errorData = ErrorData(
                                         R.string.error,
                                         R.string.error_message
                                     )
                                 )
-                            )
+                            }
                         }
                     }
                 }
