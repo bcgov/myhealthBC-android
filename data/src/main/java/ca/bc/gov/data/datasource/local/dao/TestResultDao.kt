@@ -32,6 +32,6 @@ interface TestResultDao {
     @Query("SELECT id FROM test_result WHERE patient_id = :patientId AND collection_date = :collectionDate")
     suspend fun getTestResultId(patientId: Long, collectionDate: Instant): Long?
 
-    @Query("DELETE FROM test_result WHERE patient_id = :patientId AND data_source = 'BCSC'")
-    suspend fun deleteAuthenticatedTestRecords(patientId: Long): Int
+    @Query("DELETE FROM test_result WHERE patient_id = :patientId")
+    suspend fun deletePatientTestRecords(patientId: Long): Int
 }

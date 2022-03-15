@@ -45,6 +45,6 @@ class PatientWithTestResultRepository @Inject constructor(
         return testResultId
     }
 
-    suspend fun deleteAuthenticatedTestRecords(patientId: Long) =
-        testResultRepository.deleteAuthenticatedTestRecords(patientId)
+    suspend fun deletePatientTestRecords(patientId: Long) =
+        testResultRepository.deletePatientTestRecords(patientId)
 }

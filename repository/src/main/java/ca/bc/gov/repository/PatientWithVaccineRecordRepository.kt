@@ -41,7 +41,7 @@ class PatientWithVaccineRecordRepository @Inject constructor(
     ): Long {
         patientVaccineRecord.vaccineRecordDto.patientId = patientId
         patientVaccineRecord.vaccineRecordDto.mode = DataSource.BCSC
-        vaccineRecordRepository.deleteAuthenticatedVaccineRecords(patientId)
+        vaccineRecordRepository.deletePatientVaccineRecords(patientId)
         val vaccineRecordId = vaccineRecordRepository.insertAuthenticatedVaccineRecord(
             patientVaccineRecord.vaccineRecordDto
         )
