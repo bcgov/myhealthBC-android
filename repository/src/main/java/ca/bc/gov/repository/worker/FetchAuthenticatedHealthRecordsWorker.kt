@@ -5,6 +5,9 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import ca.bc.gov.common.R
+import ca.bc.gov.common.exceptions.ProtectiveWordException
+import ca.bc.gov.common.model.ProtectiveWordState
+import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.repository.FetchTestResultRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
@@ -36,7 +39,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val patientRepository: PatientRepository,
     private val notificationHelper: NotificationHelper,
     private val labOrderRepository: LabOrderRepository,
-    private val labTestRepository: LabTestRepository
+    private val labTestRepository: LabTestRepository,
+    private val encryptedPreferenceStorage: EncryptedPreferenceStorage
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
@@ -88,11 +92,16 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 medicationRecordRepository.fetchMedicationStatement(
                     patientId,
                     authParameters.first,
-                    authParameters.second
+                    authParameters.second,
+                    encryptedPreferenceStorage.protectiveWord
                 )
             }
         } catch (e: Exception) {
-            isApiFailed = true
+            if (e is ProtectiveWordException) {
+                encryptedPreferenceStorage.protectiveWordState = ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
+            } else {
+                isApiFailed = true
+            }
         }
 
         try {

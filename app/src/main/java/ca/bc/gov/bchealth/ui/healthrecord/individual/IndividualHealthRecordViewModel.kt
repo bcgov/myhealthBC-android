@@ -6,9 +6,11 @@ import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.DataSource
+import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.FetchTestResultRepository
+import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.testrecord.TestResultRepository
@@ -31,7 +33,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
     private val testResultRepository: TestResultRepository,
     private val patientRepository: PatientRepository,
     private val queueItTokenRepository: QueueItTokenRepository,
-    private val fetchTestResultRepository: FetchTestResultRepository
+    private val fetchTestResultRepository: FetchTestResultRepository,
+    private val medicationRecordRepository: MedicationRecordRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(IndividualHealthRecordsUiState())
@@ -94,7 +97,13 @@ class IndividualHealthRecordViewModel @Inject constructor(
                             medicationRecordsNonBcsc +
                             labTestRecordsNonBcsc
                         )
-                        .sortedByDescending { it.date }
+                        .sortedByDescending { it.date },
+                    healthRecordsExceptMedication = (
+                        covidTestRecords +
+                            vaccineRecords +
+                            labTestRecords
+                        )
+                        .sortedByDescending { it.date },
                 )
             }
         } catch (e: java.lang.Exception) {
@@ -159,6 +168,18 @@ class IndividualHealthRecordViewModel @Inject constructor(
             )
         }
     }
+
+    fun medicationRecordsUpdated(isMedicationRecordsUpdated: Boolean) {
+        _uiState.update { state ->
+            state.copy(
+                medicationRecordsUpdated = isMedicationRecordsUpdated
+            )
+        }
+    }
+
+    fun isProtectiveWordRequired(): Boolean {
+        return medicationRecordRepository.getProtectiveWordState() == ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
+    }
 }
 
 data class IndividualHealthRecordsUiState(
@@ -171,6 +192,8 @@ data class IndividualHealthRecordsUiState(
     val patientAuthStatus: AuthenticationStatus? = null,
     val onHealthRecords: List<HealthRecordItem> = emptyList(),
     val onNonBcscHealthRecords: List<HealthRecordItem> = emptyList(),
+    val healthRecordsExceptMedication: List<HealthRecordItem> = emptyList(),
+    val medicationRecordsUpdated: Boolean = false
 )
 
 data class HealthRecordItem(
@@ -197,3 +220,8 @@ enum class HealthRecordType {
     MEDICATION_RECORD,
     LAB_TEST
 }
+
+data class HiddenMedicationRecordItem(
+    val title: String,
+    val desc: String
+)

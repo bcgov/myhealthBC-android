@@ -1,7 +1,9 @@
 package ca.bc.gov.data.datasource.remote.interceptor
 
 import ca.bc.gov.common.const.MUST_QUEUED
+import ca.bc.gov.common.const.PROTECTIVE_WORD_ERROR_CODE
 import ca.bc.gov.common.exceptions.MustBeQueuedException
+import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -29,6 +31,10 @@ class QueueItInterceptor @Inject constructor(
         private const val RESOURCE_PAYLOAD = "resourcePayload"
         private const val LOADED = "loaded"
         private const val RETRY_IN = "retryin"
+        private const val RESULT_ERROR = "resultError"
+        private const val ACTION_CODE = "actionCode"
+        private const val PROTECTED = "PROTECTED"
+        private const val BAD_RESPONSE = "Bad response!"
     }
 
     @Throws(IOException::class)
@@ -62,14 +68,15 @@ class QueueItInterceptor @Inject constructor(
                 body = response.body
                 stringBody = body?.string()
                 val json = Gson().fromJson(stringBody, JsonObject::class.java)
+
                 if (json.get(RESOURCE_PAYLOAD).isJsonNull) {
-                    throw IOException("Bad response!")
+                    checkException(json)
                 }
 
                 var retryInMillis = 0L
                 try {
                     val payload =
-                        json.getAsJsonObject(RESOURCE_PAYLOAD) ?: throw IOException("Bad response!")
+                        json.getAsJsonObject(RESOURCE_PAYLOAD) ?: throw IOException(BAD_RESPONSE)
                     loaded = payload.get(LOADED).asBoolean
                     retryInMillis = payload.get(RETRY_IN).asLong
                 } catch (e: Exception) {
@@ -109,4 +116,18 @@ class QueueItInterceptor @Inject constructor(
     private fun mustQueue(response: Response) = response.headers.names().contains(
         HEADER_QUEUE_IT_REDIRECT_URL
     )
+
+    private fun checkException(json: JsonObject) {
+        val resultError = json.getAsJsonObject(RESULT_ERROR) ?: throw IOException(
+            BAD_RESPONSE
+        )
+        if (resultError.get(ACTION_CODE).asString == PROTECTED) {
+            throw ProtectiveWordException(
+                PROTECTIVE_WORD_ERROR_CODE,
+                "Record protected by keyword"
+            )
+        } else {
+            throw IOException(BAD_RESPONSE)
+        }
+    }
 }

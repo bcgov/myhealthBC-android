@@ -79,6 +79,9 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         viewModel.patientHealthRecords.collect { records ->
             binding.progressBar.isVisible = false
             if (records.isNotEmpty()) {
+                binding.ivAddHealthRecord.visibility = View.VISIBLE
+                binding.rvMembers.adapter = adapter
+
                 if (records.size == 1) {
                     val navOptions = NavOptions.Builder()
                         .setPopUpTo(R.id.healthRecordsFragment, true)
@@ -97,8 +100,6 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                     binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), 2)
                     adapter.submitList(records)
                 }
-            } else {
-                findNavController().navigate(R.id.addHealthRecordsFragment)
             }
         }
     }

@@ -52,6 +52,9 @@
         <action
             android:id="@+id/action_individualHealthRecordFragment_to_labTestDetailFragment"
             app:destination="@id/labTestDetailFragment"/>
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_protectiveWordFragment"
+            app:destination="@+id/protectiveWordFragment"/>
     </fragment>
 
 
@@ -111,5 +114,13 @@
         <argument
             android:name="lab_order_id"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/protectiveWordFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.protectiveword.ProtectiveWordFragment"
+        android:label="ProtectiveWordFragment">
+        <argument
+            android:name="patient_id"
+            app:argType="long"/>
     </fragment>
 </navigation>

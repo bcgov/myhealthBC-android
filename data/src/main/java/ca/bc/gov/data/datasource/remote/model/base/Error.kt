@@ -18,5 +18,6 @@ data class Error(
 
 enum class Action(val code: String) {
     REFRESH("REFRESH"),
-    MISMATCH("MISMATCH")
+    MISMATCH("MISMATCH"),
+    PROTECTED("PROTECTED")
 }

@@ -2,6 +2,7 @@ package ca.bc.gov.data.datasource.local.preference
 
 import android.content.SharedPreferences
 import android.util.Base64
+import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.settings.AnalyticsFeature
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -23,6 +24,8 @@ class EncryptedPreferenceStorage @Inject constructor(
         private const val COOKIE = "cookie"
         private const val PASS_PHRASE = "RECORD"
         private const val AUTH_STATE = "STATE"
+        private const val PROTECTIVE_WORD = "PROTECTIVE_WORD"
+        private const val PROTECTIVE_WORD_STATE = "PROTECTIVE_WORD_STATE"
     }
 
     var queueItToken: String?
@@ -94,5 +97,17 @@ class EncryptedPreferenceStorage @Inject constructor(
             encryptedSharedPreferences.edit().putString(
                 AUTH_STATE, value
             ).apply()
+        }
+
+    var protectiveWord: String?
+        get() = encryptedSharedPreferences.getString(PROTECTIVE_WORD, null)
+        set(value) {
+            encryptedSharedPreferences.edit().putString(PROTECTIVE_WORD, value).apply()
+        }
+
+    var protectiveWordState: Int
+        get() = encryptedSharedPreferences.getInt(PROTECTIVE_WORD_STATE, ProtectiveWordState.PROTECTIVE_WORD_NOT_REQUIRED.value)
+        set(value) {
+            encryptedSharedPreferences.edit().putInt(PROTECTIVE_WORD_STATE, value).apply()
         }
 }
