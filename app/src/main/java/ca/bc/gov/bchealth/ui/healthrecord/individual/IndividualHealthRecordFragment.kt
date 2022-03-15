@@ -68,14 +68,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
         setUpRecyclerView()
 
-        if (loginSessionStatus == null) {
-            observeBcscLogin()
-            bcscAuthViewModel.checkLogin()
-        } else {
-            viewModel.getIndividualsHealthRecord(args.patientId)
-        }
         protectiveWordFragmentResultListener()
-        setupObserver()
+
         observeBcscLogin()
 
         bcscAuthViewModel.checkLogin()
@@ -169,9 +163,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun updateUi(uiState: IndividualHealthRecordsUiState) {
         binding.progressBar.isVisible = false
 
-                        if (loginSessionStatus == LoginSessionStatus.ACTIVE) {
-                            updateUIForActiveLoginSession(uiState)
-                        }
         updateHealthRecordsList(uiState)
 
         if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
@@ -195,9 +186,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         }
     }
 
-                        if (loginSessionStatus == LoginSessionStatus.EXPIRED) {
-                            updateUIForExpiredLoginSession(uiState)
-                        }
     private fun displayNonBcscRecords(uiState: IndividualHealthRecordsUiState) {
         if (::healthRecordsAdapter.isInitialized) {
             healthRecordsAdapter.submitList(uiState.onNonBcscHealthRecords)
@@ -208,18 +196,12 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             ::hiddenHealthRecordAdapter.isInitialized
         ) {
             hiddenHealthRecordAdapter.submitList(
-                getDummyData(uiState.authenticatedRecordsCount)
+                getHiddenRecordItem(uiState.authenticatedRecordsCount)
             )
         }
     }
 
     private fun displayBcscRecords(uiState: IndividualHealthRecordsUiState) {
-        if (::healthRecordsAdapter.isInitialized) {
-            healthRecordsAdapter.submitList(uiState.onHealthRecords)
-        }
-    }
-
-    private fun updateUIForActiveLoginSession(uiState: IndividualHealthRecordsUiState) {
         if (uiState.medicationRecordsUpdated || !viewModel.isProtectiveWordRequired()) {
             if (::healthRecordsAdapter.isInitialized) {
                 healthRecordsAdapter.submitList(uiState.onHealthRecords)
@@ -239,21 +221,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     )
                 )
             }
-        }
-    }
-
-    private fun updateUIForExpiredLoginSession(uiState: IndividualHealthRecordsUiState) {
-        if (::healthRecordsAdapter.isInitialized) {
-            healthRecordsAdapter.submitList(uiState.onNonBcscHealthRecords)
-        }
-
-        if (uiState.authenticatedRecordsCount != null &&
-            uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED &&
-            ::hiddenHealthRecordAdapter.isInitialized
-        ) {
-            hiddenHealthRecordAdapter.submitList(
-                getHiddenRecordItem(uiState.authenticatedRecordsCount)
-            )
         }
     }
 

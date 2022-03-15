@@ -81,16 +81,7 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
             if (records.isNotEmpty()) {
                 binding.ivAddHealthRecord.visibility = View.VISIBLE
                 binding.rvMembers.adapter = adapter
-                if (records.any { it.authStatus == AuthenticationStatus.AUTHENTICATED }) {
-                    binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), GRID_SPAN_COUNT).apply {
-                        spanSizeLookup =
-                            object : GridLayoutManager.SpanSizeLookup() {
-                                override fun getSpanSize(position: Int) = when (position) {
-                                    0 -> GRID_SPAN_COUNT
-                                    else -> LIST_SPAN_COUNT
-                                }
-                            }
-                    }
+
                 if (records.size == 1) {
                     val navOptions = NavOptions.Builder()
                         .setPopUpTo(R.id.healthRecordsFragment, true)
@@ -104,16 +95,11 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                             )
                     findNavController().navigate(action, navOptions)
                 } else {
-                    binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), GRID_SPAN_COUNT)
-                }
-                adapter.submitList(records)
                     initUi()
                     binding.rvMembers.adapter = adapter
                     binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), 2)
                     adapter.submitList(records)
                 }
-            } else {
-                findNavController().navigate(R.id.addHealthRecordsFragment)
             }
         }
     }

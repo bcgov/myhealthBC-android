@@ -64,8 +64,6 @@ class BcscAuthViewModel @Inject constructor(
             val isLoggedSuccess = bcscAuthRepo.processAuthResponse(data)
             if (isLoggedSuccess) {
                 clearStorageRepository.clearMedicationPreferences()
-            }
-            if (isLoggedSuccess) {
                 _authStatus.update {
                     it.copy(
                         showLoading = true,
