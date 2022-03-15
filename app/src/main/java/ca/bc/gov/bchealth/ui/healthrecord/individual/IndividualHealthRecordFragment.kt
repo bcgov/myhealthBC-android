@@ -25,7 +25,7 @@ import ca.bc.gov.bchealth.ui.login.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
-import ca.bc.gov.bchealth.ui.login.LoginSessionStatus
+import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -57,7 +57,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private var testResultId: Long = -1L
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private var loginSessionStatus: LoginSessionStatus? = null
+    private var loginStatus: LoginStatus? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -76,6 +76,13 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         }
         protectiveWordFragmentResultListener()
         setupObserver()
+        observeBcscLogin()
+
+        bcscAuthViewModel.checkLogin()
+
+        observeHealthRecords()
+
+        observeHealthRecordsSyncCompletion()
     }
 
     private fun handleBcscAuthResponse() {
@@ -119,8 +126,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     if (authStatus.showLoading) {
                         return@collect
                     } else {
-                        authStatus.loginSessionStatus?.let {
-                            loginSessionStatus = it
+                        authStatus.loginStatus?.let {
+                            loginStatus = it
                             viewModel.getIndividualsHealthRecord(args.patientId)
                         }
                     }
@@ -129,31 +136,13 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         }
     }
 
-    private fun setupObserver() {
+    private fun observeHealthRecords() {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
 
-                    if (loginSessionStatus != null) {
-
-                        binding.progressBar.isVisible = false
-
-                        if (loginSessionStatus == LoginSessionStatus.ACTIVE) {
-                            updateUIForActiveLoginSession(uiState)
-                        }
-
-                        if (loginSessionStatus == LoginSessionStatus.EXPIRED) {
-                            updateUIForExpiredLoginSession(uiState)
-                        }
-
-                        if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
-                            observeHealthRecordsSyncCompletion()
-                        }
-                    }
-
-                    if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
-                        binding.ivEdit.visibility = View.GONE
-                        healthRecordsAdapter.isUpdateRequested = false
+                    if (loginStatus != null) {
+                        updateUi(uiState)
                     }
 
                     if (uiState.updatedTestResultId > 0) {
@@ -161,15 +150,72 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         return@collect
                     }
 
-                    if (uiState.queItTokenUpdated) {
-                        requestUpdate(testResultId)
-                    }
-
-                    if (uiState.onMustBeQueued && uiState.queItUrl != null) {
-                        queUser(uiState.queItUrl)
-                    }
+                    respondToQueueIt(uiState)
                 }
             }
+        }
+    }
+
+    private fun respondToQueueIt(uiState: IndividualHealthRecordsUiState) {
+        if (uiState.queItTokenUpdated) {
+            requestUpdate(testResultId)
+        }
+
+        if (uiState.onMustBeQueued && uiState.queItUrl != null) {
+            queUser(uiState.queItUrl)
+        }
+    }
+
+    private fun updateUi(uiState: IndividualHealthRecordsUiState) {
+        binding.progressBar.isVisible = false
+
+                        if (loginSessionStatus == LoginSessionStatus.ACTIVE) {
+                            updateUIForActiveLoginSession(uiState)
+                        }
+        updateHealthRecordsList(uiState)
+
+        if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
+            binding.ivEdit.visibility = View.GONE
+            binding.ivFilter.visibility = View.VISIBLE
+            healthRecordsAdapter.isUpdateRequested = false
+        } else {
+            binding.ivEdit.visibility = View.VISIBLE
+            binding.ivFilter.visibility = View.GONE
+            healthRecordsAdapter.isUpdateRequested = true
+        }
+    }
+
+    private fun updateHealthRecordsList(uiState: IndividualHealthRecordsUiState) {
+        if (loginStatus == LoginStatus.ACTIVE) {
+            displayBcscRecords(uiState)
+        }
+
+        if (loginStatus == LoginStatus.EXPIRED) {
+            displayNonBcscRecords(uiState)
+        }
+    }
+
+                        if (loginSessionStatus == LoginSessionStatus.EXPIRED) {
+                            updateUIForExpiredLoginSession(uiState)
+                        }
+    private fun displayNonBcscRecords(uiState: IndividualHealthRecordsUiState) {
+        if (::healthRecordsAdapter.isInitialized) {
+            healthRecordsAdapter.submitList(uiState.onNonBcscHealthRecords)
+        }
+
+        if (uiState.authenticatedRecordsCount != null &&
+            uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED &&
+            ::hiddenHealthRecordAdapter.isInitialized
+        ) {
+            hiddenHealthRecordAdapter.submitList(
+                getDummyData(uiState.authenticatedRecordsCount)
+            )
+        }
+    }
+
+    private fun displayBcscRecords(uiState: IndividualHealthRecordsUiState) {
+        if (::healthRecordsAdapter.isInitialized) {
+            healthRecordsAdapter.submitList(uiState.onHealthRecords)
         }
     }
 
@@ -296,8 +342,15 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
         binding.apply {
             tvName.text = args.patientName
-            ivBack.setOnClickListener {
-                findNavController().popBackStack()
+            if (findNavController().previousBackStackEntry?.destination?.id ==
+                R.id.healthRecordsFragment
+            ) {
+                ivBack.visibility = View.VISIBLE
+                ivBack.setOnClickListener {
+                    findNavController().popBackStack()
+                }
+            } else {
+                ivBack.visibility = View.GONE
             }
             ivSetting.setOnClickListener {
                 findNavController().navigate(R.id.profileFragment)
@@ -310,7 +363,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             }
             ivEdit.setOnClickListener {
                 healthRecordsAdapter.canDeleteRecord = !healthRecordsAdapter.canDeleteRecord
-
                 concatAdapter.notifyItemRangeChanged(
                     0,
                     concatAdapter.itemCount
