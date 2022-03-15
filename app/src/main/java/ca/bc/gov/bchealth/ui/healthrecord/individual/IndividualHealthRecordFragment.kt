@@ -18,6 +18,9 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
+import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
+import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_REQUEST
+import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_UPDATED
 import ca.bc.gov.bchealth.ui.login.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
@@ -46,6 +49,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private val binding by viewBindings(FragmentIndividualHealthRecordBinding::bind)
     private val viewModel: IndividualHealthRecordViewModel by viewModels()
+    private lateinit var hiddenMedicationRecordsAdapter: HiddenMedicationRecordAdapter
     private lateinit var hiddenHealthRecordAdapter: HiddenHealthRecordAdapter
     private lateinit var healthRecordsAdapter: HealthRecordsAdapter
     private lateinit var concatAdapter: ConcatAdapter
@@ -63,6 +67,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         setupToolbar()
 
         setUpRecyclerView()
+
+        protectiveWordFragmentResultListener()
 
         observeBcscLogin()
 
@@ -91,7 +97,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         }
     }
 
-    private fun getDummyData(authenticatedRecordsCount: Int): ArrayList<HiddenRecordItem> {
+    private fun getHiddenRecordItem(authenticatedRecordsCount: Int): ArrayList<HiddenRecordItem> {
         return arrayListOf(HiddenRecordItem(authenticatedRecordsCount))
     }
 
@@ -190,14 +196,31 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             ::hiddenHealthRecordAdapter.isInitialized
         ) {
             hiddenHealthRecordAdapter.submitList(
-                getDummyData(uiState.authenticatedRecordsCount)
+                getHiddenRecordItem(uiState.authenticatedRecordsCount)
             )
         }
     }
 
     private fun displayBcscRecords(uiState: IndividualHealthRecordsUiState) {
-        if (::healthRecordsAdapter.isInitialized) {
-            healthRecordsAdapter.submitList(uiState.onHealthRecords)
+        if (uiState.medicationRecordsUpdated || !viewModel.isProtectiveWordRequired()) {
+            if (::healthRecordsAdapter.isInitialized) {
+                healthRecordsAdapter.submitList(uiState.onHealthRecords)
+            }
+            concatAdapter.removeAdapter(hiddenMedicationRecordsAdapter)
+        } else {
+            if (::healthRecordsAdapter.isInitialized) {
+                healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
+            }
+            if (::hiddenMedicationRecordsAdapter.isInitialized) {
+                hiddenMedicationRecordsAdapter.submitList(
+                    listOf(
+                        HiddenMedicationRecordItem(
+                            getString(R.string.hidden_medication_records),
+                            getString(R.string.enter_protective_word_to_access_medication_records)
+                        )
+                    )
+                )
+            }
         }
     }
 
@@ -258,12 +281,23 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         )
 
         hiddenHealthRecordAdapter = HiddenHealthRecordAdapter { onBCSCLoginClick() }
+        hiddenMedicationRecordsAdapter = HiddenMedicationRecordAdapter { onMedicationAccessClick() }
+
         concatAdapter = ConcatAdapter(
             hiddenHealthRecordAdapter,
+            hiddenMedicationRecordsAdapter,
             healthRecordsAdapter
         )
         binding.rvHealthRecords.adapter = concatAdapter
         binding.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
+    }
+
+    private fun onMedicationAccessClick() {
+        val action = IndividualHealthRecordFragmentDirections
+            .actionIndividualHealthRecordFragmentToProtectiveWordFragment(
+                args.patientId
+            )
+        findNavController().navigate(action)
     }
 
     private fun requestUpdate(testResultId: Long) {
@@ -383,5 +417,14 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun onBCSCLoginClick() {
         sharedViewModel.destinationId = 0
         findNavController().navigate(R.id.bcscAuthInfoFragment)
+    }
+
+    private fun protectiveWordFragmentResultListener() {
+        parentFragmentManager.setFragmentResultListener(
+            KEY_MEDICATION_RECORD_REQUEST,
+            viewLifecycleOwner
+        ) { _, result ->
+            viewModel.medicationRecordsUpdated(result.get(KEY_MEDICATION_RECORD_UPDATED) as Boolean)
+        }
     }
 }
