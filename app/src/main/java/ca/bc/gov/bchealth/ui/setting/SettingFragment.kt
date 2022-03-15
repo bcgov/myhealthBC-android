@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSettingBinding
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
+import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
@@ -98,8 +99,9 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
 
                     showLoader(it.showLoading)
 
-                    binding.switchLogin.isChecked = it.isLoggedIn
-                    isLoggedIn = it.isLoggedIn
+                    val isLoginStatusActive = it.loginStatus == LoginStatus.ACTIVE
+                    binding.switchLogin.isChecked = isLoginStatusActive
+                    isLoggedIn = isLoginStatusActive
                     bcscLoginSwitch()
 
                     if (it.isError) {

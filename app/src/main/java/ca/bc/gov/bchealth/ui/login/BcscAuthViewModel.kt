@@ -60,11 +60,13 @@ class BcscAuthViewModel @Inject constructor(
                 )
             }
             val isLoggedSuccess = bcscAuthRepo.processAuthResponse(data)
-            _authStatus.update {
-                it.copy(
-                    showLoading = true,
-                    isLoggedIn = isLoggedSuccess
-                )
+            if (isLoggedSuccess) {
+                _authStatus.update {
+                    it.copy(
+                        showLoading = true,
+                        loginStatus = LoginStatus.ACTIVE
+                    )
+                }
             }
         } catch (e: Exception) {
             _authStatus.update {
@@ -105,6 +107,12 @@ class BcscAuthViewModel @Inject constructor(
 
     fun processLogoutResponse() = viewModelScope.launch {
         bcscAuthRepo.processLogoutResponse()
+        _authStatus.update {
+            it.copy(
+                showLoading = false,
+                loginStatus = LoginStatus.EXPIRED
+            )
+        }
     }
 
     /*
@@ -120,24 +128,22 @@ class BcscAuthViewModel @Inject constructor(
             val isLoggedSuccess = bcscAuthRepo.checkLogin()
             val userName = bcscAuthRepo.getUserName()
             val loginSessionStatus = if (isLoggedSuccess) {
-                LoginSessionStatus.ACTIVE
+                LoginStatus.ACTIVE
             } else {
-                LoginSessionStatus.EXPIRED
+                LoginStatus.EXPIRED
             }
             _authStatus.update {
                 it.copy(
                     showLoading = false,
-                    isLoggedIn = isLoggedSuccess,
                     userName = userName,
-                    loginSessionStatus = loginSessionStatus
+                    loginStatus = loginSessionStatus
                 )
             }
         } catch (e: Exception) {
             _authStatus.update {
                 it.copy(
                     showLoading = false,
-                    isLoggedIn = false,
-                    loginSessionStatus = LoginSessionStatus.EXPIRED
+                    loginStatus = LoginStatus.EXPIRED
                 )
             }
         }
@@ -147,11 +153,11 @@ class BcscAuthViewModel @Inject constructor(
         _authStatus.update {
             it.copy(
                 showLoading = false,
-                isLoggedIn = false,
                 authRequestIntent = null,
                 isError = false,
                 userName = "",
-                loginSessionStatus = null
+                queItTokenUpdated = false,
+                loginStatus = null
             )
         }
     }
@@ -169,15 +175,14 @@ class BcscAuthViewModel @Inject constructor(
 
 data class AuthStatus(
     val showLoading: Boolean = false,
-    val isLoggedIn: Boolean = false, // Deprecated
     val authRequestIntent: Intent? = null,
     val isError: Boolean = false,
     val userName: String = "",
     val queItTokenUpdated: Boolean = false,
-    val loginSessionStatus: LoginSessionStatus? = null
+    val loginStatus: LoginStatus? = null
 )
 
-enum class LoginSessionStatus {
+enum class LoginStatus {
     ACTIVE,
     EXPIRED
 }

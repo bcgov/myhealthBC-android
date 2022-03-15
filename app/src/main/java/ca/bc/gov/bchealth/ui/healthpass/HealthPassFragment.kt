@@ -28,6 +28,7 @@ import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment.Companion.BIO
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment.Companion.BCSC_AUTH_STATUS
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
+import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.FederalTravelPassDecoderVideModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -168,7 +169,8 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                     if (it.showLoading) {
                         return@collect
                     } else {
-                        if (it.isLoggedIn) {
+                        val isLoginStatusActive = it.loginStatus == LoginStatus.ACTIVE
+                        if (isLoginStatusActive) {
                             findNavController().navigate(R.id.addCardOptionFragment)
                         } else {
                             sharedViewModel.destinationId = R.id.addCardOptionFragment

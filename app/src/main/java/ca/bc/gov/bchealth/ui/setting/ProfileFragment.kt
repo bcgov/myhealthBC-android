@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentProfileBinding
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
+import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -85,8 +86,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                         return@collect
                     } else {
                         initClickListeners()
-                        binding.layoutProfile.isVisible = it.isLoggedIn
-                        binding.layoutLogin.isVisible = !it.isLoggedIn
+                        val isLoginStatusActive = it.loginStatus == LoginStatus.ACTIVE
+                        binding.layoutProfile.isVisible = isLoginStatusActive
+                        binding.layoutLogin.isVisible = !isLoginStatusActive
                     }
                 }
             }
