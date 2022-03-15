@@ -42,4 +42,6 @@ class MedicationRecordLocalDataSource @Inject constructor(
 
     suspend fun isMedicationRecordsAvailableForPatient(patientId: Long): Boolean =
         medicationRecordDao.getCountOfMedicationRecords(patientId) > 0
+    suspend fun deletePatientMedicationRecords(patientId: Long): Int =
+        medicationRecordDao.deletePatientMedicationRecords(patientId)
 }

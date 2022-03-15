@@ -25,4 +25,6 @@ interface MedicationRecordDao : BaseDao<MedicationRecordEntity> {
 
     @Query("SELECT COUNT(*) FROM medication_record WHERE patient_id = :patientId ")
     suspend fun getCountOfMedicationRecords(patientId: Long): Long
+    @Query("DELETE FROM medication_record WHERE patient_id = :patientId")
+    suspend fun deletePatientMedicationRecords(patientId: Long): Int
 }
