@@ -231,7 +231,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun displayBcscRecords(uiState: IndividualHealthRecordsUiState) {
-        if (uiState.medicationRecordsUpdated || !viewModel.isProtectiveWordRequired()) {
+        if (uiState.medicationRecordsUpdated || !viewModel.isProtectiveWordRequired() || sharedViewModel.isProtectiveWordAdded) {
             if (::healthRecordsAdapter.isInitialized) {
                 healthRecordsAdapter.submitList(uiState.onHealthRecords)
             }

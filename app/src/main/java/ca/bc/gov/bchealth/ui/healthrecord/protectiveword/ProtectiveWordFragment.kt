@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -19,6 +20,7 @@ import ca.bc.gov.bchealth.utils.makeLinks
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -31,6 +33,7 @@ class ProtectiveWordFragment : Fragment(R.layout.fragment_protective_word) {
     private val binding by viewBindings(FragmentProtectiveWordBinding::bind)
     private val viewModel: ProtectiveWordViewModel by viewModels()
     private val args: ProtectiveWordFragmentArgs by navArgs()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -77,6 +80,7 @@ class ProtectiveWordFragment : Fragment(R.layout.fragment_protective_word) {
                     }
 
                     if (fetchMedicationUiState.isRecordsUpdated) {
+                        sharedViewModel.isProtectiveWordAdded = true
                         parentFragmentManager.setFragmentResult(
                             KEY_MEDICATION_RECORD_REQUEST,
                             bundleOf(
