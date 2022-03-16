@@ -64,7 +64,13 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                         title1 = "Test name:",
                         testName = labTest.batteryType,
                         title2 = "Result:",
-                        outOfRange = labTest.outOfRange,
+                        outOfRange = if (labTest.testStatus.equals("partial", true) ||
+                            labTest.testStatus.equals("cancelled", true)
+                        ) {
+                            null
+                        } else {
+                            labTest.outOfRange
+                        },
                         title3 = "Test status:",
                         testStatus = labTest.testStatus,
                         viewType = ITEM_VIEW_TYPE_LAB_TEST
@@ -77,7 +83,13 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                         title1 = "Test name:",
                         testName = labTest.batteryType,
                         title2 = "Result:",
-                        outOfRange = labTest.outOfRange,
+                        outOfRange = if (labTest.testStatus.equals("partial", true) ||
+                            labTest.testStatus.equals("cancelled", true)
+                        ) {
+                            null
+                        } else {
+                            labTest.outOfRange
+                        },
                         title3 = "Test status:",
                         testStatus = labTest.testStatus,
                         viewType = ITEM_VIEW_TYPE_LAB_TEST
