@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter
 const val yyyy_MMM_dd_HH_mm = "yyyy-MMM-dd, HH:mm"
 const val yyyy_MMM_dd = "yyyy-MMM-dd"
 const val yyyy_MM_dd = "yyyy-MM-dd"
+const val eee_dd_mmm_yyyy_hh_mm_ss_z = "EEE, dd MMM yyyy HH:mm:ss XXXX"
 
 fun Instant.toDateTimeString(dateFormat: String = yyyy_MMM_dd_HH_mm): String {
     val dateTime = LocalDateTime.ofInstant(this, ZoneOffset.UTC)

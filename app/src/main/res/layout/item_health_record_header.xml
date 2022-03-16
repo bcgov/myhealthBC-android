@@ -27,11 +27,10 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_number_of_health_records"
-        style="?textAppearanceHeadline4"
+        style="?textAppearanceCaption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_2_x"
-        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/iv_health_record"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/iv_health_record"

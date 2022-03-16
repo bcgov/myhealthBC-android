@@ -43,6 +43,7 @@ class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
         binding.toolbar.apply {
             ivLeftOption.visibility = View.VISIBLE
             ivLeftOption.setImageResource(R.drawable.ic_action_back)
+            ivRightOption.setImageResource(R.drawable.ic_download_pdf)
             ivLeftOption.setOnClickListener {
                 findNavController().popBackStack()
             }
