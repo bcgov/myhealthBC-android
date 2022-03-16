@@ -30,7 +30,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tip_from"
-                style="@style/BC_VAX.Widget.App.TextInputLayout"
+                style="@style/HealthGateway.Widget.App.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -55,7 +55,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tip_to"
-                style="@style/BC_VAX.Widget.App.TextInputLayout"
+                style="@style/HealthGateway.Widget.App.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -98,7 +98,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/all_records_from"
-                style="@style/BC_VAX.TextAppearance.MaterialComponents.Headline3"
+                style="@style/HealthGateway.TextAppearance.MaterialComponents.Headline3"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="@dimen/space_4_x"
                 app:layout_constraintTop_toBottomOf="@+id/line1"
@@ -110,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="@string/_2022"
-                style="@style/BC_VAX.CheckBox"
+                style="@style/HealthGateway.CheckBox"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="@dimen/space_4_x"
                 app:layout_constraintTop_toBottomOf="@+id/tv_title"
@@ -121,7 +121,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/_2021"
-                style="@style/BC_VAX.CheckBox"
+                style="@style/HealthGateway.CheckBox"
                 app:layout_constraintTop_toBottomOf="@+id/check_box_2022"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -132,7 +132,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/_2020"
-                style="@style/BC_VAX.CheckBox"
+                style="@style/HealthGateway.CheckBox"
                 app:layout_constraintTop_toBottomOf="@+id/check_box_2021"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -143,7 +143,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/before_2020"
-                style="@style/BC_VAX.CheckBox"
+                style="@style/HealthGateway.CheckBox"
                 app:layout_constraintTop_toBottomOf="@+id/check_box_2020"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -155,7 +155,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_show_results"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button1"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"

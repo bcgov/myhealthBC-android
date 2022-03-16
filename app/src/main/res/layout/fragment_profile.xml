@@ -54,7 +54,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_view_profile"
-            style="@style/BC_VAX.TextAppearance.MaterialComponents.Headline5"
+            style="@style/HealthGateway.TextAppearance.MaterialComponents.Headline5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/space_4_x"
@@ -84,7 +84,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_login"
-            style="@style/BC_VAX.Widget.MaterialComponents.Button2"
+            style="@style/HealthGateway.Widget.MaterialComponents.Button2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/log_in_with_bc_services_card"

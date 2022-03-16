@@ -1,6 +1,5 @@
 package ca.bc.gov.data.datasource.local
 
-import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -44,11 +43,8 @@ import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
         LabTestEntity::class,
         CommentEntity::class
     ],
-    version = 2,
-    exportSchema = true,
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2)
-    ]
+    version = 1,
+    exportSchema = true
 )
 @TypeConverters(DateTimeConverter::class, AuthenticationStatusTypeConverter::class)
 abstract class MyHealthDataBase : RoomDatabase() {

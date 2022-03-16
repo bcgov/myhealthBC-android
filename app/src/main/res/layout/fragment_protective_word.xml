@@ -82,7 +82,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tl_protective_word"
-                style="@style/BC_VAX.Widget.App.TextInputLayout"
+                style="@style/HealthGateway.Widget.App.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -107,7 +107,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_continue"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button2"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_2_x"
@@ -122,7 +122,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_cancel"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button.OutlinedButton"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_1_x"

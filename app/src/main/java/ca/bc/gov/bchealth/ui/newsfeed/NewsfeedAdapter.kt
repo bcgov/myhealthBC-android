@@ -6,9 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.databinding.ItemNewsFeedRowBinding
 import ca.bc.gov.bchealth.model.rss.Newsfeed
-import ca.bc.gov.bchealth.utils.getNewsFeedDate
-import java.text.SimpleDateFormat
-import java.util.Date
+import ca.bc.gov.common.utils.eee_dd_mmm_yyyy_hh_mm_ss_z
+import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.toDateTime
+import java.time.format.DateTimeFormatter
 
 /**
  * [NewsfeedAdapter]
@@ -40,16 +41,9 @@ class NewsfeedAdapter(
         holder.binding.tvTitle.text = item.title
         holder.binding.tvDesc.text = item.description
 
-        try {
-            val sdf = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z")
-            val mDate: Date = sdf.parse(item.pubDate)
-            val timeInMilliseconds = mDate.time
-            holder.binding.tvDate.text = timeInMilliseconds.getNewsFeedDate()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            holder.binding.tvDate.text = item.pubDate
-        }
-
+        holder.binding.tvDate.text =
+            item.pubDate?.toDateTime(DateTimeFormatter.ofPattern(eee_dd_mmm_yyyy_hh_mm_ss_z))
+                ?.toDate()
         holder.itemView.setOnClickListener {
             clickListener(item)
         }
