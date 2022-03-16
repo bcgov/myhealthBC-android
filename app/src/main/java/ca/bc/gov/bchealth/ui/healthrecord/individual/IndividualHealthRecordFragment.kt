@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,6 +19,10 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
+import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
+import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
+import ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_REQUEST
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_UPDATED
@@ -59,6 +64,24 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var loginStatus: LoginStatus? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().previousBackStackEntry?.savedStateHandle
+                        ?.set(
+                            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
+                            NavigationAction.ACTION_BACK
+                        )
+                    findNavController().popBackStack()
+                }
+            }
+        )
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -77,6 +100,10 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         observeHealthRecords()
 
         observeHealthRecordsSyncCompletion()
+
+        observeVaccineRecordAddition()
+
+        observeCovidTestRecordAddition()
     }
 
     private fun handleBcscAuthResponse() {
@@ -88,6 +115,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             )
             when (it) {
                 BcscAuthState.SUCCESS -> {
+                    findNavController().previousBackStackEntry?.savedStateHandle
+                        ?.set(FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS, 1L)
                     findNavController().popBackStack()
                 }
                 else -> {
@@ -323,7 +352,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 findNavController().navigate(R.id.profileFragment)
             }
             ivAdd.setOnClickListener {
-                findNavController().navigate(R.id.addHealthRecordsFragment)
+                val action = IndividualHealthRecordFragmentDirections
+                    .actionIndividualHealthRecordFragmentToAddHealthRecordFragment(true)
+                findNavController().navigate(action)
             }
             ivFilter.setOnClickListener {
                 requireContext().toast("Coming soon")
@@ -425,6 +456,47 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             viewLifecycleOwner
         ) { _, result ->
             viewModel.medicationRecordsUpdated(result.get(KEY_MEDICATION_RECORD_UPDATED) as Boolean)
+        }
+    }
+
+    private fun observeCovidTestRecordAddition() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
+            FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS
+        )
+            ?.observe(
+                viewLifecycleOwner
+            ) { recordId ->
+                findNavController().currentBackStackEntry?.savedStateHandle?.remove<Long>(
+                    FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS
+                )
+                if (recordId > 0) {
+                    findNavController().previousBackStackEntry?.savedStateHandle
+                        ?.set(
+                            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
+                            NavigationAction.ACTION_RE_CHECK
+                        )
+                    findNavController().popBackStack()
+                }
+            }
+    }
+
+    private fun observeVaccineRecordAddition() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
+            FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
+        )?.observe(
+            viewLifecycleOwner
+        ) {
+            findNavController().currentBackStackEntry?.savedStateHandle?.remove<Long>(
+                FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
+            )
+            if (it > 0) {
+                findNavController().previousBackStackEntry?.savedStateHandle
+                    ?.set(
+                        HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
+                        NavigationAction.ACTION_RE_CHECK
+                    )
+                findNavController().popBackStack()
+            }
         }
     }
 }
