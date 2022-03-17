@@ -18,20 +18,15 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import androidx.work.WorkRequest
 import androidx.work.workDataOf
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentBcscAuthBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker
-import ca.bc.gov.repository.worker.FetchAuthenticatedPatientDataWorker
-import ca.bc.gov.repository.worker.PATIENT_ID
-import ca.bc.gov.repository.worker.WORK_RESULT
+import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker.Companion.PATIENT_ID
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
@@ -59,8 +54,6 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
     ) { activityResult ->
         processAuthResponse(activityResult)
     }
-    private lateinit var workRequest: WorkRequest
-    private lateinit var workManager: WorkManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,8 +63,48 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupToolBar()
         initUI()
+        observeAuthentication()
+    }
+
+    private fun observeAuthentication() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.authStatus.collect {
+
+                    showLoader(it.showLoading)
+                    handleError(it.isError)
+
+                    if (it.authRequestIntent != null) {
+                        authResultLauncher.launch(it.authRequestIntent)
+                        viewModel.resetAuthStatus()
+                    }
+
+                    val isLoginStatusActive = it.loginStatus == LoginStatus.ACTIVE
+                    if (isLoginStatusActive) {
+                        viewModel.resetAuthStatus()
+                        viewModel.fetchPatientData()
+                    }
+
+                    handleQueueIt(it)
+
+                    if (it.patientId > 0L) {
+                        respondToSuccess()
+                        fetchBcscHealthRecords(it.patientId)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleQueueIt(authStatus: AuthStatus) {
+        if (authStatus.onMustBeQueued && authStatus.queItUrl != null) {
+            queUser(authStatus.queItUrl)
+        }
+
+        if (authStatus.queItTokenUpdated) {
+            viewModel.fetchPatientData()
+        }
     }
 
     private fun setupToolBar() {
@@ -91,6 +124,8 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
     private fun initUI() {
 
+        setupToolBar()
+
         binding.tvLoginInfoMessage.text = Html.fromHtml(
             getString(R.string.login_info_message), Html.FROM_HTML_MODE_LEGACY
         )
@@ -101,31 +136,6 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
         binding.btnContinue.setOnClickListener {
             viewModel.initiateLogin()
-
-            viewLifecycleOwner.lifecycleScope.launch {
-                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.authStatus.collect {
-
-                        showLoader(it.showLoading)
-                        handleError(it.isError)
-
-                        if (it.authRequestIntent != null) {
-                            authResultLauncher.launch(it.authRequestIntent)
-                            viewModel.resetAuthStatus()
-                        }
-
-                        val isLoginStatusActive = it.loginStatus == LoginStatus.ACTIVE
-                        if (isLoginStatusActive) {
-                            viewModel.resetAuthStatus()
-                            fetchAuthenticatedPatientData()
-                        }
-
-                        if (it.queItTokenUpdated) {
-                            workManager.enqueue(workRequest)
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -136,35 +146,12 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
         }
     }
 
-    private fun fetchAuthenticatedPatientData() {
-        workRequest = OneTimeWorkRequestBuilder<FetchAuthenticatedPatientDataWorker>().build()
-        workManager = WorkManager.getInstance(requireContext())
-        workManager.enqueue(workRequest)
-        workManager.getWorkInfoByIdLiveData(workRequest.id)
-            .observe(viewLifecycleOwner) { info ->
-                showLoader(true)
-                if (info != null && info.state.isFinished) {
-                    val queItUrl = info.outputData.getString(WORK_RESULT)
-                    if (queItUrl != null) {
-                        queUser(queItUrl)
-                    }
-
-                    if (info.outputData.getLong(PATIENT_ID, 0) > 0) {
-                        respondToSuccess()
-                        fetchAuthenticatedRecords(info)
-                        showLoader(false)
-                    }
-                }
-            }
-    }
-
-    private fun fetchAuthenticatedRecords(info: WorkInfo) {
-        val patientId = info.outputData.getLong(PATIENT_ID, 0)
+    private fun fetchBcscHealthRecords(patientId: Long) {
         val data: Data = workDataOf(PATIENT_ID to patientId)
         val workRequest = PeriodicWorkRequestBuilder<FetchAuthenticatedHealthRecordsWorker>(BACKGROUND_AUTH_RECORD_FETCH_WORK_INTERVAL, TimeUnit.MINUTES)
             .setInputData(data)
             .build()
-        workManager = WorkManager.getInstance(requireContext())
+        val workManager = WorkManager.getInstance(requireContext())
         workManager.enqueueUniquePeriodicWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME, ExistingPeriodicWorkPolicy.REPLACE, workRequest)
     }
 

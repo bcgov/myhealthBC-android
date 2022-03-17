@@ -125,4 +125,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             notificationHelper.updateNotification(context.getString(R.string.notification_title_on_success))
         }
     }
+
+    companion object {
+        const val PATIENT_ID = "PATIENT_ID"
+    }
 }
