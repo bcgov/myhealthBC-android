@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
+import ca.bc.gov.repository.ProfileRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.patient.PatientRepository
@@ -27,6 +28,7 @@ class BcscAuthViewModel @Inject constructor(
     private val clearStorageRepository: ClearStorageRepository,
     private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
     private val patientRepository: PatientRepository,
+    private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
     private val _authStatus = MutableStateFlow(AuthStatus())
@@ -166,7 +168,8 @@ class BcscAuthViewModel @Inject constructor(
                 userName = "",
                 queItTokenUpdated = false,
                 loginStatus = null,
-                patientId = -1L
+                patientId = -1L,
+                ageLimitCheck = null
             )
         }
     }
@@ -178,6 +181,48 @@ class BcscAuthViewModel @Inject constructor(
                 showLoading = true,
                 queItTokenUpdated = true
             )
+        }
+    }
+
+    fun checkAgeLimit() = viewModelScope.launch {
+        _authStatus.update {
+            it.copy(
+                showLoading = true
+            )
+        }
+        try {
+            val authParameters = bcscAuthRepo.getAuthParameters()
+            val isWithinAgeLimit = profileRepository.checkAgeLimit(
+                authParameters.first,
+                authParameters.second
+            )
+
+            _authStatus.update {
+                it.copy(
+                    showLoading = true,
+                    ageLimitCheck = if (isWithinAgeLimit) AgeLimitCheck.PASSED else AgeLimitCheck.FAILED
+                )
+            }
+        } catch (e: Exception) {
+            when (e) {
+                is MustBeQueuedException -> {
+                    _authStatus.update {
+                        it.copy(
+                            showLoading = true,
+                            onMustBeQueued = true,
+                            queItUrl = e.message,
+                        )
+                    }
+                }
+                else -> {
+                    _authStatus.update {
+                        it.copy(
+                            showLoading = false,
+                            isError = true
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -235,10 +280,16 @@ data class AuthStatus(
     val onMustBeQueued: Boolean = false,
     val queItUrl: String? = null,
     val loginStatus: LoginStatus? = null,
-    val patientId: Long = -1L
+    val patientId: Long = -1L,
+    val ageLimitCheck: AgeLimitCheck? = null
 )
 
 enum class LoginStatus {
     ACTIVE,
     EXPIRED
+}
+
+enum class AgeLimitCheck {
+    PASSED,
+    FAILED
 }
