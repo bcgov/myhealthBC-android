@@ -21,13 +21,13 @@ class BcscAuthInfoFragment : Fragment(R.layout.fragment_bcsc_auth_info) {
 
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
             BCSC_AUTH_STATUS
-        )?.observe(viewLifecycleOwner, {
+        )?.observe(viewLifecycleOwner) {
             if (it == BcscAuthState.SUCCESS) {
                 findNavController().previousBackStackEntry?.savedStateHandle
                     ?.set(BCSC_AUTH_STATUS, BcscAuthState.SUCCESS)
                 findNavController().popBackStack()
             }
-        })
+        }
 
         binding.btnNotNow.setOnClickListener {
             findNavController().previousBackStackEntry?.savedStateHandle

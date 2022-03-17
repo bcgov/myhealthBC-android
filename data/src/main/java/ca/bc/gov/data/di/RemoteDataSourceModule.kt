@@ -43,7 +43,9 @@ class RemoteDataSourceModule {
 
     @Provides
     @Singleton
-    fun providesPatientRemoteDataSource(healthGatewayPrivateApi: HealthGatewayPrivateApi) =
+    fun providesPatientRemoteDataSource(
+        healthGatewayPrivateApi: HealthGatewayPrivateApi
+    ) =
         PatientRemoteDataSource(healthGatewayPrivateApi)
 
     @Provides
