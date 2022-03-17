@@ -44,6 +44,7 @@ import java.util.concurrent.TimeUnit
 */
 const val BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME = "BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME"
 const val BACKGROUND_AUTH_RECORD_FETCH_WORK_INTERVAL = 15L
+
 @AndroidEntryPoint
 class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
@@ -83,17 +84,34 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                     val isLoginStatusActive = it.loginStatus == LoginStatus.ACTIVE
                     if (isLoginStatusActive) {
                         viewModel.resetAuthStatus()
-                        viewModel.fetchPatientData()
+                        viewModel.checkAgeLimit()
                     }
 
                     handleQueueIt(it)
 
-                    if (it.patientId > 0L) {
-                        respondToSuccess()
-                        fetchBcscHealthRecords(it.patientId)
-                    }
+                    handleAgeLimitCheck(it)
+
+                    handlePatientDataResponse(it)
                 }
             }
+        }
+    }
+
+    private fun handlePatientDataResponse(authStatus: AuthStatus) {
+        if (authStatus.patientId > 0L) {
+            viewModel.resetAuthStatus()
+            respondToSuccess()
+            fetchBcscHealthRecords(authStatus.patientId)
+        }
+    }
+
+    private fun handleAgeLimitCheck(authStatus: AuthStatus) {
+        if (authStatus.ageLimitCheck != null) {
+            viewModel.resetAuthStatus()
+            if (authStatus.ageLimitCheck == AgeLimitCheck.PASSED)
+                viewModel.fetchPatientData()
+            else
+                showAgeLimitRestrictionDialog()
         }
     }
 
@@ -103,7 +121,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
         }
 
         if (authStatus.queItTokenUpdated) {
-            viewModel.fetchPatientData()
+            viewModel.checkAgeLimit()
         }
     }
 
@@ -148,11 +166,18 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
     private fun fetchBcscHealthRecords(patientId: Long) {
         val data: Data = workDataOf(PATIENT_ID to patientId)
-        val workRequest = PeriodicWorkRequestBuilder<FetchAuthenticatedHealthRecordsWorker>(BACKGROUND_AUTH_RECORD_FETCH_WORK_INTERVAL, TimeUnit.MINUTES)
+        val workRequest = PeriodicWorkRequestBuilder<FetchAuthenticatedHealthRecordsWorker>(
+            BACKGROUND_AUTH_RECORD_FETCH_WORK_INTERVAL,
+            TimeUnit.MINUTES
+        )
             .setInputData(data)
             .build()
         val workManager = WorkManager.getInstance(requireContext())
-        workManager.enqueueUniquePeriodicWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME, ExistingPeriodicWorkPolicy.REPLACE, workRequest)
+        workManager.enqueueUniquePeriodicWork(
+            BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME,
+            ExistingPeriodicWorkPolicy.REPLACE,
+            workRequest
+        )
     }
 
     private fun queUser(value: String) {
@@ -204,6 +229,17 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                 findNavController().previousBackStackEntry?.savedStateHandle
                     ?.set(BCSC_AUTH_STATUS, BcscAuthState.SUCCESS)
                 findNavController().popBackStack()
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun showAgeLimitRestrictionDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.age_limit_title))
+            .setCancelable(false)
+            .setMessage(getString(R.string.age_limit_message))
+            .setPositiveButton(getString(R.string.ok_camel_case)) { dialog, _ ->
                 dialog.dismiss()
             }
             .show()

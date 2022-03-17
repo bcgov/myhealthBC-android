@@ -12,14 +12,4 @@ class ProfileRepository @Inject constructor(
     suspend fun checkAgeLimit(token: String, hdid: String): Boolean {
         return profileRemoteDataSource.checkAgeLimit(token, hdid)
     }
-
-    suspend fun isTermsOfServiceAccepted(token: String, hdid: String): Boolean {
-        val response = profileRemoteDataSource.getUserProfile(token, hdid)
-        return response.resourcePayload.acceptedTermsOfService
-    }
-
-    suspend fun acceptTermsOfService(token: String, hdid: String): Boolean {
-        val response = profileRemoteDataSource.acceptTermsOfService(token, hdid)
-        return response.resourcePayload.acceptedTermsOfService
-    }
 }

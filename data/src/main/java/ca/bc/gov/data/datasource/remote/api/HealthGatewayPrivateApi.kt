@@ -6,6 +6,7 @@ import ca.bc.gov.data.datasource.remote.model.response.LabTestPdfResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
 import ca.bc.gov.data.datasource.remote.model.response.PatientResponse
+import ca.bc.gov.data.datasource.remote.model.response.ProfileValidationResponse
 import ca.bc.gov.data.datasource.remote.model.response.VaccineStatusResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -75,4 +76,10 @@ interface HealthGatewayPrivateApi {
         @Header(AUTHORIZATION) accessToken: String,
         @Query("parentEntryId") parentEntryId: String?
     ): Response<CommentResponse>
+
+    @GET("$BASE_USER_PROFILE_SERVICE/{$HDID}/Validate")
+    suspend fun checkAgeLimit(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String
+    ): Response<ProfileValidationResponse>
 }
