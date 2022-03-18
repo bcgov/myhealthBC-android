@@ -3,9 +3,12 @@ package ca.bc.gov.bchealth.ui.login
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.repository.ClearStorageRepository
+import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
+import ca.bc.gov.repository.patient.PatientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +24,9 @@ import javax.inject.Inject
 class BcscAuthViewModel @Inject constructor(
     private val bcscAuthRepo: BcscAuthRepo,
     private val queueItTokenRepository: QueueItTokenRepository,
-    private val clearStorageRepository: ClearStorageRepository
+    private val clearStorageRepository: ClearStorageRepository,
+    private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
+    private val patientRepository: PatientRepository,
 ) : ViewModel() {
 
     private val _authStatus = MutableStateFlow(AuthStatus())
@@ -160,7 +165,8 @@ class BcscAuthViewModel @Inject constructor(
                 isError = false,
                 userName = "",
                 queItTokenUpdated = false,
-                loginStatus = null
+                loginStatus = null,
+                patientId = -1L
             )
         }
     }
@@ -174,6 +180,50 @@ class BcscAuthViewModel @Inject constructor(
             )
         }
     }
+
+    fun fetchPatientData() = viewModelScope.launch {
+        _authStatus.update {
+            it.copy(
+                showLoading = true
+            )
+        }
+        try {
+            val authParameters = bcscAuthRepo.getAuthParameters()
+            val patient = patientWithBCSCLoginRepository.getPatient(
+                authParameters.first,
+                authParameters.second
+            )
+            val patientId = patientRepository.insertAuthenticatedPatient(patient)
+            if (patientId > 0L) {
+                _authStatus.update {
+                    it.copy(
+                        showLoading = false,
+                        patientId = patientId
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            when (e) {
+                is MustBeQueuedException -> {
+                    _authStatus.update {
+                        it.copy(
+                            showLoading = true,
+                            onMustBeQueued = true,
+                            queItUrl = e.message,
+                        )
+                    }
+                }
+                else -> {
+                    _authStatus.update {
+                        it.copy(
+                            showLoading = false,
+                            isError = true
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 data class AuthStatus(
@@ -182,7 +232,10 @@ data class AuthStatus(
     val isError: Boolean = false,
     val userName: String = "",
     val queItTokenUpdated: Boolean = false,
-    val loginStatus: LoginStatus? = null
+    val onMustBeQueued: Boolean = false,
+    val queItUrl: String? = null,
+    val loginStatus: LoginStatus? = null,
+    val patientId: Long = -1L
 )
 
 enum class LoginStatus {
