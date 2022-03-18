@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <string name="retrofit_url_immunization">https://dev.healthgateway.gov.bc.ca/</string>
-
-</resources>

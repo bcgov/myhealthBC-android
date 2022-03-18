@@ -57,9 +57,12 @@ android {
             dimension "version"
             versionNameSuffix "-stage"
         }
-
         prod {
             dimension "version"
+        }
+        mock {
+            dimension "version"
+            versionNameSuffix "-mock"
         }
     }
 

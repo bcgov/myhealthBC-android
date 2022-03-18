@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -189,14 +190,19 @@ class FetchFederalTravelPassFragment : Fragment(R.layout.fragment_fetch_travel_p
     private fun showTravelPass(federalPass: String) {
         // Snowplow event
         analyticsFeatureViewModel.track(AnalyticsAction.ADD_QR, AnalyticsActionData.GET)
-        val action = FetchFederalTravelPassFragmentDirections
-            .actionFetchFederalTravelPassToTravelPassFragment(federalPass)
 
         val navOptions = NavOptions.Builder()
             .setPopUpTo(R.id.fetchFederalTravelPass, true)
             .build()
 
-        findNavController().navigate(action, navOptions)
+        findNavController().navigate(
+            R.id.pdfRendererFragment,
+            bundleOf(
+                "base64pdf" to federalPass,
+                "title" to getString(R.string.travel_pass)
+            ),
+            navOptions
+        )
     }
 
     private fun queUser(value: String) {

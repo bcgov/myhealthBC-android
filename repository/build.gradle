@@ -62,6 +62,15 @@ android {
             resValue "string", "default_rules_json", "smarthealthcard.phsa.ca~v1~Covid19Proof~.well-known~rules.json"
             resValue "string", "auth_issuer_end_point", "https://oidc.gov.bc.ca/auth/realms/ff09qn3f"
         }
+
+        mock {
+            dimension "version"
+            resValue "string", "issuer_url", "https://phsasmarthealthcard-dev.azurewebsites.net/v1/trusted/.well-known/issuers.json"
+            resValue "string", "rules_url", "https://ds9mwekyyprcy.cloudfront.net/bc-rules.json"
+            resValue "string", "default_issuer_json", "phsasmarthealthcard-dev.azurewebsites.net~v1~trusted~.well-known~issuers.json"
+            resValue "string", "default_rules_json", "ds9mwekyyprcy.cloudfront.net~bc-rules.json"
+            resValue "string", "auth_issuer_end_point", "https://dev.oidc.gov.bc.ca/auth/realms/ff09qn3f"
+        }
     }
 
     compileOptions {

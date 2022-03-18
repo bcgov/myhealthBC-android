@@ -22,12 +22,6 @@
         <action
             android:id="@+id/action_healthPassFragment_to_fetchFederalTravelPass"
             app:destination="@id/fetchFederalTravelPass" />
-        <action
-            android:id="@+id/action_healthPassFragment_to_travelPassFragment"
-            app:destination="@id/travelPassFragment" />
-        <action
-            android:id="@+id/action_healthPassFragment_to_bcscAuthInfoFragment"
-            app:destination="@id/navigation2" />
     </fragment>
 
     <fragment
@@ -44,9 +38,6 @@
         <action
             android:id="@+id/action_healthPassesFragment_to_fetchFederalTravelPass"
             app:destination="@id/fetchFederalTravelPass" />
-        <action
-            android:id="@+id/action_healthPassesFragment_to_travelPassFragment"
-            app:destination="@id/travelPassFragment" />
     </fragment>
 
     <fragment
@@ -86,22 +77,5 @@
         <argument
             android:name="patient_id"
             app:argType="long" />
-        <action
-            android:id="@+id/action_fetchFederalTravelPass_to_travelPassFragment"
-            app:destination="@id/travelPassFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/travelPassFragment"
-        android:name="ca.bc.gov.bchealth.ui.travelpass.TravelPassFragment"
-        android:label="FragmentTravelPass"
-        tools:layout="@layout/fragment_travel_pass">
-        <argument
-            android:name="travel_pass"
-            app:argType="string" />
-    </fragment>
-
-    <navigation android:id="@+id/navigation2"
-        app:startDestination="@id/bcsc_auth">
-        <include app:graph="@navigation/bcsc_auth" />
-    </navigation>
 </navigation>

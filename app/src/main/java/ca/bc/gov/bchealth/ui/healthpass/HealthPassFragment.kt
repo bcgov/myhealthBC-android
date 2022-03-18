@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -28,7 +29,7 @@ import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.viewBindings
-import ca.bc.gov.bchealth.viewmodel.FederalTravelPassDecoderVideModel
+import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.bchealth.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
@@ -51,7 +52,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
     private lateinit var sceneSingleHealthPass: Scene
     private lateinit var sceneNoCardPlaceHolder: Scene
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private val federalTravelPassDecoderVideModel: FederalTravelPassDecoderVideModel by viewModels()
+    private val pdfDecoderViewModel: PdfDecoderViewModel by viewModels()
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -104,7 +105,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                             )
                     findNavController().navigate(action)
                 } else {
-                    federalTravelPassDecoderVideModel.base64ToPDFFile(federalPass)
+                    pdfDecoderViewModel.base64ToPDFFile(federalPass)
                 }
             },
             itemClickListener = { healthPass ->
@@ -163,9 +164,9 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
     }
 
     private suspend fun collectUiState() {
-        federalTravelPassDecoderVideModel.uiState.collect { uiState ->
-            if (uiState.travelPass != null) {
-                val (federalTravelPass, file) = uiState.travelPass
+        pdfDecoderViewModel.uiState.collect { uiState ->
+            if (uiState.pdf != null) {
+                val (federalTravelPass, file) = uiState.pdf
                 if (file != null) {
                     try {
                         showPDF(file)
@@ -175,7 +176,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                 } else {
                     navigateToViewTravelPass(federalTravelPass)
                 }
-                federalTravelPassDecoderVideModel.federalTravelPassShown()
+                pdfDecoderViewModel.resetUiState()
             }
         }
     }
@@ -193,11 +194,13 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
     }
 
     private fun navigateToViewTravelPass(federalTravelPass: String) {
-        val action =
-            HealthPassFragmentDirections.actionHealthPassFragmentToTravelPassFragment(
-                federalTravelPass
+        findNavController().navigate(
+            R.id.pdfRendererFragment,
+            bundleOf(
+                "base64pdf" to federalTravelPass,
+                "title" to getString(R.string.travel_pass)
             )
-        findNavController().navigate(action)
+        )
     }
 
     private suspend fun collectHealthPasses() {

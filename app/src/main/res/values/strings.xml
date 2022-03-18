@@ -265,6 +265,9 @@
     <string name="to_yyyy_mm_dd">To (yyyy-mm-dd)</string>
     <string name="timeline">Timeline</string>
 
+    <!--Lab test-->
+    <string name="lab_test">Lab test</string>
+
     <!-- Home screen -->
     <string name="hello">Hello</string>
     <string name="hi">Hi</string>
