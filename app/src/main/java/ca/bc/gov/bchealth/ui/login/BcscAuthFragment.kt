@@ -76,6 +76,8 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                     showLoader(it.showLoading)
                     handleError(it.isError)
 
+                    handleLoadVerification(it)
+
                     if (it.authRequestIntent != null) {
                         authResultLauncher.launch(it.authRequestIntent)
                         viewModel.resetAuthStatus()
@@ -94,6 +96,13 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                     handlePatientDataResponse(it)
                 }
             }
+        }
+    }
+
+    private fun handleLoadVerification(authStatus: AuthStatus) {
+        if (authStatus.canInitiateBcscLogin != null) {
+            viewModel.resetAuthStatus()
+            viewModel.initiateLogin()
         }
     }
 
@@ -121,7 +130,8 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
         }
 
         if (authStatus.queItTokenUpdated) {
-            viewModel.checkAgeLimit()
+            viewModel.resetAuthStatus()
+            viewModel.verifyLoad()
         }
     }
 
@@ -153,7 +163,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
         }
 
         binding.btnContinue.setOnClickListener {
-            viewModel.initiateLogin()
+            viewModel.verifyLoad()
         }
     }
 

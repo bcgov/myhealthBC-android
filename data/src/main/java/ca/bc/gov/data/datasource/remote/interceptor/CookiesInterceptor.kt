@@ -20,25 +20,6 @@ class CookiesInterceptor @Inject constructor(
             requestBuilder.addHeader("Cookie", cookie)
         }
 
-        /*val response = chain.proceed(requestBuilder.build())
-        val responseHeaders = response.headers("Set-Cookie")
-        val cookies = hashSetOf<String>()
-        responseHeaders.forEach { header ->
-            cookies.add(header)
-        }
-        if (cookies.isNotEmpty()) {
-            cookieStorage.store(cookies)
-        }
-
-        // CHECK FOR PRIOR RESPONSE
-        val priorResponseHeaders = response.priorResponse?.headers("Set-Cookie")
-        val priorCookies = hashSetOf<String>()
-        priorResponseHeaders?.forEach { header ->
-            priorCookies.add(header)
-        }
-        if (priorCookies.isNotEmpty()) {
-            cookieStorage.store(priorCookies)
-        }*/
         return chain.proceed(requestBuilder.build())
     }
 }
