@@ -55,11 +55,13 @@ class HealthGateWayApiModule {
         loggingInterceptor: HttpLoggingInterceptor,
         cookiesInterceptor: CookiesInterceptor,
         queueItInterceptor: QueueItInterceptor,
-        receivedCookieInterceptor: ReceivedCookieInterceptor
+        receivedCookieInterceptor: ReceivedCookieInterceptor,
+        userAgentInterceptor: UserAgentInterceptor
     ) = OkHttpClient.Builder()
         .addInterceptor(queueItInterceptor)
         .addInterceptor(cookiesInterceptor)
         .addInterceptor(receivedCookieInterceptor)
+        .addInterceptor(userAgentInterceptor)
         .addInterceptor(loggingInterceptor)
         .hostnameVerifier { _, _ ->
             return@hostnameVerifier true

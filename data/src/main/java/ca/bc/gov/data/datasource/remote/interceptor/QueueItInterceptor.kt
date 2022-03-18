@@ -69,22 +69,12 @@ class QueueItInterceptor @Inject constructor(
                 stringBody = body?.string()
                 val json = Gson().fromJson(stringBody, JsonObject::class.java)
 
-                if (json.get(RESOURCE_PAYLOAD).isJsonNull) {
-                    checkException(json)
-                }
-
-                var retryInMillis = 0L
-                try {
-                    val payload =
-                        json.getAsJsonObject(RESOURCE_PAYLOAD) ?: throw IOException(BAD_RESPONSE)
-                    loaded = payload.get(LOADED).asBoolean
-                    retryInMillis = payload.get(RETRY_IN).asLong
-                } catch (e: Exception) {
+                if (request.url.toString().contains("MobileConfiguration", true)) {
                     loaded = true
+                } else {
+                    loaded = checkForLoadedFlag(json)
+                    retryCount++
                 }
-                sleepOnRetry(loaded, retryInMillis)
-
-                retryCount++
             }
         } while (!loaded && retryCount < 3)
 
@@ -96,6 +86,25 @@ class QueueItInterceptor @Inject constructor(
 
         return response.newBuilder()
             .body(newBody).build()
+    }
+
+    private fun checkForLoadedFlag(json: JsonObject): Boolean {
+        var loaded: Boolean
+        if (json.get(RESOURCE_PAYLOAD).isJsonNull) {
+            checkException(json)
+        }
+        var retryInMillis = 0L
+        try {
+            val payload =
+                json.getAsJsonObject(RESOURCE_PAYLOAD)
+                    ?: throw IOException(BAD_RESPONSE)
+            loaded = payload.get(LOADED).asBoolean
+            retryInMillis = payload.get(RETRY_IN).asLong
+        } catch (e: Exception) {
+            loaded = true
+        }
+        sleepOnRetry(loaded, retryInMillis)
+        return loaded
     }
 
     private fun checkQueueItTokenInPref(requestUrlBuilder: HttpUrl.Builder) {
@@ -121,7 +130,7 @@ class QueueItInterceptor @Inject constructor(
         val resultError = json.getAsJsonObject(RESULT_ERROR) ?: throw IOException(
             BAD_RESPONSE
         )
-        if (resultError.get(ACTION_CODE).asString == PROTECTED) {
+        if (resultError.get(ACTION_CODE)?.toString() == PROTECTED) {
             throw ProtectiveWordException(
                 PROTECTIVE_WORD_ERROR_CODE,
                 "Record protected by keyword"
