@@ -109,8 +109,8 @@ class LaboratoryRemoteDataSource @Inject constructor(
         val response = safeCall {
             healthGatewayPrivateApi.getLabTestReportPdf(
                 token,
-                hdid,
                 reportId,
+                hdid,
                 isCovid19
             )
         }
@@ -135,6 +135,10 @@ class LaboratoryRemoteDataSource @Inject constructor(
                     mediaType.isNullOrBlank() ||
                         encoding.isNullOrBlank() ||
                         data.isNullOrBlank() -> {
+                        false
+                    }
+                    mediaType != "application/pdf" ||
+                        encoding != "base64" -> {
                         false
                     }
                     else -> {

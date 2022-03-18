@@ -32,7 +32,8 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                 it.copy(
                     onLoading = false,
                     labTestDetails = prepareLabTestDetailsData(labOrderWithLabTestsAndPatientDto.labOrderWithLabTest),
-                    toolbarTitle = labOrderWithLabTestsAndPatientDto.labOrderWithLabTest.labOrder.commonName
+                    toolbarTitle = labOrderWithLabTestsAndPatientDto.labOrderWithLabTest.labOrder.commonName,
+                    showDownloadOption = labOrderWithLabTestsAndPatientDto.labOrderWithLabTest.labOrder.reportingAvailable
                 )
             }
         } catch (e: Exception) {
@@ -103,9 +104,38 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
         return labTestDetails
     }
 
+    fun getLabTestPdf(labOrderId: String) = viewModelScope.launch {
+        _uiState.update {
+            it.copy(onLoading = true)
+        }
+        try {
+            val pdfData = labOrderRepository.fetchLabTestPdf(labOrderId, false)
+            _uiState.update {
+                it.copy(pdfData = pdfData)
+            }
+        } catch (e: java.lang.Exception) {
+            _uiState.update {
+                it.copy(onError = true)
+            }
+        }
+    }
+
     companion object {
         const val ITEM_VIEW_TYPE_LAB_ORDER = 0
         const val ITEM_VIEW_TYPE_LAB_TEST = 1
+    }
+
+    fun resetUiState() {
+        _uiState.update {
+            it.copy(
+                onLoading = false,
+                onError = false,
+                labTestDetails = null,
+                toolbarTitle = null,
+                showDownloadOption = false,
+                pdfData = null
+            )
+        }
     }
 }
 
@@ -114,6 +144,8 @@ data class LabTestDetailUiState(
     val onError: Boolean = false,
     val labTestDetails: List<LabTestDetail>? = null,
     val toolbarTitle: String? = null,
+    val showDownloadOption: Boolean = false,
+    val pdfData: String? = null
 )
 
 data class LabTestDetail(

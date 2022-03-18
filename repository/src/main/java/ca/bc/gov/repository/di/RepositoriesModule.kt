@@ -20,12 +20,12 @@ import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.TermsOfServiceRemoteDataSource
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.CommentRepository
-import ca.bc.gov.repository.FederalTravelPassDecoderRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
+import ca.bc.gov.repository.PdfDecoderRepository
 import ca.bc.gov.repository.QrCodeGeneratorRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.RecentPhnDobRepository
@@ -150,7 +150,7 @@ class RepositoriesModule {
     @Provides
     @Singleton
     fun provideFetchTravelPassDecoderRepository(@ApplicationContext context: Context) =
-        FederalTravelPassDecoderRepository(context)
+        PdfDecoderRepository(context)
 
     @Provides
     @Singleton
@@ -182,10 +182,12 @@ class RepositoriesModule {
     @Singleton
     fun provideLabOrderRepository(
         laboratoryRemoteDataSource: LaboratoryRemoteDataSource,
-        labOrderLocalDataSource: LabOrderLocalDataSource
+        labOrderLocalDataSource: LabOrderLocalDataSource,
+        bcscAuthRepo: BcscAuthRepo
     ): LabOrderRepository = LabOrderRepository(
         laboratoryRemoteDataSource,
-        labOrderLocalDataSource
+        labOrderLocalDataSource,
+        bcscAuthRepo
     )
 
     @Provides
