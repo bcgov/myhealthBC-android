@@ -10,6 +10,7 @@ import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.data.datasource.remote.ConfigRemoteDataSource
 import ca.bc.gov.repository.R
 import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationException
@@ -29,7 +30,8 @@ import java.nio.charset.Charset
 class BcscAuthRepo(
     private val applicationContext: Context,
     private val encryptedPreferenceStorage: EncryptedPreferenceStorage,
-    private val patientLocalDataSource: PatientLocalDataSource
+    private val patientLocalDataSource: PatientLocalDataSource,
+    private val configRemoteDataSource: ConfigRemoteDataSource
 ) {
 
     private lateinit var authState: AuthState
@@ -42,6 +44,13 @@ class BcscAuthRepo(
 
     private fun getAuthState(): AuthState? {
         return encryptedPreferenceStorage.authState?.let { AuthState.jsonDeserialize(it) }
+    }
+
+    /*
+    * Throttle call to BCSC login
+    * */
+    suspend fun verifyLoad(): Boolean {
+        return configRemoteDataSource.verifyLoad()
     }
 
     /*

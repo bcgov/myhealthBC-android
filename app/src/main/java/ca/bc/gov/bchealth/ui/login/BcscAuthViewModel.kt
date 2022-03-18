@@ -35,6 +35,46 @@ class BcscAuthViewModel @Inject constructor(
     val authStatus: StateFlow<AuthStatus> = _authStatus.asStateFlow()
 
     /*
+    * Throttle calls to BCSC login
+    * */
+    fun verifyLoad() = viewModelScope.launch {
+        try {
+            _authStatus.update {
+                it.copy(
+                    showLoading = true
+                )
+            }
+            val canInitiateBcscLogin = bcscAuthRepo.verifyLoad()
+            _authStatus.update {
+                it.copy(
+                    showLoading = true,
+                    canInitiateBcscLogin = canInitiateBcscLogin
+                )
+            }
+        } catch (e: Exception) {
+            when (e) {
+                is MustBeQueuedException -> {
+                    _authStatus.update {
+                        it.copy(
+                            showLoading = true,
+                            onMustBeQueued = true,
+                            queItUrl = e.message,
+                        )
+                    }
+                }
+                else -> {
+                    _authStatus.update {
+                        it.copy(
+                            showLoading = false,
+                            isError = true
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    /*
     * BCSC Login
     * */
     fun initiateLogin() = viewModelScope.launch {
@@ -170,7 +210,9 @@ class BcscAuthViewModel @Inject constructor(
                 queItTokenUpdated = false,
                 loginStatus = null,
                 patientId = -1L,
-                isWithinAgeLimit = false
+                isWithinAgeLimit = false,
+                canInitiateBcscLogin = null,
+                onMustBeQueued = false,
             )
         }
     }
@@ -180,7 +222,8 @@ class BcscAuthViewModel @Inject constructor(
         _authStatus.update {
             it.copy(
                 showLoading = true,
-                queItTokenUpdated = true
+                queItTokenUpdated = true,
+                onMustBeQueued = false
             )
         }
     }
@@ -287,7 +330,8 @@ data class AuthStatus(
     val queItUrl: String? = null,
     val loginStatus: LoginStatus? = null,
     val patientId: Long = -1L,
-    val isWithinAgeLimit: Boolean = false
+    val isWithinAgeLimit: Boolean = false,
+    val canInitiateBcscLogin: Boolean? = null
 )
 
 enum class LoginStatus {
