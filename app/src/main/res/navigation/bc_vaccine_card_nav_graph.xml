@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/health_pass"
+    app:startDestination="@id/home"
     android:id="@+id/bc_vaccine_card_nav_graph">
 
     <fragment
@@ -41,6 +41,7 @@
         android:label="FetchVaccineRecordFragment"
         tools:layout="@layout/fragment_fetch_vaccine_record" />
 
+    <include app:graph="@navigation/home" />
     <include app:graph="@navigation/health_pass" />
     <include app:graph="@navigation/health_records" />
     <include app:graph="@navigation/news_feed" />
