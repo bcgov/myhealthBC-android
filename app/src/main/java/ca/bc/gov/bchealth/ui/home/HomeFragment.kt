@@ -13,6 +13,8 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHomeBinding
 import ca.bc.gov.bchealth.ui.auth.BioMetricState
 import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment
+import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
+import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,12 +26,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val binding by viewBindings(FragmentHomeBinding::bind)
     private val viewModel: HomeViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private lateinit var homeAdapter: HomeAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setupToolBar()
 
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BioMetricState>(
             BiometricsAuthenticationFragment.BIOMETRIC_STATE
@@ -45,8 +44,25 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
         }
 
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
+            BcscAuthFragment.BCSC_AUTH_STATUS
+        )?.observe(viewLifecycleOwner) {
+            findNavController().currentBackStackEntry?.savedStateHandle?.remove<BcscAuthState>(
+                BcscAuthFragment.BCSC_AUTH_STATUS
+            )
+            when (it) {
+                BcscAuthState.SUCCESS -> {}
+                BcscAuthState.NOT_NOW -> {
+                    val destinationId = sharedViewModel.destinationId
+                    if (destinationId > 0) {
+                        findNavController().navigate(destinationId)
+                    }
+                }
+                else -> {}
+            }
+        }
+
         viewModel.launchCheck()
-        viewModel.getAuthenticatedPatientName()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -56,28 +72,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
         }
 
-        initRecyclerview()
-    }
+        binding.btnContinue.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_health_records)
+        }
 
-    private fun initRecyclerview() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                homeAdapter = HomeAdapter {
-                    when (it) {
-                        HomeNavigationType.HEALTH_RECORD -> {
-                            findNavController().navigate(R.id.action_homeFragment_to_health_records)
-                        }
-                        HomeNavigationType.VACCINE_PROOF -> {
-                            findNavController().navigate(R.id.action_homeFragment_to_health_pass)
-                        }
-                        HomeNavigationType.RESOURCES -> {
-                            findNavController().navigate(R.id.action_homeFragment_to_resources)
-                        }
-                    }
-                }
-                binding.rvHome.adapter = homeAdapter
-                homeAdapter.submitList(viewModel.getHomeRecordsList())
-            }
+        binding.btnContinue1.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_health_pass)
+        }
+
+        binding.btnContinue2.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_resources)
         }
     }
 
@@ -88,33 +92,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 viewModel.onBoardingShown()
             }
 
-            if (uiState.isAuthenticationRequired && !sharedViewModel.isBiometricAuthShown) {
+            if (uiState.isAuthenticationRequired) {
                 findNavController().navigate(R.id.biometricsAuthenticationFragment)
-                sharedViewModel.isBiometricAuthShown = true
-                viewModel.onAuthenticationRequired(false)
             }
 
             if (uiState.isBcscLoginRequiredPostBiometrics) {
                 findNavController().navigate(R.id.bcscAuthInfoFragment)
-                sharedViewModel.isBCSCAuthShown = true
                 viewModel.onBcscLoginRequired(false)
-            }
-
-            if (!uiState.patientFirstName.isNullOrBlank()) {
-                binding.tvName.text = getString(R.string.hi)
-                    .plus(" ")
-                    .plus(uiState.patientFirstName)
-            } else {
-                binding.tvName.text = getString(R.string.hello)
-            }
-        }
-    }
-
-    private fun setupToolBar() {
-        binding.toolbar.ivRightOption.apply {
-            visibility = View.VISIBLE
-            setOnClickListener {
-                findNavController().navigate(R.id.profileFragment)
             }
         }
     }

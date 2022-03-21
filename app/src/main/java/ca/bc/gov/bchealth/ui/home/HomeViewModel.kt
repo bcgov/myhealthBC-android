@@ -2,11 +2,8 @@ package ca.bc.gov.bchealth.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.bchealth.R
-import ca.bc.gov.common.model.AuthenticationStatus
+import ca.bc.gov.bchealth.ui.healthpass.HealthPassUiState
 import ca.bc.gov.repository.OnBoardingRepository
-import ca.bc.gov.repository.bcsc.BcscAuthRepo
-import ca.bc.gov.repository.patient.PatientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,13 +14,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val onBoardingRepository: OnBoardingRepository,
-    private val patientRepository: PatientRepository,
-    private val bcscAuthRepo: BcscAuthRepo
+    private val onBoardingRepository: OnBoardingRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeUiState())
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(HealthPassUiState())
+    val uiState: StateFlow<HealthPassUiState> = _uiState.asStateFlow()
     var isAuthenticationRequired: Boolean = true
     var isBcscLoginRequiredPostBiometrics: Boolean = false
 
@@ -59,78 +54,11 @@ class HomeViewModel @Inject constructor(
         isBcscLoginRequiredPostBiometrics = isRequired
         _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = isRequired) }
     }
-
-    fun getAuthenticatedPatientName() = viewModelScope.launch {
-        try {
-            val patient =
-                patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
-            val names = patient.fullName.split(" ")
-            val firstName = if (names.isNotEmpty()) names.first() else ""
-            _uiState.update {
-                it.copy(patientFirstName = firstName)
-            }
-        } catch (e: Exception) {
-            _uiState.update {
-                it.copy(patientFirstName = "")
-            }
-        }
-    }
-
-    suspend fun getHomeRecordsList(): MutableList<HomeRecordItem> {
-        val isLoggedIn: Boolean = try {
-            bcscAuthRepo.checkLogin()
-        } catch (e: Exception) {
-            false
-        }
-
-        return mutableListOf(
-            HomeRecordItem(
-                R.drawable.ic_login_info,
-                "Health Records",
-                "View and manage all your available health records, including dispensed medications, health visits, COVID-19 test results, immunizations and more.",
-                if (isLoggedIn) 0 else R.drawable.ic_bcsc,
-                if (isLoggedIn) "View records" else "Get started",
-                HomeNavigationType.HEALTH_RECORD
-            ),
-            HomeRecordItem(
-                R.drawable.ic_green_tick,
-                "Proof of vaccination",
-                "View, download and print your BC Vaccine Card and federal proof of vaccination, to access events, businesses, services and to travel.",
-                R.drawable.ic_right_arrow,
-                "Add proofs",
-                HomeNavigationType.VACCINE_PROOF
-            ),
-            HomeRecordItem(
-                R.drawable.ic_resources,
-                "Resources",
-                "Find useful information and learn how to get vaccinated or tested for COVID-19.",
-                R.drawable.ic_right_arrow,
-                "Learn more",
-                HomeNavigationType.RESOURCES
-            )
-        )
-    }
 }
 
-data class HomeUiState(
+data class HealthPassUiState(
     val isLoading: Boolean = false,
     val isOnBoardingRequired: Boolean = false,
     val isAuthenticationRequired: Boolean = false,
-    val isBcscLoginRequiredPostBiometrics: Boolean = false,
-    val patientFirstName: String? = null
+    val isBcscLoginRequiredPostBiometrics: Boolean = false
 )
-
-data class HomeRecordItem(
-    val iconTitle: Int,
-    val title: String,
-    val description: String,
-    val icon: Int,
-    val btnTitle: String,
-    val recordType: HomeNavigationType
-)
-
-enum class HomeNavigationType {
-    HEALTH_RECORD,
-    VACCINE_PROOF,
-    RESOURCES
-}
