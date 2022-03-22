@@ -56,7 +56,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_continue"
-            style="@style/BC_VAX.Widget.MaterialComponents.Button2"
+            style="@style/HealthGateway.Widget.MaterialComponents.Button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_1_x"
