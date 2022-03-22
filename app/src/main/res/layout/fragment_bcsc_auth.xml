@@ -50,7 +50,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_continue"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button1"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/btn_continue"
@@ -64,7 +64,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_cancel"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button.OutlinedButton"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/cancel"

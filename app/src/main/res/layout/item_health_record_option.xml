@@ -14,26 +14,25 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_get_vaccination_record_title"
-        style="?textAppearanceSubtitle1"
+        style="?textAppearanceHeadline3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_2_x"
         android:layout_marginTop="@dimen/space_3_x"
         android:text="@string/get_vaccination_records"
-        android:textSize="17sp"
+        android:textColor="@color/blue"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_get_vaccination_record_subtitle"
-        style="?textAppearanceHeadline4"
+        style="?textAppearanceCaption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_2_x"
         android:layout_marginEnd="@dimen/space_1_x"
         android:layout_marginBottom="@dimen/space_3_x"
         android:text="@string/access_to_the_details_of_you_and_your_family_s_covid_19_vaccination_records"
-        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/iv_vaccination_record_icon"
         app:layout_constraintStart_toStartOf="parent"

@@ -13,7 +13,7 @@
     <color name="text_black">#313132</color>
     <color name="grey">#606060</color>
     <color name="shadow_grey">#CFCFCF</color>
-    <color name="light_grey">#F2F2F2</color>
+    <color name="light_grey">#F7F7F7</color>
     <color name="error">#D8292F</color>
 
     <!--Covid Test Result colors-->
@@ -23,4 +23,5 @@
     <color name="covid_test_text_positive">#A12622</color>
     <color name="covid_test_text_negative">#2E8540</color>
     <color name="covid_test_text_indeterminate">#1A5A96</color>
+    <color name="default_indicator_dot">#D9EAF7</color>
 </resources>
