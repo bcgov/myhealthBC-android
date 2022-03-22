@@ -54,7 +54,12 @@ class HomeAdapter(
                 holder.binding.imgIcon.setBackgroundResource(record.iconTitle)
                 holder.binding.tvTitle.text = record.title
                 holder.binding.tvDesc.text = record.description
-                holder.binding.btnContinue.setCompoundDrawablesWithIntrinsicBounds(record.icon, 0, 0, 0)
+                holder.binding.btnContinue.setCompoundDrawablesWithIntrinsicBounds(
+                    record.icon,
+                    0,
+                    0,
+                    0
+                )
                 holder.binding.btnContinue.text = record.btnTitle
             }
             is HomeWithoutButtonBgViewHolder -> {

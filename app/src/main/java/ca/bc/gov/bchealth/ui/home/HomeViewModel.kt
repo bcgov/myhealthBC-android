@@ -2,8 +2,8 @@ package ca.bc.gov.bchealth.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.bchealth.ui.healthpass.HealthPassUiState
 import ca.bc.gov.repository.OnBoardingRepository
+import ca.bc.gov.repository.patient.PatientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,11 +14,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val onBoardingRepository: OnBoardingRepository
+    private val onBoardingRepository: OnBoardingRepository,
+    private val patientRepository: PatientRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HealthPassUiState())
-    val uiState: StateFlow<HealthPassUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(HomeUiState())
+    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     var isAuthenticationRequired: Boolean = true
     var isBcscLoginRequiredPostBiometrics: Boolean = false
 
@@ -54,11 +55,36 @@ class HomeViewModel @Inject constructor(
         isBcscLoginRequiredPostBiometrics = isRequired
         _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = isRequired) }
     }
+
+    fun getPatientFirstName() = viewModelScope.launch {
+        val patientFirstName = patientRepository.getAuthenticatedPatient().fullName
+        _uiState.update { state ->
+            state.copy(
+                patientFirstName = patientFirstName
+            )
+        }
+    }
 }
 
-data class HealthPassUiState(
+data class HomeUiState(
     val isLoading: Boolean = false,
     val isOnBoardingRequired: Boolean = false,
     val isAuthenticationRequired: Boolean = false,
-    val isBcscLoginRequiredPostBiometrics: Boolean = false
+    val isBcscLoginRequiredPostBiometrics: Boolean = false,
+    val patientFirstName: String? = null
 )
+
+data class HomeRecordItem(
+    val iconTitle: Int,
+    val title: String,
+    val description: String,
+    val icon: Int,
+    val btnTitle: String,
+    val recordType: HomeNavigationType
+)
+
+enum class HomeNavigationType {
+    HEALTH_RECORD,
+    VACCINE_PROOF,
+    RESOURCES
+}

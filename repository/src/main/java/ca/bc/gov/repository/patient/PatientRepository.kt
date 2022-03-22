@@ -2,7 +2,6 @@ package ca.bc.gov.repository.patient
 
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
-import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
@@ -112,9 +111,6 @@ class PatientRepository @Inject constructor(
     suspend fun isAuthenticatedPatient(patientId: Long): Boolean =
         patientLocalDataSource.isAuthenticatedPatient(patientId)
 
-    suspend fun findPatientByAuthStatus(authenticationStatus: AuthenticationStatus): PatientDto =
-        patientLocalDataSource.findPatientByAuthStatus(authenticationStatus)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient status=  $authenticationStatus"
-            )
+    suspend fun getAuthenticatedPatient(): PatientDto =
+        patientLocalDataSource.getAuthenticatedPatient()
 }
