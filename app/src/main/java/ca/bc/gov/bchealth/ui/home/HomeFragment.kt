@@ -14,8 +14,6 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHomeBinding
 import ca.bc.gov.bchealth.ui.auth.BioMetricState
 import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment
-import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
-import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -51,22 +49,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
         }
 
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
-            BcscAuthFragment.BCSC_AUTH_STATUS
-        )?.observe(viewLifecycleOwner) {
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<BcscAuthState>(
-                BcscAuthFragment.BCSC_AUTH_STATUS
-            )
-            when (it) {
-                BcscAuthState.SUCCESS -> {
-                }
-                BcscAuthState.NOT_NOW -> {
-                }
-                else -> {
-                }
-            }
-        }
-
         viewModel.launchCheck()
 
         checkLogin()
@@ -97,26 +79,26 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             mutableListOf(
                 HomeRecordItem(
                     R.drawable.ic_login_info,
-                    "Health Records",
-                    "View and manage all your available health records, including dispensed medications, health visits, COVID-19 test results, immunizations and more.",
+                    getString(R.string.health_records_title),
+                    getString(R.string.health_records_desc),
                     R.drawable.ic_bcsc,
-                    "Get Started",
+                    getString(R.string.get_started),
                     HomeNavigationType.HEALTH_RECORD
                 ),
                 HomeRecordItem(
                     R.drawable.ic_green_tick,
-                    "Proof of Vaccination",
-                    "View, download and print your BC Vaccine Card and federal proof of vaccination, to access events, businesses, services and to travel.",
+                    getString(R.string.proof_of_vaccination),
+                    getString(R.string.proof_of_vaccination_desc),
                     R.drawable.ic_right_arrow,
-                    "Add proofs",
+                    getString(R.string.add_proofs),
                     HomeNavigationType.VACCINE_PROOF
                 ),
                 HomeRecordItem(
                     R.drawable.ic_resources,
-                    "Resources",
-                    "Find useful information and learn how to get vaccinated or tested for COVID-19.",
+                    getString(R.string.resources),
+                    getString(R.string.resources_desc),
                     R.drawable.ic_right_arrow,
-                    "Learn more",
+                    getString(R.string.learn_more),
                     HomeNavigationType.RESOURCES
                 )
             )
@@ -168,7 +150,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
 
             if (!uiState.patientFirstName.isNullOrBlank()) {
-                binding.tvName.text = "Hello " + uiState.patientFirstName
+                binding.tvName.text = getString(R.string.hello) + " " + uiState.patientFirstName
             }
         }
     }

@@ -260,4 +260,14 @@
     <string name="from_yyyy_mm_dd">From (yyyy-mm-dd)</string>
     <string name="to_yyyy_mm_dd">To (yyyy-mm-dd)</string>
     <string name="timeline">Timeline</string>
+
+    <!-- Home screen -->
+    <string name="hello">Hello</string>
+    <string name="health_records_title">Health Records</string>
+    <string name="health_records_desc">View and manage all your available health records, including dispensed medications, health visits, COVID-19 test results, immunizations and more.</string>
+    <string name="proof_of_vaccination">Proof of vaccination</string>
+    <string name="proof_of_vaccination_desc">View, download and print your BC Vaccine Card and federal proof of vaccination, to access events, businesses, services and to travel.</string>
+    <string name="add_proofs">Add proofs</string>
+    <string name="resources_desc">Find useful information and learn how to get vaccinated or tested for COVID-19.</string>
+    <string name="learn_more">Learn more</string>
 </resources>
