@@ -26,10 +26,8 @@
         android:text="@string/tv_login_title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.50" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_login_message"
@@ -48,7 +46,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_login"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button2"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/log_in_with_bc_services_card"
@@ -63,7 +61,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_not_now"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button.OutlinedButton"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/not_now"

@@ -23,7 +23,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/ed_phn_number"
-                style="@style/BC_VAX.Widget.App.TextInputLayout"
+                style="@style/HealthGateway.Widget.App.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -65,7 +65,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tip_dob"
-                style="@style/BC_VAX.Widget.App.TextInputLayout"
+                style="@style/HealthGateway.Widget.App.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -90,7 +90,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tip_dot"
-                style="@style/BC_VAX.Widget.App.TextInputLayout"
+                style="@style/HealthGateway.Widget.App.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
@@ -163,7 +163,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_cancel"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button.OutlinedButton"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
@@ -177,7 +177,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_submit"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button1"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_1_x"
