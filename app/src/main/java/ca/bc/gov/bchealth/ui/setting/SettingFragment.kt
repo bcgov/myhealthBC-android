@@ -108,8 +108,8 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
                         bcscAuthViewModel.resetAuthStatus()
                     }
 
-                    if (it.authRequestIntent != null) {
-                        logoutResultLauncher.launch(it.authRequestIntent)
+                    if (it.endSessionIntent != null) {
+                        logoutResultLauncher.launch(it.endSessionIntent)
                         bcscAuthViewModel.resetAuthStatus()
                     }
                 }
