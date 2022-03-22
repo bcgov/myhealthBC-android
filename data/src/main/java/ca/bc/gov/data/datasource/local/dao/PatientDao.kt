@@ -116,4 +116,8 @@ interface PatientDao {
     @Transaction
     @Query("SELECT * FROM patient WHERE id = :patientId")
     suspend fun getPatientWithLabOrderAndTests(patientId: Long): PatientWithLabOrdersAndLabTests?
+
+    @Transaction
+    @Query("SELECT * FROM patient WHERE authentication_status = 'AUTHENTICATED'")
+    suspend fun getAuthenticatedPatient(): PatientEntity
 }

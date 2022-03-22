@@ -61,7 +61,7 @@ class PatientLocalDataSource @Inject constructor(
         } else {
             for (i in patientList.indices) {
                 if (patientList[i].fullName.toUniquePatientName()
-                    .equals(patient.fullName.toUniquePatientName(), true)
+                        .equals(patient.fullName.toUniquePatientName(), true)
                 ) {
                     return patientList[i].id
                 }
@@ -80,7 +80,7 @@ class PatientLocalDataSource @Inject constructor(
         } else {
             for (i in patientList.indices) {
                 if (patientList[i].fullName.toUniquePatientName()
-                    .equals(patientDto.fullName.toUniquePatientName(), true)
+                        .equals(patientDto.fullName.toUniquePatientName(), true)
                 ) {
                     patientDao.deletePatientById(patientList[i].id)
                 }
@@ -126,4 +126,7 @@ class PatientLocalDataSource @Inject constructor(
 
     suspend fun isAuthenticatedPatient(patientId: Long): Boolean =
         patientDao.isAuthenticatedPatient(patientId) > 0
+
+    suspend fun getAuthenticatedPatient(): PatientDto =
+        patientDao.getAuthenticatedPatient().toDto()
 }

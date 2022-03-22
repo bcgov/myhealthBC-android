@@ -6,10 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/layout_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_title"
+        android:id="@+id/tv_name"
         style="?textAppearanceHeadline3"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginStart="@dimen/space_4_x"
@@ -20,7 +28,7 @@
         android:textColor="@color/text_black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         android:text="Hello" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -36,50 +44,31 @@
         android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_name"
         android:text="What do you want to focus on today?"
         />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_continue"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_2_x"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginEnd="@dimen/space_4_x"
-        android:layout_marginBottom="@dimen/space_1_x"
-        android:text="@string/btn_continue"
+    <ca.bc.gov.bchealth.widget.RecyclerView
+        android:id="@+id/rv_home"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/space_2_x"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_desc"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_continue1"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button2"
-        android:layout_width="0dp"
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_2_x"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginEnd="@dimen/space_4_x"
-        android:layout_marginBottom="@dimen/space_1_x"
-        android:text="@string/btn_continue"
-        app:layout_constraintTop_toBottomOf="@+id/btn_continue"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_continue2"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_2_x"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginEnd="@dimen/space_4_x"
-        android:layout_marginBottom="@dimen/space_1_x"
-        android:text="@string/btn_continue"
-        app:layout_constraintTop_toBottomOf="@+id/btn_continue1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
