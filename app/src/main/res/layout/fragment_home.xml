@@ -16,16 +16,14 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_name"
-        style="?textAppearanceHeadline3"
+        style="?textAppearanceHeadline1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
-        android:textSize="20sp"
         android:gravity="start"
         android:textAlignment="textStart"
-        android:textColor="@color/text_black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
@@ -33,14 +31,14 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_desc"
-        style="?textAppearanceBody1"
+        style="?textAppearanceHeadline2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_1_x"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
         android:gravity="start"
-        android:textSize="15sp"
+        android:textSize="20sp"
         android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,10 +50,12 @@
         android:id="@+id/rv_home"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/space_2_x"
+        android:layout_marginTop="@dimen/space_1_x"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_desc"
+        android:paddingBottom="@dimen/space_2_x"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
