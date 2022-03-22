@@ -60,7 +60,7 @@ class HomeViewModel @Inject constructor(
         val fullName = patientRepository.getAuthenticatedPatient().fullName
         val nameList = fullName.split(" ")
         var patientFirstName = ""
-        if(nameList.isNotEmpty()) {
+        if (nameList.isNotEmpty()) {
             patientFirstName = nameList.first()
         }
         _uiState.update { state ->
