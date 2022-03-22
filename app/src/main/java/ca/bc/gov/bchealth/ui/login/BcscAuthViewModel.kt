@@ -102,7 +102,7 @@ class BcscAuthViewModel @Inject constructor(
             _authStatus.update {
                 it.copy(
                     showLoading = false,
-                    authRequestIntent = endSessionIntent
+                    endSessionIntent = endSessionIntent
                 )
             }
         } catch (e: Exception) {
@@ -164,12 +164,13 @@ class BcscAuthViewModel @Inject constructor(
             it.copy(
                 showLoading = false,
                 authRequestIntent = null,
+                endSessionIntent = null,
                 isError = false,
                 userName = "",
                 queItTokenUpdated = false,
                 loginStatus = null,
                 patientId = -1L,
-                ageLimitCheck = null
+                isWithinAgeLimit = false
             )
         }
     }
@@ -197,11 +198,15 @@ class BcscAuthViewModel @Inject constructor(
                 authParameters.second
             )
 
-            _authStatus.update {
-                it.copy(
-                    showLoading = true,
-                    ageLimitCheck = if (isWithinAgeLimit) AgeLimitCheck.PASSED else AgeLimitCheck.FAILED
-                )
+            if (isWithinAgeLimit) {
+                _authStatus.update {
+                    it.copy(
+                        showLoading = true,
+                        isWithinAgeLimit = true
+                    )
+                }
+            } else {
+                getEndSessionIntent()
             }
         } catch (e: Exception) {
             when (e) {
@@ -274,6 +279,7 @@ class BcscAuthViewModel @Inject constructor(
 data class AuthStatus(
     val showLoading: Boolean = false,
     val authRequestIntent: Intent? = null,
+    val endSessionIntent: Intent? = null,
     val isError: Boolean = false,
     val userName: String = "",
     val queItTokenUpdated: Boolean = false,
@@ -281,15 +287,10 @@ data class AuthStatus(
     val queItUrl: String? = null,
     val loginStatus: LoginStatus? = null,
     val patientId: Long = -1L,
-    val ageLimitCheck: AgeLimitCheck? = null
+    val isWithinAgeLimit: Boolean = false
 )
 
 enum class LoginStatus {
     ACTIVE,
     EXPIRED
-}
-
-enum class AgeLimitCheck {
-    PASSED,
-    FAILED
 }
