@@ -37,8 +37,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         setupToolBar()
 
-        checkLogin()
-
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BioMetricState>(
             BiometricsAuthenticationFragment.BIOMETRIC_STATE
         )?.observe(viewLifecycleOwner) {
@@ -63,10 +61,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 BcscAuthState.SUCCESS -> {
                 }
                 BcscAuthState.NOT_NOW -> {
-                    val destinationId = sharedViewModel.destinationId
-                    if (destinationId > 0) {
-                        findNavController().navigate(destinationId)
-                    }
                 }
                 else -> {
                 }
@@ -74,6 +68,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
 
         viewModel.launchCheck()
+
+        checkLogin()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -143,6 +139,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         val isLoginStatusActive = it.loginStatus == LoginStatus.ACTIVE
                         if (isLoginStatusActive) {
                             viewModel.getPatientFirstName()
+                        } else if (!sharedViewModel.isBCSCAuthShown) {
+                            findNavController().navigate(R.id.bcscAuthInfoFragment)
+                            sharedViewModel.isBCSCAuthShown = true
+                            viewModel.onBcscLoginRequired(false)
                         }
                     }
                 }
@@ -163,10 +163,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
             if (uiState.isBcscLoginRequiredPostBiometrics) {
                 findNavController().navigate(R.id.bcscAuthInfoFragment)
+                sharedViewModel.isBCSCAuthShown = true
                 viewModel.onBcscLoginRequired(false)
             }
 
-            if(!uiState.patientFirstName.isNullOrBlank()) {
+            if (!uiState.patientFirstName.isNullOrBlank()) {
                 binding.tvName.text = "Hello " + uiState.patientFirstName
             }
         }

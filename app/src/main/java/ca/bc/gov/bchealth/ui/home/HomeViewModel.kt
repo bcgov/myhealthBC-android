@@ -57,7 +57,12 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getPatientFirstName() = viewModelScope.launch {
-        val patientFirstName = patientRepository.getAuthenticatedPatient().fullName
+        val fullName = patientRepository.getAuthenticatedPatient().fullName
+        val nameList = fullName.split(" ")
+        var patientFirstName = ""
+        if(nameList.isNotEmpty()) {
+            patientFirstName = nameList.first()
+        }
         _uiState.update { state ->
             state.copy(
                 patientFirstName = patientFirstName
