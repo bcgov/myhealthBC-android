@@ -22,6 +22,7 @@
         android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
+        android:textSize="28sp"
         android:gravity="start"
         android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
