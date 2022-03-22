@@ -214,8 +214,8 @@
     <string name="incorrect_credentials">Please enter valid credentials</string>
     <string name="login_success_title">Log in successful</string>
     <string name="login_success_message">Your records will be automatically added and updated in My Health BC.</string>
-    <string name="age_limit_title">You have been restricted!</string>
-    <string name="age_limit_message">Users with age 12 years or above are allowed to login with BCSC.</string>
+    <string name="age_limit_title">Age Restriction</string>
+    <string name="age_limit_message">You must be 12 years of age or older to use Health Gateway.</string>
 
     <!--ERROR-->
     <string name="error">Error!</string>
