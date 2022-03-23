@@ -213,6 +213,7 @@ class BcscAuthViewModel @Inject constructor(
                 isWithinAgeLimit = false,
                 canInitiateBcscLogin = null,
                 onMustBeQueued = false,
+                tosAccepted = null
             )
         }
     }
@@ -250,6 +251,47 @@ class BcscAuthViewModel @Inject constructor(
                 }
             } else {
                 getEndSessionIntent()
+            }
+        } catch (e: Exception) {
+            when (e) {
+                is MustBeQueuedException -> {
+                    _authStatus.update {
+                        it.copy(
+                            showLoading = true,
+                            onMustBeQueued = true,
+                            queItUrl = e.message,
+                        )
+                    }
+                }
+                else -> {
+                    _authStatus.update {
+                        it.copy(
+                            showLoading = false,
+                            isError = true
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun isTermsOfServiceAccepted() = viewModelScope.launch {
+        _authStatus.update {
+            it.copy(
+                showLoading = true
+            )
+        }
+        try {
+            val authParameters = bcscAuthRepo.getAuthParameters()
+            val isTosAccepted = profileRepository.isTermsOfServiceAccepted(
+                authParameters.first,
+                authParameters.second
+            )
+            _authStatus.update {
+                it.copy(
+                    showLoading = true,
+                    tosAccepted = if (isTosAccepted) TOSAccepted.ACCEPTED else TOSAccepted.NOT_ACCEPTED
+                )
             }
         } catch (e: Exception) {
             when (e) {
@@ -331,10 +373,22 @@ data class AuthStatus(
     val loginStatus: LoginStatus? = null,
     val patientId: Long = -1L,
     val isWithinAgeLimit: Boolean = false,
-    val canInitiateBcscLogin: Boolean? = null
+    val canInitiateBcscLogin: Boolean? = null,
+    val tosAccepted: TOSAccepted? = null
 )
 
 enum class LoginStatus {
     ACTIVE,
     EXPIRED
+}
+
+enum class AgeLimitCheck {
+    PASSED,
+    FAILED
+}
+
+enum class TOSAccepted {
+    ACCEPTED,
+    NOT_ACCEPTED,
+    USER_DECLINED
 }

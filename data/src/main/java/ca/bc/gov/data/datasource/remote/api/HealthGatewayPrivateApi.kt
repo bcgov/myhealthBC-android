@@ -7,6 +7,8 @@ import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
 import ca.bc.gov.data.datasource.remote.model.response.PatientResponse
 import ca.bc.gov.data.datasource.remote.model.response.ProfileValidationResponse
+import ca.bc.gov.data.datasource.remote.model.response.TermsOfServiceResponse
+import ca.bc.gov.data.datasource.remote.model.response.UserProfileResponse
 import ca.bc.gov.data.datasource.remote.model.response.VaccineStatusResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -82,4 +84,13 @@ interface HealthGatewayPrivateApi {
         @Path(HDID) hdid: String,
         @Header(AUTHORIZATION) accessToken: String
     ): Response<ProfileValidationResponse>
+
+    @GET("$BASE_USER_PROFILE_SERVICE/{$HDID}")
+    suspend fun getUserProfile(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String
+    ): Response<UserProfileResponse>
+
+    @GET("$BASE_USER_PROFILE_SERVICE/termsofservice")
+    suspend fun getTermsOfService(): Response<TermsOfServiceResponse>
 }
