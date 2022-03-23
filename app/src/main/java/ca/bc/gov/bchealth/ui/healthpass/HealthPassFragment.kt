@@ -23,8 +23,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Scene
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHelathPassBinding
-import ca.bc.gov.bchealth.ui.auth.BioMetricState
-import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment.Companion.BIOMETRIC_STATE
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment.Companion.BCSC_AUTH_STATUS
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
@@ -59,20 +57,6 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupToolBar()
-
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BioMetricState>(
-            BIOMETRIC_STATE
-        )?.observe(viewLifecycleOwner) {
-            when (it) {
-                BioMetricState.SUCCESS -> {
-                    viewModel.onAuthenticationRequired(false)
-                    viewModel.launchCheck()
-                }
-                else -> {
-                    findNavController().popBackStack()
-                }
-            }
-        }
 
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
             BCSC_AUTH_STATUS
@@ -144,13 +128,8 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
             }
         }
 
-        viewModel.launchCheck()
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    onBoardingFlow()
-                }
                 launch {
                     collectHealthPasses()
                 }
@@ -178,24 +157,6 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                         }
                     }
                 }
-            }
-        }
-    }
-
-    private suspend fun onBoardingFlow() {
-        viewModel.uiState.collect { uiState ->
-            if (uiState.isOnBoardingRequired) {
-                findNavController().navigate(R.id.onBoardingSliderFragment)
-                viewModel.onBoardingShown()
-            }
-
-            if (uiState.isAuthenticationRequired) {
-                findNavController().navigate(R.id.biometricsAuthenticationFragment)
-            }
-
-            if (uiState.isBcscLoginRequiredPostBiometrics) {
-                findNavController().navigate(R.id.bcscAuthInfoFragment)
-                viewModel.onBcscLoginRequired(false)
             }
         }
     }

@@ -101,6 +101,7 @@
     <string name="get_federal_travel_pass">Get Canadian COVID-19 proof</string>
     <string name="health_records">Health records</string>
     <string name="health_passes">Proof of vaccination</string>
+    <string name="home">Home</string>
 
     <!-- In app updates -->
     <string name="update_success">Update Success!</string>
@@ -261,4 +262,7 @@
     <string name="from_yyyy_mm_dd">From (yyyy-mm-dd)</string>
     <string name="to_yyyy_mm_dd">To (yyyy-mm-dd)</string>
     <string name="timeline">Timeline</string>
+
+    <!-- Home screen -->
+    <string name="hello">Hello</string>
 </resources>

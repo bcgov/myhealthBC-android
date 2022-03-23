@@ -126,4 +126,7 @@ class PatientLocalDataSource @Inject constructor(
 
     suspend fun isAuthenticatedPatient(patientId: Long): Boolean =
         patientDao.isAuthenticatedPatient(patientId) > 0
+
+    suspend fun getAuthenticatedPatient(): PatientDto =
+        patientDao.getAuthenticatedPatient().toDto()
 }
