@@ -15,6 +15,7 @@ import ca.bc.gov.data.datasource.remote.ConfigRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
+import ca.bc.gov.data.datasource.remote.TermsOfServiceRemoteDataSource
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.CommentRepository
 import ca.bc.gov.repository.FederalTravelPassDecoderRepository
@@ -26,6 +27,7 @@ import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.QrCodeGeneratorRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.RecentPhnDobRepository
+import ca.bc.gov.repository.TermsOfServiceRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.labtest.LabTestRepository
@@ -196,4 +198,10 @@ class RepositoriesModule {
         bcscAuthRepo: BcscAuthRepo
     ): CommentRepository =
         CommentRepository(commentRemoteDataSource, commentLocalDataSource, bcscAuthRepo)
+
+    @Provides
+    @Singleton
+    fun provideTermsOfServiceRepository(
+        termsOfServiceRemoteDataSource: TermsOfServiceRemoteDataSource
+    ): TermsOfServiceRepository = TermsOfServiceRepository(termsOfServiceRemoteDataSource)
 }

@@ -5,6 +5,7 @@ import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.PatientRemoteDataSource
+import ca.bc.gov.data.datasource.remote.TermsOfServiceRemoteDataSource
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPublicApi
 import dagger.Module
@@ -53,4 +54,10 @@ class RemoteDataSourceModule {
     fun provideCommentRemoteDataSource(
         healthGatewayPrivateApi: HealthGatewayPrivateApi
     ) = CommentRemoteDataSource(healthGatewayPrivateApi)
+
+    @Singleton
+    @Provides
+    fun providesTermsOfServiceRemoteDataSource(
+        healthGatewayPrivateApi: HealthGatewayPrivateApi
+    ): TermsOfServiceRemoteDataSource = TermsOfServiceRemoteDataSource(healthGatewayPrivateApi)
 }

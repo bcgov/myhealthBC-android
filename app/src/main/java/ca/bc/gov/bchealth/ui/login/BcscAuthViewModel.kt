@@ -142,7 +142,7 @@ class BcscAuthViewModel @Inject constructor(
             _authStatus.update {
                 it.copy(
                     showLoading = false,
-                    authRequestIntent = endSessionIntent
+                    endSessionIntent = endSessionIntent
                 )
             }
         } catch (e: Exception) {
@@ -204,14 +204,16 @@ class BcscAuthViewModel @Inject constructor(
             it.copy(
                 showLoading = false,
                 authRequestIntent = null,
+                endSessionIntent = null,
                 isError = false,
                 userName = "",
                 queItTokenUpdated = false,
                 loginStatus = null,
                 patientId = -1L,
-                ageLimitCheck = null,
+                isWithinAgeLimit = false,
                 canInitiateBcscLogin = null,
                 onMustBeQueued = false,
+                tosAccepted = null
             )
         }
     }
@@ -240,10 +242,55 @@ class BcscAuthViewModel @Inject constructor(
                 authParameters.second
             )
 
+            if (isWithinAgeLimit) {
+                _authStatus.update {
+                    it.copy(
+                        showLoading = true,
+                        isWithinAgeLimit = true
+                    )
+                }
+            } else {
+                getEndSessionIntent()
+            }
+        } catch (e: Exception) {
+            when (e) {
+                is MustBeQueuedException -> {
+                    _authStatus.update {
+                        it.copy(
+                            showLoading = true,
+                            onMustBeQueued = true,
+                            queItUrl = e.message,
+                        )
+                    }
+                }
+                else -> {
+                    _authStatus.update {
+                        it.copy(
+                            showLoading = false,
+                            isError = true
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun isTermsOfServiceAccepted() = viewModelScope.launch {
+        _authStatus.update {
+            it.copy(
+                showLoading = true
+            )
+        }
+        try {
+            val authParameters = bcscAuthRepo.getAuthParameters()
+            val isTosAccepted = profileRepository.isTermsOfServiceAccepted(
+                authParameters.first,
+                authParameters.second
+            )
             _authStatus.update {
                 it.copy(
                     showLoading = true,
-                    ageLimitCheck = if (isWithinAgeLimit) AgeLimitCheck.PASSED else AgeLimitCheck.FAILED
+                    tosAccepted = if (isTosAccepted) TOSAccepted.ACCEPTED else TOSAccepted.NOT_ACCEPTED
                 )
             }
         } catch (e: Exception) {
@@ -317,6 +364,7 @@ class BcscAuthViewModel @Inject constructor(
 data class AuthStatus(
     val showLoading: Boolean = false,
     val authRequestIntent: Intent? = null,
+    val endSessionIntent: Intent? = null,
     val isError: Boolean = false,
     val userName: String = "",
     val queItTokenUpdated: Boolean = false,
@@ -324,8 +372,9 @@ data class AuthStatus(
     val queItUrl: String? = null,
     val loginStatus: LoginStatus? = null,
     val patientId: Long = -1L,
-    val ageLimitCheck: AgeLimitCheck? = null,
-    val canInitiateBcscLogin: Boolean? = null
+    val isWithinAgeLimit: Boolean = false,
+    val canInitiateBcscLogin: Boolean? = null,
+    val tosAccepted: TOSAccepted? = null
 )
 
 enum class LoginStatus {
@@ -336,4 +385,10 @@ enum class LoginStatus {
 enum class AgeLimitCheck {
     PASSED,
     FAILED
+}
+
+enum class TOSAccepted {
+    ACCEPTED,
+    NOT_ACCEPTED,
+    USER_DECLINED
 }

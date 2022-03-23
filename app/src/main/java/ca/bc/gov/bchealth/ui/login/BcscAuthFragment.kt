@@ -55,6 +55,21 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
     ) { activityResult ->
         processAuthResponse(activityResult)
     }
+    private var logoutResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { activityResult ->
+        if (activityResult.resultCode == Activity.RESULT_OK) {
+            viewModel.processLogoutResponse()
+            showAgeLimitRestrictionDialog()
+        } else {
+            AlertDialogHelper.showAlertDialog(
+                context = requireContext(),
+                title = getString(R.string.error),
+                msg = getString(R.string.error_message),
+                positiveBtnMsg = getString(R.string.dialog_button_ok)
+            )
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,9 +108,20 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
                     handleAgeLimitCheck(it)
 
+                    handleTosCheck(it)
+
                     handlePatientDataResponse(it)
+
+                    handleEndSessionRequest(it)
                 }
             }
+        }
+    }
+
+    private fun handleEndSessionRequest(authStatus: AuthStatus) {
+        if (authStatus.endSessionIntent != null) {
+            logoutResultLauncher.launch(authStatus.endSessionIntent)
+            viewModel.resetAuthStatus()
         }
     }
 
@@ -115,12 +141,25 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
     }
 
     private fun handleAgeLimitCheck(authStatus: AuthStatus) {
-        if (authStatus.ageLimitCheck != null) {
+        if (authStatus.isWithinAgeLimit) {
             viewModel.resetAuthStatus()
-            if (authStatus.ageLimitCheck == AgeLimitCheck.PASSED)
-                viewModel.fetchPatientData()
-            else
-                showAgeLimitRestrictionDialog()
+            viewModel.isTermsOfServiceAccepted()
+        }
+    }
+
+    private fun handleTosCheck(authStatus: AuthStatus) {
+
+        if (authStatus.tosAccepted != null) {
+            viewModel.resetAuthStatus()
+            when (authStatus.tosAccepted) {
+                TOSAccepted.ACCEPTED -> {
+                    viewModel.fetchPatientData()
+                }
+                TOSAccepted.NOT_ACCEPTED -> {
+                    findNavController().navigate(R.id.termsOfServiceFragment)
+                }
+                TOSAccepted.USER_DECLINED -> {}
+            }
         }
     }
 
