@@ -11,6 +11,7 @@ import ca.bc.gov.data.datasource.local.TestResultLocalDataSource
 import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.CommentRemoteDataSource
+import ca.bc.gov.data.datasource.remote.ConfigRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
@@ -150,11 +151,13 @@ class RepositoriesModule {
     fun provideBcscAuthRepository(
         @ApplicationContext context: Context,
         encryptedPreferenceStorage: EncryptedPreferenceStorage,
-        patientLocalDataSource: PatientLocalDataSource
+        patientLocalDataSource: PatientLocalDataSource,
+        configRemoteDataSource: ConfigRemoteDataSource
     ) = BcscAuthRepo(
         context,
         encryptedPreferenceStorage,
-        patientLocalDataSource
+        patientLocalDataSource,
+        configRemoteDataSource
     )
 
     @Provides
