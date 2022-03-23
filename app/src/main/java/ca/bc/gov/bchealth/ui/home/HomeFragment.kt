@@ -143,8 +143,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 viewModel.onBoardingShown()
             }
 
-            if (uiState.isAuthenticationRequired) {
+            if (uiState.isAuthenticationRequired && !sharedViewModel.isBiometricAuthShown) {
                 findNavController().navigate(R.id.biometricsAuthenticationFragment)
+                sharedViewModel.isBiometricAuthShown = true
+                viewModel.onAuthenticationRequired(false)
             }
 
             if (uiState.isBcscLoginRequiredPostBiometrics) {

@@ -23,4 +23,5 @@ class SharedViewModel @Inject constructor() : ViewModel() {
     var destinationId: Int = 0
     var isProtectiveWordAdded = false
     var isBCSCAuthShown = false
+    var isBiometricAuthShown = false
 }
