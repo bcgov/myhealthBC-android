@@ -61,6 +61,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
         }
 
+        initRecyclerview()
+    }
+
+    private fun initRecyclerview() {
         homeAdapter = HomeAdapter {
             when (it) {
                 HomeNavigationType.HEALTH_RECORD -> {
