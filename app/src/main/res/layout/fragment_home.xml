@@ -40,6 +40,7 @@
         android:layout_marginEnd="@dimen/space_4_x"
         android:gravity="start"
         android:textSize="20sp"
+        android:textColor="@color/blue"
         android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -60,6 +60,7 @@
             android:layout_height="wrap_content"
             style="?textAppearanceHeadline4"
             android:textSize="15sp"
+            android:textColor="@color/primary_blue"
             android:layout_marginTop="@dimen/space_1_x"
             android:layout_marginStart="@dimen/space_2_x"
             android:layout_marginEnd="@dimen/space_2_x"
