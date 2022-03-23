@@ -79,34 +79,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
         }
         binding.rvHome.adapter = homeAdapter
-        homeAdapter.submitList(
-            mutableListOf(
-                HomeRecordItem(
-                    R.drawable.ic_login_info,
-                    getString(R.string.health_records_title),
-                    getString(R.string.health_records_desc),
-                    R.drawable.ic_bcsc,
-                    getString(R.string.get_started),
-                    HomeNavigationType.HEALTH_RECORD
-                ),
-                HomeRecordItem(
-                    R.drawable.ic_green_tick,
-                    getString(R.string.proof_of_vaccination),
-                    getString(R.string.proof_of_vaccination_desc),
-                    R.drawable.ic_right_arrow,
-                    getString(R.string.add_proofs),
-                    HomeNavigationType.VACCINE_PROOF
-                ),
-                HomeRecordItem(
-                    R.drawable.ic_resources,
-                    getString(R.string.resources),
-                    getString(R.string.resources_desc),
-                    R.drawable.ic_right_arrow,
-                    getString(R.string.learn_more),
-                    HomeNavigationType.RESOURCES
-                )
-            )
-        )
+        homeAdapter.submitList(viewModel.getHomeRecordsList())
     }
 
     private fun checkLogin() {
