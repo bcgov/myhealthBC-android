@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.R
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.patient.PatientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -69,6 +70,33 @@ class HomeViewModel @Inject constructor(
             )
         }
     }
+
+    fun getHomeRecordsList() = mutableListOf(
+        HomeRecordItem(
+            R.drawable.ic_login_info,
+            "Health Records",
+            "View and manage all your available health records, including dispensed medications, health visits, COVID-19 test results, immunizations and more.",
+            R.drawable.ic_bcsc,
+            "Get started",
+            HomeNavigationType.HEALTH_RECORD
+        ),
+        HomeRecordItem(
+            R.drawable.ic_green_tick,
+            "Proof of vaccination",
+            "View, download and print your BC Vaccine Card and federal proof of vaccination, to access events, businesses, services and to travel.",
+            R.drawable.ic_right_arrow,
+            "Add proofs",
+            HomeNavigationType.VACCINE_PROOF
+        ),
+        HomeRecordItem(
+            R.drawable.ic_resources,
+            "Resources",
+            "Find useful information and learn how to get vaccinated or tested for COVID-19.",
+            R.drawable.ic_right_arrow,
+            "Learn more",
+            HomeNavigationType.RESOURCES
+        )
+    )
 }
 
 data class HomeUiState(
