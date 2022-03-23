@@ -13,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentVaccineRecordDetailBinding
+import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.AuthenticationStatus
@@ -47,6 +48,15 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
             ivLeftOption.visibility = View.VISIBLE
             ivLeftOption.setImageResource(R.drawable.ic_action_back)
             ivLeftOption.setOnClickListener {
+                if (findNavController().previousBackStackEntry?.destination?.id ==
+                    R.id.fetchVaccineRecordFragment
+                ) {
+                    findNavController().previousBackStackEntry?.savedStateHandle
+                        ?.set(
+                            FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS,
+                            args.patientId
+                        )
+                }
                 findNavController().popBackStack()
             }
 

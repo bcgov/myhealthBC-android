@@ -67,7 +67,11 @@
         android:id="@+id/fetchTestRecordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment"
         android:label="FetchTestRecordFragment"
-        tools:layout="@layout/fragment_fetch_covid_test_result" />
+        tools:layout="@layout/fragment_fetch_covid_test_result" >
+        <action
+            android:id="@+id/action_fetchTestRecordFragment_to_testResultDetailFragment"
+            app:destination="@id/testResultDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/testResultDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.covidtests.TestResultDetailFragment"
@@ -78,6 +82,16 @@
         <argument
             android:name="testResult_id"
             app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fetchVaccineRecordFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment"
+        android:label="FetchVaccineRecordFragment"
+        tools:layout="@layout/fragment_fetch_vaccine_record" >
+        <action
+            android:id="@+id/action_fetchVaccineRecordFragment_to_vaccineRecordDetailFragment"
+            app:destination="@id/vaccineRecordDetailFragment" />
     </fragment>
 
     <fragment
