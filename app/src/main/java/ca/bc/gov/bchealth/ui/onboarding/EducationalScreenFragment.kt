@@ -27,8 +27,8 @@ class EducationalScreenFragment : Fragment(R.layout.fragment_educational_screen)
         super.onViewCreated(view, savedInstanceState)
 
         when (position) {
-            0 -> showHealthPassesIntro()
-            1 -> showHealthRecordsIntro()
+            0 -> showHealthRecordsIntro()
+            1 -> showHealthPassesIntro()
             2 -> showResourcesIntro()
             3 -> showNewsFeedIntro()
         }
