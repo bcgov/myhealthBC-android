@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,45 +27,10 @@ class HealthPassViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(HealthPassUiState())
     val uiState: StateFlow<HealthPassUiState> = _uiState.asStateFlow()
-    var isAuthenticationRequired: Boolean = true
-    var isBcscLoginRequiredPostBiometrics: Boolean = false
     val healthPasses = patientRepository.patientWithVaccineAndDoses.map { records ->
         records.map { record ->
             record.toUiModel()
         }
-    }
-
-    fun launchCheck() = viewModelScope.launch {
-        when {
-            onBoardingRepository.onBoardingRequired -> {
-                isBcscLoginRequiredPostBiometrics = true
-                _uiState.update { state ->
-                    state.copy(isLoading = false, isOnBoardingRequired = true)
-                }
-            }
-            isAuthenticationRequired -> {
-                _uiState.update { state -> state.copy(isAuthenticationRequired = true) }
-            }
-            isBcscLoginRequiredPostBiometrics -> {
-                _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = true) }
-            }
-        }
-    }
-
-    fun onBoardingShown() {
-        _uiState.update {
-            it.copy(isOnBoardingRequired = false)
-        }
-    }
-
-    fun onAuthenticationRequired(isRequired: Boolean) {
-        isAuthenticationRequired = isRequired
-        _uiState.update { state -> state.copy(isAuthenticationRequired = isRequired) }
-    }
-
-    fun onBcscLoginRequired(isRequired: Boolean) {
-        isBcscLoginRequiredPostBiometrics = isRequired
-        _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = isRequired) }
     }
 
     fun deleteHealthPass(vaccineRecordId: Long) = viewModelScope.launch {
