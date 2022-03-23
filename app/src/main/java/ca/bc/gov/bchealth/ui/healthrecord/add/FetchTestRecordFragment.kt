@@ -41,14 +41,11 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
     private val recentPhnDobViewModel: RecentPhnDobViewModel by viewModels()
 
     companion object {
-        private const val TAG = "FetchTestRecordFragment"
         const val TEST_RECORD_ADDED_SUCCESS = "TEST_RECORD_ADDED_SUCCESS"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        findNavController().previousBackStackEntry?.savedStateHandle
-            ?.set(TEST_RECORD_ADDED_SUCCESS, -1L)
 
         setupToolBar()
 
@@ -61,6 +58,22 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
         initClickListeners()
 
         observeCovidTestResult()
+
+        observeCovidTestRecordAddition()
+    }
+
+    private fun observeCovidTestRecordAddition() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
+            TEST_RECORD_ADDED_SUCCESS
+        )?.observe(
+            viewLifecycleOwner
+        ) {
+            if (it > 0) {
+                findNavController().previousBackStackEntry?.savedStateHandle
+                    ?.set(TEST_RECORD_ADDED_SUCCESS, it)
+                findNavController().popBackStack()
+            }
+        }
     }
 
     private fun showLoader(value: Boolean) {
@@ -89,14 +102,17 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
                     }
 
                     if (state.onTestResultFetched > 0) {
-                        findNavController().previousBackStackEntry?.savedStateHandle
-                            ?.set(TEST_RECORD_ADDED_SUCCESS, state.onTestResultFetched)
                         if (binding.checkboxRemember.isChecked) {
                             val phn = binding.edPhn.text.toString()
                             val dob = binding.edtDob.text.toString()
                             recentPhnDobViewModel.setRecentPhnDobData(phn, dob)
                         }
-                        findNavController().popBackStack()
+                        val action = FetchTestRecordFragmentDirections
+                            .actionFetchTestRecordFragmentToTestResultDetailFragment(
+                                state.patientId,
+                                state.onTestResultFetched
+                            )
+                        findNavController().navigate(action)
                     }
 
                     if (state.onMustBeQueued && state.queItUrl != null) {
@@ -109,7 +125,6 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
 
     private fun initClickListeners() {
         binding.btnSubmit.setOnClickListener {
-
             fetchTestRecord()
         }
 

@@ -16,7 +16,7 @@ class FetchTestResultRepository @Inject constructor(
         phn: String,
         dateOfBirth: String,
         collectionDate: String
-    ): Long {
+    ): Pair<Long, Long> {
         val response = laboratoryRemoteDataSource.getCovidTests(
             CovidTestRequest(
                 phn, dateOfBirth, collectionDate

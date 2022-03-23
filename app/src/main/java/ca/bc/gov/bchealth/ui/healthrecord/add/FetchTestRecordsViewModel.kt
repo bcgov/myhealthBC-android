@@ -45,10 +45,11 @@ class FetchTestRecordsViewModel @Inject constructor(
             )
 
             try {
-                val tesTestResultId = repository.fetchCovidTestRecord(phn, dateOfBirth, collectionDate)
+                val (patientId, tesTestResultId) = repository.fetchCovidTestRecord(phn, dateOfBirth, collectionDate)
                 _uiState.tryEmit(
                     FetchTestRecordUiState(
-                        onTestResultFetched = tesTestResultId
+                        onTestResultFetched = tesTestResultId,
+                        patientId = patientId
                     )
                 )
             } catch (e: Exception) {
@@ -119,5 +120,6 @@ data class FetchTestRecordUiState(
     val queItUrl: String? = null,
     val onTestResultFetched: Long = -1L,
     val isError: Boolean = false,
-    val errorData: ErrorData? = null
+    val errorData: ErrorData? = null,
+    val patientId: Long = -1L
 )
