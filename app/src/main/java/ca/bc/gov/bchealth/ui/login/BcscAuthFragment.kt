@@ -108,6 +108,8 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
                     handleAgeLimitCheck(it)
 
+                    handleTosCheck(it)
+
                     handlePatientDataResponse(it)
 
                     handleEndSessionRequest(it)
@@ -141,7 +143,23 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
     private fun handleAgeLimitCheck(authStatus: AuthStatus) {
         if (authStatus.isWithinAgeLimit) {
             viewModel.resetAuthStatus()
-            viewModel.fetchPatientData()
+            viewModel.isTermsOfServiceAccepted()
+        }
+    }
+
+    private fun handleTosCheck(authStatus: AuthStatus) {
+
+        if (authStatus.tosAccepted != null) {
+            viewModel.resetAuthStatus()
+            when (authStatus.tosAccepted) {
+                TOSAccepted.ACCEPTED -> {
+                    viewModel.fetchPatientData()
+                }
+                TOSAccepted.NOT_ACCEPTED -> {
+                    findNavController().navigate(R.id.termsOfServiceFragment)
+                }
+                TOSAccepted.USER_DECLINED -> {}
+            }
         }
     }
 
