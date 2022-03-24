@@ -35,6 +35,10 @@ android {
     flavorDimensions "version"
     productFlavors {
 
+        mock {
+            dimension "version"
+            resValue "string", "base_url", "https://mock.healthgateway.gov.bc.ca/"
+        }
         dev {
             dimension "version"
             resValue "string", "base_url", "https://dev.healthgateway.gov.bc.ca/"

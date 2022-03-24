@@ -75,6 +75,8 @@ class QueueItInterceptor @Inject constructor(
                     loaded = checkForLoadedFlag(json)
                     retryCount++
                 }
+            } else {
+                return response
             }
         } while (!loaded && retryCount < 3)
 

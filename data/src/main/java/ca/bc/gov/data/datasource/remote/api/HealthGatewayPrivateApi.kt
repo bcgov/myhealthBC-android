@@ -1,5 +1,6 @@
 package ca.bc.gov.data.datasource.remote.api
 
+import ca.bc.gov.data.datasource.remote.model.request.UserProfileRequest
 import ca.bc.gov.data.datasource.remote.model.response.AuthenticatedCovidTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestPdfResponse
@@ -11,8 +12,10 @@ import ca.bc.gov.data.datasource.remote.model.response.TermsOfServiceResponse
 import ca.bc.gov.data.datasource.remote.model.response.UserProfileResponse
 import ca.bc.gov.data.datasource.remote.model.response.VaccineStatusResponse
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -93,4 +96,11 @@ interface HealthGatewayPrivateApi {
 
     @GET("$BASE_USER_PROFILE_SERVICE/termsofservice")
     suspend fun getTermsOfService(): Response<TermsOfServiceResponse>
+
+    @POST("$BASE_USER_PROFILE_SERVICE/{$HDID}")
+    suspend fun updateUserProfile(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String,
+        @Body profileRequest: UserProfileRequest
+    ): Response<UserProfileResponse>
 }
