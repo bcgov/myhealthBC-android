@@ -1,5 +1,6 @@
 package ca.bc.gov.data.datasource.local
 
+import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
@@ -127,6 +128,6 @@ class PatientLocalDataSource @Inject constructor(
     suspend fun isAuthenticatedPatient(patientId: Long): Boolean =
         patientDao.isAuthenticatedPatient(patientId) > 0
 
-    suspend fun getAuthenticatedPatient(): PatientDto =
-        patientDao.getAuthenticatedPatient().toDto()
+    suspend fun findPatientByAuthStatus(authenticationStatus: AuthenticationStatus): PatientDto? =
+        patientDao.findPatientByAuthStatus(authenticationStatus)?.toDto()
 }

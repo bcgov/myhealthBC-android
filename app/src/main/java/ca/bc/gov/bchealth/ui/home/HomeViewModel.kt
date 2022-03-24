@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.patient.PatientRepository
@@ -12,7 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -60,26 +60,19 @@ class HomeViewModel @Inject constructor(
         _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = isRequired) }
     }
 
-    fun getPatientFirstName() = viewModelScope.launch {
-        val isLoggedIn: Boolean = try {
-            bcscAuthRepo.checkLogin()
-        } catch (e: Exception) {
-            false
-        }
-        var patientFirstName = ""
-        if (isLoggedIn) {
-            val fullName = patientRepository.getAuthenticatedPatient().fullName
-            val nameList = fullName.split(" ")
-            if (nameList.isNotEmpty()) {
-                patientFirstName = nameList.first()
+    fun getAuthenticatedPatientName() = viewModelScope.launch {
+        try {
+            val patient =
+                patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
+            val names = patient.fullName.split(" ")
+            val firstName = if (names.isNotEmpty()) names.first() else ""
+            _uiState.update {
+                it.copy(patientFirstName = firstName)
             }
-        } else {
-            patientFirstName = ""
-        }
-        _uiState.update { state ->
-            state.copy(
-                patientFirstName = patientFirstName
-            )
+        } catch (e: Exception) {
+            _uiState.update {
+                it.copy(patientFirstName = "")
+            }
         }
     }
 
