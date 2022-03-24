@@ -34,7 +34,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: myhealth_mock.apk
-          path: app/build/outputs/apk/mock/debug/app-mock-debug.apk
+          path: app/build/outputs/apk/dev/debug/app-mock-debug.apk
 
       - name: upload dev apk
         uses: actions/upload-artifact@v1
@@ -61,7 +61,7 @@ jobs:
           appId: ${{secrets.FIREBASE_APP_ID}}
           token: ${{secrets.FIREBASE_TOKEN}}
           groups: freshworks.io
-          file: app/build/outputs/apk/mock/debug/app-mock-debug.apk
+          file: app/build/outputs/apk/dev/debug/app-mock-debug.apk
 
       - name: upload dev APK to firebase
         id: fb_dev

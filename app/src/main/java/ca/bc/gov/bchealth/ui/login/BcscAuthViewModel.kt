@@ -316,6 +316,53 @@ class BcscAuthViewModel @Inject constructor(
         }
     }
 
+    fun acceptTermsAndService() = viewModelScope.launch {
+        _authStatus.update {
+            it.copy(
+                showLoading = true
+            )
+        }
+
+        try {
+            val authParameters = bcscAuthRepo.getAuthParameters()
+            val isTosAccepted = profileRepository.acceptTermsOfService(
+                authParameters.first,
+                authParameters.second
+            )
+
+            if (isTosAccepted) {
+                _authStatus.update {
+                    it.copy(
+                        showLoading = true,
+                        tosAccepted = TOSAccepted.ACCEPTED
+                    )
+                }
+            } else {
+                getEndSessionIntent()
+            }
+        } catch (e: Exception) {
+            when (e) {
+                is MustBeQueuedException -> {
+                    _authStatus.update {
+                        it.copy(
+                            showLoading = true,
+                            onMustBeQueued = true,
+                            queItUrl = e.message,
+                        )
+                    }
+                }
+                else -> {
+                    _authStatus.update {
+                        it.copy(
+                            showLoading = false,
+                            isError = true
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     fun fetchPatientData() = viewModelScope.launch {
         _authStatus.update {
             it.copy(
