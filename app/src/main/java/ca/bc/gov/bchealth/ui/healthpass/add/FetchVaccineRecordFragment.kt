@@ -54,8 +54,6 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        findNavController().previousBackStackEntry?.savedStateHandle
-            ?.set(VACCINE_RECORD_ADDED_SUCCESS, -1L)
 
         setupToolBar()
 
@@ -67,7 +65,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
         initClickListeners()
 
-        observeCovidTestResult()
+        observeUiState()
 
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -77,6 +75,22 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                         performActionBasedOnState(state)
                     }
                 }
+            }
+        }
+
+        observeVaccineRecordAddition()
+    }
+
+    private fun observeVaccineRecordAddition() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
+            VACCINE_RECORD_ADDED_SUCCESS
+        )?.observe(
+            viewLifecycleOwner
+        ) {
+            if (it > 0) {
+                findNavController().previousBackStackEntry?.savedStateHandle
+                    ?.set(VACCINE_RECORD_ADDED_SUCCESS, it)
+                findNavController().popBackStack()
             }
         }
     }
@@ -94,8 +108,6 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
             }
             Status.INSERTED,
             Status.UPDATED -> {
-                findNavController().previousBackStackEntry?.savedStateHandle
-                    ?.set(VACCINE_RECORD_ADDED_SUCCESS, state.modifiedRecordId)
                 analyticsFeatureViewModel.track(
                     AnalyticsAction.ADD_QR,
                     AnalyticsActionData.GET
@@ -105,7 +117,22 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                     val dob = binding.edDob.text.toString()
                     recentPhnDobViewModel.setRecentPhnDobData(phn, dob)
                 }
-                findNavController().popBackStack()
+                if (findNavController().previousBackStackEntry?.destination?.id ==
+                    R.id.addCardOptionFragment
+                ) {
+                    findNavController().previousBackStackEntry?.savedStateHandle
+                        ?.set(
+                            VACCINE_RECORD_ADDED_SUCCESS,
+                            state.modifiedRecordId
+                        )
+                    findNavController().popBackStack()
+                } else {
+                    val action = FetchVaccineRecordFragmentDirections
+                        .actionFetchVaccineRecordFragmentToVaccineRecordDetailFragment(
+                            state.modifiedRecordId
+                        )
+                    findNavController().navigate(action)
+                }
                 addOrUpdateCardViewModel.resetStatus()
             }
             Status.DUPLICATE -> {
@@ -158,9 +185,9 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         binding.progressBar.isVisible = value
     }
 
-    private fun observeCovidTestResult() {
+    private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
 
                     showLoader(uiState.onLoading)
@@ -174,14 +201,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                         )
                     }
 
-                    if (uiState.queItTokenUpdated) {
-                        fetchVaccineRecord()
-                    }
-
-                    if (uiState.onMustBeQueued && uiState.queItUrl != null) {
-                        Log.d(TAG, "Mut be queue, url = ${uiState.queItUrl}")
-                        queUser(uiState.queItUrl)
-                    }
+                    handleQueueIt(uiState)
 
                     if (uiState.vaccineRecord != null) {
                         // savedStateHandle.set(VACCINE_RECORD_ADDED_SUCCESS, uiState.vaccineRecord)
@@ -189,6 +209,17 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                     }
                 }
             }
+        }
+    }
+
+    private fun handleQueueIt(uiState: FetchVaccineRecordUiState) {
+        if (uiState.queItTokenUpdated) {
+            fetchVaccineRecord()
+        }
+
+        if (uiState.onMustBeQueued && uiState.queItUrl != null) {
+            Log.d(TAG, "Mut be queue, url = ${uiState.queItUrl}")
+            queUser(uiState.queItUrl)
         }
     }
 

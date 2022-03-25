@@ -13,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentTestResultDetailBinding
+import ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.AuthenticationStatus
@@ -94,6 +95,15 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
             ivLeftOption.visibility = View.VISIBLE
             ivLeftOption.setImageResource(R.drawable.ic_action_back)
             ivLeftOption.setOnClickListener {
+                if (findNavController().previousBackStackEntry?.destination?.id ==
+                    R.id.fetchTestRecordFragment
+                ) {
+                    findNavController().previousBackStackEntry?.savedStateHandle
+                        ?.set(
+                            FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS,
+                            args.testResultId
+                        )
+                }
                 findNavController().popBackStack()
             }
 
