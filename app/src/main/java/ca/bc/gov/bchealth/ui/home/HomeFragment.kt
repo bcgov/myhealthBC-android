@@ -65,21 +65,25 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun initRecyclerview() {
-        homeAdapter = HomeAdapter {
-            when (it) {
-                HomeNavigationType.HEALTH_RECORD -> {
-                    findNavController().navigate(R.id.action_homeFragment_to_health_records)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeAdapter = HomeAdapter {
+                    when (it) {
+                        HomeNavigationType.HEALTH_RECORD -> {
+                            findNavController().navigate(R.id.action_homeFragment_to_health_records)
+                        }
+                        HomeNavigationType.VACCINE_PROOF -> {
+                            findNavController().navigate(R.id.action_homeFragment_to_health_pass)
+                        }
+                        HomeNavigationType.RESOURCES -> {
+                            findNavController().navigate(R.id.action_homeFragment_to_resources)
+                        }
+                    }
                 }
-                HomeNavigationType.VACCINE_PROOF -> {
-                    findNavController().navigate(R.id.action_homeFragment_to_health_pass)
-                }
-                HomeNavigationType.RESOURCES -> {
-                    findNavController().navigate(R.id.action_homeFragment_to_resources)
-                }
+                binding.rvHome.adapter = homeAdapter
+                homeAdapter.submitList(viewModel.getHomeRecordsList())
             }
         }
-        binding.rvHome.adapter = homeAdapter
-        homeAdapter.submitList(viewModel.getHomeRecordsList())
     }
 
     private fun checkLogin() {
