@@ -61,11 +61,20 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getPatientFirstName() = viewModelScope.launch {
-        val fullName = patientRepository.getAuthenticatedPatient().fullName
-        val nameList = fullName.split(" ")
+        val isLoggedIn: Boolean = try {
+            bcscAuthRepo.checkLogin()
+        } catch (e: Exception) {
+            false
+        }
         var patientFirstName = ""
-        if (nameList.isNotEmpty()) {
-            patientFirstName = nameList.first()
+        if (isLoggedIn) {
+            val fullName = patientRepository.getAuthenticatedPatient().fullName
+            val nameList = fullName.split(" ")
+            if (nameList.isNotEmpty()) {
+                patientFirstName = nameList.first()
+            }
+        } else {
+            patientFirstName = ""
         }
         _uiState.update { state ->
             state.copy(
