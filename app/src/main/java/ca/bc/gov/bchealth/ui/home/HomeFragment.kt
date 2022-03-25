@@ -15,7 +15,6 @@ import ca.bc.gov.bchealth.databinding.FragmentHomeBinding
 import ca.bc.gov.bchealth.ui.auth.BioMetricState
 import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
-import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -99,10 +98,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     if (it.showLoading) {
                         return@collect
                     } else {
-                        val isLoginStatusActive = it.loginStatus == LoginStatus.ACTIVE
-                        if (isLoginStatusActive) {
-                            viewModel.getPatientFirstName()
-                        } else if (!sharedViewModel.isBCSCAuthShown) {
+                        viewModel.getPatientFirstName()
+                        if (!sharedViewModel.isBCSCAuthShown) {
                             findNavController().navigate(R.id.bcscAuthInfoFragment)
                             sharedViewModel.isBCSCAuthShown = true
                             viewModel.onBcscLoginRequired(false)
@@ -133,7 +130,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
 
             if (!uiState.patientFirstName.isNullOrBlank()) {
-                binding.tvName.text = getString(R.string.hello) + " " + uiState.patientFirstName
+                binding.tvName.text = getString(R.string.hi)
+                    .plus(" ")
+                    .plus(uiState.patientFirstName)
+            } else {
+                binding.tvName.text = getString(R.string.hello)
             }
         }
     }
