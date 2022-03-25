@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.repository.OnBoardingRepository
+import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.patient.PatientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val onBoardingRepository: OnBoardingRepository,
-    private val patientRepository: PatientRepository
+    private val patientRepository: PatientRepository,
+    private val bcscAuthRepo: BcscAuthRepo
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -58,11 +60,20 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getPatientFirstName() = viewModelScope.launch {
-        val fullName = patientRepository.getAuthenticatedPatient().fullName
-        val nameList = fullName.split(" ")
+        val isLoggedIn: Boolean = try {
+            bcscAuthRepo.checkLogin()
+        } catch (e: Exception) {
+            false
+        }
         var patientFirstName = ""
-        if (nameList.isNotEmpty()) {
-            patientFirstName = nameList.first()
+        if (isLoggedIn) {
+            val fullName = patientRepository.getAuthenticatedPatient().fullName
+            val nameList = fullName.split(" ")
+            if (nameList.isNotEmpty()) {
+                patientFirstName = nameList.first()
+            }
+        } else {
+            patientFirstName = ""
         }
         _uiState.update { state ->
             state.copy(

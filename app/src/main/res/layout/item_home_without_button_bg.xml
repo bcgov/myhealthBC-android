@@ -22,18 +22,19 @@
             android:id="@+id/img_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_2_x"
-            android:layout_marginTop="@dimen/space_2_x"
+            android:layout_marginStart="@dimen/space_4_x"
+            android:layout_marginTop="@dimen/space_4_x"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            />
+            tools:src="@drawable/ic_login_info" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_title"
             style="?textAppearanceHeadline3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_2_x"
+            android:layout_marginStart="@dimen/space_1_x"
+            android:layout_marginEnd="@dimen/space_4_x"
             app:layout_constraintBottom_toBottomOf="@+id/img_icon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/img_icon"
@@ -46,8 +47,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_1_x"
-            android:layout_marginStart="@dimen/space_2_x"
-            android:layout_marginEnd="@dimen/space_2_x"
+            android:layout_marginStart="@dimen/space_4_x"
+            android:layout_marginEnd="@dimen/space_4_x"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -60,11 +61,12 @@
             android:layout_height="wrap_content"
             style="?textAppearanceHeadline4"
             android:textSize="15sp"
+            tools:text="View more"
             android:textColor="@color/primary_blue"
-            android:layout_marginTop="@dimen/space_1_x"
-            android:layout_marginStart="@dimen/space_2_x"
-            android:layout_marginEnd="@dimen/space_2_x"
-            android:layout_marginBottom="@dimen/space_2_x"
+            android:layout_marginTop="@dimen/space_2_x"
+            android:layout_marginStart="@dimen/space_4_x"
+            android:layout_marginEnd="@dimen/space_4_x"
+            android:layout_marginBottom="@dimen/space_4_x"
             app:layout_constraintTop_toBottomOf="@+id/tv_desc"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -74,10 +76,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/space_2_x"
+            tools:src="@drawable/ic_right_arrow"
             app:layout_constraintStart_toEndOf="@id/tv_continue"
             app:layout_constraintTop_toTopOf="@id/tv_continue"
-            app:layout_constraintBottom_toBottomOf="@id/tv_continue"
-            />
+            app:layout_constraintBottom_toBottomOf="@id/tv_continue" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

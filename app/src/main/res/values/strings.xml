@@ -265,6 +265,7 @@
 
     <!-- Home screen -->
     <string name="hello">Hello</string>
+    <string name="hi">Hi</string>
 
     <!--Terms of service-->
     <string name="terms_of_service">Terms of service</string>
