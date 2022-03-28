@@ -4,7 +4,7 @@ package ca.bc.gov.data.datasource.remote.model.base.labtest
  * @author Pinakin Kansara
  */
 data class LabTestOrder(
-    val laboratoryReportId: String,
+    val labPdfId: String,
     val reportingSource: String?,
     val reportId: String?,
     val collectionDateTime: String,
