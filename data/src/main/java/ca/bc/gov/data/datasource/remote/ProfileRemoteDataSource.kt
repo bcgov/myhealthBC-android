@@ -53,7 +53,7 @@ class ProfileRemoteDataSource @Inject constructor(
 
     suspend fun acceptTermsOfService(token: String, hdid: String): UserProfileResponse {
         val request = UserProfileRequest(UserProfile(hdid, true))
-        val response = safeCall { healthGatewayPrivateApi.updateUserProfile(token, hdid, request) }
+        val response = safeCall { healthGatewayPrivateApi.updateUserProfile(hdid, token, request) }
             ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
         if (response.error != null) {
