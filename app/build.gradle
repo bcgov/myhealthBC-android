@@ -44,6 +44,11 @@ android {
     flavorDimensions "version"
     productFlavors {
 
+        mock {
+            dimension "version"
+            versionNameSuffix "-mock"
+        }
+
         dev {
             dimension "version"
             versionNameSuffix "-dev"

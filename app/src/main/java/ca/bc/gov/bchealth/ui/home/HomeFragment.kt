@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.ui.home
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -14,7 +13,6 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHomeBinding
 import ca.bc.gov.bchealth.ui.auth.BioMetricState
 import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment
-import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,7 +25,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val viewModel: HomeViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var homeAdapter: HomeAdapter
-    private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -49,8 +46,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
 
         viewModel.launchCheck()
-
-        checkLogin()
+        viewModel.getAuthenticatedPatientName()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -81,31 +77,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
                 binding.rvHome.adapter = homeAdapter
                 homeAdapter.submitList(viewModel.getHomeRecordsList())
-            }
-        }
-    }
-
-    private fun checkLogin() {
-        bcscAuthViewModel.checkLogin()
-        observeBcscLogin()
-    }
-
-    private fun observeBcscLogin() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                bcscAuthViewModel.authStatus.collect {
-                    binding.progressBar.isVisible = it.showLoading
-                    if (it.showLoading) {
-                        return@collect
-                    } else {
-                        viewModel.getPatientFirstName()
-                        if (!sharedViewModel.isBCSCAuthShown) {
-                            findNavController().navigate(R.id.bcscAuthInfoFragment)
-                            sharedViewModel.isBCSCAuthShown = true
-                            viewModel.onBcscLoginRequired(false)
-                        }
-                    }
-                }
             }
         }
     }

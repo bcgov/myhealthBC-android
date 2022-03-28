@@ -17,4 +17,9 @@ class ProfileRepository @Inject constructor(
         val response = profileRemoteDataSource.getUserProfile(token, hdid)
         return response.resourcePayload.acceptedTermsOfService
     }
+
+    suspend fun acceptTermsOfService(token: String, hdid: String): Boolean {
+        val response = profileRemoteDataSource.acceptTermsOfService(token, hdid)
+        return response.resourcePayload.acceptedTermsOfService
+    }
 }

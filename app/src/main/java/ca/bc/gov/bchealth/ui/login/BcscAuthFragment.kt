@@ -23,6 +23,8 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentBcscAuthBinding
+import ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment
+import ca.bc.gov.bchealth.ui.tos.TermsOfServiceStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker
@@ -79,6 +81,21 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<TermsOfServiceStatus>(
+            TermsOfServiceFragment.TERMS_OF_SERVICE_STATUS
+        )?.observe(viewLifecycleOwner) {
+            findNavController().currentBackStackEntry?.savedStateHandle?.remove<TermsOfServiceStatus>(
+                TermsOfServiceFragment.TERMS_OF_SERVICE_STATUS
+            )
+            when (it) {
+                TermsOfServiceStatus.ACCEPTED -> {
+                    viewModel.acceptTermsAndService()
+                }
+                else -> {
+                    viewModel.getEndSessionIntent()
+                }
+            }
+        }
         initUI()
         observeAuthentication()
     }
@@ -155,10 +172,9 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                 TOSAccepted.ACCEPTED -> {
                     viewModel.fetchPatientData()
                 }
-                TOSAccepted.NOT_ACCEPTED -> {
+                else -> {
                     findNavController().navigate(R.id.termsOfServiceFragment)
                 }
-                TOSAccepted.USER_DECLINED -> {}
             }
         }
     }
