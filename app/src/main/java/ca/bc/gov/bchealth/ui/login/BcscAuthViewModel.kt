@@ -210,7 +210,7 @@ class BcscAuthViewModel @Inject constructor(
                 queItTokenUpdated = false,
                 loginStatus = null,
                 patientId = -1L,
-                isWithinAgeLimit = false,
+                ageLimitCheck = null,
                 canInitiateBcscLogin = null,
                 onMustBeQueued = false,
                 tosAccepted = null
@@ -242,15 +242,11 @@ class BcscAuthViewModel @Inject constructor(
                 authParameters.second
             )
 
-            if (isWithinAgeLimit) {
-                _authStatus.update {
-                    it.copy(
-                        showLoading = true,
-                        isWithinAgeLimit = true
-                    )
-                }
-            } else {
-                getEndSessionIntent()
+            _authStatus.update {
+                it.copy(
+                    showLoading = true,
+                    ageLimitCheck = if (isWithinAgeLimit) AgeLimitCheck.PASSED else AgeLimitCheck.FAILED
+                )
             }
         } catch (e: Exception) {
             when (e) {
@@ -419,7 +415,7 @@ data class AuthStatus(
     val queItUrl: String? = null,
     val loginStatus: LoginStatus? = null,
     val patientId: Long = -1L,
-    val isWithinAgeLimit: Boolean = false,
+    val ageLimitCheck: AgeLimitCheck? = null,
     val canInitiateBcscLogin: Boolean? = null,
     val tosAccepted: TOSAccepted? = null
 )
