@@ -29,8 +29,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:padding="4dp"
         android:src="@drawable/ic_action_back"
-        android:background="?attr/selectableItemBackground"
+        android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintTop_toBottomOf="@+id/mockView2"
         app:layout_constraintStart_toEndOf="@+id/mockView1" />
 
@@ -48,7 +49,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_settings"
-        android:background="?attr/selectableItemBackground"
+        android:padding="4dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginEnd="@dimen/space_2_x"
         app:layout_constraintEnd_toStartOf="@+id/iv_add"
@@ -59,32 +61,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_add_card_blue_small"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="?attr/selectableItemBackground"
+        app:layout_constraintTop_toTopOf="@+id/iv_setting"
+        android:padding="4dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_marginEnd="@dimen/space_2_x"
-        android:layout_marginTop="@dimen/space_2_x"
-        app:layout_constraintEnd_toStartOf="@+id/iv_filter" />
+        app:layout_constraintEnd_toStartOf="@+id/iv_filter"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_setting" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_filter"
-        android:background="?attr/selectableItemBackground"
-        android:layout_marginTop="@dimen/space_2_x"
+        android:padding="4dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_marginEnd="@dimen/space_2_x"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/iv_edit" />
+        app:layout_constraintTop_toTopOf="@+id/iv_add"
+        app:layout_constraintEnd_toStartOf="@+id/iv_edit"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_add" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_edit"
-        android:background="?attr/selectableItemBackground"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/space_2_x"
-        app:layout_constraintEnd_toStartOf="@+id/mockView" />
+        android:padding="4dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:layout_constraintTop_toTopOf="@+id/iv_filter"
+        app:layout_constraintEnd_toStartOf="@+id/mockView"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_filter" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_name"
