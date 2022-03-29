@@ -62,7 +62,6 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
     ) { activityResult ->
         if (activityResult.resultCode == Activity.RESULT_OK) {
             viewModel.processLogoutResponse()
-            showAgeLimitRestrictionDialog()
         } else {
             AlertDialogHelper.showAlertDialog(
                 context = requireContext(),
@@ -92,7 +91,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                     viewModel.acceptTermsAndService()
                 }
                 else -> {
-                    viewModel.getEndSessionIntent()
+                    showTosNotAcceptedDialog()
                 }
             }
         }
@@ -158,9 +157,14 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
     }
 
     private fun handleAgeLimitCheck(authStatus: AuthStatus) {
-        if (authStatus.isWithinAgeLimit) {
-            viewModel.resetAuthStatus()
-            viewModel.isTermsOfServiceAccepted()
+        when (authStatus.ageLimitCheck) {
+            AgeLimitCheck.PASSED -> {
+                viewModel.resetAuthStatus()
+                viewModel.isTermsOfServiceAccepted()
+            }
+            AgeLimitCheck.FAILED -> { showAgeLimitRestrictionDialog() }
+            else -> {
+            }
         }
     }
 
@@ -305,6 +309,19 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             .setCancelable(false)
             .setMessage(getString(R.string.age_limit_message))
             .setPositiveButton(getString(R.string.ok_camel_case)) { dialog, _ ->
+                viewModel.getEndSessionIntent()
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun showTosNotAcceptedDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.terms_of_service))
+            .setCancelable(false)
+            .setMessage(getString(R.string.terms_of_service_message))
+            .setPositiveButton(getString(R.string.ok_camel_case)) { dialog, _ ->
+                viewModel.getEndSessionIntent()
                 dialog.dismiss()
             }
             .show()
