@@ -100,15 +100,18 @@ class ProtectiveWordFragment : Fragment(R.layout.fragment_protective_word) {
     }
 
     private fun setUpToolbar() {
-        binding.toolbar.tvTitle.show()
-        binding.toolbar.tvTitle.text = getString(R.string.restricted_pharmanet_records)
-        binding.toolbar.ivLeftOption.apply {
-            this.show()
-            setImageResource(R.drawable.ic_scanner_close)
-            setColorFilter(ContextCompat.getColor(context, R.color.primary_blue))
-            setOnClickListener {
-                findNavController().popBackStack()
+        binding.toolbar.apply {
+            tvTitle.show()
+            tvTitle.text = getString(R.string.access_records)
+            ivLeftOption.apply {
+                this.show()
+                setImageResource(R.drawable.ic_scanner_close)
+                setColorFilter(ContextCompat.getColor(context, R.color.primary_blue))
+                setOnClickListener {
+                    findNavController().popBackStack()
+                }
             }
+            line1.visibility = View.VISIBLE
         }
     }
 }
