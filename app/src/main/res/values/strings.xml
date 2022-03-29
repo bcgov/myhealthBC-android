@@ -226,6 +226,7 @@
     <string name="login_success_message">Your records will be automatically added and updated in My Health BC.</string>
     <string name="age_limit_title">Age Restriction</string>
     <string name="age_limit_message">You must be 12 years of age or older to use Health Gateway.</string>
+    <string name="terms_of_service_message">Terms of service must be accepted to use Health Gateway.</string>
 
     <!--ERROR-->
     <string name="error">Error!</string>
