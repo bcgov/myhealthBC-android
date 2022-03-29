@@ -24,6 +24,17 @@
         </Constraint>
         <Constraint android:id="@id/iv_filter">
             <PropertySet
+                app:layout_constraintTag="false"
+                app:visibilityMode="ignore"
+                app:applyMotionScene="false" />
+        </Constraint>
+        <Constraint android:id="@id/iv_add">
+            <PropertySet
+                app:visibilityMode="ignore"
+                app:applyMotionScene="false" />
+        </Constraint>
+        <Constraint android:id="@id/iv_setting">
+            <PropertySet
                 app:visibilityMode="ignore"
                 app:applyMotionScene="false" />
         </Constraint>
@@ -46,6 +57,22 @@
                 app:applyMotionScene="false" />
         </Constraint>
         <Constraint android:id="@id/iv_edit">
+            <PropertySet
+                app:visibilityMode="ignore"
+                app:applyMotionScene="false" />
+        </Constraint>
+        <Constraint android:id="@id/iv_filter">
+            <PropertySet
+                app:layout_constraintTag="false"
+                app:visibilityMode="ignore"
+                app:applyMotionScene="false" />
+        </Constraint>
+        <Constraint android:id="@id/iv_add">
+            <PropertySet
+                app:visibilityMode="ignore"
+                app:applyMotionScene="false" />
+        </Constraint>
+        <Constraint android:id="@id/iv_setting">
             <PropertySet
                 app:visibilityMode="ignore"
                 app:applyMotionScene="false" />
