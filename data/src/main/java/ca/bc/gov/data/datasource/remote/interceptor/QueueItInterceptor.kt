@@ -13,7 +13,6 @@ import okhttp3.Response
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import java.io.IOException
-import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -132,11 +131,12 @@ class QueueItInterceptor @Inject constructor(
         val resultError = json.getAsJsonObject(RESULT_ERROR) ?: throw IOException(
             BAD_RESPONSE
         )
-        if (resultError.get(ACTION_CODE)?.toString() == PROTECTED) {
-            throw ProtectiveWordException(
-                PROTECTIVE_WORD_ERROR_CODE,
-                "Record protected by keyword"
-            )
+        if (resultError.get(ACTION_CODE) != null) {
+            if (resultError.get(ACTION_CODE)?.asString == PROTECTED)
+                throw ProtectiveWordException(
+                    PROTECTIVE_WORD_ERROR_CODE,
+                    "Record protected by keyword"
+                )
         } else {
             throw IOException(BAD_RESPONSE)
         }
