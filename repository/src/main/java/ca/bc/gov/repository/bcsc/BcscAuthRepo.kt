@@ -104,7 +104,7 @@ class BcscAuthRepo(
     * */
     suspend fun checkLogin(): Boolean {
         val authState = getAuthState() ?: return false
-        val accessToken = awaitPerformActionWithFreshTokens(applicationContext, authState)
+        val accessToken = awaitPerformActionWithFreshTokens(applicationContext, authState, encryptedPreferenceStorage)
         return accessToken.isNotEmpty()
     }
 
@@ -134,7 +134,11 @@ class BcscAuthRepo(
 
     suspend fun getAuthParameters(): Pair<String, String> {
         val authState = getAuthState() ?: throw MyHealthException(AUTH_ERROR_DO_LOGIN, "Login again!")
-        val accessToken = awaitPerformActionWithFreshTokens(applicationContext, authState)
+        val accessToken = awaitPerformActionWithFreshTokens(
+            applicationContext,
+            authState,
+            encryptedPreferenceStorage
+        )
         val json = decodeAccessToken(accessToken)
         val hdId = json.get(HDID).toString()
         if (hdId.isEmpty())

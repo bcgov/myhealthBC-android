@@ -5,6 +5,7 @@ import android.net.Uri
 import ca.bc.gov.common.const.AUTH_ERROR
 import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationException
@@ -52,12 +53,14 @@ suspend fun awaitPerformTokenRequest(
 
 suspend fun awaitPerformActionWithFreshTokens(
     applicationContext: Context,
-    authState: AuthState
+    authState: AuthState,
+    encryptedPreferenceStorage: EncryptedPreferenceStorage
 ): String = suspendCancellableCoroutine { continuation ->
     val authService = AuthorizationService(applicationContext)
     authState.performActionWithFreshTokens(
         authService
     ) { accessToken, idToken, ex ->
+        encryptedPreferenceStorage.authState = authState.jsonSerializeString()
         if (accessToken == null || idToken == null || ex != null) {
             continuation.resumeWithException(
                 MyHealthException(AUTH_ERROR_DO_LOGIN, "Login check failed!")
