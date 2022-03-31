@@ -166,10 +166,12 @@ class RepositoriesModule {
     @Singleton
     fun provideMedicationRecordRepository(
         medicationRecordLocalDataSource: MedicationRecordLocalDataSource,
-        medicationRemoteDataSource: MedicationRemoteDataSource
+        medicationRemoteDataSource: MedicationRemoteDataSource,
+        encryptedPreferenceStorage: EncryptedPreferenceStorage
     ): MedicationRecordRepository = MedicationRecordRepository(
         medicationRecordLocalDataSource,
-        medicationRemoteDataSource
+        medicationRemoteDataSource,
+        encryptedPreferenceStorage
     )
 
     @Provides
