@@ -1,7 +1,7 @@
 package ca.bc.gov.common.model
 
-enum class AuthenticationStatus(val value: Int) {
-    AUTHENTICATED(1),
-    NON_AUTHENTICATED(2),
-    AUTHENTICATION_EXPIRED(3)
+enum class AuthenticationStatus(val source: String) {
+    AUTHENTICATED("AUTHENTICATED"),
+    NON_AUTHENTICATED("NON_AUTHENTICATED"),
+    AUTHENTICATION_EXPIRED("AUTHENTICATION_EXPIRED")
 }

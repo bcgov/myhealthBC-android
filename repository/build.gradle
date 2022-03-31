@@ -39,9 +39,9 @@ android {
         dev {
             dimension "version"
             resValue "string", "issuer_url", "https://phsasmarthealthcard-dev.azurewebsites.net/v1/trusted/.well-known/issuers.json"
-            resValue "string", "rules_url", "https://ds9mwekyyprcy.cloudfront.net/rules.json"
+            resValue "string", "rules_url", "https://ds9mwekyyprcy.cloudfront.net/bc-rules.json"
             resValue "string", "default_issuer_json", "phsasmarthealthcard-dev.azurewebsites.net~v1~trusted~.well-known~issuers.json"
-            resValue "string", "default_rules_json", "ds9mwekyyprcy.cloudfront.net~rules.json"
+            resValue "string", "default_rules_json", "ds9mwekyyprcy.cloudfront.net~bc-rules.json"
             resValue "string", "auth_issuer_end_point", "https://dev.oidc.gov.bc.ca/auth/realms/ff09qn3f"
         }
 
@@ -81,7 +81,7 @@ dependencies {
     implementation project(path: ':data')
     implementation project(path: ':common')
 
-    implementation "ca.bc.gov:shcdecoder:1.1.8"
+    implementation "ca.bc.gov:shcdecoder:$versions.shcdecoder"
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0-RC3'
 
