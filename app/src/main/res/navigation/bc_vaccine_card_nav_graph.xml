@@ -76,5 +76,10 @@
         tools:layout="@layout/fragment_terms_of_service"
         android:name="ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment"
         android:label="TermsOfServiceFragment" />
+    <fragment
+        android:id="@+id/filterFragment"
+        tools:layout="@layout/fragment_filter"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.FilterFragment"
+        android:label="FilterFragment"/>
 
 </navigation>

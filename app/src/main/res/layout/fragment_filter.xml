@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.healthrecord.protectiveword.ProtectiveWordFragment">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/layout_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_type_title"
+        style="?textAppearanceHeadline3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:textSize="20sp"
+        android:gravity="start"
+        android:textAlignment="textStart"
+        android:textColor="@color/text_black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        android:text="Record type"
+        />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/cg_filter_by_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_type_title">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_medication"
+            style="@style/ChipFilterByType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Medications"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_lab_test"
+            style="@style/ChipFilterByType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lab tests"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_covid_test"
+            style="@style/ChipFilterByType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="COVID-19 tests"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_immunizations"
+            style="@style/ChipFilterByType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Immunizations"/>
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_apply"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginStart="@dimen/space_1_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:layout_marginBottom="@dimen/space_2_x"
+        android:text="Apply"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_cancel" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_cancel"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginEnd="@dimen/space_1_x"
+        android:layout_marginBottom="@dimen/space_2_x"
+        android:text="@string/cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_apply"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
