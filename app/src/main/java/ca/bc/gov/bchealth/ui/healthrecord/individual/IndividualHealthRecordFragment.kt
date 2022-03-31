@@ -23,6 +23,7 @@ import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
 import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
 import ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment
+import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterViewModel
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_REQUEST
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_UPDATED
@@ -32,7 +33,6 @@ import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
-import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.common.model.AuthenticationStatus
@@ -63,6 +63,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var loginStatus: LoginStatus? = null
+    private val filterSharedViewModel: FilterViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,7 +137,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         if (!workRequest.hasObservers()) {
             workRequest.observe(viewLifecycleOwner) {
                 if (it.firstOrNull()?.state == WorkInfo.State.ENQUEUED) {
-                    viewModel.getIndividualsHealthRecord(args.patientId)
+                    viewModel.getIndividualsHealthRecord(args.patientId, filterSharedViewModel.timelineTypeFilter)
                 }
             }
         }
@@ -151,7 +152,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     } else {
                         authStatus.loginStatus?.let {
                             loginStatus = it
-                            viewModel.getIndividualsHealthRecord(args.patientId)
+                            viewModel.getIndividualsHealthRecord(args.patientId, filterSharedViewModel.timelineTypeFilter)
                         }
                     }
                 }
@@ -169,7 +170,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     }
 
                     if (uiState.updatedTestResultId > 0) {
-                        viewModel.getIndividualsHealthRecord(args.patientId)
+                        viewModel.getIndividualsHealthRecord(args.patientId, filterSharedViewModel.timelineTypeFilter)
                         return@collect
                     }
 
@@ -357,15 +358,10 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 findNavController().navigate(action)
             }
             ivFilter.setOnClickListener {
-                requireContext().toast("Coming soon")
+                findNavController().navigate(R.id.filterFragment)
             }
             ivEdit.setOnClickListener {
                 healthRecordsAdapter.canDeleteRecord = !healthRecordsAdapter.canDeleteRecord
-                if (healthRecordsAdapter.canDeleteRecord) {
-                    ivEdit.setImageResource(R.drawable.ic_done)
-                } else {
-                    ivEdit.setImageResource(R.drawable.ic_edit)
-                }
                 concatAdapter.notifyItemRangeChanged(
                     0,
                     concatAdapter.itemCount
@@ -389,7 +385,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         viewModel.deleteVaccineRecord(
                             healthRecordItem.patientId
                         )
-                            .invokeOnCompletion { viewModel.getIndividualsHealthRecord(args.patientId) }
+                            .invokeOnCompletion { viewModel.getIndividualsHealthRecord(args.patientId, filterSharedViewModel.timelineTypeFilter) }
                     }
                 )
             }
@@ -405,7 +401,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         viewModel.deleteTestRecord(
                             healthRecordItem.testResultId
                         )
-                            .invokeOnCompletion { viewModel.getIndividualsHealthRecord(args.patientId) }
+                            .invokeOnCompletion { viewModel.getIndividualsHealthRecord(args.patientId, filterSharedViewModel.timelineTypeFilter) }
                     }
                 )
             }

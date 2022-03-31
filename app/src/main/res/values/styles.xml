@@ -97,5 +97,13 @@
         <item name="android:colorAccent">@color/blue</item>
         <item name="boxStrokeColor">@color/blue</item>
     </style>
-
+    <style name="ChipFilterByType" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="chipCornerRadius">@dimen/space_1_x</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipStrokeColor">@drawable/chip_stroke_color_selector</item>
+        <item name="chipBackgroundColor">@drawable/chip_bg_color_selector</item>
+        <item name="android:textColor">@drawable/chip_text_color_selector</item>
+        <item name="checkedIconEnabled">false</item>
+        <item name="checkedIcon">@null</item>
+    </style>
 </resources>

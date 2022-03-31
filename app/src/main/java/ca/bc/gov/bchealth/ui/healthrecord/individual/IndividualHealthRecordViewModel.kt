@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
+import ca.bc.gov.bchealth.ui.healthrecord.filter.TimelineTypeFilter
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.DataSource
@@ -40,76 +41,95 @@ class IndividualHealthRecordViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(IndividualHealthRecordsUiState())
     val uiState: StateFlow<IndividualHealthRecordsUiState> = _uiState.asStateFlow()
 
-    fun getIndividualsHealthRecord(patientId: Long) = viewModelScope.launch {
-
-        _uiState.update { state ->
-            state.copy(onLoading = true)
-        }
-
-        try {
-            val patientWithVaccineRecords =
-                patientRepository.getPatientWithVaccineAndDoses(patientId)
-            val testResultWithRecords =
-                patientRepository.getPatientWithTestResultsAndRecords(patientId)
-            val vaccineWithDoses = listOfNotNull(patientWithVaccineRecords.vaccineWithDoses)
-            val patientAndMedicationRecords =
-                patientRepository.getPatientWithMedicationRecords(patientId)
-            val patientWithLabOrdersAndLabTests =
-                patientRepository.getPatientWithLabOrdersAndLabTests(patientId)
-
-            val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
-                it.toUiModel()
-            }
-            val vaccineRecords = vaccineWithDoses.map {
-                it.toUiModel()
-            }
-            val medicationRecords = patientAndMedicationRecords.medicationRecord.map {
-                it.toUiModel()
-            }
-            val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
-                it.toUiModel()
-            }
-
-            val covidTestRecordsNonBcsc = covidTestRecords
-                .filter { it.dataSource != DataSource.BCSC.name }
-            val vaccineRecordsNonBcsc = vaccineRecords
-                .filter { it.dataSource != DataSource.BCSC.name }
-            val medicationRecordsNonBcsc = medicationRecords
-                .filter { it.dataSource != DataSource.BCSC.name }
-            val labTestRecordsNonBcsc = labTestRecords
-                .filter { it.dataSource != DataSource.BCSC.name }
+    fun getIndividualsHealthRecord(patientId: Long, filterList: List<TimelineTypeFilter>) =
+        viewModelScope.launch {
 
             _uiState.update { state ->
-                state.copy(
-                    onLoading = false,
-                    patientAuthStatus = patientWithVaccineRecords.patient.authenticationStatus,
-                    authenticatedRecordsCount = patientRepository.getBcscDataRecordCount(),
-                    onHealthRecords = (
-                        covidTestRecords +
-                            vaccineRecords +
-                            medicationRecords +
-                            labTestRecords
-                        )
-                        .sortedByDescending { it.date },
-                    onNonBcscHealthRecords = (
-                        covidTestRecordsNonBcsc +
-                            vaccineRecordsNonBcsc +
-                            medicationRecordsNonBcsc +
-                            labTestRecordsNonBcsc
-                        )
-                        .sortedByDescending { it.date },
-                    healthRecordsExceptMedication = (
-                        covidTestRecords +
-                            vaccineRecords +
-                            labTestRecords
-                        )
-                        .sortedByDescending { it.date },
-                )
+                state.copy(onLoading = true)
             }
-        } catch (e: java.lang.Exception) {
-            // no implementation required.
+
+            try {
+                val patientWithVaccineRecords =
+                    patientRepository.getPatientWithVaccineAndDoses(patientId)
+                val testResultWithRecords =
+                    patientRepository.getPatientWithTestResultsAndRecords(patientId)
+                val vaccineWithDoses = listOfNotNull(patientWithVaccineRecords.vaccineWithDoses)
+                val patientAndMedicationRecords =
+                    patientRepository.getPatientWithMedicationRecords(patientId)
+                val patientWithLabOrdersAndLabTests =
+                    patientRepository.getPatientWithLabOrdersAndLabTests(patientId)
+
+                val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
+                    it.toUiModel()
+                }
+                val vaccineRecords = vaccineWithDoses.map {
+                    it.toUiModel()
+                }
+                val medicationRecords = patientAndMedicationRecords.medicationRecord.map {
+                    it.toUiModel()
+                }
+                val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
+                    it.toUiModel()
+                }
+
+                val covidTestRecordsNonBcsc = covidTestRecords
+                    .filter { it.dataSource != DataSource.BCSC.name }
+                val vaccineRecordsNonBcsc = vaccineRecords
+                    .filter { it.dataSource != DataSource.BCSC.name }
+                val medicationRecordsNonBcsc = medicationRecords
+                    .filter { it.dataSource != DataSource.BCSC.name }
+                val labTestRecordsNonBcsc = labTestRecords
+                    .filter { it.dataSource != DataSource.BCSC.name }
+
+                var filteredHealthRecords: List<HealthRecordItem> = mutableListOf()
+                var filteredHealthRecordsExceptMedication: List<HealthRecordItem> = mutableListOf()
+
+                filterList.forEach {
+                    when (it) {
+                        TimelineTypeFilter.ALL -> {
+                            filteredHealthRecords = medicationRecords + vaccineRecords + covidTestRecords + labTestRecords
+                            filteredHealthRecordsExceptMedication = vaccineRecords + covidTestRecords + labTestRecords
+                        }
+                        TimelineTypeFilter.MEDICATION -> {
+                            filteredHealthRecords += medicationRecords
+                        }
+                        TimelineTypeFilter.IMMUNIZATION -> {
+                            filteredHealthRecords += vaccineRecords
+                            filteredHealthRecordsExceptMedication += vaccineRecords
+                        }
+                        TimelineTypeFilter.COVID_19_TEST -> {
+                            filteredHealthRecords += covidTestRecords
+                            filteredHealthRecordsExceptMedication += covidTestRecords
+                        }
+                        TimelineTypeFilter.LAB_TEST -> {
+                            filteredHealthRecords += labTestRecords
+                            filteredHealthRecordsExceptMedication += labTestRecords
+                        }
+                    }
+                }
+                filteredHealthRecords.sortedByDescending { it.date }
+                filteredHealthRecordsExceptMedication.sortedByDescending { it.date }
+
+                _uiState.update { state ->
+                    state.copy(
+                        onLoading = false,
+                        patientAuthStatus = patientWithVaccineRecords.patient.authenticationStatus,
+                        authenticatedRecordsCount = patientRepository.getBcscDataRecordCount(),
+                        onHealthRecords = filteredHealthRecords,
+                        onNonBcscHealthRecords = (
+                            covidTestRecordsNonBcsc +
+                                vaccineRecordsNonBcsc +
+                                medicationRecordsNonBcsc +
+                                labTestRecordsNonBcsc
+                            )
+                            .sortedByDescending { it.date },
+                        healthRecordsExceptMedication = filteredHealthRecordsExceptMedication
+                    )
+                }
+            } catch (e: java.lang.Exception) {
+                // no implementation required.
+            }
         }
-    }
 
     fun deleteVaccineRecord(patientId: Long) = viewModelScope.launch {
         val patientAndVaccineRecord = patientRepository.getPatientWithVaccineAndDoses(patientId)
