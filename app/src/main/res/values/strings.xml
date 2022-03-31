@@ -275,4 +275,10 @@
 
     <!-- Filter screen -->
     <string name="clear_all">Clear all</string>
+    <string name="record_type">Record type</string>
+    <string name="lab_tests">Lab tests</string>
+    <string name="covid_19_tests">COVID-19 tests</string>
+    <string name="immunizations">Immunizations</string>
+    <string name="filter">Filter</string>
+    <string name="apply">Apply</string>
 </resources>

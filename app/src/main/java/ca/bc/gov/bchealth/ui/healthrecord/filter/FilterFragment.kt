@@ -33,12 +33,15 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
     }
 
     private fun setUpToolbar() {
-        binding.toolbar.tvTitle.show()
-        binding.toolbar.tvTitle.text = "Filter"
-        binding.toolbar.ivLeftOption.apply {
-            this.show()
-            setOnClickListener {
-                findNavController().popBackStack()
+        binding.toolbar.apply {
+            tvTitle.show()
+            tvTitle.text = getString(R.string.filter)
+            line1.visibility = View.VISIBLE
+            ivLeftOption.apply {
+                this.show()
+                setOnClickListener {
+                    findNavController().popBackStack()
+                }
             }
         }
     }
@@ -73,7 +76,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
             val filterList = mutableListOf<TimelineTypeFilter>()
             val checkedChipIds = binding.cgFilterByType.checkedChipIds
             checkedChipIds.forEach {
-                when(it) {
+                when (it) {
                     R.id.chip_medication -> {
                         filterList.add(TimelineTypeFilter.MEDICATION)
                     }

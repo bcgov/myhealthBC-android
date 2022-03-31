@@ -105,5 +105,9 @@
         <item name="android:textColor">@drawable/chip_text_color_selector</item>
         <item name="checkedIconEnabled">false</item>
         <item name="checkedIcon">@null</item>
+        <item name="fontFamily">@font/bc_sans_regular</item>
+        <item name="android:fontFamily">@font/bc_sans_regular</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">normal</item>
     </style>
 </resources>

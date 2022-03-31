@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.healthrecord.protectiveword.ProtectiveWordFragment">
+    android:layout_height="match_parent">
 
     <include
         android:id="@+id/toolbar"
@@ -22,21 +20,19 @@
         android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
-        android:textSize="20sp"
         android:gravity="start"
         android:textAlignment="textStart"
-        android:textColor="@color/text_black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        android:text="Record type"
+        android:text="@string/record_type"
         />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/cg_filter_by_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginTop="@dimen/space_1_x"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,28 +44,28 @@
             style="@style/ChipFilterByType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Medications"/>
+            android:text="@string/medications"/>
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_lab_test"
             style="@style/ChipFilterByType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lab tests"/>
+            android:text="@string/lab_tests"/>
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_covid_test"
             style="@style/ChipFilterByType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="COVID-19 tests"/>
+            android:text="@string/covid_19_tests"/>
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_immunizations"
             style="@style/ChipFilterByType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Immunizations"/>
+            android:text="@string/immunizations"/>
 
     </com.google.android.material.chip.ChipGroup>
 
@@ -82,7 +78,7 @@
         android:layout_marginStart="@dimen/space_1_x"
         android:layout_marginEnd="@dimen/space_4_x"
         android:layout_marginBottom="@dimen/space_2_x"
-        android:text="Apply"
+        android:text="@string/apply"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_clear" />
