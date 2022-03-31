@@ -9,14 +9,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
-import ca.bc.gov.bchealth.utils.showAlertDialog
-import ca.bc.gov.bchealth.utils.showError
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -35,11 +33,9 @@ import kotlinx.coroutines.launch
 class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
 
     private val binding by viewBindings(FragmentAddCardOptionsBinding::bind)
-
     private val addOrUpdateCardViewModel: AddOrUpdateCardViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
-
     private lateinit var action: ActivityResultLauncher<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,34 +47,31 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
                 addOrUpdateCardViewModel.processQRCode(it)
             }
         }
-
-        val savedStateHandle: SavedStateHandle =
-            findNavController().currentBackStackEntry!!.savedStateHandle
-        savedStateHandle.getLiveData<Long>(
-            FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
-        )
-            .observe(
-                findNavController().currentBackStackEntry!!,
-                Observer {
-                    if (it > 0) {
-                        sharedViewModel.setModifiedRecordId(it)
-                        savedStateHandle.remove<Long>(FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS)
-                        findNavController().popBackStack()
-                    }
-                }
-            )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
+            FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
+        )?.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it > 0) {
+                    sharedViewModel.setModifiedRecordId(it)
+                    findNavController().currentBackStackEntry?.savedStateHandle
+                        ?.remove<Long>(FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS)
+                    findNavController().popBackStack()
+                }
+            }
+        )
 
         binding.btnScanQrCode.setOnClickListener {
             findNavController().navigate(R.id.action_addCardOptionFragment_to_onBoardingFragment)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 addOrUpdateCardViewModel.uiState.collect { state ->
                     if (state.state != null) {
                         performActionBasedOnState(state)
@@ -126,33 +119,42 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
             }
             Status.DUPLICATE -> {
 
-                requireContext().showError(
-                    getString(R.string.error_duplicate_title),
-                    getString(R.string.error_duplicate_message)
+                AlertDialogHelper.showAlertDialog(
+                    context = requireContext(),
+                    title = getString(R.string.error_duplicate_title),
+                    msg = getString(R.string.error_duplicate_message),
+                    positiveBtnMsg = getString(R.string.btn_ok),
+                    positiveBtnCallback = {
+                        addOrUpdateCardViewModel.resetStatus()
+                    }
                 )
-                addOrUpdateCardViewModel.resetStatus()
             }
 
             Status.ERROR -> {
-
-                requireContext().showError(
-                    getString(R.string.error_invalid_qr_code_title),
-                    getString(R.string.error_invalid_qr_code_message)
+                AlertDialogHelper.showAlertDialog(
+                    context = requireContext(),
+                    title = getString(R.string.error_invalid_qr_code_title),
+                    msg = getString(R.string.error_invalid_qr_code_message),
+                    positiveBtnMsg = getString(R.string.btn_ok),
+                    positiveBtnCallback = {
+                        addOrUpdateCardViewModel.resetStatus()
+                    }
                 )
-                addOrUpdateCardViewModel.resetStatus()
             }
         }
     }
 
     private fun updateRecord(vaccineRecord: PatientVaccineRecord) {
-        requireContext().showAlertDialog(
+        AlertDialogHelper.showAlertDialog(
+            context = requireContext(),
             title = getString(R.string.replace_health_pass_title),
-            message = getString(R.string.replace_health_pass_message),
-            positiveButtonText = getString(R.string.replace),
-            negativeButtonText = getString(R.string.not_now)
-        ) {
-            addOrUpdateCardViewModel.update(vaccineRecord)
-        }
+            msg = getString(R.string.replace_health_pass_message),
+            positiveBtnMsg = getString(R.string.replace),
+            negativeBtnMsg = getString(R.string.not_now),
+            positiveBtnCallback = {
+                addOrUpdateCardViewModel.update(vaccineRecord)
+            }
+        )
     }
 
     private fun insert(vaccineRecord: PatientVaccineRecord) {

@@ -32,7 +32,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_next_slide"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button1"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/space_2_x"

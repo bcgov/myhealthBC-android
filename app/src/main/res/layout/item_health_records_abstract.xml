@@ -29,41 +29,39 @@
             android:layout_marginTop="@dimen/space_2_x"
             android:layout_marginBottom="@dimen/space_2_x"
             android:src="@drawable/ic_resources_icon_1"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_vaccine_name"
-            style="?textAppearanceSubtitle1"
+            android:id="@+id/tv_title"
+            style="?textAppearanceHeadline3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/space_2_x"
-            android:layout_marginTop="@dimen/space_1_x"
             android:ellipsize="end"
-            android:maxLines="1"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/tv_vaccine_status"
+            android:maxLines="2"
+            android:textColor="@color/blue"
+            app:layout_constraintBottom_toTopOf="@+id/tv_desc"
             app:layout_constraintEnd_toStartOf="@+id/iv_right_arrow"
             app:layout_constraintStart_toEndOf="@+id/img_icon"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
-            tools:text="Where to get your COVID-19 Testing? also where show I get Rapid tst kit nearby" />
+            tools:text="Where to get your COVID-19 Testing? also where show I get Rapid tst kit nearby"
+            app:layout_constraintTop_toTopOf="@+id/img_icon" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_vaccine_status"
-            style="?textAppearanceHeadline4"
+            android:id="@+id/tv_desc"
+            style="?textAppearanceCaption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/space_1_x"
             android:ellipsize="end"
-            android:maxLines="1"
-            android:textSize="14sp"
+            android:maxLines="2"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/tv_vaccine_name"
+            app:layout_constraintEnd_toEndOf="@+id/tv_title"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/tv_vaccine_name"
-            app:layout_constraintTop_toBottomOf="@+id/tv_vaccine_name"
+            app:layout_constraintStart_toStartOf="@+id/tv_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
             tools:text="3 records" />
 
         <com.google.android.material.imageview.ShapeableImageView

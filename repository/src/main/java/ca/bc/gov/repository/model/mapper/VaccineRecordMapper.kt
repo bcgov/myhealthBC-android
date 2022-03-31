@@ -1,7 +1,7 @@
 package ca.bc.gov.repository.model.mapper
 
 import ca.bc.gov.common.model.VaccineRecordDto
-import ca.bc.gov.data.local.entity.VaccineRecordEntity
+import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
 
 fun VaccineRecordEntity.toVaccineRecord() = VaccineRecordDto(
     id = id,

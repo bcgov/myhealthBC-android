@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentManageHealthPassesBinding
 import ca.bc.gov.bchealth.ui.healthpass.HealthPassViewModel
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.common.model.analytics.AnalyticsAction
 import ca.bc.gov.common.model.analytics.AnalyticsActionData
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.Collections
@@ -126,21 +126,18 @@ class ManageHealthPassFragment : Fragment(R.layout.fragment_manage_health_passes
     }
 
     private fun confirmUnlinking(vaccineRecordId: Long) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.unlink_card))
-            .setCancelable(false)
-            .setMessage(getString(R.string.do_you_want_to_unlink))
-            .setPositiveButton(getString(R.string.unlink)) { dialog, _ ->
-
+        AlertDialogHelper.showAlertDialog(
+            context = requireContext(),
+            title = getString(R.string.unlink_card),
+            msg = getString(R.string.do_you_want_to_unlink),
+            positiveBtnMsg = getString(R.string.unlink),
+            negativeBtnMsg = getString(R.string.not_now),
+            positiveBtnCallback = {
                 // Snowplow event
                 analyticsFeatureViewModel.track(AnalyticsAction.REMOVE_CARD, AnalyticsActionData.NA)
 
                 viewModel.deleteHealthPass(vaccineRecordId)
-                dialog.dismiss()
             }
-            .setNegativeButton(getString(R.string.not_now)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
+        )
     }
 }

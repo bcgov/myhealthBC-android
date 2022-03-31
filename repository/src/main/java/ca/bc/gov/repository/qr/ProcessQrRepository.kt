@@ -1,10 +1,11 @@
 package ca.bc.gov.repository.qr
 
 import android.net.Uri
-import ca.bc.gov.data.datasource.PatientWithVaccineRecordLocalDataSource
+import ca.bc.gov.data.model.mapper.toEntity
 import ca.bc.gov.repository.extensions.toPatient
 import ca.bc.gov.repository.extensions.toPatientVaccineRecord
 import ca.bc.gov.repository.model.PatientVaccineRecord
+import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.scanner.QrScanner
 import ca.bc.gov.repository.utils.UriToImage
 import ca.bc.gov.shcdecoder.SHCVerifier
@@ -21,7 +22,7 @@ class ProcessQrRepository @Inject constructor(
     private val qrScanner: QrScanner,
     private val uriToImage: UriToImage,
     private val shcVerifier: SHCVerifier,
-    private val localDataSource: PatientWithVaccineRecordLocalDataSource
+    private val patientRepository: PatientRepository
 ) {
 
     suspend fun processQrCode(image: InputImage): Pair<VaccineRecordState, PatientVaccineRecord?> {
@@ -46,18 +47,23 @@ class ProcessQrRepository @Inject constructor(
             }
             val patient = shcData.toPatient()
             val patientsVaccineRecord =
-                withContext(Dispatchers.IO) { localDataSource.getPatientWithVaccineRecord(patient) }
+                withContext(Dispatchers.IO) {
+                    patientRepository.getPatientWithVaccineAndDoses(
+                        patient.toEntity()
+                    )
+                }
             val patientData = shcData.toPatientVaccineRecord(shcUri, status)
-            if (patientsVaccineRecord.isNullOrEmpty() || patientsVaccineRecord.last().vaccineRecord == null) {
+            if (patientsVaccineRecord.isNullOrEmpty() || patientsVaccineRecord.last().vaccineWithDoses == null) {
                 return Pair(VaccineRecordState.CAN_INSERT, patientData)
             }
             val record = patientsVaccineRecord.last()
             val value =
-                patientData.vaccineRecordDto.qrIssueDate.compareTo(record.vaccineRecord?.qrIssueDate!!)
+                patientData.vaccineRecordDto.qrIssueDate.compareTo(record.vaccineWithDoses?.vaccine?.qrIssueDate!!)
             return if (value > 0) {
                 patientData.patientDto.id = record.patient.id
-                patientData.vaccineRecordDto.id = record.vaccineRecord!!.id
-                patientData.vaccineRecordDto.patientId = record.vaccineRecord!!.patientId
+                patientData.vaccineRecordDto.id = record.vaccineWithDoses?.vaccine?.id!!
+                patientData.vaccineRecordDto.patientId =
+                    record.vaccineWithDoses?.vaccine?.patientId!!
                 Pair(VaccineRecordState.CAN_UPDATE, patientData)
             } else {
                 Pair(VaccineRecordState.DUPLICATE, patientData)

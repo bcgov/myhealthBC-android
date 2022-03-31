@@ -1,13 +1,14 @@
 package ca.bc.gov.data.di
 
-import ca.bc.gov.data.datasource.LocalDataSource
-import ca.bc.gov.data.datasource.PatientLocalDataSource
-import ca.bc.gov.data.datasource.PatientWithVaccineRecordLocalDataSource
-import ca.bc.gov.data.datasource.TestRecordLocalDataSource
-import ca.bc.gov.data.datasource.TestResultLocalDataSource
-import ca.bc.gov.data.datasource.VaccineDoseLocalDataSource
-import ca.bc.gov.data.datasource.VaccineRecordLocalDataSource
-import ca.bc.gov.data.local.MyHealthDataBase
+import ca.bc.gov.data.datasource.local.CommentLocalDataSource
+import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
+import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
+import ca.bc.gov.data.datasource.local.LocalDataSource
+import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
+import ca.bc.gov.data.datasource.local.MyHealthDataBase
+import ca.bc.gov.data.datasource.local.PatientLocalDataSource
+import ca.bc.gov.data.datasource.local.TestResultLocalDataSource
+import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,26 +34,37 @@ class LocalDataSourceModule {
 
     @Provides
     @Singleton
-    fun providesVaccineDoseLocalDataSource(db: MyHealthDataBase) =
-        VaccineDoseLocalDataSource(db.getVaccineDoseDao())
-
-    @Provides
-    @Singleton
-    fun providesPatientWithVaccineRecordLocalDataSource(
-        db: MyHealthDataBase
-    ) = PatientWithVaccineRecordLocalDataSource(db.getPatientWithVaccineRecordDao())
-
-    @Provides
-    @Singleton
     fun providesTestResultLocalDataSource(
         db: MyHealthDataBase
     ) = TestResultLocalDataSource(db.getTestResultDao())
 
     @Provides
     @Singleton
-    fun providesTestRecordLocalDataSource(
+    fun providesMedicationRecordLocalDataSource(
         db: MyHealthDataBase
-    ) = TestRecordLocalDataSource(db.getTestRecordDao())
+    ) = MedicationRecordLocalDataSource(
+        db.getMedicationRecordDao(),
+        db.getMedicationSummaryDao(),
+        db.getDispensingPharmacyDao()
+    )
+
+    @Provides
+    @Singleton
+    fun providesLabOrderLocalDataSource(
+        db: MyHealthDataBase
+    ) = LabOrderLocalDataSource(db.getLabOrderDao())
+
+    @Provides
+    @Singleton
+    fun providesLabTestLocalDataSource(
+        db: MyHealthDataBase
+    ) = LabTestLocalDataSource(db.getLabTestDao())
+
+    @Provides
+    @Singleton
+    fun provideCommentLocalDataSource(
+        db: MyHealthDataBase
+    ) = CommentLocalDataSource(db.getCommentDao())
 
     @Provides
     @Singleton

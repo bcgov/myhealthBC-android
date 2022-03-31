@@ -5,10 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.repository.OnBoardingRepository
-import ca.bc.gov.repository.PatientWithVaccineRecordRepository
+import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,21 +20,18 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class HealthPassViewModel @Inject constructor(
-    private val repository: PatientWithVaccineRecordRepository,
+    private val patientRepository: PatientRepository,
     private val vaccineRecordRepository: VaccineRecordRepository,
     private val onBoardingRepository: OnBoardingRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HealthPassUiState())
     val uiState: StateFlow<HealthPassUiState> = _uiState.asStateFlow()
-
-    val healthPasses = repository.patientsVaccineRecord.map { records ->
+    val healthPasses = patientRepository.patientWithVaccineAndDoses.map { records ->
         records.map { record ->
             record.toUiModel()
         }
     }
-
-    val onBoardingRequired: Flow<Boolean> = onBoardingRepository.onBoardingRequired
 
     fun deleteHealthPass(vaccineRecordId: Long) = viewModelScope.launch {
         vaccineRecordRepository.delete(vaccineRecordId = vaccineRecordId)
@@ -43,7 +39,7 @@ class HealthPassViewModel @Inject constructor(
 
     fun updateHealthPassOrder(healthPasses: List<HealthPass>) =
         viewModelScope.launch {
-            repository.updatePatientOrder(
+            patientRepository.updatePatientsOrder(
                 healthPasses.mapIndexed { index, healthPass ->
                     healthPass.patientId to index.toLong()
                 }
@@ -54,7 +50,8 @@ class HealthPassViewModel @Inject constructor(
 data class HealthPassUiState(
     val isLoading: Boolean = false,
     val isOnBoardingRequired: Boolean = false,
-    val healthPasses: List<HealthPass> = emptyList()
+    val isAuthenticationRequired: Boolean = false,
+    val isBcscLoginRequiredPostBiometrics: Boolean = false
 )
 
 data class HealthPass(
@@ -66,7 +63,8 @@ data class HealthPass(
     val shcUri: String,
     val qrCode: Bitmap?,
     val federalTravelPassState: FederalTravelPassState,
-    val state: PassState
+    val state: PassState,
+    val isAuthenticated: Boolean = false
 )
 
 data class PassState(

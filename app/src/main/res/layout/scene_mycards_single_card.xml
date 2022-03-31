@@ -83,7 +83,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_view_all"
-                style="@style/BC_VAX.Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/HealthGateway.Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"

@@ -1,6 +1,5 @@
 package ca.bc.gov.repository.extensions
 
-import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
@@ -26,7 +25,7 @@ fun SHCData.toPatient(): PatientDto {
     }
     return PatientDto(
         fullName = fullNameBuilder.toString(),
-        dateOfBirth = patient.dateOfBirth?.toDate()!!,
+        dateOfBirth = patient.dateOfBirth?.toDate()!!
     )
 }
 
@@ -74,8 +73,7 @@ fun SHCData.toPatientVaccineRecord(
         federalPass = null,
         shcUri = shcUri,
         status = status.toImmunizationStatus(),
-        qrCodeImage = null,
-        mode = DataSource.QR_CODE
+        qrCodeImage = null
     )
 
     return PatientVaccineRecord(toPatient(), record)

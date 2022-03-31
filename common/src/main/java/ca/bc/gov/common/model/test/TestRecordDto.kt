@@ -1,18 +1,14 @@
 package ca.bc.gov.common.model.test
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import java.time.Instant
 
 /**
  * @author Pinakin Kansara
  */
-
-@Parcelize
 data class TestRecordDto(
     var id: String,
     var testResultId: Long = 0,
-    val labName: String,
+    var labName: String,
     val collectionDateTime: Instant,
     val resultDateTime: Instant,
     val testName: String,
@@ -22,4 +18,4 @@ data class TestRecordDto(
     val resultTitle: String,
     val resultDescription: List<String>,
     val resultLink: String
-) : Parcelable
+)

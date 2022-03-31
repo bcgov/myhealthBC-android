@@ -13,8 +13,10 @@ import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentTestResultDetailBinding
-import ca.bc.gov.bchealth.utils.showAlertDialog
+import ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import com.google.android.material.tabs.TabLayoutMediator
@@ -38,7 +40,7 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
 
         setToolBar()
 
-        viewModel.getTestResultDetail(args.patientId, args.testResultId)
+        viewModel.getTestResultDetail(args.testResultId)
 
         observeDetails()
     }
@@ -46,7 +48,7 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
     private fun observeDetails() {
 
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 viewModel.uiState.collect { state ->
 
@@ -54,24 +56,30 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
 
                     state.onTestResultDetail.let { patientTestResult ->
 
-                        patientTestResult?.recordDtos?.let { initUi(it, patientTestResult.patientDto) }
+                        if (patientTestResult != null) {
+                            initUi(
+                                patientTestResult.testResultWithRecords.testRecords,
+                                patientTestResult.patient
+                            )
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun initUi(testRecordDtos: List<TestRecordDto>, patientDto: PatientDto) {
+    private fun initUi(testRecords: List<TestRecordDto>, patientDto: PatientDto) {
 
+        binding.toolbar.tvRightOption.isVisible =
+            patientDto.authenticationStatus != AuthenticationStatus.AUTHENTICATED
         val covidTestResultsAdapter = CovidTestResultsAdapter(
             this,
-            testRecordDtos,
-            patientDto
+            testRecords
         )
 
         binding.viewpagerCovidTestResults.adapter = covidTestResultsAdapter
 
-        if (testRecordDtos.size > 1) {
+        if (testRecords.size > 1) {
 
             binding.tabCovidTestResults.visibility = View.VISIBLE
 
@@ -87,6 +95,15 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
             ivLeftOption.visibility = View.VISIBLE
             ivLeftOption.setImageResource(R.drawable.ic_action_back)
             ivLeftOption.setOnClickListener {
+                if (findNavController().previousBackStackEntry?.destination?.id ==
+                    R.id.fetchTestRecordFragment
+                ) {
+                    findNavController().previousBackStackEntry?.savedStateHandle
+                        ?.set(
+                            FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS,
+                            args.testResultId
+                        )
+                }
                 findNavController().popBackStack()
             }
 
@@ -96,35 +113,39 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
             tvRightOption.visibility = View.VISIBLE
             tvRightOption.text = getString(R.string.delete)
             tvRightOption.setOnClickListener {
-                requireContext().showAlertDialog(
+                AlertDialogHelper.showAlertDialog(
+                    context = requireContext(),
                     title = getString(R.string.delete_hc_record_title),
-                    message = getString(R.string.delete_individual_covid_test_record_message),
-                    positiveButtonText = getString(R.string.delete),
-                    negativeButtonText = getString(R.string.not_now)
-                ) {
-                    binding.progressBar.visibility = View.VISIBLE
-                    viewModel.deleteTestRecord(args.testResultId)
-                        .invokeOnCompletion {
-                            findNavController().popBackStack()
-                        }
-                }
+                    msg = getString(R.string.delete_individual_covid_test_record_message),
+                    positiveBtnMsg = getString(R.string.delete),
+                    negativeBtnMsg = getString(R.string.not_now),
+                    positiveBtnCallback = {
+                        binding.progressBar.visibility = View.VISIBLE
+                        viewModel.deleteTestRecord(args.testResultId)
+                            .invokeOnCompletion {
+                                findNavController().popBackStack()
+                            }
+                    }
+                )
             }
 
             line1.visibility = View.VISIBLE
         }
     }
 
-    class CovidTestResultsAdapter(
+    inner class CovidTestResultsAdapter(
         fragment: Fragment,
-        private val testRecordDtos: List<TestRecordDto>,
-        private val patientDto: PatientDto
+        private val testRecordDtos: List<TestRecordDto>
     ) : FragmentStateAdapter(fragment) {
 
         override fun getItemCount(): Int = testRecordDtos.size
 
         override fun createFragment(position: Int): Fragment {
 
-            return SingleTestResultFragment.newInstance(testRecordDtos[position], patientDto)
+            return SingleTestResultFragment.newInstance(
+                testRecordDtos[position].id,
+                args.testResultId
+            )
         }
     }
 }

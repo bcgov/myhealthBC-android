@@ -13,9 +13,10 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentVaccineRecordDetailBinding
-import ca.bc.gov.bchealth.ui.healthrecord.VaccineRecordDetailViewModel
-import ca.bc.gov.bchealth.utils.showAlertDialog
+import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.utils.toDateTimeString
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,6 +48,15 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
             ivLeftOption.visibility = View.VISIBLE
             ivLeftOption.setImageResource(R.drawable.ic_action_back)
             ivLeftOption.setOnClickListener {
+                if (findNavController().previousBackStackEntry?.destination?.id ==
+                    R.id.fetchVaccineRecordFragment
+                ) {
+                    findNavController().previousBackStackEntry?.savedStateHandle
+                        ?.set(
+                            FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS,
+                            args.patientId
+                        )
+                }
                 findNavController().popBackStack()
             }
 
@@ -57,16 +67,18 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
             tvRightOption.text = getString(R.string.delete)
             tvRightOption.setOnClickListener {
 
-                requireContext().showAlertDialog(
+                AlertDialogHelper.showAlertDialog(
+                    context = requireContext(),
                     title = getString(R.string.delete_hc_record_title),
-                    message = getString(R.string.delete_individual_vaccine_record_message),
-                    positiveButtonText = getString(R.string.delete),
-                    negativeButtonText = getString(R.string.not_now)
-                ) {
-                    viewModel.deleteVaccineRecord(vaccineRecordId).invokeOnCompletion {
-                        findNavController().popBackStack()
+                    msg = getString(R.string.delete_individual_vaccine_record_message),
+                    positiveBtnMsg = getString(R.string.delete),
+                    negativeBtnMsg = getString(R.string.not_now),
+                    positiveBtnCallback = {
+                        viewModel.deleteVaccineRecord(vaccineRecordId).invokeOnCompletion {
+                            findNavController().popBackStack()
+                        }
                     }
-                }
+                )
             }
 
             line1.visibility = View.VISIBLE
@@ -86,23 +98,28 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
 
                     state.onVaccineRecordDtoDetail?.let { patientAndVaccineRecord ->
 
-                        patientAndVaccineRecord.vaccineRecordDto?.id?.let {
+                        patientAndVaccineRecord.vaccineWithDoses?.vaccine?.id?.let {
                             vaccineRecordId = it
                         }
 
-                        binding.tvFullName.text = patientAndVaccineRecord.patientDto.fullName
+                        binding.toolbar.tvRightOption.isVisible =
+                            (
+                                patientAndVaccineRecord.patient.authenticationStatus
+                                    != AuthenticationStatus.AUTHENTICATED
+                                )
+                        binding.tvFullName.text = patientAndVaccineRecord.patient.fullName
 
                         binding.tvIssueDate.text = getString(R.string.issued_on)
                             .plus(" ")
                             .plus(
-                                patientAndVaccineRecord.vaccineRecordDto?.qrIssueDate
+                                patientAndVaccineRecord.vaccineWithDoses?.vaccine?.qrIssueDate
                                     ?.toDateTimeString()
                             )
 
-                        patientAndVaccineRecord.vaccineRecordDto?.status
+                        patientAndVaccineRecord.vaccineWithDoses?.vaccine?.status
                             ?.let { status -> setUiState(status) }
 
-                        patientAndVaccineRecord.vaccineRecordDto?.doseDtos
+                        patientAndVaccineRecord.vaccineWithDoses?.doses
                             ?.let { doses -> adapter.submitList(doses) }
                     }
                 }

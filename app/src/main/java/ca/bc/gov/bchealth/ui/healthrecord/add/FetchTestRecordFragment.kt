@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.ui.healthrecord.add
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -11,17 +10,15 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchCovidTestResultBinding
-import ca.bc.gov.bchealth.ui.custom.setUpDatePickerUi
-import ca.bc.gov.bchealth.ui.custom.validateDatePickerData
-import ca.bc.gov.bchealth.ui.custom.validatePhnNumber
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.DatePickerHelper
+import ca.bc.gov.bchealth.utils.PhnHelper
 import ca.bc.gov.bchealth.utils.redirect
-import ca.bc.gov.bchealth.utils.showError
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
 import com.queue_it.androidsdk.Error
@@ -41,18 +38,14 @@ import java.nio.charset.StandardCharsets
 class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_result) {
     private val binding by viewBindings(FragmentFetchCovidTestResultBinding::bind)
     private val viewModel: FetchTestRecordsViewModel by viewModels()
-    private lateinit var savedStateHandle: SavedStateHandle
     private val recentPhnDobViewModel: RecentPhnDobViewModel by viewModels()
 
     companion object {
-        private const val TAG = "FetchTestRecordFragment"
         const val TEST_RECORD_ADDED_SUCCESS = "TEST_RECORD_ADDED_SUCCESS"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
-        savedStateHandle.set(TEST_RECORD_ADDED_SUCCESS, -1L)
 
         setupToolBar()
 
@@ -65,6 +58,22 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
         initClickListeners()
 
         observeCovidTestResult()
+
+        observeCovidTestRecordAddition()
+    }
+
+    private fun observeCovidTestRecordAddition() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
+            TEST_RECORD_ADDED_SUCCESS
+        )?.observe(
+            viewLifecycleOwner
+        ) {
+            if (it > 0) {
+                findNavController().previousBackStackEntry?.savedStateHandle
+                    ?.set(TEST_RECORD_ADDED_SUCCESS, it)
+                findNavController().popBackStack()
+            }
+        }
     }
 
     private fun showLoader(value: Boolean) {
@@ -74,15 +83,17 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
 
     private fun observeCovidTestResult() {
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
 
                     showLoader(state.onLoading)
 
                     if (state.errorData != null) {
-                        requireContext().showError(
-                            getString(state.errorData.title),
-                            getString(state.errorData.message)
+                        AlertDialogHelper.showAlertDialog(
+                            context = requireContext(),
+                            title = getString(state.errorData.title),
+                            msg = getString(state.errorData.message),
+                            positiveBtnMsg = getString(R.string.btn_ok)
                         )
                     }
 
@@ -91,13 +102,17 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
                     }
 
                     if (state.onTestResultFetched > 0) {
-                        savedStateHandle.set(TEST_RECORD_ADDED_SUCCESS, state.onTestResultFetched)
                         if (binding.checkboxRemember.isChecked) {
                             val phn = binding.edPhn.text.toString()
                             val dob = binding.edtDob.text.toString()
                             recentPhnDobViewModel.setRecentPhnDobData(phn, dob)
                         }
-                        findNavController().popBackStack()
+                        val action = FetchTestRecordFragmentDirections
+                            .actionFetchTestRecordFragmentToTestResultDetailFragment(
+                                state.patientId,
+                                state.onTestResultFetched
+                            )
+                        findNavController().navigate(action)
                     }
 
                     if (state.onMustBeQueued && state.queItUrl != null) {
@@ -110,7 +125,6 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
 
     private fun initClickListeners() {
         binding.btnSubmit.setOnClickListener {
-
             fetchTestRecord()
         }
 
@@ -124,15 +138,18 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
         val dob = binding.edtDob.text.toString()
         val dot = binding.edtDoc.text.toString()
 
-        if (this.validatePhnNumber(
-                binding.edPhnNumber
+        if (PhnHelper().validatePhnData(
+                binding.edPhnNumber,
+                requireContext()
             ) &&
-            this.validateDatePickerData(
+            DatePickerHelper().validateDatePickerData(
                     binding.tipDob,
+                    requireContext(),
                     getString(R.string.dob_required)
                 ) &&
-            this.validateDatePickerData(
+            DatePickerHelper().validateDatePickerData(
                     binding.tipDot,
+                    requireContext(),
                     getString(R.string.dot_required)
                 )
         ) {
@@ -165,7 +182,7 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
 
     private fun setUpPhnUI() {
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 recentPhnDobViewModel.recentPhnDob.collect { recentPhnDob ->
                     val (phn, dob) = recentPhnDob
                     val phnArray = arrayOf(phn)
@@ -194,11 +211,21 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
     }
 
     private fun setUpDobUI() {
-        this.setUpDatePickerUi(binding.tipDob, "DATE_OF_BIRTH")
+        DatePickerHelper().initializeDatePicker(
+            binding.tipDob,
+            getString(R.string.select_date),
+            parentFragmentManager,
+            "DATE_OF_BIRTH"
+        )
     }
 
     private fun setUpDotUI() {
-        this.setUpDatePickerUi(binding.tipDot, "DATE_OF_TEST")
+        DatePickerHelper().initializeDatePicker(
+            binding.tipDot,
+            getString(R.string.select_date),
+            parentFragmentManager,
+            "DATE_OF_TEST"
+        )
     }
 
     private fun queUser(value: String) {
@@ -215,7 +242,6 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
                 "",
                 object : QueueListener() {
                     override fun onQueuePassed(queuePassedInfo: QueuePassedInfo?) {
-                        Log.d(TAG, "onQueuePassed: updatedToken ${queuePassedInfo?.queueItToken}")
                         viewModel.setQueItToken(queuePassedInfo?.queueItToken)
                     }
 

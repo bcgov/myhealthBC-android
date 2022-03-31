@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ca.bc.gov.bchealth.databinding.ItemHealthRecordLoginBinding
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordOptionBinding
 import ca.bc.gov.bchealth.ui.healthrecord.add.HealthRecordOption
 import ca.bc.gov.bchealth.ui.healthrecord.add.OptionType
@@ -14,7 +15,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.add.OptionType
  */
 class HealthRecordOptionAdapter(
     private val itemClickListener: ItemClickListener
-) : ListAdapter<HealthRecordOption, HealthRecordOptionAdapter.ViewHolder>(
+) : ListAdapter<HealthRecordOption, RecyclerView.ViewHolder>(
     HealthRecordOptionDiffCallBack()
 ) {
 
@@ -22,28 +23,58 @@ class HealthRecordOptionAdapter(
         fun onItemClick(optionType: OptionType)
     }
 
-    class ViewHolder(val binding: ItemHealthRecordOptionBinding) :
+    class ViewHolderOptions(val binding: ItemHealthRecordOptionBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
+    class ViewHolderLogin(val binding: ItemHealthRecordLoginBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ViewHolder {
-        val view = ItemHealthRecordOptionBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
-        )
-        return ViewHolder(view)
+    ): RecyclerView.ViewHolder {
+        return when (viewType) {
+            OptionType.VACCINE.ordinal,
+            OptionType.TEST.ordinal -> {
+                val binding = ItemHealthRecordOptionBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false
+                )
+                ViewHolderOptions(binding)
+            }
+            OptionType.LOGIN.ordinal -> {
+                val binding = ItemHealthRecordLoginBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false
+                )
+                ViewHolderLogin(binding)
+            }
+            else -> throw ClassCastException("Unknown viewType $viewType")
+        }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val option = getItem(position)
-        holder.binding.tvGetVaccinationRecordTitle.setText(option.titleStringResource)
-        holder.binding.tvGetVaccinationRecordSubtitle.setText(option.descriptionStringResource)
-        holder.binding.ivVaccinationRecordIcon.setBackgroundResource(option.iconDrawableResource)
+        when (holder) {
+            is ViewHolderOptions -> {
+                holder.binding.tvGetVaccinationRecordTitle.setText(option.titleStringResource)
+                holder.binding.tvGetVaccinationRecordSubtitle.setText(option.descriptionStringResource)
+                holder.binding.ivVaccinationRecordIcon.setBackgroundResource(option.iconDrawableResource)
+                holder.itemView.setOnClickListener {
+                    itemClickListener.onItemClick(option.type)
+                }
+            }
 
-        holder.itemView.setOnClickListener {
-            itemClickListener.onItemClick(option.type)
+            is ViewHolderLogin -> {
+                holder.binding.tvTitle.setText(option.titleStringResource)
+                holder.binding.tvLoginMsg.setText(option.descriptionStringResource)
+                holder.binding.btnLogin.setOnClickListener {
+                    itemClickListener.onItemClick(option.type)
+                }
+            }
         }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return getItem(position).type.ordinal
     }
 }
 

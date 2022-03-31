@@ -1,7 +1,8 @@
 package ca.bc.gov.repository
 
-import ca.bc.gov.data.ImmunizationRemoteDataSource
-import ca.bc.gov.data.remote.model.request.VaccineStatusRequest
+import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
+import ca.bc.gov.data.datasource.remote.model.request.VaccineStatusRequest
+import ca.bc.gov.data.model.VaccineStatus
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.qr.ProcessQrRepository
 import ca.bc.gov.repository.qr.VaccineRecordState
@@ -24,11 +25,24 @@ class FetchVaccineRecordRepository @Inject constructor(
     ): Pair<VaccineRecordState, PatientVaccineRecord?> {
         val response =
             immunizationRemoteDataSource.getVaccineStatus(VaccineStatusRequest(phn, dob, dov))
-        val image = base64ToInputImageConverter.convert(response.payload?.qrCode?.data!!)
+        return processResponse(response)
+    }
+
+    suspend fun fetchVaccineRecord(
+        token: String,
+        hdid: String
+    ): Pair<VaccineRecordState, PatientVaccineRecord?> {
+        val response =
+            immunizationRemoteDataSource.getVaccineStatus(token, hdid)
+        return processResponse(response)
+    }
+
+    private suspend fun processResponse(vaccineStatus: VaccineStatus): Pair<VaccineRecordState, PatientVaccineRecord?> {
+        val image = base64ToInputImageConverter.convert(vaccineStatus.qrCode.data)
         val patientVaccineRecord = processQrRepository.processQrCode(image)
         val (status, record) = patientVaccineRecord
-        record?.vaccineRecordDto?.federalPass = response.payload?.federalVaccineProof?.data
-        record?.patientDto?.phn = response.payload?.phn
+        record?.vaccineRecordDto?.federalPass = vaccineStatus.federalVaccineProof.data
+        record?.patientDto?.phn = vaccineStatus.phn
         return Pair(status, record)
     }
 }

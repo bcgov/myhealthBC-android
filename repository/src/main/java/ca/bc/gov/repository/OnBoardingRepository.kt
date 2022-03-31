@@ -1,6 +1,6 @@
 package ca.bc.gov.repository
 
-import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import javax.inject.Inject
 
 /**
@@ -13,8 +13,9 @@ class OnBoardingRepository @Inject constructor(
     suspend fun setAppVersionCode(appVersionCode: Int) =
         preferenceStorage.setAppVersion(appVersionCode)
 
-    suspend fun setOnBoardingRequired(onBoardingShown: Boolean) =
-        preferenceStorage.setIsOnBoardingShown(onBoardingShown)
-
-    val onBoardingRequired = preferenceStorage.onBoardingRequired
+    var onBoardingRequired: Boolean
+        get() = preferenceStorage.onBoardingRequired
+        set(value) {
+            preferenceStorage.onBoardingRequired = value
+        }
 }

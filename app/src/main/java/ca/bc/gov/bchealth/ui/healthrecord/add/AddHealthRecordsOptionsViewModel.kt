@@ -11,7 +11,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddHealthRecordsOptionsViewModel @Inject constructor() : ViewModel() {
 
-    fun getHealthRecordOption(): List<HealthRecordOption> = listOf(
+    fun getHealthRecordOption(): List<HealthRecordOption> = mutableListOf(
         HealthRecordOption(
             R.string.get_vaccination_records,
             R.string.access_to_the_details_of_you_and_your_family_s_covid_19_vaccination_records,
@@ -25,6 +25,15 @@ class AddHealthRecordsOptionsViewModel @Inject constructor() : ViewModel() {
             OptionType.TEST
         )
     )
+
+    fun getLoginOption(): MutableList<HealthRecordOption> = mutableListOf(
+        HealthRecordOption(
+            R.string.add_health_record_title,
+            R.string.add_health_record_message,
+            R.drawable.ic_covid_test_result,
+            OptionType.LOGIN
+        )
+    )
 }
 
 data class HealthRecordOption(
@@ -34,7 +43,8 @@ data class HealthRecordOption(
     val type: OptionType
 )
 
-enum class OptionType {
-    VACCINE,
-    TEST
+enum class OptionType(private val value: Int) {
+    VACCINE(1),
+    TEST(2),
+    LOGIN(3)
 }

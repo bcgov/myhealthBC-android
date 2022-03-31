@@ -2,13 +2,13 @@ package ca.bc.gov.data.di
 
 import android.content.Context
 import ca.bc.gov.data.R
-import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
-import ca.bc.gov.data.remote.ImmunizationApi
-import ca.bc.gov.data.remote.LaboratoryApi
-import ca.bc.gov.data.remote.interceptor.CookiesInterceptor
-import ca.bc.gov.data.remote.interceptor.QueueItInterceptor
-import ca.bc.gov.data.remote.interceptor.ReceivedCookieInterceptor
-import ca.bc.gov.data.remote.interceptor.UserAgentInterceptor
+import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
+import ca.bc.gov.data.datasource.remote.api.HealthGatewayPublicApi
+import ca.bc.gov.data.datasource.remote.interceptor.CookiesInterceptor
+import ca.bc.gov.data.datasource.remote.interceptor.QueueItInterceptor
+import ca.bc.gov.data.datasource.remote.interceptor.ReceivedCookieInterceptor
+import ca.bc.gov.data.datasource.remote.interceptor.UserAgentInterceptor
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -55,11 +55,13 @@ class HealthGateWayApiModule {
         loggingInterceptor: HttpLoggingInterceptor,
         cookiesInterceptor: CookiesInterceptor,
         queueItInterceptor: QueueItInterceptor,
-        receivedCookieInterceptor: ReceivedCookieInterceptor
+        receivedCookieInterceptor: ReceivedCookieInterceptor,
+        userAgentInterceptor: UserAgentInterceptor
     ) = OkHttpClient.Builder()
         .addInterceptor(queueItInterceptor)
         .addInterceptor(cookiesInterceptor)
         .addInterceptor(receivedCookieInterceptor)
+        .addInterceptor(userAgentInterceptor)
         .addInterceptor(loggingInterceptor)
         .hostnameVerifier { _, _ ->
             return@hostnameVerifier true
@@ -86,10 +88,10 @@ class HealthGateWayApiModule {
             .build()
 
     @Provides
-    fun providesImmunizationApi(retrofit: Retrofit): ImmunizationApi =
-        retrofit.create(ImmunizationApi::class.java)
+    fun providesHealthGateWayPrivateApi(retrofit: Retrofit): HealthGatewayPrivateApi =
+        retrofit.create(HealthGatewayPrivateApi::class.java)
 
     @Provides
-    fun providesLaboratoryApi(retrofit: Retrofit): LaboratoryApi =
-        retrofit.create(LaboratoryApi::class.java)
+    fun providesHealthGateWayPublicApi(retrofit: Retrofit): HealthGatewayPublicApi =
+        retrofit.create(HealthGatewayPublicApi::class.java)
 }

@@ -14,6 +14,6 @@ data class VaccineRecordDto(
     var qrCodeImage: Bitmap?,
     var shcUri: String,
     var federalPass: String?,
-    var mode: DataSource,
+    var mode: DataSource = DataSource.PUBLIC_API,
     var doseDtos: List<VaccineDoseDto> = emptyList()
 )

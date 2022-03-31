@@ -15,19 +15,21 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_resource"
+        android:id="@+id/tv_title1"
         style="?textAppearanceHeadline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
         android:text="@string/health_records"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_resource_message"
+        android:id="@+id/tv_message"
         style="?textAppearanceBody1"
         android:layout_width="0dp"
+        android:visibility="invisible"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
         android:text="@string/view_the_details_of_all_your_covid_19_health_records"
@@ -35,7 +37,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_resource"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title1"
         android:layout_marginEnd="@dimen/space_4_x" />
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -47,13 +49,13 @@
         android:clickable="true"
         android:contentDescription="@string/add_card"
         android:focusable="true"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:src="@drawable/ic_add_card_blue"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_resource_message"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tv_resource_message"
-        app:layout_constraintTop_toTopOf="@+id/tv_resource_message" />
+        app:layout_constraintStart_toEndOf="@+id/tv_message"
+        app:layout_constraintTop_toTopOf="@+id/tv_message" />
 
     <ca.bc.gov.bchealth.widget.RecyclerView
         android:id="@+id/rv_members"
@@ -65,6 +67,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_resource_message" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_message" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

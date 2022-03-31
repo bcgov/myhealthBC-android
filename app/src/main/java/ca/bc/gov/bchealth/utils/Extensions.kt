@@ -6,14 +6,21 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
+import android.text.Selection
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.graphics.drawable.toBitmap
 import ca.bc.gov.bchealth.R
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -138,40 +145,46 @@ fun Context.hideKeyboard(view: View) {
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
-/*
-* Generic error dialog
-* */
-fun Context.showError(title: String, message: String) {
-    MaterialAlertDialogBuilder(this)
-        .setTitle(title)
-        .setCancelable(false)
-        .setMessage(message)
-        .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
-            dialog.dismiss()
-        }
-        .show()
+/**
+ * Makes View visible
+ */
+fun View.show() {
+    this.visibility = View.VISIBLE
 }
 
-/*
-* Show alert dialog with positive button click action
-* */
-fun Context.showAlertDialog(
-    title: String,
-    message: String,
-    positiveButtonText: String,
-    negativeButtonText: String,
-    runnable: Runnable
-) {
+/**
+ * Makes view invisible, and it doesn't take any space for layout purposes.
+ */
+fun View.hide() {
+    this.visibility = View.GONE
+}
 
-    MaterialAlertDialogBuilder(this)
-        .setTitle(title)
-        .setCancelable(false)
-        .setMessage(message)
-        .setPositiveButton(positiveButtonText) { dialog, _ ->
-            runnable.run()
-            dialog.dismiss()
-        }.setNegativeButton(negativeButtonText) { dialog, _ ->
-            dialog.dismiss()
+fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {
+    val spannableString = SpannableString(this.text)
+    var startIndexOfLink = -1
+    for (link in links) {
+        val clickableSpan = object : ClickableSpan() {
+            override fun updateDrawState(textPaint: TextPaint) {
+                // use this to change the link color
+                textPaint.color = textPaint.linkColor
+                // toggle below value to enable/disable
+                // the underline shown below the clickable text
+                textPaint.isUnderlineText = true
+            }
+
+            override fun onClick(view: View) {
+                Selection.setSelection((view as TextView).text as Spannable, 0)
+                view.invalidate()
+                link.second.onClick(view)
+            }
         }
-        .show()
+        startIndexOfLink = this.text.toString().indexOf(link.first, startIndexOfLink + 1)
+        spannableString.setSpan(
+            clickableSpan, startIndexOfLink, startIndexOfLink + link.first.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+    }
+    this.movementMethod =
+        LinkMovementMethod.getInstance() // without LinkMovementMethod, link can not click
+    this.setText(spannableString, TextView.BufferType.SPANNABLE)
 }

@@ -1,6 +1,6 @@
 package ca.bc.gov.repository
 
-import ca.bc.gov.data.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import javax.inject.Inject
 
 /**
