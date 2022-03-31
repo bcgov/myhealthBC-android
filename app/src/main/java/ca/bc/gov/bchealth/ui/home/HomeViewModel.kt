@@ -1,5 +1,7 @@
 package ca.bc.gov.bchealth.ui.home
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
@@ -86,26 +88,26 @@ class HomeViewModel @Inject constructor(
         return mutableListOf(
             HomeRecordItem(
                 R.drawable.ic_login_info,
-                "Health Records",
-                "View and manage all your available health records, including dispensed medications, health visits, COVID-19 test results, immunizations and more.",
+                R.string.health_records_home,
+                R.string.health_records_desc,
                 if (isLoggedIn) 0 else R.drawable.ic_bcsc,
-                if (isLoggedIn) "View records" else "Get started",
+                if (isLoggedIn) R.string.view_records else R.string.get_started,
                 HomeNavigationType.HEALTH_RECORD
             ),
             HomeRecordItem(
                 R.drawable.ic_green_tick,
-                "Proof of vaccination",
-                "View, download and print your BC Vaccine Card and federal proof of vaccination, to access events, businesses, services and to travel.",
+                R.string.health_passes,
+                R.string.proof_of_vaccination_desc,
                 R.drawable.ic_right_arrow,
-                "Add proofs",
+                R.string.add_proofs,
                 HomeNavigationType.VACCINE_PROOF
             ),
             HomeRecordItem(
                 R.drawable.ic_resources,
-                "Resources",
-                "Find useful information and learn how to get vaccinated or tested for COVID-19.",
+                R.string.resources,
+                R.string.resources_desc,
                 R.drawable.ic_right_arrow,
-                "Learn more",
+                R.string.learn_more,
                 HomeNavigationType.RESOURCES
             )
         )
@@ -121,11 +123,11 @@ data class HomeUiState(
 )
 
 data class HomeRecordItem(
-    val iconTitle: Int,
-    val title: String,
-    val description: String,
-    val icon: Int,
-    val btnTitle: String,
+    @DrawableRes val iconTitle: Int,
+    @StringRes val title: Int,
+    @StringRes val description: Int,
+    @DrawableRes val icon: Int,
+    @StringRes val btnTitle: Int,
     val recordType: HomeNavigationType
 )
 
