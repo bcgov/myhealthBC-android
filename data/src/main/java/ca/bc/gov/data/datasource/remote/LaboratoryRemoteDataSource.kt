@@ -33,7 +33,7 @@ class LaboratoryRemoteDataSource @Inject constructor(
 ) {
 
     /**
-     * TODO:- Covid test result is not providing phn number of dob in response
+     *  Covid test result is not providing phn number of dob in response
      *  so we have to add phn and dob in order to record data in DB properly.
      *  This can be done on repository layer or data source layer.
      */

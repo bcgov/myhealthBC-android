@@ -122,5 +122,6 @@ class PatientDaoTest : BaseDataBaseTest() {
     }
 
     override fun tearDown() {
+        // no implementation required
     }
 }

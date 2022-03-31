@@ -1,13 +1,11 @@
 package ca.bc.gov.bchealth.ui.auth
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import androidx.activity.addCallback
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.biometric.BiometricManager
@@ -48,9 +46,8 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
             requireActivity().finishAndRemoveTask()
         }
         startForResult =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                }
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                // no implementation required
             }
     }
 
@@ -83,7 +80,9 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
                 showNoHardwareDialog()
             }
-            BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {}
+            BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {
+                // no implementation required
+            }
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
                 showUserNotEnrolledDialog()
             }
@@ -98,7 +97,9 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
                     when (errorCode) {
-                        BiometricPrompt.ERROR_USER_CANCELED -> {}
+                        BiometricPrompt.ERROR_USER_CANCELED -> {
+                            // no implementation required
+                        }
                         else -> {
                             val errorMessage = "$errorCode, $errString"
                             showAuthenticationErrorDialog(errorMessage)
@@ -155,7 +156,7 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
             positiveBtnMsg = getString(R.string.dialog_btn_settings),
             negativeBtnMsg = getString(R.string.dialog_btn_not_now),
             positiveBtnCallback = {
-                var enrollIntent: Intent?
+                val enrollIntent: Intent?
                 when {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
                         enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {

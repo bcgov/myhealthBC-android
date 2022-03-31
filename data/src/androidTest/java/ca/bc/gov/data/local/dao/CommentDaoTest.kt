@@ -24,5 +24,6 @@ class CommentDaoTest : BaseDataBaseTest() {
     }
 
     override fun tearDown() {
+        // no implementation required
     }
 }

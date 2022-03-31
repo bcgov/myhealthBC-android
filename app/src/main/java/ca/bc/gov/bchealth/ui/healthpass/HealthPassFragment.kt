@@ -65,14 +65,15 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                 BCSC_AUTH_STATUS
             )
             when (it) {
-                BcscAuthState.SUCCESS -> {}
                 BcscAuthState.NOT_NOW -> {
                     val destinationId = sharedViewModel.destinationId
                     if (destinationId > 0) {
                         findNavController().navigate(destinationId)
                     }
                 }
-                else -> {}
+                else -> {
+                    // no implementation required
+                }
             }
         }
 

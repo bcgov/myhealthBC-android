@@ -163,8 +163,6 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                 viewModel.isTermsOfServiceAccepted()
             }
             AgeLimitCheck.FAILED -> { showAgeLimitRestrictionDialog() }
-            else -> {
-            }
         }
     }
 

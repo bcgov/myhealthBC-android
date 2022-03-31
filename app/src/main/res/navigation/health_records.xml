@@ -103,21 +103,7 @@
             android:name="patientId"
             app:argType="long" />
     </fragment>
-    <fragment
-        android:id="@+id/timelineViewFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.TimelineViewFragment"
-        android:label="TimelineViewFragment" />
-    <fragment
-        android:id="@+id/timeFilterFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.TimeFilterFragment"
-        android:label="fragment_time_filter"
-        tools:layout="@layout/fragment_time_filter" />
-    <fragment
-        android:id="@+id/typeFilterFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.TypeFilterFragment"
-        android:label="fragment_type_filter"
-        tools:layout="@layout/fragment_type_filter" />
-    <fragment
+   <fragment
         android:id="@+id/medicationDetailsFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsFragment"
         android:label="fragment_medication_details"

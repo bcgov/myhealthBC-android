@@ -37,5 +37,6 @@ class LabOrderDaoTest : BaseDataBaseTest() {
     }
 
     override fun tearDown() {
+        // no implementation required
     }
 }

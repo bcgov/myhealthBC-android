@@ -100,10 +100,11 @@ fun DispensingPharmacy.toDispensingPharmacyDto(medicationRecordId: Long) = Dispe
     faxNumber = faxNumber
 )
 
+const val INVALID_RESPONSE = "Invalid Response"
 fun Media.toMediaMetaData(): MediaMetaData = MediaMetaData(
-    mediaType = mediaType ?: throw MyHealthException(SERVER_ERROR, "Invalid Response"),
-    encoding = encoding ?: throw MyHealthException(SERVER_ERROR, "Invalid Response"),
-    data = data ?: throw MyHealthException(SERVER_ERROR, "Invalid Response"),
+    mediaType = mediaType ?: throw MyHealthException(SERVER_ERROR, INVALID_RESPONSE),
+    encoding = encoding ?: throw MyHealthException(SERVER_ERROR, INVALID_RESPONSE),
+    data = data ?: throw MyHealthException(SERVER_ERROR, INVALID_RESPONSE),
 )
 
 fun VaccineResourcePayload.toVaccineStatus(): VaccineStatus = VaccineStatus(
