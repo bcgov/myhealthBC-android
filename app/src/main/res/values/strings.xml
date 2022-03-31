@@ -270,4 +270,7 @@
     <!--Terms of service-->
     <string name="terms_of_service">Terms of service</string>
     <string name="btn_agree">Agree</string>
+
+    <!-- Filter screen -->
+    <string name="clear_all">Clear all</string>
 </resources>
