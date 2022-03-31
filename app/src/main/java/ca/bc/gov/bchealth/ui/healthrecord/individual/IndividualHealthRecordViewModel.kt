@@ -84,12 +84,13 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 var filteredHealthRecords: List<HealthRecordItem> = mutableListOf()
                 var filteredHealthRecordsExceptMedication: List<HealthRecordItem> = mutableListOf()
 
+                if(filterList.isNullOrEmpty()) {
+                    filteredHealthRecords = medicationRecords + vaccineRecords + covidTestRecords + labTestRecords
+                    filteredHealthRecordsExceptMedication = vaccineRecords + covidTestRecords + labTestRecords
+                }
+
                 filterList.forEach {
                     when (it) {
-                        TimelineTypeFilter.ALL -> {
-                            filteredHealthRecords = medicationRecords + vaccineRecords + covidTestRecords + labTestRecords
-                            filteredHealthRecordsExceptMedication = vaccineRecords + covidTestRecords + labTestRecords
-                        }
                         TimelineTypeFilter.MEDICATION -> {
                             filteredHealthRecords += medicationRecords
                         }

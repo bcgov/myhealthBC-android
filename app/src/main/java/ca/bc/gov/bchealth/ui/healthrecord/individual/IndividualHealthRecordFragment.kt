@@ -24,6 +24,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
 import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
 import ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment
 import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterViewModel
+import ca.bc.gov.bchealth.ui.healthrecord.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_REQUEST
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_UPDATED
@@ -232,25 +233,32 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun displayBcscRecords(uiState: IndividualHealthRecordsUiState) {
-        if (uiState.medicationRecordsUpdated || !viewModel.isProtectiveWordRequired() || sharedViewModel.isProtectiveWordAdded) {
-            if (::healthRecordsAdapter.isInitialized) {
-                healthRecordsAdapter.submitList(uiState.onHealthRecords)
+        if(filterSharedViewModel.timelineTypeFilter.isNullOrEmpty() || filterSharedViewModel.timelineTypeFilter.contains(TimelineTypeFilter.MEDICATION)) {
+            if (uiState.medicationRecordsUpdated || !viewModel.isProtectiveWordRequired() || sharedViewModel.isProtectiveWordAdded) {
+                if (::healthRecordsAdapter.isInitialized) {
+                    healthRecordsAdapter.submitList(uiState.onHealthRecords)
+                }
+                concatAdapter.removeAdapter(hiddenMedicationRecordsAdapter)
+            } else {
+                if (::healthRecordsAdapter.isInitialized) {
+                    healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
+                }
+                if (::hiddenMedicationRecordsAdapter.isInitialized) {
+                    hiddenMedicationRecordsAdapter.submitList(
+                        listOf(
+                            HiddenMedicationRecordItem(
+                                getString(R.string.hidden_medication_records),
+                                getString(R.string.enter_protective_word_to_access_medication_records)
+                            )
+                        )
+                    )
+                }
             }
-            concatAdapter.removeAdapter(hiddenMedicationRecordsAdapter)
         } else {
             if (::healthRecordsAdapter.isInitialized) {
                 healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
             }
-            if (::hiddenMedicationRecordsAdapter.isInitialized) {
-                hiddenMedicationRecordsAdapter.submitList(
-                    listOf(
-                        HiddenMedicationRecordItem(
-                            getString(R.string.hidden_medication_records),
-                            getString(R.string.enter_protective_word_to_access_medication_records)
-                        )
-                    )
-                )
-            }
+            concatAdapter.removeAdapter(hiddenMedicationRecordsAdapter)
         }
     }
 

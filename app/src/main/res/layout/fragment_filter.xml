@@ -85,10 +85,10 @@
         android:text="Apply"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_cancel" />
+        app:layout_constraintStart_toEndOf="@+id/btn_clear" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_cancel"
+        android:id="@+id/btn_clear"
         style="@style/HealthGateway.Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_1_x"
         android:layout_marginBottom="@dimen/space_2_x"
-        android:text="@string/cancel"
+        android:text="@string/clear_all"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_apply"
         app:layout_constraintStart_toStartOf="parent" />

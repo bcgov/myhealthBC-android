@@ -27,6 +27,48 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
         initTypeFilter()
 
+        applyClickListener()
+
+        clearClickListener()
+    }
+
+    private fun setUpToolbar() {
+        binding.toolbar.tvTitle.show()
+        binding.toolbar.tvTitle.text = "Filter"
+        binding.toolbar.ivLeftOption.apply {
+            this.show()
+            setOnClickListener {
+                findNavController().popBackStack()
+            }
+        }
+    }
+
+    private fun initTypeFilter() {
+        if(filterSharedViewModel.timelineTypeFilter.isNullOrEmpty()) {
+            binding.chipMedication.isChecked = true
+            binding.chipImmunizations.isChecked = true
+            binding.chipCovidTest.isChecked = true
+            binding.chipLabTest.isChecked = true
+        }
+        filterSharedViewModel.timelineTypeFilter.forEach {
+            when (it) {
+                TimelineTypeFilter.MEDICATION -> {
+                    binding.chipMedication.isChecked = true
+                }
+                TimelineTypeFilter.IMMUNIZATION -> {
+                    binding.chipImmunizations.isChecked = true
+                }
+                TimelineTypeFilter.COVID_19_TEST -> {
+                    binding.chipCovidTest.isChecked = true
+                }
+                TimelineTypeFilter.LAB_TEST -> {
+                    binding.chipLabTest.isChecked = true
+                }
+            }
+        }
+    }
+
+    private fun applyClickListener() {
         binding.btnApply.setOnClickListener {
             val filterList = mutableListOf<TimelineTypeFilter>()
             val checkedChipIds = binding.cgFilterByType.checkedChipIds
@@ -49,42 +91,11 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
             filterSharedViewModel.timelineTypeFilter = filterList
             findNavController().popBackStack()
         }
-
     }
 
-    private fun setUpToolbar() {
-        binding.toolbar.tvTitle.show()
-        binding.toolbar.tvTitle.text = "Filter"
-        binding.toolbar.ivLeftOption.apply {
-            this.show()
-            setOnClickListener {
-                findNavController().popBackStack()
-            }
-        }
-    }
-
-    private fun initTypeFilter() {
-        filterSharedViewModel.timelineTypeFilter.forEach {
-            when (it) {
-                TimelineTypeFilter.ALL -> {
-                    binding.chipMedication.isChecked = true
-                    binding.chipImmunizations.isChecked = true
-                    binding.chipCovidTest.isChecked = true
-                    binding.chipLabTest.isChecked = true
-                }
-                TimelineTypeFilter.MEDICATION -> {
-                    binding.chipMedication.isChecked = true
-                }
-                TimelineTypeFilter.IMMUNIZATION -> {
-                    binding.chipImmunizations.isChecked = true
-                }
-                TimelineTypeFilter.COVID_19_TEST -> {
-                    binding.chipCovidTest.isChecked = true
-                }
-                TimelineTypeFilter.LAB_TEST -> {
-                    binding.chipLabTest.isChecked = true
-                }
-            }
+    private fun clearClickListener() {
+        binding.btnClear.setOnClickListener {
+            findNavController().popBackStack()
         }
     }
 }
