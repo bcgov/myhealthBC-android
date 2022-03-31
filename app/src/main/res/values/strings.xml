@@ -180,8 +180,8 @@
     <string name="in_range">In Range</string>
     <string name="add_health_record_title">Manage your records</string>
     <string name="add_health_record_message">Log in with your BC Services Card to view all the records and customize health plans</string>
-    <string name="hidden_medication_records">Hidden medication records</string>
-    <string name="enter_protective_word_to_access_medication_records">Enter protective word to access your medication records.</string>
+    <string name="hidden_medication_records">Medications</string>
+    <string name="enter_protective_word_to_access_medication_records">Your protective word is required to access medication records</string>
     <string name="protective_word_for_a_pharmanet_record">protective-word-for-a-pharmanet-record</string>
     <string name="wrong_protective_word">Invalid protective word. Try again.</string>
     <string name="restricted_pharmanet_records">Restricted PharmaNet Records</string>
@@ -189,6 +189,7 @@
     <string name="protective_word_desc">Please enter the protective word required to access these restricted PharmaNet records. For more information visit protective-word-for-a-pharmanet-record</string>
     <string name="protective_word">Protective Word</string>
     <string name="access_records">Access records</string>
+    <string name="e_g_pa6729bc">e.g. PA6729BC</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>

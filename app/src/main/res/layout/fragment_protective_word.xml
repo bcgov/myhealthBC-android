@@ -29,29 +29,11 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_title"
-                style="?textAppearanceHeadline3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_2_x"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginEnd="@dimen/space_4_x"
-                android:textSize="20sp"
-                android:gravity="start"
-                android:textAlignment="textStart"
-                android:textColor="@color/text_black"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:text="@string/view_your_medication_records"
-                />
-
-            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_desc"
                 style="?textAppearanceBody1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_1_x"
+                android:layout_marginTop="@dimen/space_4_x"
                 android:layout_marginStart="@dimen/space_4_x"
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:gravity="start"
@@ -59,9 +41,8 @@
                 android:textAlignment="textStart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_title"
-                android:text="@string/protective_word_desc"
-                />
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="@string/protective_word_desc" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_protective_word_title"
@@ -73,12 +54,10 @@
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:gravity="start"
                 android:textAlignment="textStart"
-                android:textColor="@color/grey"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_desc"
-                android:text="@string/protective_word"
-                />
+                android:text="@string/protective_word" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tl_protective_word"
@@ -89,6 +68,8 @@
                 android:layout_marginTop="@dimen/space_1_x"
                 android:layout_marginEnd="@dimen/space_4_x"
                 app:errorEnabled="true"
+                app:helperTextEnabled="true"
+                app:helperText="@string/e_g_pa6729bc"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -97,7 +78,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_protective_word"
                     android:layout_width="match_parent"
-                    android:inputType="text"
+                    android:inputType="textCapCharacters"
                     android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -110,30 +91,29 @@
         style="@style/HealthGateway.Widget.MaterialComponents.Button2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_2_x"
-        android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
-        android:layout_marginBottom="@dimen/space_1_x"
+        android:layout_marginBottom="@dimen/space_2_x"
         android:text="@string/btn_continue"
-        app:layout_constraintBottom_toTopOf="@+id/btn_cancel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_cancel"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginStart="@dimen/space_1_x" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_cancel"
         style="@style/HealthGateway.Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_1_x"
         android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginEnd="@dimen/space_4_x"
         android:layout_marginBottom="@dimen/space_2_x"
         android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toStartOf="@+id/btn_continue"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        android:layout_marginEnd="@dimen/space_1_x" />
 
     <ProgressBar
         android:id="@+id/progressBar"
