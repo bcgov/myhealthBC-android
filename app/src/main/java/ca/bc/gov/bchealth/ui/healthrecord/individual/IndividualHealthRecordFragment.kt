@@ -2,10 +2,8 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -114,6 +112,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         updateFilterSelection()
 
         filterFragmentResultListener()
+
+        clearFilterClickListener()
     }
 
     private fun filterFragmentResultListener() {
@@ -128,37 +128,48 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun updateFilterSelection() {
-        binding.chipMedication.isChecked = false
-        binding.chipImmunizations.isChecked = false
-        binding.chipCovidTest.isChecked = false
-        binding.chipLabTest.isChecked = false
+        resetFilters()
         filterSharedViewModel.timelineTypeFilter.forEach {
+            binding.imgClear.isVisible = true
             when (it) {
                 TimelineTypeFilter.MEDICATION -> {
-                    binding.chipMedication.isChecked = true
+                    binding.chipMedication.isVisible = true
                 }
                 TimelineTypeFilter.IMMUNIZATION -> {
-                    binding.chipImmunizations.isChecked = true
+                    binding.chipImmunizations.isVisible = true
                 }
                 TimelineTypeFilter.COVID_19_TEST -> {
-                    binding.chipCovidTest.isChecked = true
+                    binding.chipCovidTest.isVisible = true
                 }
                 TimelineTypeFilter.LAB_TEST -> {
-                    binding.chipLabTest.isChecked = true
+                    binding.chipLabTest.isVisible = true
                 }
                 TimelineTypeFilter.ALL -> {
-                    binding.chipMedication.isChecked = true
-                    binding.chipImmunizations.isChecked = true
-                    binding.chipCovidTest.isChecked = true
-                    binding.chipLabTest.isChecked = true
+                    binding.chipMedication.isVisible = true
+                    binding.chipImmunizations.isVisible = true
+                    binding.chipCovidTest.isVisible = true
+                    binding.chipLabTest.isVisible = true
                 }
                 TimelineTypeFilter.NONE -> {
-                    binding.chipMedication.isChecked = false
-                    binding.chipImmunizations.isChecked = false
-                    binding.chipCovidTest.isChecked = false
-                    binding.chipLabTest.isChecked = false
+                    resetFilters()
                 }
             }
+        }
+    }
+
+    private fun resetFilters() {
+        binding.chipMedication.isVisible = false
+        binding.chipImmunizations.isVisible = false
+        binding.chipCovidTest.isVisible = false
+        binding.chipLabTest.isVisible = false
+        binding.imgClear.isVisible = false
+    }
+
+    private fun clearFilterClickListener() {
+        binding.imgClear.setOnClickListener {
+            filterSharedViewModel.timelineTypeFilter = listOf(TimelineTypeFilter.ALL)
+            updateFilterSelection()
+            viewModel.getIndividualsHealthRecord(args.patientId, filterSharedViewModel.timelineTypeFilter)
         }
     }
 
@@ -287,7 +298,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun displayBcscRecords(uiState: IndividualHealthRecordsUiState) {
-        if(filterSharedViewModel.timelineTypeFilter.contains(TimelineTypeFilter.ALL) || filterSharedViewModel.timelineTypeFilter.contains(TimelineTypeFilter.MEDICATION)) {
+        if (filterSharedViewModel.timelineTypeFilter.contains(TimelineTypeFilter.ALL) || filterSharedViewModel.timelineTypeFilter.contains(TimelineTypeFilter.MEDICATION)) {
             displayBCSCRecordsWithMedicationFilter(uiState)
         } else {
             displayBCSCRecordsExceptMedicationFilter(uiState)
@@ -299,13 +310,10 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             if (::healthRecordsAdapter.isInitialized) {
                 healthRecordsAdapter.submitList(uiState.onHealthRecords)
             }
-            concatAdapter.removeAdapter(hiddenMedicationRecordsAdapter)
+            if (::hiddenMedicationRecordsAdapter.isInitialized) {
+                hiddenMedicationRecordsAdapter.submitList(emptyList())
+            }
             binding.emptyView.isVisible = uiState.onHealthRecords.isNullOrEmpty()
-            // if(uiState.onHealthRecords.isNullOrEmpty()) {
-            //     binding.emptyView.setVisibilityCustom(View.VISIBLE)
-            // } else {
-            //     binding.emptyView.setVisibilityCustom(View.GONE)
-            // }
         } else {
             if (::healthRecordsAdapter.isInitialized) {
                 healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
@@ -327,22 +335,10 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         if (::healthRecordsAdapter.isInitialized) {
             healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
         }
-        concatAdapter.removeAdapter(hiddenMedicationRecordsAdapter)
-        binding.emptyView.isVisible = uiState.healthRecordsExceptMedication.isNullOrEmpty()
-        // if(uiState.healthRecordsExceptMedication.isNullOrEmpty()) {
-        //     binding.emptyView.setVisibilityCustom(View.VISIBLE)
-        // } else {
-        //     binding.emptyView.setVisibilityCustom(View.GONE)
-        // }
-    }
-
-    fun View.setVisibilityCustom(visibility: Int) {
-        val motionLayout = parent as MotionLayout
-        motionLayout.constraintSetIds.forEach {
-            val constraintSet = motionLayout.getConstraintSet(it) ?: return@forEach
-            constraintSet.setVisibility(this.id, visibility)
-            constraintSet.applyTo(motionLayout)
+        if (::hiddenMedicationRecordsAdapter.isInitialized) {
+            hiddenMedicationRecordsAdapter.submitList(emptyList())
         }
+        binding.emptyView.isVisible = uiState.healthRecordsExceptMedication.isNullOrEmpty()
     }
 
     private fun setUpRecyclerView() {
