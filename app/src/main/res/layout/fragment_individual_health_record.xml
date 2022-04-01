@@ -125,6 +125,7 @@
         android:layout_marginTop="@dimen/space_1_x"
         android:layout_marginStart="@dimen/space_1_x"
         android:layout_marginEnd="@dimen/space_1_x"
+        android:scrollbars="none"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_clear"
         app:layout_constraintTop_toBottomOf="@+id/tv_name">
