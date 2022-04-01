@@ -131,7 +131,7 @@ class QueueItInterceptor @Inject constructor(
         val resultError = json.getAsJsonObject(RESULT_ERROR) ?: throw IOException(
             BAD_RESPONSE
         )
-        if (resultError.get(ACTION_CODE) != null) {
+        if (!resultError.get(ACTION_CODE).isJsonNull) {
             if (resultError.get(ACTION_CODE)?.asString == PROTECTED)
                 throw ProtectiveWordException(
                     PROTECTIVE_WORD_ERROR_CODE,

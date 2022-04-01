@@ -1,6 +1,12 @@
-package ca.bc.gov.data.datasource.remote.model.base
+package ca.bc.gov.common.model.test
 
-data class Order(
+import ca.bc.gov.common.model.DataSource
+import java.time.Instant
+
+/**
+ * @author Pinakin Kansara
+ */
+data class CovidOrderDto(
     val id: String,
     val phn: String?,
     val orderingProviderIds: String?,
@@ -8,9 +14,10 @@ data class Order(
     val reportingLab: String?,
     val location: String?,
     val ormOrOru: String?,
-    val messageDateTime: String,
+    val messageDateTime: Instant,
     val messageId: String?,
     val additionalData: String?,
     val reportAvailable: Boolean,
-    val labResults: List<LabResult> = emptyList()
+    var patientId: Long = 0,
+    val dataSource: DataSource = DataSource.BCSC
 )

@@ -12,6 +12,7 @@ import ca.bc.gov.common.model.labtest.LabOrderWithLabTestsAndPatientDto
 import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
+import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
@@ -20,10 +21,18 @@ import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsAndPatientDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
+import ca.bc.gov.common.model.test.CovidOrderDto
+import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
+import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
+import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
+import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderEntity
+import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderWithCovidTests
+import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderWithCovidTestsAndPatient
+import ca.bc.gov.data.datasource.local.entity.covid.CovidTestEntity
 import ca.bc.gov.data.datasource.local.entity.covid.test.TestRecordEntity
 import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
@@ -36,6 +45,7 @@ import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntit
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
 import ca.bc.gov.data.datasource.local.entity.relations.MedicationWithSummaryAndPharmacy
+import ca.bc.gov.data.datasource.local.entity.relations.PatientWithCovidOrderAndCovidTest
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithLabOrdersAndLabTests
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithMedicationRecords
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithTestResultsAndRecords
@@ -164,6 +174,11 @@ fun PatientWithLabOrdersAndLabTests.toDto() = PatientWithLabOrderAndLatTestsDto(
     labOrdersWithLabTests = labOrdersWithLabTests.map { it.toDto() }
 )
 
+fun PatientWithCovidOrderAndCovidTest.toDto() = PatientWithCovidOrderAndTestDto(
+    patient = patient.toDto(),
+    covidOrderAndTests = covidOrderWithTests.map { it.toDto() }
+)
+
 fun List<PatientEntity>.toDto() = PatientListDto(
     patientDtos = this.map { it.toDto() }
 )
@@ -205,4 +220,46 @@ fun CommentEntity.toDto() = CommentDto(
     createdBy,
     updatedDateTime,
     updatedBy
+)
+
+fun CovidOrderEntity.toDto() = CovidOrderDto(
+    id,
+    phn,
+    orderingProviderIds,
+    orderingProviders,
+    reportingLab,
+    location,
+    ormOrOru,
+    messageDateTime,
+    messageId,
+    additionalData,
+    reportAvailable,
+    patientId,
+    dataSource = dataSource
+)
+
+fun CovidTestEntity.toDto() = CovidTestDto(
+    id,
+    testType,
+    outOfRange,
+    collectedDateTime,
+    testStatus,
+    labResultOutcome,
+    resultDescription?.split("|") ?: emptyList(),
+    resultLink,
+    receivedDateTime,
+    resultDateTime,
+    loinc,
+    loincName,
+    covidOrderId
+)
+
+fun CovidOrderWithCovidTests.toDto() = CovidOrderWithCovidTestDto(
+    covidOrder.toDto(),
+    covidTests.map { it.toDto() }
+)
+
+fun CovidOrderWithCovidTestsAndPatient.toDto() = CovidOrderWithCovidTestAndPatientDto(
+    covidOrderWithCovidTests.toDto(),
+    patient.toDto()
 )

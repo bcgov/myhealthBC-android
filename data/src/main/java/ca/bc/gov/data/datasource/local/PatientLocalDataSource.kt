@@ -3,6 +3,7 @@ package ca.bc.gov.data.datasource.local
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
+import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
@@ -120,6 +121,9 @@ class PatientLocalDataSource @Inject constructor(
 
     suspend fun getPatientWithLabOrdersAndLabTests(patientId: Long): PatientWithLabOrderAndLatTestsDto? =
         patientDao.getPatientWithLabOrderAndTests(patientId)?.toDto()
+
+    suspend fun getPatientWithCovidOrderAndCovidTests(patientId: Long): PatientWithCovidOrderAndTestDto? =
+        patientDao.getPatientWithCovidOrderAndCovidTests(patientId)?.toDto()
 
     suspend fun deleteBcscAuthenticatedPatientData() {
         patientDao.deleteAuthenticatedPatient()

@@ -9,10 +9,14 @@ import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.model.test.CovidOrderDto
+import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
+import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderEntity
+import ca.bc.gov.data.datasource.local.entity.covid.CovidTestEntity
 import ca.bc.gov.data.datasource.local.entity.covid.test.TestRecordEntity
 import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
@@ -142,4 +146,35 @@ fun CommentDto.toEntity() = CommentEntity(
     createdBy,
     updatedDateTime,
     updatedBy
+)
+
+fun CovidOrderDto.toEntity() = CovidOrderEntity(
+    id,
+    patientId,
+    phn,
+    orderingProviderIds,
+    orderingProviders,
+    reportingLab,
+    location,
+    ormOrOru,
+    messageDateTime,
+    messageId,
+    additionalData,
+    reportAvailable
+)
+
+fun CovidTestDto.toEntity() = CovidTestEntity(
+    id,
+    covidOrderId,
+    testType,
+    outOfRange,
+    collectedDateTime,
+    testStatus,
+    labResultOutcome,
+    resultDescription = resultDescription.joinToString("|"),
+    resultLink,
+    receivedDateTime,
+    resultDateTime,
+    loInc,
+    loIncName
 )
