@@ -5,7 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class FilterViewModel @Inject constructor(): ViewModel() {
+class FilterViewModel @Inject constructor() : ViewModel() {
     var timelineTypeFilter: List<TimelineTypeFilter> = listOf(TimelineTypeFilter.ALL)
 }
 

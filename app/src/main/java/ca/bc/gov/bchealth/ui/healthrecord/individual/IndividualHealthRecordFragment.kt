@@ -121,7 +121,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             KEY_FILTER_REQUEST,
             viewLifecycleOwner
         ) { _, result ->
-            if(result.get(KEY_FILTER_UPDATED) as Boolean) {
+            if (result.get(KEY_FILTER_UPDATED) as Boolean) {
                 updateFilterSelection()
             }
         }

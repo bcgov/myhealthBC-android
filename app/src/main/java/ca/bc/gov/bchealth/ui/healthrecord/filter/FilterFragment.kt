@@ -95,7 +95,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                     }
                 }
             }
-            if(filterList.isNullOrEmpty()) {
+            if (filterList.isNullOrEmpty()) {
                 filterList.add(TimelineTypeFilter.NONE)
             }
             filterSharedViewModel.timelineTypeFilter = filterList
