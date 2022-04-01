@@ -18,9 +18,6 @@ const val KEY_FILTER_UPDATED = "KEY_FILTER_UPDATED"
 @AndroidEntryPoint
 class FilterFragment : Fragment(R.layout.fragment_filter) {
 
-    companion object {
-        fun newInstance() = FilterFragment()
-    }
     private val binding by viewBindings(FragmentFilterBinding::bind)
     private val filterSharedViewModel: FilterViewModel by activityViewModels()
 
