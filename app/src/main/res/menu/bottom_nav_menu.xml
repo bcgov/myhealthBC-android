@@ -21,9 +21,4 @@
         android:enabled="true"
         android:icon="@drawable/resource_selector"
         android:title="@string/resources" />
-    <item
-        android:id="@+id/news_feed"
-        android:enabled="true"
-        android:icon="@drawable/news_feed_selector"
-        android:title="@string/news_feed" />
 </menu>
