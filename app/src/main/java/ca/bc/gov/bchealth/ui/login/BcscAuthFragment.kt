@@ -25,6 +25,7 @@ import androidx.work.workDataOf
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentBcscAuthBinding
 import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterViewModel
+import ca.bc.gov.bchealth.ui.healthrecord.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
@@ -177,7 +178,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             when (authStatus.tosAccepted) {
                 TOSAccepted.ACCEPTED -> {
                     //clear timeline filter
-                    filterSharedViewModel.timelineTypeFilter = emptyList()
+                    filterSharedViewModel.timelineTypeFilter = listOf(TimelineTypeFilter.ALL)
                     viewModel.fetchPatientData()
                 }
                 else -> {

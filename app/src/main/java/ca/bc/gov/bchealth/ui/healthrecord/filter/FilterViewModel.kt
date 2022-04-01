@@ -6,10 +6,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FilterViewModel @Inject constructor(): ViewModel() {
-    var timelineTypeFilter: List<TimelineTypeFilter> = emptyList()
+    var timelineTypeFilter: List<TimelineTypeFilter> = listOf(TimelineTypeFilter.ALL)
 }
 
 enum class TimelineTypeFilter {
+    ALL,
+    NONE,
     MEDICATION,
     LAB_TEST,
     COVID_19_TEST,

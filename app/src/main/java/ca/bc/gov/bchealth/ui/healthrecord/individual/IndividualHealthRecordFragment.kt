@@ -233,33 +233,43 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun displayBcscRecords(uiState: IndividualHealthRecordsUiState) {
-        if(filterSharedViewModel.timelineTypeFilter.isNullOrEmpty() || filterSharedViewModel.timelineTypeFilter.contains(TimelineTypeFilter.MEDICATION)) {
-            if (uiState.medicationRecordsUpdated || !viewModel.isProtectiveWordRequired() || sharedViewModel.isProtectiveWordAdded) {
-                if (::healthRecordsAdapter.isInitialized) {
-                    healthRecordsAdapter.submitList(uiState.onHealthRecords)
-                }
-                concatAdapter.removeAdapter(hiddenMedicationRecordsAdapter)
-            } else {
-                if (::healthRecordsAdapter.isInitialized) {
-                    healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
-                }
-                if (::hiddenMedicationRecordsAdapter.isInitialized) {
-                    hiddenMedicationRecordsAdapter.submitList(
-                        listOf(
-                            HiddenMedicationRecordItem(
-                                getString(R.string.hidden_medication_records),
-                                getString(R.string.enter_protective_word_to_access_medication_records)
-                            )
-                        )
-                    )
-                }
+        if(filterSharedViewModel.timelineTypeFilter.contains(TimelineTypeFilter.ALL) || filterSharedViewModel.timelineTypeFilter.contains(TimelineTypeFilter.MEDICATION)) {
+            displayBCSCRecordsWithMedicationFilter(uiState)
+        } else {
+            displayBCSCRecordsExceptMedicationFilter(uiState)
+        }
+    }
+
+    private fun displayBCSCRecordsWithMedicationFilter(uiState: IndividualHealthRecordsUiState) {
+        if (uiState.medicationRecordsUpdated || !viewModel.isProtectiveWordRequired() || sharedViewModel.isProtectiveWordAdded) {
+            if (::healthRecordsAdapter.isInitialized) {
+                healthRecordsAdapter.submitList(uiState.onHealthRecords)
             }
+            concatAdapter.removeAdapter(hiddenMedicationRecordsAdapter)
+            // binding.emptyView.isVisible = uiState.onHealthRecords.isNullOrEmpty()
         } else {
             if (::healthRecordsAdapter.isInitialized) {
                 healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
             }
-            concatAdapter.removeAdapter(hiddenMedicationRecordsAdapter)
+            if (::hiddenMedicationRecordsAdapter.isInitialized) {
+                hiddenMedicationRecordsAdapter.submitList(
+                    listOf(
+                        HiddenMedicationRecordItem(
+                            getString(R.string.hidden_medication_records),
+                            getString(R.string.enter_protective_word_to_access_medication_records)
+                        )
+                    )
+                )
+            }
         }
+    }
+
+    private fun displayBCSCRecordsExceptMedicationFilter(uiState: IndividualHealthRecordsUiState) {
+        if (::healthRecordsAdapter.isInitialized) {
+            healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
+        }
+        concatAdapter.removeAdapter(hiddenMedicationRecordsAdapter)
+        // binding.emptyView.isVisible = uiState.healthRecordsExceptMedication.isNullOrEmpty()
     }
 
     private fun setUpRecyclerView() {

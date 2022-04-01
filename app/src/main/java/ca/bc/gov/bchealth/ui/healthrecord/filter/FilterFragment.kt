@@ -47,12 +47,6 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
     }
 
     private fun initTypeFilter() {
-        if(filterSharedViewModel.timelineTypeFilter.isNullOrEmpty()) {
-            binding.chipMedication.isChecked = true
-            binding.chipImmunizations.isChecked = true
-            binding.chipCovidTest.isChecked = true
-            binding.chipLabTest.isChecked = true
-        }
         filterSharedViewModel.timelineTypeFilter.forEach {
             when (it) {
                 TimelineTypeFilter.MEDICATION -> {
@@ -65,6 +59,12 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                     binding.chipCovidTest.isChecked = true
                 }
                 TimelineTypeFilter.LAB_TEST -> {
+                    binding.chipLabTest.isChecked = true
+                }
+                TimelineTypeFilter.ALL -> {
+                    binding.chipMedication.isChecked = true
+                    binding.chipImmunizations.isChecked = true
+                    binding.chipCovidTest.isChecked = true
                     binding.chipLabTest.isChecked = true
                 }
             }
@@ -90,6 +90,9 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                         filterList.add(TimelineTypeFilter.IMMUNIZATION)
                     }
                 }
+            }
+            if(filterList.isNullOrEmpty()) {
+                filterList.add(TimelineTypeFilter.NONE)
             }
             filterSharedViewModel.timelineTypeFilter = filterList
             findNavController().popBackStack()

@@ -288,4 +288,6 @@
     <string name="immunizations">Immunizations</string>
     <string name="filter">Filter</string>
     <string name="apply">Apply</string>
+    <string name="no_records_found">No records found</string>
+    <string name="clear_all_filters_and_start_over">Clear all filters and start over</string>
 </resources>
