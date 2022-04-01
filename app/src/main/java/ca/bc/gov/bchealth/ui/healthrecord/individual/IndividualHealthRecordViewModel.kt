@@ -197,6 +197,14 @@ class IndividualHealthRecordViewModel @Inject constructor(
         }
     }
 
+    fun filterUpdated() {
+        _uiState.update { state ->
+            state.copy(
+                filterUpdated = true
+            )
+        }
+    }
+
     fun isProtectiveWordRequired(): Boolean {
         return medicationRecordRepository.getProtectiveWordState() == ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
     }
@@ -213,7 +221,8 @@ data class IndividualHealthRecordsUiState(
     val onHealthRecords: List<HealthRecordItem> = emptyList(),
     val onNonBcscHealthRecords: List<HealthRecordItem> = emptyList(),
     val healthRecordsExceptMedication: List<HealthRecordItem> = emptyList(),
-    val medicationRecordsUpdated: Boolean = false
+    val medicationRecordsUpdated: Boolean = false,
+    val filterUpdated: Boolean = false
 )
 
 data class HealthRecordItem(

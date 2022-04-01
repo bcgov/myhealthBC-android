@@ -48,7 +48,7 @@
                 motion:attributeName="textSize"
                 motion:customFloatValue="20" />
         </Constraint>
-        <Constraint android:id="@+id/empty_view">
+        <Constraint android:id="@id/empty_view">
             <PropertySet
                 app:visibilityMode="ignore"
                 app:applyMotionScene="false" />
@@ -96,7 +96,7 @@
                 motion:attributeName="textSize"
                 motion:customFloatValue="17" />
         </Constraint>
-        <Constraint android:id="@+id/empty_view">
+        <Constraint android:id="@id/empty_view">
             <PropertySet
                 app:visibilityMode="ignore"
                 app:applyMotionScene="false" />

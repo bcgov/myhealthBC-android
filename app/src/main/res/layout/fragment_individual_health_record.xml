@@ -107,6 +107,47 @@
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x" />
 
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/cg_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:singleLine="true"
+        android:layout_marginTop="@dimen/space_1_x"
+        android:layout_marginStart="@dimen/space_4_x"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_name">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_medication"
+            style="@style/ChipFilterByType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/medications"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_lab_test"
+            style="@style/ChipFilterByType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lab_tests"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_covid_test"
+            style="@style/ChipFilterByType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/covid_19_tests"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_immunizations"
+            style="@style/ChipFilterByType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/immunizations"/>
+
+    </com.google.android.material.chip.ChipGroup>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_health_records"
         android:layout_width="match_parent"
@@ -117,7 +158,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+        app:layout_constraintTop_toBottomOf="@+id/cg_filter" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -133,8 +174,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

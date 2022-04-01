@@ -2,8 +2,10 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -24,6 +26,8 @@ import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
 import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
 import ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment
 import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterViewModel
+import ca.bc.gov.bchealth.ui.healthrecord.filter.KEY_FILTER_REQUEST
+import ca.bc.gov.bchealth.ui.healthrecord.filter.KEY_FILTER_UPDATED
 import ca.bc.gov.bchealth.ui.healthrecord.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_REQUEST
@@ -106,6 +110,56 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         observeVaccineRecordAddition()
 
         observeCovidTestRecordAddition()
+
+        updateFilterSelection()
+
+        filterFragmentResultListener()
+    }
+
+    private fun filterFragmentResultListener() {
+        parentFragmentManager.setFragmentResultListener(
+            KEY_FILTER_REQUEST,
+            viewLifecycleOwner
+        ) { _, result ->
+            if(result.get(KEY_FILTER_UPDATED) as Boolean) {
+                updateFilterSelection()
+            }
+        }
+    }
+
+    private fun updateFilterSelection() {
+        binding.chipMedication.isChecked = false
+        binding.chipImmunizations.isChecked = false
+        binding.chipCovidTest.isChecked = false
+        binding.chipLabTest.isChecked = false
+        filterSharedViewModel.timelineTypeFilter.forEach {
+            when (it) {
+                TimelineTypeFilter.MEDICATION -> {
+                    binding.chipMedication.isChecked = true
+                }
+                TimelineTypeFilter.IMMUNIZATION -> {
+                    binding.chipImmunizations.isChecked = true
+                }
+                TimelineTypeFilter.COVID_19_TEST -> {
+                    binding.chipCovidTest.isChecked = true
+                }
+                TimelineTypeFilter.LAB_TEST -> {
+                    binding.chipLabTest.isChecked = true
+                }
+                TimelineTypeFilter.ALL -> {
+                    binding.chipMedication.isChecked = true
+                    binding.chipImmunizations.isChecked = true
+                    binding.chipCovidTest.isChecked = true
+                    binding.chipLabTest.isChecked = true
+                }
+                TimelineTypeFilter.NONE -> {
+                    binding.chipMedication.isChecked = false
+                    binding.chipImmunizations.isChecked = false
+                    binding.chipCovidTest.isChecked = false
+                    binding.chipLabTest.isChecked = false
+                }
+            }
+        }
     }
 
     private fun handleBcscAuthResponse() {
@@ -246,7 +300,12 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 healthRecordsAdapter.submitList(uiState.onHealthRecords)
             }
             concatAdapter.removeAdapter(hiddenMedicationRecordsAdapter)
-            // binding.emptyView.isVisible = uiState.onHealthRecords.isNullOrEmpty()
+            binding.emptyView.isVisible = uiState.onHealthRecords.isNullOrEmpty()
+            // if(uiState.onHealthRecords.isNullOrEmpty()) {
+            //     binding.emptyView.setVisibilityCustom(View.VISIBLE)
+            // } else {
+            //     binding.emptyView.setVisibilityCustom(View.GONE)
+            // }
         } else {
             if (::healthRecordsAdapter.isInitialized) {
                 healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
@@ -269,7 +328,21 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
         }
         concatAdapter.removeAdapter(hiddenMedicationRecordsAdapter)
-        // binding.emptyView.isVisible = uiState.healthRecordsExceptMedication.isNullOrEmpty()
+        binding.emptyView.isVisible = uiState.healthRecordsExceptMedication.isNullOrEmpty()
+        // if(uiState.healthRecordsExceptMedication.isNullOrEmpty()) {
+        //     binding.emptyView.setVisibilityCustom(View.VISIBLE)
+        // } else {
+        //     binding.emptyView.setVisibilityCustom(View.GONE)
+        // }
+    }
+
+    fun View.setVisibilityCustom(visibility: Int) {
+        val motionLayout = parent as MotionLayout
+        motionLayout.constraintSetIds.forEach {
+            val constraintSet = motionLayout.getConstraintSet(it) ?: return@forEach
+            constraintSet.setVisibility(this.id, visibility)
+            constraintSet.applyTo(motionLayout)
+        }
     }
 
     private fun setUpRecyclerView() {

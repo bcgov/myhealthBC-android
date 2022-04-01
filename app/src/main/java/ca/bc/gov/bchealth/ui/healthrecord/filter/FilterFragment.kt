@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.filter
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -10,6 +11,9 @@ import ca.bc.gov.bchealth.databinding.FragmentFilterBinding
 import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
+
+const val KEY_FILTER_REQUEST = "KEY_FILTER_REQUEST"
+const val KEY_FILTER_UPDATED = "KEY_FILTER_UPDATED"
 
 @AndroidEntryPoint
 class FilterFragment : Fragment(R.layout.fragment_filter) {
@@ -95,6 +99,12 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                 filterList.add(TimelineTypeFilter.NONE)
             }
             filterSharedViewModel.timelineTypeFilter = filterList
+            parentFragmentManager.setFragmentResult(
+                KEY_FILTER_REQUEST,
+                bundleOf(
+                    KEY_FILTER_UPDATED to true,
+                )
+            )
             findNavController().popBackStack()
         }
     }
