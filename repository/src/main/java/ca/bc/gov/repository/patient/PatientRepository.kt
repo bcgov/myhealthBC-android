@@ -5,6 +5,7 @@ import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
+import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
@@ -102,6 +103,12 @@ class PatientRepository @Inject constructor(
 
     suspend fun getPatientWithLabOrdersAndLabTests(patientId: Long): PatientWithLabOrderAndLatTestsDto =
         patientLocalDataSource.getPatientWithLabOrdersAndLabTests(patientId)
+            ?: throw MyHealthException(
+                DATABASE_ERROR, "No record found for patient id=  $patientId"
+            )
+
+    suspend fun getPatientWithCovidOrdersAndCovidTests(patientId: Long): PatientWithCovidOrderAndTestDto =
+        patientLocalDataSource.getPatientWithCovidOrderAndCovidTests(patientId)
             ?: throw MyHealthException(
                 DATABASE_ERROR, "No record found for patient id=  $patientId"
             )

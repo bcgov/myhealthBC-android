@@ -1,6 +1,8 @@
 package ca.bc.gov.data.di
 
 import ca.bc.gov.data.datasource.local.CommentLocalDataSource
+import ca.bc.gov.data.datasource.local.CovidOrderLocalDataSource
+import ca.bc.gov.data.datasource.local.CovidTestLocalDataSource
 import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
 import ca.bc.gov.data.datasource.local.LocalDataSource
@@ -65,6 +67,18 @@ class LocalDataSourceModule {
     fun provideCommentLocalDataSource(
         db: MyHealthDataBase
     ) = CommentLocalDataSource(db.getCommentDao())
+
+    @Provides
+    @Singleton
+    fun provideCovidOrderLocalDataSource(
+        db: MyHealthDataBase
+    ): CovidOrderLocalDataSource = CovidOrderLocalDataSource(db.getCovidOrderDao())
+
+    @Provides
+    @Singleton
+    fun provideCovidTestLocalDataSource(
+        db: MyHealthDataBase
+    ): CovidTestLocalDataSource = CovidTestLocalDataSource(db.getCovidTestDao())
 
     @Provides
     @Singleton

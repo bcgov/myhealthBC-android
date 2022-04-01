@@ -9,9 +9,8 @@ import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
-import ca.bc.gov.common.model.test.TestRecordDto
+import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.TestResultDto
-import ca.bc.gov.common.utils.formatInPattern
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPublicApi
@@ -75,37 +74,14 @@ class LaboratoryRemoteDataSource @Inject constructor(
     suspend fun getCovidTests(
         token: String,
         hdid: String
-    ): List<TestResultWithRecordsDto> {
+    ): List<CovidOrderWithCovidTestDto> {
         val response = safeCall { healthGatewayPrivateApi.getCovidTests(token, hdid) }
             ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
         if (response.error != null) {
             throw MyHealthException(SERVER_ERROR, response.error.message)
         }
-
-        val list = arrayListOf<TestResultWithRecordsDto>()
-        for (i in response.payload.orders.indices) {
-            if (!response.payload.orders[i].labResults.isNullOrEmpty() &&
-                response.payload.orders[i].labResults!![0].collectedDateTime != null
-            ) {
-                val testResult = TestResultDto(
-                    collectionDate = response.payload.orders[i].labResults!![0].collectedDateTime!!.formatInPattern()
-                        .toDate()
-                )
-                var records = emptyList<TestRecordDto>()
-                for (j in response.payload.orders[i].labResults!!.indices) {
-                    records = response.payload.orders[i].labResults!!.map { labResult ->
-                        labResult.toTestRecord()
-                    }
-                }
-                records.map { record ->
-                    record.labName = response.payload.orders[i].reportingLab ?: ""
-                }
-                list.add(TestResultWithRecordsDto(testResult, records))
-            }
-        }
-
-        return list
+        return response.toDto()
     }
 
     suspend fun getLabTests(

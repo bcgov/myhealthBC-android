@@ -10,11 +10,15 @@ import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabTestDto
+import ca.bc.gov.common.model.test.CovidOrderDto
+import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
+import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.utils.formatInPattern
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.data.datasource.remote.model.base.LabResult
+import ca.bc.gov.data.datasource.remote.model.base.Order
 import ca.bc.gov.data.datasource.remote.model.base.comment.CommentPayload
 import ca.bc.gov.data.datasource.remote.model.base.covidtest.CovidTestRecord
 import ca.bc.gov.data.datasource.remote.model.base.medication.DispensingPharmacy
@@ -22,12 +26,12 @@ import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationStatemen
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationSummary
 import ca.bc.gov.data.datasource.remote.model.base.vaccine.Media
 import ca.bc.gov.data.datasource.remote.model.base.vaccine.VaccineResourcePayload
+import ca.bc.gov.data.datasource.remote.model.response.AuthenticatedCovidTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.model.MediaMetaData
 import ca.bc.gov.data.model.VaccineStatus
 import java.time.Instant
-import java.time.format.DateTimeFormatter
 
 fun CovidTestRecord.toTestRecord() = TestRecordDto(
     id = reportId,
@@ -39,20 +43,6 @@ fun CovidTestRecord.toTestRecord() = TestRecordDto(
     testType = testType,
     testStatus = testStatus,
     resultTitle = resultTitle,
-    resultDescription = resultDescription,
-    resultLink = resultLink
-)
-
-fun LabResult.toTestRecord() = TestRecordDto(
-    id = id,
-    labName = "",
-    collectionDateTime = collectedDateTime!!.formatInPattern().toDate(),
-    resultDateTime = resultDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-    testName = loIncName ?: "",
-    testOutcome = labResultOutcome ?: "",
-    testType = testType,
-    testStatus = testStatus ?: "",
-    resultTitle = "",
     resultDescription = resultDescription,
     resultLink = resultLink
 )
@@ -156,4 +146,41 @@ fun CommentPayload.toDto() = CommentDto(
 
 fun CommentResponse.toDto(): List<CommentDto> {
     return payload.map { it.toDto() }
+}
+
+fun Order.toDto() = CovidOrderDto(
+    id,
+    phn,
+    orderingProviderIds,
+    orderingProviders,
+    reportingLab,
+    location,
+    ormOrOru,
+    messageDateTime.formatInPattern().toDate(),
+    messageId,
+    additionalData, reportAvailable
+)
+
+fun LabResult.toDto() = CovidTestDto(
+    id,
+    testType,
+    outOfRange,
+    collectedDateTime.formatInPattern().toDate(),
+    testStatus,
+    labResultOutcome,
+    resultDescription,
+    resultLink,
+    receivedDateTime.formatInPattern().toDate(),
+    resultDateTime.formatInPattern().toDate(),
+    loInc,
+    loIncName
+)
+
+fun AuthenticatedCovidTestResponse.toDto(): List<CovidOrderWithCovidTestDto> {
+    return payload.orders.map { order ->
+        val covidOrder = order.toDto()
+        val covidTest = order.labResults.map { it.toDto() }
+        covidTest.forEach { it.covidOrderId = covidOrder.id }
+        CovidOrderWithCovidTestDto(covidOrder, covidTest)
+    }
 }

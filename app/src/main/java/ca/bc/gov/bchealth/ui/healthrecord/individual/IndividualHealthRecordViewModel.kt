@@ -56,6 +56,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 patientRepository.getPatientWithMedicationRecords(patientId)
             val patientWithLabOrdersAndLabTests =
                 patientRepository.getPatientWithLabOrdersAndLabTests(patientId)
+            val patientWithCovidOrderAndTests =
+                patientRepository.getPatientWithCovidOrdersAndCovidTests(patientId)
 
             val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
                 it.toUiModel()
@@ -70,6 +72,9 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 it.toUiModel()
             }
 
+            val covidOrders =
+                patientWithCovidOrderAndTests.covidOrderAndTests.map { it.toUiModel() }
+
             val covidTestRecordsNonBcsc = covidTestRecords
                 .filter { it.dataSource != DataSource.BCSC.name }
             val vaccineRecordsNonBcsc = vaccineRecords
@@ -78,6 +83,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 .filter { it.dataSource != DataSource.BCSC.name }
             val labTestRecordsNonBcsc = labTestRecords
                 .filter { it.dataSource != DataSource.BCSC.name }
+            val covidOrderNonBcsc = covidOrders.filter { it.dataSource != DataSource.BCSC.name }
 
             _uiState.update { state ->
                 state.copy(
@@ -88,14 +94,16 @@ class IndividualHealthRecordViewModel @Inject constructor(
                         covidTestRecords +
                             vaccineRecords +
                             medicationRecords +
-                            labTestRecords
+                            labTestRecords +
+                            covidOrders
                         )
                         .sortedByDescending { it.date },
                     onNonBcscHealthRecords = (
                         covidTestRecordsNonBcsc +
                             vaccineRecordsNonBcsc +
                             medicationRecordsNonBcsc +
-                            labTestRecordsNonBcsc
+                            labTestRecordsNonBcsc +
+                            covidOrderNonBcsc
                         )
                         .sortedByDescending { it.date },
                     healthRecordsExceptMedication = (
@@ -201,6 +209,7 @@ data class HealthRecordItem(
     val testResultId: Long = -1L,
     val medicationRecordId: Long = -1L,
     val labOrderId: String? = null,
+    val covidOrderId: String? = null,
     val icon: Int,
     val title: String,
     val description: String,

@@ -15,8 +15,10 @@ import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
+import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
+import java.time.Instant
 
 fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
 
@@ -148,6 +150,45 @@ fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
         testOutcome = null,
         healthRecordType = HealthRecordType.LAB_TEST,
         dataSource = labOrder.dataSorce.name
+    )
+}
+
+fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem {
+
+    val covidTestResult = covidTests.maxByOrNull { it.collectedDateTime }
+    val testOutcome = if (covidTestResult?.testStatus.equals("Pending")) {
+        covidTestResult?.testStatus
+    } else {
+        when (covidTestResult?.labResultOutcome) {
+            CovidTestResultStatus.Indeterminate.name,
+            CovidTestResultStatus.IndeterminateResult.name -> {
+                CovidTestResultStatus.Indeterminate.name
+            }
+            CovidTestResultStatus.Cancelled.name -> {
+                CovidTestResultStatus.Cancelled.name
+            }
+            CovidTestResultStatus.Negative.name -> {
+                CovidTestResultStatus.Negative.name
+            }
+            CovidTestResultStatus.Positive.name -> {
+                CovidTestResultStatus.Positive.name
+            }
+            else -> {
+                CovidTestResultStatus.Indeterminate.name
+            }
+        }
+    }
+
+    return HealthRecordItem(
+        patientId = covidOrder.patientId,
+        covidOrderId = covidOrder.id,
+        title = "COVID-19 test result",
+        description = "",
+        testOutcome = testOutcome,
+        icon = R.drawable.ic_health_record_covid_test,
+        date = covidTestResult?.collectedDateTime ?: Instant.now(),
+        healthRecordType = HealthRecordType.COVID_TEST_RECORD,
+        dataSource = covidOrder.dataSource.name
     )
 }
 
