@@ -9,6 +9,7 @@
     <color name="status_blue">#38598A</color>
 
     <color name="primary_blue">#003366</color>
+    <color name="primary_blue_disabled">#4D003366</color>
     <color name="blue">#1A5A96</color>
     <color name="text_black">#313132</color>
     <color name="grey">#606060</color>
