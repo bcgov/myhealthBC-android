@@ -13,18 +13,19 @@
 
     <!--Resources-->
     <string name="resources">Resources</string>
-    <string name="resource_screen_message">Get COVID-19 information from official Government of B.C. sources.</string>
-    <string name="label_resource_1">Get vaccinated</string>
-    <string name="label_resource_2">Get a COVID-19 test</string>
-    <string name="label_resource_3">COVID-19 self-assessment</string>
+    <string name="resource_screen_message">Find trusted health information and resources</string>
+    <string name="label_resource_1">Get health advice</string>
+    <string name="label_resource_2">Get vaccinated for COVID-19</string>
+    <string name="label_resource_3">Get a COVID-19 test</string>
+    <string name="label_resource_4">COVID-19 self-assessment</string>
     <string name="health_resources">Health resources</string>
 
     <!--Settings-->
     <string name="settings">Settings</string>
     <string name="privacy_statement">Privacy statement</string>
     <string name="no_app_found">No app found to open link!</string>
-    <string name="disable_analytics">Disable analytics</string>
-    <string name="anonymized_behavioural_data_is_used_to_help_improve_the_user_experience">Anonymized behavioural data is used to help improve the user experience</string>
+    <string name="turn_on_analytics">Turn on analytics</string>
+    <string name="anonymized_behavioural_data_is_used_to_help_improve_the_user_experience">Share data about how you use the app. This will help us know how we can make it better. All data is anonymous.</string>
     <string name="delete_all_records_and_saved_data">Delete all records and saved data</string>
     <string name="delete_data">Delete data</string>
     <string name="delete_data_message">Are you sure you want to delete all records and saved data?</string>
@@ -32,7 +33,7 @@
     <string name="security_and_data"><![CDATA[Security & data]]></string>
     <string name="view_profile"><![CDATA[View profile >]]></string>
     <string name="data">Data</string>
-    <string name="delete_all_records_desc">Log out of BC Services Card account and delete every records and saved personal information from My Health BC</string>
+    <string name="delete_all_records_desc">Log out of the app and delete all records and saved information.</string>
     <string name="logins">Logins</string>
     <string name="log_in_with_bc_services_card_desc">When logged in, recrods will be automatically added and updated</string>
     <string name="logout_dialog_title">Log out of BC Service Card</string>
@@ -115,16 +116,16 @@
     <string name="next">Next</string>
     <string name="get_started">Get started</string>
     <string name="onboarding_health_passes_title">Proof of vaccination</string>
-    <string name="onboarding_health_passes_desc">Keep your BC Vaccine Card and federal COVID-19 proof of vaccination document in a single place</string>
+    <string name="onboarding_health_passes_desc">Save proof of vaccination documents for you and your family</string>
     <string name="onboarding_health_records_title">Health records</string>
-    <string name="onboarding_health_records_desc">Easily access your COVID-19 health records</string>
+    <string name="onboarding_health_records_desc">Access your lab results, prescription history and vaccine records</string>
     <string name="onboarding_health_resources_title">Health resources</string>
-    <string name="onboarding_health_resources_desc">Find COVID-19 health information and testing resources</string>
+    <string name="onboarding_health_resources_desc">Find trusted health information and resources</string>
     <string name="onboarding_news_feed_title">News feed</string>
     <string name="onboarding_news_feed_desc">Get the latest COVID-19 news from  the Government of B.C.</string>
     <string name="new_string">New</string>
     <string name="ok_camel_case">Ok</string>
-    <string name="skip">Skip</string>
+    <string name="skip">Skip intro</string>
 
     <!--Health Records-->
     <string name="view_the_details_of_all_your_covid_19_health_records">View the details of all your COVID-19 Health Records</string>
@@ -175,27 +176,27 @@
         <item quantity="one">%1$d Hidden record</item>
         <item quantity="other">%1$d Hidden records</item>
     </plurals>
-    <string name="login_to_view_hidden_records_msg">Login again with your BC Services Card to view all the records</string>
+    <string name="login_to_view_hidden_records_msg">Log in again to access your proof of vaccination</string>
     <string name="out_of_range">Out of Range</string>
     <string name="in_range">In Range</string>
     <string name="add_health_record_title">Manage your records</string>
     <string name="add_health_record_message">Log in with your BC Services Card to view all the records and customize health plans</string>
-    <string name="hidden_medication_records">Medications</string>
-    <string name="enter_protective_word_to_access_medication_records">Your protective word is required to access medication records</string>
-    <string name="protective_word_for_a_pharmanet_record">protective-word-for-a-pharmanet-record</string>
+    <string name="hidden_medication_records">Medication history</string>
+    <string name="enter_protective_word_to_access_medication_records">Some of your health records are locked. You need to enter your protective word to unlock them.</string>
+    <string name="more">more</string>
     <string name="wrong_protective_word">Invalid protective word. Try again.</string>
     <string name="restricted_pharmanet_records">Restricted PharmaNet Records</string>
     <string name="view_your_medication_records">View your medication records</string>
-    <string name="protective_word_desc">Please enter the protective word required to access these restricted PharmaNet records. For more information visit protective-word-for-a-pharmanet-record</string>
-    <string name="protective_word">Protective Word</string>
-    <string name="access_records">Access records</string>
+    <string name="protective_word_desc">Enter the protective word to access your medication history from PharmaNet. Find out more</string>
+    <string name="protective_word">Protective word</string>
+    <string name="unlock_records">Unlock records</string>
     <string name="e_g_pa6729bc">e.g. PA6729BC</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>
     <string name="tv_biometric_heading">Protect your personal information</string>
     <string name="dialog_biometric_description">Log in using your biometric credential</string>
-    <string name="biometric_description">Your records contain your personal information. Unlock My Health BC with biometric authentication.</string>
+    <string name="biometric_description">To keep your data safe, your device security features must be turned on.</string>
 
     <!--Miscellaneous-->
     <string name="coming_soon">Coming soon!</string>
@@ -214,13 +215,11 @@
     <string name="dialog_button_ok">Ok</string>
 
     <!-- Login -->
-    <string name="leaving_my_health_bc">Leaving My Health BC</string>
-    <string name="login_info_message"><![CDATA[<p>You will be temporarily redirected to <b>Health Gateway</b> to login with your BC Services Card.</p>
-                    <p>You will then be automatically returned to the <b>My Health BC</b> mobile app.</p>]]></string>
+    <string name="leaving_my_health_bc">Leaving Health Gateway</string>
+    <string name="login_info_message">You will be temporarily redirected to log in with your BC Services Card.\n\nYou will then be automatically returned to this mobile app.</string>
     <string name="btn_continue">Continue</string>
-    <string name="go_to_health_gateway">Go to Health Gateway</string>
     <string name="tv_login_title">Access health records</string>
-    <string name="tv_login_message">Log in with BC Service Card to access all your health records in My Health BC.</string>
+    <string name="tv_login_message">A digital BC Services Card is government-issued ID and is the only secure way to access your health records.\n\nIf you do not have a digital BC Services Card, you will be guided to set up your ID.</string>
     <string name="log_in_with_bc_services_card">Log in with BC Services Card</string>
     <string name="incorrect_credentials">Please enter valid credentials</string>
     <string name="login_success_title">Log in successful</string>
@@ -228,6 +227,7 @@
     <string name="age_limit_title">Age Restriction</string>
     <string name="age_limit_message">You must be 12 years of age or older to use Health Gateway.</string>
     <string name="terms_of_service_message">You must agree to the Health Gateway terms of service before using this app.</string>
+    <string name="bc_services_card">BC Services Card</string>
 
     <!--ERROR-->
     <string name="error">Error!</string>

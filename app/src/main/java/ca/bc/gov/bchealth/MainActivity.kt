@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
                 analyticsFeatureViewModel.analyticsFeature.collect { analyticsFeature ->
                     if (analyticsFeature == AnalyticsFeature.ENABLED) {
                         Snowplow.getDefaultTracker()?.resume()
-                    } else {
+                    } else if (analyticsFeature == AnalyticsFeature.DISABLED) {
                         Snowplow.getDefaultTracker()?.pause()
                     }
                 }

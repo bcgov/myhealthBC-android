@@ -103,17 +103,19 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     }
 
     private fun analyticsSwitch() {
-        binding.switchAnalytics.isChecked = Snowplow.getDefaultTracker()?.isTracking == false
+        Snowplow.getDefaultTracker()?.isTracking?.let {
+            binding.switchAnalytics.isChecked = it
+        }
 
         binding.switchAnalytics.setOnCheckedChangeListener { _, isChecked ->
             when (isChecked) {
                 true -> {
-                    Snowplow.getDefaultTracker()?.pause()
-                    analyticsFeatureViewModel.toggleAnalyticsFeature(AnalyticsFeature.DISABLED)
-                }
-                false -> {
                     Snowplow.getDefaultTracker()?.resume()
                     analyticsFeatureViewModel.toggleAnalyticsFeature(AnalyticsFeature.ENABLED)
+                }
+                false -> {
+                    Snowplow.getDefaultTracker()?.pause()
+                    analyticsFeatureViewModel.toggleAnalyticsFeature(AnalyticsFeature.DISABLED)
                 }
             }
         }
