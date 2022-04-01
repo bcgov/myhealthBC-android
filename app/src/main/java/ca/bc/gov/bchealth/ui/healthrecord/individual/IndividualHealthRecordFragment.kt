@@ -313,7 +313,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             if (::hiddenMedicationRecordsAdapter.isInitialized) {
                 hiddenMedicationRecordsAdapter.submitList(emptyList())
             }
-            binding.emptyView.isVisible = uiState.onHealthRecords.isNullOrEmpty()
         } else {
             if (::healthRecordsAdapter.isInitialized) {
                 healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
@@ -338,7 +337,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         if (::hiddenMedicationRecordsAdapter.isInitialized) {
             hiddenMedicationRecordsAdapter.submitList(emptyList())
         }
-        binding.emptyView.isVisible = uiState.healthRecordsExceptMedication.isNullOrEmpty()
     }
 
     private fun setUpRecyclerView() {
@@ -407,6 +405,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         )
         binding.rvHealthRecords.adapter = concatAdapter
         binding.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvHealthRecords.emptyView = binding.emptyView
     }
 
     private fun onMedicationAccessClick() {

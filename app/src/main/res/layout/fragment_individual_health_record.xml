@@ -176,7 +176,7 @@
 
     </HorizontalScrollView>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <ca.bc.gov.bchealth.widget.RecyclerView
         android:id="@+id/rv_health_records"
         android:layout_width="match_parent"
         android:layout_height="0dp"
