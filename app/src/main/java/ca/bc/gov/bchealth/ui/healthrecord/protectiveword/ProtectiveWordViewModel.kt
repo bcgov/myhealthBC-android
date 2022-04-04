@@ -49,14 +49,16 @@ class ProtectiveWordViewModel @Inject constructor(
                 } else {
                     _uiState.update { state ->
                         state.copy(
-                            wrongProtectiveWord = true
+                            wrongProtectiveWord = true,
+                            isButtonClickEnabled = true
                         )
                     }
                 }
             } else {
                 _uiState.update { state ->
                     state.copy(
-                        onLoading = true
+                        onLoading = true,
+                        isButtonClickEnabled = false
                     )
                 }
                 try {
@@ -80,7 +82,8 @@ class ProtectiveWordViewModel @Inject constructor(
                             _uiState.update { state ->
                                 state.copy(
                                     onLoading = false,
-                                    wrongProtectiveWord = true
+                                    wrongProtectiveWord = true,
+                                    isButtonClickEnabled = true
                                 )
                             }
                         }
@@ -91,7 +94,8 @@ class ProtectiveWordViewModel @Inject constructor(
                                     errorData = ErrorData(
                                         R.string.error,
                                         R.string.error_message
-                                    )
+                                    ),
+                                    isButtonClickEnabled = true
                                 )
                             }
                         }
@@ -100,11 +104,24 @@ class ProtectiveWordViewModel @Inject constructor(
             }
         }
     }
+
+    fun resetUiState() {
+        _uiState.update { state ->
+            state.copy(
+                onLoading = false,
+                isRecordsUpdated = false,
+                errorData = null,
+                wrongProtectiveWord = false,
+                isButtonClickEnabled = false
+            )
+        }
+    }
 }
 
 data class FetchMedicationUiState(
     val onLoading: Boolean = false,
     val isRecordsUpdated: Boolean = false,
     val errorData: ErrorData? = null,
-    val wrongProtectiveWord: Boolean = false
+    val wrongProtectiveWord: Boolean = false,
+    val isButtonClickEnabled: Boolean = false
 )

@@ -13,7 +13,8 @@
 
     <style name="HealthGateway.Widget.MaterialComponents.Button2" parent="Widget.MaterialComponents.Button">
         <item name="android:textColor">@color/white</item>
-        <item name="backgroundTint">@color/primary_blue</item>
+        <item name="backgroundTint">@color/material_button_color_states</item>
+        <item name="android:enabled">true</item>
         <item name="android:minHeight">56dp</item>
         <item name="android:textSize">16sp</item>
         <item name="fontFamily">@font/bc_sans_bold</item>
