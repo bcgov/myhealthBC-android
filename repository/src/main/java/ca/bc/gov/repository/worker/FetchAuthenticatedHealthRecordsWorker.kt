@@ -8,15 +8,17 @@ import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
-import ca.bc.gov.repository.FetchTestResultRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
+import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.labtest.LabTestRepository
 import ca.bc.gov.repository.patient.PatientRepository
+import ca.bc.gov.repository.testrecord.CovidOrderRepository
+import ca.bc.gov.repository.testrecord.CovidTestRepository
 import ca.bc.gov.repository.utils.NotificationHelper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -31,15 +33,17 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted workerParams: WorkerParameters,
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
-    private val fetchTestResultRepository: FetchTestResultRepository,
     private val bcscAuthRepo: BcscAuthRepo,
     private val patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
+    private val patientWithTestResultRepository: PatientWithTestResultRepository,
     private val medicationRecordRepository: MedicationRecordRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
     private val patientRepository: PatientRepository,
     private val notificationHelper: NotificationHelper,
     private val labOrderRepository: LabOrderRepository,
     private val labTestRepository: LabTestRepository,
+    private val covidOrderRepository: CovidOrderRepository,
+    private val covidTestRepository: CovidTestRepository,
     private val encryptedPreferenceStorage: EncryptedPreferenceStorage
 ) : CoroutineWorker(context, workerParams) {
 
@@ -78,10 +82,17 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         }
         try {
             withContext(dispatcher) {
-                fetchTestResultRepository.fetchCovidTestRecord(
-                    patientId, authParameters.first,
+                val response = covidOrderRepository.fetchCovidOrders(
+                    authParameters.first,
                     authParameters.second
                 )
+                patientWithTestResultRepository.deletePatientTestRecords(patientId)
+                covidOrderRepository.deleteByPatientId(patientId)
+                response.forEach {
+                    it.covidOrder.patientId = patientId
+                    covidOrderRepository.insert(it.covidOrder)
+                    covidTestRepository.insert(it.covidTests)
+                }
             }
         } catch (e: Exception) {
             isApiFailed = true
@@ -98,7 +109,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
         } catch (e: Exception) {
             if (e is ProtectiveWordException) {
-                encryptedPreferenceStorage.protectiveWordState = ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
+                encryptedPreferenceStorage.protectiveWordState =
+                    ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
             } else {
                 isApiFailed = true
             }
