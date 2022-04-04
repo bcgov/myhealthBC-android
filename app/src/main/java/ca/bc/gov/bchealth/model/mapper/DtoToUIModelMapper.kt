@@ -135,17 +135,17 @@ fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
     var description = ""
     description = if (labTests.size > 1) {
         description.plus(labTests.size).plus(" tests").plus(" • ")
-            .plus(labOrder.collectionDateTime.toDate())
+            .plus(labOrder.timelineDateTime.toDate())
     } else {
         description.plus(labTests.size).plus(" test").plus(" • ")
-            .plus(labOrder.collectionDateTime.toDate())
+            .plus(labOrder.timelineDateTime.toDate())
     }
     return HealthRecordItem(
         patientId = labOrder.patientId,
         title = labOrder.commonName ?: "",
         labOrderId = labOrder.id,
         icon = R.drawable.ic_lab_test,
-        date = labOrder.collectionDateTime,
+        date = labOrder.timelineDateTime,
         description = description,
         testOutcome = null,
         healthRecordType = HealthRecordType.LAB_TEST,

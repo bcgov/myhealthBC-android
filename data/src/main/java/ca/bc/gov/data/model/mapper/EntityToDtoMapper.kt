@@ -188,6 +188,7 @@ fun LabOrderEntity.toDto() = LabOrderDto(
     patientId,
     reportId,
     collectionDateTime,
+    timelineDateTime,
     reportingSource,
     commonName,
     orderingProvider,

@@ -8,6 +8,7 @@ data class LabTestOrder(
     val reportingSource: String?,
     val reportId: String?,
     val collectionDateTime: String,
+    val timelineDateTime: String,
     val commonName: String?,
     val orderingProvider: String?,
     val testStatus: String?,
