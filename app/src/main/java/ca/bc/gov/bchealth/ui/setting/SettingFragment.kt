@@ -6,7 +6,6 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -15,11 +14,9 @@ import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSettingBinding
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
-import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
-import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.common.model.settings.AnalyticsFeature
 import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,23 +34,15 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
     private val viewModel: SettingsViewModel by viewModels()
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
-    private val sharedViewModel: SharedViewModel by activityViewModels()
-    private var isLoggedIn: Boolean = false
 
     private var logoutResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { activityResult ->
         if (activityResult.resultCode == Activity.RESULT_OK) {
             bcscAuthViewModel.processLogoutResponse()
-            isLoggedIn = false
-            binding.switchLogin.isChecked = false
+            deleteAllRecordsAndSavedData()
         } else {
-            AlertDialogHelper.showAlertDialog(
-                context = requireContext(),
-                title = getString(R.string.error),
-                msg = getString(R.string.error_message),
-                positiveBtnMsg = getString(R.string.dialog_button_ok)
-            )
+            deleteAllRecordsAndSavedData()
         }
     }
 
@@ -61,9 +50,6 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         super.onViewCreated(view, savedInstanceState)
 
         initUi()
-
-        bcscAuthViewModel.checkLogin()
-
         observeAuthStatus()
     }
 
@@ -99,15 +85,10 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
 
                     showLoader(it.showLoading)
 
-                    val isLoginStatusActive = it.loginStatus == LoginStatus.ACTIVE
-                    binding.switchLogin.isChecked = isLoginStatusActive
-                    isLoggedIn = isLoginStatusActive
-                    bcscLoginSwitch()
-
                     if (it.isError) {
                         bcscAuthViewModel.resetAuthStatus()
+                        deleteAllRecordsAndSavedData()
                     }
-
                     if (it.endSessionIntent != null) {
                         logoutResultLauncher.launch(it.endSessionIntent)
                         bcscAuthViewModel.resetAuthStatus()
@@ -138,31 +119,6 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         }
     }
 
-    private fun bcscLoginSwitch() {
-        binding.switchLogin.setOnClickListener {
-            binding.switchLogin.isChecked = isLoggedIn
-            if (isLoggedIn) {
-                showLogoutDialog()
-            } else {
-                sharedViewModel.destinationId = 0
-                findNavController().navigate(R.id.bcscAuthInfoFragment)
-            }
-        }
-    }
-
-    private fun showLogoutDialog() {
-        AlertDialogHelper.showAlertDialog(
-            context = requireContext(),
-            title = getString(R.string.logout_dialog_title),
-            msg = getString(R.string.logout_dialog_message),
-            positiveBtnMsg = getString(R.string.log_out),
-            negativeBtnMsg = getString(R.string.cancel),
-            positiveBtnCallback = {
-                bcscAuthViewModel.getEndSessionIntent()
-            }
-        )
-    }
-
     private fun showDeleteRecordsAlertDialog() {
         AlertDialogHelper.showAlertDialog(
             context = requireContext(),
@@ -171,7 +127,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
             positiveBtnMsg = getString(R.string.delete),
             negativeBtnMsg = getString(R.string.cancel),
             positiveBtnCallback = {
-                deleteAllRecordsAndSavedData()
+                bcscAuthViewModel.getEndSessionIntent()
             }
         )
     }
@@ -183,6 +139,6 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     }
 
     private fun navigatePostDeletion() {
-        findNavController().popBackStack(R.id.healthPassFragment, false)
+        findNavController().popBackStack(R.id.homeFragment, false)
     }
 }

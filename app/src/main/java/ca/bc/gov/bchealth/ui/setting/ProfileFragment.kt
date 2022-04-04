@@ -1,7 +1,9 @@
 package ca.bc.gov.bchealth.ui.setting
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -14,6 +16,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentProfileBinding
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -29,6 +32,20 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private val binding by viewBindings(FragmentProfileBinding::bind)
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
+    private var logoutResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { activityResult ->
+        if (activityResult.resultCode == Activity.RESULT_OK) {
+            bcscAuthViewModel.processLogoutResponse()
+        } else {
+            AlertDialogHelper.showAlertDialog(
+                context = requireContext(),
+                title = getString(R.string.error),
+                msg = getString(R.string.error_message),
+                positiveBtnMsg = getString(R.string.dialog_button_ok)
+            )
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,6 +65,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
             tvPrivacyStatement.setOnClickListener {
                 requireActivity().redirect(getString(R.string.url_privacy_policy))
+            }
+
+            tvLogOut.setOnClickListener {
+                showLogoutDialog()
             }
 
             btnLogin.setOnClickListener {
@@ -89,9 +110,32 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                         val isLoginStatusActive = it.loginStatus == LoginStatus.ACTIVE
                         binding.layoutProfile.isVisible = isLoginStatusActive
                         binding.layoutLogin.isVisible = !isLoginStatusActive
+                        binding.tvLogOut.isVisible = isLoginStatusActive
+
+                        if (it.isError) {
+                            bcscAuthViewModel.resetAuthStatus()
+                        }
+
+                        if (it.endSessionIntent != null) {
+                            logoutResultLauncher.launch(it.endSessionIntent)
+                            bcscAuthViewModel.resetAuthStatus()
+                        }
                     }
                 }
             }
         }
+    }
+
+    private fun showLogoutDialog() {
+        AlertDialogHelper.showAlertDialog(
+            context = requireContext(),
+            title = getString(R.string.logout_dialog_title),
+            msg = getString(R.string.logout_dialog_message),
+            positiveBtnMsg = getString(R.string.log_out),
+            negativeBtnMsg = getString(R.string.cancel),
+            positiveBtnCallback = {
+                bcscAuthViewModel.getEndSessionIntent()
+            }
+        )
     }
 }
