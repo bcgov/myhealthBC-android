@@ -104,8 +104,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
                             filteredHealthRecordsExceptMedication += vaccineRecords
                         }
                         TimelineTypeFilter.COVID_19_TEST -> {
-                            filteredHealthRecords += covidTestRecords
-                            filteredHealthRecordsExceptMedication += covidTestRecords
+                            filteredHealthRecords += covidTestRecords + covidOrders
+                            filteredHealthRecordsExceptMedication += covidTestRecords + covidOrders
                         }
                         TimelineTypeFilter.LAB_TEST -> {
                             filteredHealthRecords += labTestRecords
@@ -126,7 +126,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
                             covidTestRecordsNonBcsc +
                                 vaccineRecordsNonBcsc +
                                 medicationRecordsNonBcsc +
-                                labTestRecordsNonBcsc
+                                labTestRecordsNonBcsc +
+                                covidOrderNonBcsc
                             )
                             .sortedByDescending { it.date },
                         healthRecordsExceptMedication = filteredHealthRecordsExceptMedication
@@ -136,39 +137,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 // no implementation required.
             }
         }
-            _uiState.update { state ->
-                state.copy(
-                    onLoading = false,
-                    patientAuthStatus = patientWithVaccineRecords.patient.authenticationStatus,
-                    authenticatedRecordsCount = patientRepository.getBcscDataRecordCount(),
-                    onHealthRecords = (
-                        covidTestRecords +
-                            vaccineRecords +
-                            medicationRecords +
-                            labTestRecords +
-                            covidOrders
-                        )
-                        .sortedByDescending { it.date },
-                    onNonBcscHealthRecords = (
-                        covidTestRecordsNonBcsc +
-                            vaccineRecordsNonBcsc +
-                            medicationRecordsNonBcsc +
-                            labTestRecordsNonBcsc +
-                            covidOrderNonBcsc
-                        )
-                        .sortedByDescending { it.date },
-                    healthRecordsExceptMedication = (
-                        covidTestRecords +
-                            vaccineRecords +
-                            labTestRecords
-                        )
-                        .sortedByDescending { it.date },
-                )
-            }
-        } catch (e: java.lang.Exception) {
-            // no implementation required.
-        }
-    }
 
     fun deleteVaccineRecord(patientId: Long) = viewModelScope.launch {
         val patientAndVaccineRecord = patientRepository.getPatientWithVaccineAndDoses(patientId)
