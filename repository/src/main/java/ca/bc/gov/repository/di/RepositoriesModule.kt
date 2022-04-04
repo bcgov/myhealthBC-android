@@ -2,6 +2,8 @@ package ca.bc.gov.repository.di
 
 import android.content.Context
 import ca.bc.gov.data.datasource.local.CommentLocalDataSource
+import ca.bc.gov.data.datasource.local.CovidOrderLocalDataSource
+import ca.bc.gov.data.datasource.local.CovidTestLocalDataSource
 import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
 import ca.bc.gov.data.datasource.local.LocalDataSource
@@ -34,6 +36,8 @@ import ca.bc.gov.repository.labtest.LabTestRepository
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.ProcessQrRepository
 import ca.bc.gov.repository.scanner.QrScanner
+import ca.bc.gov.repository.testrecord.CovidOrderRepository
+import ca.bc.gov.repository.testrecord.CovidTestRepository
 import ca.bc.gov.repository.testrecord.TestResultRepository
 import ca.bc.gov.repository.utils.Base64ToInputImageConverter
 import ca.bc.gov.repository.utils.UriToImage
@@ -206,4 +210,17 @@ class RepositoriesModule {
     fun provideTermsOfServiceRepository(
         termsOfServiceRemoteDataSource: TermsOfServiceRemoteDataSource
     ): TermsOfServiceRepository = TermsOfServiceRepository(termsOfServiceRemoteDataSource)
+
+    @Provides
+    @Singleton
+    fun provideCovidOrderRepository(
+        laboratoryRemoteDataSource: LaboratoryRemoteDataSource,
+        covidOrderLocalDataSource: CovidOrderLocalDataSource
+    ): CovidOrderRepository =
+        CovidOrderRepository(laboratoryRemoteDataSource, covidOrderLocalDataSource)
+
+    @Provides
+    @Singleton
+    fun provideCovidTestRepository(covidTestLocalDataSource: CovidTestLocalDataSource): CovidTestRepository =
+        CovidTestRepository(covidTestLocalDataSource)
 }

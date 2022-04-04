@@ -13,12 +13,10 @@ import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentTestResultDetailBinding
-import ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment
-import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.AuthenticationStatus
-import ca.bc.gov.common.model.patient.PatientDto
-import ca.bc.gov.common.model.test.TestRecordDto
+import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
+import ca.bc.gov.common.model.test.CovidTestDto
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -27,19 +25,21 @@ import kotlinx.coroutines.launch
  * @author amit metri
  */
 @AndroidEntryPoint
-class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) {
+class CovidTestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) {
 
     private val binding by viewBindings(FragmentTestResultDetailBinding::bind)
 
-    private val viewModel: TestResultDetailsViewModel by viewModels()
+    private val viewModel: CovidTestResultDetailsViewModel by viewModels()
 
-    private val args: TestResultDetailFragmentArgs by navArgs()
+    private val args: CovidTestResultDetailFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setToolBar()
-        viewModel.getTestResultDetail(args.testResultId)
+
+        viewModel.getCovidOrderWithCovidTests(args.covidOrderId)
+
         observeDetails()
     }
 
@@ -52,12 +52,11 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
 
                     binding.progressBar.isVisible = state.onLoading
 
-                    state.onTestResultDetail.let { patientTestResult ->
+                    state.onCovidTestResultDetail.let { covidTestResult ->
 
-                        if (patientTestResult != null) {
+                        if (covidTestResult != null) {
                             initUi(
-                                patientTestResult.testResultWithRecords.testRecords,
-                                patientTestResult.patient
+                                covidTestResult
                             )
                         }
                     }
@@ -66,18 +65,18 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
         }
     }
 
-    private fun initUi(testRecords: List<TestRecordDto>, patientDto: PatientDto) {
+    private fun initUi(covidTestResult: CovidOrderWithCovidTestAndPatientDto) {
 
         binding.toolbar.tvRightOption.isVisible =
-            patientDto.authenticationStatus != AuthenticationStatus.AUTHENTICATED
+            covidTestResult.patient.authenticationStatus != AuthenticationStatus.AUTHENTICATED
         val covidTestResultsAdapter = CovidTestResultsAdapter(
             this,
-            testRecords
+            covidTestResult.covidOrderWithCovidTest.covidTests
         )
 
         binding.viewpagerCovidTestResults.adapter = covidTestResultsAdapter
 
-        if (testRecords.size > 1) {
+        if (covidTestResult.covidOrderWithCovidTest.covidTests.size > 1) {
 
             binding.tabCovidTestResults.visibility = View.VISIBLE
 
@@ -93,15 +92,6 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
             ivLeftOption.visibility = View.VISIBLE
             ivLeftOption.setImageResource(R.drawable.ic_action_back)
             ivLeftOption.setOnClickListener {
-                if (findNavController().previousBackStackEntry?.destination?.id ==
-                    R.id.fetchTestRecordFragment
-                ) {
-                    findNavController().previousBackStackEntry?.savedStateHandle
-                        ?.set(
-                            FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS,
-                            args.testResultId
-                        )
-                }
                 findNavController().popBackStack()
             }
 
@@ -109,40 +99,22 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
             tvTitle.text = getString(R.string.covid_19_test_result)
 
             tvRightOption.visibility = View.VISIBLE
-            tvRightOption.text = getString(R.string.delete)
-            tvRightOption.setOnClickListener {
-                AlertDialogHelper.showAlertDialog(
-                    context = requireContext(),
-                    title = getString(R.string.delete_hc_record_title),
-                    msg = getString(R.string.delete_individual_covid_test_record_message),
-                    positiveBtnMsg = getString(R.string.delete),
-                    negativeBtnMsg = getString(R.string.not_now),
-                    positiveBtnCallback = {
-                        binding.progressBar.visibility = View.VISIBLE
-                        viewModel.deleteTestRecord(args.testResultId)
-                            .invokeOnCompletion {
-                                findNavController().popBackStack()
-                            }
-                    }
-                )
-            }
-
             line1.visibility = View.VISIBLE
         }
     }
 
     inner class CovidTestResultsAdapter(
         fragment: Fragment,
-        private val testRecordDtos: List<TestRecordDto>
+        private val covidTests: List<CovidTestDto>
     ) : FragmentStateAdapter(fragment) {
 
-        override fun getItemCount(): Int = testRecordDtos.size
+        override fun getItemCount(): Int = covidTests.size
 
         override fun createFragment(position: Int): Fragment {
 
-            return SingleTestResultFragment.newInstance(
-                testRecordDtos[position].id,
-                args.testResultId
+            return CovidTestResultFragment.newInstance(
+                args.covidOrderId,
+                covidTests[position].id
             )
         }
     }

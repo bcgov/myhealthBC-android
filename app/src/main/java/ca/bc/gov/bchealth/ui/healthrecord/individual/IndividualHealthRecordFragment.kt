@@ -351,11 +351,18 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         findNavController().navigate(action)
                     }
                     HealthRecordType.COVID_TEST_RECORD -> {
-                        val action = IndividualHealthRecordFragmentDirections
-                            .actionIndividualHealthRecordFragmentToTestResultDetailFragment(
-                                it.patientId,
-                                it.testResultId
+
+                        val action = if (it.covidOrderId != null) {
+                            IndividualHealthRecordFragmentDirections.actionIndividualHealthRecordFragmentToCovidTestResultDetailFragment(
+                                it.covidOrderId
                             )
+                        } else {
+                            IndividualHealthRecordFragmentDirections
+                                .actionIndividualHealthRecordFragmentToTestResultDetailFragment(
+                                    it.patientId,
+                                    it.testResultId
+                                )
+                        }
                         findNavController().navigate(action)
                     }
                     HealthRecordType.MEDICATION_RECORD -> {

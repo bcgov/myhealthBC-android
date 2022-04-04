@@ -30,18 +30,6 @@ class EducationalScreenFragment : Fragment(R.layout.fragment_educational_screen)
             0 -> showHealthRecordsIntro()
             1 -> showHealthPassesIntro()
             2 -> showResourcesIntro()
-            3 -> showNewsFeedIntro()
-        }
-    }
-
-    private fun showNewsFeedIntro() {
-        binding.apply {
-            tvSliderTitle.text = getString(R.string.onboarding_news_feed_title)
-            tvSliderDescription.text = getString(R.string.onboarding_news_feed_desc)
-            ivTopIcon.apply {
-                setImageResource(R.drawable.ic_onboarding_news_feed)
-                visibility = View.VISIBLE
-            }
         }
     }
 

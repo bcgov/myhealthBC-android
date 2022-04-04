@@ -24,15 +24,4 @@ class FetchTestResultRepository @Inject constructor(
         )
         return patientWithTestResultRepository.insertTestResult(response)
     }
-
-    suspend fun fetchCovidTestRecord(patientId: Long, token: String, hdid: String) {
-        val response = laboratoryRemoteDataSource.getCovidTests(token, hdid)
-        patientWithTestResultRepository.deletePatientTestRecords(patientId)
-        response.forEach {
-            patientWithTestResultRepository.insertAuthenticatedTestResult(
-                patientId,
-                it
-            )
-        }
-    }
 }

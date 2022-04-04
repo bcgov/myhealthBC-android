@@ -58,6 +58,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     patientRepository.getPatientWithMedicationRecords(patientId)
                 val patientWithLabOrdersAndLabTests =
                     patientRepository.getPatientWithLabOrdersAndLabTests(patientId)
+                val patientWithCovidOrderAndTests =
+                    patientRepository.getPatientWithCovidOrdersAndCovidTests(patientId)
 
                 val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
                     it.toUiModel()
@@ -72,6 +74,9 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     it.toUiModel()
                 }
 
+                val covidOrders =
+                    patientWithCovidOrderAndTests.covidOrderAndTests.map { it.toUiModel() }
+
                 val covidTestRecordsNonBcsc = covidTestRecords
                     .filter { it.dataSource != DataSource.BCSC.name }
                 val vaccineRecordsNonBcsc = vaccineRecords
@@ -80,6 +85,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     .filter { it.dataSource != DataSource.BCSC.name }
                 val labTestRecordsNonBcsc = labTestRecords
                     .filter { it.dataSource != DataSource.BCSC.name }
+                val covidOrderNonBcsc = covidOrders.filter { it.dataSource != DataSource.BCSC.name }
 
                 var filteredHealthRecords: List<HealthRecordItem> = mutableListOf()
                 var filteredHealthRecordsExceptMedication: List<HealthRecordItem> = mutableListOf()
@@ -130,6 +136,39 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 // no implementation required.
             }
         }
+            _uiState.update { state ->
+                state.copy(
+                    onLoading = false,
+                    patientAuthStatus = patientWithVaccineRecords.patient.authenticationStatus,
+                    authenticatedRecordsCount = patientRepository.getBcscDataRecordCount(),
+                    onHealthRecords = (
+                        covidTestRecords +
+                            vaccineRecords +
+                            medicationRecords +
+                            labTestRecords +
+                            covidOrders
+                        )
+                        .sortedByDescending { it.date },
+                    onNonBcscHealthRecords = (
+                        covidTestRecordsNonBcsc +
+                            vaccineRecordsNonBcsc +
+                            medicationRecordsNonBcsc +
+                            labTestRecordsNonBcsc +
+                            covidOrderNonBcsc
+                        )
+                        .sortedByDescending { it.date },
+                    healthRecordsExceptMedication = (
+                        covidTestRecords +
+                            vaccineRecords +
+                            labTestRecords
+                        )
+                        .sortedByDescending { it.date },
+                )
+            }
+        } catch (e: java.lang.Exception) {
+            // no implementation required.
+        }
+    }
 
     fun deleteVaccineRecord(patientId: Long) = viewModelScope.launch {
         val patientAndVaccineRecord = patientRepository.getPatientWithVaccineAndDoses(patientId)
@@ -221,6 +260,7 @@ data class HealthRecordItem(
     val testResultId: Long = -1L,
     val medicationRecordId: Long = -1L,
     val labOrderId: String? = null,
+    val covidOrderId: String? = null,
     val icon: Int,
     val title: String,
     val description: String,
