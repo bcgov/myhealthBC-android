@@ -93,8 +93,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 filterList.forEach {
                     when (it) {
                         TimelineTypeFilter.ALL -> {
-                            filteredHealthRecords = medicationRecords + vaccineRecords + covidTestRecords + labTestRecords
-                            filteredHealthRecordsExceptMedication = vaccineRecords + covidTestRecords + labTestRecords
+                            filteredHealthRecords = medicationRecords + vaccineRecords + covidTestRecords + covidOrders + labTestRecords
+                            filteredHealthRecordsExceptMedication = vaccineRecords + covidTestRecords + covidOrders + labTestRecords
                         }
                         TimelineTypeFilter.MEDICATION -> {
                             filteredHealthRecords += medicationRecords
