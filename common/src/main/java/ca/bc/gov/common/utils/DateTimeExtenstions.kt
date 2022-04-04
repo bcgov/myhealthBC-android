@@ -29,10 +29,3 @@ fun String.toDate(): Instant = LocalDate.parse(this).atStartOfDay().toInstant(Zo
 
 fun String.toDateTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): Instant =
     LocalDateTime.parse(this, formatter).toInstant(ZoneOffset.UTC)
-
-fun String.formatInPattern(
-    formatter: DateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME,
-    pattern: String = yyyy_MM_dd
-): String {
-    return this.toDateTime(formatter).toDateTimeString(pattern)
-}
