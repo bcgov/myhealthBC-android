@@ -19,3 +19,11 @@ fun String.toUniquePatientName(): String {
     }
     return uniqueName
 }
+
+fun String.titleCase(): String {
+    val names = this.split(" ")
+    return names.joinToString(" ") { name ->
+        name.lowercase()
+            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+    }
+}
