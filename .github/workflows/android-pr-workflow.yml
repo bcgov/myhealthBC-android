@@ -1,4 +1,4 @@
-name: Android CICD Firebase deployment
+name: Android CICD PR
 
 on:
   pull_request:
