@@ -27,6 +27,7 @@ import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
+import ca.bc.gov.common.utils.titleCase
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderEntity
@@ -56,7 +57,7 @@ import ca.bc.gov.data.datasource.local.entity.relations.VaccineRecordWithDose
 import java.time.Instant
 
 fun PatientEntity.toDto() = PatientDto(
-    id, fullName, dateOfBirth, phn, authenticationStatus = authenticationStatus
+    id, fullName.titleCase(), dateOfBirth, phn, authenticationStatus = authenticationStatus
 )
 
 fun TestResultEntity.toDto() = TestResultDto(

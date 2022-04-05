@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
-import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,8 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HealthPassViewModel @Inject constructor(
     private val patientRepository: PatientRepository,
-    private val vaccineRecordRepository: VaccineRecordRepository,
-    private val onBoardingRepository: OnBoardingRepository
+    private val vaccineRecordRepository: VaccineRecordRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HealthPassUiState())

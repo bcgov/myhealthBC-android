@@ -41,7 +41,7 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
     return HealthPass(
         patientId = patient.id,
         vaccineRecordId = vaccineWithDoses?.vaccine?.id!!,
-        name = patient.fullName.uppercase(),
+        name = patient.fullName,
         qrIssuedDate = "Issued on ${
         vaccineWithDoses?.vaccine?.qrIssueDate
             ?.toDateTimeString()
