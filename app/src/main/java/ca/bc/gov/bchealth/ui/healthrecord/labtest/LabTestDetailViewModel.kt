@@ -49,6 +49,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
             LabTestDetail(
                 title1 = "Collection date:",
                 collectionDateTime = labOrderWithLabTestDto.labOrder.collectionDateTime.toDate(),
+                timelineDateTime = labOrderWithLabTestDto.labOrder.timelineDateTime.toDate(),
                 title2 = "Ordering provider:",
                 orderingProvider = labOrderWithLabTestDto.labOrder.orderingProvider,
                 title3 = "Reporting Lab:",
@@ -121,6 +122,7 @@ data class LabTestDetail(
     val title2: String,
     val title3: String,
     val collectionDateTime: String? = "N/A",
+    val timelineDateTime: String? = null,
     val orderingProvider: String? = "N/A",
     val reportingSource: String? = "N/A",
     val testName: String? = "N/A",
