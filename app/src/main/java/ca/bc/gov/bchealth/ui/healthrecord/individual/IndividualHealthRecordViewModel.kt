@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Instant
+import java.util.Date
 import javax.inject.Inject
 
 /**
@@ -41,7 +42,12 @@ class IndividualHealthRecordViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(IndividualHealthRecordsUiState())
     val uiState: StateFlow<IndividualHealthRecordsUiState> = _uiState.asStateFlow()
 
-    fun getIndividualsHealthRecord(patientId: Long, filterList: List<TimelineTypeFilter>) =
+    fun getIndividualsHealthRecord(
+        patientId: Long,
+        filterList: List<TimelineTypeFilter>,
+        fromDate: String?,
+        toDate: String?
+    ) =
         viewModelScope.launch {
 
             _uiState.update { state ->
@@ -73,9 +79,34 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
                     it.toUiModel()
                 }
-
                 val covidOrders =
                     patientWithCovidOrderAndTests.covidOrderAndTests.map { it.toUiModel() }
+
+                var filteredCovidTestRecords = covidTestRecords
+                var filteredVaccineRecords = vaccineRecords
+                var filteredMedicationRecords = medicationRecords
+                var filteredLabTestRecords = labTestRecords
+                var filteredCovidOrders = covidOrders
+
+                if (!fromDate.isNullOrBlank() && !toDate.isNullOrBlank()) {
+                    filteredCovidTestRecords = covidTestRecords.filter { it.date >= fromDate.toDate() && it.date <= toDate.toDate()}
+                    filteredVaccineRecords = vaccineRecords.filter { it.date >= fromDate.toDate() && it.date <= toDate.toDate()}
+                    filteredMedicationRecords = medicationRecords.filter { it.date >= fromDate.toDate() && it.date <= toDate.toDate()}
+                    filteredLabTestRecords = labTestRecords.filter { it.date >= fromDate.toDate() && it.date <= toDate.toDate()}
+                    filteredCovidOrders = covidOrders.filter { it.date >= fromDate.toDate() && it.date <= toDate.toDate()}
+                } else if(!fromDate.isNullOrBlank()) {
+                    filteredCovidTestRecords = covidTestRecords.filter { it.date >= fromDate.toDate() }
+                    filteredVaccineRecords = vaccineRecords.filter { it.date >= fromDate.toDate() }
+                    filteredMedicationRecords = medicationRecords.filter { it.date >= fromDate.toDate() }
+                    filteredLabTestRecords = labTestRecords.filter { it.date >= fromDate.toDate() }
+                    filteredCovidOrders = covidOrders.filter { it.date >= fromDate.toDate() }
+                } else if(!toDate.isNullOrBlank()) {
+                    filteredCovidTestRecords = covidTestRecords.filter { it.date <= toDate.toDate()}
+                    filteredVaccineRecords = vaccineRecords.filter { it.date <= toDate.toDate()}
+                    filteredMedicationRecords = medicationRecords.filter { it.date <= toDate.toDate()}
+                    filteredLabTestRecords = labTestRecords.filter { it.date <= toDate.toDate()}
+                    filteredCovidOrders = covidOrders.filter { it.date <= toDate.toDate()}
+                }
 
                 val covidTestRecordsNonBcsc = covidTestRecords
                     .filter { it.dataSource != DataSource.BCSC.name }
@@ -93,23 +124,25 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 filterList.forEach {
                     when (it) {
                         TimelineTypeFilter.ALL -> {
-                            filteredHealthRecords = medicationRecords + vaccineRecords + covidTestRecords + covidOrders + labTestRecords
-                            filteredHealthRecordsExceptMedication = vaccineRecords + covidTestRecords + covidOrders + labTestRecords
+                            filteredHealthRecords =
+                                filteredMedicationRecords + filteredVaccineRecords + filteredCovidTestRecords + filteredCovidOrders + filteredLabTestRecords
+                            filteredHealthRecordsExceptMedication =
+                                filteredVaccineRecords + filteredCovidTestRecords + filteredCovidOrders + filteredLabTestRecords
                         }
                         TimelineTypeFilter.MEDICATION -> {
-                            filteredHealthRecords += medicationRecords
+                            filteredHealthRecords += filteredMedicationRecords
                         }
                         TimelineTypeFilter.IMMUNIZATION -> {
-                            filteredHealthRecords += vaccineRecords
-                            filteredHealthRecordsExceptMedication += vaccineRecords
+                            filteredHealthRecords += filteredVaccineRecords
+                            filteredHealthRecordsExceptMedication += filteredVaccineRecords
                         }
                         TimelineTypeFilter.COVID_19_TEST -> {
-                            filteredHealthRecords += covidTestRecords + covidOrders
-                            filteredHealthRecordsExceptMedication += covidTestRecords + covidOrders
+                            filteredHealthRecords += filteredCovidTestRecords + filteredCovidOrders
+                            filteredHealthRecordsExceptMedication += filteredCovidTestRecords + filteredCovidOrders
                         }
                         TimelineTypeFilter.LAB_TEST -> {
-                            filteredHealthRecords += labTestRecords
-                            filteredHealthRecordsExceptMedication += labTestRecords
+                            filteredHealthRecords += filteredLabTestRecords
+                            filteredHealthRecordsExceptMedication += filteredLabTestRecords
                         }
                     }
                 }
@@ -130,7 +163,9 @@ class IndividualHealthRecordViewModel @Inject constructor(
                                 covidOrderNonBcsc
                             )
                             .sortedByDescending { it.date },
-                        healthRecordsExceptMedication = filteredHealthRecordsExceptMedication
+                        healthRecordsExceptMedication = filteredHealthRecordsExceptMedication,
+                        // startDate = fromDate ?: filteredHealthRecords.lastOrNull()?.date?.toDate(yyyy_MM_dd),
+                        // endDate = toDate ?: Date().toInstant().toDate(yyyy_MM_dd)
                     )
                 }
             } catch (e: java.lang.Exception) {
@@ -220,7 +255,9 @@ data class IndividualHealthRecordsUiState(
     val onHealthRecords: List<HealthRecordItem> = emptyList(),
     val onNonBcscHealthRecords: List<HealthRecordItem> = emptyList(),
     val healthRecordsExceptMedication: List<HealthRecordItem> = emptyList(),
-    val medicationRecordsUpdated: Boolean = false
+    val medicationRecordsUpdated: Boolean = false,
+    val startDate: String? = null,
+    val endDate: String = Date().toInstant().toDate(yyyy_MM_dd)
 )
 
 data class HealthRecordItem(

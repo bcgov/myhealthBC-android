@@ -177,8 +177,6 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             viewModel.resetAuthStatus()
             when (authStatus.tosAccepted) {
                 TOSAccepted.ACCEPTED -> {
-                    // clear timeline filter
-                    filterSharedViewModel.timelineTypeFilter = listOf(TimelineTypeFilter.ALL)
                     viewModel.fetchPatientData()
                 }
                 else -> {

@@ -137,13 +137,23 @@
             app:singleLine="true">
 
             <com.google.android.material.chip.Chip
+                android:id="@+id/chip_date"
+                style="@style/ChipFilterByType"
+                android:focusable="false"
+                android:clickable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                />
+
+            <com.google.android.material.chip.Chip
                 android:id="@+id/chip_medication"
                 style="@style/ChipFilterByType"
                 android:focusable="false"
                 android:clickable="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/medications"/>
+                android:text="@string/medications" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_lab_test"
@@ -152,7 +162,7 @@
                 android:clickable="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/lab_tests"/>
+                android:text="@string/lab_tests" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_covid_test"
@@ -161,7 +171,7 @@
                 android:clickable="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/covid_19_tests"/>
+                android:text="@string/covid_19_tests" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_immunizations"
@@ -170,7 +180,7 @@
                 android:clickable="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/immunizations"/>
+                android:text="@string/immunizations" />
 
         </com.google.android.material.chip.ChipGroup>
 

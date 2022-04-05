@@ -290,4 +290,8 @@
     <string name="apply">Apply</string>
     <string name="no_records_found">No records found</string>
     <string name="clear_all_filters_and_start_over">Clear all filters and start over</string>
+    <string name="date_range">Date range</string>
+    <string name="from">From</string>
+    <string name="date_hint">yyyy-mm-dd</string>
+    <string name="to">To</string>
 </resources>
