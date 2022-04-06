@@ -89,23 +89,23 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 var filteredCovidOrders = covidOrders
 
                 if (!fromDate.isNullOrBlank() && !toDate.isNullOrBlank()) {
-                    filteredCovidTestRecords = covidTestRecords.filter { it.date >= fromDate.toDate() && it.date <= toDate.toDate()}
-                    filteredVaccineRecords = vaccineRecords.filter { it.date >= fromDate.toDate() && it.date <= toDate.toDate()}
-                    filteredMedicationRecords = medicationRecords.filter { it.date >= fromDate.toDate() && it.date <= toDate.toDate()}
-                    filteredLabTestRecords = labTestRecords.filter { it.date >= fromDate.toDate() && it.date <= toDate.toDate()}
-                    filteredCovidOrders = covidOrders.filter { it.date >= fromDate.toDate() && it.date <= toDate.toDate()}
-                } else if(!fromDate.isNullOrBlank()) {
+                    filteredCovidTestRecords = covidTestRecords.filter { it.date >= fromDate.toDate() && it.date <= toDate.toDate() }
+                    filteredVaccineRecords = vaccineRecords.filter { it.date >= fromDate.toDate() && it.date <= toDate.toDate() }
+                    filteredMedicationRecords = medicationRecords.filter { it.date >= fromDate.toDate() && it.date <= toDate.toDate() }
+                    filteredLabTestRecords = labTestRecords.filter { it.date >= fromDate.toDate() && it.date <= toDate.toDate() }
+                    filteredCovidOrders = covidOrders.filter { it.date >= fromDate.toDate() && it.date <= toDate.toDate() }
+                } else if (!fromDate.isNullOrBlank()) {
                     filteredCovidTestRecords = covidTestRecords.filter { it.date >= fromDate.toDate() }
                     filteredVaccineRecords = vaccineRecords.filter { it.date >= fromDate.toDate() }
                     filteredMedicationRecords = medicationRecords.filter { it.date >= fromDate.toDate() }
                     filteredLabTestRecords = labTestRecords.filter { it.date >= fromDate.toDate() }
                     filteredCovidOrders = covidOrders.filter { it.date >= fromDate.toDate() }
-                } else if(!toDate.isNullOrBlank()) {
-                    filteredCovidTestRecords = covidTestRecords.filter { it.date <= toDate.toDate()}
-                    filteredVaccineRecords = vaccineRecords.filter { it.date <= toDate.toDate()}
-                    filteredMedicationRecords = medicationRecords.filter { it.date <= toDate.toDate()}
-                    filteredLabTestRecords = labTestRecords.filter { it.date <= toDate.toDate()}
-                    filteredCovidOrders = covidOrders.filter { it.date <= toDate.toDate()}
+                } else if (!toDate.isNullOrBlank()) {
+                    filteredCovidTestRecords = covidTestRecords.filter { it.date <= toDate.toDate() }
+                    filteredVaccineRecords = vaccineRecords.filter { it.date <= toDate.toDate() }
+                    filteredMedicationRecords = medicationRecords.filter { it.date <= toDate.toDate() }
+                    filteredLabTestRecords = labTestRecords.filter { it.date <= toDate.toDate() }
+                    filteredCovidOrders = covidOrders.filter { it.date <= toDate.toDate() }
                 }
 
                 val covidTestRecordsNonBcsc = covidTestRecords

@@ -243,7 +243,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 viewModel.uiState.collect { uiState ->
 
                     if (loginStatus != null) {
-                        //update date range with default values if null
+                        // update date range with default values if null
                         updateDefaultFilterDates(uiState)
 
                         updateUi(uiState)

@@ -102,7 +102,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
                 filterSharedViewModel.updateFilterTypes(filterList)
 
-                //update date range
+                // update date range
                 filterSharedViewModel.updateFilterDates(binding.etFrom.text.toString(), binding.etTo.text.toString())
 
                 findNavController().popBackStack()
@@ -119,11 +119,11 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                 errorMessage = "",
                 isBlankAllowed = true
             ) && DatePickerHelper().validateDatePickerData(
-                textInputLayout = binding.tipTo,
-                context = requireContext(),
-                errorMessage = "",
-                isBlankAllowed = true
-            )
+                    textInputLayout = binding.tipTo,
+                    context = requireContext(),
+                    errorMessage = "",
+                    isBlankAllowed = true
+                )
         ) {
             if (!binding.etFrom.text.toString().isNullOrBlank() &&
                 !binding.etTo.text.toString().isNullOrBlank() &&
