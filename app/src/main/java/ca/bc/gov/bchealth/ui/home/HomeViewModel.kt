@@ -1,5 +1,7 @@
 package ca.bc.gov.bchealth.ui.home
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
@@ -86,26 +88,26 @@ class HomeViewModel @Inject constructor(
         return mutableListOf(
             HomeRecordItem(
                 R.drawable.ic_login_info,
-                "Health records",
-                "Access your lab results, medication history and vaccination records",
+                R.string.health_records,
+                R.string.health_records_desc,
                 if (isLoggedIn) 0 else R.drawable.ic_bcsc,
-                if (isLoggedIn) "View records" else "Get started",
+                if (isLoggedIn) R.string.view_records else R.string.get_started,
                 HomeNavigationType.HEALTH_RECORD
             ),
             HomeRecordItem(
                 R.drawable.ic_green_tick,
-                "Proof of vaccination",
-                "Save proof of vaccination documents for you and your family",
+                R.string.health_passes,
+                R.string.proof_of_vaccination_desc,
                 R.drawable.ic_right_arrow,
-                "Add proofs",
+                R.string.add_proofs,
                 HomeNavigationType.VACCINE_PROOF
             ),
             HomeRecordItem(
                 R.drawable.ic_resources,
-                "Health resources",
-                "Find trusted health information and resources",
+                R.string.health_resources,
+                R.string.resources_desc,
                 R.drawable.ic_right_arrow,
-                "Learn more",
+                R.string.learn_more,
                 HomeNavigationType.RESOURCES
             )
         )
@@ -121,11 +123,11 @@ data class HomeUiState(
 )
 
 data class HomeRecordItem(
-    val iconTitle: Int,
-    val title: String,
-    val description: String,
-    val icon: Int,
-    val btnTitle: String,
+    @DrawableRes val iconTitle: Int,
+    @StringRes val title: Int,
+    @StringRes val description: Int,
+    @DrawableRes val icon: Int,
+    @StringRes val btnTitle: Int,
     val recordType: HomeNavigationType
 )
 

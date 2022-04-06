@@ -107,7 +107,86 @@
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <ImageView
+        android:id="@+id/img_clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_clear"
+        android:layout_marginStart="@dimen/space_4_x"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/horizontal_scrollview"
+        app:layout_constraintBottom_toBottomOf="@+id/horizontal_scrollview"
+        />
+
+    <HorizontalScrollView
+        android:id="@+id/horizontal_scrollview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_1_x"
+        android:layout_marginStart="@dimen/space_1_x"
+        android:layout_marginEnd="@dimen/space_1_x"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/img_clear"
+        app:layout_constraintTop_toBottomOf="@+id/tv_name">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/cg_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleLine="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_date"
+                style="@style/ChipFilterByType"
+                android:focusable="false"
+                android:clickable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_medication"
+                style="@style/ChipFilterByType"
+                android:focusable="false"
+                android:clickable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/medications" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_lab_test"
+                style="@style/ChipFilterByType"
+                android:focusable="false"
+                android:clickable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lab_tests" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_covid_test"
+                style="@style/ChipFilterByType"
+                android:focusable="false"
+                android:clickable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/covid_19_tests" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_immunizations"
+                style="@style/ChipFilterByType"
+                android:focusable="false"
+                android:clickable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/immunizations" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+    </HorizontalScrollView>
+
+    <ca.bc.gov.bchealth.widget.RecyclerView
         android:id="@+id/rv_health_records"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -118,7 +197,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_scrollview" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -131,5 +210,54 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/img_no_records"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_no_record"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_no_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?textAppearanceHeadline2"
+            android:textSize="20sp"
+            android:textColor="@color/blue"
+            android:layout_marginTop="@dimen/space_4_x"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/img_no_records"
+            android:text="@string/no_records_found" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_clear_filter_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?textAppearanceBody2"
+            android:textSize="13sp"
+            android:textColor="@color/grey"
+            android:layout_marginTop="@dimen/space_1_x"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_no_record"
+            android:text="@string/clear_all_filters_and_start_over" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

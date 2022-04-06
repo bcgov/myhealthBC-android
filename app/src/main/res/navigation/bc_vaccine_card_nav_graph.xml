@@ -55,7 +55,11 @@
         android:id="@+id/biometricsAuthenticationFragment"
         tools:layout="@layout/fragment_biometric_authentication"
         android:name="ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment"
-        android:label="BiometricsAuthenticationFragment" />
+        android:label="BiometricsAuthenticationFragment">
+        <action
+            android:id="@+id/action_biometricsAuthenticationFragment_to_biometricSecurityTipFragment"
+            app:destination="@id/biometricSecurityTipFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/bcscAuthInfoFragment"
@@ -76,6 +80,17 @@
         tools:layout="@layout/fragment_terms_of_service"
         android:name="ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment"
         android:label="TermsOfServiceFragment" />
+    <fragment
+        android:id="@+id/filterFragment"
+        tools:layout="@layout/fragment_filter"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.filter.FilterFragment"
+        android:label="FilterFragment"/>
+
+    <fragment
+        android:id="@+id/biometricSecurityTipFragment"
+        tools:layout="@layout/fragment_biometric_security_tip"
+        android:name="ca.bc.gov.bchealth.ui.auth.BiometricSecurityTipFragment"
+        android:label="BiometricSecurityTipFragment" />
 
     <fragment
         android:id="@+id/pdfRendererFragment"
