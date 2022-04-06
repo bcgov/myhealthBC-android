@@ -124,6 +124,7 @@ fun LabOrderDto.toEntity() = LabOrderEntity(
     patientId,
     reportId,
     collectionDateTime,
+    timelineDateTime,
     reportingSource,
     commonName,
     orderingProvider,

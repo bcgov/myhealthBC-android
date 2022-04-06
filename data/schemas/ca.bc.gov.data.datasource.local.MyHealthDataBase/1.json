@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a4a0bb97d056b18fbb241ab48dcd5157",
+    "identityHash": "8f98e9f31277c4d328e063883284b78f",
     "entities": [
       {
         "tableName": "patient",
@@ -647,7 +647,7 @@
       },
       {
         "tableName": "lab_order",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `patient_id` INTEGER NOT NULL, `report_id` TEXT, `collection_date_time` INTEGER NOT NULL, `reporting_source` TEXT, `common_name` TEXT, `ordering_provider` TEXT, `test_status` TEXT, `report_available` INTEGER NOT NULL, `data_source` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `patient_id` INTEGER NOT NULL, `report_id` TEXT, `collection_date_time` INTEGER NOT NULL, `timeline_date_time` INTEGER NOT NULL, `reporting_source` TEXT, `common_name` TEXT, `ordering_provider` TEXT, `test_status` TEXT, `report_available` INTEGER NOT NULL, `data_source` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -670,6 +670,12 @@
           {
             "fieldPath": "collectionDateTime",
             "columnName": "collection_date_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timelineDateTime",
+            "columnName": "timeline_date_time",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -1085,7 +1091,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a4a0bb97d056b18fbb241ab48dcd5157')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8f98e9f31277c4d328e063883284b78f')"
     ]
   }
 }

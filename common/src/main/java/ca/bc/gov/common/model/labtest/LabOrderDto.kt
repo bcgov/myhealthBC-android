@@ -11,6 +11,7 @@ data class LabOrderDto(
     var patientId: Long = 0,
     val reportId: String? = null,
     val collectionDateTime: Instant,
+    val timelineDateTime: Instant,
     val reportingSource: String? = null,
     val commonName: String? = null,
     val orderingProvider: String? = null,

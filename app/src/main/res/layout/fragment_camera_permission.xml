@@ -24,7 +24,7 @@
                 android:id="@+id/img_educational_mobile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_8_x"
+                android:layout_marginTop="172dp"
                 android:src="@drawable/ic_camera_permission"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_2_x"
-                android:layout_marginTop="@dimen/space_4_x"
+                android:layout_marginTop="@dimen/space_8_x"
                 android:layout_marginEnd="@dimen/space_2_x"
                 android:text="@string/permission_required"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -50,7 +50,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_4_x"
+                android:layout_marginTop="@dimen/space_1_x"
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:text="@string/allow_vaxwallet"
                 android:textAlignment="center"
@@ -64,33 +64,30 @@
                 style="@style/HealthGateway.Widget.MaterialComponents.Button1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_8_x"
                 android:text="@string/allow"
-                app:icon="@drawable/ic_check"
-                app:iconGravity="start"
-                app:iconPadding="@dimen/space_1_x"
-                app:iconTint="@color/white"
+                android:layout_marginBottom="@dimen/space_1_x"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_bc_camera_permission_message"
-                tools:ignore="ContentDescription" />
+                tools:ignore="ContentDescription"
+                app:layout_constraintBottom_toTopOf="@+id/txt_skip_for_now" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/txt_skip_for_now"
-                style="?textAppearanceHeadline6"
+                style="?textAppearanceHeadline3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_2_x"
-                android:layout_marginTop="@dimen/space_2_x"
                 android:layout_marginEnd="@dimen/space_2_x"
+                android:layout_marginBottom="132dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:linksClickable="true"
                 android:text="@string/skip_for_now"
+                android:textColor="@color/blue"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_allow_camera_permission" />
+                app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

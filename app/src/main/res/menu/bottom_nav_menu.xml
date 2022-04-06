@@ -7,15 +7,15 @@
         android:icon="@drawable/ic_home"
         android:title="@string/home" />
     <item
-        android:id="@+id/health_pass"
-        android:enabled="true"
-        android:icon="@drawable/pass_selector"
-        android:title="@string/passes" />
-    <item
         android:id="@+id/health_records"
         android:enabled="true"
         android:icon="@drawable/records_selector"
         android:title="@string/records" />
+    <item
+        android:id="@+id/health_pass"
+        android:enabled="true"
+        android:icon="@drawable/pass_selector"
+        android:title="@string/passes" />
     <item
         android:id="@+id/resources"
         android:enabled="true"

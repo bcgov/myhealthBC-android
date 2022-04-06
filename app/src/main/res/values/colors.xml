@@ -9,12 +9,14 @@
     <color name="status_blue">#38598A</color>
 
     <color name="primary_blue">#003366</color>
+    <color name="primary_blue_disabled">#4D003366</color>
     <color name="blue">#1A5A96</color>
     <color name="text_black">#313132</color>
     <color name="grey">#606060</color>
     <color name="shadow_grey">#CFCFCF</color>
     <color name="light_grey">#F7F7F7</color>
     <color name="error">#D8292F</color>
+    <color name="red">#D72E3D</color>
 
     <!--Covid Test Result colors-->
     <color name="covid_test_blue">#D2E2EF</color>

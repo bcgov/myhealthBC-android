@@ -45,7 +45,6 @@
             android:textAlignment="center"
             android:textColor="@color/primary_blue"
             app:layout_constraintStart_toStartOf="parent"
-            app:textAllCaps="true"
             tools:text="JEAN SMITH"
             app:layout_constraintTop_toBottomOf="@+id/iv_profile"
             android:layout_marginStart="@dimen/space_4_x"
@@ -63,6 +62,7 @@
             android:text="@string/view_profile"
             android:textAlignment="center"
             android:textSize="14sp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -166,6 +166,36 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_privacy_statement" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_log_out"
+        style="?textAppearanceHeadline4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:paddingStart="@dimen/space_4_x"
+        android:paddingTop="@dimen/space_2_x"
+        android:paddingEnd="@dimen/space_4_x"
+        android:paddingBottom="@dimen/space_2_x"
+        android:text="@string/log_out"
+        android:textColor="@color/red"
+        android:drawableStart="@drawable/ic_log_out"
+        android:drawablePadding="@dimen/space_1_x"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line3" />
+
+    <View
+        android:id="@+id/line4"
+        android:layout_width="0dp"
+        android:layout_height="1.5dp"
+        android:background="@drawable/solid_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_log_out" />
+
 
     <ProgressBar
         android:id="@+id/progressBar"

@@ -8,6 +8,7 @@ import androidx.core.net.toUri
 import ca.bc.gov.common.const.AUTH_ERROR
 import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.utils.titleCase
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.ConfigRemoteDataSource
@@ -148,7 +149,7 @@ class BcscAuthRepo(
         try {
             val authState = getAuthState() ?: throw MyHealthException(AUTH_ERROR, "Login again!")
             val json = authState.accessToken?.let { decodeAccessToken(it) }
-            userName = json?.get(NAME).toString()
+            userName = json?.get(NAME).toString().titleCase()
         } catch (e: java.lang.Exception) {
             // NA
         }

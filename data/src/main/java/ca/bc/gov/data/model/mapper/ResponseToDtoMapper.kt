@@ -14,8 +14,6 @@ import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.model.test.TestRecordDto
-import ca.bc.gov.common.utils.formatInPattern
-import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.data.datasource.remote.model.base.LabResult
 import ca.bc.gov.data.datasource.remote.model.base.Order
@@ -32,6 +30,7 @@ import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.model.MediaMetaData
 import ca.bc.gov.data.model.VaccineStatus
 import java.time.Instant
+import java.time.format.DateTimeFormatter
 
 fun CovidTestRecord.toTestRecord() = TestRecordDto(
     id = reportId,
@@ -120,7 +119,8 @@ fun LabTestResponse.toDto(): List<LabOrderWithLabTestDto> {
             LabOrderDto(
                 id = order.labPdfId,
                 reportId = order.reportId,
-                collectionDateTime = order.collectionDateTime.formatInPattern().toDate(),
+                collectionDateTime = order.collectionDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+                timelineDateTime = order.timelineDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
                 reportingSource = order.reportingSource,
                 commonName = order.commonName,
                 orderingProvider = order.orderingProvider,
@@ -157,7 +157,7 @@ fun Order.toDto() = CovidOrderDto(
     reportingLab,
     location,
     ormOrOru,
-    messageDateTime.formatInPattern().toDate(),
+    messageDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
     messageId,
     additionalData, reportAvailable
 )
@@ -166,13 +166,13 @@ fun LabResult.toDto() = CovidTestDto(
     id,
     testType,
     outOfRange,
-    collectedDateTime.formatInPattern().toDate(),
+    collectedDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
     testStatus,
     labResultOutcome,
     resultDescription,
     resultLink,
-    receivedDateTime.formatInPattern().toDate(),
-    resultDateTime.formatInPattern().toDate(),
+    receivedDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+    resultDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
     loInc,
     loIncName
 )
