@@ -353,7 +353,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             if (::healthRecordsAdapter.isInitialized) {
                 healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
             }
-            if (::hiddenMedicationRecordsAdapter.isInitialized) {
+            if (::hiddenMedicationRecordsAdapter.isInitialized &&
+                uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED
+            ) {
                 hiddenMedicationRecordsAdapter.submitList(
                     listOf(
                         HiddenMedicationRecordItem(

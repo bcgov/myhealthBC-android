@@ -90,6 +90,8 @@ class HomeViewModel @Inject constructor(
                 R.drawable.ic_login_info,
                 R.string.health_records_home,
                 R.string.health_records_desc,
+                "Health records",
+                "Access your lab results, medication history and vaccination records",
                 if (isLoggedIn) 0 else R.drawable.ic_bcsc,
                 if (isLoggedIn) R.string.view_records else R.string.get_started,
                 HomeNavigationType.HEALTH_RECORD
@@ -98,6 +100,8 @@ class HomeViewModel @Inject constructor(
                 R.drawable.ic_green_tick,
                 R.string.health_passes,
                 R.string.proof_of_vaccination_desc,
+                "Proof of vaccination",
+                "Save proof of vaccination documents for you and your family",
                 R.drawable.ic_right_arrow,
                 R.string.add_proofs,
                 HomeNavigationType.VACCINE_PROOF
@@ -106,6 +110,8 @@ class HomeViewModel @Inject constructor(
                 R.drawable.ic_resources,
                 R.string.resources,
                 R.string.resources_desc,
+                "Health resources",
+                "Find trusted health information and resources",
                 R.drawable.ic_right_arrow,
                 R.string.learn_more,
                 HomeNavigationType.RESOURCES

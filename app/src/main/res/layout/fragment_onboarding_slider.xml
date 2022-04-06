@@ -45,7 +45,8 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_skip"
-        style="?textAppearanceHeadline6"
+        style="?textAppearanceHeadline3"
+        android:textColor="@color/blue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"

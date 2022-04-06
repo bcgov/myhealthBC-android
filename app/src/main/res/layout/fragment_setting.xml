@@ -39,13 +39,13 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_disable_analytics"
+                    android:id="@+id/tv_analytics_title"
                     style="@style/HealthGateway.TextAppearance.MaterialComponents.Body1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/space_4_x"
                     android:layout_marginTop="@dimen/space_2_x"
-                    android:text="@string/disable_analytics"
+                    android:text="@string/turn_on_analytics"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,16 +63,16 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_disable_analytics" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_analytics_title" />
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/switch_analytics"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/space_4_x"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_disable_analytics"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_analytics_title"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_disable_analytics" />
+                    app:layout_constraintTop_toTopOf="@+id/tv_analytics_title" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

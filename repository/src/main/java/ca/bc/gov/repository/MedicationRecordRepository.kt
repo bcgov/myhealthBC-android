@@ -9,6 +9,7 @@ import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
+import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
 import ca.bc.gov.data.model.mapper.toDispensingPharmacyDto
 import ca.bc.gov.data.model.mapper.toMedicationRecordDto
 import ca.bc.gov.data.model.mapper.toMedicationSummaryDto
@@ -27,6 +28,16 @@ class MedicationRecordRepository @Inject constructor(
         medicationRecordLocalDataSource.insert(medicationRecords)
 
     suspend fun fetchMedicationStatement(
+        accessToken: String,
+        hdid: String,
+        protectiveWord: String?
+    ): MedicationStatementResponse {
+        return medicationRemoteDataSource.getMedicationStatement(
+            accessToken, hdid, protectiveWord
+        )
+    }
+
+    suspend fun fetchMedicationStatement(
         patientId: Long,
         accessToken: String,
         hdid: String,
@@ -35,8 +46,11 @@ class MedicationRecordRepository @Inject constructor(
         val response = medicationRemoteDataSource.getMedicationStatement(
             accessToken, hdid, protectiveWord
         )
-        medicationRecordLocalDataSource.deletePatientMedicationRecords(patientId)
+        updateMedicationRecords(response, patientId)
+    }
 
+    suspend fun updateMedicationRecords(response: MedicationStatementResponse, patientId: Long) {
+        medicationRecordLocalDataSource.deletePatientMedicationRecords(patientId)
         response.payload?.forEach { medicationStatementPayload ->
             val medicationRecordId = insert(
                 medicationStatementPayload.toMedicationRecordDto(patientId = patientId)
