@@ -52,17 +52,17 @@ class HomeAdapter(
         when (holder) {
             is HomeWithButtonBgViewHolder -> {
                 holder.binding.imgIcon.setBackgroundResource(record.iconTitle)
-                holder.binding.tvTitle.text = record.title
-                holder.binding.tvDesc.text = record.description
+                holder.binding.tvTitle.text = holder.itemView.context.getString(record.title)
+                holder.binding.tvDesc.text = holder.itemView.context.getString(record.description)
                 holder.binding.btnContinue.setCompoundDrawablesWithIntrinsicBounds(record.icon, 0, 0, 0)
-                holder.binding.btnContinue.text = record.btnTitle
+                holder.binding.btnContinue.text = holder.itemView.context.getString(record.btnTitle)
             }
             is HomeWithoutButtonBgViewHolder -> {
                 holder.binding.imgIcon.setBackgroundResource(record.iconTitle)
-                holder.binding.tvTitle.text = record.title
-                holder.binding.tvDesc.text = record.description
+                holder.binding.tvTitle.text = holder.itemView.context.getString(record.title)
+                holder.binding.tvDesc.text = holder.itemView.context.getString(record.description)
                 holder.binding.imgContinue.setBackgroundResource(record.icon)
-                holder.binding.tvContinue.text = record.btnTitle
+                holder.binding.tvContinue.text = holder.itemView.context.getString(record.btnTitle)
             }
         }
     }

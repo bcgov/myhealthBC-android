@@ -268,8 +268,31 @@
     <!-- Home screen -->
     <string name="hello">Hello</string>
     <string name="hi">Hi</string>
+    <string name="health_records_home">Health Records</string>
+    <string name="view_records">View records</string>
+    <string name="health_records_desc">Access your lab results, medication history and vaccination records</string>
+    <string name="proof_of_vaccination_desc">Save proof of vaccination documents for you and your family</string>
+    <string name="add_proofs">Add proofs</string>
+    <string name="resources_desc">Find trusted health information and resources</string>
+    <string name="learn_more">Learn more</string>
 
     <!--Terms of service-->
     <string name="terms_of_service">Terms of service</string>
     <string name="btn_agree">Agree</string>
+
+    <!-- Filter screen -->
+    <string name="clear_all">Clear all</string>
+    <string name="record_type">Record type</string>
+    <string name="lab_tests">Lab tests</string>
+    <string name="covid_19_tests">COVID-19 tests</string>
+    <string name="immunizations">Immunizations</string>
+    <string name="filter">Filter</string>
+    <string name="apply">Apply</string>
+    <string name="no_records_found">No records found</string>
+    <string name="clear_all_filters_and_start_over">Clear all filters and start over</string>
+    <string name="date_range">Date range</string>
+    <string name="from">From</string>
+    <string name="date_hint">yyyy-mm-dd</string>
+    <string name="to">To</string>
+    <string name="enter_valid_date">Please enter a valid date</string>
 </resources>

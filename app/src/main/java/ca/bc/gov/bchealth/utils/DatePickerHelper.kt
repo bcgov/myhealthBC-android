@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.FragmentManager
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.common.utils.toDate
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
@@ -22,18 +25,49 @@ class DatePickerHelper {
         parentFragmentManager: FragmentManager,
         tag: String
     ) {
-        val dateOfBirthPicker =
+        val datePicker =
             MaterialDatePicker.Builder.datePicker()
                 .setTitleText(title)
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                 .build()
         textInputLayout.editText?.setOnClickListener {
-            dateOfBirthPicker.show(parentFragmentManager, tag)
+            datePicker.show(parentFragmentManager, tag)
         }
         textInputLayout.setEndIconOnClickListener {
-            dateOfBirthPicker.show(parentFragmentManager, tag)
+            datePicker.show(parentFragmentManager, tag)
         }
-        dateOfBirthPicker.addOnPositiveButtonClickListener {
+        datePicker.addOnPositiveButtonClickListener {
+            textInputLayout.editText?.setText(simpleDateFormat.format(it.adjustOffset()))
+        }
+    }
+
+    fun initFilterDatePicker(
+        textInputLayout: TextInputLayout,
+        title: String,
+        parentFragmentManager: FragmentManager,
+        tag: String,
+        selectedDate: String?
+    ) {
+        val selectedTimeInMillis = selectedDate?.let { it.toDate().toEpochMilli() }
+            ?: run { MaterialDatePicker.todayInUtcMilliseconds() }
+
+        val constraints: CalendarConstraints = CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointBackward.now())
+            .setOpenAt(selectedTimeInMillis)
+            .build()
+
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText(title)
+            .setSelection(selectedTimeInMillis)
+            .setCalendarConstraints(constraints)
+            .build()
+        textInputLayout.editText?.setOnClickListener {
+            datePicker.show(parentFragmentManager, tag)
+        }
+        textInputLayout.setEndIconOnClickListener {
+            datePicker.show(parentFragmentManager, tag)
+        }
+        datePicker.addOnPositiveButtonClickListener {
             textInputLayout.editText?.setText(simpleDateFormat.format(it.adjustOffset()))
         }
     }
@@ -41,36 +75,43 @@ class DatePickerHelper {
     fun validateDatePickerData(
         textInputLayout: TextInputLayout,
         context: Context,
-        errorMessage: String
+        errorMessage: String,
+        isBlankAllowed: Boolean = false
     ): Boolean {
-        if (textInputLayout.editText?.text.isNullOrEmpty()) {
-            textInputLayout.isErrorEnabled = true
-            textInputLayout.error = errorMessage
-            textInputLayout.editText?.doOnTextChanged { text, _, _, _ ->
-                if (text != null && text.isNotEmpty()) {
-                    textInputLayout.isErrorEnabled = false
-                    textInputLayout.error = null
-                }
+        if (isBlankAllowed) {
+            return true
+        } else {
+            if (textInputLayout.editText?.text.isNullOrEmpty()) {
+                updateErrorMessage(textInputLayout, errorMessage)
+                return false
             }
-            return false
-        }
 
-        if (!textInputLayout.editText?.text.toString()
-            .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
-
-            !textInputLayout.editText?.text.toString()
-                .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
-        ) {
-            textInputLayout.isErrorEnabled = true
-            textInputLayout.error = context.getString(R.string.enter_valid_date_format)
-            textInputLayout.editText?.doOnTextChanged { text, _, _, _ ->
-                if (text != null && text.isNotEmpty()) {
-                    textInputLayout.isErrorEnabled = false
-                    textInputLayout.error = null
-                }
+            if (!textInputLayout.editText?.text.toString()
+                .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
+                !textInputLayout.editText?.text.toString()
+                    .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
+            ) {
+                updateErrorMessage(
+                    textInputLayout,
+                    context.getString(R.string.enter_valid_date_format)
+                )
+                return false
             }
-            return false
         }
         return true
+    }
+
+    fun updateErrorMessage(
+        textInputLayout: TextInputLayout,
+        errorMessage: String
+    ) {
+        textInputLayout.isErrorEnabled = true
+        textInputLayout.error = errorMessage
+        textInputLayout.editText?.doOnTextChanged { text, _, _, _ ->
+            if (text != null && text.isNotEmpty()) {
+                textInputLayout.isErrorEnabled = false
+                textInputLayout.error = null
+            }
+        }
     }
 }
