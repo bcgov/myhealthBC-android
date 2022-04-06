@@ -658,6 +658,13 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     }
 
                     updateTypeFilterSelection(filterState)
+
+                    viewModel.getIndividualsHealthRecord(
+                        args.patientId,
+                        filterSharedViewModel.filterState.value.timelineTypeFilter,
+                        filterSharedViewModel.filterState.value.filterFromDate,
+                        filterSharedViewModel.filterState.value.filterToDate
+                    )
                 }
             }
         }
