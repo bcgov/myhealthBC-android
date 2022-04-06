@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.toDateTimeString
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,6 +50,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
             LabTestDetail(
                 title1 = "Collection date:",
                 collectionDateTime = labOrderWithLabTestDto.labOrder.collectionDateTime.toDate(),
+                timelineDateTime = labOrderWithLabTestDto.labOrder.timelineDateTime.toDateTimeString(),
                 title2 = "Ordering provider:",
                 orderingProvider = labOrderWithLabTestDto.labOrder.orderingProvider,
                 title3 = "Reporting Lab:",
@@ -121,6 +123,7 @@ data class LabTestDetail(
     val title2: String,
     val title3: String,
     val collectionDateTime: String? = "N/A",
+    val timelineDateTime: String? = null,
     val orderingProvider: String? = "N/A",
     val reportingSource: String? = "N/A",
     val testName: String? = "N/A",

@@ -49,7 +49,7 @@ class LabTestDetailAdapter :
                 holder.binding.apply {
                     tvHeader.visibility = View.GONE
                     tvTitle1.text = labTestDetail.title1
-                    tvDesc1.text = labTestDetail.collectionDateTime
+                    tvDesc1.text = labTestDetail.timelineDateTime
                     tvTitle2.text = labTestDetail.title2
                     tvDesc2.text = labTestDetail.orderingProvider
                     tvTitle3.text = labTestDetail.title3

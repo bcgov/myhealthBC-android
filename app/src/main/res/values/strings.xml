@@ -2,7 +2,7 @@
     <string name="app_name">My Health BC</string>
 
     <!--Informational screen for camera permission-->
-    <string name="allow">Allow</string>
+    <string name="allow">Allow camera access</string>
     <string name="permission_required">Permission required</string>
     <string name="allow_vaxwallet">Allow My Health BC to use your camera to scan QR codes to store your card.</string>
     <string name="skip_for_now">Skip for now</string>
