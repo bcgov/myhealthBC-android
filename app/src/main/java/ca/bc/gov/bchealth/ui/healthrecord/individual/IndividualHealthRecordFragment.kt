@@ -244,17 +244,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
                     if (loginStatus != null) {
                         //update date range with default values if null
-                        val startDate = if (filterSharedViewModel.filterState.value.filterFromDate.isNullOrBlank()) {
-                            uiState.onHealthRecords.lastOrNull()?.date?.toDate(yyyy_MM_dd)
-                        } else {
-                            filterSharedViewModel.filterState.value.filterFromDate
-                        }
-                        val endDate = if (filterSharedViewModel.filterState.value.filterToDate.isNullOrBlank()) {
-                            Date().toInstant().toDate(yyyy_MM_dd)
-                        } else {
-                            filterSharedViewModel.filterState.value.filterToDate
-                        }
-                        filterSharedViewModel.updateFilterDates(startDate, endDate)
+                        updateDefaultFilterDates(uiState)
 
                         updateUi(uiState)
                     }
@@ -273,6 +263,20 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 }
             }
         }
+    }
+
+    private fun updateDefaultFilterDates(uiState: IndividualHealthRecordsUiState) {
+        val startDate = if (filterSharedViewModel.filterState.value.filterFromDate.isNullOrBlank()) {
+            uiState.onHealthRecords.lastOrNull()?.date?.toDate(yyyy_MM_dd)
+        } else {
+            filterSharedViewModel.filterState.value.filterFromDate
+        }
+        val endDate = if (filterSharedViewModel.filterState.value.filterToDate.isNullOrBlank()) {
+            Date().toInstant().toDate(yyyy_MM_dd)
+        } else {
+            filterSharedViewModel.filterState.value.filterToDate
+        }
+        filterSharedViewModel.updateFilterDates(startDate, endDate)
     }
 
     private fun respondToQueueIt(uiState: IndividualHealthRecordsUiState) {

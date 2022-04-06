@@ -78,38 +78,40 @@ class DatePickerHelper {
         errorMessage: String,
         isBlankAllowed: Boolean = false
     ): Boolean {
-        if(isBlankAllowed) {
+        if (isBlankAllowed) {
             return true
         } else {
             if (textInputLayout.editText?.text.isNullOrEmpty()) {
-                textInputLayout.isErrorEnabled = true
-                textInputLayout.error = errorMessage
-                textInputLayout.editText?.doOnTextChanged { text, _, _, _ ->
-                    if (text != null && text.isNotEmpty()) {
-                        textInputLayout.isErrorEnabled = false
-                        textInputLayout.error = null
-                    }
-                }
+                updateErrorMessage(textInputLayout, errorMessage)
                 return false
             }
 
             if (!textInputLayout.editText?.text.toString()
                     .matches(Regex("^\\d{4}-\\d{2}-\\d{2}$")) ||
-
                 !textInputLayout.editText?.text.toString()
                     .matches(Regex("^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"))
             ) {
-                textInputLayout.isErrorEnabled = true
-                textInputLayout.error = context.getString(R.string.enter_valid_date_format)
-                textInputLayout.editText?.doOnTextChanged { text, _, _, _ ->
-                    if (text != null && text.isNotEmpty()) {
-                        textInputLayout.isErrorEnabled = false
-                        textInputLayout.error = null
-                    }
-                }
+                updateErrorMessage(
+                    textInputLayout,
+                    context.getString(R.string.enter_valid_date_format)
+                )
                 return false
             }
         }
         return true
+    }
+
+    private fun updateErrorMessage(
+        textInputLayout: TextInputLayout,
+        errorMessage: String
+    ) {
+        textInputLayout.isErrorEnabled = true
+        textInputLayout.error = errorMessage
+        textInputLayout.editText?.doOnTextChanged { text, _, _, _ ->
+            if (text != null && text.isNotEmpty()) {
+                textInputLayout.isErrorEnabled = false
+                textInputLayout.error = null
+            }
+        }
     }
 }
