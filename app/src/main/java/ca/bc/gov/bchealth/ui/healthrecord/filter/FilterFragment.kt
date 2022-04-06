@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.ui.healthrecord.filter
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
