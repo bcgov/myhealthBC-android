@@ -7,16 +7,23 @@ import androidx.work.WorkerParameters
 import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.ProtectiveWordState
+import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
+import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
+import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.labtest.LabTestRepository
+import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.patient.PatientRepository
+import ca.bc.gov.repository.qr.VaccineRecordState
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.testrecord.CovidTestRepository
 import ca.bc.gov.repository.utils.NotificationHelper
@@ -44,64 +51,75 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val labTestRepository: LabTestRepository,
     private val covidOrderRepository: CovidOrderRepository,
     private val covidTestRepository: CovidTestRepository,
-    private val encryptedPreferenceStorage: EncryptedPreferenceStorage
+    private val encryptedPreferenceStorage: EncryptedPreferenceStorage,
+    private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        val patientId: Long = inputData.getLong(PATIENT_ID, 0)
-
-        if (patientId > 0 && patientRepository.isAuthenticatedPatient(patientId)) {
-            // authenticated patient is available in DB means token is not expired
-            fetchAuthRecords(patientId)
-        }
+        fetchAuthRecords()
         return Result.success()
     }
 
-    private suspend fun fetchAuthRecords(patientId: Long) {
+    private suspend fun fetchAuthRecords() {
         var isApiFailed = false
-
-        val authParameters = bcscAuthRepo.getAuthParameters()
         notificationHelper.showNotification(
             context.getString(R.string.notification_title_while_fetching_data)
         )
+
+        val authParameters = bcscAuthRepo.getAuthParameters()
+        var patient: PatientDto? = null
+        var patientId = 0L
+        var vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>? = null
+        var covidOrderResponse: List<CovidOrderWithCovidTestDto>? = null
+        var medicationResponse: MedicationStatementResponse? = null
+        var labOrdersResponse: List<LabOrderWithLabTestDto>? = null
+
+        try {
+            patient = patientWithBCSCLoginRepository.getPatient(
+                authParameters.first,
+                authParameters.second
+            )
+        } catch (e: Exception) {
+            isApiFailed = true
+            e.printStackTrace()
+        }
+
+        /*
+        * Fetch vaccine records
+        * */
         try {
             withContext(dispatcher) {
-                val response = fetchVaccineRecordRepository.fetchVaccineRecord(
+                vaccineRecordsResponse = fetchVaccineRecordRepository.fetchVaccineRecord(
                     authParameters.first,
                     authParameters.second
                 )
-                response.second?.let {
-                    patientWithVaccineRecordRepository.insertAuthenticatedPatientsVaccineRecord(
-                        patientId, it
-                    )
-                }
             }
         } catch (e: Exception) {
             isApiFailed = true
             e.printStackTrace()
         }
+
+        /*
+        * Fetch covid test results
+        * */
         try {
             withContext(dispatcher) {
-                val response = covidOrderRepository.fetchCovidOrders(
+                covidOrderResponse = covidOrderRepository.fetchCovidOrders(
                     authParameters.first,
                     authParameters.second
                 )
-                patientWithTestResultRepository.deletePatientTestRecords(patientId)
-                covidOrderRepository.deleteByPatientId(patientId)
-                response.forEach {
-                    it.covidOrder.patientId = patientId
-                    covidOrderRepository.insert(it.covidOrder)
-                    covidTestRepository.insert(it.covidTests)
-                }
             }
         } catch (e: Exception) {
             isApiFailed = true
             e.printStackTrace()
         }
+
+        /*
+        * Fetch medication records
+        * */
         try {
             withContext(dispatcher) {
-                medicationRecordRepository.fetchMedicationStatement(
-                    patientId,
+                medicationResponse = medicationRecordRepository.fetchMedicationStatement(
                     authParameters.first,
                     authParameters.second,
                     encryptedPreferenceStorage.protectiveWord
@@ -116,19 +134,47 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
         }
 
+        /*
+        * Fetch lab test results
+        * */
         try {
             withContext(dispatcher) {
-                val response =
+                labOrdersResponse =
                     labOrderRepository.fetchLabOrders(authParameters.first, authParameters.second)
-                labOrderRepository.delete(patientId)
-                response.forEach {
-                    it.labOrder.patientId = patientId
-                    labOrderRepository.insert(it.labOrder)
-                    labTestRepository.insert(it.labTests)
-                }
             }
         } catch (e: Exception) {
             isApiFailed = true
+        }
+
+        /*
+        * DB Operations
+        * */
+        // Insert patient details
+        patient?.let {
+            patientId = patientRepository.insertAuthenticatedPatient(it)
+        }
+        // Insert vaccine records
+        vaccineRecordsResponse?.second?.let {
+            patientWithVaccineRecordRepository.insertAuthenticatedPatientsVaccineRecord(
+                patientId, it
+            )
+        }
+        // Insert covid orders
+        patientWithTestResultRepository.deletePatientTestRecords(patientId)
+        covidOrderRepository.deleteByPatientId(patientId)
+        covidOrderResponse?.forEach {
+            it.covidOrder.patientId = patientId
+            covidOrderRepository.insert(it.covidOrder)
+            covidTestRepository.insert(it.covidTests)
+        }
+        // Insert medication records
+        medicationResponse?.let { medicationRecordRepository.updateMedicationRecords(it, patientId) }
+        // Insert lab orders
+        labOrderRepository.delete(patientId)
+        labOrdersResponse?.forEach {
+            it.labOrder.patientId = patientId
+            labOrderRepository.insert(it.labOrder)
+            labTestRepository.insert(it.labTests)
         }
 
         if (isApiFailed) {
@@ -136,9 +182,5 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         } else {
             notificationHelper.updateNotification(context.getString(R.string.notification_title_on_success))
         }
-    }
-
-    companion object {
-        const val PATIENT_ID = "PATIENT_ID"
     }
 }
