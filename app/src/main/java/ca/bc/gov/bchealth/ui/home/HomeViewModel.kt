@@ -86,8 +86,8 @@ class HomeViewModel @Inject constructor(
         return mutableListOf(
             HomeRecordItem(
                 R.drawable.ic_login_info,
-                "Health Records",
-                "View and manage all your available health records, including dispensed medications, health visits, COVID-19 test results, immunizations and more.",
+                "Health records",
+                "Access your lab results, medication history and vaccination records",
                 if (isLoggedIn) 0 else R.drawable.ic_bcsc,
                 if (isLoggedIn) "View records" else "Get started",
                 HomeNavigationType.HEALTH_RECORD
@@ -95,15 +95,15 @@ class HomeViewModel @Inject constructor(
             HomeRecordItem(
                 R.drawable.ic_green_tick,
                 "Proof of vaccination",
-                "View, download and print your BC Vaccine Card and federal proof of vaccination, to access events, businesses, services and to travel.",
+                "Save proof of vaccination documents for you and your family",
                 R.drawable.ic_right_arrow,
                 "Add proofs",
                 HomeNavigationType.VACCINE_PROOF
             ),
             HomeRecordItem(
                 R.drawable.ic_resources,
-                "Resources",
-                "Find useful information and learn how to get vaccinated or tested for COVID-19.",
+                "Health resources",
+                "Find trusted health information and resources",
                 R.drawable.ic_right_arrow,
                 "Learn more",
                 HomeNavigationType.RESOURCES

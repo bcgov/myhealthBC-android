@@ -53,10 +53,10 @@ class EncryptedPreferenceStorage @Inject constructor(
             ).apply()
         }
 
-    val analyticsFeature: Flow<AnalyticsFeature> = flow {
+    val analyticsFeature: Flow<AnalyticsFeature?> = flow {
         val value =
-            encryptedSharedPreferences.getInt(ANALYTICS_FEATURE, AnalyticsFeature.DISABLED.value)
-        emit(AnalyticsFeature.getByValue(value) ?: AnalyticsFeature.DISABLED)
+            encryptedSharedPreferences.getInt(ANALYTICS_FEATURE, 0)
+        emit(AnalyticsFeature.getByValue(value))
     }
 
     val appVersion: Int = encryptedSharedPreferences.getInt(APP_VERSION_CODE, 0)

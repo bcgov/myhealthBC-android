@@ -6,6 +6,7 @@
     <string name="url_news_feed">https://news.gov.bc.ca/news-subscribe/covid-19/feed</string>
 
     <!--Resources-->
+    <string name="url_get_health_advice">https://www.healthlinkbc.ca/</string>
     <string name="url_how_to_get_covid_vaccinated">https://www2.gov.bc.ca/gov/content/covid-19/vaccine/register</string>
     <string name="url_get_tested_for_covid">http://www.bccdc.ca/health-info/diseases-conditions/covid-19/testing/where-to-get-a-covid-19-test-in-bc</string>
     <string name="url_covid_symptom_checker">https://bc.thrive.health/covid19/en</string>

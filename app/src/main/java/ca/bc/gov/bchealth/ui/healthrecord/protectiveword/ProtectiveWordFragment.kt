@@ -44,7 +44,7 @@ class ProtectiveWordFragment : Fragment(R.layout.fragment_protective_word) {
 
         binding.tvDesc.makeLinks(
             Pair(
-                getString(R.string.protective_word_for_a_pharmanet_record),
+                getString(R.string.more),
                 View.OnClickListener {
                     requireContext().redirect("https://www2.gov.bc.ca/gov/content/health/health-drug-coverage/pharmacare-for-bc-residents/pharmanet/protective-word-for-a-pharmanet-record")
                 }
@@ -115,7 +115,7 @@ class ProtectiveWordFragment : Fragment(R.layout.fragment_protective_word) {
     private fun setUpToolbar() {
         binding.toolbar.apply {
             tvTitle.show()
-            tvTitle.text = getString(R.string.access_records)
+            tvTitle.text = getString(R.string.unlock_records)
             ivLeftOption.apply {
                 this.show()
                 setImageResource(R.drawable.ic_scanner_close)

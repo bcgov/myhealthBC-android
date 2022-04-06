@@ -37,60 +37,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_resource" />
 
-    <ScrollView
-        android:layout_width="match_parent"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_resources"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginTop="@dimen/space_1_x"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_resource_message"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ca.bc.gov.bchealth.widget.ResourceCustomView
-                android:id="@+id/customView1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginEnd="@dimen/space_4_x"
-                app:imageSource="@drawable/ic_resources_icon_1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:textSource="@string/label_resource_1"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="@dimen/space_3_x" />
-
-            <ca.bc.gov.bchealth.widget.ResourceCustomView
-                android:id="@+id/customView2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_2_x"
-                android:layout_marginEnd="@dimen/space_4_x"
-                app:imageSource="@drawable/ic_resources_icon_2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/customView1"
-                app:textSource="@string/label_resource_2" />
-
-            <ca.bc.gov.bchealth.widget.ResourceCustomView
-                android:id="@+id/customView3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_2_x"
-                android:layout_marginEnd="@dimen/space_4_x"
-                app:imageSource="@drawable/ic_resources_icon_3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/customView2"
-                app:textSource="@string/label_resource_3" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_resource_message" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

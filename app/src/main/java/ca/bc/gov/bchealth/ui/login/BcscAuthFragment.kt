@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Html
 import android.util.Log
 import android.view.View
 import androidx.activity.result.ActivityResult
@@ -201,7 +200,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             }
 
             tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.go_to_health_gateway)
+            tvTitle.text = getString(R.string.bc_services_card)
 
             line1.visibility = View.VISIBLE
         }
@@ -211,9 +210,8 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
         setupToolBar()
 
-        binding.tvLoginInfoMessage.text = Html.fromHtml(
-            getString(R.string.login_info_message), Html.FROM_HTML_MODE_LEGACY
-        )
+        binding.tvLoginInfoMessage.text =
+            getString(R.string.login_info_message)
 
         binding.btnCancel.setOnClickListener {
             findNavController().popBackStack()
