@@ -101,7 +101,7 @@ class DatePickerHelper {
         return true
     }
 
-    private fun updateErrorMessage(
+    fun updateErrorMessage(
         textInputLayout: TextInputLayout,
         errorMessage: String
     ) {

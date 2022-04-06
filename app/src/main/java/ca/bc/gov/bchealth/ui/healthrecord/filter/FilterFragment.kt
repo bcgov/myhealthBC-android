@@ -107,7 +107,10 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
                 findNavController().popBackStack()
             } else {
-                Toast.makeText(requireContext(), "From date must be less than or equal to To date", Toast.LENGTH_SHORT).show()
+                DatePickerHelper().updateErrorMessage(
+                    binding.tipFrom,
+                    requireContext().getString(R.string.enter_valid_date)
+                )
             }
         }
     }

@@ -163,9 +163,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                                 covidOrderNonBcsc
                             )
                             .sortedByDescending { it.date },
-                        healthRecordsExceptMedication = filteredHealthRecordsExceptMedication,
-                        // startDate = fromDate ?: filteredHealthRecords.lastOrNull()?.date?.toDate(yyyy_MM_dd),
-                        // endDate = toDate ?: Date().toInstant().toDate(yyyy_MM_dd)
+                        healthRecordsExceptMedication = filteredHealthRecordsExceptMedication
                     )
                 }
             } catch (e: java.lang.Exception) {
@@ -255,9 +253,7 @@ data class IndividualHealthRecordsUiState(
     val onHealthRecords: List<HealthRecordItem> = emptyList(),
     val onNonBcscHealthRecords: List<HealthRecordItem> = emptyList(),
     val healthRecordsExceptMedication: List<HealthRecordItem> = emptyList(),
-    val medicationRecordsUpdated: Boolean = false,
-    val startDate: String? = null,
-    val endDate: String = Date().toInstant().toDate(yyyy_MM_dd)
+    val medicationRecordsUpdated: Boolean = false
 )
 
 data class HealthRecordItem(
