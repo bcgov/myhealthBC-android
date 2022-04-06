@@ -27,75 +27,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_logins"
-                style="@style/HealthGateway.TextAppearance.MaterialComponents.Headline3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:text="@string/logins"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="@dimen/space_2_x" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layoutLogin"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_logins">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_login_with_bcsc"
-                    style="@style/HealthGateway.TextAppearance.MaterialComponents.Body1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/space_4_x"
-                    android:layout_marginTop="@dimen/space_2_x"
-                    android:text="@string/log_in_with_bc_services_card"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_login_with_bcsc_desc"
-                    style="@style/HealthGateway.TextAppearance.MaterialComponents.Headline5"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/space_4_x"
-                    android:layout_marginEnd="@dimen/space_4_x"
-                    android:layout_marginBottom="@dimen/space_2_x"
-                    android:text="@string/log_in_with_bc_services_card_desc"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_login_with_bcsc" />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/switch_login"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/space_4_x"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_login_with_bcsc"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_login_with_bcsc" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_data"
-                style="@style/HealthGateway.TextAppearance.MaterialComponents.Headline3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:text="@string/data"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/line1"
-                android:layout_marginTop="@dimen/space_2_x" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layoutDisableAnalytics"
@@ -105,7 +36,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_data">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_disable_analytics"

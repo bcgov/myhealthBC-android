@@ -2,7 +2,7 @@
     <string name="app_name">My Health BC</string>
 
     <!--Informational screen for camera permission-->
-    <string name="allow">Allow</string>
+    <string name="allow">Allow camera access</string>
     <string name="permission_required">Permission required</string>
     <string name="allow_vaxwallet">Allow My Health BC to use your camera to scan QR codes to store your card.</string>
     <string name="skip_for_now">Skip for now</string>
@@ -227,7 +227,7 @@
     <string name="login_success_message">Your records will be automatically added and updated in My Health BC.</string>
     <string name="age_limit_title">Age Restriction</string>
     <string name="age_limit_message">You must be 12 years of age or older to use Health Gateway.</string>
-    <string name="terms_of_service_message">Terms of service must be accepted to use Health Gateway.</string>
+    <string name="terms_of_service_message">You must agree to the Health Gateway terms of service before using this app.</string>
 
     <!--ERROR-->
     <string name="error">Error!</string>

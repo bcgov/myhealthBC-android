@@ -77,7 +77,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view_blue"
-                app:textAllCaps="true"
                 tools:text="JEAN SMITH " />
 
             <com.google.android.material.textview.MaterialTextView

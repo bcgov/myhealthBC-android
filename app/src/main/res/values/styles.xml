@@ -13,7 +13,8 @@
 
     <style name="HealthGateway.Widget.MaterialComponents.Button2" parent="Widget.MaterialComponents.Button">
         <item name="android:textColor">@color/white</item>
-        <item name="backgroundTint">@color/primary_blue</item>
+        <item name="backgroundTint">@color/material_button_color_states</item>
+        <item name="android:enabled">true</item>
         <item name="android:minHeight">56dp</item>
         <item name="android:textSize">16sp</item>
         <item name="fontFamily">@font/bc_sans_bold</item>
@@ -25,7 +26,7 @@
     </style>
 
     <style name="HealthGateway.Widget.MaterialComponents.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="strokeWidth">2dp</item>
+        <item name="strokeWidth">1dp</item>
         <item name="strokeColor">@color/primary_blue</item>
         <item name="android:textSize">16sp</item>
         <item name="backgroundTint">@android:color/white</item>
@@ -36,7 +37,7 @@
     </style>
 
     <style name="HealthGateway.Widget.MaterialComponents.Button.OutlinedButton.Icon" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="strokeWidth">2dp</item>
+        <item name="strokeWidth">1dp</item>
         <item name="strokeColor">@color/primary_blue</item>
         <item name="android:textSize">16sp</item>
         <item name="backgroundTint">@android:color/white</item>
@@ -54,6 +55,11 @@
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>
         <item name="shapeAppearance">@style/ShapeAppearance.App.SmallComponent</item>
         <item name="hintTextColor">?attr/colorOnSurface</item>
+        <item name="errorTextAppearance">?textAppearanceBody2</item>
+        <item name="hintTextAppearance">?textAppearanceCaption</item>
+        <item name="helperTextTextAppearance">@style/TextAppearance.App.HelperText</item>
+        <item name="helperTextEnabled">true</item>
+        <item name="helperTextTextColor">@color/grey</item>
     </style>
 
     <style name="ThemeOverlay.App.TextInputLayout" parent="">
@@ -63,6 +69,13 @@
         <item name="textAppearanceSubtitle1">@style/TextAppearance.App.Subtitle1</item>
         <item name="textAppearanceCaption">@style/TextAppearance.App.Caption</item>
         <item name="editTextStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox</item>
+    </style>
+
+    <style name="TextAppearance.App.HelperText" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="fontFamily">@font/bc_sans_regular</item>
+        <item name="android:fontFamily">@font/bc_sans_regular</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textSize">13sp</item>
     </style>
 
     <style name="TextAppearance.App.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
