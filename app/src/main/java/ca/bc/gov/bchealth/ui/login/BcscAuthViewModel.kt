@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.exceptions.MustBeQueuedException
+import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.ProfileRepository
@@ -176,7 +177,8 @@ class BcscAuthViewModel @Inject constructor(
                 )
             }
             val isLoggedSuccess = bcscAuthRepo.checkLogin()
-            val userName = bcscAuthRepo.getUserName()
+            val userName =
+                patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).fullName
             val loginSessionStatus = if (isLoggedSuccess) {
                 LoginStatus.ACTIVE
             } else {
