@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentResourcesBinding
 import ca.bc.gov.bchealth.utils.redirect
@@ -17,28 +18,24 @@ import dagger.hilt.android.AndroidEntryPoint
 class ResourcesFragment : Fragment(R.layout.fragment_resources) {
 
     private val binding by viewBindings(FragmentResourcesBinding::bind)
+    private val resourcesViewModel: ResourcesViewModel by viewModels()
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
+    private lateinit var resourcesAdapter: ResourcesAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupToolBar()
+        setupRecyclerView()
+    }
 
-        binding.customView1.setOnClickListener {
-            val url = getString(R.string.url_how_to_get_covid_vaccinated)
+    private fun setupRecyclerView() {
+        resourcesAdapter = ResourcesAdapter { url ->
             requireActivity().redirect(url)
             seedAnalyticsData(url = url)
         }
-        binding.customView2.setOnClickListener {
-            val url = getString(R.string.url_get_tested_for_covid)
-            requireActivity().redirect(url)
-            seedAnalyticsData(url = url)
-        }
-        binding.customView3.setOnClickListener {
-            val url = getString(R.string.url_covid_symptom_checker)
-            requireActivity().redirect(url)
-            seedAnalyticsData(url = url)
-        }
+        binding.rvResources.adapter = resourcesAdapter
+        binding.rvResources.layoutManager = LinearLayoutManager(requireContext())
+        resourcesAdapter.submitList(resourcesViewModel.prepareResourcesList())
     }
 
     private fun seedAnalyticsData(url: String) {
