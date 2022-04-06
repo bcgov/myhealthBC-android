@@ -58,6 +58,12 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
         binding.btnAuth.setOnClickListener {
             canAuthenticateUsingBioMetric()
         }
+
+        binding.btnLearnMore.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_biometricsAuthenticationFragment_to_biometricSecurityTipFragment
+            )
+        }
     }
 
     private fun canAuthenticateUsingBioMetric() {

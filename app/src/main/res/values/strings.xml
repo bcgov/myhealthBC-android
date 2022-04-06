@@ -197,6 +197,12 @@
     <string name="tv_biometric_heading">Protect your personal information</string>
     <string name="dialog_biometric_description">Log in using your biometric credential</string>
     <string name="biometric_description">To keep your data safe, your device security features must be turned on.</string>
+    <string name="biometric_learn_more">Learn more about keeping your data secure</string>
+    <string name="biometric_security_tip_info">Health information for you and your family can be stored on this device. To keep this data private, you must have your device security features turned on.</string>
+    <string name="biometric_security_tip_title">Keeping your data secure</string>
+    <string name="biometric_security_tip_1">Do not turn off your fingerprint ID or face ID</string>
+    <string name="biometric_security_tip_2">Do not share or turn off your passcode</string>
+    <string name="biometric_security_tip_3">Do not leave your device unlocked</string>
 
     <!--Miscellaneous-->
     <string name="coming_soon">Coming soon!</string>
