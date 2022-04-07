@@ -171,6 +171,14 @@ class BcscAuthRepo(
         return String(decodedBytes, Charset.defaultCharset())
     }
 
+    fun setPostLoginCheck(postLoginCheck: PostLoginCheck) {
+        encryptedPreferenceStorage.postLoginCheck = postLoginCheck.name
+    }
+
+    fun getPostLoginCheck(): String? {
+        return encryptedPreferenceStorage.postLoginCheck
+    }
+
     companion object {
         private const val CLIENT_ID = "myhealthapp"
         const val REDIRECT_URI = "myhealthbc://*"
@@ -181,4 +189,9 @@ class BcscAuthRepo(
         private const val NAME = "name"
         private const val BEARER = "Bearer"
     }
+}
+
+enum class PostLoginCheck {
+    IN_PROGRESS,
+    COMPLETE
 }

@@ -1,7 +1,9 @@
 package ca.bc.gov.bchealth.ui.home
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -13,6 +15,8 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHomeBinding
 import ca.bc.gov.bchealth.ui.auth.BioMetricState
 import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment
+import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +29,23 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val viewModel: HomeViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var homeAdapter: HomeAdapter
+    private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
+    private var logoutResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { activityResult ->
+        if (activityResult.resultCode == Activity.RESULT_OK) {
+            bcscAuthViewModel.processLogoutResponse().invokeOnCompletion {
+                initRecyclerview()
+            }
+        } else {
+            AlertDialogHelper.showAlertDialog(
+                context = requireContext(),
+                title = getString(R.string.error),
+                msg = getString(R.string.error_message),
+                positiveBtnMsg = getString(R.string.dialog_button_ok)
+            )
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,6 +78,26 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
 
         initRecyclerview()
+
+        observeAuthStatus()
+    }
+
+    private fun observeAuthStatus() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                bcscAuthViewModel.authStatus.collect {
+
+                    if (it.isError) {
+                        bcscAuthViewModel.resetAuthStatus()
+                    }
+
+                    if (it.endSessionIntent != null) {
+                        logoutResultLauncher.launch(it.endSessionIntent)
+                        bcscAuthViewModel.resetAuthStatus()
+                    }
+                }
+            }
+        }
     }
 
     private fun initRecyclerview() {
@@ -106,6 +147,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     .plus(uiState.patientFirstName)
             } else {
                 binding.tvName.text = getString(R.string.hello)
+            }
+
+            if (uiState.isForceLogout) {
+                bcscAuthViewModel.getEndSessionIntent()
+                viewModel.onForceLogout(false)
             }
         }
     }

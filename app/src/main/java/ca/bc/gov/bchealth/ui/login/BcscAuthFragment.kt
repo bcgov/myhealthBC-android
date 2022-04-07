@@ -26,6 +26,7 @@ import ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.queue_it.androidsdk.Error
@@ -273,6 +274,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
     }
 
     private fun respondToSuccess() {
+        viewModel.setPostLoginCheck(PostLoginCheck.COMPLETE)
         showLoginSuccessDialog()
     }
 
