@@ -645,7 +645,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 filterSharedViewModel.filterState.collect { filterState ->
 
-                    //update filter date selection
+                    // update filter date selection
                     if (isFilterDateSelected(filterState)) {
                         binding.chipDate.apply {
                             show()
