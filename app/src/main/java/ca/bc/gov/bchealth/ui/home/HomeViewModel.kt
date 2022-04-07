@@ -8,6 +8,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
+import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.patient.PatientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +29,7 @@ class HomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     var isAuthenticationRequired: Boolean = true
     var isBcscLoginRequiredPostBiometrics: Boolean = false
+    var isForceLogout: Boolean = false
 
     fun launchCheck() = viewModelScope.launch {
         when {
@@ -42,6 +44,9 @@ class HomeViewModel @Inject constructor(
             }
             isBcscLoginRequiredPostBiometrics -> {
                 _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = true) }
+            }
+            bcscAuthRepo.getPostLoginCheck() == PostLoginCheck.IN_PROGRESS.name -> {
+                _uiState.update { state -> state.copy(isForceLogout = true) }
             }
         }
     }
@@ -60,6 +65,11 @@ class HomeViewModel @Inject constructor(
     fun onBcscLoginRequired(isRequired: Boolean) {
         isBcscLoginRequiredPostBiometrics = isRequired
         _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = isRequired) }
+    }
+
+    fun onForceLogout(isRequired: Boolean) {
+        isForceLogout = isRequired
+        _uiState.update { state -> state.copy(isForceLogout = isRequired) }
     }
 
     fun getAuthenticatedPatientName() = viewModelScope.launch {
@@ -119,7 +129,8 @@ data class HomeUiState(
     val isOnBoardingRequired: Boolean = false,
     val isAuthenticationRequired: Boolean = false,
     val isBcscLoginRequiredPostBiometrics: Boolean = false,
-    val patientFirstName: String? = null
+    val patientFirstName: String? = null,
+    val isForceLogout: Boolean = false
 )
 
 data class HomeRecordItem(

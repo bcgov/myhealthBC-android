@@ -8,6 +8,7 @@ import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.ProfileRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
+import ca.bc.gov.repository.bcsc.PostLoginCheck
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -113,6 +114,7 @@ class BcscAuthViewModel @Inject constructor (
                         loginStatus = LoginStatus.ACTIVE
                     )
                 }
+                setPostLoginCheck(PostLoginCheck.IN_PROGRESS)
             }
         } catch (e: Exception) {
             _authStatus.update {
@@ -159,6 +161,7 @@ class BcscAuthViewModel @Inject constructor (
                 loginStatus = LoginStatus.EXPIRED
             )
         }
+        setPostLoginCheck(PostLoginCheck.COMPLETE)
     }
 
     /*
@@ -352,6 +355,10 @@ class BcscAuthViewModel @Inject constructor (
                 }
             }
         }
+    }
+
+    fun setPostLoginCheck(postLoginCheck: PostLoginCheck) {
+        bcscAuthRepo.setPostLoginCheck(postLoginCheck)
     }
 }
 

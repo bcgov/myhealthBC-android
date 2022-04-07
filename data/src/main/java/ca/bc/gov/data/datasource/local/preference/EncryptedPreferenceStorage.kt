@@ -26,6 +26,7 @@ class EncryptedPreferenceStorage @Inject constructor(
         private const val AUTH_STATE = "STATE"
         private const val PROTECTIVE_WORD = "PROTECTIVE_WORD"
         private const val PROTECTIVE_WORD_STATE = "PROTECTIVE_WORD_STATE"
+        private const val POST_LOGIN_CHECK = "POST_LOGIN_CHECK"
     }
 
     var queueItToken: String?
@@ -109,5 +110,11 @@ class EncryptedPreferenceStorage @Inject constructor(
         get() = encryptedSharedPreferences.getInt(PROTECTIVE_WORD_STATE, ProtectiveWordState.PROTECTIVE_WORD_NOT_REQUIRED.value)
         set(value) {
             encryptedSharedPreferences.edit().putInt(PROTECTIVE_WORD_STATE, value).apply()
+        }
+
+    var postLoginCheck: String?
+        get() = encryptedSharedPreferences.getString(POST_LOGIN_CHECK, null)
+        set(value) {
+            encryptedSharedPreferences.edit().putString(POST_LOGIN_CHECK, value).apply()
         }
 }
