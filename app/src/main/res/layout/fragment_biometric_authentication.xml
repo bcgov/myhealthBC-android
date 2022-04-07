@@ -37,7 +37,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginBottom="@dimen/space_1_x"
+        android:layout_marginTop="@dimen/space_1_x"
         android:layout_marginEnd="@dimen/space_4_x"
         android:text="@string/biometric_description"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,6 +52,28 @@
                 android:layout_marginTop="92dp"
                 app:srcCompat="@drawable/ic_biometric"
                 android:layout_height="wrap_content" />
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_biometric_logo"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_biometric_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="92dp"
+        app:srcCompat="@drawable/ic_biometric"
+        android:layout_height="wrap_content"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="0dp"
+        android:id="@+id/btn_learn_more"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button.TextButton"
+        android:text="@string/biometric_learn_more"
+        android:layout_marginStart="@dimen/space_8_x"
+        android:layout_marginEnd="@dimen/space_8_x"
+        android:layout_marginTop="@dimen/space_2_x"
+        app:layout_constraintTop_toBottomOf="@id/iv_biometric_logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
