@@ -44,7 +44,6 @@ class FilterViewModel @Inject constructor() : ViewModel() {
 
 enum class TimelineTypeFilter {
     ALL,
-    NONE,
     MEDICATION,
     LAB_TEST,
     COVID_19_TEST,
