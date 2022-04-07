@@ -61,14 +61,26 @@ class DatePickerHelper {
             .setSelection(selectedTimeInMillis)
             .setCalendarConstraints(constraints)
             .build()
+
+        toggleDatePickerIcon(textInputLayout, textInputLayout.editText?.text.isNullOrBlank())
+
         textInputLayout.editText?.setOnClickListener {
             datePicker.show(parentFragmentManager, tag)
         }
+
         textInputLayout.setEndIconOnClickListener {
-            datePicker.show(parentFragmentManager, tag)
+            if (textInputLayout.editText?.text.isNullOrBlank()) {
+                datePicker.show(parentFragmentManager, tag)
+            } else {
+                textInputLayout.editText?.setText("")
+            }
+
+            toggleDatePickerIcon(textInputLayout, textInputLayout.editText?.text.isNullOrBlank())
         }
         datePicker.addOnPositiveButtonClickListener {
             textInputLayout.editText?.setText(simpleDateFormat.format(it.adjustOffset()))
+
+            toggleDatePickerIcon(textInputLayout, textInputLayout.editText?.text.isNullOrBlank())
         }
     }
 
@@ -112,6 +124,14 @@ class DatePickerHelper {
                 textInputLayout.isErrorEnabled = false
                 textInputLayout.error = null
             }
+        }
+    }
+
+    private fun toggleDatePickerIcon(textInputLayout: TextInputLayout, isDateBlank: Boolean) {
+        if (isDateBlank) {
+            textInputLayout.setEndIconDrawable(R.drawable.ic_date)
+        } else {
+            textInputLayout.setEndIconDrawable(R.drawable.ic_clear)
         }
     }
 }
