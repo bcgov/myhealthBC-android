@@ -14,39 +14,56 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_login_info_title"
-        style="?textAppearanceHeadline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginTop="@dimen/space_4_x"
-        android:text="@string/leaving_my_health_bc"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/space_1_x"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/iv_login_info_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_login_info"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_login_info_title"
-        android:layout_marginTop="@dimen/space_3_x"
-        android:layout_marginStart="@dimen/space_4_x" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_login_info_message"
-        style="?textAppearanceBody1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_3_x"
-        android:text="@string/login_info_message"
-        app:layout_constraintTop_toBottomOf="@+id/tv_login_info_title"
-        app:layout_constraintStart_toEndOf="@+id/iv_login_info_icon"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="@dimen/space_4_x"
-        android:layout_marginStart="@dimen/space_2_x" />
+        app:layout_constraintBottom_toTopOf="@+id/btn_continue">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_login_info_title"
+                style="?textAppearanceHeadline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginTop="@dimen/space_4_x"
+                android:text="@string/leaving_my_health_bc"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_login_info_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_login_info"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_login_info_title"
+                android:layout_marginTop="@dimen/space_3_x"
+                android:layout_marginStart="@dimen/space_4_x" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_login_info_message"
+                style="?textAppearanceBody1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_3_x"
+                android:text="@string/login_info_message"
+                app:layout_constraintTop_toBottomOf="@+id/tv_login_info_title"
+                app:layout_constraintStart_toEndOf="@+id/iv_login_info_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:layout_marginStart="@dimen/space_2_x" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_continue"
