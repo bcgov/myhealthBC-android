@@ -69,7 +69,7 @@ class DatePickerHelper {
         }
 
         textInputLayout.setEndIconOnClickListener {
-            if(textInputLayout.editText?.text.isNullOrBlank()) {
+            if (textInputLayout.editText?.text.isNullOrBlank()) {
                 datePicker.show(parentFragmentManager, tag)
             } else {
                 textInputLayout.editText?.setText("")
@@ -128,7 +128,7 @@ class DatePickerHelper {
     }
 
     private fun toggleDatePickerIcon(textInputLayout: TextInputLayout, isDateBlank: Boolean) {
-        if(isDateBlank) {
+        if (isDateBlank) {
             textInputLayout.setEndIconDrawable(R.drawable.ic_date)
         } else {
             textInputLayout.setEndIconDrawable(R.drawable.ic_clear)
