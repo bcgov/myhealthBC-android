@@ -121,38 +121,28 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun updateTypeFilterSelection(filterUiState: FilterUiState) {
         resetFilters()
         filterUiState.timelineTypeFilter.forEach {
-            binding.imgClear.isVisible = true
             when (it) {
                 TimelineTypeFilter.MEDICATION -> {
-                    binding.chipMedication.isVisible = true
+                    binding.chipMedication.show()
                 }
                 TimelineTypeFilter.IMMUNIZATION -> {
-                    binding.chipImmunizations.isVisible = true
+                    binding.chipImmunizations.show()
                 }
                 TimelineTypeFilter.COVID_19_TEST -> {
-                    binding.chipCovidTest.isVisible = true
+                    binding.chipCovidTest.show()
                 }
                 TimelineTypeFilter.LAB_TEST -> {
-                    binding.chipLabTest.isVisible = true
-                }
-                TimelineTypeFilter.ALL -> {
-                    binding.chipMedication.isVisible = true
-                    binding.chipImmunizations.isVisible = true
-                    binding.chipCovidTest.isVisible = true
-                    binding.chipLabTest.isVisible = true
-                }
-                TimelineTypeFilter.NONE -> {
-                    resetFilters()
+                    binding.chipLabTest.show()
                 }
             }
         }
     }
 
     private fun resetFilters() {
-        binding.chipMedication.isVisible = false
-        binding.chipImmunizations.isVisible = false
-        binding.chipCovidTest.isVisible = false
-        binding.chipLabTest.isVisible = false
+        binding.chipMedication.hide()
+        binding.chipImmunizations.hide()
+        binding.chipCovidTest.hide()
+        binding.chipLabTest.hide()
     }
 
     private fun clearFilterClickListener() {
@@ -266,17 +256,21 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun updateDefaultFilterDates(uiState: IndividualHealthRecordsUiState) {
-        val startDate = if (filterSharedViewModel.filterState.value.filterFromDate.isNullOrBlank()) {
-            uiState.onHealthRecords.lastOrNull()?.date?.toDate(yyyy_MM_dd)
-        } else {
-            filterSharedViewModel.filterState.value.filterFromDate
+        if (isFilterDateSelected(filterSharedViewModel.filterState.value)) {
+            val startDate =
+                if (filterSharedViewModel.filterState.value.filterFromDate.isNullOrBlank()) {
+                    uiState.onHealthRecords.lastOrNull()?.date?.toDate(yyyy_MM_dd)
+                } else {
+                    filterSharedViewModel.filterState.value.filterFromDate
+                }
+            val endDate =
+                if (filterSharedViewModel.filterState.value.filterToDate.isNullOrBlank()) {
+                    Date().toInstant().toDate(yyyy_MM_dd)
+                } else {
+                    filterSharedViewModel.filterState.value.filterToDate
+                }
+            filterSharedViewModel.updateFilterDates(startDate, endDate)
         }
-        val endDate = if (filterSharedViewModel.filterState.value.filterToDate.isNullOrBlank()) {
-            Date().toInstant().toDate(yyyy_MM_dd)
-        } else {
-            filterSharedViewModel.filterState.value.filterToDate
-        }
-        filterSharedViewModel.updateFilterDates(startDate, endDate)
     }
 
     private fun respondToQueueIt(uiState: IndividualHealthRecordsUiState) {
@@ -651,15 +645,19 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 filterSharedViewModel.filterState.collect { filterState ->
 
-                    if (filterState.filterFromDate.isNullOrBlank()) {
-                        binding.chipDate.hide()
+                    //update filter date selection
+                    if (isFilterDateSelected(filterState)) {
+                        binding.chipDate.apply {
+                            show()
+                            text = filterState.filterFromDate + " - " + filterState.filterToDate
+                        }
                     } else {
-                        binding.chipDate.show()
-                        binding.chipDate.text =
-                            filterState.filterFromDate + " - " + filterState.filterToDate
+                        binding.chipDate.hide()
                     }
 
                     updateTypeFilterSelection(filterState)
+
+                    updateClearButton(filterState)
 
                     viewModel.getIndividualsHealthRecord(
                         args.patientId,
@@ -669,6 +667,24 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     )
                 }
             }
+        }
+    }
+
+    private fun isFilterDateSelected(filterState: FilterUiState): Boolean {
+        if (filterState.filterFromDate.isNullOrBlank() && filterState.filterToDate.isNullOrBlank()) {
+            return false
+        }
+        return true
+    }
+
+    private fun updateClearButton(filterState: FilterUiState) {
+        if (!isFilterDateSelected(filterState) && filterState.timelineTypeFilter.contains(
+                TimelineTypeFilter.ALL
+            )
+        ) {
+            binding.imgClear.hide()
+        } else {
+            binding.imgClear.show()
         }
     }
 }

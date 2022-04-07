@@ -64,12 +64,6 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                 TimelineTypeFilter.LAB_TEST -> {
                     binding.chipLabTest.isChecked = true
                 }
-                TimelineTypeFilter.ALL -> {
-                    binding.chipMedication.isChecked = true
-                    binding.chipImmunizations.isChecked = true
-                    binding.chipCovidTest.isChecked = true
-                    binding.chipLabTest.isChecked = true
-                }
             }
         }
     }
@@ -96,7 +90,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                     }
                 }
                 if (filterList.isNullOrEmpty()) {
-                    filterList.add(TimelineTypeFilter.NONE)
+                    filterList.add(TimelineTypeFilter.ALL)
                 }
 
                 filterSharedViewModel.updateFilterTypes(filterList)
@@ -140,6 +134,11 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
     private fun clearClickListener() {
         binding.btnClear.setOnClickListener {
+            filterSharedViewModel.updateFilterTypes(mutableListOf(TimelineTypeFilter.ALL))
+
+            // update date range
+            filterSharedViewModel.updateFilterDates(null, null)
+
             findNavController().popBackStack()
         }
     }
