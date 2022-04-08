@@ -145,15 +145,13 @@ class IndividualHealthRecordViewModel @Inject constructor(
                         }
                     }
                 }
-                filteredHealthRecords.sortedByDescending { it.date }
-                filteredHealthRecordsExceptMedication.sortedByDescending { it.date }
 
                 _uiState.update { state ->
                     state.copy(
                         onLoading = false,
                         patientAuthStatus = patientWithVaccineRecords.patient.authenticationStatus,
                         authenticatedRecordsCount = patientRepository.getBcscDataRecordCount(),
-                        onHealthRecords = filteredHealthRecords,
+                        onHealthRecords = filteredHealthRecords.sortedByDescending { it.date },
                         onNonBcscHealthRecords = (
                             covidTestRecordsNonBcsc +
                                 vaccineRecordsNonBcsc +
@@ -162,7 +160,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                                 covidOrderNonBcsc
                             )
                             .sortedByDescending { it.date },
-                        healthRecordsExceptMedication = filteredHealthRecordsExceptMedication
+                        healthRecordsExceptMedication = filteredHealthRecordsExceptMedication.sortedByDescending { it.date }
                     )
                 }
             } catch (e: java.lang.Exception) {
