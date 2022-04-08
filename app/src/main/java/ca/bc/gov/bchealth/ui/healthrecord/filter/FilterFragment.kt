@@ -93,10 +93,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                     filterList.add(TimelineTypeFilter.ALL)
                 }
 
-                filterSharedViewModel.updateFilterTypes(filterList)
-
-                // update date range
-                filterSharedViewModel.updateFilterDates(binding.etFrom.text.toString(), binding.etTo.text.toString())
+                filterSharedViewModel.updateFilter(filterList, binding.etFrom.text.toString(), binding.etTo.text.toString())
 
                 findNavController().popBackStack()
             } else {
@@ -134,10 +131,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
     private fun clearClickListener() {
         binding.btnClear.setOnClickListener {
-            filterSharedViewModel.updateFilterTypes(mutableListOf(TimelineTypeFilter.ALL))
-
-            // update date range
-            filterSharedViewModel.updateFilterDates(null, null)
+            filterSharedViewModel.updateFilter(mutableListOf(TimelineTypeFilter.ALL), null, null)
 
             findNavController().popBackStack()
         }

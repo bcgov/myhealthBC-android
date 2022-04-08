@@ -13,15 +13,7 @@ class FilterViewModel @Inject constructor() : ViewModel() {
     private val _filterState = MutableStateFlow(FilterUiState())
     val filterState: StateFlow<FilterUiState> = _filterState.asStateFlow()
 
-    fun updateFilterTypes(timelineTypeFilter: List<TimelineTypeFilter>) {
-        _filterState.update { state ->
-            state.copy(
-                timelineTypeFilter = timelineTypeFilter
-            )
-        }
-    }
-
-    fun updateFilterDates(fromDate: String?, toDate: String?) {
+    fun updateFilter(timelineTypeFilter: List<TimelineTypeFilter>, fromDate: String?, toDate: String?) {
         val startDate: String? = if (fromDate.isNullOrBlank()) {
             null
         } else {
@@ -35,6 +27,7 @@ class FilterViewModel @Inject constructor() : ViewModel() {
 
         _filterState.update { state ->
             state.copy(
+                timelineTypeFilter = timelineTypeFilter,
                 filterFromDate = startDate,
                 filterToDate = endDate
             )

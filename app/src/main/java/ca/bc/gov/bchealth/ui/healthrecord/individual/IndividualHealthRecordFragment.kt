@@ -147,8 +147,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private fun clearFilterClickListener() {
         binding.imgClear.setOnClickListener {
-            filterSharedViewModel.updateFilterTypes(listOf(TimelineTypeFilter.ALL))
-            filterSharedViewModel.updateFilterDates(null, null)
+            filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL), null, null)
 
             viewModel.getIndividualsHealthRecord(
                 args.patientId,
@@ -219,8 +218,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     }
                     if (loginStatus == LoginStatus.EXPIRED) {
                         // clear timeline filter
-                        filterSharedViewModel.updateFilterTypes(listOf(TimelineTypeFilter.ALL))
-                        filterSharedViewModel.updateFilterDates(null, null)
+                        filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL), null, null)
                     }
                 }
             }
@@ -269,7 +267,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 } else {
                     filterSharedViewModel.filterState.value.filterToDate
                 }
-            filterSharedViewModel.updateFilterDates(startDate, endDate)
+            filterSharedViewModel.updateFilter(filterSharedViewModel.filterState.value.timelineTypeFilter, startDate, endDate)
         }
     }
 
