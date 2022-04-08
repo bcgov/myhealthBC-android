@@ -29,7 +29,7 @@ android {
 
         mock {
             dimension "version"
-            resValue "string", "issuer_url", "https://phsasmarthealthcard-dev.azurewebsites.net/v1/trusted/.well-known/issuers.json"
+            resValue "string", "issuer_url", "https://bcvaxcardgen.freshworks.club"
             resValue "string", "rules_url", "https://ds9mwekyyprcy.cloudfront.net/bc-rules.json"
             resValue "string", "default_issuer_json", "phsasmarthealthcard-dev.azurewebsites.net~v1~trusted~.well-known~issuers.json"
             resValue "string", "default_rules_json", "ds9mwekyyprcy.cloudfront.net~bc-rules.json"
@@ -38,7 +38,7 @@ android {
 
         dev {
             dimension "version"
-            resValue "string", "issuer_url", "https://phsasmarthealthcard-dev.azurewebsites.net/v1/trusted/.well-known/issuers.json"
+            resValue "string", "issuer_url", "https://bcvaxcardgen.freshworks.club"
             resValue "string", "rules_url", "https://ds9mwekyyprcy.cloudfront.net/bc-rules.json"
             resValue "string", "default_issuer_json", "phsasmarthealthcard-dev.azurewebsites.net~v1~trusted~.well-known~issuers.json"
             resValue "string", "default_rules_json", "ds9mwekyyprcy.cloudfront.net~bc-rules.json"
@@ -47,7 +47,7 @@ android {
 
         stage {
             dimension "version"
-            resValue "string", "issuer_url", "https://phsasmarthealthcard-dev.azurewebsites.net/v1/trusted/.well-known/issuers.json"
+            resValue "string", "issuer_url", "https://phsasmarthealthcard-dev.azurewebsites.net/v1/issuer"
             resValue "string", "rules_url", "https://phsasmarthealthcard-dev.azurewebsites.net/v1/Covid19Proof/.well-known/rules.json"
             resValue "string", "default_issuer_json", "phsasmarthealthcard-dev.azurewebsites.net~v1~trusted~.well-known~issuers.json"
             resValue "string", "default_rules_json", "phsasmarthealthcard-dev.azurewebsites.net~v1~Covid19Proof~.well-known~rules.json"
@@ -56,7 +56,7 @@ android {
 
         prod {
             dimension "version"
-            resValue "string", "issuer_url", "https://smarthealthcard.phsa.ca/v1/trusted/.well-known/issuers.json"
+            resValue "string", "issuer_url", "https://smarthealthcard.phsa.ca/v1/issuer"
             resValue "string", "rules_url", "https://smarthealthcard.phsa.ca/v1/Covid19Proof/.well-known/rules.json"
             resValue "string", "default_issuer_json", "smarthealthcard.phsa.ca~v1~trusted~.well-known~issuers.json"
             resValue "string", "default_rules_json", "smarthealthcard.phsa.ca~v1~Covid19Proof~.well-known~rules.json"
