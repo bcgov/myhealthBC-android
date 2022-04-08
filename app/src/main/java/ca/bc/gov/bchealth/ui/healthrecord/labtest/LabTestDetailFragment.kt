@@ -1,9 +1,8 @@
 package ca.bc.gov.bchealth.ui.healthrecord.labtest
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.FileProvider
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -17,6 +16,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentLabTestDetailBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.PdfHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +32,11 @@ class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
     private val args: LabTestDetailFragmentArgs by navArgs()
     private val pdfDecoderViewModel: PdfDecoderViewModel by viewModels()
     private var fileInMemory: File? = null
+    private var resultListener = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { _ ->
+        fileInMemory?.delete()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -127,7 +132,7 @@ class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
                         if (file != null) {
                             try {
                                 fileInMemory = file
-                                showPDF(file)
+                                PdfHelper().showPDF(file, requireActivity(), resultListener)
                             } catch (e: Exception) {
                                 fallBackToPdfRenderer(base64Pdf)
                             }
@@ -139,18 +144,6 @@ class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
                 }
             }
         }
-    }
-
-    private fun showPDF(file: File) {
-        val authority =
-            requireActivity().applicationContext.packageName.toString() +
-                ".fileprovider"
-        val uriToFile =
-            FileProvider.getUriForFile(requireActivity(), authority, file)
-        val shareIntent = Intent(Intent.ACTION_VIEW)
-        shareIntent.setDataAndType(uriToFile, "application/pdf")
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        requireActivity().startActivity(shareIntent)
     }
 
     private fun fallBackToPdfRenderer(federalTravelPass: String) {

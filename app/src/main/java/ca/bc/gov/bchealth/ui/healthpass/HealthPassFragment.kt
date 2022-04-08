@@ -1,15 +1,13 @@
 package ca.bc.gov.bchealth.ui.healthpass
 
-import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -28,6 +26,7 @@ import ca.bc.gov.bchealth.ui.login.BcscAuthFragment.Companion.BCSC_AUTH_STATUS
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
+import ca.bc.gov.bchealth.utils.PdfHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -54,6 +53,12 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val pdfDecoderViewModel: PdfDecoderViewModel by viewModels()
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
+    private var fileInMemory: File? = null
+    private var resultListener = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { _ ->
+        fileInMemory?.delete()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -169,7 +174,8 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                 val (federalTravelPass, file) = uiState.pdf
                 if (file != null) {
                     try {
-                        showPDF(file)
+                        fileInMemory = file
+                        PdfHelper().showPDF(file, requireActivity(), resultListener)
                     } catch (e: Exception) {
                         navigateToViewTravelPass(federalTravelPass)
                     }
@@ -179,18 +185,6 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
                 pdfDecoderViewModel.resetUiState()
             }
         }
-    }
-
-    private fun showPDF(file: File) {
-        val authority =
-            requireActivity().applicationContext.packageName.toString() +
-                ".fileprovider"
-        val uriToFile: Uri =
-            FileProvider.getUriForFile(requireActivity(), authority, file)
-        val shareIntent = Intent(Intent.ACTION_VIEW)
-        shareIntent.setDataAndType(uriToFile, "application/pdf")
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        requireActivity().startActivity(shareIntent)
     }
 
     private fun navigateToViewTravelPass(federalTravelPass: String) {
