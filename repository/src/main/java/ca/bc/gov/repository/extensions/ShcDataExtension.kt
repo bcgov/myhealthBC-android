@@ -33,7 +33,7 @@ fun VaccinationStatus.toImmunizationStatus(): ImmunizationStatus =
     when (this) {
         VaccinationStatus.FULLY_VACCINATED -> ImmunizationStatus.FULLY_IMMUNIZED
         VaccinationStatus.PARTIALLY_VACCINATED -> ImmunizationStatus.PARTIALLY_IMMUNIZED
-        VaccinationStatus.INVALID -> ImmunizationStatus.INVALID
+        else -> ImmunizationStatus.INVALID
     }
 
 fun SHCData.toPatientVaccineRecord(

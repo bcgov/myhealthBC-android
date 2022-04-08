@@ -50,7 +50,7 @@ versions.spotless = "5.14.3"
 
 versions.crypto = "1.1.0-alpha03"
 
-versions.shcdecoder = "1.1.13"
+versions.shcdecoder = "1.2.5"
 
 versions.sqlcipher = "4.5.0"
 versions.sqlite = "2.2.0"
