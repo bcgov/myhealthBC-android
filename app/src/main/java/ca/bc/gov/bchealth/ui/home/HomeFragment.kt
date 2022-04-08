@@ -145,8 +145,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 binding.tvName.text = getString(R.string.hi)
                     .plus(" ")
                     .plus(uiState.patientFirstName)
+                    .plus(",")
             } else {
-                binding.tvName.text = getString(R.string.hello)
+                binding.tvName.text = getString(R.string.hello).plus(",")
             }
 
             if (uiState.isForceLogout) {

@@ -55,6 +55,7 @@ class HealthRecordsAdapter(
             HealthRecordType.VACCINE_RECORD -> {
                 description = record.date.toDate()
                 holder.binding.ivUnlink.isVisible = canDeleteRecord
+                holder.binding.ivRightArrow.isVisible = !canDeleteRecord
                 holder.binding.ivUnlink.setOnClickListener {
                     itemDeleteListener.onDeleteClick(record)
                 }
@@ -62,6 +63,7 @@ class HealthRecordsAdapter(
             HealthRecordType.COVID_TEST_RECORD -> {
                 description = "${record.testOutcome} • ${record.date.toDate()}"
                 holder.binding.ivUnlink.isVisible = canDeleteRecord
+                holder.binding.ivRightArrow.isVisible = !canDeleteRecord
                 holder.binding.ivUnlink.setOnClickListener {
                     itemDeleteListener.onDeleteClick(record)
                 }
@@ -77,7 +79,7 @@ class HealthRecordsAdapter(
                     isUpdateRequested = false
                 } else {
                     holder.binding.progressBar.visibility = View.INVISIBLE
-                    holder.binding.ivRightArrow.visibility = View.VISIBLE
+                    holder.binding.ivRightArrow.visibility = if (canDeleteRecord) View.GONE else View.VISIBLE
                 }
             }
             HealthRecordType.MEDICATION_RECORD -> {

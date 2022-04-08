@@ -179,6 +179,7 @@
     <string name="login_to_view_hidden_records_msg">Log in again to view all the health records</string>
     <string name="out_of_range">Out of Range</string>
     <string name="in_range">In Range</string>
+    <string name="add_health_record">Add health record</string>
     <string name="add_health_record_title">Manage your records</string>
     <string name="add_health_record_message">Log in with your BC Services Card to view all the records and customize health plans</string>
     <string name="hidden_medication_records">Medication history</string>
@@ -245,7 +246,7 @@
     <string name="error_data_mismatch_title">The information does not match</string>
     <string name="error_test_result_data_mismatch_message">If it has been 48 hours from the time of your test, contact the BC COVID-19 Results Line (1‐833‐707‐2792) to investigate the issue.</string>
     <string name="error_vaccine_data_mismatch_message">The information you entered does not match our records. Please try again.</string>
-    <string name="invalid_phn">The Personal Health Number entered is not valid</string>
+    <string name="invalid_phn">Please enter a valid PHN</string>
     <string name="error_incorrect_phn">There was an error with your Personal Health Number. Please check that it is correct and try again.</string>
     <string name="error_biometric_enrollment_title">Enable Biometric</string>
     <string name="error_biometric_enrollment_message">My Health BC requires to authenticate using Biometric or passcode. Go to Settings > To enable Biometric or Passcode.</string>

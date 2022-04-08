@@ -55,15 +55,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/space_4_x"
-                    android:layout_marginEnd="@dimen/space_4_x"
                     android:layout_marginBottom="@dimen/space_2_x"
                     android:text="@string/anonymized_behavioural_data_is_used_to_help_improve_the_user_experience"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_analytics_title" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_analytics_title"
+                    app:layout_constraintEnd_toStartOf="@+id/switch_analytics" />
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/switch_analytics"
@@ -108,10 +107,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/space_4_x"
-                    android:layout_marginEnd="@dimen/space_4_x"
                     android:text="@string/delete_all_records_desc"
                     android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_delete_all_records"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_delete_all_records"

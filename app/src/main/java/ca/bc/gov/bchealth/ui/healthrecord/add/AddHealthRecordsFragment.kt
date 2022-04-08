@@ -61,6 +61,13 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_add_health_records) 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (args.isBackButtonEnabled) {
+            binding.tvHealthRecordTitle.isVisible = false
+            binding.tvMessage.isVisible = true
+        } else {
+            binding.tvHealthRecordTitle.isVisible = true
+            binding.tvMessage.isVisible = true
+        }
         setupToolBar()
 
         observeBcscLogin()
@@ -163,9 +170,13 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_add_health_records) 
                     findNavController().popBackStack()
                 }
             }
+            binding.toolbar.tvTitle.apply {
+                visibility = View.VISIBLE
+                setText(R.string.add_health_record)
+            }
         }
         binding.toolbar.ivRightOption.apply {
-            visibility = View.VISIBLE
+            isVisible = !args.isBackButtonEnabled
             setOnClickListener {
                 findNavController().navigate(R.id.profileFragment)
             }
