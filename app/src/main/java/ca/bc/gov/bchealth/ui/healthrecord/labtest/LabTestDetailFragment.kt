@@ -2,6 +2,8 @@ package ca.bc.gov.bchealth.ui.healthrecord.labtest
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,9 +16,12 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentLabTestDetailBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.PdfHelper
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.io.File
 
 @AndroidEntryPoint
 class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
@@ -25,6 +30,13 @@ class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
     private val viewModel: LabTestDetailViewModel by viewModels()
     private lateinit var labTestDetailAdapter: LabTestDetailAdapter
     private val args: LabTestDetailFragmentArgs by navArgs()
+    private val pdfDecoderViewModel: PdfDecoderViewModel by viewModels()
+    private var fileInMemory: File? = null
+    private var resultListener = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { _ ->
+        fileInMemory?.delete()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -32,6 +44,7 @@ class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
         initUI()
         viewModel.getLabTestDetails(args.labOrderId)
         observeUiState()
+        observePdfData()
     }
 
     private fun initUI() {
@@ -46,6 +59,11 @@ class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
             ivRightOption.setImageResource(R.drawable.ic_download_pdf)
             ivLeftOption.setOnClickListener {
                 findNavController().popBackStack()
+            }
+
+            ivRightOption.setImageResource(R.drawable.ic_download)
+            ivRightOption.setOnClickListener {
+                viewModel.getLabTestPdf(args.labOrderId)
             }
 
             tvTitle.visibility = View.VISIBLE
@@ -76,9 +94,23 @@ class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
 
                     if (state.onError) {
                         showError()
+                        viewModel.resetUiState()
                     }
+
+                    handlePdfDownload(state)
                 }
             }
+        }
+    }
+
+    private fun handlePdfDownload(state: LabTestDetailUiState) {
+        if (state.showDownloadOption) {
+            binding.toolbar.ivRightOption.isVisible = true
+        }
+
+        if (state.pdfData?.isNotEmpty() == true) {
+            pdfDecoderViewModel.base64ToPDFFile(state.pdfData)
+            viewModel.resetUiState()
         }
     }
 
@@ -87,10 +119,48 @@ class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
             context = requireContext(),
             title = getString(R.string.error),
             msg = getString(R.string.error_message),
-            positiveBtnMsg = getString(R.string.dialog_button_ok),
-            positiveBtnCallback = {
-                findNavController().popBackStack()
-            }
+            positiveBtnMsg = getString(R.string.dialog_button_ok)
         )
+    }
+
+    private fun observePdfData() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                pdfDecoderViewModel.uiState.collect { uiState ->
+                    uiState.pdf?.let {
+                        val (base64Pdf, file) = it
+                        if (file != null) {
+                            try {
+                                fileInMemory = file
+                                PdfHelper().showPDF(file, requireActivity(), resultListener)
+                            } catch (e: Exception) {
+                                fallBackToPdfRenderer(base64Pdf)
+                            }
+                        } else {
+                            fallBackToPdfRenderer(base64Pdf)
+                        }
+                        pdfDecoderViewModel.resetUiState()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun fallBackToPdfRenderer(federalTravelPass: String) {
+        findNavController().navigate(
+            R.id.pdfRendererFragment,
+            bundleOf(
+                "base64pdf" to federalTravelPass,
+                "title" to getString(R.string.lab_test)
+            )
+        )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (fileInMemory != null) {
+            fileInMemory?.delete()
+            fileInMemory = null
+        }
     }
 }

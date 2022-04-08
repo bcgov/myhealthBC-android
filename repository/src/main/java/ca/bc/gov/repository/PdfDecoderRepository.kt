@@ -9,13 +9,13 @@ import javax.inject.Inject
 /**
  * @author Pinakin Kansara
  */
-class FederalTravelPassDecoderRepository @Inject constructor(
+class PdfDecoderRepository @Inject constructor(
     private val context: Context,
 ) {
 
     suspend fun base64ToPDF(base64String: String): File {
         val byteArray = Base64.decode(base64String, Base64.DEFAULT)
-        val file = createTempFile("travelPass", ".pdf", context.filesDir)
+        val file = createTempFile("file", ".pdf", context.filesDir)
         context.openFileOutput(file.name, Context.MODE_PRIVATE).use {
             it.write(byteArray)
         }

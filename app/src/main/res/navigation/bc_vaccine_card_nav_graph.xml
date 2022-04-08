@@ -92,4 +92,17 @@
         android:name="ca.bc.gov.bchealth.ui.auth.BiometricSecurityTipFragment"
         android:label="BiometricSecurityTipFragment" />
 
+    <fragment
+        android:id="@+id/pdfRendererFragment"
+        android:name="ca.bc.gov.bchealth.ui.pdf.PdfRendererFragment"
+        android:label="FragmentTravelPass"
+        tools:layout="@layout/fragment_pdf_renderer">
+        <argument
+            android:name="base64pdf"
+            app:argType="string" />
+        <argument
+            android:name="title"
+            app:argType="string"
+            android:defaultValue=""/>
+    </fragment>
 </navigation>

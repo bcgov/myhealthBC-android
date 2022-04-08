@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.travelpass
+package ca.bc.gov.bchealth.ui.pdf
 
 import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer
@@ -10,8 +10,8 @@ import ca.bc.gov.bchealth.databinding.ItemTravelPassPageBinding
 /**
  * @author Pinakin Kansara
  */
-class TravelPassAdapter(private val pdfRenderer: PdfRenderer) :
-    RecyclerView.Adapter<TravelPassAdapter.ViewHolder>() {
+class PdfRendererAdapter(private val pdfRenderer: PdfRenderer) :
+    RecyclerView.Adapter<PdfRendererAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemTravelPassPageBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -28,19 +28,13 @@ class TravelPassAdapter(private val pdfRenderer: PdfRenderer) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val page: PdfRenderer.Page = pdfRenderer.openPage(position)
-
         val displayMetrics = holder.itemView.resources.displayMetrics
         val displayWidth = displayMetrics.widthPixels
         val displayHeight = displayMetrics.heightPixels
-
         val bitmap = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)
-
         val scaledBitMap = resize(bitmap, displayWidth, displayHeight)
-
         page.render(scaledBitMap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
-
         holder.binding.ivPdfPage.setImageBitmap(scaledBitMap)
-
         page.close()
     }
 

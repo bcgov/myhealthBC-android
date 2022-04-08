@@ -1,11 +1,13 @@
 package ca.bc.gov.data.di
 
 import android.content.Context
+import ca.bc.gov.data.BuildConfig
 import ca.bc.gov.data.R
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPublicApi
 import ca.bc.gov.data.datasource.remote.interceptor.CookiesInterceptor
+import ca.bc.gov.data.datasource.remote.interceptor.MockInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.QueueItInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.ReceivedCookieInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.UserAgentInterceptor
@@ -51,22 +53,35 @@ class HealthGateWayApiModule {
     }
 
     @Provides
+    fun providesMockInterceptor(@ApplicationContext context: Context) =
+        MockInterceptor(context)
+
+    @Provides
     fun providesOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
         cookiesInterceptor: CookiesInterceptor,
         queueItInterceptor: QueueItInterceptor,
         receivedCookieInterceptor: ReceivedCookieInterceptor,
-        userAgentInterceptor: UserAgentInterceptor
-    ) = OkHttpClient.Builder()
-        .addInterceptor(queueItInterceptor)
-        .addInterceptor(cookiesInterceptor)
-        .addInterceptor(receivedCookieInterceptor)
-        .addInterceptor(userAgentInterceptor)
-        .addInterceptor(loggingInterceptor)
-        .hostnameVerifier { _, _ ->
-            return@hostnameVerifier true
-        }
-        .build()
+        mockInterceptor: MockInterceptor,
+    ) = if (BuildConfig.FLAVOR == "mock") {
+        OkHttpClient.Builder()
+            .addInterceptor(mockInterceptor)
+            .addInterceptor(loggingInterceptor)
+            .hostnameVerifier { _, _ ->
+                return@hostnameVerifier true
+            }
+            .build()
+    } else {
+        OkHttpClient.Builder()
+            .addInterceptor(queueItInterceptor)
+            .addInterceptor(cookiesInterceptor)
+            .addInterceptor(receivedCookieInterceptor)
+            .addInterceptor(loggingInterceptor)
+            .hostnameVerifier { _, _ ->
+                return@hostnameVerifier true
+            }
+            .build()
+    }
 
     @Provides
     fun providesJsonConverterFactory(): GsonConverterFactory = GsonConverterFactory.create(
