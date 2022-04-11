@@ -4,12 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:filterTouchesWhenObscured="true"
     tools:context=".ui.login.BcscAuthInfoFragment">
 
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintEnd_toEndOf="parent"
@@ -68,6 +70,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/log_in_with_bc_services_card"
+        android:filterTouchesWhenObscured="true"
         app:icon="@drawable/ic_address_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,6 +86,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/not_now"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintEnd_toEndOf="parent"

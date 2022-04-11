@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:filterTouchesWhenObscured="true"
     tools:context=".ui.travelpass.FetchFederalTravelPassFragment">
 
     <ScrollView
@@ -11,6 +12,7 @@
         android:layout_height="0dp"
         android:layout_marginBottom="@dimen/space_1_x"
         android:fillViewport="true"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toTopOf="@+id/btn_cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -30,6 +32,7 @@
                 android:layout_marginTop="@dimen/space_4_x"
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:hint="@string/personal_health_number"
+                android:filterTouchesWhenObscured="true"
                 app:endIconContentDescription="@string/select_phn"
                 app:endIconMode="custom"
                 app:helperText="@string/find_phn_on_care_card_or_the_back_of_driver_s_license"
@@ -64,6 +67,7 @@
                 android:textAlignment="textStart"
                 android:textColorLink="@color/blue"
                 android:textSize="14sp"
+                android:filterTouchesWhenObscured="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -91,6 +95,7 @@
         android:layout_marginEnd="@dimen/space_1_x"
         android:layout_marginBottom="@dimen/space_3_x"
         android:text="@string/cancel"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_submit"
         app:layout_constraintHorizontal_bias="0.5"
@@ -104,6 +109,7 @@
         android:layout_marginStart="@dimen/space_1_x"
         android:layout_marginEnd="@dimen/space_4_x"
         android:text="@string/submit"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toBottomOf="@+id/btn_cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

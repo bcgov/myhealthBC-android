@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/layout_shape_rectangle"
     android:clickable="true"
+    android:filterTouchesWhenObscured="true"
     android:foreground="?attr/selectableItemBackground">
 
     <com.google.android.material.textview.MaterialTextView

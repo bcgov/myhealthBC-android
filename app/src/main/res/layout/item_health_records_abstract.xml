@@ -9,6 +9,7 @@
     android:layout_marginEnd="@dimen/space_4_x"
     android:animateLayoutChanges="true"
     android:clickable="true"
+    android:filterTouchesWhenObscured="true"
     android:foreground="?android:attr/selectableItemBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -97,6 +98,7 @@
         android:foreground="?attr/selectableItemBackgroundBorderless"
         android:padding="@dimen/space_2_x"
         android:visibility="gone"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

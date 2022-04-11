@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:filterTouchesWhenObscured="true"
     tools:context=".ui.healthrecord.HealthRecordsFragment">
 
     <include
@@ -51,6 +52,7 @@
         android:focusable="true"
         android:visibility="invisible"
         android:src="@drawable/ic_add_card_blue"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toBottomOf="@+id/tv_message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

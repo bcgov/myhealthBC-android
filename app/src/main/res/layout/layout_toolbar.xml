@@ -5,11 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="64dp"
     android:paddingTop="@dimen/space_1_x"
+    android:filterTouchesWhenObscured="true"
     app:contentInsetEnd="0dp"
     app:contentInsetStart="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        android:filterTouchesWhenObscured="true"
         android:layout_height="match_parent">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -21,6 +23,7 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="12dp"
+            android:filterTouchesWhenObscured="true"
             android:src="@drawable/ic_action_back"
             android:visibility="gone"
             android:contentDescription="@string/back"
@@ -36,6 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginStart="@dimen/space_3_x"
+            android:filterTouchesWhenObscured="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
@@ -78,6 +82,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginEnd="@dimen/space_4_x"
+            android:filterTouchesWhenObscured="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:contentDescription="@string/settings"
@@ -96,6 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginEnd="24dp"
+            android:filterTouchesWhenObscured="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"

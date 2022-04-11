@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:filterTouchesWhenObscured="true"
     tools:context=".ui.onboarding.CameraPermissionFragment">
 
     <androidx.viewpager2.widget.ViewPager2
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:layout_marginBottom="@dimen/space_2_x"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toTopOf="@+id/btn_next_slide"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -38,6 +40,7 @@
         android:layout_marginBottom="@dimen/space_2_x"
         android:contentDescription="@string/next"
         android:text="@string/next"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toTopOf="@+id/tv_skip"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -56,6 +59,7 @@
         android:linksClickable="true"
         android:text="@string/skip"
         android:textAlignment="center"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

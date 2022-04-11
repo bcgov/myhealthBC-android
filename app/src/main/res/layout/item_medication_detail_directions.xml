@@ -7,6 +7,7 @@
     android:layout_marginStart="@dimen/space_4_x"
     android:layout_marginEnd="@dimen/space_4_x"
     android:layout_marginBottom="@dimen/space_2_x"
+    android:filterTouchesWhenObscured="true"
     android:background="@drawable/layout_shape_rectangle">
 
     <com.google.android.material.textview.MaterialTextView
