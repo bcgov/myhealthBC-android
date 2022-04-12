@@ -99,7 +99,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
             } else {
                 DatePickerHelper().updateErrorMessage(
                     binding.tipFrom,
-                    requireContext().getString(R.string.enter_valid_date)
+                    requireContext().getString(R.string.date_filter_validation_msg)
                 )
             }
         }
