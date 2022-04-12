@@ -11,7 +11,7 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_member_name"
-        style="?textAppearanceSubtitle1"
+        style="?textAppearanceHeadline3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_2_x"
@@ -21,6 +21,7 @@
         android:lines="2"
         android:maxLines="2"
         android:textSize="17sp"
+        android:textColor="@color/blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
