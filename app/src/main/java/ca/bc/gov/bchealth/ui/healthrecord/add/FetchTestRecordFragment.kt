@@ -213,7 +213,7 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
     private fun setUpDobUI() {
         DatePickerHelper().initializeDatePicker(
             binding.tipDob,
-            getString(R.string.select_date),
+            getString(R.string.enter_dob),
             parentFragmentManager,
             "DATE_OF_BIRTH"
         )
@@ -222,7 +222,7 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
     private fun setUpDotUI() {
         DatePickerHelper().initializeDatePicker(
             binding.tipDot,
-            getString(R.string.select_date),
+            getString(R.string.enter_dot),
             parentFragmentManager,
             "DATE_OF_TEST"
         )

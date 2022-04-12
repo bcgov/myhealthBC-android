@@ -29,6 +29,7 @@
         android:layout_marginBottom="@dimen/space_1_x"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
+        android:contentDescription="@string/qr_image"
         android:src="@drawable/ic_check_mark"
         app:layout_constraintBottom_toTopOf="@+id/btn_close"
         app:layout_constraintEnd_toEndOf="parent"

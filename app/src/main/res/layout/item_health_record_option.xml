@@ -56,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/space_6_x"
-        android:contentDescription="@string/add_card"
+        tools:ignore="contentDescription"
         tools:src="@drawable/ic_health_record_add_vaccine"
         app:layout_constraintBottom_toBottomOf="@+id/tv_get_vaccination_record_subtitle"
         app:layout_constraintEnd_toEndOf="parent"
