@@ -306,5 +306,5 @@
     <string name="from">From</string>
     <string name="date_hint">yyyy-mm-dd</string>
     <string name="to">To</string>
-    <string name="enter_valid_date">Please enter a valid date</string>
+    <string name="date_filter_validation_msg">FROM date should be on or before TO date</string>
 </resources>
