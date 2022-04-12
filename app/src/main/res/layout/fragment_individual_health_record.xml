@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
+    android:filterTouchesWhenObscured="true"
     tools:context=".ui.healthrecord.individual.IndividualHealthRecordFragment"
     app:layoutDescription="@xml/fragment_individual_health_record_scene">
 
@@ -53,6 +54,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginEnd="@dimen/space_2_x"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintEnd_toStartOf="@+id/iv_add"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -65,6 +67,7 @@
         android:padding="4dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_marginEnd="@dimen/space_2_x"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintEnd_toStartOf="@+id/iv_filter"
         app:layout_constraintBottom_toBottomOf="@+id/iv_setting" />
 
@@ -76,6 +79,7 @@
         android:padding="4dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_marginEnd="@dimen/space_2_x"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintTop_toTopOf="@+id/iv_add"
         app:layout_constraintEnd_toStartOf="@+id/iv_edit"
         app:layout_constraintBottom_toBottomOf="@+id/iv_add" />
@@ -87,6 +91,7 @@
         android:src="@drawable/ic_edit"
         android:padding="4dp"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintTop_toTopOf="@+id/iv_filter"
         app:layout_constraintEnd_toStartOf="@+id/mockView"
         app:layout_constraintBottom_toBottomOf="@+id/iv_filter" />
@@ -114,6 +119,7 @@
         android:src="@drawable/ic_clear"
         android:layout_marginStart="@dimen/space_4_x"
         android:visibility="gone"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/horizontal_scrollview"
         app:layout_constraintBottom_toBottomOf="@+id/horizontal_scrollview"
@@ -127,6 +133,7 @@
         android:layout_marginStart="@dimen/space_1_x"
         android:layout_marginEnd="@dimen/space_1_x"
         android:scrollbars="none"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_clear"
         app:layout_constraintTop_toBottomOf="@+id/tv_name">
@@ -135,6 +142,7 @@
             android:id="@+id/cg_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:filterTouchesWhenObscured="true"
             app:singleLine="true">
 
             <com.google.android.material.chip.Chip

@@ -9,6 +9,7 @@
     android:layout_marginBottom="@dimen/space_3_x"
     android:animateLayoutChanges="true"
     android:animationCache="true"
+    android:filterTouchesWhenObscured="true"
     app:cardCornerRadius="4dp"
     app:cardElevation="@dimen/space_1_x">
 
@@ -71,6 +72,7 @@
             android:focusable="true"
             android:padding="@dimen/space_2_x"
             android:visibility="gone"
+            android:filterTouchesWhenObscured="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ic_reorder"
             app:layout_constraintTop_toTopOf="@+id/txt_full_name"
@@ -87,6 +89,7 @@
             android:focusable="true"
             android:padding="@dimen/space_2_x"
             android:visibility="gone"
+            android:filterTouchesWhenObscured="true"
             app:layout_constraintBottom_toBottomOf="@+id/img_unlink"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/img_unlink"
@@ -210,6 +213,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/space_1_x"
+                android:filterTouchesWhenObscured="true"
                 android:src="@drawable/ic_federal_pass_add"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_federal_pass_title"
                 app:layout_constraintEnd_toEndOf="parent"

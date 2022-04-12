@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/layout_shape_round"
+    android:filterTouchesWhenObscured="true"
     android:layout_marginStart="@dimen/space_4_x"
     android:layout_marginEnd="@dimen/space_4_x"
     android:layout_marginTop="@dimen/space_1_x"

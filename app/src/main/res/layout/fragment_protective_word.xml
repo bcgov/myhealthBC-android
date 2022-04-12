@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:filterTouchesWhenObscured="true"
     tools:context=".ui.healthrecord.protectiveword.ProtectiveWordFragment">
 
     <include
@@ -67,6 +68,7 @@
                 android:layout_marginStart="@dimen/space_4_x"
                 android:layout_marginTop="@dimen/space_1_x"
                 android:layout_marginEnd="@dimen/space_4_x"
+                android:filterTouchesWhenObscured="true"
                 app:errorEnabled="true"
                 app:helperTextEnabled="true"
                 app:helperText="@string/e_g_pa6729bc"
@@ -95,6 +97,7 @@
         android:layout_marginBottom="@dimen/space_2_x"
         android:text="@string/btn_continue"
         android:enabled="false"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_cancel"
@@ -109,6 +112,7 @@
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginBottom="@dimen/space_2_x"
         android:text="@string/cancel"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
