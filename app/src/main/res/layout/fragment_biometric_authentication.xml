@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:filterTouchesWhenObscured="true"
     android:layout_height="match_parent">
 
     <ScrollView
@@ -9,6 +10,7 @@
         android:layout_height="0dp"
         android:layout_marginBottom="@dimen/space_1_x"
         android:fillViewport="true"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toTopOf="@+id/btn_auth"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,6 +68,7 @@
             <com.google.android.material.button.MaterialButton
                 android:layout_width="0dp"
                 android:id="@+id/btn_learn_more"
+                android:filterTouchesWhenObscured="true"
                 style="@style/HealthGateway.Widget.MaterialComponents.Button.TextButton"
                 android:text="@string/biometric_learn_more"
                 android:layout_marginStart="@dimen/space_8_x"
@@ -88,6 +91,7 @@
         android:layout_marginEnd="@dimen/space_4_x"
         android:layout_marginBottom="@dimen/space_4_x"
         android:text="@string/btn_use_biometrics"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

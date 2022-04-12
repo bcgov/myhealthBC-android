@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:filterTouchesWhenObscured="true"
     app:layoutDescription="@xml/fragment_vaccine_details_scene"
     tools:context="ca.bc.gov.bchealth.ui.healthrecord.vaccine.VaccineRecordDetailFragment">
 

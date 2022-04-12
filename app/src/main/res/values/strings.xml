@@ -192,6 +192,8 @@
     <string name="protective_word">Protective word</string>
     <string name="unlock_records">Unlock records</string>
     <string name="e_g_pa6729bc">e.g. PA6729BC</string>
+    <string name="after">and after</string>
+    <string name="before">and before</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>
@@ -304,5 +306,5 @@
     <string name="from">From</string>
     <string name="date_hint">yyyy-mm-dd</string>
     <string name="to">To</string>
-    <string name="enter_valid_date">Please enter a valid date</string>
+    <string name="date_filter_validation_msg">FROM date should be on or before TO date</string>
 </resources>

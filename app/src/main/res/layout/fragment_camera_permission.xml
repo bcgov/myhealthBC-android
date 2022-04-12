@@ -4,12 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:filterTouchesWhenObscured="true"
     tools:context=".ui.onboarding.CameraPermissionFragment">
 
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -24,11 +26,11 @@
                 android:id="@+id/img_educational_mobile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="172dp"
                 android:src="@drawable/ic_camera_permission"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginBottom="@dimen/space_8_x"
+                app:layout_constraintBottom_toTopOf="@+id/txt_camera_permission_title" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/txt_camera_permission_title"
@@ -36,13 +38,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_2_x"
-                android:layout_marginTop="@dimen/space_8_x"
                 android:layout_marginEnd="@dimen/space_2_x"
                 android:text="@string/permission_required"
+                android:layout_marginBottom="@dimen/space_1_x"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/img_educational_mobile" />
+                app:layout_constraintBottom_toTopOf="@+id/txt_bc_camera_permission_message" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/txt_bc_camera_permission_message"
@@ -50,14 +52,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_1_x"
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:text="@string/allow_vaxwallet"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_camera_permission_title" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_bias="0.521" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_allow_camera_permission"
@@ -65,12 +68,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/allow"
-                android:layout_marginBottom="@dimen/space_1_x"
+                android:layout_marginTop="@dimen/space_10_x"
+                android:filterTouchesWhenObscured="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:ignore="ContentDescription"
-                app:layout_constraintBottom_toTopOf="@+id/txt_skip_for_now" />
+                app:layout_constraintTop_toBottomOf="@+id/txt_bc_camera_permission_message" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/txt_skip_for_now"
@@ -79,15 +83,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_2_x"
                 android:layout_marginEnd="@dimen/space_2_x"
-                android:layout_marginBottom="132dp"
+                android:layout_marginTop="@dimen/space_1_x"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:linksClickable="true"
                 android:text="@string/skip_for_now"
                 android:textColor="@color/blue"
                 android:textAlignment="center"
+                android:filterTouchesWhenObscured="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_allow_camera_permission" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

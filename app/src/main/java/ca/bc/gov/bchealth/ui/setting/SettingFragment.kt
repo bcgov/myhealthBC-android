@@ -75,6 +75,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
             ivLeftOption.setOnClickListener {
                 findNavController().popBackStack()
             }
+            line1.visibility = View.VISIBLE
         }
     }
 

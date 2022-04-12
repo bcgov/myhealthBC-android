@@ -40,8 +40,6 @@ import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.common.model.AuthenticationStatus
-import ca.bc.gov.common.utils.toDate
-import ca.bc.gov.common.utils.yyyy_MM_dd
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
 import com.queue_it.androidsdk.QueueListener
@@ -51,7 +49,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
-import java.util.Date
 
 /**
  * @author Pinakin Kansara
@@ -231,9 +228,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 viewModel.uiState.collect { uiState ->
 
                     if (loginStatus != null) {
-                        // update date range with default values if null
-                        updateDefaultFilterDates(uiState)
-
                         updateUi(uiState)
                     }
 
@@ -250,24 +244,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     respondToQueueIt(uiState)
                 }
             }
-        }
-    }
-
-    private fun updateDefaultFilterDates(uiState: IndividualHealthRecordsUiState) {
-        if (isFilterDateSelected(filterSharedViewModel.filterState.value)) {
-            val startDate =
-                if (filterSharedViewModel.filterState.value.filterFromDate.isNullOrBlank()) {
-                    uiState.onHealthRecords.lastOrNull()?.date?.toDate(yyyy_MM_dd)
-                } else {
-                    filterSharedViewModel.filterState.value.filterFromDate
-                }
-            val endDate =
-                if (filterSharedViewModel.filterState.value.filterToDate.isNullOrBlank()) {
-                    Date().toInstant().toDate(yyyy_MM_dd)
-                } else {
-                    filterSharedViewModel.filterState.value.filterToDate
-                }
-            filterSharedViewModel.updateFilter(filterSharedViewModel.filterState.value.timelineTypeFilter, startDate, endDate)
         }
     }
 
@@ -647,7 +623,17 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     if (isFilterDateSelected(filterState)) {
                         binding.chipDate.apply {
                             show()
-                            text = filterState.filterFromDate + " - " + filterState.filterToDate
+                            text = when {
+                                filterState.filterFromDate.isNullOrBlank() -> {
+                                    filterState.filterToDate + " " + getString(R.string.before)
+                                }
+                                filterState.filterToDate.isNullOrBlank() -> {
+                                    filterState.filterFromDate + " " + getString(R.string.after)
+                                }
+                                else -> {
+                                    filterState.filterFromDate + " - " + filterState.filterToDate
+                                }
+                            }
                         }
                     } else {
                         binding.chipDate.hide()

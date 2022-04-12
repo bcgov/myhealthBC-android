@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/space_2_x"
     android:layout_marginTop="@dimen/space_2_x"
+    android:filterTouchesWhenObscured="true"
     android:background="@drawable/layout_shape_round">
 
     <com.google.android.material.textview.MaterialTextView
@@ -36,6 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_1_x"
         android:text="@string/log_in_with_bc_services_card"
+        android:filterTouchesWhenObscured="true"
         app:icon="@drawable/ic_bcsc"
         app:layout_constraintTop_toBottomOf="@+id/tv_login_msg"
         app:layout_constraintEnd_toEndOf="parent"

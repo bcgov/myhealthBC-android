@@ -7,6 +7,7 @@
     android:layout_marginEnd="@dimen/space_4_x"
     android:padding="@dimen/space_2_x"
     android:layout_marginTop="@dimen/space_2_x"
+    android:filterTouchesWhenObscured="true"
     android:background="@drawable/layout_shape_round">
 
     <com.google.android.material.textview.MaterialTextView
@@ -39,6 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_1_x"
         android:text="@string/unlock_records"
+        android:filterTouchesWhenObscured="true"
         app:icon="@drawable/ic_lock"
         app:iconGravity="textStart"
         app:layout_constraintTop_toBottomOf="@+id/tv_desc"
