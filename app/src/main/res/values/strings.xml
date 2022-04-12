@@ -192,6 +192,8 @@
     <string name="protective_word">Protective word</string>
     <string name="unlock_records">Unlock records</string>
     <string name="e_g_pa6729bc">e.g. PA6729BC</string>
+    <string name="after">and after</string>
+    <string name="before">and before</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>

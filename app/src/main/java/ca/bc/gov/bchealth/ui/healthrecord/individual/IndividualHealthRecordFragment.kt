@@ -623,7 +623,17 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     if (isFilterDateSelected(filterState)) {
                         binding.chipDate.apply {
                             show()
-                            text = (filterState.filterFromDate ?: "") + " - " + (filterState.filterToDate ?: "")
+                            text = when {
+                                filterState.filterFromDate.isNullOrBlank() -> {
+                                    filterState.filterToDate + " " + getString(R.string.before)
+                                }
+                                filterState.filterToDate.isNullOrBlank() -> {
+                                    filterState.filterFromDate + " " + getString(R.string.after)
+                                }
+                                else -> {
+                                    filterState.filterFromDate + " - " + filterState.filterToDate
+                                }
+                            }
                         }
                     } else {
                         binding.chipDate.hide()
