@@ -66,125 +66,138 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
 
     private suspend fun fetchAuthRecords() {
         var isApiFailed = false
-        notificationHelper.showNotification(
-            context.getString(R.string.notification_title_while_fetching_data)
-        )
-
-        val authParameters = bcscAuthRepo.getAuthParameters()
-        var patient: PatientDto? = null
-        var patientId = 0L
-        var vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>? = null
-        var covidOrderResponse: List<CovidOrderWithCovidTestDto>? = null
-        var medicationResponse: MedicationStatementResponse? = null
-        var labOrdersResponse: List<LabOrderWithLabTestDto>? = null
 
         try {
-            patient = patientWithBCSCLoginRepository.getPatient(
-                authParameters.first,
-                authParameters.second
+            val authParameters = bcscAuthRepo.getAuthParameters()
+            var patient: PatientDto? = null
+            var patientId = 0L
+            var vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>? = null
+            var covidOrderResponse: List<CovidOrderWithCovidTestDto>? = null
+            var medicationResponse: MedicationStatementResponse? = null
+            var labOrdersResponse: List<LabOrderWithLabTestDto>? = null
+
+            notificationHelper.showNotification(
+                context.getString(R.string.notification_title_while_fetching_data)
             )
-        } catch (e: Exception) {
-            isApiFailed = true
-            e.printStackTrace()
-        }
 
-        /*
-        * Fetch vaccine records
-        * */
-        try {
-            withContext(dispatcher) {
-                vaccineRecordsResponse = fetchVaccineRecordRepository.fetchVaccineRecord(
+            try {
+                patient = patientWithBCSCLoginRepository.getPatient(
                     authParameters.first,
                     authParameters.second
                 )
+            } catch (e: Exception) {
+                isApiFailed = true
+                e.printStackTrace()
             }
-        } catch (e: Exception) {
-            isApiFailed = true
-            e.printStackTrace()
-        }
 
-        /*
-        * Fetch covid test results
-        * */
-        try {
-            withContext(dispatcher) {
-                covidOrderResponse = covidOrderRepository.fetchCovidOrders(
-                    authParameters.first,
-                    authParameters.second
-                )
+            /*
+            * Fetch vaccine records
+            * */
+            try {
+                withContext(dispatcher) {
+                    vaccineRecordsResponse = fetchVaccineRecordRepository.fetchVaccineRecord(
+                        authParameters.first,
+                        authParameters.second
+                    )
+                }
+            } catch (e: Exception) {
+                isApiFailed = true
+                e.printStackTrace()
             }
-        } catch (e: Exception) {
-            isApiFailed = true
-            e.printStackTrace()
-        }
 
-        /*
-        * Fetch medication records
-        * */
-        try {
-            withContext(dispatcher) {
-                medicationResponse = medicationRecordRepository.fetchMedicationStatement(
-                    authParameters.first,
-                    authParameters.second,
-                    encryptedPreferenceStorage.protectiveWord
-                )
+            /*
+            * Fetch covid test results
+            * */
+            try {
+                withContext(dispatcher) {
+                    covidOrderResponse = covidOrderRepository.fetchCovidOrders(
+                        authParameters.first,
+                        authParameters.second
+                    )
+                }
+            } catch (e: Exception) {
+                isApiFailed = true
+                e.printStackTrace()
             }
-        } catch (e: Exception) {
-            if (e is ProtectiveWordException) {
-                encryptedPreferenceStorage.protectiveWordState =
-                    ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
-            } else {
+
+            /*
+            * Fetch medication records
+            * */
+            try {
+                withContext(dispatcher) {
+                    medicationResponse = medicationRecordRepository.fetchMedicationStatement(
+                        authParameters.first,
+                        authParameters.second,
+                        encryptedPreferenceStorage.protectiveWord
+                    )
+                }
+            } catch (e: Exception) {
+                if (e is ProtectiveWordException) {
+                    encryptedPreferenceStorage.protectiveWordState =
+                        ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
+                } else {
+                    isApiFailed = true
+                }
+            }
+
+            /*
+            * Fetch lab test results
+            * */
+            try {
+                withContext(dispatcher) {
+                    labOrdersResponse =
+                        labOrderRepository.fetchLabOrders(
+                            authParameters.first,
+                            authParameters.second
+                        )
+                }
+            } catch (e: Exception) {
                 isApiFailed = true
             }
-        }
 
-        /*
-        * Fetch lab test results
-        * */
-        try {
-            withContext(dispatcher) {
-                labOrdersResponse =
-                    labOrderRepository.fetchLabOrders(authParameters.first, authParameters.second)
+            /*
+            * DB Operations
+            * */
+            // Insert patient details
+            patient?.let {
+                patientId = patientRepository.insertAuthenticatedPatient(it)
+            }
+            // Insert vaccine records
+            vaccineRecordsResponse?.second?.let {
+                patientWithVaccineRecordRepository.insertAuthenticatedPatientsVaccineRecord(
+                    patientId, it
+                )
+            }
+            // Insert covid orders
+            patientWithTestResultRepository.deletePatientTestRecords(patientId)
+            covidOrderRepository.deleteByPatientId(patientId)
+            covidOrderResponse?.forEach {
+                it.covidOrder.patientId = patientId
+                covidOrderRepository.insert(it.covidOrder)
+                covidTestRepository.insert(it.covidTests)
+            }
+            // Insert medication records
+            medicationResponse?.let {
+                medicationRecordRepository.updateMedicationRecords(
+                    it,
+                    patientId
+                )
+            }
+            // Insert lab orders
+            labOrderRepository.delete(patientId)
+            labOrdersResponse?.forEach {
+                it.labOrder.patientId = patientId
+                labOrderRepository.insert(it.labOrder)
+                labTestRepository.insert(it.labTests)
+            }
+
+            if (isApiFailed) {
+                notificationHelper.updateNotification(context.getString(R.string.notification_title_on_failed))
+            } else {
+                notificationHelper.updateNotification(context.getString(R.string.notification_title_on_success))
             }
         } catch (e: Exception) {
-            isApiFailed = true
-        }
-
-        /*
-        * DB Operations
-        * */
-        // Insert patient details
-        patient?.let {
-            patientId = patientRepository.insertAuthenticatedPatient(it)
-        }
-        // Insert vaccine records
-        vaccineRecordsResponse?.second?.let {
-            patientWithVaccineRecordRepository.insertAuthenticatedPatientsVaccineRecord(
-                patientId, it
-            )
-        }
-        // Insert covid orders
-        patientWithTestResultRepository.deletePatientTestRecords(patientId)
-        covidOrderRepository.deleteByPatientId(patientId)
-        covidOrderResponse?.forEach {
-            it.covidOrder.patientId = patientId
-            covidOrderRepository.insert(it.covidOrder)
-            covidTestRepository.insert(it.covidTests)
-        }
-        // Insert medication records
-        medicationResponse?.let { medicationRecordRepository.updateMedicationRecords(it, patientId) }
-        // Insert lab orders
-        labOrderRepository.delete(patientId)
-        labOrdersResponse?.forEach {
-            it.labOrder.patientId = patientId
-            labOrderRepository.insert(it.labOrder)
-            labTestRepository.insert(it.labTests)
-        }
-
-        if (isApiFailed) {
-            notificationHelper.updateNotification(context.getString(R.string.notification_title_on_failed))
-        } else {
-            notificationHelper.updateNotification(context.getString(R.string.notification_title_on_success))
+            e.printStackTrace()
         }
     }
 }

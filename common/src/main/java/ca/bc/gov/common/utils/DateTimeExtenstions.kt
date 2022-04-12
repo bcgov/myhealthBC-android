@@ -5,6 +5,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 const val yyyy_MMM_dd_HH_mm = "yyyy-MMM-dd, HH:mm"
 const val yyyy_MMM_dd = "yyyy-MMM-dd"
@@ -29,3 +30,7 @@ fun String.toDate(): Instant = LocalDate.parse(this).atStartOfDay().toInstant(Zo
 
 fun String.toDateTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): Instant =
     LocalDateTime.parse(this, formatter).toInstant(ZoneOffset.UTC)
+
+fun Instant.toStartOfDayInstant(): Instant {
+    return this.truncatedTo(ChronoUnit.DAYS)
+}
