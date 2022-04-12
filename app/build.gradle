@@ -14,7 +14,7 @@ android {
         applicationId "ca.bc.gov.myhealth"
         minSdk 27
         targetSdk 31
-        versionCode 12
+        versionCode 13
         versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
