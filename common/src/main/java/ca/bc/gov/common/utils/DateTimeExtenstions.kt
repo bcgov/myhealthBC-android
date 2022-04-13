@@ -7,7 +7,7 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
-const val yyyy_MMM_dd_HH_mm = "yyyy-MMM-dd, HH:mm"
+const val yyyy_MMM_dd_HH_mm = "yyyy-MMM-dd, hh:mm a"
 const val yyyy_MMM_dd = "yyyy-MMM-dd"
 const val yyyy_MM_dd = "yyyy-MM-dd"
 const val eee_dd_mmm_yyyy_hh_mm_ss_z = "EEE, dd MMM yyyy HH:mm:ss XXXX"
