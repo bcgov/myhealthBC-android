@@ -88,7 +88,7 @@ class HomeViewModel @Inject constructor(
 
     suspend fun getHomeRecordsList(): MutableList<HomeRecordItem> {
         val isLoggedIn: Boolean = try {
-            bcscAuthRepo.checkLogin()
+            bcscAuthRepo.checkSession()
         } catch (e: Exception) {
             false
         }

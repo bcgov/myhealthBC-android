@@ -170,14 +170,14 @@ class BcscAuthViewModel @Inject constructor(
     /*
     * Check BCSC login
     * */
-    fun checkLogin() = viewModelScope.launch {
+    fun checkSession() = viewModelScope.launch {
         try {
             _authStatus.update {
                 it.copy(
                     showLoading = true
                 )
             }
-            val isLoggedSuccess = bcscAuthRepo.checkLogin()
+            val isLoggedSuccess = bcscAuthRepo.checkSession()
             val userName =
                 patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).fullName
             val loginSessionStatus = if (isLoggedSuccess) {

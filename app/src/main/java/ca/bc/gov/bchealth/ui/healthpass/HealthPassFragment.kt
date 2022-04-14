@@ -287,7 +287,7 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
     }
 
     private fun checkLogin() {
-        bcscAuthViewModel.checkLogin()
+        bcscAuthViewModel.checkSession()
         observeBcscLogin()
     }
 

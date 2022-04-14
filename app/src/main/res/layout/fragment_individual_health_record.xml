@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
+    android:animateLayoutChanges="false"
     android:filterTouchesWhenObscured="true"
     tools:context=".ui.healthrecord.individual.IndividualHealthRecordFragment"
     app:layoutDescription="@xml/fragment_individual_health_record_scene">
@@ -20,10 +20,11 @@
     <androidx.constraintlayout.utils.widget.MockView
         android:id="@+id/mockView2"
         android:visibility="invisible"
-        android:layout_width="@dimen/space_2_x"
+        android:layout_width="0dp"
         android:layout_height="@dimen/space_2_x"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/mockView1" />
+        app:layout_constraintStart_toEndOf="@+id/mockView1"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_back"
@@ -37,7 +38,7 @@
 
     <androidx.constraintlayout.utils.widget.MockView
         android:layout_width="@dimen/space_4_x"
-        android:layout_height="@dimen/space_4_x"
+        android:layout_height="48dp"
         android:id="@+id/mockView"
         android:visibility="invisible"
         android:layout_marginTop="@dimen/space_2_x"
@@ -49,44 +50,44 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:src="@drawable/ic_settings"
+        android:visibility="gone"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_marginTop="@dimen/space_2_x"
         android:filterTouchesWhenObscured="true"
         app:layout_constraintEnd_toStartOf="@+id/iv_add"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/mockView2" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_add"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:visibility="gone"
         android:src="@drawable/ic_add_card_blue_small"
-        app:layout_constraintTop_toTopOf="@+id/iv_setting"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:filterTouchesWhenObscured="true"
         app:layout_constraintEnd_toStartOf="@+id/iv_filter"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_setting" />
+        app:layout_constraintTop_toBottomOf="@+id/mockView2" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_filter"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:src="@drawable/ic_filter"
+        android:visibility="gone"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:filterTouchesWhenObscured="true"
-        app:layout_constraintTop_toTopOf="@+id/iv_add"
         app:layout_constraintEnd_toStartOf="@+id/iv_edit"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_add" />
+        app:layout_constraintTop_toBottomOf="@+id/mockView2" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_edit"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:src="@drawable/ic_edit"
+        android:visibility="gone"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:filterTouchesWhenObscured="true"
-        app:layout_constraintTop_toTopOf="@+id/iv_filter"
         app:layout_constraintEnd_toStartOf="@+id/mockView"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_filter" />
+        app:layout_constraintTop_toBottomOf="@+id/mockView2" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_name"
@@ -96,7 +97,7 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@+id/iv_setting"
+        app:layout_constraintTop_toBottomOf="@+id/mockView"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/space_4_x"
         tools:text="JEAN SMITH"

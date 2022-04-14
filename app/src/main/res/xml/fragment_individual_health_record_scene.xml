@@ -93,8 +93,8 @@
             android:layout_height="wrap_content"
             motion:layout_constraintStart_toEndOf="@+id/iv_back"
             android:layout_marginStart="8dp"
-            motion:layout_constraintTop_toTopOf="@+id/iv_setting"
-            motion:layout_constraintBottom_toBottomOf="@+id/iv_setting"
+            motion:layout_constraintTop_toTopOf="@+id/mockView"
+            motion:layout_constraintBottom_toBottomOf="@+id/mockView"
             motion:layout_constraintEnd_toStartOf="@+id/iv_setting"
             android:layout_marginEnd="8dp">
             <CustomAttribute
