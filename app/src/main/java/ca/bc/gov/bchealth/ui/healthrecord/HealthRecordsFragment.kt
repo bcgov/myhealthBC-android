@@ -58,6 +58,8 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
 
         observeCovidTestRecordAddition()
 
+        observeHealthRecordDeletion()
+
         adapter = HealthRecordsAdapter {
             val action =
                 HealthRecordsFragmentDirections
@@ -134,6 +136,25 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                 findNavController().popBackStack()
             }
         }
+    }
+
+    private fun observeHealthRecordDeletion() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<NavigationAction>(
+            PLACE_HOLDER_NAVIGATION
+        )
+            ?.observe(
+                viewLifecycleOwner
+            ) {
+                findNavController().currentBackStackEntry?.savedStateHandle?.remove<NavigationAction>(
+                    PLACE_HOLDER_NAVIGATION
+                )
+                findNavController().previousBackStackEntry?.savedStateHandle
+                    ?.set(
+                        PLACE_HOLDER_NAVIGATION,
+                        NavigationAction.ACTION_RE_CHECK
+                    )
+                findNavController().popBackStack()
+            }
     }
 
     private fun initUi() {
