@@ -45,7 +45,7 @@
         android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginEnd="@dimen/space_2_x"
         android:layout_marginBottom="@dimen/space_2_x"
-        android:contentDescription="@string/add_card"
+        tools:ignore="contentDescription"
         android:src="@drawable/ic_health_records_members_list"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

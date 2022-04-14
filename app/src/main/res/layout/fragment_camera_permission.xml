@@ -73,7 +73,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:ignore="ContentDescription"
                 app:layout_constraintTop_toBottomOf="@+id/txt_bc_camera_permission_message" />
 
             <com.google.android.material.textview.MaterialTextView

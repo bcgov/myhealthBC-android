@@ -64,13 +64,12 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/img_unlink"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:contentDescription="@string/unlink"
             android:focusable="true"
-            android:padding="@dimen/space_2_x"
             android:visibility="gone"
             android:filterTouchesWhenObscured="true"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -81,13 +80,12 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ic_reorder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:contentDescription="move"
+            android:contentDescription="@string/move"
             android:focusable="true"
-            android:padding="@dimen/space_2_x"
             android:visibility="gone"
             android:filterTouchesWhenObscured="true"
             app:layout_constraintBottom_toBottomOf="@+id/img_unlink"
@@ -210,8 +208,8 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_federal_pass_action"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_marginEnd="@dimen/space_1_x"
                 android:filterTouchesWhenObscured="true"
                 android:src="@drawable/ic_federal_pass_add"

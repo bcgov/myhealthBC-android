@@ -47,7 +47,7 @@
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:contentDescription="@string/add_card"
+                android:contentDescription="@string/add_bc_vaccine_record"
                 android:focusable="true"
                 android:src="@drawable/ic_add_card_blue"
                 android:filterTouchesWhenObscured="true"

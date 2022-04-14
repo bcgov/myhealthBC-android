@@ -18,6 +18,7 @@
         android:layout_marginStart="@dimen/space_2_x"
         android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginBottom="@dimen/space_2_x"
+        tools:src="@drawable/ic_resources_icon_1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -33,10 +34,11 @@
         android:layout_marginEnd="@dimen/space_2_x"
         android:drawableEnd="@drawable/ic_angle_right"
         android:drawablePadding="@dimen/space_2_x"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="@+id/img_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_icon"
         app:layout_constraintTop_toTopOf="@+id/img_icon"
-        tools:text="Where to get your COVID-19 Testing? also where show I get Rapid tst kit nearby" />
+        tools:text="Where to get" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
