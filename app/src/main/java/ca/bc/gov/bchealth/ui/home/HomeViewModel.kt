@@ -28,13 +28,11 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     var isAuthenticationRequired: Boolean = true
-    var isBcscLoginRequiredPostBiometrics: Boolean = false
     var isForceLogout: Boolean = false
 
     fun launchCheck() = viewModelScope.launch {
         when {
             onBoardingRepository.onBoardingRequired -> {
-                isBcscLoginRequiredPostBiometrics = true
                 _uiState.update { state ->
                     state.copy(isLoading = false, isOnBoardingRequired = true)
                 }
@@ -42,7 +40,7 @@ class HomeViewModel @Inject constructor(
             isAuthenticationRequired -> {
                 _uiState.update { state -> state.copy(isAuthenticationRequired = true) }
             }
-            isBcscLoginRequiredPostBiometrics -> {
+            onBoardingRepository.onBCSCLoginRequiredPostBiometric -> {
                 _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = true) }
             }
             bcscAuthRepo.getPostLoginCheck() == PostLoginCheck.IN_PROGRESS.name -> {
@@ -63,7 +61,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onBcscLoginRequired(isRequired: Boolean) {
-        isBcscLoginRequiredPostBiometrics = isRequired
+        onBoardingRepository.onBCSCLoginRequiredPostBiometric = isRequired
         _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = isRequired) }
     }
 
@@ -100,7 +98,7 @@ class HomeViewModel @Inject constructor(
                 R.drawable.ic_login_info,
                 R.string.health_records,
                 R.string.health_records_desc,
-                if (isLoggedIn) 0 else R.drawable.ic_bcsc,
+                0,
                 if (isLoggedIn) R.string.view_records else R.string.get_started,
                 HomeNavigationType.HEALTH_RECORD
             ),

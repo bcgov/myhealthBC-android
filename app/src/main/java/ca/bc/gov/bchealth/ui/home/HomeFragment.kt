@@ -66,9 +66,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
         }
 
-        viewModel.launchCheck()
-        viewModel.getAuthenticatedPatientName()
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
@@ -80,6 +77,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         initRecyclerview()
 
         observeAuthStatus()
+
+        viewModel.launchCheck()
+
+        viewModel.getAuthenticatedPatientName()
     }
 
     private fun observeAuthStatus() {

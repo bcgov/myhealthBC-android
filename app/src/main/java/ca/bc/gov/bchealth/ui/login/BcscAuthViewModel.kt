@@ -4,11 +4,13 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.exceptions.MustBeQueuedException
+import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.ProfileRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
+import ca.bc.gov.repository.patient.PatientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +27,8 @@ class BcscAuthViewModel @Inject constructor (
     private val bcscAuthRepo: BcscAuthRepo,
     private val queueItTokenRepository: QueueItTokenRepository,
     private val clearStorageRepository: ClearStorageRepository,
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val patientRepository: PatientRepository
 ) : ViewModel() {
 
     private val _authStatus = MutableStateFlow(AuthStatus())
@@ -175,7 +178,7 @@ class BcscAuthViewModel @Inject constructor (
                 )
             }
             val isLoggedSuccess = bcscAuthRepo.checkLogin()
-            val userName = bcscAuthRepo.getUserName()
+            val userName = patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).fullName
             val loginSessionStatus = if (isLoggedSuccess) {
                 LoginStatus.ACTIVE
             } else {
