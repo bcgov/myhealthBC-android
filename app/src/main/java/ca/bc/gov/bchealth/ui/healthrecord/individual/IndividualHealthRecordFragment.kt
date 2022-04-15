@@ -445,7 +445,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun setupToolbar() {
 
         binding.apply {
-            tvName.text = args.patientName
+            val names = args.patientName.split(" ")
+            val firstName = if (names.isNotEmpty()) names.first() else ""
+            tvName.text = firstName
             if (findNavController().previousBackStackEntry?.destination?.id ==
                 R.id.healthRecordsFragment
             ) {

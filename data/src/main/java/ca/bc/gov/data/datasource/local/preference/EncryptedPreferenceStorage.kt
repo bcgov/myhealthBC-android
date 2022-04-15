@@ -27,6 +27,7 @@ class EncryptedPreferenceStorage @Inject constructor(
         private const val PROTECTIVE_WORD = "PROTECTIVE_WORD"
         private const val PROTECTIVE_WORD_STATE = "PROTECTIVE_WORD_STATE"
         private const val POST_LOGIN_CHECK = "POST_LOGIN_CHECK"
+        private const val BCSC_SHOWN_POST_BIOMETRIC = "BCSC_SHOWN_POST_BIOMETRIC"
     }
 
     var queueItToken: String?
@@ -74,6 +75,14 @@ class EncryptedPreferenceStorage @Inject constructor(
         set(value) {
             encryptedSharedPreferences.edit()
                 .putBoolean(ON_BOARDING_SHOWN, value)
+                .apply()
+        }
+
+    var onBCSCLoginRequiredPostBiometric: Boolean
+        get() = encryptedSharedPreferences.getBoolean(BCSC_SHOWN_POST_BIOMETRIC, true)
+        set(value) {
+            encryptedSharedPreferences.edit()
+                .putBoolean(BCSC_SHOWN_POST_BIOMETRIC, value)
                 .apply()
         }
 
