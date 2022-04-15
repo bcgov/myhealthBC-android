@@ -128,17 +128,13 @@ class QueueItInterceptor @Inject constructor(
     )
 
     private fun checkException(json: JsonObject) {
-        val resultError = json.getAsJsonObject(RESULT_ERROR) ?: throw IOException(
-            BAD_RESPONSE
-        )
+        val resultError = json.getAsJsonObject(RESULT_ERROR)
         if (!resultError.get(ACTION_CODE).isJsonNull) {
             if (resultError.get(ACTION_CODE)?.asString == PROTECTED)
                 throw ProtectiveWordException(
                     PROTECTIVE_WORD_ERROR_CODE,
                     "Record protected by keyword"
                 )
-        } else {
-            throw IOException(BAD_RESPONSE)
         }
     }
 }

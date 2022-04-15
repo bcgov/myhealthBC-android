@@ -40,10 +40,7 @@ class ImmunizationRemoteDataSource @Inject constructor(
 
     private fun validate(response: VaccineStatusResponse): VaccineStatus {
         if (response.error != null) {
-            if (response.error.action == null) {
-                throw MyHealthException(SERVER_ERROR, response.error.message)
-            }
-            if (Action.MISMATCH.code == response.error.action.code) {
+            if (Action.MISMATCH.code == response.error.action?.code) {
                 throw MyHealthException(SERVER_ERROR_DATA_MISMATCH, response.error.message)
             }
             if ("Error parsing phn" == response.error.message) {

@@ -155,6 +155,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             }
             AgeLimitCheck.FAILED -> {
                 showAgeLimitRestrictionDialog()
+                viewModel.resetAuthStatus()
             }
         }
     }
