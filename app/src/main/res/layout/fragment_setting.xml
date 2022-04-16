@@ -8,8 +8,8 @@
     tools:context=".ui.setting.SettingFragment">
 
     <include
-        android:id="@+id/toolbar"
-        layout="@layout/layout_toolbar"
+        android:id="@+id/layout_toolbar"
+        layout="@layout/layout_top_appbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/layout_toolbar"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout

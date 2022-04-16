@@ -8,14 +8,16 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchVaccineRecordBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.DatePickerHelper
 import ca.bc.gov.bchealth.utils.PhnHelper
@@ -40,7 +42,7 @@ import java.nio.charset.StandardCharsets
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
-class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_record) {
+class FetchVaccineRecordFragment : BaseFragment(R.layout.fragment_fetch_vaccine_record) {
     private val binding by viewBindings(FragmentFetchVaccineRecordBinding::bind)
     private val viewModel: FetchVaccineRecordViewModel by viewModels()
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
@@ -54,8 +56,6 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setupToolBar()
 
         setUpPhnUI()
 
@@ -243,15 +243,15 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
                 requireContext()
             ) &&
             DatePickerHelper().validateDatePickerData(
-                    binding.tipDob,
-                    requireContext(),
-                    getString(R.string.dob_required)
-                ) &&
+                binding.tipDob,
+                requireContext(),
+                getString(R.string.dob_required)
+            ) &&
             DatePickerHelper().validateDatePickerData(
-                    binding.tipDov,
-                    requireContext(),
-                    getString(R.string.dov_required)
-                )
+                binding.tipDov,
+                requireContext(),
+                getString(R.string.dov_required)
+            )
         ) {
             viewModel.fetchVaccineRecord(phn, dob, dov)
         }
@@ -305,25 +305,20 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
         }
     }
 
-    private fun setupToolBar() {
-        binding.toolbar.apply {
-            ivLeftOption.visibility = View.VISIBLE
-            ivLeftOption.setImageResource(R.drawable.ic_action_back)
-            ivLeftOption.setOnClickListener {
-                findNavController().popBackStack()
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.topAppBar) {
+            setupWithNavController(findNavController(), appBarConfiguration)
+            title = getString(R.string.add_a_health_pass)
+            setNavigationIcon(R.drawable.ic_toolbar_back)
+            inflateMenu(R.menu.help_menu)
+            setOnMenuItemClickListener { menu ->
+                when (menu.itemId) {
+                    R.id.menu_help -> {
+                        requireActivity().redirect(getString(R.string.url_help))
+                    }
+                }
+                return@setOnMenuItemClickListener true
             }
-
-            tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.add_a_health_pass)
-
-            ivRightOption.visibility = View.VISIBLE
-            ivRightOption.setImageResource(R.drawable.ic_help)
-            ivRightOption.setOnClickListener {
-                requireActivity().redirect(getString(R.string.url_help))
-            }
-            ivRightOption.contentDescription = getString(R.string.help)
-
-            line1.visibility = View.VISIBLE
         }
     }
 

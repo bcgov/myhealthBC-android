@@ -2,17 +2,19 @@ package ca.bc.gov.bchealth.ui.healthpass.manage
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentManageHealthPassesBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.healthpass.HealthPassViewModel
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -27,7 +29,7 @@ import java.util.Collections
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
-class ManageHealthPassFragment : Fragment(R.layout.fragment_manage_health_passes) {
+class ManageHealthPassFragment : BaseFragment(R.layout.fragment_manage_health_passes) {
     private val viewModel: HealthPassViewModel by viewModels()
     private val binding by viewBindings(FragmentManageHealthPassesBinding::bind)
     private lateinit var manageHealthPassAdapter: ManageHealthPassAdapter
@@ -35,8 +37,6 @@ class ManageHealthPassFragment : Fragment(R.layout.fragment_manage_health_passes
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setUpToolbar()
 
         setUpRecyclerView()
 
@@ -67,24 +67,22 @@ class ManageHealthPassFragment : Fragment(R.layout.fragment_manage_health_passes
         manageHealthPassAdapter.notifyItemRangeChanged(0, manageHealthPassAdapter.itemCount)
     }
 
-    private fun setUpToolbar() {
-        binding.toolbar.apply {
-            ivLeftOption.visibility = View.VISIBLE
-            ivLeftOption.setImageResource(R.drawable.ic_action_back)
-            ivLeftOption.setOnClickListener {
-                findNavController().popBackStack()
-            }
-
-            tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.bc_vaccine_passes)
-
-            tvRightOption.visibility = View.VISIBLE
-            tvRightOption.text = getString(R.string.done)
-            tvRightOption.setOnClickListener {
-                viewModel.updateHealthPassOrder(manageHealthPassAdapter.healthPasses)
-                    .invokeOnCompletion {
-                        findNavController().popBackStack()
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.topAppBar) {
+            setupWithNavController(findNavController(), appBarConfiguration)
+            title = getString(R.string.bc_vaccine_passes)
+            setNavigationIcon(R.drawable.ic_toolbar_back)
+            inflateMenu(R.menu.menu_manage_helth_pass)
+            setOnMenuItemClickListener { menu ->
+                when (menu.itemId) {
+                    R.id.menu_done -> {
+                        viewModel.updateHealthPassOrder(manageHealthPassAdapter.healthPasses)
+                            .invokeOnCompletion {
+                                findNavController().popBackStack()
+                            }
                     }
+                }
+                return@setOnMenuItemClickListener true
             }
         }
     }

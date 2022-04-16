@@ -4,16 +4,19 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentProfileBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
@@ -27,7 +30,7 @@ import kotlinx.coroutines.launch
 * @auther amit_metri on 07,January,2022
 */
 @AndroidEntryPoint
-class ProfileFragment : Fragment(R.layout.fragment_profile) {
+class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
 
     private val binding by viewBindings(FragmentProfileBinding::bind)
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
@@ -49,8 +52,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setUpToolBar()
 
         checkLogin()
     }
@@ -78,16 +79,11 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
     }
 
-    private fun setUpToolBar() {
-        binding.toolbar.apply {
-            ivLeftOption.visibility = View.VISIBLE
-            ivLeftOption.setImageResource(R.drawable.ic_action_back)
-            tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.profile_settings)
-            ivLeftOption.setOnClickListener {
-                findNavController().popBackStack()
-            }
-            line1.isVisible = true
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.topAppBar) {
+            setupWithNavController(findNavController(), appBarConfiguration)
+            setNavigationIcon(R.drawable.ic_toolbar_back)
+            title = getString(R.string.profile_settings)
         }
     }
 

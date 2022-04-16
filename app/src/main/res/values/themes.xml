@@ -22,6 +22,8 @@
 
         <item name="android:colorBackground">@android:color/white</item>
 
+        <item name="colorSurface">@color/white</item>
+
         <item name="android:statusBarColor" tools:targetApi="l">?colorPrimaryVariant</item>
 
         <item name="android:windowLightStatusBar">true</item>
