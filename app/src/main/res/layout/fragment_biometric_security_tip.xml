@@ -7,8 +7,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <include
-        android:id="@+id/toolbar"
-        layout="@layout/layout_toolbar"
+        android:id="@+id/layout_toolbar"
+        layout="@layout/layout_top_appbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,7 +19,7 @@
         android:layout_width="0dp"
         style="?textAppearanceBody1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintTop_toBottomOf="@id/layout_toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/biometric_security_tip_info"
         android:layout_marginStart="@dimen/space_4_x"

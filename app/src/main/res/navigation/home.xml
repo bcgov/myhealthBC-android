@@ -8,7 +8,6 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="ca.bc.gov.bchealth.ui.home.HomeFragment"
-        android:label="HomeFragment"
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_health_records"
