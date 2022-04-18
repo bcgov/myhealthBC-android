@@ -29,20 +29,16 @@ class ImmunizationDetailsAdapter :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val vaccineData = getItem(position)
+        val immunizationData = getItem(position)
 
         holder.binding.apply {
             tvDose.text = holder.itemView.resources.getString(R.string.dose)
                 .plus(" ")
                 .plus(position + 1)
-
-            tvOccurrenceDate.text = vaccineData.date.toDate()
-
-            tvProduct.text = vaccineData.productName
-
-            tvProvider.text = vaccineData.providerName
-
-            tvLotNumber.text = vaccineData.lotNumber
+            tvOccurrenceDate.text = immunizationData.date.toDate()
+            tvProduct.text = immunizationData.productName
+            tvProvider.text = immunizationData.providerName
+            tvLotNumber.text = immunizationData.lotNumber
         }
     }
 }
