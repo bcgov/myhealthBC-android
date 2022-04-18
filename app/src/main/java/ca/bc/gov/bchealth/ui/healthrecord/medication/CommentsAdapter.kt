@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemCommentBinding
 import ca.bc.gov.bchealth.databinding.ItemCommentsCountBinding
 import ca.bc.gov.common.utils.toDateTimeString
@@ -12,8 +13,14 @@ import ca.bc.gov.common.utils.toDateTimeString
 /**
  * @author Pinakin Kansara
  */
-class CommentsAdapter :
+class CommentsAdapter(
+    private val itemClickListener: ItemClickListener
+) :
     ListAdapter<Comment, RecyclerView.ViewHolder>(CommentsDiffCallBacks()) {
+
+    fun interface ItemClickListener {
+        fun onItemClick(parentEntryId: String)
+    }
 
     class CommentsCountViewHolder(val binding: ItemCommentsCountBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -43,12 +50,24 @@ class CommentsAdapter :
         val comment = getItem(position)
         when (holder) {
             is CommentsCountViewHolder -> {
-                holder.binding.tvCommentsCount.text = comment.text
+                holder.binding.tvCommentsCount.setTextColor(
+                    holder.itemView.resources.getColor(R.color.blue, null)
+                )
+                holder.binding.tvCommentsCount.text =
+                    comment.text?.let {
+                        holder.itemView.context.resources.getQuantityString(
+                            R.plurals.comments, it.toInt(), it.toInt()
+                        )
+                    }
+
+                holder.itemView.setOnClickListener {
+                    comment.parentEntryId?.let { it1 -> itemClickListener.onItemClick(it1) }
+                }
             }
 
             is CommentsViewHolder -> {
                 holder.binding.tvComment.text = comment.text
-                holder.binding.tvDateTime.text = comment.date.toDateTimeString()
+                holder.binding.tvDateTime.text = comment.date?.toDateTimeString()
             }
         }
     }
