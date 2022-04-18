@@ -57,8 +57,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         )?.observe(viewLifecycleOwner) {
             when (it) {
                 BioMetricState.SUCCESS -> {
+                    findNavController().currentBackStackEntry?.savedStateHandle?.remove<BioMetricState>(
+                        BiometricsAuthenticationFragment.BIOMETRIC_STATE
+                    )
                     viewModel.onAuthenticationRequired(false)
                     viewModel.launchCheck()
+                    viewModel.executeOneTimeDataFetch()
                 }
                 else -> {
                     findNavController().popBackStack()
