@@ -5,52 +5,72 @@
     android:filterTouchesWhenObscured="true"
     android:layout_height="match_parent">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_health_passes"
-        style="?textAppearanceHeadline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:text="@string/health_passes"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_health_pass_message"
-        style="?textAppearanceHeadline4"
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginTop="@dimen/space_2_x"
-        android:layout_marginEnd="@dimen/space_4_x"
-        android:text="@string/health_passes_message"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_health_passes" />
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/img_no_card"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_group_5209"
-        app:layout_constraintBottom_toTopOf="@+id/tv_do_not_have_any_card"
-        android:layout_marginBottom="@dimen/space_2_x"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_do_not_have_any_card"
-        style="?textAppearanceHeadline6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/no_cards_message"
-        android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@+id/tv_health_pass_message"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/space_1_x"
         app:layout_constraintBottom_toTopOf="@+id/btn_add_card"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.569" />
+        app:layout_constraintHorizontal_bias="0.5"
+        android:filterTouchesWhenObscured="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:filterTouchesWhenObscured="true"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_health_passes"
+                style="?textAppearanceHeadline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginTop="@dimen/space_4_x"
+                android:text="@string/health_passes"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_health_pass_message"
+                style="?textAppearanceHeadline4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginTop="@dimen/space_2_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:text="@string/health_passes_message"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_health_passes" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_no_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_group_5209"
+                android:layout_marginTop="@dimen/space_4_x"
+                app:layout_constraintTop_toBottomOf="@+id/tv_health_pass_message"
+                android:layout_marginBottom="@dimen/space_2_x"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_do_not_have_any_card"
+                style="?textAppearanceHeadline6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_4_x"
+                android:text="@string/no_cards_message"
+                android:textAlignment="center"
+                app:layout_constraintTop_toBottomOf="@+id/img_no_card"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_add_card"
