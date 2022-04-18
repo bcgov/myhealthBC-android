@@ -204,6 +204,11 @@
     <string name="enter_to_date">Enter to date</string>
     <string name="after">and after</string>
     <string name="before">and before</string>
+    <plurals name="comments">
+        <item quantity="one">%1$s Comment</item>
+        <item quantity="other">%1$s Comments</item>
+    </plurals>
+    <string name="comments">Comments</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>
@@ -318,4 +323,5 @@
     <string name="to">To</string>
     <string name="enter_valid_date">Please enter a valid date</string>
     <string name="date_filter_validation_msg">FROM date should be on or before TO date</string>
+    <string name="comments_medication_subtitle">Only you can see comments added to your medical records.</string>
 </resources>
