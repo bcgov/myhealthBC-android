@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_RECORD
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.repository.CommentRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,22 +37,35 @@ class MedicationDetailsViewModel @Inject constructor(
             val medicationWithSummaryAndPharmacyDto = medicationRecordRepository
                 .getMedicationWithSummaryAndPharmacy(medicationId)
 
-            val comment =
+            val comments =
                 commentRepository
                     .getComments(
                         medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
                     )
-            val comments = mutableListOf<Comment>()
-            if (comment.isNotEmpty()) {
-                comments.add(Comment("${comment.size} Comments", Instant.now()))
-                comments.addAll(comment.map { Comment(it.text, it.createdDateTime) })
+            val commentsTemp = mutableListOf<Comment>()
+            if (comments.isNotEmpty()) {
+                commentsTemp.add(
+                    Comment(
+                        medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier,
+                        comments.size.toString(),
+                        Instant.now()
+                    )
+                )
+                val firsComment = comments.maxByOrNull { it.createdDateTime }
+                commentsTemp.add(
+                    Comment(
+                        firsComment?.parentEntryId,
+                        firsComment?.text,
+                        firsComment?.createdDateTime?.toLocalDateTimeInstant()
+                    )
+                )
             }
             _uiState.update {
                 it.copy(
                     onLoading = false,
                     medicationDetails = prePareMedicationDetails(medicationWithSummaryAndPharmacyDto),
                     toolbarTitle = medicationWithSummaryAndPharmacyDto.medicationSummary.brandName,
-                    comments = comments
+                    comments = commentsTemp
                 )
             }
         } catch (e: Exception) {
@@ -143,6 +157,18 @@ class MedicationDetailsViewModel @Inject constructor(
         return medicationDetails
     }
 
+    fun resetUiState() {
+        _uiState.update {
+            it.copy(
+                onLoading = false,
+                onError = false,
+                medicationDetails = null,
+                toolbarTitle = null,
+                comments = emptyList()
+            )
+        }
+    }
+
     companion object {
         const val ITEM_VIEW_TYPE_RECORD = 0
         const val ITEM_VIEW_TYPE_DIRECTIONS = 1
@@ -166,6 +192,7 @@ data class MedicationDetail(
 )
 
 data class Comment(
+    val parentEntryId: String?,
     val text: String?,
-    val date: Instant,
+    val date: Instant?,
 )
