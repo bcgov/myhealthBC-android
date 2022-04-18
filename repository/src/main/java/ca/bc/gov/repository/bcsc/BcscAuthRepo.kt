@@ -5,6 +5,10 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Base64
 import androidx.core.net.toUri
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import ca.bc.gov.common.const.AUTH_ERROR
 import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
 import ca.bc.gov.common.exceptions.MyHealthException
@@ -13,6 +17,7 @@ import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.ConfigRemoteDataSource
 import ca.bc.gov.repository.R
+import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker
 import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationRequest
@@ -177,6 +182,18 @@ class BcscAuthRepo(
 
     fun getPostLoginCheck(): String? {
         return encryptedPreferenceStorage.postLoginCheck
+    }
+
+    fun executeOneTimeDatFetch() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        val oneTimeWorkRequest =
+            OneTimeWorkRequest.Builder(FetchAuthenticatedHealthRecordsWorker::class.java)
+                .setConstraints(constraints)
+                .build()
+        val workManager = WorkManager.getInstance(applicationContext)
+        workManager.enqueue(oneTimeWorkRequest)
     }
 
     companion object {

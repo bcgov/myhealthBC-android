@@ -120,6 +120,8 @@ class HomeViewModel @Inject constructor(
             )
         )
     }
+
+    fun executeOneTimeDataFetch() = bcscAuthRepo.executeOneTimeDatFetch()
 }
 
 data class HomeUiState(

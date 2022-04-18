@@ -23,7 +23,7 @@ import javax.inject.Inject
 * @auther amit_metri on 05,January,2022
 */
 @HiltViewModel
-class BcscAuthViewModel @Inject constructor (
+class BcscAuthViewModel @Inject constructor(
     private val bcscAuthRepo: BcscAuthRepo,
     private val queueItTokenRepository: QueueItTokenRepository,
     private val clearStorageRepository: ClearStorageRepository,
@@ -178,7 +178,8 @@ class BcscAuthViewModel @Inject constructor (
                 )
             }
             val isLoggedSuccess = bcscAuthRepo.checkLogin()
-            val userName = patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).fullName
+            val userName =
+                patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).fullName
             val loginSessionStatus = if (isLoggedSuccess) {
                 LoginStatus.ACTIVE
             } else {
@@ -363,6 +364,8 @@ class BcscAuthViewModel @Inject constructor (
     fun setPostLoginCheck(postLoginCheck: PostLoginCheck) {
         bcscAuthRepo.setPostLoginCheck(postLoginCheck)
     }
+
+    fun executeOneTimeDataFetch() = bcscAuthRepo.executeOneTimeDatFetch()
 }
 
 data class AuthStatus(
