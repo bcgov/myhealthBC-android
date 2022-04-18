@@ -295,7 +295,8 @@ enum class HealthRecordType {
     VACCINE_RECORD,
     COVID_TEST_RECORD,
     MEDICATION_RECORD,
-    LAB_TEST
+    LAB_TEST,
+    IMMUNIZATION_RECORD
 }
 
 data class HiddenMedicationRecordItem(

@@ -409,6 +409,13 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                             findNavController().navigate(action)
                         }
                     }
+                    HealthRecordType.IMMUNIZATION_RECORD -> {
+                        val action = IndividualHealthRecordFragmentDirections
+                            .actionIndividualHealthRecordFragmentToImmunizationRecordDetailFragment(
+                                it.patientId
+                            )
+                        findNavController().navigate(action)
+                    }
                 }
             },
             {

@@ -68,6 +68,9 @@
         <action
             android:id="@+id/action_individualHealthRecordFragment_to_covidTestResultDetailFragment"
             app:destination="@id/covidTestResultDetailFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_immunizationRecordDetailFragment"
+            app:destination="@id/immunizationRecordDetailFragment" />
     </fragment>
 
 
@@ -153,5 +156,14 @@
         <argument
             android:name="covid_order_id"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/immunizationRecordDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.immunization.ImmunizationRecordDetailFragment"
+        android:label="fragment_immunization_record_detail"
+        tools:layout="@layout/fragment_immunization_record_detail">
+        <argument
+            android:name="patientId"
+            app:argType="long" />
     </fragment>
 </navigation>
