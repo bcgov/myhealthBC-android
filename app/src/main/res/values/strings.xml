@@ -107,6 +107,10 @@
     <string name="health_passes">Proof of vaccination</string>
     <string name="home">Home</string>
     <string name="move">move</string>
+    <plurals name="cards_count">
+        <item quantity="one">%1$d card</item>
+        <item quantity="other">%1$d cards</item>
+    </plurals>
 
     <!-- In app updates -->
     <string name="update_success">Update Success!</string>

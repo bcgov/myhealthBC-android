@@ -89,23 +89,38 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 var filteredCovidOrders = covidOrders
 
                 if (!fromDate.isNullOrBlank() && !toDate.isNullOrBlank()) {
-                    filteredCovidTestRecords = covidTestRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
-                    filteredVaccineRecords = vaccineRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
-                    filteredMedicationRecords = medicationRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
-                    filteredLabTestRecords = labTestRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
-                    filteredCovidOrders = covidOrders.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
+                    filteredCovidTestRecords =
+                        covidTestRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
+                    filteredVaccineRecords =
+                        vaccineRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
+                    filteredMedicationRecords =
+                        medicationRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
+                    filteredLabTestRecords =
+                        labTestRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
+                    filteredCovidOrders =
+                        covidOrders.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
                 } else if (!fromDate.isNullOrBlank()) {
-                    filteredCovidTestRecords = covidTestRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
-                    filteredVaccineRecords = vaccineRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
-                    filteredMedicationRecords = medicationRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
-                    filteredLabTestRecords = labTestRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
-                    filteredCovidOrders = covidOrders.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
+                    filteredCovidTestRecords =
+                        covidTestRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
+                    filteredVaccineRecords =
+                        vaccineRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
+                    filteredMedicationRecords =
+                        medicationRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
+                    filteredLabTestRecords =
+                        labTestRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
+                    filteredCovidOrders =
+                        covidOrders.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
                 } else if (!toDate.isNullOrBlank()) {
-                    filteredCovidTestRecords = covidTestRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
-                    filteredVaccineRecords = vaccineRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
-                    filteredMedicationRecords = medicationRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
-                    filteredLabTestRecords = labTestRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
-                    filteredCovidOrders = covidOrders.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
+                    filteredCovidTestRecords =
+                        covidTestRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
+                    filteredVaccineRecords =
+                        vaccineRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
+                    filteredMedicationRecords =
+                        medicationRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
+                    filteredLabTestRecords =
+                        labTestRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
+                    filteredCovidOrders =
+                        covidOrders.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
                 }
 
                 val covidTestRecordsNonBcsc = covidTestRecords

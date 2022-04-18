@@ -232,6 +232,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     }
 
                     if (uiState.updatedTestResultId > 0) {
+                        healthRecordsAdapter.isUpdateRequested = false
+                        healthRecordsAdapter.notifyDataSetChanged()
                         viewModel.getIndividualsHealthRecord(
                             args.patientId,
                             filterSharedViewModel.filterState.value.timelineTypeFilter,
@@ -270,6 +272,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             binding.ivEdit.visibility = View.VISIBLE
             binding.ivFilter.visibility = View.GONE
             healthRecordsAdapter.isUpdateRequested = true
+            filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL), null, null)
         }
     }
 

@@ -253,12 +253,9 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
         val txtNumberOfPasses: MaterialTextView =
             sceneSingleHealthPass.sceneRoot.findViewById(R.id.tv_number_of_passes)
 
-        if (healthPasses.size > 1) {
-            val numberOfPasses = "${healthPasses.size} passes"
-            txtNumberOfPasses.text = numberOfPasses
-        } else {
-            txtNumberOfPasses.visibility = View.GONE
-        }
+        txtNumberOfPasses.text = resources.getQuantityString(
+            R.plurals.cards_count, healthPasses.size, healthPasses.size
+        )
     }
 
     private fun setupRecyclerView(healthPasses: List<HealthPass>) {
