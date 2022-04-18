@@ -10,14 +10,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ImmunizationRecordDetailViewModel @Inject constructor(
-) : ViewModel() {
+class ImmunizationRecordDetailViewModel @Inject constructor() : ViewModel() {
 
     private val _uiState = MutableStateFlow(ImmunizationRecordDetailUiState())
     val uiState: StateFlow<ImmunizationRecordDetailUiState> = _uiState.asStateFlow()
 
     fun getImmunizationRecordDetails(patientId: Long) = viewModelScope.launch {
-
     }
 }
 
