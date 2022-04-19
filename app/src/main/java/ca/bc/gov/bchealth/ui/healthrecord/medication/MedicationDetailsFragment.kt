@@ -39,6 +39,7 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
     private fun initUI() {
         setToolBar()
         setUpRecyclerView()
+        addCommentListener()
     }
 
     private fun setToolBar() {
@@ -98,5 +99,11 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
                 findNavController().popBackStack()
             }
         )
+    }
+
+    private fun addCommentListener() {
+        binding.tipComment.setEndIconOnClickListener {
+            viewModel.addComment(args.medicationId, binding.edComment.text.toString())
+        }
     }
 }

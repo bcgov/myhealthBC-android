@@ -33,4 +33,18 @@ class CommentRemoteDataSource @Inject constructor(
         }
         return response.toDto()
     }
+
+    suspend fun addComment(
+        parentEntryId: String?,
+        hdid: String,
+        accessToken: String
+    ) {
+        val response =
+            safeCall { healthGatewayPrivateApi.addComment(hdid, accessToken, parentEntryId) }
+                ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
+
+        if (response.error != null) {
+            throw MyHealthException(SERVER_ERROR, response.error.message)
+        }
+    }
 }

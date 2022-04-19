@@ -143,6 +143,39 @@ class MedicationDetailsViewModel @Inject constructor(
         return medicationDetails
     }
 
+    fun addComment(medicationId: Long, comment: String) = viewModelScope.launch {
+        try {
+            _uiState.update {
+                it.copy(onLoading = true)
+            }
+            val medicationWithSummaryAndPharmacyDto =
+                medicationRecordRepository.getMedicationWithSummaryAndPharmacy(medicationId)
+
+            val comment = commentRepository.addComment(
+                        medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
+                    )
+            val comments = mutableListOf<Comment>()
+            if (comment.isNotEmpty()) {
+                comments.add(Comment("${comment.size} Comments", Instant.now()))
+                comments.addAll(comment.map { Comment(it.text, it.createdDateTime) })
+            }
+            _uiState.update {
+                it.copy(
+                    onLoading = false,
+                    medicationDetails = prePareMedicationDetails(medicationWithSummaryAndPharmacyDto),
+                    toolbarTitle = medicationWithSummaryAndPharmacyDto.medicationSummary.brandName,
+                    comments = comments
+                )
+            }
+        } catch (e: Exception) {
+            _uiState.update {
+                it.copy(
+                    onError = true
+                )
+            }
+        }
+    }
+
     companion object {
         const val ITEM_VIEW_TYPE_RECORD = 0
         const val ITEM_VIEW_TYPE_DIRECTIONS = 1
