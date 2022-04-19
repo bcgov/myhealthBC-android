@@ -82,6 +82,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 val covidOrders =
                     patientWithCovidOrderAndTests.covidOrderAndTests.map { it.toUiModel() }
 
+                // reset filter for non-authenticated user
                 val filterList: MutableList<TimelineTypeFilter> = tempFilterList.toMutableList()
                 var fromDate: String? = tempFromDate
                 var toDate: String? = tempToDate
@@ -91,47 +92,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     filterList.add(TimelineTypeFilter.ALL)
                     fromDate = null
                     toDate = null
-                }
-
-                var filteredCovidTestRecords = covidTestRecords
-                var filteredVaccineRecords = vaccineRecords
-                var filteredMedicationRecords = medicationRecords
-                var filteredLabTestRecords = labTestRecords
-                var filteredCovidOrders = covidOrders
-
-                if (!fromDate.isNullOrBlank() && !toDate.isNullOrBlank()) {
-                    filteredCovidTestRecords =
-                        covidTestRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
-                    filteredVaccineRecords =
-                        vaccineRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
-                    filteredMedicationRecords =
-                        medicationRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
-                    filteredLabTestRecords =
-                        labTestRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
-                    filteredCovidOrders =
-                        covidOrders.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
-                } else if (!fromDate.isNullOrBlank()) {
-                    filteredCovidTestRecords =
-                        covidTestRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
-                    filteredVaccineRecords =
-                        vaccineRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
-                    filteredMedicationRecords =
-                        medicationRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
-                    filteredLabTestRecords =
-                        labTestRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
-                    filteredCovidOrders =
-                        covidOrders.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
-                } else if (!toDate.isNullOrBlank()) {
-                    filteredCovidTestRecords =
-                        covidTestRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
-                    filteredVaccineRecords =
-                        vaccineRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
-                    filteredMedicationRecords =
-                        medicationRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
-                    filteredLabTestRecords =
-                        labTestRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
-                    filteredCovidOrders =
-                        covidOrders.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
                 }
 
                 val covidTestRecordsNonBcsc = covidTestRecords
@@ -151,26 +111,43 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     when (it) {
                         TimelineTypeFilter.ALL -> {
                             filteredHealthRecords =
-                                filteredMedicationRecords + filteredVaccineRecords + filteredCovidTestRecords + filteredCovidOrders + filteredLabTestRecords
+                                medicationRecords + vaccineRecords + covidTestRecords + covidOrders + labTestRecords
                             filteredHealthRecordsExceptMedication =
-                                filteredVaccineRecords + filteredCovidTestRecords + filteredCovidOrders + filteredLabTestRecords
+                                vaccineRecords + covidTestRecords + covidOrders + labTestRecords
                         }
                         TimelineTypeFilter.MEDICATION -> {
-                            filteredHealthRecords += filteredMedicationRecords
+                            filteredHealthRecords += medicationRecords
                         }
                         TimelineTypeFilter.IMMUNIZATION -> {
-                            filteredHealthRecords += filteredVaccineRecords
-                            filteredHealthRecordsExceptMedication += filteredVaccineRecords
+                            filteredHealthRecords += vaccineRecords
+                            filteredHealthRecordsExceptMedication += vaccineRecords
                         }
                         TimelineTypeFilter.COVID_19_TEST -> {
-                            filteredHealthRecords += filteredCovidTestRecords + filteredCovidOrders
-                            filteredHealthRecordsExceptMedication += filteredCovidTestRecords + filteredCovidOrders
+                            filteredHealthRecords += covidTestRecords + covidOrders
+                            filteredHealthRecordsExceptMedication += covidTestRecords + covidOrders
                         }
                         TimelineTypeFilter.LAB_TEST -> {
-                            filteredHealthRecords += filteredLabTestRecords
-                            filteredHealthRecordsExceptMedication += filteredLabTestRecords
+                            filteredHealthRecords += labTestRecords
+                            filteredHealthRecordsExceptMedication += labTestRecords
                         }
                     }
+                }
+
+                if (!fromDate.isNullOrBlank() && !toDate.isNullOrBlank()) {
+                    filteredHealthRecords =
+                        filteredHealthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
+                    filteredHealthRecordsExceptMedication =
+                        filteredHealthRecordsExceptMedication.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
+                } else if (!fromDate.isNullOrBlank()) {
+                    filteredHealthRecords =
+                        filteredHealthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
+                    filteredHealthRecordsExceptMedication =
+                        filteredHealthRecordsExceptMedication.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
+                } else if (!toDate.isNullOrBlank()) {
+                    filteredHealthRecords =
+                        filteredHealthRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
+                    filteredHealthRecordsExceptMedication =
+                        filteredHealthRecordsExceptMedication.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
                 }
 
                 _uiState.update { state ->
