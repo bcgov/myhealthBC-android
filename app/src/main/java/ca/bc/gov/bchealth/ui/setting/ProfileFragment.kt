@@ -92,8 +92,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
     private fun checkLogin() {
-        bcscAuthViewModel.checkSession()
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 bcscAuthViewModel.authStatus.collect {
@@ -124,6 +122,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 }
             }
         }
+
+        bcscAuthViewModel.checkSession()
     }
 
     private fun showLogoutDialog() {
