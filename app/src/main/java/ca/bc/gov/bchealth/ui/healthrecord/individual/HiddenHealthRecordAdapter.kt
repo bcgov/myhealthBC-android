@@ -27,11 +27,7 @@ class HiddenHealthRecordAdapter(private val loginClickListener: ItemClickListene
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val record = getItem(position)
-        holder.binding.tvRecordsCount.text =
-            holder.itemView.context.resources.getQuantityString(
-                R.plurals.hidden_records_count, record.countOfRecords, record.countOfRecords
-            )
+        holder.binding.tvRecordsCount.text = holder.itemView.context.getString(R.string.session_time_out)
 
         holder.binding.btnLogin.setOnClickListener {
             loginClickListener.onItemClick()

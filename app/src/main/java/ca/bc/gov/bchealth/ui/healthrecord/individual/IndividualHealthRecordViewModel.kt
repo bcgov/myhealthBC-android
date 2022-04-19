@@ -44,9 +44,9 @@ class IndividualHealthRecordViewModel @Inject constructor(
 
     fun getIndividualsHealthRecord(
         patientId: Long,
-        filterList: List<TimelineTypeFilter>,
-        fromDate: String?,
-        toDate: String?
+        tempFilterList: List<TimelineTypeFilter>,
+        tempFromDate: String?,
+        tempToDate: String?
     ) =
         viewModelScope.launch {
 
@@ -81,6 +81,17 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 }
                 val covidOrders =
                     patientWithCovidOrderAndTests.covidOrderAndTests.map { it.toUiModel() }
+
+                val filterList: MutableList<TimelineTypeFilter> = tempFilterList.toMutableList()
+                var fromDate: String? = tempFromDate
+                var toDate: String? = tempToDate
+
+                if (patientWithVaccineRecords.patient.authenticationStatus != AuthenticationStatus.AUTHENTICATED) {
+                    filterList.clear()
+                    filterList.add(TimelineTypeFilter.ALL)
+                    fromDate = null
+                    toDate = null
+                }
 
                 var filteredCovidTestRecords = covidTestRecords
                 var filteredVaccineRecords = vaccineRecords
