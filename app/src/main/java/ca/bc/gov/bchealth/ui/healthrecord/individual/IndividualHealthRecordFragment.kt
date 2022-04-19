@@ -392,7 +392,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         findNavController().navigate(action)
                     }
                     HealthRecordType.LAB_TEST -> {
-                        it.labOrderId?.let { it1 ->
+                        it.labOrderId.let { it1 ->
                             val action = IndividualHealthRecordFragmentDirections
                                 .actionIndividualHealthRecordFragmentToLabTestDetailFragment(
                                     it1

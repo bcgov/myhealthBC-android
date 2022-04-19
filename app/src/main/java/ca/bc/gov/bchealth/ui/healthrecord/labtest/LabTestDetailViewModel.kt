@@ -21,7 +21,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
     private val _uiState = MutableStateFlow(LabTestDetailUiState())
     val uiState: StateFlow<LabTestDetailUiState> = _uiState.asStateFlow()
 
-    fun getLabTestDetails(labOrderId: String) = viewModelScope.launch {
+    fun getLabTestDetails(labOrderId: Long) = viewModelScope.launch {
         try {
             _uiState.update {
                 it.copy(onLoading = true)
@@ -31,6 +31,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
             _uiState.update {
                 it.copy(
                     onLoading = false,
+                    labPdfId = labOrderWithLabTestsAndPatientDto.labOrderWithLabTest.labOrder.labPdfId,
                     labTestDetails = prepareLabTestDetailsData(labOrderWithLabTestsAndPatientDto.labOrderWithLabTest),
                     toolbarTitle = labOrderWithLabTestsAndPatientDto.labOrderWithLabTest.labOrder.commonName,
                     showDownloadOption = labOrderWithLabTestsAndPatientDto.labOrderWithLabTest.labOrder.reportingAvailable
@@ -142,6 +143,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
 data class LabTestDetailUiState(
     val onLoading: Boolean = false,
     val onError: Boolean = false,
+    val labPdfId: String? = null,
     val labTestDetails: List<LabTestDetail>? = null,
     val toolbarTitle: String? = null,
     val showDownloadOption: Boolean = false,

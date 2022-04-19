@@ -42,7 +42,7 @@ class MyHealthDataBaseModule {
             MyHealthDataBase::class.java,
             "my_health_db"
         )
-        if (BuildConfig.FLAVOR != "dev") {
+        if (BuildConfig.FLAVOR != "dev" && BuildConfig.FLAVOR != "stage") {
             builder.openHelperFactory(supportFactory)
         }
         return builder.build()
