@@ -82,6 +82,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         observeAuthStatus()
 
+        bcscAuthViewModel.checkSession()
+
         viewModel.launchCheck()
 
         viewModel.getAuthenticatedPatientName()
