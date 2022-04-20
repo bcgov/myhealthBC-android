@@ -28,6 +28,7 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
     private lateinit var medicationDetailAdapter: MedicationDetailAdapter
     private lateinit var commentsAdapter: CommentsAdapter
     private lateinit var concatAdapter: ConcatAdapter
+    private var userProfileId: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -84,6 +85,7 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
                     if (state.onError) {
                         showError()
                     }
+                    userProfileId = state.userProfileId
                 }
             }
         }
@@ -102,8 +104,14 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
     }
 
     private fun addCommentListener() {
-        binding.tipComment.setEndIconOnClickListener {
-            viewModel.addComment(args.medicationId, binding.edComment.text.toString())
+        binding.comment.tipComment.setEndIconOnClickListener {
+            if (!binding.comment.edComment.text.isNullOrBlank()) {
+                viewModel.addComment(
+                    args.medicationId,
+                    userProfileId,
+                    binding.comment.edComment.text.toString()
+                )
+            }
         }
     }
 }

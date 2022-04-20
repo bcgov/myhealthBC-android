@@ -24,6 +24,7 @@ import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationStatemen
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationSummary
 import ca.bc.gov.data.datasource.remote.model.base.vaccine.Media
 import ca.bc.gov.data.datasource.remote.model.base.vaccine.VaccineResourcePayload
+import ca.bc.gov.data.datasource.remote.model.response.AddCommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.AuthenticatedCovidTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
@@ -147,6 +148,10 @@ fun CommentPayload.toDto() = CommentDto(
 
 fun CommentResponse.toDto(): List<CommentDto> {
     return payload.map { it.toDto() }
+}
+
+fun AddCommentResponse.toDto(): CommentDto{
+    return payload.toDto()
 }
 
 fun Order.toDto() = CovidOrderDto(

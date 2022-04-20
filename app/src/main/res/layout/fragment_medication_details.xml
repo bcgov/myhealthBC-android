@@ -22,7 +22,7 @@
         android:layout_height="0dp"
         android:scrollbars="vertical"
         android:layout_marginBottom="@dimen/space_2_x"
-        app:layout_constraintBottom_toTopOf="@+id/tip_comment"
+        app:layout_constraintBottom_toTopOf="@+id/comment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
@@ -40,31 +40,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tip_comment"
-        style="@style/HealthGateway.Widget.App.TextInputLayout"
+    <include android:id="@+id/comment"
+        layout="@layout/add_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginEnd="@dimen/space_4_x"
         android:layout_marginBottom="@dimen/space_4_x"
-        android:hint="@string/comment_here"
-        android:filterTouchesWhenObscured="true"
-        app:endIconContentDescription="@string/comment_here"
-        app:endIconDrawable="@drawable/ic_add_comment"
-        app:endIconMode="custom"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/ed_comment"
-            android:inputType="text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

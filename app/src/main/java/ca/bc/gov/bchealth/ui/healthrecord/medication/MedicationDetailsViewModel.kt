@@ -1,5 +1,6 @@
 package ca.bc.gov.bchealth.ui.healthrecord.medication
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_RECORD
@@ -41,8 +42,10 @@ class MedicationDetailsViewModel @Inject constructor(
                     .getComments(
                         medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
                     )
+            var userProfileId : String? = null
             val comments = mutableListOf<Comment>()
             if (comment.isNotEmpty()) {
+                userProfileId = comment.first().userProfileId
                 comments.add(Comment("${comment.size} Comments", Instant.now()))
                 comments.addAll(comment.map { Comment(it.text, it.createdDateTime) })
             }
@@ -51,7 +54,8 @@ class MedicationDetailsViewModel @Inject constructor(
                     onLoading = false,
                     medicationDetails = prePareMedicationDetails(medicationWithSummaryAndPharmacyDto),
                     toolbarTitle = medicationWithSummaryAndPharmacyDto.medicationSummary.brandName,
-                    comments = comments
+                    comments = comments,
+                    userProfileId = userProfileId
                 )
             }
         } catch (e: Exception) {
@@ -143,7 +147,7 @@ class MedicationDetailsViewModel @Inject constructor(
         return medicationDetails
     }
 
-    fun addComment(medicationId: Long, comment: String) = viewModelScope.launch {
+    fun addComment(medicationId: Long, userProfileId: String?, comment: String) = viewModelScope.launch {
         try {
             _uiState.update {
                 it.copy(onLoading = true)
@@ -152,7 +156,7 @@ class MedicationDetailsViewModel @Inject constructor(
                 medicationRecordRepository.getMedicationWithSummaryAndPharmacy(medicationId)
 
             val comment = commentRepository.addComment(
-                        medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
+                        medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier, userProfileId, comment
                     )
             val comments = mutableListOf<Comment>()
             if (comment.isNotEmpty()) {
@@ -168,6 +172,8 @@ class MedicationDetailsViewModel @Inject constructor(
                 )
             }
         } catch (e: Exception) {
+            e.printStackTrace()
+            Log.i("RASHMI", "Exception: ${e.message}")
             _uiState.update {
                 it.copy(
                     onError = true
@@ -189,7 +195,8 @@ data class MedicationDetailUiState(
     val onError: Boolean = false,
     val medicationDetails: List<MedicationDetail>? = null,
     val toolbarTitle: String? = null,
-    val comments: List<Comment> = emptyList()
+    val comments: List<Comment> = emptyList(),
+    val userProfileId: String? = null
 )
 
 data class MedicationDetail(

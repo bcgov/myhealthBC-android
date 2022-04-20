@@ -2,6 +2,7 @@ package ca.bc.gov.data.datasource.remote.api
 
 import ca.bc.gov.data.datasource.remote.model.request.CommentRequest
 import ca.bc.gov.data.datasource.remote.model.request.UserProfileRequest
+import ca.bc.gov.data.datasource.remote.model.response.AddCommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.AuthenticatedCovidTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestPdfResponse
@@ -110,6 +111,6 @@ interface HealthGatewayPrivateApi {
         @Path(HDID) hdid: String,
         @Header(AUTHORIZATION) accessToken: String,
         @Body commentRequest: CommentRequest
-    ): Response<CommentResponse>
+    ): Response<AddCommentResponse>
 
 }

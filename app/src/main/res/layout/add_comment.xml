@@ -1,0 +1,17 @@
+<com.google.android.material.textfield.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tip_comment"
+    style="@style/HealthGateway.Widget.App.TextInputLayout"
+    android:hint="@string/comment_here"
+    android:filterTouchesWhenObscured="true"
+    app:endIconContentDescription="@string/comment_here"
+    app:endIconDrawable="@drawable/ic_add_comment"
+    app:endIconMode="custom">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/ed_comment"
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</com.google.android.material.textfield.TextInputLayout>
