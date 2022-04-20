@@ -42,6 +42,7 @@ class PatientLocalDataSource @Inject constructor(
                     vaccineRecordCount = it.vaccineRecordCount,
                     testResultCount = it.testRecordCount,
                     labTestCount = it.labTestCount,
+                    covidTestCount = it.covidTestCount,
                     medicationRecordCount = it.medicationRecordCount
                 )
             }
