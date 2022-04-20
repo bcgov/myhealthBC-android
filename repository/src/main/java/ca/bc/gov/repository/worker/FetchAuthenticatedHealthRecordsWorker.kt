@@ -187,7 +187,10 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             labOrderRepository.delete(patientId)
             labOrdersResponse?.forEach {
                 it.labOrder.patientId = patientId
-                labOrderRepository.insert(it.labOrder)
+                val id = labOrderRepository.insert(it.labOrder)
+                it.labTests.forEach { test ->
+                    test.labOrderId = id
+                }
                 labTestRepository.insert(it.labTests)
             }
 

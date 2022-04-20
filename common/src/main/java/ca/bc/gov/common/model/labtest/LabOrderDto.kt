@@ -7,8 +7,9 @@ import java.time.Instant
  * @author Pinakin Kansara
  */
 data class LabOrderDto(
-    val id: String,
+    val id: Long = 0,
     var patientId: Long = 0,
+    val labPdfId: String? = null,
     val reportId: String? = null,
     val collectionDateTime: Instant,
     val timelineDateTime: Instant,

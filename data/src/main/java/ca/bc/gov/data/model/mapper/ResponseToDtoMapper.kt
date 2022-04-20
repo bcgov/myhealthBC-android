@@ -106,8 +106,6 @@ fun LabTestResponse.toDto(): List<LabOrderWithLabTestDto> {
     return payload.orders.map { order ->
         val tests = order.laboratoryTests.map { test ->
             LabTestDto(
-                id = 0,
-                labOrderId = order.labPdfId,
                 obxId = test.obxId,
                 batteryType = test.batteryType,
                 outOfRange = test.outOfRange,
@@ -117,7 +115,7 @@ fun LabTestResponse.toDto(): List<LabOrderWithLabTestDto> {
         }
         LabOrderWithLabTestDto(
             LabOrderDto(
-                id = order.labPdfId,
+                labPdfId = order.labPdfId,
                 reportId = order.reportId,
                 collectionDateTime = order.collectionDateTime.toDateTime(),
                 timelineDateTime = order.timelineDateTime.toDateTime(),

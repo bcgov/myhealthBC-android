@@ -13,11 +13,11 @@ import ca.bc.gov.data.datasource.local.entity.labtest.LabOrderWithLabTestsAndPat
 interface LabOrderDao : BaseDao<LabOrderEntity> {
 
     @Query("SELECT * FROM lab_order WHERE id = :id")
-    suspend fun findById(id: String): LabOrderEntity
+    suspend fun findById(id: Long): LabOrderEntity
 
     @Transaction
     @Query("SELECT * FROM lab_order WHERE id = :id")
-    suspend fun findByLabOrderId(id: String): LabOrderWithLabTestsAndPatient?
+    suspend fun findByLabOrderId(id: Long): LabOrderWithLabTestsAndPatient?
 
     @Query("DELETE FROM lab_order WHERE patient_id = :patientId")
     suspend fun delete(patientId: Long): Int

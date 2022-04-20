@@ -121,7 +121,7 @@
         android:label="LabTestDetailFragment">
         <argument
             android:name="lab_order_id"
-            app:argType="string" />
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/protectiveWordFragment"
