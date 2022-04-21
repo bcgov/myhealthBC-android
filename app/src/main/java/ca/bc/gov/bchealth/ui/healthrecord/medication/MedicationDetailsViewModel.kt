@@ -217,18 +217,6 @@ class MedicationDetailsViewModel @Inject constructor(
         }
     }
 
-    fun resetUiState() {
-        _uiState.update {
-            it.copy(
-                onLoading = false,
-                onError = false,
-                medicationDetails = null,
-                toolbarTitle = null,
-                comments = emptyList()
-            )
-        }
-    }
-
     companion object {
         const val ITEM_VIEW_TYPE_RECORD = 0
         const val ITEM_VIEW_TYPE_DIRECTIONS = 1

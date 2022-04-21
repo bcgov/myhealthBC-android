@@ -121,10 +121,6 @@
             android:id="@+id/action_medicationDetailsFragment_to_commentsFragment"
             app:destination="@id/commentsFragment" />
     </fragment>
-       <action
-           android:id="@+id/action_medicationDetailsFragment_to_commentsFragment"
-           app:destination="@id/commentsFragment" />
-   </fragment>
     <fragment
         android:id="@+id/labTestDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.labtest.LabTestDetailFragment"
@@ -145,7 +141,7 @@
         android:id="@+id/healthRecordPlaceholderFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment"
         android:label="health_record_placeholder_fragment"
-        tools:layout="@layout/health_record_placeholder_fragment">
+        tools:layout="@layout/health_record_placeholder_fragment" >
         <action
             android:id="@+id/action_healthRecordsPlaceHolderFragment_to_individualHealthRecordFragment"
             app:destination="@id/individualHealthRecordFragment" />
@@ -169,24 +165,6 @@
             app:argType="string" />
         <argument
             android:name="userProfileId"
-            app:argType="string" />
-    </fragment>
-    <fragment
-        android:id="@+id/commentsFragment"
-        android:name="ca.bc.gov.bchealth.ui.comment.CommentsFragment"
-        android:label="fragment_comments"
-        tools:layout="@layout/fragment_comments" >
-        <argument
-            android:name="parentEntryId"
-            app:argType="string" />
-    </fragment>
-    <fragment
-        android:id="@+id/commentsFragment"
-        android:name="ca.bc.gov.bchealth.ui.comment.CommentsFragment"
-        android:label="fragment_comments"
-        tools:layout="@layout/fragment_comments" >
-        <argument
-            android:name="parentEntryId"
             app:argType="string" />
     </fragment>
     <fragment

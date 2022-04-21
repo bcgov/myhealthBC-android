@@ -69,11 +69,6 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
                 )
             findNavController().navigate(action)
         }
-        commentsAdapter = CommentsAdapter { parentEntryId ->
-            val action = MedicationDetailsFragmentDirections
-                .actionMedicationDetailsFragmentToCommentsFragment(parentEntryId)
-            findNavController().navigate(action)
-        }
         medicationDetailAdapter = MedicationDetailAdapter()
         concatAdapter = ConcatAdapter(medicationDetailAdapter, commentsAdapter)
         val recyclerView = binding.rvMedicationDetailList
