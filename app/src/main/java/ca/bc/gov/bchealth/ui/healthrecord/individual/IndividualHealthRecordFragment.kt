@@ -232,6 +232,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     }
 
                     if (uiState.updatedTestResultId > 0) {
+                        healthRecordsAdapter.isUpdateRequested = false
+                        healthRecordsAdapter.notifyDataSetChanged()
                         viewModel.getIndividualsHealthRecord(
                             args.patientId,
                             filterSharedViewModel.filterState.value.timelineTypeFilter,
@@ -270,11 +272,13 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             binding.ivEdit.visibility = View.VISIBLE
             binding.ivFilter.visibility = View.GONE
             healthRecordsAdapter.isUpdateRequested = true
+            binding.imgClear.visibility = View.GONE
+            binding.cgFilter.visibility = View.GONE
         }
     }
 
     private fun updateHealthRecordsList(uiState: IndividualHealthRecordsUiState) {
-        if (uiState.onHealthRecords.isEmpty()) {
+        if (uiState.onHealthRecords.isEmpty() && uiState.patientAuthStatus != AuthenticationStatus.AUTHENTICATED) {
             findNavController().previousBackStackEntry?.savedStateHandle
                 ?.set(
                     HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
@@ -282,6 +286,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 )
             findNavController().popBackStack()
         }
+
         if (loginStatus == LoginStatus.ACTIVE) {
             displayBcscRecords(uiState)
         }

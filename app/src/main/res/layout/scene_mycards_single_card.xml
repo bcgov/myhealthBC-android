@@ -29,52 +29,38 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_health_pass_message"
-                style="?textAppearanceHeadline3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_2_x"
-                android:text="@string/bc_vaccine_card"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_health_passes" />
-
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_add_card"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/space_4_x"
+                android:layout_marginBottom="@dimen/space_2_x"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:contentDescription="@string/add_bc_vaccine_record"
                 android:focusable="true"
                 android:src="@drawable/ic_add_card_blue"
                 android:filterTouchesWhenObscured="true"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_health_pass_message"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_health_passes" />
+                app:layout_constraintBottom_toTopOf="@+id/rec_cards_list" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_number_of_passes"
-                style="?textAppearanceHeadline4"
+                style="?textAppearanceHeadline3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_1_x"
-                android:layout_marginEnd="@dimen/space_4_x"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+                android:layout_marginTop="@dimen/space_2_x"
+                android:textSize="15sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_health_pass_message"
+                app:layout_constraintTop_toBottomOf="@+id/tv_health_passes"
                 tools:text="3 passes" />
 
             <ca.bc.gov.bchealth.widget.RecyclerView
                 android:id="@+id/rec_cards_list"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_2_x"
+                android:layout_marginTop="@dimen/space_3_x"
                 android:layout_weight="1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"

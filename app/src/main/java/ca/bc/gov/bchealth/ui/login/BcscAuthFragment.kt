@@ -10,24 +10,18 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentBcscAuthBinding
-import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterViewModel
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.repository.bcsc.PostLoginCheck
-import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
@@ -38,7 +32,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
-import java.util.concurrent.TimeUnit
 
 /*
 * @auther amit_metri on 04,January,2022
@@ -70,8 +63,6 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             )
         }
     }
-
-    private val filterSharedViewModel: FilterViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -155,6 +146,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             }
             AgeLimitCheck.FAILED -> {
                 showAgeLimitRestrictionDialog()
+                viewModel.resetAuthStatus()
             }
         }
     }
@@ -166,7 +158,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             when (authStatus.tosAccepted) {
                 TOSAccepted.ACCEPTED -> {
                     respondToSuccess()
-                    fetchBcscHealthRecords()
+                    viewModel.executeOneTimeDataFetch()
                 }
                 else -> {
                     findNavController().navigate(R.id.termsOfServiceFragment)
@@ -222,19 +214,6 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             respondToError()
             viewModel.resetAuthStatus()
         }
-    }
-
-    private fun fetchBcscHealthRecords() {
-        val workRequest = PeriodicWorkRequestBuilder<FetchAuthenticatedHealthRecordsWorker>(
-            BACKGROUND_AUTH_RECORD_FETCH_WORK_INTERVAL,
-            TimeUnit.MINUTES
-        ).build()
-        val workManager = WorkManager.getInstance(requireContext())
-        workManager.enqueueUniquePeriodicWork(
-            BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME,
-            ExistingPeriodicWorkPolicy.REPLACE,
-            workRequest
-        )
     }
 
     private fun queUser(value: String) {
