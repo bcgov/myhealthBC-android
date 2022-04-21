@@ -2,8 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:filterTouchesWhenObscured="true"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:filterTouchesWhenObscured="true">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_resource"
@@ -79,7 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/space_2_x"
-            android:contentDescription="@string/add_card"
+            android:contentDescription="@string/add_bc_vaccine_record"
             android:src="@drawable/ic_add_health_record"
             app:layout_constraintBottom_toBottomOf="@+id/tv_get_vaccination_record_title"
             app:layout_constraintEnd_toEndOf="parent"
@@ -90,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/space_6_x"
-            android:contentDescription="@string/add_card"
+            tools:ignore="contentDescription"
             android:src="@drawable/ic_health_record_add_vaccine"
             app:layout_constraintBottom_toBottomOf="@+id/tv_get_vaccination_record_subtitle"
             app:layout_constraintEnd_toEndOf="parent"
@@ -146,7 +147,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/space_2_x"
-            android:contentDescription="@string/add_card"
+            android:contentDescription="@string/add_covid_test_result"
             android:src="@drawable/ic_add_health_record"
             app:layout_constraintBottom_toBottomOf="@+id/tv_get_covid_test_result_title"
             app:layout_constraintEnd_toEndOf="parent"
@@ -157,7 +158,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/space_4_x"
-            android:contentDescription="@string/add_card"
+            tools:ignore="contentDescription"
             android:src="@drawable/ic_covid_test_result"
             app:layout_constraintBottom_toBottomOf="@+id/tv_get_covid_test_result_subtitle"
             app:layout_constraintEnd_toEndOf="parent"

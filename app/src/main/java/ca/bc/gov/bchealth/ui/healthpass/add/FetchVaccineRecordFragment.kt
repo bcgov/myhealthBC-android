@@ -260,7 +260,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
     private fun setUpDovUI() {
         DatePickerHelper().initializeDatePicker(
             binding.tipDov,
-            getString(R.string.select_date),
+            getString(R.string.enter_dob),
             parentFragmentManager,
             "DATE_OF_VACCINATION"
         )
@@ -269,7 +269,7 @@ class FetchVaccineRecordFragment : Fragment(R.layout.fragment_fetch_vaccine_reco
     private fun setUpDobUI() {
         DatePickerHelper().initializeDatePicker(
             binding.tipDob,
-            getString(R.string.select_date),
+            getString(R.string.enter_dov),
             parentFragmentManager,
             "DATE_OF_BIRTH"
         )

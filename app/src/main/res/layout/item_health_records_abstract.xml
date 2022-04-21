@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/space_2_x"
             android:layout_marginTop="@dimen/space_2_x"
+            android:layout_marginBottom="@dimen/space_2_x"
             android:src="@drawable/ic_resources_icon_2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -53,7 +54,7 @@
             style="?textAppearanceCaption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/space_1_x"
+            android:layout_marginBottom="@dimen/space_2_x"
             android:ellipsize="end"
             android:maxLines="2"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -65,8 +66,8 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_right_arrow"
-            android:layout_width="@dimen/space_3_x"
-            android:layout_height="@dimen/space_3_x"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginEnd="@dimen/space_2_x"
             android:src="@drawable/ic_angle_right"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -96,7 +97,6 @@
         android:contentDescription="@string/unlink"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:padding="@dimen/space_2_x"
         android:visibility="gone"
         android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toBottomOf="parent"

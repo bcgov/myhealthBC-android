@@ -3,6 +3,7 @@ package ca.bc.gov.common.utils
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -33,4 +34,9 @@ fun String.toDateTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL
 
 fun Instant.toStartOfDayInstant(): Instant {
     return this.truncatedTo(ChronoUnit.DAYS)
+}
+
+fun Instant.toLocalDateTimeInstant(): Instant? {
+    return this.atZone(ZoneId.systemDefault())
+        ?.toLocalDateTime()?.toInstant(ZoneOffset.UTC)
 }

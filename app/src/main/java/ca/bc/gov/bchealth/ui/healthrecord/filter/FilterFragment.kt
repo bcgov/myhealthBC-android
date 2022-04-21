@@ -147,7 +147,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
                     DatePickerHelper().initFilterDatePicker(
                         binding.tipFrom,
-                        getString(R.string.select_date),
+                        getString(R.string.enter_from_date),
                         parentFragmentManager,
                         "FILTER_FROM_DATE",
                         filterState.filterFromDate
@@ -155,7 +155,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
                     DatePickerHelper().initFilterDatePicker(
                         binding.tipTo,
-                        getString(R.string.select_date),
+                        getString(R.string.enter_to_date),
                         parentFragmentManager,
                         "FILTER_TO_DATE",
                         filterState.filterToDate

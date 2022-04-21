@@ -57,17 +57,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         )?.observe(viewLifecycleOwner) {
             when (it) {
                 BioMetricState.SUCCESS -> {
+                    findNavController().currentBackStackEntry?.savedStateHandle?.remove<BioMetricState>(
+                        BiometricsAuthenticationFragment.BIOMETRIC_STATE
+                    )
                     viewModel.onAuthenticationRequired(false)
                     viewModel.launchCheck()
+                    viewModel.executeOneTimeDataFetch()
                 }
                 else -> {
                     findNavController().popBackStack()
                 }
             }
         }
-
-        viewModel.launchCheck()
-        viewModel.getAuthenticatedPatientName()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -80,6 +81,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         initRecyclerview()
 
         observeAuthStatus()
+
+        viewModel.launchCheck()
+
+        viewModel.getAuthenticatedPatientName()
     }
 
     private fun observeAuthStatus() {

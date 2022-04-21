@@ -61,13 +61,6 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_add_health_records) 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (args.isBackButtonEnabled) {
-            binding.tvHealthRecordTitle.isVisible = false
-            binding.tvMessage.isVisible = true
-        } else {
-            binding.tvHealthRecordTitle.isVisible = true
-            binding.tvMessage.isVisible = true
-        }
         setupToolBar()
 
         observeBcscLogin()

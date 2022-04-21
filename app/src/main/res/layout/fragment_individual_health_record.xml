@@ -27,10 +27,9 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:visibility="gone"
-        android:padding="4dp"
         android:src="@drawable/ic_action_back"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintTop_toBottomOf="@+id/mockView2"
@@ -47,38 +46,32 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_setting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:src="@drawable/ic_settings"
-        android:padding="4dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_marginTop="@dimen/space_2_x"
-        android:layout_marginEnd="@dimen/space_2_x"
         android:filterTouchesWhenObscured="true"
         app:layout_constraintEnd_toStartOf="@+id/iv_add"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:src="@drawable/ic_add_card_blue_small"
         app:layout_constraintTop_toTopOf="@+id/iv_setting"
-        android:padding="4dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_marginEnd="@dimen/space_2_x"
         android:filterTouchesWhenObscured="true"
         app:layout_constraintEnd_toStartOf="@+id/iv_filter"
         app:layout_constraintBottom_toBottomOf="@+id/iv_setting" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_filter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:src="@drawable/ic_filter"
-        android:padding="4dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_marginEnd="@dimen/space_2_x"
         android:filterTouchesWhenObscured="true"
         app:layout_constraintTop_toTopOf="@+id/iv_add"
         app:layout_constraintEnd_toStartOf="@+id/iv_edit"
@@ -86,10 +79,9 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:src="@drawable/ic_edit"
-        android:padding="4dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:filterTouchesWhenObscured="true"
         app:layout_constraintTop_toTopOf="@+id/iv_filter"
@@ -114,8 +106,8 @@
 
     <ImageView
         android:id="@+id/img_clear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:src="@drawable/ic_clear"
         android:layout_marginStart="@dimen/space_4_x"
         android:visibility="gone"
@@ -123,14 +115,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/horizontal_scrollview"
         app:layout_constraintBottom_toBottomOf="@+id/horizontal_scrollview"
-        />
+        android:contentDescription="@string/clear" />
 
     <HorizontalScrollView
         android:id="@+id/horizontal_scrollview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_1_x"
-        android:layout_marginStart="@dimen/space_1_x"
         android:layout_marginEnd="@dimen/space_1_x"
         android:scrollbars="none"
         android:filterTouchesWhenObscured="true"
@@ -152,8 +143,7 @@
                 android:clickable="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_medication"

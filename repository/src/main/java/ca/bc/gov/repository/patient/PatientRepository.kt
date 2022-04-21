@@ -50,7 +50,7 @@ class PatientRepository @Inject constructor(
                         record.testResultCount +
                         record.medicationRecordCount +
                         record.labTestCount
-                    ) >= 0
+                    ) > 0
             }
         }
 

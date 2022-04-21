@@ -18,4 +18,10 @@ class OnBoardingRepository @Inject constructor(
         set(value) {
             preferenceStorage.onBoardingRequired = value
         }
+
+    var onBCSCLoginRequiredPostBiometric: Boolean
+        get() = preferenceStorage.onBCSCLoginRequiredPostBiometric
+        set(value) {
+            preferenceStorage.onBCSCLoginRequiredPostBiometric = value
+        }
 }

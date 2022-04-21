@@ -232,6 +232,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     }
 
                     if (uiState.updatedTestResultId > 0) {
+                        healthRecordsAdapter.isUpdateRequested = false
+                        healthRecordsAdapter.notifyDataSetChanged()
                         viewModel.getIndividualsHealthRecord(
                             args.patientId,
                             filterSharedViewModel.filterState.value.timelineTypeFilter,
@@ -270,10 +272,21 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             binding.ivEdit.visibility = View.VISIBLE
             binding.ivFilter.visibility = View.GONE
             healthRecordsAdapter.isUpdateRequested = true
+            binding.imgClear.visibility = View.GONE
+            binding.cgFilter.visibility = View.GONE
         }
     }
 
     private fun updateHealthRecordsList(uiState: IndividualHealthRecordsUiState) {
+        if (uiState.onHealthRecords.isEmpty() && uiState.patientAuthStatus != AuthenticationStatus.AUTHENTICATED) {
+            findNavController().previousBackStackEntry?.savedStateHandle
+                ?.set(
+                    HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
+                    NavigationAction.ACTION_RE_CHECK
+                )
+            findNavController().popBackStack()
+        }
+
         if (loginStatus == LoginStatus.ACTIVE) {
             displayBcscRecords(uiState)
         }
@@ -444,7 +457,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun setupToolbar() {
 
         binding.apply {
-            tvName.text = args.patientName
+            val names = args.patientName.split(" ")
+            val firstName = if (names.isNotEmpty()) names.first() else ""
+            tvName.text = firstName
             if (findNavController().previousBackStackEntry?.destination?.id ==
                 R.id.healthRecordsFragment
             ) {
@@ -468,6 +483,11 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             }
             ivEdit.setOnClickListener {
                 healthRecordsAdapter.canDeleteRecord = !healthRecordsAdapter.canDeleteRecord
+                if (healthRecordsAdapter.canDeleteRecord) {
+                    ivEdit.setImageResource(R.drawable.ic_done)
+                } else {
+                    ivEdit.setImageResource(R.drawable.ic_edit)
+                }
                 concatAdapter.notifyItemRangeChanged(
                     0,
                     concatAdapter.itemCount
