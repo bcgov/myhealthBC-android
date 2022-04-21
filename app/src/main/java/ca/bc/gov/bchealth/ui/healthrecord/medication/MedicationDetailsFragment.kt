@@ -62,7 +62,7 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
     private fun setUpRecyclerView() {
         commentsAdapter = CommentsAdapter { parentEntryId ->
             val action = MedicationDetailsFragmentDirections
-                .actionMedicationDetailsFragmentToCommentsFragment(parentEntryId)
+                .actionMedicationDetailsFragmentToCommentsFragment(parentEntryId, userProfileId ?: "")
             findNavController().navigate(action)
         }
         medicationDetailAdapter = MedicationDetailAdapter()

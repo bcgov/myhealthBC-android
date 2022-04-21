@@ -36,6 +36,7 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
     private fun initUi() {
         setUpToolBar()
         setUpRecyclerView()
+        addCommentListener()
     }
 
     private fun setUpRecyclerView() {
@@ -91,5 +92,17 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
                 findNavController().popBackStack()
             }
         )
+    }
+
+    private fun addCommentListener() {
+        binding.comment.tipComment.setEndIconOnClickListener {
+            if (!binding.comment.edComment.text.isNullOrBlank()) {
+                viewModel.addComment(
+                    args.parentEntryId,
+                    args.userProfileId,
+                    binding.comment.edComment.text.toString()
+                )
+            }
+        }
     }
 }

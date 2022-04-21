@@ -106,7 +106,7 @@
             android:name="patientId"
             app:argType="long" />
     </fragment>
-   <fragment
+    <fragment
         android:id="@+id/medicationDetailsFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsFragment"
         android:label="fragment_medication_details"
@@ -114,10 +114,10 @@
         <argument
             android:name="medicationId"
             app:argType="long" />
-       <action
-           android:id="@+id/action_medicationDetailsFragment_to_commentsFragment"
-           app:destination="@id/commentsFragment" />
-   </fragment>
+        <action
+            android:id="@+id/action_medicationDetailsFragment_to_commentsFragment"
+            app:destination="@id/commentsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/labTestDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.labtest.LabTestDetailFragment"
@@ -138,7 +138,7 @@
         android:id="@+id/healthRecordPlaceholderFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment"
         android:label="health_record_placeholder_fragment"
-        tools:layout="@layout/health_record_placeholder_fragment" >
+        tools:layout="@layout/health_record_placeholder_fragment">
         <action
             android:id="@+id/action_healthRecordsPlaceHolderFragment_to_individualHealthRecordFragment"
             app:destination="@id/individualHealthRecordFragment" />
@@ -159,6 +159,9 @@
         tools:layout="@layout/fragment_comments" >
         <argument
             android:name="parentEntryId"
+            app:argType="string" />
+        <argument
+            android:name="userProfileId"
             app:argType="string" />
     </fragment>
 </navigation>

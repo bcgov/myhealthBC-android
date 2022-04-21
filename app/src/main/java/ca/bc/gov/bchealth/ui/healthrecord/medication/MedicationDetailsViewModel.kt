@@ -1,6 +1,5 @@
 package ca.bc.gov.bchealth.ui.healthrecord.medication
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_RECORD
@@ -200,7 +199,6 @@ class MedicationDetailsViewModel @Inject constructor(
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.i("RASHMI", "Exception: ${e.message}")
             _uiState.update {
                 it.copy(
                     onError = true
