@@ -208,7 +208,8 @@ fun PatientWithHealthRecordCount.toUiModel(): PatientHealthRecord {
     return PatientHealthRecord(
         patientId = patientDto.id,
         name = patientDto.fullName,
-        totalRecord = vaccineRecordCount + testResultCount + labTestCount + medicationRecordCount,
+        totalRecord = vaccineRecordCount + testResultCount + labTestCount + medicationRecordCount +
+            covidTestCount,
         authStatus = patientDto.authenticationStatus
     )
 }
