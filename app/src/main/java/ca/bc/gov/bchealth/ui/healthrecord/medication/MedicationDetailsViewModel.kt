@@ -44,11 +44,6 @@ class MedicationDetailsViewModel @Inject constructor(
                         medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
                     )
             var userProfileId : String? = null
-            val comments = mutableListOf<Comment>()
-            if (comment.isNotEmpty()) {
-                userProfileId = comment.first().userProfileId
-                comments.add(Comment("${comment.size} Comments", Instant.now()))
-                comments.addAll(comment.map { Comment(it.text, it.createdDateTime) })
             val commentsTemp = mutableListOf<Comment>()
             if (comments.isNotEmpty()) {
                 commentsTemp.add(
@@ -66,15 +61,15 @@ class MedicationDetailsViewModel @Inject constructor(
                         firsComment?.createdDateTime?.toLocalDateTimeInstant()
                     )
                 )
+                userProfileId = firsComment?.userProfileId
             }
             _uiState.update {
                 it.copy(
                     onLoading = false,
                     medicationDetails = prePareMedicationDetails(medicationWithSummaryAndPharmacyDto),
                     toolbarTitle = medicationWithSummaryAndPharmacyDto.medicationSummary.brandName,
-                    comments = comments,
+                    comments = commentsTemp,
                     userProfileId = userProfileId
-                    comments = commentsTemp
                 )
             }
         } catch (e: Exception) {
@@ -174,20 +169,33 @@ class MedicationDetailsViewModel @Inject constructor(
             val medicationWithSummaryAndPharmacyDto =
                 medicationRecordRepository.getMedicationWithSummaryAndPharmacy(medicationId)
 
-            val comment = commentRepository.addComment(
+            val comments = commentRepository.addComment(
                         medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier, userProfileId, comment
                     )
-            val comments = mutableListOf<Comment>()
-            if (comment.isNotEmpty()) {
-                comments.add(Comment("${comment.size} Comments", Instant.now()))
-                comments.addAll(comment.map { Comment(it.text, it.createdDateTime) })
+            val commentsTemp = mutableListOf<Comment>()
+            if (comments.isNotEmpty()) {
+                commentsTemp.add(
+                    Comment(
+                        medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier,
+                        comments.size.toString(),
+                        Instant.now()
+                    )
+                )
+                val firsComment = comments.maxByOrNull { it.createdDateTime }
+                commentsTemp.add(
+                    Comment(
+                        firsComment?.parentEntryId,
+                        firsComment?.text,
+                        firsComment?.createdDateTime?.toLocalDateTimeInstant()
+                    )
+                )
             }
             _uiState.update {
                 it.copy(
                     onLoading = false,
                     medicationDetails = prePareMedicationDetails(medicationWithSummaryAndPharmacyDto),
                     toolbarTitle = medicationWithSummaryAndPharmacyDto.medicationSummary.brandName,
-                    comments = comments
+                    comments = commentsTemp
                 )
             }
         } catch (e: Exception) {
