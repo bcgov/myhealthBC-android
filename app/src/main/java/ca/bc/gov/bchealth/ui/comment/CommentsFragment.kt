@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.healthrecord.medication
+package ca.bc.gov.bchealth.ui.comment
 
 import android.os.Bundle
 import android.view.View
@@ -10,40 +10,42 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.databinding.FragmentMedicationDetailsBinding
+import ca.bc.gov.bchealth.databinding.FragmentCommentsBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details) {
+class CommentsFragment : Fragment(R.layout.fragment_comments) {
 
-    private val binding by viewBindings(FragmentMedicationDetailsBinding::bind)
-    private val args: MedicationDetailsFragmentArgs by navArgs()
-    private val viewModel: MedicationDetailsViewModel by viewModels()
-    private lateinit var medicationDetailAdapter: MedicationDetailAdapter
+    private val binding by viewBindings(FragmentCommentsBinding::bind)
+    private val args: CommentsFragmentArgs by navArgs()
+    private val viewModel: CommentsViewModel by viewModels()
     private lateinit var commentsAdapter: CommentsAdapter
-    private lateinit var concatAdapter: ConcatAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initUI()
-        if (medicationDetailAdapter.currentList.isEmpty()) {
-            viewModel.getMedicationDetails(args.medicationId)
-        }
-        observeUiState()
+        initUi()
+        observeComments()
+        viewModel.getComments(args.parentEntryId)
     }
 
-    private fun initUI() {
-        setToolBar()
+    private fun initUi() {
+        setUpToolBar()
         setUpRecyclerView()
     }
 
-    private fun setToolBar() {
+    private fun setUpRecyclerView() {
+        commentsAdapter = CommentsAdapter()
+        val recyclerView = binding.rvCommentsList
+        recyclerView.adapter = commentsAdapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+    }
+
+    private fun setUpToolBar() {
         binding.toolbar.apply {
             ivLeftOption.visibility = View.VISIBLE
             ivLeftOption.setImageResource(R.drawable.ic_action_back)
@@ -52,38 +54,21 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
             }
 
             tvTitle.visibility = View.VISIBLE
+            tvTitle.text = getString(R.string.comments)
 
             line1.visibility = View.VISIBLE
         }
     }
 
-    private fun setUpRecyclerView() {
-        commentsAdapter = CommentsAdapter { parentEntryId ->
-            val action = MedicationDetailsFragmentDirections
-                .actionMedicationDetailsFragmentToCommentsFragment(parentEntryId)
-            findNavController().navigate(action)
-        }
-        medicationDetailAdapter = MedicationDetailAdapter()
-        concatAdapter = ConcatAdapter(medicationDetailAdapter, commentsAdapter)
-        val recyclerView = binding.rvMedicationDetailList
-        recyclerView.adapter = concatAdapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-    }
-
-    private fun observeUiState() {
+    private fun observeComments() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
 
                     binding.progressBar.isVisible = state.onLoading
 
-                    if (state.medicationDetails?.isNotEmpty() == true) {
-                        medicationDetailAdapter.submitList(state.medicationDetails)
-                        binding.toolbar.tvTitle.text = state.toolbarTitle
-                    }
-
-                    if (state.comments.isNotEmpty()) {
-                        commentsAdapter.submitList(state.comments)
+                    if (state.commentsList != null) {
+                        commentsAdapter.submitList(state.commentsList)
                         viewModel.resetUiState()
                     }
 
