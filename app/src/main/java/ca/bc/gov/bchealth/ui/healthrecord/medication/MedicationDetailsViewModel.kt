@@ -192,8 +192,6 @@ class MedicationDetailsViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     onLoading = false,
-                    medicationDetails = prePareMedicationDetails(medicationWithSummaryAndPharmacyDto),
-                    toolbarTitle = medicationWithSummaryAndPharmacyDto.medicationSummary.brandName,
                     comments = commentsTemp
                 )
             }

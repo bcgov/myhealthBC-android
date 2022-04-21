@@ -1,8 +1,11 @@
 package ca.bc.gov.bchealth.ui.healthrecord.medication
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -62,7 +65,10 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
     private fun setUpRecyclerView() {
         commentsAdapter = CommentsAdapter { parentEntryId ->
             val action = MedicationDetailsFragmentDirections
-                .actionMedicationDetailsFragmentToCommentsFragment(parentEntryId, userProfileId ?: "")
+                .actionMedicationDetailsFragmentToCommentsFragment(
+                    parentEntryId,
+                    userProfileId ?: ""
+                )
             findNavController().navigate(action)
         }
         medicationDetailAdapter = MedicationDetailAdapter()
@@ -112,6 +118,23 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
     }
 
     private fun addCommentListener() {
+        binding.comment.tipComment.editText?.doOnTextChanged { text, _, _, _ ->
+            if (text.isNullOrBlank()) {
+                binding.comment.tipComment.setEndIconDrawable(R.drawable.ic_add_comment)
+            } else {
+                binding.comment.tipComment.apply {
+                    setEndIconDrawable(R.drawable.ic_add_comment_press)
+                    setEndIconTintList(
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.blue
+                            )
+                        )
+                    )
+                }
+            }
+        }
         binding.comment.tipComment.setEndIconOnClickListener {
             if (!binding.comment.edComment.text.isNullOrBlank()) {
                 viewModel.addComment(
