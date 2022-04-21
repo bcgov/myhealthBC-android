@@ -4,6 +4,8 @@
     style="@style/HealthGateway.Widget.App.TextInputLayout"
     android:hint="@string/comment_here"
     android:filterTouchesWhenObscured="true"
+    app:startIconDrawable="@drawable/ic_lock"
+    app:startIconContentDescription="@string/comment_here"
     app:endIconContentDescription="@string/comment_here"
     app:endIconDrawable="@drawable/ic_add_comment"
     app:endIconMode="custom">
