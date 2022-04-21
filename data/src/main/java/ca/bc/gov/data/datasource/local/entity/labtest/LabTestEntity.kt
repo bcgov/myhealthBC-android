@@ -22,9 +22,9 @@ import androidx.room.PrimaryKey
 )
 data class LabTestEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    val id: Long = 0,
     @ColumnInfo(name = "lab_order_id")
-    val labOrderId: String,
+    val labOrderId: Long,
     @ColumnInfo(name = "obx_id")
     val obxId: String? = null,
     @ColumnInfo(name = "batter_type")

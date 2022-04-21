@@ -25,7 +25,7 @@ class LabOrderRepository @Inject constructor(
     suspend fun insert(labOrders: List<LabOrderDto>): List<Long> =
         labOrderLocalDataSource.insert(labOrders)
 
-    suspend fun findByLabOrderId(labOrderId: String): LabOrderWithLabTestsAndPatientDto =
+    suspend fun findByLabOrderId(labOrderId: Long): LabOrderWithLabTestsAndPatientDto =
         labOrderLocalDataSource.findByLabOrderId(labOrderId)
             ?: throw MyHealthException(
                 DATABASE_ERROR, "No record found for labOrder id=  $labOrderId"

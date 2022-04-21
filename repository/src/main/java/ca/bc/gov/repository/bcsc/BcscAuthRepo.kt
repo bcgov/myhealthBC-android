@@ -29,6 +29,7 @@ import net.openid.appauth.ResponseTypeValues
 import org.json.JSONObject
 import java.io.UnsupportedEncodingException
 import java.nio.charset.Charset
+import java.time.Instant
 
 /*
 * @author amit_metri on 05,January,2022
@@ -45,6 +46,14 @@ class BcscAuthRepo(
     private lateinit var authServiceConfiguration: AuthorizationServiceConfiguration
 
     private fun setAuthState(authState: AuthState?) {
+        if (authState != null) {
+            authState.lastTokenResponse?.additionalParameters?.get("refresh_expires_in")?.toLong()
+                ?.let {
+                    encryptedPreferenceStorage.sessionTime = Instant.now().epochSecond.plus(it)
+                }
+        } else {
+            encryptedPreferenceStorage.sessionTime = -1L
+        }
         encryptedPreferenceStorage.authState = authState?.jsonSerializeString()
     }
 
@@ -108,10 +117,8 @@ class BcscAuthRepo(
     /*
     * Check for logged in session
     * */
-    suspend fun checkLogin(): Boolean {
-        val authState = getAuthState() ?: return false
-        val accessToken = awaitPerformActionWithFreshTokens(applicationContext, authState)
-        return accessToken.isNotEmpty()
+    suspend fun checkSession(): Boolean {
+        return encryptedPreferenceStorage.sessionTime > Instant.now().epochSecond
     }
 
     /*

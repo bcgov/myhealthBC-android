@@ -27,6 +27,7 @@ class EncryptedPreferenceStorage @Inject constructor(
         private const val PROTECTIVE_WORD = "PROTECTIVE_WORD"
         private const val PROTECTIVE_WORD_STATE = "PROTECTIVE_WORD_STATE"
         private const val POST_LOGIN_CHECK = "POST_LOGIN_CHECK"
+        private const val SESSION_TIME = "SESSION_TIME"
         private const val BCSC_SHOWN_POST_BIOMETRIC = "BCSC_SHOWN_POST_BIOMETRIC"
     }
 
@@ -125,5 +126,11 @@ class EncryptedPreferenceStorage @Inject constructor(
         get() = encryptedSharedPreferences.getString(POST_LOGIN_CHECK, null)
         set(value) {
             encryptedSharedPreferences.edit().putString(POST_LOGIN_CHECK, value).apply()
+        }
+
+    var sessionTime: Long
+        get() = encryptedSharedPreferences.getLong(SESSION_TIME, -1L)
+        set(value) {
+            encryptedSharedPreferences.edit().putLong(SESSION_TIME, value).apply()
         }
 }

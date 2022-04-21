@@ -63,6 +63,9 @@
         <action
             android:id="@+id/action_individualHealthRecordFragment_to_covidTestResultDetailFragment"
             app:destination="@id/covidTestResultDetailFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_immunizationRecordDetailFragment"
+            app:destination="@id/immunizationRecordDetailFragment" />
     </fragment>
 
 
@@ -118,13 +121,17 @@
             android:id="@+id/action_medicationDetailsFragment_to_commentsFragment"
             app:destination="@id/commentsFragment" />
     </fragment>
+       <action
+           android:id="@+id/action_medicationDetailsFragment_to_commentsFragment"
+           app:destination="@id/commentsFragment" />
+   </fragment>
     <fragment
         android:id="@+id/labTestDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.labtest.LabTestDetailFragment"
         android:label="LabTestDetailFragment">
         <argument
             android:name="lab_order_id"
-            app:argType="string" />
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/protectiveWordFragment"
@@ -163,5 +170,32 @@
         <argument
             android:name="userProfileId"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/commentsFragment"
+        android:name="ca.bc.gov.bchealth.ui.comment.CommentsFragment"
+        android:label="fragment_comments"
+        tools:layout="@layout/fragment_comments" >
+        <argument
+            android:name="parentEntryId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/commentsFragment"
+        android:name="ca.bc.gov.bchealth.ui.comment.CommentsFragment"
+        android:label="fragment_comments"
+        tools:layout="@layout/fragment_comments" >
+        <argument
+            android:name="parentEntryId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/immunizationRecordDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.immunization.ImmunizationRecordDetailFragment"
+        android:label="fragment_immunization_record_detail"
+        tools:layout="@layout/fragment_immunization_record_detail">
+        <argument
+            android:name="patientId"
+            app:argType="long" />
     </fragment>
 </navigation>

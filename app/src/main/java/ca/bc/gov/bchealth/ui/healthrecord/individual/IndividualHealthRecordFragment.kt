@@ -100,7 +100,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
         observeBcscLogin()
 
-        bcscAuthViewModel.checkLogin()
+        bcscAuthViewModel.checkSession()
 
         observeHealthRecords()
 
@@ -215,7 +215,11 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     }
                     if (loginStatus == LoginStatus.EXPIRED) {
                         // clear timeline filter
-                        filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL), null, null)
+                        filterSharedViewModel.updateFilter(
+                            listOf(TimelineTypeFilter.ALL),
+                            null,
+                            null
+                        )
                     }
                 }
             }
@@ -260,21 +264,25 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun updateUi(uiState: IndividualHealthRecordsUiState) {
+        if (findNavController().previousBackStackEntry?.destination?.id !=
+            R.id.healthRecordsFragment
+        ) {
+            binding.ivSetting.visibility = View.VISIBLE
+            binding.ivAdd.visibility = View.VISIBLE
+        }
+
         binding.progressBar.isVisible = false
 
-        updateHealthRecordsList(uiState)
-
         if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
-            binding.ivEdit.visibility = View.GONE
             binding.ivFilter.visibility = View.VISIBLE
             healthRecordsAdapter.isUpdateRequested = false
         } else {
             binding.ivEdit.visibility = View.VISIBLE
-            binding.ivFilter.visibility = View.GONE
             healthRecordsAdapter.isUpdateRequested = true
             binding.imgClear.visibility = View.GONE
             binding.cgFilter.visibility = View.GONE
         }
+        updateHealthRecordsList(uiState)
     }
 
     private fun updateHealthRecordsList(uiState: IndividualHealthRecordsUiState) {
@@ -392,13 +400,20 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         findNavController().navigate(action)
                     }
                     HealthRecordType.LAB_TEST -> {
-                        it.labOrderId?.let { it1 ->
+                        it.labOrderId.let { it1 ->
                             val action = IndividualHealthRecordFragmentDirections
                                 .actionIndividualHealthRecordFragmentToLabTestDetailFragment(
                                     it1
                                 )
                             findNavController().navigate(action)
                         }
+                    }
+                    HealthRecordType.IMMUNIZATION_RECORD -> {
+                        val action = IndividualHealthRecordFragmentDirections
+                            .actionIndividualHealthRecordFragmentToImmunizationRecordDetailFragment(
+                                it.patientId
+                            )
+                        findNavController().navigate(action)
                     }
                 }
             },

@@ -187,6 +187,7 @@ fun List<PatientEntity>.toDto() = PatientListDto(
 fun LabOrderEntity.toDto() = LabOrderDto(
     id,
     patientId,
+    labPdfId,
     reportId,
     collectionDateTime,
     timelineDateTime,

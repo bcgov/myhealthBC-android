@@ -24,10 +24,12 @@ import java.time.Instant
     ]
 )
 data class LabOrderEntity(
-    @PrimaryKey
-    val id: String,
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
     @ColumnInfo(name = "patient_id")
     val patientId: Long,
+    @ColumnInfo(name = "lab_pdf_id")
+    val labPdfId: String? = null,
     @ColumnInfo(name = "report_id")
     val reportId: String? = null,
     @ColumnInfo(name = "collection_date_time")

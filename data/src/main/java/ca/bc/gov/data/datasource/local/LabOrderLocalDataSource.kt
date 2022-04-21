@@ -22,7 +22,7 @@ class LabOrderLocalDataSource @Inject constructor(
         return labOrderDao.insert(labOrders.map { it.toEntity() })
     }
 
-    suspend fun findByLabOrderId(labOrderId: String): LabOrderWithLabTestsAndPatientDto? =
+    suspend fun findByLabOrderId(labOrderId: Long): LabOrderWithLabTestsAndPatientDto? =
         labOrderDao.findByLabOrderId(labOrderId)?.toDto()
 
     suspend fun delete(patientId: Long): Int = labOrderDao.delete(patientId)

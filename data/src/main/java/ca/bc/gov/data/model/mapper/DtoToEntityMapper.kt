@@ -122,6 +122,7 @@ fun DispensingPharmacyDto.toEntity() = DispensingPharmacyEntity(
 fun LabOrderDto.toEntity() = LabOrderEntity(
     id,
     patientId,
+    labPdfId,
     reportId,
     collectionDateTime,
     timelineDateTime,

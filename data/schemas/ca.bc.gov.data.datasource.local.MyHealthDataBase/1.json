@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8f98e9f31277c4d328e063883284b78f",
+    "identityHash": "ebabbc5a6688294f9a16704af9793eb0",
     "entities": [
       {
         "tableName": "patient",
@@ -647,12 +647,12 @@
       },
       {
         "tableName": "lab_order",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `patient_id` INTEGER NOT NULL, `report_id` TEXT, `collection_date_time` INTEGER NOT NULL, `timeline_date_time` INTEGER NOT NULL, `reporting_source` TEXT, `common_name` TEXT, `ordering_provider` TEXT, `test_status` TEXT, `report_available` INTEGER NOT NULL, `data_source` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `lab_pdf_id` TEXT, `report_id` TEXT, `collection_date_time` INTEGER NOT NULL, `timeline_date_time` INTEGER NOT NULL, `reporting_source` TEXT, `common_name` TEXT, `ordering_provider` TEXT, `test_status` TEXT, `report_available` INTEGER NOT NULL, `data_source` TEXT NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -660,6 +660,12 @@
             "columnName": "patient_id",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "labPdfId",
+            "columnName": "lab_pdf_id",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "reportId",
@@ -720,7 +726,7 @@
           "columnNames": [
             "id"
           ],
-          "autoGenerate": false
+          "autoGenerate": true
         },
         "indices": [],
         "foreignKeys": [
@@ -739,7 +745,7 @@
       },
       {
         "tableName": "lab_test",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `lab_order_id` TEXT NOT NULL, `obx_id` TEXT, `batter_type` TEXT, `out_of_range` INTEGER NOT NULL, `loinc` TEXT, `test_status` TEXT, FOREIGN KEY(`lab_order_id`) REFERENCES `lab_order`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `lab_order_id` INTEGER NOT NULL, `obx_id` TEXT, `batter_type` TEXT, `out_of_range` INTEGER NOT NULL, `loinc` TEXT, `test_status` TEXT, FOREIGN KEY(`lab_order_id`) REFERENCES `lab_order`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -750,7 +756,7 @@
           {
             "fieldPath": "labOrderId",
             "columnName": "lab_order_id",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -1091,7 +1097,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8f98e9f31277c4d328e063883284b78f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ebabbc5a6688294f9a16704af9793eb0')"
     ]
   }
 }

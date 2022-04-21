@@ -65,7 +65,7 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_add_health_records) 
 
         observeBcscLogin()
 
-        bcscAuthViewModel.checkLogin()
+        bcscAuthViewModel.checkSession()
 
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
             FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS
