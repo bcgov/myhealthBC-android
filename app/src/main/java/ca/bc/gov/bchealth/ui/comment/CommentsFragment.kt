@@ -62,6 +62,21 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
         }
     }
 
+    private fun addCommentListener() {
+        binding.comment.tipComment.apply {
+            updateCommentEndIcon(requireContext())
+            setEndIconOnClickListener {
+                if (!binding.comment.edComment.text.isNullOrBlank()) {
+                    viewModel.addComment(
+                        args.parentEntryId,
+                        args.userProfileId,
+                        binding.comment.edComment.text.toString()
+                    )
+                }
+            }
+        }
+    }
+
     private fun observeComments() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -93,20 +108,5 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
                 findNavController().popBackStack()
             }
         )
-    }
-
-    private fun addCommentListener() {
-        binding.comment.tipComment.apply {
-            updateCommentEndIcon(requireContext())
-            setEndIconOnClickListener {
-                if (!binding.comment.edComment.text.isNullOrBlank()) {
-                    viewModel.addComment(
-                        args.parentEntryId,
-                        args.userProfileId,
-                        binding.comment.edComment.text.toString()
-                    )
-                }
-            }
-        }
     }
 }
