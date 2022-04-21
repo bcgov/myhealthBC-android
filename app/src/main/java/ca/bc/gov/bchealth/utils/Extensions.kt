@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.utils
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
@@ -19,8 +20,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.widget.doOnTextChanged
 import ca.bc.gov.bchealth.R
+import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -187,4 +191,24 @@ fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {
     this.movementMethod =
         LinkMovementMethod.getInstance() // without LinkMovementMethod, link can not click
     this.setText(spannableString, TextView.BufferType.SPANNABLE)
+}
+
+fun TextInputLayout.updateCommentEndIcon(context: Context) {
+    this.editText?.doOnTextChanged { text, _, _, _ ->
+        if (text.isNullOrBlank()) {
+            this.setEndIconDrawable(R.drawable.ic_add_comment)
+        } else {
+            this.apply {
+                setEndIconDrawable(R.drawable.ic_add_comment_press)
+                setEndIconTintList(
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.blue
+                        )
+                    )
+                )
+            }
+        }
+    }
 }
