@@ -144,12 +144,25 @@ fun CommentPayload.toDto() = CommentDto(
     updatedBy
 )
 
+fun CommentPayload.toAddCommentDto() = CommentDto(
+    id,
+    userProfileId,
+    text,
+    entryTypeCode,
+    parentEntryId,
+    version,
+    createdDateTime = createdDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+    createdBy,
+    updatedDateTime = updatedDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+    updatedBy
+)
+
 fun CommentResponse.toDto(): List<CommentDto> {
     return payload.map { it.toDto() }
 }
 
 fun AddCommentResponse.toDto(): CommentDto{
-    return payload.toDto()
+    return payload.toAddCommentDto()
 }
 
 fun Order.toDto() = CovidOrderDto(

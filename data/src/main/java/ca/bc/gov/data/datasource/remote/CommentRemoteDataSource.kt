@@ -58,10 +58,6 @@ class CommentRemoteDataSource @Inject constructor(
             }
                 ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
-        if (response.error != null) {
-            throw MyHealthException(SERVER_ERROR, response.error.message)
-        }
-
         return response.toDto()
     }
 }
