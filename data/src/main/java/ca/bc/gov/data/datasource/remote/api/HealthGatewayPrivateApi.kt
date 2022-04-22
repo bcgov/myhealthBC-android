@@ -112,5 +112,4 @@ interface HealthGatewayPrivateApi {
         @Header(AUTHORIZATION) accessToken: String,
         @Body commentRequest: CommentRequest
     ): Response<AddCommentResponse>
-
 }

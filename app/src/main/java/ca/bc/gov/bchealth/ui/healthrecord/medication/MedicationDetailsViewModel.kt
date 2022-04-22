@@ -42,7 +42,7 @@ class MedicationDetailsViewModel @Inject constructor(
                     .getComments(
                         medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
                     )
-            var userProfileId : String? = null
+            var userProfileId: String? = null
             val commentsTemp = mutableListOf<Comment>()
             if (comments.isNotEmpty()) {
                 commentsTemp.add(
@@ -169,8 +169,8 @@ class MedicationDetailsViewModel @Inject constructor(
                 medicationRecordRepository.getMedicationWithSummaryAndPharmacy(medicationId)
 
             val comments = commentRepository.addComment(
-                        medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier, userProfileId, comment
-                    )
+                medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier, userProfileId, comment
+            )
             val commentsTemp = mutableListOf<Comment>()
             if (comments.isNotEmpty()) {
                 commentsTemp.add(

@@ -161,7 +161,7 @@ fun CommentResponse.toDto(): List<CommentDto> {
     return payload.map { it.toDto() }
 }
 
-fun AddCommentResponse.toDto(): CommentDto{
+fun AddCommentResponse.toDto(): CommentDto {
     return payload.toAddCommentDto()
 }
 
