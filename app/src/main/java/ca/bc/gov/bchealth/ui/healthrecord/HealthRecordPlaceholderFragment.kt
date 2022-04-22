@@ -108,7 +108,8 @@ class HealthRecordPlaceholderFragment : Fragment(R.layout.health_record_placehol
                     HealthRecordPlaceholderFragmentDirections
                         .actionHealthRecordsPlaceHolderFragmentToIndividualHealthRecordFragment(
                             records.first().patientId,
-                            records.first().name
+                            records.first().name,
+                            records.first().authStatus.name
                         )
                 findNavController().navigate(action)
             } else {
