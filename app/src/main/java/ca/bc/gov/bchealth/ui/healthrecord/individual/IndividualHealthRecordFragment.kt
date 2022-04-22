@@ -286,7 +286,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun updateHealthRecordsList(uiState: IndividualHealthRecordsUiState) {
-        if (uiState.onHealthRecords.isEmpty() && uiState.patientAuthStatus != AuthenticationStatus.AUTHENTICATED) {
+        if (uiState.onHealthRecords == null && uiState.patientAuthStatus != AuthenticationStatus.AUTHENTICATED) {
             findNavController().previousBackStackEntry?.savedStateHandle
                 ?.set(
                     HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,

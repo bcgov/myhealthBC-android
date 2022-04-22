@@ -261,7 +261,7 @@ data class IndividualHealthRecordsUiState(
     val updatedTestResultId: Long = -1L,
     val authenticatedRecordsCount: Int? = null,
     val patientAuthStatus: AuthenticationStatus? = null,
-    val onHealthRecords: List<HealthRecordItem> = emptyList(),
+    val onHealthRecords: List<HealthRecordItem>? = null,
     val onNonBcscHealthRecords: List<HealthRecordItem> = emptyList(),
     val healthRecordsExceptMedication: List<HealthRecordItem> = emptyList(),
     val medicationRecordsUpdated: Boolean = false
