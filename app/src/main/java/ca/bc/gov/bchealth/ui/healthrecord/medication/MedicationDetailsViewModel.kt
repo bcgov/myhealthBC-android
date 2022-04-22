@@ -42,7 +42,6 @@ class MedicationDetailsViewModel @Inject constructor(
                     .getComments(
                         medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
                     )
-            var userProfileId: String? = null
             val commentsTemp = mutableListOf<Comment>()
             if (comments.isNotEmpty()) {
                 commentsTemp.add(
@@ -60,15 +59,13 @@ class MedicationDetailsViewModel @Inject constructor(
                         firsComment?.createdDateTime?.toLocalDateTimeInstant()
                     )
                 )
-                userProfileId = firsComment?.userProfileId
             }
             _uiState.update {
                 it.copy(
                     onLoading = false,
                     medicationDetails = prePareMedicationDetails(medicationWithSummaryAndPharmacyDto),
                     toolbarTitle = medicationWithSummaryAndPharmacyDto.medicationSummary.brandName,
-                    comments = commentsTemp,
-                    userProfileId = userProfileId
+                    comments = commentsTemp
                 )
             }
         } catch (e: Exception) {
@@ -160,7 +157,7 @@ class MedicationDetailsViewModel @Inject constructor(
         return medicationDetails
     }
 
-    fun addComment(medicationId: Long, userProfileId: String?, comment: String) = viewModelScope.launch {
+    fun addComment(medicationId: Long, comment: String) = viewModelScope.launch {
         try {
             _uiState.update {
                 it.copy(onLoading = true)
@@ -169,7 +166,7 @@ class MedicationDetailsViewModel @Inject constructor(
                 medicationRecordRepository.getMedicationWithSummaryAndPharmacy(medicationId)
 
             val comments = commentRepository.addComment(
-                medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier, userProfileId, comment
+                medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier, comment
             )
             val commentsTemp = mutableListOf<Comment>()
             if (comments.isNotEmpty()) {
@@ -199,7 +196,8 @@ class MedicationDetailsViewModel @Inject constructor(
             e.printStackTrace()
             _uiState.update {
                 it.copy(
-                    onError = true
+                    onError = true,
+                    onLoading = false
                 )
             }
         }
@@ -230,8 +228,7 @@ data class MedicationDetailUiState(
     val onError: Boolean = false,
     val medicationDetails: List<MedicationDetail>? = null,
     val toolbarTitle: String? = null,
-    val comments: List<Comment> = emptyList(),
-    val userProfileId: String? = null
+    val comments: List<Comment> = emptyList()
 )
 
 data class MedicationDetail(

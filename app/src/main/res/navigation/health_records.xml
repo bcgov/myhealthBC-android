@@ -163,9 +163,6 @@
         <argument
             android:name="parentEntryId"
             app:argType="string" />
-        <argument
-            android:name="userProfileId"
-            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/immunizationRecordDetailFragment"

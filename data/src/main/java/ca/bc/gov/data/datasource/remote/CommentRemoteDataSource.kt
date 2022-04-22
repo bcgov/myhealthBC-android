@@ -37,7 +37,6 @@ class CommentRemoteDataSource @Inject constructor(
 
     suspend fun addComment(
         parentEntryId: String?,
-        userProfileId: String?,
         comment: String,
         hdid: String,
         accessToken: String
@@ -45,7 +44,7 @@ class CommentRemoteDataSource @Inject constructor(
         val commentRequest = CommentRequest(
             text = comment,
             parentEntryId = parentEntryId,
-            userProfileId = userProfileId,
+            userProfileId = hdid,
             entryTypeCode = "Med"
         )
         val response =

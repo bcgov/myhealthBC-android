@@ -29,7 +29,6 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
     private lateinit var medicationDetailAdapter: MedicationDetailAdapter
     private lateinit var commentsAdapter: CommentsAdapter
     private lateinit var concatAdapter: ConcatAdapter
-    private var userProfileId: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,8 +63,7 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
         commentsAdapter = CommentsAdapter { parentEntryId ->
             val action = MedicationDetailsFragmentDirections
                 .actionMedicationDetailsFragmentToCommentsFragment(
-                    parentEntryId,
-                    userProfileId ?: ""
+                    parentEntryId
                 )
             findNavController().navigate(action)
         }
@@ -99,7 +97,6 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
                         showError()
                         viewModel.resetUiState()
                     }
-                    userProfileId = state.userProfileId
                 }
             }
         }
@@ -124,7 +121,6 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
                 if (!binding.comment.edComment.text.isNullOrBlank()) {
                     viewModel.addComment(
                         args.medicationId,
-                        userProfileId,
                         binding.comment.edComment.text.toString()
                     )
                 }

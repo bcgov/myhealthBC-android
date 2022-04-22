@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.time.Instant
 import javax.inject.Inject
 
@@ -57,14 +56,14 @@ class CommentsViewModel @Inject constructor(
         }
     }
 
-    fun addComment(parentEntryId: String, userProfileId: String?, comment: String) =
+    fun addComment(parentEntryId: String, comment: String) =
         viewModelScope.launch {
             try {
                 _uiState.update {
                     it.copy(onLoading = true)
                 }
 
-                val commentsDtoList = commentRepository.addComment(parentEntryId, userProfileId, comment) as MutableList
+                val commentsDtoList = commentRepository.addComment(parentEntryId, comment) as MutableList
                 commentsDtoList.sortByDescending { it.createdDateTime }
                 _uiState.update { it ->
                     it.copy(
@@ -82,7 +81,8 @@ class CommentsViewModel @Inject constructor(
                 e.printStackTrace()
                 _uiState.update {
                     it.copy(
-                        onError = true
+                        onError = true,
+                        onLoading = false
                     )
                 }
             }
