@@ -9,5 +9,6 @@ data class PatientWithHealthRecordCount(
     val testResultCount: Int,
     val labTestCount: Int,
     val covidTestCount: Int,
+    val immunizationCount: Int,
     val medicationRecordCount: Int
 )

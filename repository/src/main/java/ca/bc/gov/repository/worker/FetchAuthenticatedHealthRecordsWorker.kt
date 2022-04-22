@@ -8,6 +8,7 @@ import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ProtectiveWordState
+import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
@@ -21,6 +22,8 @@ import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.di.IoDispatcher
+import ca.bc.gov.repository.immunization.ImmunizationForecastRepository
+import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.labtest.LabTestRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
@@ -54,7 +57,9 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val covidOrderRepository: CovidOrderRepository,
     private val covidTestRepository: CovidTestRepository,
     private val encryptedPreferenceStorage: EncryptedPreferenceStorage,
-    private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository
+    private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
+    private val immunizationRecordRepository: ImmunizationRecordRepository,
+    private val immunizationForecastRepository: ImmunizationForecastRepository
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
@@ -76,6 +81,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             var covidOrderResponse: List<CovidOrderWithCovidTestDto>? = null
             var medicationResponse: MedicationStatementResponse? = null
             var labOrdersResponse: List<LabOrderWithLabTestDto>? = null
+            var immunizationResponse: List<ImmunizationRecordWithForecastDto>? = null
 
             notificationHelper.showNotification(
                 context.getString(R.string.notification_title_while_fetching_data)
@@ -166,6 +172,20 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             /*
+             * Fetch Immunization record
+             */
+            try {
+                withContext(dispatcher) {
+                    immunizationResponse = immunizationRecordRepository.fetchImmunization(
+                        authParameters.first,
+                        authParameters.second
+                    )
+                }
+            } catch (e: Exception) {
+                isApiFailed = true
+            }
+
+            /*
             * DB Operations
             * */
             // Insert patient details
@@ -202,6 +222,19 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                     test.labOrderId = id
                 }
                 labTestRepository.insert(it.labTests)
+            }
+
+            // Insert immunization records
+            immunizationRecordRepository.delete(patientId)
+            immunizationResponse?.forEach {
+                it.immunizationRecord.patientId = patientId
+                val id = immunizationRecordRepository.insert(it.immunizationRecord)
+                it.immunizationForecast?.immunizationRecordId = id
+                it.immunizationForecast?.let { forecast ->
+                    immunizationForecastRepository.insert(
+                        forecast
+                    )
+                }
             }
 
             if (isApiFailed) {

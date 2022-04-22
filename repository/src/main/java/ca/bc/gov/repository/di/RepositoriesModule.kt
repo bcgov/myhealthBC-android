@@ -4,6 +4,8 @@ import android.content.Context
 import ca.bc.gov.data.datasource.local.CommentLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidTestLocalDataSource
+import ca.bc.gov.data.datasource.local.ImmunizationForecastLocalDataSource
+import ca.bc.gov.data.datasource.local.ImmunizationRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
 import ca.bc.gov.data.datasource.local.LocalDataSource
@@ -31,6 +33,8 @@ import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.RecentPhnDobRepository
 import ca.bc.gov.repository.TermsOfServiceRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
+import ca.bc.gov.repository.immunization.ImmunizationForecastRepository
+import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.labtest.LabTestRepository
 import ca.bc.gov.repository.patient.PatientRepository
@@ -223,6 +227,25 @@ class RepositoriesModule {
 
     @Provides
     @Singleton
-    fun provideCovidTestRepository(covidTestLocalDataSource: CovidTestLocalDataSource): CovidTestRepository =
-        CovidTestRepository(covidTestLocalDataSource)
+    fun provideCovidTestRepository(
+        covidTestLocalDataSource: CovidTestLocalDataSource
+    ): CovidTestRepository = CovidTestRepository(covidTestLocalDataSource)
+
+    @Provides
+    @Singleton
+    fun providesImmunizationRepository(
+        immunizationRemoteDataSource: ImmunizationRemoteDataSource,
+        immunizationRecordLocalDataSource: ImmunizationRecordLocalDataSource
+    ): ImmunizationRecordRepository =
+        ImmunizationRecordRepository(
+            immunizationRemoteDataSource,
+            immunizationRecordLocalDataSource
+        )
+
+    @Provides
+    @Singleton
+    fun providesImmunizationForecastRepository(
+        immunizationForecastLocalDataSource: ImmunizationForecastLocalDataSource
+    ): ImmunizationForecastRepository =
+        ImmunizationForecastRepository(immunizationForecastLocalDataSource)
 }

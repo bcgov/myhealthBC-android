@@ -5,6 +5,7 @@ import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
+import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
@@ -43,6 +44,7 @@ class PatientLocalDataSource @Inject constructor(
                     testResultCount = it.testRecordCount,
                     labTestCount = it.labTestCount,
                     covidTestCount = it.covidTestCount,
+                    immunizationCount = it.immunizationCount,
                     medicationRecordCount = it.medicationRecordCount
                 )
             }
@@ -125,6 +127,9 @@ class PatientLocalDataSource @Inject constructor(
 
     suspend fun getPatientWithCovidOrderAndCovidTests(patientId: Long): PatientWithCovidOrderAndTestDto? =
         patientDao.getPatientWithCovidOrderAndCovidTests(patientId)?.toDto()
+
+    suspend fun getPatientWithImmunizationRecordAndForecast(patientId: Long): PatientWithImmunizationRecordAndForecastDto? =
+        patientDao.getPatientWithImmunizationRecordAndForecast(patientId)?.toDto()
 
     suspend fun deleteBcscAuthenticatedPatientData() {
         patientDao.deleteAuthenticatedPatient()
