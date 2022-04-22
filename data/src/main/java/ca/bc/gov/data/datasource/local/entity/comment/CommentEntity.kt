@@ -29,5 +29,5 @@ data class CommentEntity(
     @ColumnInfo(name = "updated_date_time")
     val updatedDateTime: Instant,
     @ColumnInfo(name = "updated_by")
-    val updatedBy: String? = null
+    val updatedBy: String? = null,
 )

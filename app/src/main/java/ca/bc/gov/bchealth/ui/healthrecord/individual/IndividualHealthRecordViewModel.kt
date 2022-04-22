@@ -66,6 +66,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     patientRepository.getPatientWithLabOrdersAndLabTests(patientId)
                 val patientWithCovidOrderAndTests =
                     patientRepository.getPatientWithCovidOrdersAndCovidTests(patientId)
+                val patientWithImmunizationRecordAndForecast =
+                    patientRepository.getPatientWithImmunizationRecordAndForecast(patientId)
 
                 val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
                     it.toUiModel()
@@ -81,6 +83,11 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 }
                 val covidOrders =
                     patientWithCovidOrderAndTests.covidOrderAndTests.map { it.toUiModel() }
+
+                val immunizationRecords =
+                    patientWithImmunizationRecordAndForecast.immunizationRecords.map {
+                        it.toUiModel()
+                    }
 
                 // reset filter for non-authenticated user
                 val filterList: MutableList<TimelineTypeFilter> = tempFilterList.toMutableList()
@@ -103,6 +110,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 val labTestRecordsNonBcsc = labTestRecords
                     .filter { it.dataSource != DataSource.BCSC.name }
                 val covidOrderNonBcsc = covidOrders.filter { it.dataSource != DataSource.BCSC.name }
+                val immunizationRecordNonBcsc =
+                    immunizationRecords.filter { it.dataSource != DataSource.BCSC.name }
 
                 var filteredHealthRecords: List<HealthRecordItem> = mutableListOf()
                 var filteredHealthRecordsExceptMedication: List<HealthRecordItem> = mutableListOf()
@@ -111,16 +120,16 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     when (it) {
                         TimelineTypeFilter.ALL -> {
                             filteredHealthRecords =
-                                medicationRecords + vaccineRecords + covidTestRecords + covidOrders + labTestRecords
+                                medicationRecords + covidTestRecords + covidOrders + labTestRecords + immunizationRecords
                             filteredHealthRecordsExceptMedication =
-                                vaccineRecords + covidTestRecords + covidOrders + labTestRecords
+                                covidTestRecords + covidOrders + labTestRecords + immunizationRecords
                         }
                         TimelineTypeFilter.MEDICATION -> {
                             filteredHealthRecords += medicationRecords
                         }
                         TimelineTypeFilter.IMMUNIZATION -> {
-                            filteredHealthRecords += vaccineRecords
-                            filteredHealthRecordsExceptMedication += vaccineRecords
+                            filteredHealthRecords += immunizationRecords
+                            filteredHealthRecordsExceptMedication += immunizationRecords
                         }
                         TimelineTypeFilter.COVID_19_TEST -> {
                             filteredHealthRecords += covidTestRecords + covidOrders
@@ -161,7 +170,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
                                 vaccineRecordsNonBcsc +
                                 medicationRecordsNonBcsc +
                                 labTestRecordsNonBcsc +
-                                covidOrderNonBcsc
+                                covidOrderNonBcsc +
+                                immunizationRecordNonBcsc
                             )
                             .sortedByDescending { it.date },
                         healthRecordsExceptMedication = filteredHealthRecordsExceptMedication.sortedByDescending { it.date }
@@ -262,6 +272,7 @@ data class HealthRecordItem(
     val testResultId: Long = -1L,
     val medicationRecordId: Long = -1L,
     val labOrderId: Long = -1L,
+    val immunizationRecordId: Long = -1L,
     val covidOrderId: String? = null,
     val icon: Int,
     val title: String,
