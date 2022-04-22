@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment
 import ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment
+import ca.bc.gov.common.model.patient.PatientDto
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -94,21 +95,21 @@ class HealthRecordPlaceholderFragment : Fragment(R.layout.health_record_placehol
     private fun collectHealthRecordsFlow() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.patientHealthRecords.collect { records ->
+                viewModel.patients.collect { records ->
                     navigate(records)
                 }
             }
         }
     }
 
-    private fun navigate(records: List<PatientHealthRecord>) {
+    private fun navigate(records: List<PatientDto>) {
         if (records.isNotEmpty()) {
             if (records.size == 1) {
                 val action =
                     HealthRecordPlaceholderFragmentDirections
                         .actionHealthRecordsPlaceHolderFragmentToIndividualHealthRecordFragment(
-                            records.first().patientId,
-                            records.first().name
+                            records.first().id,
+                            records.first().fullName
                         )
                 findNavController().navigate(action)
             } else {
