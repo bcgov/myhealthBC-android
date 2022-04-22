@@ -87,6 +87,8 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
                     if (state.commentsList != null) {
                         commentsAdapter.submitList(state.commentsList)
                         viewModel.resetUiState()
+                        //clear comment
+                        binding.comment.edComment.setText("")
                     }
 
                     if (state.onError) {
