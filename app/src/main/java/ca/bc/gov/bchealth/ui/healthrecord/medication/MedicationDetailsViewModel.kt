@@ -157,7 +157,7 @@ class MedicationDetailsViewModel @Inject constructor(
         return medicationDetails
     }
 
-    fun addComment(medicationId: Long, comment: String) = viewModelScope.launch {
+    fun addComment(medicationId: Long, comment: String, entryTypeCode: String) = viewModelScope.launch {
         try {
             _uiState.update {
                 it.copy(onLoading = true)
@@ -166,7 +166,7 @@ class MedicationDetailsViewModel @Inject constructor(
                 medicationRecordRepository.getMedicationWithSummaryAndPharmacy(medicationId)
 
             val comments = commentRepository.addComment(
-                medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier, comment
+                medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier, comment, entryTypeCode
             )
             val commentsTemp = mutableListOf<Comment>()
             if (comments.isNotEmpty()) {

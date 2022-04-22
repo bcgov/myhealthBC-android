@@ -69,7 +69,8 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
                 if (!binding.comment.edComment.text.isNullOrBlank()) {
                     viewModel.addComment(
                         args.parentEntryId,
-                        binding.comment.edComment.text.toString()
+                        binding.comment.edComment.text.toString(),
+                        "Med"
                     )
                 }
             }

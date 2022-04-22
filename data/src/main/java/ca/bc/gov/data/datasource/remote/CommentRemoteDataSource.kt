@@ -38,6 +38,7 @@ class CommentRemoteDataSource @Inject constructor(
     suspend fun addComment(
         parentEntryId: String?,
         comment: String,
+        entryTypeCode: String,
         hdid: String,
         accessToken: String
     ): CommentDto {
@@ -45,7 +46,7 @@ class CommentRemoteDataSource @Inject constructor(
             text = comment,
             parentEntryId = parentEntryId,
             userProfileId = hdid,
-            entryTypeCode = "Med"
+            entryTypeCode = entryTypeCode
         )
         val response =
             safeCall {

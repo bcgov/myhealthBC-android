@@ -56,14 +56,14 @@ class CommentsViewModel @Inject constructor(
         }
     }
 
-    fun addComment(parentEntryId: String, comment: String) =
+    fun addComment(parentEntryId: String, comment: String, entryTypeCode: String) =
         viewModelScope.launch {
             try {
                 _uiState.update {
                     it.copy(onLoading = true)
                 }
 
-                val commentsDtoList = commentRepository.addComment(parentEntryId, comment) as MutableList
+                val commentsDtoList = commentRepository.addComment(parentEntryId, comment, entryTypeCode) as MutableList
                 commentsDtoList.sortByDescending { it.createdDateTime }
                 _uiState.update { it ->
                     it.copy(

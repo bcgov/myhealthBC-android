@@ -121,7 +121,8 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
                 if (!binding.comment.edComment.text.isNullOrBlank()) {
                     viewModel.addComment(
                         args.medicationId,
-                        binding.comment.edComment.text.toString()
+                        binding.comment.edComment.text.toString(),
+                        "Med"
                     )
                 }
             }

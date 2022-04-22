@@ -33,9 +33,9 @@ class CommentRepository @Inject constructor(
 
     suspend fun delete(parentEntryId: String?) = commentLocalDataSource.delete(parentEntryId)
 
-    suspend fun addComment(parentEntryId: String?, comment: String): List<CommentDto> {
+    suspend fun addComment(parentEntryId: String?, comment: String, entryTypeCode: String): List<CommentDto> {
         val (token, hdid) = bcscAuthRepo.getAuthParameters()
-        val comment = commentRemoteDataSource.addComment(parentEntryId, comment, hdid, token)
+        val comment = commentRemoteDataSource.addComment(parentEntryId, comment, entryTypeCode, hdid, token)
         insert(comment)
         return commentLocalDataSource.findCommentByParentEntryId(parentEntryId)
     }
