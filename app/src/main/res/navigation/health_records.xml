@@ -41,6 +41,11 @@
         <argument
             android:name="patient_name"
             app:argType="string" />
+
+        <argument
+            android:name="authStatus"
+            app:argType="string" />
+
         <action
             android:id="@+id/action_individualHealthRecordFragment_to_testResultDetailFragment"
             app:destination="@id/testResultDetailFragment" />

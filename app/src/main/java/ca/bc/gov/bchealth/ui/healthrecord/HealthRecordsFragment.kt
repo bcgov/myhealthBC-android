@@ -65,7 +65,8 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                 HealthRecordsFragmentDirections
                     .actionHealthRecordsFragmentToIndividualHealthRecordFragment(
                         it.patientId,
-                        it.name
+                        it.name,
+                        it.authStatus.name
                     )
             findNavController().navigate(action)
         }
