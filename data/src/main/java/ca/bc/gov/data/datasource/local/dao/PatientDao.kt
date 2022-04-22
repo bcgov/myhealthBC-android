@@ -11,6 +11,7 @@ import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.PatientOrderUpdate
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithCovidOrderAndCovidTest
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithHealthRecordCount
+import ca.bc.gov.data.datasource.local.entity.relations.PatientWithImmunizationRecordAndForecast
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithLabOrdersAndLabTests
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithMedicationRecords
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithTestResultsAndRecords
@@ -68,11 +69,13 @@ interface PatientDao {
         COUNT(DISTINCT T.id) as testRecordCount,
         COUNT(DISTINCT L.id) as labTestCount,
         COUNT(DISTINCT C.id) as covidTestCount,
+        COUNT(DISTINCT I.id) as immunizationCount,
         COUNT (DISTINCT M.id) as medicationRecordCount FROM patient P
         LEFT JOIN vaccine_record V on V.patient_id = P.id
         LEFT JOIN test_result T on T.patient_id = P.id
         LEFT JOIN lab_order L on L.patient_id = P.id
         LEFT JOIN covid_order C on C.patient_id = P.id
+        LEFT JOIN immunization_record I on I.patient_id = P.id
         LEFT JOIN medication_record M on M.patient_id = P.id
         GROUP BY P.id ORDER BY P.authentication_status
     """
@@ -86,6 +89,7 @@ interface PatientDao {
             " (SELECT COUNT(*) FROM vaccine_record WHERE data_source = 'BCSC') +" +
             " (SELECT COUNT(*) FROM lab_order) +" +
             " (SELECT COUNT(*) FROM covid_order) +" +
+            " (SELECT COUNT(*) FROM immunization_record)+" +
             " (SELECT COUNT(*) FROM medication_record WHERE data_source = 'BCSC') as SumCount"
     )
     suspend fun getBcscSourceHealthRecordCount(): Int
@@ -125,6 +129,10 @@ interface PatientDao {
     @Transaction
     @Query("SELECT * FROM patient WHERE id = :patientId")
     suspend fun getPatientWithCovidOrderAndCovidTests(patientId: Long): PatientWithCovidOrderAndCovidTest?
+
+    @Transaction
+    @Query("SELECT * FROM patient WHERE id = :patientId")
+    suspend fun getPatientWithImmunizationRecordAndForecast(patientId: Long): PatientWithImmunizationRecordAndForecast
 
     @Query("SELECT * FROM patient WHERE authentication_status = :authenticationStatus")
     suspend fun findPatientByAuthStatus(authenticationStatus: AuthenticationStatus): PatientEntity?

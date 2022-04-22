@@ -3,6 +3,7 @@ package ca.bc.gov.data.datasource.remote.api
 import ca.bc.gov.data.datasource.remote.model.request.UserProfileRequest
 import ca.bc.gov.data.datasource.remote.model.response.AuthenticatedCovidTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
+import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestPdfResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
@@ -103,4 +104,10 @@ interface HealthGatewayPrivateApi {
         @Header(AUTHORIZATION) accessToken: String,
         @Body profileRequest: UserProfileRequest
     ): Response<UserProfileResponse>
+
+    @GET("$BASE_IMMUNIZATION_SERVICE/Immunization")
+    suspend fun getImmunization(
+        @Header(AUTHORIZATION) accessToken: String,
+        @Query(HDID) hdid: String,
+    ): Response<ImmunizationResponse>
 }

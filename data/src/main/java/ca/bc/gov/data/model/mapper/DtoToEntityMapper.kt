@@ -6,6 +6,8 @@ import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.comment.CommentDto
+import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
+import ca.bc.gov.common.model.immunization.ImmunizationRecordDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
@@ -21,6 +23,8 @@ import ca.bc.gov.data.datasource.local.entity.covid.test.TestRecordEntity
 import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
+import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationForecastEntity
+import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.labtest.LabOrderEntity
 import ca.bc.gov.data.datasource.local.entity.labtest.LabTestEntity
 import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntity
@@ -179,4 +183,20 @@ fun CovidTestDto.toEntity() = CovidTestEntity(
     resultDateTime,
     loInc,
     loIncName
+)
+
+fun ImmunizationRecordDto.toEntity() = ImmunizationRecordEntity(
+    id, patientId, immunizationId, dateOfImmunization, status, isValid,
+    provideOrClinic, targetedDisease, immunizationName, agentCode, agentName, lotNumber, productName
+)
+
+fun ImmunizationForecastDto.toEntity() = ImmunizationForecastEntity(
+    id,
+    immunizationRecordId,
+    recommendationId,
+    createDate,
+    status,
+    displayName,
+    eligibleDate,
+    dueDate
 )

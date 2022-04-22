@@ -6,6 +6,10 @@ import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.comment.CommentDto
+import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
+import ca.bc.gov.common.model.immunization.ImmunizationRecordDto
+import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPatientDto
+import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestsAndPatientDto
@@ -13,6 +17,7 @@ import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
+import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
@@ -38,6 +43,10 @@ import ca.bc.gov.data.datasource.local.entity.covid.test.TestRecordEntity
 import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
+import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationForecastEntity
+import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecordEntity
+import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecordWithForecast
+import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecordWithForecastAndPatient
 import ca.bc.gov.data.datasource.local.entity.labtest.LabOrderEntity
 import ca.bc.gov.data.datasource.local.entity.labtest.LabOrderWithLabTests
 import ca.bc.gov.data.datasource.local.entity.labtest.LabOrderWithLabTestsAndPatient
@@ -47,6 +56,7 @@ import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
 import ca.bc.gov.data.datasource.local.entity.relations.MedicationWithSummaryAndPharmacy
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithCovidOrderAndCovidTest
+import ca.bc.gov.data.datasource.local.entity.relations.PatientWithImmunizationRecordAndForecast
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithLabOrdersAndLabTests
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithMedicationRecords
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithTestResultsAndRecords
@@ -180,6 +190,11 @@ fun PatientWithCovidOrderAndCovidTest.toDto() = PatientWithCovidOrderAndTestDto(
     covidOrderAndTests = covidOrderWithTests.map { it.toDto() }
 )
 
+fun PatientWithImmunizationRecordAndForecast.toDto() = PatientWithImmunizationRecordAndForecastDto(
+    patient = patient.toDto(),
+    immunizationRecords = immunizationRecords.map { it.toDto() }
+)
+
 fun List<PatientEntity>.toDto() = PatientListDto(
     patientDtos = this.map { it.toDto() }
 )
@@ -265,4 +280,41 @@ fun CovidOrderWithCovidTests.toDto() = CovidOrderWithCovidTestDto(
 fun CovidOrderWithCovidTestsAndPatient.toDto() = CovidOrderWithCovidTestAndPatientDto(
     covidOrderWithCovidTests.toDto(),
     patient.toDto()
+)
+
+fun ImmunizationRecordEntity.toDto() = ImmunizationRecordDto(
+    id,
+    patientId,
+    immunizationId,
+    dateOfImmunization,
+    status,
+    isValid,
+    providerOrClinic,
+    targetedDisease,
+    immunizationName,
+    agentCode,
+    agentName,
+    lotNumber,
+    productName
+)
+
+fun ImmunizationForecastEntity.toDto() = ImmunizationForecastDto(
+    id,
+    immunizationRecordId,
+    recommendationId,
+    createDate,
+    status,
+    displayName,
+    eligibleDate,
+    dueDate
+)
+
+fun ImmunizationRecordWithForecast.toDto() = ImmunizationRecordWithForecastDto(
+    immunizationRecord = immunizationRecord.toDto(),
+    immunizationForecast = immunizationForecast?.toDto()
+)
+
+fun ImmunizationRecordWithForecastAndPatient.toDto() = ImmunizationRecordWithForecastAndPatientDto(
+    immunizationRecordWithForecast = immunizationRecordWithForecast.toDto(),
+    patient = patient.toDto()
 )

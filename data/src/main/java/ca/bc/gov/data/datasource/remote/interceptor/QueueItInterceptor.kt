@@ -28,12 +28,14 @@ class QueueItInterceptor @Inject constructor(
         private const val HEADER_QUEUE_IT_AJAX_URL = "x-queueit-ajaxpageurl"
         private const val HEADER_QUEUE_IT_REDIRECT_URL = "x-queueit-redirect"
         private const val RESOURCE_PAYLOAD = "resourcePayload"
+        private const val LOAD_STATE = "loadState"
         private const val LOADED = "loaded"
         private const val RETRY_IN = "retryin"
         private const val RESULT_ERROR = "resultError"
         private const val ACTION_CODE = "actionCode"
         private const val PROTECTED = "PROTECTED"
         private const val BAD_RESPONSE = "Bad response!"
+        private const val REFRESH_IN_PROGRESS = "refreshInProgress"
     }
 
     @Throws(IOException::class)
@@ -90,7 +92,7 @@ class QueueItInterceptor @Inject constructor(
     }
 
     private fun checkForLoadedFlag(json: JsonObject): Boolean {
-        var loaded: Boolean
+        var loaded: Boolean = true
         if (json.get(RESOURCE_PAYLOAD).isJsonNull) {
             checkException(json)
         }
@@ -99,8 +101,15 @@ class QueueItInterceptor @Inject constructor(
             val payload =
                 json.getAsJsonObject(RESOURCE_PAYLOAD)
                     ?: throw IOException(BAD_RESPONSE)
-            loaded = payload.get(LOADED).asBoolean
-            retryInMillis = payload.get(RETRY_IN).asLong
+            if (payload.has(LOADED)) {
+                loaded = payload.get(LOADED).asBoolean
+                retryInMillis = payload.get(RETRY_IN).asLong
+            } else if (payload.has(LOAD_STATE)) {
+                val loadState = payload.getAsJsonObject(LOAD_STATE) ?: throw IOException(BAD_RESPONSE)
+                if (loadState.has(REFRESH_IN_PROGRESS)) {
+                    loaded = loadState.get(REFRESH_IN_PROGRESS).asBoolean == false
+                }
+            }
         } catch (e: Exception) {
             loaded = true
         }

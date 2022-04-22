@@ -9,6 +9,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
+import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
@@ -192,6 +193,21 @@ fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem {
     )
 }
 
+fun ImmunizationRecordWithForecastDto.toUiModel(): HealthRecordItem {
+
+    return HealthRecordItem(
+        patientId = immunizationRecord.patientId,
+        immunizationRecordId = immunizationRecord.id,
+        title = immunizationRecord.agentName ?: "",
+        description = "",
+        testOutcome = "",
+        icon = R.drawable.ic_health_record_vaccine,
+        date = immunizationRecord.dateOfImmunization,
+        healthRecordType = HealthRecordType.IMMUNIZATION_RECORD,
+        dataSource = immunizationRecord.dataSorce.name
+    )
+}
+
 fun getHealthPassStateResources(state: ImmunizationStatus?): PassState = when (state) {
     ImmunizationStatus.FULLY_IMMUNIZED -> {
         PassState(R.color.status_green, R.string.vaccinated, R.drawable.ic_check_mark)
@@ -209,7 +225,7 @@ fun PatientWithHealthRecordCount.toUiModel(): PatientHealthRecord {
         patientId = patientDto.id,
         name = patientDto.fullName,
         totalRecord = vaccineRecordCount + testResultCount + labTestCount + medicationRecordCount +
-            covidTestCount,
+            covidTestCount + immunizationCount,
         authStatus = patientDto.authenticationStatus
     )
 }
