@@ -11,7 +11,6 @@ import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestsAndPatientDto
 import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
-import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
@@ -178,10 +177,6 @@ fun PatientWithLabOrdersAndLabTests.toDto() = PatientWithLabOrderAndLatTestsDto(
 fun PatientWithCovidOrderAndCovidTest.toDto() = PatientWithCovidOrderAndTestDto(
     patient = patient.toDto(),
     covidOrderAndTests = covidOrderWithTests.map { it.toDto() }
-)
-
-fun List<PatientEntity>.toDto() = PatientListDto(
-    patientDtos = this.map { it.toDto() }
 )
 
 fun LabOrderEntity.toDto() = LabOrderDto(
