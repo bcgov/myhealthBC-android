@@ -5,16 +5,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemImmunizationDetailBinding
-import ca.bc.gov.common.model.VaccineDoseDto
-import ca.bc.gov.common.utils.toDate
 
 /**
  * @author: Created by Rashmi Bambhania on 14,April,2022
  */
 class ImmunizationDetailsAdapter :
-    ListAdapter<VaccineDoseDto, ImmunizationDetailsAdapter.ViewHolder>(ImmunizationRecordsDiffCallBacks()) {
+    ListAdapter<ImmunizationDoseDetailItem, ImmunizationDetailsAdapter.ViewHolder>(
+        ImmunizationRecordsDiffCallBacks()
+    ) {
 
     class ViewHolder(val binding: ItemImmunizationDetailBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -32,23 +31,27 @@ class ImmunizationDetailsAdapter :
         val immunizationData = getItem(position)
 
         holder.binding.apply {
-            tvDose.text = holder.itemView.resources.getString(R.string.dose)
-                .plus(" ")
-                .plus(position + 1)
-            tvOccurrenceDate.text = immunizationData.date.toDate()
-            tvProduct.text = immunizationData.productName
-            tvProvider.text = immunizationData.providerName
-            tvLotNumber.text = immunizationData.lotNumber
+            tvDose.text = ""
+            tvOccurrenceDate.text = immunizationData.date ?: "--"
+            tvProduct.text = immunizationData.productName ?: "--"
+            tvProvider.text = immunizationData.providerOrClinicName ?: "--"
+            tvLotNumber.text = immunizationData.lotNumber ?: "--"
         }
     }
 }
 
-class ImmunizationRecordsDiffCallBacks : DiffUtil.ItemCallback<VaccineDoseDto>() {
-    override fun areItemsTheSame(oldItem: VaccineDoseDto, newItem: VaccineDoseDto): Boolean {
+class ImmunizationRecordsDiffCallBacks : DiffUtil.ItemCallback<ImmunizationDoseDetailItem>() {
+    override fun areItemsTheSame(
+        oldItem: ImmunizationDoseDetailItem,
+        newItem: ImmunizationDoseDetailItem
+    ): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: VaccineDoseDto, newItem: VaccineDoseDto): Boolean {
+    override fun areContentsTheSame(
+        oldItem: ImmunizationDoseDetailItem,
+        newItem: ImmunizationDoseDetailItem
+    ): Boolean {
         return oldItem == newItem
     }
 }

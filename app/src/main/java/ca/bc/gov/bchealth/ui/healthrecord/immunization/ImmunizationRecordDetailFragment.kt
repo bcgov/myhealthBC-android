@@ -13,10 +13,8 @@ import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentImmunizationRecordDetailBinding
 import ca.bc.gov.bchealth.utils.viewBindings
-import ca.bc.gov.common.model.VaccineDoseDto
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.time.Instant
 
 @AndroidEntryPoint
 class ImmunizationRecordDetailFragment : Fragment(R.layout.fragment_immunization_record_detail) {
@@ -43,7 +41,6 @@ class ImmunizationRecordDetailFragment : Fragment(R.layout.fragment_immunization
             }
 
             tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.vaccination_record)
 
             line1.visibility = View.VISIBLE
         }
@@ -59,20 +56,15 @@ class ImmunizationRecordDetailFragment : Fragment(R.layout.fragment_immunization
                 viewModel.uiState.collect { state ->
 
                     binding.progressBar.isVisible = state.onLoading
-
-                    adapter.submitList(
-                        listOf(
-                            VaccineDoseDto(
-                                123, 123, "Test product", "provider name", "lot number",
-                                Instant.now()
-                            )
-                        )
-                    )
+                    if (state.immunizationRecordDetailItem != null) {
+                        binding.toolbar.tvTitle.text = state.immunizationRecordDetailItem.productName
+                        adapter.submitList(state.immunizationRecordDetailItem.doseDetails)
+                    }
                 }
             }
         }
 
-        viewModel.getImmunizationRecordDetails(args.patientId)
+        viewModel.getImmunizationRecordDetails(args.immunizationRecordId)
     }
 
     private fun setUpRecyclerView() {

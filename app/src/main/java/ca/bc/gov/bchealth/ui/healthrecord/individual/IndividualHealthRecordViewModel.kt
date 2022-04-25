@@ -177,7 +177,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                         healthRecordsExceptMedication = filteredHealthRecordsExceptMedication.sortedByDescending { it.date }
                     )
                 }
-            } catch (e: java.lang.Exception) {
+            } catch (e: Exception) {
                 // no implementation required.
             }
         }

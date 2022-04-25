@@ -170,7 +170,7 @@
         android:label="fragment_immunization_record_detail"
         tools:layout="@layout/fragment_immunization_record_detail">
         <argument
-            android:name="patientId"
+            android:name="immunizationRecordId"
             app:argType="long" />
     </fragment>
 </navigation>
