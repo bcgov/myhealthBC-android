@@ -487,8 +487,10 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 healthRecordsAdapter.canDeleteRecord = !healthRecordsAdapter.canDeleteRecord
                 if (healthRecordsAdapter.canDeleteRecord) {
                     ivEdit.setImageResource(R.drawable.ic_done)
+                    ivEdit.contentDescription = getString(R.string.done)
                 } else {
                     ivEdit.setImageResource(R.drawable.ic_edit)
+                    ivEdit.contentDescription = getString(R.string.edit)
                 }
                 concatAdapter.notifyItemRangeChanged(
                     0,
