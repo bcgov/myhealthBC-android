@@ -1,19 +1,37 @@
-<com.google.android.material.textfield.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/tip_comment"
-    style="@style/HealthGateway.Widget.App.TextInputLayout"
-    android:hint="@string/comment_here"
-    android:filterTouchesWhenObscured="true"
-    app:startIconDrawable="@drawable/ic_lock_solid_grey"
-    app:startIconContentDescription="@string/comment_here"
-    app:endIconContentDescription="@string/comment_here"
-    app:endIconDrawable="@drawable/ic_add_comment"
-    app:endIconMode="custom">
+    android:id="@+id/comment_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="2dp"
+    android:outlineProvider="bounds">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/ed_comment"
-        android:inputType="text"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tip_comment"
+        style="@style/HealthGateway.Widget.App.TextInputLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:layout_marginBottom="@dimen/space_2_x"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:hint="@string/comment_here"
+        android:filterTouchesWhenObscured="true"
+        app:startIconDrawable="@drawable/ic_lock_solid_grey"
+        app:startIconContentDescription="@string/comment_here"
+        app:endIconContentDescription="@string/comment_here"
+        app:endIconDrawable="@drawable/ic_add_comment"
+        app:endIconMode="custom"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-</com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_comment"
+            android:inputType="text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
