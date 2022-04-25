@@ -157,6 +157,52 @@ class MedicationDetailsViewModel @Inject constructor(
         return medicationDetails
     }
 
+    fun addComment(medicationId: Long, comment: String, entryTypeCode: String) = viewModelScope.launch {
+        try {
+            _uiState.update {
+                it.copy(onLoading = true)
+            }
+            val medicationWithSummaryAndPharmacyDto =
+                medicationRecordRepository.getMedicationWithSummaryAndPharmacy(medicationId)
+
+            val comments = commentRepository.addComment(
+                medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier, comment, entryTypeCode
+            )
+            val commentsTemp = mutableListOf<Comment>()
+            if (comments.isNotEmpty()) {
+                commentsTemp.add(
+                    Comment(
+                        medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier,
+                        comments.size.toString(),
+                        Instant.now()
+                    )
+                )
+                val firsComment = comments.maxByOrNull { it.createdDateTime }
+                commentsTemp.add(
+                    Comment(
+                        firsComment?.parentEntryId,
+                        firsComment?.text,
+                        firsComment?.createdDateTime?.toLocalDateTimeInstant()
+                    )
+                )
+            }
+            _uiState.update {
+                it.copy(
+                    onLoading = false,
+                    comments = commentsTemp
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _uiState.update {
+                it.copy(
+                    onError = true,
+                    onLoading = false
+                )
+            }
+        }
+    }
+
     fun resetUiState() {
         _uiState.update {
             it.copy(

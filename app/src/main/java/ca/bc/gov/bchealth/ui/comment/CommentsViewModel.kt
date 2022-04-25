@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.time.Instant
 import javax.inject.Inject
 
@@ -56,6 +55,38 @@ class CommentsViewModel @Inject constructor(
             }
         }
     }
+
+    fun addComment(parentEntryId: String, comment: String, entryTypeCode: String) =
+        viewModelScope.launch {
+            try {
+                _uiState.update {
+                    it.copy(onLoading = true)
+                }
+
+                val commentsDtoList = commentRepository.addComment(parentEntryId, comment, entryTypeCode) as MutableList
+                commentsDtoList.sortByDescending { it.createdDateTime }
+                _uiState.update { it ->
+                    it.copy(
+                        onLoading = false,
+                        commentsList = commentsDtoList.map {
+                            Comment(
+                                it.id,
+                                it.text,
+                                it.createdDateTime.toLocalDateTimeInstant()
+                            )
+                        }
+                    )
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _uiState.update {
+                    it.copy(
+                        onError = true,
+                        onLoading = false
+                    )
+                }
+            }
+        }
 
     fun resetUiState() {
         _uiState.update {

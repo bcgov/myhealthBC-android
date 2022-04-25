@@ -109,7 +109,7 @@
             android:name="patientId"
             app:argType="long" />
     </fragment>
-   <fragment
+    <fragment
         android:id="@+id/medicationDetailsFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsFragment"
         android:label="fragment_medication_details"
@@ -117,10 +117,10 @@
         <argument
             android:name="medicationId"
             app:argType="long" />
-       <action
-           android:id="@+id/action_medicationDetailsFragment_to_commentsFragment"
-           app:destination="@id/commentsFragment" />
-   </fragment>
+        <action
+            android:id="@+id/action_medicationDetailsFragment_to_commentsFragment"
+            app:destination="@id/commentsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/labTestDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.labtest.LabTestDetailFragment"

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentCommentsBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.updateCommentEndIcon
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -36,6 +37,7 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
     private fun initUi() {
         setUpToolBar()
         setUpRecyclerView()
+        addCommentListener()
     }
 
     private fun setUpRecyclerView() {
@@ -60,6 +62,21 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
         }
     }
 
+    private fun addCommentListener() {
+        binding.comment.tipComment.apply {
+            updateCommentEndIcon(requireContext())
+            setEndIconOnClickListener {
+                if (!binding.comment.edComment.text.isNullOrBlank()) {
+                    viewModel.addComment(
+                        args.parentEntryId,
+                        binding.comment.edComment.text.toString(),
+                        "Med"
+                    )
+                }
+            }
+        }
+    }
+
     private fun observeComments() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -70,6 +87,8 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
                     if (state.commentsList != null) {
                         commentsAdapter.submitList(state.commentsList)
                         viewModel.resetUiState()
+                        // clear comment
+                        binding.comment.edComment.setText("")
                     }
 
                     if (state.onError) {
