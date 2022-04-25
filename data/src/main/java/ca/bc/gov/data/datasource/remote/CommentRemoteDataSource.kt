@@ -38,7 +38,7 @@ class CommentRemoteDataSource @Inject constructor(
     suspend fun addComment(
         parentEntryId: String?,
         comment: String,
-        entryTypeCode: String,
+        entryTypeCode: String?,
         hdid: String,
         accessToken: String
     ): CommentDto {
@@ -46,7 +46,8 @@ class CommentRemoteDataSource @Inject constructor(
             text = comment,
             parentEntryId = parentEntryId,
             userProfileId = hdid,
-            entryTypeCode = entryTypeCode
+            entryTypeCode = entryTypeCode,
+            // createdDateTime = Date().toString()
         )
         val response =
             safeCall {

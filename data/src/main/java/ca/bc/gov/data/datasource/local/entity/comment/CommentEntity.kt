@@ -30,4 +30,6 @@ data class CommentEntity(
     val updatedDateTime: Instant,
     @ColumnInfo(name = "updated_by")
     val updatedBy: String? = null,
+    @ColumnInfo(name = "is_uploaded")
+    val isUploaded: Boolean = true
 )

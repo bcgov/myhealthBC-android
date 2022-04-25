@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f37343510c33b221eba8dfe40bc974a1",
+    "identityHash": "c85972151b5d155880407e1595a524fb",
     "entities": [
       {
         "tableName": "patient",
@@ -813,7 +813,7 @@
       },
       {
         "tableName": "comments",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `user_profile_id` TEXT, `text` TEXT, `entry_type_code` TEXT, `parent_entry_id` TEXT, `version` INTEGER NOT NULL, `created_date_time` INTEGER NOT NULL, `created_by` TEXT, `updated_date_time` INTEGER NOT NULL, `updated_by` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `user_profile_id` TEXT, `text` TEXT, `entry_type_code` TEXT, `parent_entry_id` TEXT, `version` INTEGER NOT NULL, `created_date_time` INTEGER NOT NULL, `created_by` TEXT, `updated_date_time` INTEGER NOT NULL, `updated_by` TEXT, `is_uploaded` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -874,6 +874,12 @@
             "columnName": "updated_by",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "isUploaded",
+            "columnName": "is_uploaded",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -1281,7 +1287,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f37343510c33b221eba8dfe40bc974a1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c85972151b5d155880407e1595a524fb')"
     ]
   }
 }

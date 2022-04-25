@@ -7,5 +7,6 @@ data class CommentRequest(
     val text: String,
     val parentEntryId: String?,
     val userProfileId: String?,
-    val entryTypeCode: String?
+    val entryTypeCode: String?,
+    // val createdDateTime: String,
 )

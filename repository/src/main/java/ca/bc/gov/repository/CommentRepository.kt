@@ -4,6 +4,8 @@ import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.data.datasource.local.CommentLocalDataSource
 import ca.bc.gov.data.datasource.remote.CommentRemoteDataSource
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
+import java.time.Instant
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -16,7 +18,7 @@ class CommentRepository @Inject constructor(
 ) {
 
     suspend fun getComments(parentEntryId: String?): List<CommentDto> {
-        delete(parentEntryId)
+        delete(parentEntryId, true)
         val (token, hdid) = bcscAuthRepo.getAuthParameters()
         val comments = commentRemoteDataSource.fetchComments(parentEntryId, hdid, token)
         insert(comments)
@@ -31,12 +33,50 @@ class CommentRepository @Inject constructor(
         return commentLocalDataSource.insert(comments)
     }
 
-    suspend fun delete(parentEntryId: String?) = commentLocalDataSource.delete(parentEntryId)
+    suspend fun delete(parentEntryId: String?, isUploaded: Boolean) =
+        commentLocalDataSource.delete(parentEntryId, isUploaded)
 
-    suspend fun addComment(parentEntryId: String?, comment: String, entryTypeCode: String): List<CommentDto> {
+    suspend fun deleteById(id: String) = commentLocalDataSource.deleteById(id)
+
+    suspend fun addComment(
+        parentEntryId: String?,
+        comment: String,
+        entryTypeCode: String
+    ): List<CommentDto> {
         val (token, hdid) = bcscAuthRepo.getAuthParameters()
-        val comment = commentRemoteDataSource.addComment(parentEntryId, comment, entryTypeCode, hdid, token)
-        insert(comment)
+        val id = UUID.randomUUID().toString()
+        val commentDto = CommentDto(
+            id,
+            hdid,
+            comment,
+            entryTypeCode,
+            parentEntryId,
+            0,
+            Instant.now(),
+            hdid,
+            Instant.now(),
+            hdid,
+            false
+        )
+        insert(commentDto)
+        syncComment(commentDto)
         return commentLocalDataSource.findCommentByParentEntryId(parentEntryId)
     }
+
+    suspend fun syncComment(commentDto: CommentDto) {
+        val (token, hdid) = bcscAuthRepo.getAuthParameters()
+        val comment = commentRemoteDataSource.addComment(
+            commentDto.parentEntryId,
+            commentDto.text ?: "",
+            commentDto.entryTypeCode,
+            hdid,
+            token
+        )
+        deleteById(commentDto.id)
+        comment.isUploaded = true
+        insert(comment)
+    }
+
+    suspend fun findCommentsByUploadFlag(isUploaded: Boolean) =
+        commentLocalDataSource.findCommentsByUploadFlag(isUploaded)
 }

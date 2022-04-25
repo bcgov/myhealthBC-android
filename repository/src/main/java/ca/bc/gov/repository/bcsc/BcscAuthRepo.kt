@@ -18,6 +18,7 @@ import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.ConfigRemoteDataSource
 import ca.bc.gov.repository.R
 import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker
+import ca.bc.gov.repository.worker.SyncCommentsWorker
 import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationRequest
@@ -199,8 +200,12 @@ class BcscAuthRepo(
             OneTimeWorkRequest.Builder(FetchAuthenticatedHealthRecordsWorker::class.java)
                 .setConstraints(constraints)
                 .build()
+        val syncCommentsWorkRequest =
+            OneTimeWorkRequest.Builder(SyncCommentsWorker::class.java)
+                .setConstraints(constraints)
+                .build()
         val workManager = WorkManager.getInstance(applicationContext)
-        workManager.enqueue(oneTimeWorkRequest)
+        workManager.beginWith(oneTimeWorkRequest).then(syncCommentsWorkRequest).enqueue()
     }
 
     companion object {
