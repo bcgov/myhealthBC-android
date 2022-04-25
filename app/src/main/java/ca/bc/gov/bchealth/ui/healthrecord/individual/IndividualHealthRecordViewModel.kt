@@ -43,6 +43,21 @@ class IndividualHealthRecordViewModel @Inject constructor(
     val uiState: StateFlow<IndividualHealthRecordsUiState> = _uiState.asStateFlow()
 
     fun getIndividualsHealthRecord(
+        tempFilterList: List<TimelineTypeFilter>,
+        tempFromDate: String?,
+        tempToDate: String?
+    ) = viewModelScope.launch {
+        // Patient Id will change post sync of health records
+        val bcscUserPatientId = patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).id
+        getIndividualsHealthRecord(
+            bcscUserPatientId,
+            tempFilterList,
+            tempFromDate,
+            tempToDate
+        )
+    }
+
+    fun getIndividualsHealthRecord(
         patientId: Long,
         tempFilterList: List<TimelineTypeFilter>,
         tempFromDate: String?,

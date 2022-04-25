@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Base64
 import androidx.core.net.toUri
 import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -34,6 +35,8 @@ import java.time.Instant
 /*
 * @author amit_metri on 05,January,2022
 */
+const val BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME = "BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME"
+
 class BcscAuthRepo(
     private val applicationContext: Context,
     private val encryptedPreferenceStorage: EncryptedPreferenceStorage,
@@ -200,7 +203,11 @@ class BcscAuthRepo(
                 .setConstraints(constraints)
                 .build()
         val workManager = WorkManager.getInstance(applicationContext)
-        workManager.enqueue(oneTimeWorkRequest)
+        workManager.enqueueUniqueWork(
+            BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME,
+            ExistingWorkPolicy.REPLACE,
+            oneTimeWorkRequest
+        )
     }
 
     companion object {

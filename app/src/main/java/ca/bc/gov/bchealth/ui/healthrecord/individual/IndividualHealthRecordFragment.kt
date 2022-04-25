@@ -29,7 +29,6 @@ import ca.bc.gov.bchealth.ui.healthrecord.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_REQUEST
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_UPDATED
-import ca.bc.gov.bchealth.ui.login.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
@@ -40,6 +39,7 @@ import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.common.model.AuthenticationStatus
+import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
 import com.queue_it.androidsdk.QueueListener
@@ -184,9 +184,10 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             .getWorkInfosForUniqueWorkLiveData(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME)
         if (!workRequest.hasObservers()) {
             workRequest.observe(viewLifecycleOwner) {
-                if (it.firstOrNull()?.state == WorkInfo.State.ENQUEUED) {
+                if (it.firstOrNull()?.state == WorkInfo.State.SUCCEEDED &&
+                    args.authStatus == AuthenticationStatus.AUTHENTICATED.source
+                ) {
                     viewModel.getIndividualsHealthRecord(
-                        args.patientId,
                         filterSharedViewModel.filterState.value.timelineTypeFilter,
                         filterSharedViewModel.filterState.value.filterFromDate,
                         filterSharedViewModel.filterState.value.filterToDate
@@ -493,8 +494,10 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 healthRecordsAdapter.canDeleteRecord = !healthRecordsAdapter.canDeleteRecord
                 if (healthRecordsAdapter.canDeleteRecord) {
                     ivEdit.setImageResource(R.drawable.ic_done)
+                    ivEdit.contentDescription = getString(R.string.done)
                 } else {
                     ivEdit.setImageResource(R.drawable.ic_edit)
+                    ivEdit.contentDescription = getString(R.string.edit)
                 }
                 concatAdapter.notifyItemRangeChanged(
                     0,

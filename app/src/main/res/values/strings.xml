@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">My Health BC</string>
+    <string name="app_name">Health Gateway</string>
 
     <!--Informational screen for camera permission-->
     <string name="allow">Allow camera access</string>
     <string name="permission_required">Permission required</string>
-    <string name="allow_vaxwallet">Allow My Health BC to use your camera to scan QR codes to store your card.</string>
+    <string name="allow_vaxwallet">Allow Health Gateway to use your camera to scan QR codes to store your card.</string>
     <string name="skip_for_now">Skip for now</string>
     <string name="camera_permission_required_title">Camera permission required!</string>
     <string name="camera_permission_message">Camera permission is required to scan BC Vaccine Card QR codes.</string>
@@ -210,6 +210,7 @@
     </plurals>
     <string name="comments">Comments</string>
     <string name="comments_medication_subtitle">Only you can see comments added to your medical records.</string>
+    <string name="download">Download</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>
@@ -249,7 +250,7 @@
     <string name="log_in_with_bc_services_card">Log in with BC Services Card</string>
     <string name="incorrect_credentials">Please enter valid credentials</string>
     <string name="login_success_title">Log in successful</string>
-    <string name="login_success_message">Your records will be automatically added and updated in My Health BC.</string>
+    <string name="login_success_message">Your records will be automatically added and updated in Health Gateway.</string>
     <string name="age_limit_title">Age Restriction</string>
     <string name="age_limit_message">You must be 12 years of age or older to use Health Gateway.</string>
     <string name="terms_of_service_message">You must agree to the Health Gateway terms of service before using this app.</string>
@@ -268,7 +269,7 @@
     <string name="invalid_phn">Please enter a valid PHN</string>
     <string name="error_incorrect_phn">There was an error with your Personal Health Number. Please check that it is correct and try again.</string>
     <string name="error_biometric_enrollment_title">Enable Biometric</string>
-    <string name="error_biometric_enrollment_message">My Health BC requires to authenticate using Biometric or passcode. Go to Settings > To enable Biometric or Passcode.</string>
+    <string name="error_biometric_enrollment_message">Health Gateway requires to authenticate using Biometric or passcode. Go to Settings > To enable Biometric or Passcode.</string>
     <string name="error_biometric_authentication_title">Authentication error</string>
     <string name="error_biometric_no_hardware">Unable to find supported hardware to perform biometric authentication.</string>
     <string name="error_biometric_unknown">Unable to perform authentication at the moment try again later.</string>

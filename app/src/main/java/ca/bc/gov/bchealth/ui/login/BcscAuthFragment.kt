@@ -36,9 +36,6 @@ import java.nio.charset.StandardCharsets
 /*
 * @auther amit_metri on 04,January,2022
 */
-const val BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME = "BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME"
-const val BACKGROUND_AUTH_RECORD_FETCH_WORK_INTERVAL = 15L
-
 @AndroidEntryPoint
 class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
