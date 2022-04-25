@@ -204,6 +204,7 @@
     <string name="enter_to_date">Enter to date</string>
     <string name="after">and after</string>
     <string name="before">and before</string>
+    <string name="download">Download</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>
