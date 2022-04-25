@@ -165,15 +165,6 @@
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/commentsFragment"
-        android:name="ca.bc.gov.bchealth.ui.comment.CommentsFragment"
-        android:label="fragment_comments"
-        tools:layout="@layout/fragment_comments" >
-        <argument
-            android:name="parentEntryId"
-            app:argType="string" />
-    </fragment>
-    <fragment
         android:id="@+id/immunizationRecordDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.immunization.ImmunizationRecordDetailFragment"
         android:label="fragment_immunization_record_detail"
