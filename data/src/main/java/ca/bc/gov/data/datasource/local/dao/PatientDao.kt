@@ -10,7 +10,6 @@ import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.PatientOrderUpdate
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithCovidOrderAndCovidTest
-import ca.bc.gov.data.datasource.local.entity.relations.PatientWithHealthRecordCount
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithImmunizationRecordAndForecast
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithLabOrdersAndLabTests
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithMedicationRecords
@@ -64,23 +63,71 @@ interface PatientDao {
     @Transaction
     @Query(
         """
-        SELECT P.*,
-        COUNT(DISTINCT V.id) AS vaccineRecordCount,
-        COUNT(DISTINCT T.id) as testRecordCount,
-        COUNT(DISTINCT L.id) as labTestCount,
-        COUNT(DISTINCT C.id) as covidTestCount,
-        COUNT(DISTINCT I.id) as immunizationCount,
-        COUNT (DISTINCT M.id) as medicationRecordCount FROM patient P
-        LEFT JOIN vaccine_record V on V.patient_id = P.id
-        LEFT JOIN test_result T on T.patient_id = P.id
-        LEFT JOIN lab_order L on L.patient_id = P.id
-        LEFT JOIN covid_order C on C.patient_id = P.id
-        LEFT JOIN immunization_record I on I.patient_id = P.id
-        LEFT JOIN medication_record M on M.patient_id = P.id
+        SELECT *
+        FROM patient P
         GROUP BY P.id ORDER BY P.authentication_status
     """
     )
-    fun getPatientWithHealthRecordCountFlow(): Flow<List<PatientWithHealthRecordCount>>
+    suspend fun getPatientInOrderedFlow(): List<PatientEntity>
+
+    @Transaction
+    @Query(
+        """SELECT COUNT(DISTINCT V.id) FROM patient P
+            LEFT JOIN vaccine_record V
+            ON V.patient_id = P.id
+            WHERE P.id = :patientId """
+    )
+    suspend fun getPatientsVaccineCount(patientId: Long): Int
+
+    @Transaction
+    @Query(
+        """SELECT COUNT(DISTINCT T.id)
+            FROM patient P
+            LEFT JOIN test_result T
+            ON T.patient_id = P.id
+            WHERE P.id = :patientId """
+    )
+    suspend fun getPatientsTestResultCount(patientId: Long): Int
+
+    @Transaction
+    @Query(
+        """SELECT COUNT(DISTINCT V.id)
+            FROM patient P
+            LEFT JOIN lab_order V
+            ON V.patient_id = P.id
+            WHERE P.id = :patientId """
+    )
+    suspend fun getPatientsLabOrderCount(patientId: Long): Int
+
+    @Transaction
+    @Query(
+        """SELECT COUNT(DISTINCT V.id)
+            FROM patient P
+            LEFT JOIN covid_order V
+            ON V.patient_id = P.id
+            WHERE P.id = :patientId """
+    )
+    suspend fun getPatientsCovidOrderCount(patientId: Long): Int
+
+    @Transaction
+    @Query(
+        """SELECT COUNT(DISTINCT V.id)
+            FROM patient P
+            LEFT JOIN immunization_record V
+            ON V.patient_id = P.id
+            WHERE P.id = :patientId """
+    )
+    suspend fun getPatientsImmunisationRecordCount(patientId: Long): Int
+
+    @Transaction
+    @Query(
+        """SELECT COUNT(DISTINCT V.id)
+            FROM patient P
+            LEFT JOIN medication_record V
+            ON V.patient_id = P.id
+            WHERE P.id = :patientId """
+    )
+    suspend fun getPatientsMedicationCount(patientId: Long): Int
 
     @Transaction
     @Query(
