@@ -60,6 +60,12 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
             )
         )
         labOrderWithLabTestDto.labTests.forEachIndexed { index, labTest ->
+            var testStatus = ""
+            testStatus = if (labTest.testStatus.equals("partial", true)) {
+                "Active"
+            } else {
+                labTest.testStatus ?: ""
+            }
             if (index == 0) {
                 labTestDetails.add(
                     LabTestDetail(
@@ -76,7 +82,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                             labTest.outOfRange
                         },
                         title3 = "Test status:",
-                        testStatus = labTest.testStatus,
+                        testStatus = testStatus,
                         viewType = ITEM_VIEW_TYPE_LAB_TEST
                     )
                 )
@@ -95,7 +101,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                             labTest.outOfRange
                         },
                         title3 = "Test status:",
-                        testStatus = labTest.testStatus,
+                        testStatus = testStatus,
                         viewType = ITEM_VIEW_TYPE_LAB_TEST
                     )
                 )
