@@ -35,20 +35,19 @@ class PatientLocalDataSource @Inject constructor(
             }
         }
 
-    val patientWithRecordCount: Flow<List<PatientWithHealthRecordCount>> =
-        patientDao.getPatientWithHealthRecordCountFlow().map { patientWithRecordCounts ->
-            patientWithRecordCounts.map {
-                PatientWithHealthRecordCount(
-                    it.patientEntity.toDto(),
-                    vaccineRecordCount = it.vaccineRecordCount,
-                    testResultCount = it.testRecordCount,
-                    labTestCount = it.labTestCount,
-                    covidTestCount = it.covidTestCount,
-                    immunizationCount = it.immunizationCount,
-                    medicationRecordCount = it.medicationRecordCount
-                )
-            }
+    suspend fun getPatientWithRecordCount(): List<PatientWithHealthRecordCount> {
+        return patientDao.getPatientInOrderedFlow().map { patientEntity ->
+            PatientWithHealthRecordCount(
+                patientEntity.toDto(),
+                vaccineRecordCount = patientDao.getPatientsVaccineCount(patientEntity.id),
+                testResultCount = patientDao.getPatientsTestResultCount(patientEntity.id),
+                labTestCount = patientDao.getPatientsLabOrderCount(patientEntity.id),
+                covidTestCount = patientDao.getPatientsCovidOrderCount(patientEntity.id),
+                immunizationCount = patientDao.getPatientsImmunisationRecordCount(patientEntity.id),
+                medicationRecordCount = patientDao.getPatientsMedicationCount(patientEntity.id),
+            )
         }
+    }
 
     suspend fun getBcscSourceHealthRecordCount(): Int {
         return patientDao.getBcscSourceHealthRecordCount()

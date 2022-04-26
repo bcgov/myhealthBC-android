@@ -287,7 +287,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun updateHealthRecordsList(uiState: IndividualHealthRecordsUiState) {
-        if (uiState.onHealthRecords.isEmpty() && uiState.patientAuthStatus != AuthenticationStatus.AUTHENTICATED) {
+        if (uiState.onNonBcscHealthRecords.isEmpty() && uiState.patientAuthStatus != AuthenticationStatus.AUTHENTICATED) {
             findNavController().previousBackStackEntry?.savedStateHandle
                 ?.set(
                     HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
@@ -296,11 +296,19 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             findNavController().popBackStack()
         }
 
-        if (loginStatus == LoginStatus.ACTIVE) {
-            displayBcscRecords(uiState)
-        }
-
-        if (loginStatus == LoginStatus.EXPIRED) {
+        if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
+            if (loginStatus == LoginStatus.ACTIVE) {
+                displayBcscRecords(uiState)
+            } else {
+                if (uiState.authenticatedRecordsCount != null &&
+                    ::hiddenHealthRecordAdapter.isInitialized
+                )
+                    hiddenHealthRecordAdapter.submitList(
+                        getHiddenRecordItem(uiState.authenticatedRecordsCount)
+                    )
+                displayNonBcscRecords(uiState)
+            }
+        } else {
             displayNonBcscRecords(uiState)
         }
     }
@@ -308,15 +316,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun displayNonBcscRecords(uiState: IndividualHealthRecordsUiState) {
         if (::healthRecordsAdapter.isInitialized) {
             healthRecordsAdapter.submitList(uiState.onNonBcscHealthRecords)
-        }
-
-        if (uiState.authenticatedRecordsCount != null &&
-            uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED &&
-            ::hiddenHealthRecordAdapter.isInitialized
-        ) {
-            hiddenHealthRecordAdapter.submitList(
-                getHiddenRecordItem(uiState.authenticatedRecordsCount)
-            )
         }
     }
 
