@@ -24,6 +24,7 @@
         android:layout_marginTop="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
         app:cardCornerRadius="4dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

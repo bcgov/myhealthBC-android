@@ -5,10 +5,13 @@ import ca.bc.gov.bchealth.ui.healthpass.FederalTravelPassState
 import ca.bc.gov.bchealth.ui.healthpass.HealthPass
 import ca.bc.gov.bchealth.ui.healthpass.PassState
 import ca.bc.gov.bchealth.ui.healthrecord.PatientHealthRecord
+import ca.bc.gov.bchealth.ui.healthrecord.immunization.ImmunizationDoseDetailItem
+import ca.bc.gov.bchealth.ui.healthrecord.immunization.ImmunizationRecordDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
+import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPatientDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
@@ -227,6 +230,25 @@ fun PatientWithHealthRecordCount.toUiModel(): PatientHealthRecord {
         totalRecord = vaccineRecordCount + testResultCount + labTestCount + medicationRecordCount +
             covidTestCount + immunizationCount,
         authStatus = patientDto.authenticationStatus
+    )
+}
+
+fun ImmunizationRecordWithForecastAndPatientDto.toUiModel(): ImmunizationRecordDetailItem {
+
+    return ImmunizationRecordDetailItem(
+        id = immunizationRecordWithForecast.immunizationRecord.id,
+        status = immunizationRecordWithForecast.immunizationRecord.status,
+        dueDate = immunizationRecordWithForecast.immunizationForecast?.dueDate?.toDate(),
+        productName = immunizationRecordWithForecast.immunizationForecast?.displayName,
+        doseDetails = listOf(
+            ImmunizationDoseDetailItem(
+                id = immunizationRecordWithForecast.immunizationRecord.id,
+                date = immunizationRecordWithForecast.immunizationRecord.dateOfImmunization.toDate(),
+                productName = immunizationRecordWithForecast.immunizationRecord.productName,
+                providerOrClinicName = immunizationRecordWithForecast.immunizationRecord.provideOrClinic,
+                lotNumber = immunizationRecordWithForecast.immunizationRecord.lotNumber
+            )
+        )
     )
 }
 
