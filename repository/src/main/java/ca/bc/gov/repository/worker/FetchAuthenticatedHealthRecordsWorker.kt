@@ -6,7 +6,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.ProtectiveWordException
-import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
@@ -86,15 +85,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                     authParameters.first,
                     authParameters.second
                 )
-                try {
-                    patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
-                } catch (e: java.lang.Exception) {
-                    /*
-                    * If AUTHENTICATED USER is not found patient details are inserted at this stage
-                    * to show patient name soon after login
-                    * */
-                    patientId = patientRepository.insertAuthenticatedPatient(patient)
-                }
             } catch (e: Exception) {
                 isApiFailed = true
                 e.printStackTrace()

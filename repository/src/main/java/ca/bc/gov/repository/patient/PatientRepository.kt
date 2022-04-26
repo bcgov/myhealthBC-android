@@ -125,4 +125,8 @@ class PatientRepository @Inject constructor(
             ?: throw MyHealthException(
                 DATABASE_ERROR, "No record found for patient status=  $authenticationStatus"
             )
+
+    suspend fun deleteByPatientId(patientId: Long) {
+        patientLocalDataSource.deleteByPatientId(patientId)
+    }
 }
