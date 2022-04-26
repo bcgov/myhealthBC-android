@@ -6,6 +6,7 @@ import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
+import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
@@ -42,18 +43,17 @@ class PatientRepository @Inject constructor(
             }
         }
 
-    val patientHealthRecords =
-        patientLocalDataSource.patientWithRecordCount.map { patientHealthRecords ->
-            patientHealthRecords.filter { record ->
-                (
-                    record.vaccineRecordCount +
-                        record.testResultCount +
-                        record.medicationRecordCount +
-                        record.labTestCount +
-                        record.covidTestCount
-                    ) > 0
-            }
+    suspend fun getPatientHealthRecordCount(): List<PatientWithHealthRecordCount> {
+        return patientLocalDataSource.getPatientWithRecordCount().filter { patientHealthRecords ->
+            (
+                patientHealthRecords.vaccineRecordCount +
+                    patientHealthRecords.testResultCount +
+                    patientHealthRecords.medicationRecordCount +
+                    patientHealthRecords.labTestCount +
+                    patientHealthRecords.covidTestCount
+                ) > 0
         }
+    }
 
     suspend fun getBcscDataRecordCount(): Int {
         return patientLocalDataSource.getBcscSourceHealthRecordCount()
