@@ -40,8 +40,8 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_health_record"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginEnd="@dimen/space_2_x"
         android:layout_marginBottom="@dimen/space_2_x"
