@@ -1,10 +1,12 @@
 package ca.bc.gov.bchealth.ui.healthrecord
 
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordHeaderBinding
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordMemberBinding
 import ca.bc.gov.common.model.AuthenticationStatus
@@ -17,7 +19,7 @@ private const val ITEM_VIEW_TYPE_HEADER = 0
 private const val ITEM_VIEW_TYPE_MEMBER = 1
 
 class HealthRecordsAdapter(
-    private val itemClickListener: ItemClickListener
+    private val itemClickListener: ItemClickListener,
 ) : ListAdapter<PatientHealthRecord, RecyclerView.ViewHolder>(
     PatientHealthRecordDiffCallBack()
 ) {
@@ -75,6 +77,16 @@ class HealthRecordsAdapter(
                 holder.itemView.setOnClickListener {
                     itemClickListener.onItemClick(record)
                 }
+                if (record.authStatus == AuthenticationStatus.AUTHENTICATION_EXPIRED)
+                    holder.binding.ivHealthRecord.setColorFilter(
+                        holder.itemView.resources.getColor(R.color.primary_blue_disabled, null),
+                        PorterDuff.Mode.SRC_IN
+                    )
+                else
+                    holder.binding.ivHealthRecord.setColorFilter(
+                        holder.itemView.resources.getColor(R.color.blue, null),
+                        PorterDuff.Mode.SRC_IN
+                    )
             }
         }
     }
@@ -82,7 +94,9 @@ class HealthRecordsAdapter(
     override fun getItemViewType(position: Int): Int {
         return when (position) {
             0 -> {
-                return if (getItem(position).authStatus == AuthenticationStatus.AUTHENTICATED)
+                return if (getItem(position).authStatus == AuthenticationStatus.AUTHENTICATED ||
+                    getItem(position).authStatus == AuthenticationStatus.AUTHENTICATION_EXPIRED
+                )
                     ITEM_VIEW_TYPE_HEADER
                 else {
                     ITEM_VIEW_TYPE_MEMBER
