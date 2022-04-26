@@ -52,16 +52,16 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
     private fun initTypeFilter(filterState: FilterUiState) {
         filterState.timelineTypeFilter.forEach {
             when (it) {
-                TimelineTypeFilter.MEDICATION -> {
+                TimelineTypeFilter.MEDICATION.name -> {
                     binding.chipMedication.isChecked = true
                 }
-                TimelineTypeFilter.IMMUNIZATION -> {
+                TimelineTypeFilter.IMMUNIZATION.name -> {
                     binding.chipImmunizations.isChecked = true
                 }
-                TimelineTypeFilter.COVID_19_TEST -> {
+                TimelineTypeFilter.COVID_19_TEST.name -> {
                     binding.chipCovidTest.isChecked = true
                 }
-                TimelineTypeFilter.LAB_TEST -> {
+                TimelineTypeFilter.LAB_TEST.name -> {
                     binding.chipLabTest.isChecked = true
                 }
             }
@@ -71,26 +71,27 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
     private fun applyClickListener() {
         binding.btnApply.setOnClickListener {
             if (validateSelectedDate()) {
-                val filterList = mutableListOf<TimelineTypeFilter>()
+                // val filterList = mutableListOf<TimelineTypeFilter>()
+                val filterList = mutableListOf<String>()
                 val checkedChipIds = binding.cgFilterByType.checkedChipIds
                 checkedChipIds.forEach {
                     when (it) {
                         R.id.chip_medication -> {
-                            filterList.add(TimelineTypeFilter.MEDICATION)
+                            filterList.add(TimelineTypeFilter.MEDICATION.name)
                         }
                         R.id.chip_lab_test -> {
-                            filterList.add(TimelineTypeFilter.LAB_TEST)
+                            filterList.add(TimelineTypeFilter.LAB_TEST.name)
                         }
                         R.id.chip_covid_test -> {
-                            filterList.add(TimelineTypeFilter.COVID_19_TEST)
+                            filterList.add(TimelineTypeFilter.COVID_19_TEST.name)
                         }
                         R.id.chip_immunizations -> {
-                            filterList.add(TimelineTypeFilter.IMMUNIZATION)
+                            filterList.add(TimelineTypeFilter.IMMUNIZATION.name)
                         }
                     }
                 }
                 if (filterList.isNullOrEmpty()) {
-                    filterList.add(TimelineTypeFilter.ALL)
+                    filterList.add(TimelineTypeFilter.ALL.name)
                 }
 
                 filterSharedViewModel.updateFilter(filterList, binding.etFrom.text.toString(), binding.etTo.text.toString())
@@ -131,7 +132,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
     private fun clearClickListener() {
         binding.btnClear.setOnClickListener {
-            filterSharedViewModel.updateFilter(mutableListOf(TimelineTypeFilter.ALL), null, null)
+            filterSharedViewModel.updateFilter(mutableListOf(TimelineTypeFilter.ALL.name), null, null)
 
             findNavController().popBackStack()
         }

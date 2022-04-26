@@ -3,6 +3,8 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -21,7 +23,10 @@ class HealthRecordsAdapter(
     var canDeleteRecord: Boolean = false,
     var isUpdateRequested: Boolean
 ) :
-    ListAdapter<HealthRecordItem, HealthRecordsAdapter.ViewHolder>(HealthRecordDiffCallBacks()) {
+    ListAdapter<HealthRecordItem, HealthRecordsAdapter.ViewHolder>(HealthRecordDiffCallBacks()),
+    Filterable {
+
+    private lateinit var defaultList: MutableList<HealthRecordItem>
 
     fun interface ItemClickListener {
         fun onItemClick(record: HealthRecordItem)
@@ -93,6 +98,31 @@ class HealthRecordsAdapter(
         holder.binding.tvDesc.text = description
         holder.itemView.setOnClickListener {
             itemClickListener.onItemClick(record)
+        }
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(charSequence: CharSequence?): FilterResults {
+                if (charSequence.isNullOrBlank()) {
+                    return FilterResults()
+                } else {
+
+                    if (charSequence == "MEDICATION") {
+                        return FilterResults().apply { values = currentList.filter { it.healthRecordType == HealthRecordType.MEDICATION_RECORD } }
+                    }
+                }
+
+                return FilterResults().apply { values = currentList }
+            }
+
+            override fun publishResults(constraint: CharSequence?, result: FilterResults?) {
+                if (result?.values == null) {
+                    submitList(emptyList())
+                } else {
+                    submitList(result.values as List<HealthRecordItem>)
+                }
+            }
         }
     }
 }

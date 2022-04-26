@@ -119,16 +119,16 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         resetFilters()
         filterUiState.timelineTypeFilter.forEach {
             when (it) {
-                TimelineTypeFilter.MEDICATION -> {
+                TimelineTypeFilter.MEDICATION.name -> {
                     binding.chipMedication.show()
                 }
-                TimelineTypeFilter.IMMUNIZATION -> {
+                TimelineTypeFilter.IMMUNIZATION.name -> {
                     binding.chipImmunizations.show()
                 }
-                TimelineTypeFilter.COVID_19_TEST -> {
+                TimelineTypeFilter.COVID_19_TEST.name -> {
                     binding.chipCovidTest.show()
                 }
-                TimelineTypeFilter.LAB_TEST -> {
+                TimelineTypeFilter.LAB_TEST.name -> {
                     binding.chipLabTest.show()
                 }
             }
@@ -144,13 +144,10 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private fun clearFilterClickListener() {
         binding.imgClear.setOnClickListener {
-            filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL), null, null)
+            filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL.name), null, null)
 
             viewModel.getIndividualsHealthRecord(
-                args.patientId,
-                filterSharedViewModel.filterState.value.timelineTypeFilter,
-                filterSharedViewModel.filterState.value.filterFromDate,
-                filterSharedViewModel.filterState.value.filterToDate
+                args.patientId
             )
         }
     }
@@ -186,10 +183,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             workRequest.observe(viewLifecycleOwner) {
                 if (it.firstOrNull()?.state == WorkInfo.State.ENQUEUED) {
                     viewModel.getIndividualsHealthRecord(
-                        args.patientId,
-                        filterSharedViewModel.filterState.value.timelineTypeFilter,
-                        filterSharedViewModel.filterState.value.filterFromDate,
-                        filterSharedViewModel.filterState.value.filterToDate
+                        args.patientId
                     )
                 }
             }
@@ -206,17 +200,14 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         authStatus.loginStatus?.let {
                             loginStatus = it
                             viewModel.getIndividualsHealthRecord(
-                                args.patientId,
-                                filterSharedViewModel.filterState.value.timelineTypeFilter,
-                                filterSharedViewModel.filterState.value.filterFromDate,
-                                filterSharedViewModel.filterState.value.filterToDate
+                                args.patientId
                             )
                         }
                     }
                     if (loginStatus == LoginStatus.EXPIRED) {
                         // clear timeline filter
                         filterSharedViewModel.updateFilter(
-                            listOf(TimelineTypeFilter.ALL),
+                            listOf(TimelineTypeFilter.ALL.name),
                             null,
                             null
                         )
@@ -239,10 +230,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         healthRecordsAdapter.isUpdateRequested = false
                         healthRecordsAdapter.notifyDataSetChanged()
                         viewModel.getIndividualsHealthRecord(
-                            args.patientId,
-                            filterSharedViewModel.filterState.value.timelineTypeFilter,
-                            filterSharedViewModel.filterState.value.filterFromDate,
-                            filterSharedViewModel.filterState.value.filterToDate
+                            args.patientId
                         )
                         return@collect
                     }
@@ -320,14 +308,15 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun displayBcscRecords(uiState: IndividualHealthRecordsUiState) {
-        if (filterSharedViewModel.filterState.value.timelineTypeFilter.contains(TimelineTypeFilter.ALL) || filterSharedViewModel.filterState.value.timelineTypeFilter.contains(
-                TimelineTypeFilter.MEDICATION
+        if (filterSharedViewModel.filterState.value.timelineTypeFilter.contains(TimelineTypeFilter.ALL.name) || filterSharedViewModel.filterState.value.timelineTypeFilter.contains(
+                TimelineTypeFilter.MEDICATION.name
             )
         ) {
             displayBCSCRecordsWithMedicationFilter(uiState)
         } else {
             displayBCSCRecordsExceptMedicationFilter(uiState)
         }
+        healthRecordsAdapter.filter.filter("MEDICATION")
     }
 
     private fun displayBCSCRecordsWithMedicationFilter(uiState: IndividualHealthRecordsUiState) {
@@ -521,10 +510,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         )
                             .invokeOnCompletion {
                                 viewModel.getIndividualsHealthRecord(
-                                    args.patientId,
-                                    filterSharedViewModel.filterState.value.timelineTypeFilter,
-                                    filterSharedViewModel.filterState.value.filterFromDate,
-                                    filterSharedViewModel.filterState.value.filterToDate
+                                    args.patientId
                                 )
                             }
                     }
@@ -544,10 +530,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         )
                             .invokeOnCompletion {
                                 viewModel.getIndividualsHealthRecord(
-                                    args.patientId,
-                                    filterSharedViewModel.filterState.value.timelineTypeFilter,
-                                    filterSharedViewModel.filterState.value.filterFromDate,
-                                    filterSharedViewModel.filterState.value.filterToDate
+                                    args.patientId
                                 )
                             }
                     }
@@ -679,10 +662,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     updateClearButton(filterState)
 
                     viewModel.getIndividualsHealthRecord(
-                        args.patientId,
-                        filterSharedViewModel.filterState.value.timelineTypeFilter,
-                        filterSharedViewModel.filterState.value.filterFromDate,
-                        filterSharedViewModel.filterState.value.filterToDate
+                        args.patientId
                     )
                 }
             }
@@ -698,7 +678,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private fun updateClearButton(filterState: FilterUiState) {
         if (!isFilterDateSelected(filterState) && filterState.timelineTypeFilter.contains(
-                TimelineTypeFilter.ALL
+                TimelineTypeFilter.ALL.name
             )
         ) {
             binding.imgClear.hide()
