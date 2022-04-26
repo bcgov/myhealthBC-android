@@ -5,7 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.model.AuthenticationStatus
+import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.utils.toUniquePatientName
 import ca.bc.gov.repository.ClearStorageRepository
+import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.ProfileRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
@@ -28,7 +31,8 @@ class BcscAuthViewModel @Inject constructor(
     private val queueItTokenRepository: QueueItTokenRepository,
     private val clearStorageRepository: ClearStorageRepository,
     private val profileRepository: ProfileRepository,
-    private val patientRepository: PatientRepository
+    private val patientRepository: PatientRepository,
+    private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository
 ) : ViewModel() {
 
     private val _authStatus = MutableStateFlow(AuthStatus())
@@ -285,6 +289,9 @@ class BcscAuthViewModel @Inject constructor(
                 authParameters.first,
                 authParameters.second
             )
+
+            performPatientDetailCheck(authParameters)
+
             _authStatus.update {
                 it.copy(
                     showLoading = true,
@@ -311,6 +318,37 @@ class BcscAuthViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    private suspend fun performPatientDetailCheck(authParameters: Pair<String, String>) {
+        var patientFromRemoteSource: PatientDto? = null
+        try {
+            val patientFromLocalSource = patientRepository
+                .findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
+            patientFromRemoteSource = patientWithBCSCLoginRepository.getPatient(
+                authParameters.first,
+                authParameters.second
+            )
+            /*
+            * If user logs in using different user credentials post session expiry,
+            * exiting BCSC user is deleted and new BCSC user details inserted immediately.
+            * */
+            if (!patientFromLocalSource.fullName.toUniquePatientName()
+                .equals(
+                        patientFromRemoteSource.fullName.toUniquePatientName(),
+                        true
+                    )
+            ) {
+                patientRepository.deleteByPatientId(patientFromLocalSource.id)
+                patientRepository.insertAuthenticatedPatient(patientFromRemoteSource)
+            }
+        } catch (e: java.lang.Exception) {
+            /*
+            * If AUTHENTICATED USER is not found patient details are inserted at this stage
+            * to show patient name soon after login
+            * */
+            patientFromRemoteSource?.let { patientRepository.insertAuthenticatedPatient(it) }
         }
     }
 

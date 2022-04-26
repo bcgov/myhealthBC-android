@@ -135,4 +135,8 @@ class PatientLocalDataSource @Inject constructor(
 
     suspend fun findPatientByAuthStatus(authenticationStatus: AuthenticationStatus): PatientDto? =
         patientDao.findPatientByAuthStatus(authenticationStatus)?.toDto()
+
+    suspend fun deleteByPatientId(patientId: Long) {
+        patientDao.deletePatientById(patientId)
+    }
 }
