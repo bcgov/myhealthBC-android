@@ -68,7 +68,7 @@ class LabTestDetailAdapter :
                     tvDesc1.text = labTestDetail.testName
 
                     tvTitle2.text = labTestDetail.title2
-                    val pair = getTestResult(labTestDetail.outOfRange, holder.itemView.context)
+                    val pair = getTestResult(labTestDetail.outOfRange, labTestDetail.testStatus, holder.itemView.context)
                     tvDesc2.text = pair.first
                     tvDesc2.setTextColor(pair.second)
                     val typeface = ResourcesCompat.getFont(holder.itemView.context, R.font.bc_sans_bold)
@@ -81,7 +81,7 @@ class LabTestDetailAdapter :
         }
     }
 
-    private fun getTestResult(outOfRange: Boolean?, context: Context): Pair<String, Int> {
+    private fun getTestResult(outOfRange: Boolean?, testStatus: String?, context: Context): Pair<String, Int> {
         outOfRange?.let {
             return if (outOfRange) {
                 Pair(
@@ -100,7 +100,7 @@ class LabTestDetailAdapter :
             }
         } ?: run {
             return Pair(
-                context.resources.getString(R.string.pending),
+                testStatus ?: "-",
                 context.resources.getColor(
                     R.color.text_black, null
                 )
