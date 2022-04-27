@@ -57,7 +57,7 @@ class ImmunizationRecordDetailFragment : Fragment(R.layout.fragment_immunization
 
                     binding.progressBar.isVisible = state.onLoading
                     if (state.immunizationRecordDetailItem != null) {
-                        binding.toolbar.tvTitle.text = state.immunizationRecordDetailItem.productName
+                        binding.toolbar.tvTitle.text = state.immunizationRecordDetailItem.name
                         adapter.submitList(state.immunizationRecordDetailItem.doseDetails)
                     }
                 }
