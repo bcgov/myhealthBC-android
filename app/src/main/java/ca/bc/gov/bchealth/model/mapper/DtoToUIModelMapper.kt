@@ -201,7 +201,7 @@ fun ImmunizationRecordWithForecastDto.toUiModel(): HealthRecordItem {
     return HealthRecordItem(
         patientId = immunizationRecord.patientId,
         immunizationRecordId = immunizationRecord.id,
-        title = immunizationRecord.agentName ?: "",
+        title = immunizationRecord.immunizationName ?: "",
         description = "",
         testOutcome = "",
         icon = R.drawable.ic_health_record_vaccine,
