@@ -1,18 +1,20 @@
 package ca.bc.gov.bchealth.ui.healthrecord.vaccine
 
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentVaccineRecordDetailBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -23,7 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_detail) {
+class VaccineRecordDetailFragment : BaseFragment(R.layout.fragment_vaccine_record_detail) {
 
     private val binding by viewBindings(FragmentVaccineRecordDetailBinding::bind)
 
@@ -37,17 +39,14 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setToolBar()
-
         initUI()
     }
 
-    private fun setToolBar() {
-        binding.toolbar.apply {
-            ivLeftOption.visibility = View.VISIBLE
-            ivLeftOption.setImageResource(R.drawable.ic_action_back)
-            ivLeftOption.setOnClickListener {
+    private lateinit var menuInflated: Menu
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.topAppBar) {
+            setNavigationIcon(R.drawable.ic_toolbar_back)
+            setNavigationOnClickListener {
                 if (findNavController().previousBackStackEntry?.destination?.id ==
                     R.id.fetchVaccineRecordFragment
                 ) {
@@ -59,29 +58,28 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
                 }
                 findNavController().popBackStack()
             }
-
-            tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.vaccination_record)
-
-            tvRightOption.visibility = View.VISIBLE
-            tvRightOption.text = getString(R.string.delete)
-            tvRightOption.setOnClickListener {
-
-                AlertDialogHelper.showAlertDialog(
-                    context = requireContext(),
-                    title = getString(R.string.delete_hc_record_title),
-                    msg = getString(R.string.delete_individual_vaccine_record_message),
-                    positiveBtnMsg = getString(R.string.delete),
-                    negativeBtnMsg = getString(R.string.not_now),
-                    positiveBtnCallback = {
-                        viewModel.deleteVaccineRecord(vaccineRecordId).invokeOnCompletion {
-                            findNavController().popBackStack()
-                        }
+            title = getString(R.string.vaccination_record)
+            inflateMenu(R.menu.menu_details_page_delete)
+            menuInflated = menu
+            setOnMenuItemClickListener { menu ->
+                when (menu.itemId) {
+                    R.id.menu_delete -> {
+                        AlertDialogHelper.showAlertDialog(
+                            context = requireContext(),
+                            title = getString(R.string.delete_hc_record_title),
+                            msg = getString(R.string.delete_individual_vaccine_record_message),
+                            positiveBtnMsg = getString(R.string.delete),
+                            negativeBtnMsg = getString(R.string.not_now),
+                            positiveBtnCallback = {
+                                viewModel.deleteVaccineRecord(vaccineRecordId).invokeOnCompletion {
+                                    findNavController().popBackStack()
+                                }
+                            }
+                        )
                     }
-                )
+                }
+                return@setOnMenuItemClickListener true
             }
-
-            line1.visibility = View.VISIBLE
         }
     }
 
@@ -102,7 +100,7 @@ class VaccineRecordDetailFragment : Fragment(R.layout.fragment_vaccine_record_de
                             vaccineRecordId = it
                         }
 
-                        binding.toolbar.tvRightOption.isVisible =
+                        menuInflated.getItem(R.id.menu_delete).isVisible =
                             (
                                 patientAndVaccineRecord.patient.authenticationStatus
                                     != AuthenticationStatus.AUTHENTICATED

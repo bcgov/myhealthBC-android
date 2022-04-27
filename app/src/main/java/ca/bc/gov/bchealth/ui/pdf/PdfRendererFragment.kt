@@ -6,12 +6,13 @@ import android.os.Bundle
 import android.os.ParcelFileDescriptor
 import android.util.Base64
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentPdfRendererBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -20,7 +21,7 @@ import java.io.File
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
-class PdfRendererFragment : Fragment(R.layout.fragment_pdf_renderer) {
+class PdfRendererFragment : BaseFragment(R.layout.fragment_pdf_renderer) {
     private val binding by viewBindings(FragmentPdfRendererBinding::bind)
     private lateinit var pdfRendererAdapter: PdfRendererAdapter
     private lateinit var pdfRenderer: PdfRenderer
@@ -28,9 +29,6 @@ class PdfRendererFragment : Fragment(R.layout.fragment_pdf_renderer) {
     private var fileForSharing: File? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        setToolBar()
-
         try {
             val byteArray = Base64.decode(args.base64pdf, Base64.DEFAULT)
             fileForSharing = File.createTempFile("file", ".pdf", requireContext().filesDir)
@@ -58,13 +56,12 @@ class PdfRendererFragment : Fragment(R.layout.fragment_pdf_renderer) {
         binding.rvPdfPages.layoutManager = LinearLayoutManager(requireContext())
     }
 
-    private fun setToolBar() {
-        binding.toolbar.apply {
-            tvLeftOption.visibility = View.VISIBLE
-            tvLeftOption.setOnClickListener { findNavController().popBackStack() }
-
-            tvTitle.visibility = View.VISIBLE
-            tvTitle.text = args.title
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.topAppBar) {
+            setNavigationOnClickListener {
+                findNavController().popBackStack()
+            }
+            title = args.title
         }
     }
 

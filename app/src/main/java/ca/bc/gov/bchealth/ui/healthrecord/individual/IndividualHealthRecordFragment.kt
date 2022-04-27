@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -68,6 +69,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var loginStatus: LoginStatus? = null
     private val filterSharedViewModel: FilterViewModel by activityViewModels()
+    private var isSettingAndAddOptionAvailable = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,9 +92,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        handleBcscAuthResponse()
+        setToolBar()
 
-        setupToolbar()
+        handleBcscAuthResponse()
 
         setUpRecyclerView()
 
@@ -115,35 +117,141 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         observeFilterState()
     }
 
+    private fun setToolBar() {
+        binding.apply {
+            val names = args.patientName.split(" ")
+            val firstName = if (names.isNotEmpty()) names.first() else ""
+            binding.topAppBar.title = firstName
+            if (findNavController().previousBackStackEntry?.destination?.id ==
+                R.id.healthRecordsFragment
+            ) {
+                with(binding.topAppBar) {
+                    setNavigationIcon(R.drawable.ic_toolbar_back)
+                    setNavigationOnClickListener {
+                        findNavController().popBackStack()
+                    }
+                }
+            } else {
+                isSettingAndAddOptionAvailable = true
+            }
+        }
+    }
+
+    private fun setupToolBarForBcscUser() {
+        with(binding.topAppBar) {
+            if (willNotDraw()) {
+                setWillNotDraw(false)
+                if (isSettingAndAddOptionAvailable) {
+                    inflateMenu(R.menu.menu_individual_health_record)
+                } else {
+                    inflateMenu(R.menu.menu_individual_health_filter)
+                }
+                setOnMenuItemClickListener { menu ->
+                    when (menu.itemId) {
+                        R.id.menu_filter -> {
+                            findNavController().navigate(R.id.filterFragment)
+                        }
+                        R.id.menu_add -> {
+                            navigateToAddRecords()
+                        }
+                        R.id.menu_settings -> {
+                            navigateToProfile()
+                        }
+                    }
+                    return@setOnMenuItemClickListener true
+                }
+            }
+        }
+    }
+
+    private fun setupToolBarForNonBcscUser() {
+        with(binding.topAppBar) {
+            if (willNotDraw()) {
+                setWillNotDraw(false)
+                if (isSettingAndAddOptionAvailable) {
+                    inflateMenu(R.menu.menu_individual_health_record_non_bcsc)
+                } else {
+                    inflateMenu(R.menu.menu_individual_health_edit)
+                }
+                setOnMenuItemClickListener { menu ->
+                    when (menu.itemId) {
+                        R.id.menu_edit -> {
+                            healthRecordsAdapter.canDeleteRecord =
+                                !healthRecordsAdapter.canDeleteRecord
+                            if (healthRecordsAdapter.canDeleteRecord) {
+                                menu.icon =
+                                    (
+                                        ContextCompat.getDrawable(
+                                            requireContext(),
+                                            R.drawable.ic_done
+                                        )
+                                        )
+                            } else {
+                                menu.icon =
+                                    (
+                                        ContextCompat.getDrawable(
+                                            requireContext(),
+                                            R.drawable.ic_edit
+                                        )
+                                        )
+                            }
+                            concatAdapter.notifyItemRangeChanged(
+                                0,
+                                concatAdapter.itemCount
+                            )
+                        }
+                        R.id.menu_add -> {
+                            navigateToAddRecords()
+                        }
+                        R.id.menu_settings -> {
+                            navigateToProfile()
+                        }
+                    }
+                    return@setOnMenuItemClickListener true
+                }
+            }
+        }
+    }
+
+    private fun navigateToProfile() {
+        findNavController().navigate(R.id.profileFragment)
+    }
+
+    private fun navigateToAddRecords() {
+        val action = IndividualHealthRecordFragmentDirections
+            .actionIndividualHealthRecordFragmentToAddHealthRecordFragment(true)
+        findNavController().navigate(action)
+    }
+
     private fun updateTypeFilterSelection(filterUiState: FilterUiState) {
         resetFilters()
         filterUiState.timelineTypeFilter.forEach {
             when (it) {
                 TimelineTypeFilter.MEDICATION -> {
-                    binding.chipMedication.show()
+                    binding.content.chipMedication.show()
                 }
                 TimelineTypeFilter.IMMUNIZATION -> {
-                    binding.chipImmunizations.show()
+                    binding.content.chipImmunizations.show()
                 }
                 TimelineTypeFilter.COVID_19_TEST -> {
-                    binding.chipCovidTest.show()
+                    binding.content.chipCovidTest.show()
                 }
                 TimelineTypeFilter.LAB_TEST -> {
-                    binding.chipLabTest.show()
+                    binding.content.chipLabTest.show()
                 }
             }
         }
     }
 
     private fun resetFilters() {
-        binding.chipMedication.hide()
-        binding.chipImmunizations.hide()
-        binding.chipCovidTest.hide()
-        binding.chipLabTest.hide()
+        binding.content.chipMedication.hide()
+        binding.content.chipImmunizations.hide()
+        binding.content.chipCovidTest.hide()
+        binding.content.chipLabTest.hide()
     }
 
     private fun clearFilterClickListener() {
-        binding.imgClear.setOnClickListener {
+        binding.content.imgClear.setOnClickListener {
             filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL), null, null)
 
             viewModel.getIndividualsHealthRecord(
@@ -265,23 +373,16 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun updateUi(uiState: IndividualHealthRecordsUiState) {
-        if (findNavController().previousBackStackEntry?.destination?.id !=
-            R.id.healthRecordsFragment
-        ) {
-            binding.ivSetting.visibility = View.VISIBLE
-            binding.ivAdd.visibility = View.VISIBLE
-        }
-
         binding.progressBar.isVisible = false
 
         if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
-            binding.ivFilter.visibility = View.VISIBLE
+            setupToolBarForBcscUser()
             healthRecordsAdapter.isUpdateRequested = false
         } else {
-            binding.ivEdit.visibility = View.VISIBLE
+            setupToolBarForNonBcscUser()
             healthRecordsAdapter.isUpdateRequested = true
-            binding.imgClear.visibility = View.GONE
-            binding.cgFilter.visibility = View.GONE
+            binding.content.imgClear.visibility = View.GONE
+            binding.content.cgFilter.visibility = View.GONE
         }
         updateHealthRecordsList(uiState)
     }
@@ -400,7 +501,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         findNavController().navigate(action)
                     }
                     HealthRecordType.LAB_TEST -> {
-                        it.labOrderId.let { it1 ->
+                        it.labOrderId?.let { it1 ->
                             val action = IndividualHealthRecordFragmentDirections
                                 .actionIndividualHealthRecordFragmentToLabTestDetailFragment(
                                     it1
@@ -437,9 +538,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             hiddenMedicationRecordsAdapter,
             healthRecordsAdapter
         )
-        binding.rvHealthRecords.adapter = concatAdapter
-        binding.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvHealthRecords.emptyView = binding.emptyView
+        binding.content.rvHealthRecords.adapter = concatAdapter
+        binding.content.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
+        binding.content.rvHealthRecords.emptyView = binding.emptyView
     }
 
     private fun onMedicationAccessClick() {
@@ -453,50 +554,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun requestUpdate(testResultId: Long) {
         this.testResultId = testResultId
         viewModel.requestUpdate(testResultId)
-    }
-
-    private fun setupToolbar() {
-
-        binding.apply {
-            val names = args.patientName.split(" ")
-            val firstName = if (names.isNotEmpty()) names.first() else ""
-            tvName.text = firstName
-            if (findNavController().previousBackStackEntry?.destination?.id ==
-                R.id.healthRecordsFragment
-            ) {
-                ivBack.visibility = View.VISIBLE
-                ivBack.setOnClickListener {
-                    findNavController().popBackStack()
-                }
-            } else {
-                ivBack.visibility = View.GONE
-            }
-            ivSetting.setOnClickListener {
-                findNavController().navigate(R.id.profileFragment)
-            }
-            ivAdd.setOnClickListener {
-                val action = IndividualHealthRecordFragmentDirections
-                    .actionIndividualHealthRecordFragmentToAddHealthRecordFragment(true)
-                findNavController().navigate(action)
-            }
-            ivFilter.setOnClickListener {
-                findNavController().navigate(R.id.filterFragment)
-            }
-            ivEdit.setOnClickListener {
-                healthRecordsAdapter.canDeleteRecord = !healthRecordsAdapter.canDeleteRecord
-                if (healthRecordsAdapter.canDeleteRecord) {
-                    ivEdit.setImageResource(R.drawable.ic_done)
-                    ivEdit.contentDescription = getString(R.string.done)
-                } else {
-                    ivEdit.setImageResource(R.drawable.ic_edit)
-                    ivEdit.contentDescription = getString(R.string.edit)
-                }
-                concatAdapter.notifyItemRangeChanged(
-                    0,
-                    concatAdapter.itemCount
-                )
-            }
-        }
     }
 
     private fun showHealthRecordDeleteDialog(healthRecordItem: HealthRecordItem) {
@@ -651,7 +708,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
                     // update filter date selection
                     if (isFilterDateSelected(filterState)) {
-                        binding.chipDate.apply {
+                        binding.content.chipDate.apply {
                             show()
                             text = when {
                                 filterState.filterFromDate.isNullOrBlank() -> {
@@ -666,7 +723,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                             }
                         }
                     } else {
-                        binding.chipDate.hide()
+                        binding.content.chipDate.hide()
                     }
 
                     updateTypeFilterSelection(filterState)
@@ -696,9 +753,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 TimelineTypeFilter.ALL
             )
         ) {
-            binding.imgClear.hide()
+            binding.content.imgClear.hide()
         } else {
-            binding.imgClear.show()
+            binding.content.imgClear.show()
         }
     }
 }

@@ -8,7 +8,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -69,10 +68,10 @@ class ManageHealthPassFragment : BaseFragment(R.layout.fragment_manage_health_pa
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
         with(binding.layoutToolbar.topAppBar) {
-            setupWithNavController(findNavController(), appBarConfiguration)
-            title = getString(R.string.bc_vaccine_passes)
             setNavigationIcon(R.drawable.ic_toolbar_back)
-            inflateMenu(R.menu.menu_manage_helth_pass)
+            setNavigationOnClickListener { findNavController().popBackStack() }
+            title = getString(R.string.bc_vaccine_passes)
+            inflateMenu(R.menu.menu_manage_health_pass)
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
                     R.id.menu_done -> {

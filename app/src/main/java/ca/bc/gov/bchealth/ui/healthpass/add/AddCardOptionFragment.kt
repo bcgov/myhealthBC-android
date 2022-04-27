@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
@@ -93,9 +92,9 @@ class AddCardOptionFragment : BaseFragment(R.layout.fragment_add_card_options) {
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
         with(binding.layoutToolbar.topAppBar) {
-            setupWithNavController(findNavController(), appBarConfiguration)
-            title = getString(R.string.add_a_health_pass)
             setNavigationIcon(R.drawable.ic_toolbar_back)
+            setNavigationOnClickListener { findNavController().popBackStack() }
+            title = getString(R.string.add_a_health_pass)
         }
     }
 

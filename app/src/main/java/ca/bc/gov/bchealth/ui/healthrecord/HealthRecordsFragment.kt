@@ -5,16 +5,17 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHealthRecordsBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment.Companion.VACCINE_RECORD_ADDED_SUCCESS
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment.Companion.PLACE_HOLDER_NAVIGATION
 import ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment.Companion.TEST_RECORD_ADDED_SUCCESS
@@ -27,7 +28,7 @@ import kotlinx.coroutines.launch
  */
 
 @AndroidEntryPoint
-class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
+class HealthRecordsFragment : BaseFragment(R.layout.fragment_health_records) {
 
     private val binding by viewBindings(FragmentHealthRecordsBinding::bind)
     private val viewModel: HealthRecordPlaceholderViewModel by viewModels()
@@ -163,7 +164,6 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         binding.ivAddHealthRecord.visibility = View.VISIBLE
         binding.tvTitle1.visibility = View.VISIBLE
         binding.tvMessage.visibility = View.VISIBLE
-        setupToolBar()
     }
 
     private suspend fun collectHealthRecordsFlow() {
@@ -196,11 +196,20 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
         }
     }
 
-    private fun setupToolBar() {
-        binding.toolbar.ivRightOption.apply {
-            isVisible = true
-            setOnClickListener {
-                findNavController().navigate(R.id.profileFragment)
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.appbar) {
+            stateListAnimator = null
+            elevation = 0f
+        }
+        with(binding.layoutToolbar.topAppBar) {
+            inflateMenu(R.menu.settings_menu)
+            setOnMenuItemClickListener { menu ->
+                when (menu.itemId) {
+                    R.id.menu_settings -> {
+                        findNavController().navigate(R.id.profileFragment)
+                    }
+                }
+                return@setOnMenuItemClickListener true
             }
         }
     }

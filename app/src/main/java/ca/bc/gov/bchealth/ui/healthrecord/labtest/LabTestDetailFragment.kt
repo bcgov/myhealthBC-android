@@ -1,20 +1,22 @@
 package ca.bc.gov.bchealth.ui.healthrecord.labtest
 
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.DividerItemDecoration
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentLabTestDetailBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.PdfHelper
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -24,7 +26,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 @AndroidEntryPoint
-class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
+class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
 
     private val binding by viewBindings(FragmentLabTestDetailBinding::bind)
     private val viewModel: LabTestDetailViewModel by viewModels()
@@ -49,30 +51,27 @@ class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
     }
 
     private fun initUI() {
-        setToolBar()
         setUpRecyclerView()
     }
 
-    private fun setToolBar() {
-        binding.toolbar.apply {
-            ivLeftOption.visibility = View.VISIBLE
-            ivLeftOption.setImageResource(R.drawable.ic_action_back)
-            ivRightOption.setImageResource(R.drawable.ic_download_pdf)
-            ivLeftOption.setOnClickListener {
+    private lateinit var menuInflated: Menu
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.topAppBar) {
+            setNavigationIcon(R.drawable.ic_toolbar_back)
+            setNavigationOnClickListener {
                 findNavController().popBackStack()
             }
-
-            ivRightOption.setImageResource(R.drawable.ic_download)
-            ivRightOption.contentDescription = getString(R.string.download)
-            ivRightOption.setOnClickListener {
-                if (::labPdfId.isInitialized) {
-                    viewModel.getLabTestPdf(labPdfId)
+            title = getString(R.string.filter)
+            inflateMenu(R.menu.menu_lab_test_details)
+            menuInflated = menu
+            setOnMenuItemClickListener { menu ->
+                when (menu.itemId) {
+                    R.id.menu_download -> {
+                        viewModel.getLabTestPdf(labPdfId)
+                    }
                 }
+                return@setOnMenuItemClickListener true
             }
-
-            tvTitle.visibility = View.VISIBLE
-
-            line1.visibility = View.VISIBLE
         }
     }
 
@@ -93,7 +92,7 @@ class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
 
                     if (state.labTestDetails?.isNotEmpty() == true) {
                         labTestDetailAdapter.submitList(state.labTestDetails)
-                        binding.toolbar.tvTitle.text = state.toolbarTitle
+                        binding.layoutToolbar.topAppBar.title = state.toolbarTitle
                     }
 
                     if (!state.labPdfId.isNullOrBlank()) {
@@ -113,7 +112,7 @@ class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
 
     private fun handlePdfDownload(state: LabTestDetailUiState) {
         if (state.showDownloadOption) {
-            binding.toolbar.ivRightOption.isVisible = true
+            menuInflated.getItem(0).isVisible = true
         }
 
         if (state.pdfData?.isNotEmpty() == true) {

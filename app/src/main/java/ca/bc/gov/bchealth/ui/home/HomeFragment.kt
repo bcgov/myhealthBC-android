@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHomeBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
@@ -165,10 +164,11 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.appbar) {
+            stateListAnimator = null
+            elevation = 0f
+        }
         with(binding.layoutToolbar.topAppBar) {
-            setupWithNavController(
-                findNavController(), appBarConfiguration
-            )
             inflateMenu(R.menu.settings_menu)
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {

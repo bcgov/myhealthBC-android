@@ -5,7 +5,6 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentBiometricSecurityTipBinding
@@ -30,9 +29,9 @@ class BiometricSecurityTipFragment : BaseFragment(R.layout.fragment_biometric_se
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
         with(binding.layoutToolbar.topAppBar) {
-            setupWithNavController(findNavController(), appBarConfiguration)
-            title = getString(R.string.biometric_security_tip_title)
             setNavigationIcon(R.drawable.ic_toolbar_back)
+            setNavigationOnClickListener { findNavController().popBackStack() }
+            title = getString(R.string.biometric_security_tip_title)
         }
     }
 }

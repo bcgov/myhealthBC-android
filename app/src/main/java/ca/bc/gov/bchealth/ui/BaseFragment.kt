@@ -14,7 +14,6 @@ abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentL
         setToolBar(getAppBarConfiguration())
     }
 
-
     abstract fun setToolBar(appBarConfiguration: AppBarConfiguration)
 
     protected fun getAppBarConfiguration() = AppBarConfiguration(
@@ -23,6 +22,7 @@ abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentL
             R.id.healthRecordsFragment,
             R.id.healthPassFragment,
             R.id.resourcesFragment
-        )
+        ),
+        null
     )
 }
