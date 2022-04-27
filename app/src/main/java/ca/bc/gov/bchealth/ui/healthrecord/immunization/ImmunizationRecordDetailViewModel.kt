@@ -48,7 +48,7 @@ data class ImmunizationRecordDetailItem(
     val id: Long,
     val dueDate: String? = null,
     val status: String? = null,
-    val productName: String? = null,
+    val name: String? = null,
     val doseDetails: List<ImmunizationDoseDetailItem> = emptyList()
 )
 

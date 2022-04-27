@@ -239,7 +239,7 @@ fun ImmunizationRecordWithForecastAndPatientDto.toUiModel(): ImmunizationRecordD
         id = immunizationRecordWithForecast.immunizationRecord.id,
         status = immunizationRecordWithForecast.immunizationRecord.status,
         dueDate = immunizationRecordWithForecast.immunizationForecast?.dueDate?.toDate(),
-        productName = immunizationRecordWithForecast.immunizationForecast?.displayName,
+        name = immunizationRecordWithForecast.immunizationRecord.immunizationName,
         doseDetails = listOf(
             ImmunizationDoseDetailItem(
                 id = immunizationRecordWithForecast.immunizationRecord.id,
