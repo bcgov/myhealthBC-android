@@ -21,7 +21,7 @@ fun Instant.toDateTimeString(dateFormat: String = yyyy_MMM_dd_HH_mm): String {
 }
 
 fun Instant.toDate(dateFormat: String = yyyy_MMM_dd): String {
-    val dateTime = LocalDateTime.ofInstant(this, ZoneOffset.UTC)
+    val dateTime = LocalDateTime.ofInstant(this, ZoneOffset.systemDefault())
     val formatter = DateTimeFormatter.ofPattern(dateFormat)
     val formattedString = formatter.format(dateTime)
     return formattedString.replace(".", "")
