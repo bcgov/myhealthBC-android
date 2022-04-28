@@ -22,7 +22,7 @@ class SyncCommentsWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, workerParams) {
     override suspend fun doWork(): Result {
         if (bcscAuthRepo.getPostLoginCheck() == PostLoginCheck.IN_PROGRESS.name) {
-            return Result.failure()
+            return Result.retry()
         }
         try {
             val commentDtoList = commentRepository.findCommentsByUploadFlag(false)
@@ -31,6 +31,7 @@ class SyncCommentsWorker @AssistedInject constructor(
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            return Result.retry()
         }
         return Result.success()
     }

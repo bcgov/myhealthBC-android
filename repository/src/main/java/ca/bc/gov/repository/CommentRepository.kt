@@ -1,9 +1,16 @@
 package ca.bc.gov.repository
 
+import android.content.Context
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.data.datasource.local.CommentLocalDataSource
 import ca.bc.gov.data.datasource.remote.CommentRemoteDataSource
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
+import ca.bc.gov.repository.worker.SyncCommentsWorker
 import java.time.Instant
 import java.util.UUID
 import javax.inject.Inject
@@ -14,7 +21,8 @@ import javax.inject.Inject
 class CommentRepository @Inject constructor(
     private val commentRemoteDataSource: CommentRemoteDataSource,
     private val commentLocalDataSource: CommentLocalDataSource,
-    private val bcscAuthRepo: BcscAuthRepo
+    private val bcscAuthRepo: BcscAuthRepo,
+    private val applicationContext: Context
 ) {
 
     suspend fun getComments(parentEntryId: String?): List<CommentDto> {
@@ -59,7 +67,20 @@ class CommentRepository @Inject constructor(
             false
         )
         insert(commentDto)
-        syncComment(commentDto)
+        // syncComment(commentDto)
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        val oneTimeWorkRequest =
+            OneTimeWorkRequest.Builder(SyncCommentsWorker::class.java)
+                .setConstraints(constraints)
+                .build()
+        val workManager = WorkManager.getInstance(applicationContext)
+        workManager.enqueueUniqueWork(
+            "SYNC_COMMENTS",
+            ExistingWorkPolicy.REPLACE,
+            oneTimeWorkRequest
+        )
         return commentLocalDataSource.findCommentByParentEntryId(parentEntryId)
     }
 
