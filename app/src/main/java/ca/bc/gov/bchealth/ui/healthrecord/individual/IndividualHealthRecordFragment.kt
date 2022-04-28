@@ -184,9 +184,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 if (it.firstOrNull()?.state == WorkInfo.State.SUCCEEDED &&
                     args.authStatus == AuthenticationStatus.AUTHENTICATED.source
                 ) {
-                    viewModel.getIndividualsHealthRecord(
-                        args.patientId
-                    )
+                    viewModel.getIndividualsHealthRecord()
                 }
             }
         }
