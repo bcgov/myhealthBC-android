@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
@@ -315,7 +316,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         } else {
             displayBCSCRecordsExceptMedicationFilter(uiState)
         }
-        healthRecordsAdapter.filter.filter("MEDICATION")
+        val filterString = filterSharedViewModel.filterState.value.timelineTypeFilter.joinToString(",")
+        Log.i("RASHMI", "filterString: $filterString")
+        healthRecordsAdapter.filter.filter(filterString)
     }
 
     private fun displayBCSCRecordsWithMedicationFilter(uiState: IndividualHealthRecordsUiState) {

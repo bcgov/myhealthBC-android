@@ -1,5 +1,6 @@
 package ca.bc.gov.bchealth.ui.healthrecord.individual
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -107,19 +108,40 @@ class HealthRecordsAdapter(
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(charSequence: CharSequence?): FilterResults {
+                defaultList = currentList
+                val filteredList = mutableListOf<HealthRecordItem>()
                 if (charSequence.isNullOrBlank()) {
                     return FilterResults()
                 } else {
-
-                    if (charSequence == "MEDICATION") {
-                        return FilterResults().apply { values = currentList.filter { it.healthRecordType == HealthRecordType.MEDICATION_RECORD } }
+                    Log.i("RASHMI", "charSequence: $charSequence")
+                    val list = charSequence.split(",")
+                    Log.i("RASHMI", "charSequence list: $list")
+                    list.forEach { type ->
+                        when(type) {
+                            "ALL" -> {
+                                filteredList.addAll(currentList)
+                            }
+                            "MEDICATION" -> {
+                                filteredList.addAll(currentList.filter { it.healthRecordType == HealthRecordType.MEDICATION_RECORD })
+                            }
+                            "LAB_TEST" -> {
+                                filteredList.addAll(currentList.filter { it.healthRecordType == HealthRecordType.LAB_TEST })
+                            }
+                            "COVID_19_TEST" -> {
+                                filteredList.addAll(currentList.filter { it.healthRecordType == HealthRecordType.COVID_TEST_RECORD })
+                            }
+                            "IMMUNIZATION" -> {
+                                filteredList.addAll(currentList.filter { it.healthRecordType == HealthRecordType.IMMUNIZATION_RECORD })
+                            }
+                        }
+                        return FilterResults().apply { values = filteredList }
                     }
                 }
-
                 return FilterResults().apply { values = currentList }
             }
 
             override fun publishResults(constraint: CharSequence?, result: FilterResults?) {
+                defaultList = currentList
                 if (result?.values == null) {
                     submitList(emptyList())
                 } else {
