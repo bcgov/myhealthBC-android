@@ -93,6 +93,9 @@ class HealthRecordsAdapter(
             HealthRecordType.LAB_TEST -> {
                 description = record.description
             }
+            HealthRecordType.IMMUNIZATION_RECORD -> {
+                description = record.date.toDate()
+            }
         }
 
         holder.binding.tvDesc.text = description

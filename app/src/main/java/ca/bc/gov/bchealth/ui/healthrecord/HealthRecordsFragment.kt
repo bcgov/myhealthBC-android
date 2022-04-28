@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
 
     private val binding by viewBindings(FragmentHealthRecordsBinding::bind)
-    private val viewModel: HealthRecordsViewModel by viewModels()
+    private val viewModel: HealthRecordPlaceholderViewModel by viewModels()
     private lateinit var adapter: HealthRecordsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +65,8 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                 HealthRecordsFragmentDirections
                     .actionHealthRecordsFragmentToIndividualHealthRecordFragment(
                         it.patientId,
-                        it.name
+                        it.name,
+                        it.authStatus.name
                     )
             findNavController().navigate(action)
         }
@@ -81,6 +82,7 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
                 collectHealthRecordsFlow()
             }
         }
+        viewModel.getPatientsAndHealthRecordCounts()
 
         val spacing = resources.getDimensionPixelSize(R.dimen.space_2_x) / 2
         with(binding.rvMembers) {
@@ -165,29 +167,31 @@ class HealthRecordsFragment : Fragment(R.layout.fragment_health_records) {
     }
 
     private suspend fun collectHealthRecordsFlow() {
-        viewModel.patientHealthRecords.collect { records ->
-            binding.progressBar.isVisible = false
-            if (records.isNotEmpty()) {
-                if (records.size == 1) {
+        viewModel.uiState.collect { uiState ->
+            binding.progressBar.isVisible = uiState.isLoading
+            if (uiState.patientsAndHealthRecordCounts != null) {
+                if (uiState.patientsAndHealthRecordCounts.isNotEmpty()) {
+                    if (uiState.patientsAndHealthRecordCounts.size == 1) {
+                        findNavController().previousBackStackEntry?.savedStateHandle
+                            ?.set(
+                                PLACE_HOLDER_NAVIGATION,
+                                NavigationAction.ACTION_RE_CHECK
+                            )
+                        findNavController().popBackStack()
+                    } else {
+                        initUi()
+                        binding.rvMembers.adapter = adapter
+                        binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), 2)
+                        adapter.submitList(uiState.patientsAndHealthRecordCounts)
+                    }
+                } else {
                     findNavController().previousBackStackEntry?.savedStateHandle
                         ?.set(
                             PLACE_HOLDER_NAVIGATION,
                             NavigationAction.ACTION_RE_CHECK
                         )
                     findNavController().popBackStack()
-                } else {
-                    initUi()
-                    binding.rvMembers.adapter = adapter
-                    binding.rvMembers.layoutManager = GridLayoutManager(requireContext(), 2)
-                    adapter.submitList(records)
                 }
-            } else {
-                findNavController().previousBackStackEntry?.savedStateHandle
-                    ?.set(
-                        PLACE_HOLDER_NAVIGATION,
-                        NavigationAction.ACTION_RE_CHECK
-                    )
-                findNavController().popBackStack()
             }
         }
     }

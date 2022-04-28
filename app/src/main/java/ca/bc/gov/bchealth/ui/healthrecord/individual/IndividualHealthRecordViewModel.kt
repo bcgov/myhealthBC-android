@@ -41,6 +41,21 @@ class IndividualHealthRecordViewModel @Inject constructor(
     val uiState: StateFlow<IndividualHealthRecordsUiState> = _uiState.asStateFlow()
 
     fun getIndividualsHealthRecord(
+        tempFilterList: List<TimelineTypeFilter>,
+        tempFromDate: String?,
+        tempToDate: String?
+    ) = viewModelScope.launch {
+        // Patient Id will change post sync of health records
+        val bcscUserPatientId = patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).id
+        getIndividualsHealthRecord(
+            bcscUserPatientId,
+            tempFilterList,
+            tempFromDate,
+            tempToDate
+        )
+    }
+
+    fun getIndividualsHealthRecord(
         patientId: Long
     ) =
         viewModelScope.launch {
@@ -177,7 +192,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                         healthRecordsExceptMedication = filteredHealthRecordsExceptMedication.sortedByDescending { it.date }
                     )
                 }
-            } catch (e: java.lang.Exception) {
+            } catch (e: Exception) {
                 // no implementation required.
             }
         }

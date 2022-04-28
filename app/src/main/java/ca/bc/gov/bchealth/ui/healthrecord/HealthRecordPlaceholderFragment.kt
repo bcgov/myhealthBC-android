@@ -9,8 +9,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.databinding.HealthRecordPlaceholderFragmentBinding
 import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment
 import ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment
+import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -26,6 +28,7 @@ class HealthRecordPlaceholderFragment : Fragment(R.layout.health_record_placehol
 
     private val viewModel: HealthRecordPlaceholderViewModel by viewModels()
     private var isHealthRecordsFlowActive = false
+    private val binding by viewBindings(HealthRecordPlaceholderFragmentBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -94,11 +97,12 @@ class HealthRecordPlaceholderFragment : Fragment(R.layout.health_record_placehol
     private fun collectHealthRecordsFlow() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.patientHealthRecords.collect { records ->
-                    navigate(records)
+                viewModel.uiState.collect { uiState ->
+                    uiState.patientsAndHealthRecordCounts?.let { navigate(it) }
                 }
             }
         }
+        viewModel.getPatientsAndHealthRecordCounts()
     }
 
     private fun navigate(records: List<PatientHealthRecord>) {
@@ -108,7 +112,8 @@ class HealthRecordPlaceholderFragment : Fragment(R.layout.health_record_placehol
                     HealthRecordPlaceholderFragmentDirections
                         .actionHealthRecordsPlaceHolderFragmentToIndividualHealthRecordFragment(
                             records.first().patientId,
-                            records.first().name
+                            records.first().name,
+                            records.first().authStatus.name
                         )
                 findNavController().navigate(action)
             } else {

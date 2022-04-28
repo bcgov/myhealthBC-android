@@ -46,6 +46,7 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
                     if (position == educationalScreenAdapter.itemCount - 1) {
                         binding.btnNextSlide.text = getString(R.string.get_started)
                         binding.tvSkip.visibility = View.INVISIBLE
+                        binding.btnNextSlide.contentDescription = getString(R.string.get_started)
                     } else {
                         binding.btnNextSlide.text = getString(R.string.next)
                         binding.tvSkip.visibility = View.VISIBLE
