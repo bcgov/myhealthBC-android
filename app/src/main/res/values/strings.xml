@@ -242,7 +242,7 @@
 
     <!-- Login -->
     <string name="leaving_my_health_bc">Leaving Health Gateway</string>
-    <string name="login_info_message">You will be temporarily redirected to log in with your BC Services Card.\n\nYou will then be automatically returned to this mobile app.</string>
+    <string name="login_info_message">You will be temporarily redirected to log in with your BC Services Card.\n\nYou will then be automatically returned to Health Gateway.</string>
     <string name="btn_continue">Continue</string>
     <string name="tv_login_title">Log in with your BC Services Card to access all health records</string>
     <string name="tv_login_message">The BC Services Card app is a secure way to prove who you are. Follow the instructions to get set up and log in.</string>
