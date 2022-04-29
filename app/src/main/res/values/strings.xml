@@ -211,6 +211,7 @@
     <string name="comments">Comments</string>
     <string name="comments_medication_subtitle">Only you can see comments added to your medical records.</string>
     <string name="download">Download</string>
+    <string name="view_in_pdf">View in PDF</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>
