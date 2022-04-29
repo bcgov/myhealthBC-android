@@ -18,6 +18,9 @@ import javax.inject.Inject
 /**
  * @author Pinakin Kansara
  */
+
+const val SYNC_COMMENTS = "SYNC_COMMENTS"
+
 class CommentRepository @Inject constructor(
     private val commentRemoteDataSource: CommentRemoteDataSource,
     private val commentLocalDataSource: CommentLocalDataSource,
@@ -25,12 +28,8 @@ class CommentRepository @Inject constructor(
     private val applicationContext: Context
 ) {
 
-    suspend fun getComments(parentEntryId: String?): List<CommentDto> {
-        delete(parentEntryId, true)
-        val (token, hdid) = bcscAuthRepo.getAuthParameters()
-        val comments = commentRemoteDataSource.fetchComments(parentEntryId, hdid, token)
-        insert(comments)
-        return commentLocalDataSource.findCommentByParentEntryId(parentEntryId)
+    suspend fun getComments(token: String, hdid: String): List<CommentDto> {
+        return commentRemoteDataSource.fetchComments(hdid, token)
     }
 
     suspend fun getLocalComments(parentEntryId: String?): List<CommentDto> {
@@ -47,6 +46,9 @@ class CommentRepository @Inject constructor(
 
     suspend fun delete(parentEntryId: String?, isUploaded: Boolean) =
         commentLocalDataSource.delete(parentEntryId, isUploaded)
+
+    suspend fun delete(isUploaded: Boolean) =
+        commentLocalDataSource.delete(isUploaded)
 
     suspend fun deleteById(id: String) = commentLocalDataSource.deleteById(id)
 
@@ -71,20 +73,7 @@ class CommentRepository @Inject constructor(
             false
         )
         insert(commentDto)
-        // syncComment(commentDto)
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-        val oneTimeWorkRequest =
-            OneTimeWorkRequest.Builder(SyncCommentsWorker::class.java)
-                .setConstraints(constraints)
-                .build()
-        val workManager = WorkManager.getInstance(applicationContext)
-        workManager.enqueueUniqueWork(
-            "SYNC_COMMENTS",
-            ExistingWorkPolicy.REPLACE,
-            oneTimeWorkRequest
-        )
+        enqueueSyncCommentsWorker()
         return commentLocalDataSource.findCommentByParentEntryId(parentEntryId)
     }
 
@@ -104,4 +93,20 @@ class CommentRepository @Inject constructor(
 
     suspend fun findCommentsByUploadFlag(isUploaded: Boolean) =
         commentLocalDataSource.findCommentsByUploadFlag(isUploaded)
+
+    private fun enqueueSyncCommentsWorker() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        val oneTimeWorkRequest =
+            OneTimeWorkRequest.Builder(SyncCommentsWorker::class.java)
+                .setConstraints(constraints)
+                .build()
+        val workManager = WorkManager.getInstance(applicationContext)
+        workManager.enqueueUniqueWork(
+            SYNC_COMMENTS,
+            ExistingWorkPolicy.REPLACE,
+            oneTimeWorkRequest
+        )
+    }
 }

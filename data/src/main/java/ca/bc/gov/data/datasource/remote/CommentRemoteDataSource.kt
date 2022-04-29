@@ -21,12 +21,11 @@ class CommentRemoteDataSource @Inject constructor(
      * @return list of comment
      */
     suspend fun fetchComments(
-        parentEntryId: String?,
         hdid: String,
         accessToken: String
     ): List<CommentDto> {
         val response =
-            safeCall { healthGatewayPrivateApi.getComments(hdid, accessToken, parentEntryId) }
+            safeCall { healthGatewayPrivateApi.getAllComments(hdid, accessToken) }
                 ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
         if (response.error != null) {

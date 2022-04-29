@@ -33,4 +33,6 @@ class CommentLocalDataSource @Inject constructor(
 
     suspend fun findCommentsByUploadFlag(isUploaded: Boolean): List<CommentDto> =
         commentDao.findCommentsByUploadFlag(isUploaded).map { it.toDto() }
+
+    suspend fun delete(isUploaded: Boolean) = commentDao.delete(isUploaded)
 }
