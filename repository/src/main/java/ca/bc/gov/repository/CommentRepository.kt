@@ -33,6 +33,10 @@ class CommentRepository @Inject constructor(
         return commentLocalDataSource.findCommentByParentEntryId(parentEntryId)
     }
 
+    suspend fun getLocalComments(parentEntryId: String?): List<CommentDto> {
+        return commentLocalDataSource.findCommentByParentEntryId(parentEntryId)
+    }
+
     suspend fun insert(comment: CommentDto): Long {
         return commentLocalDataSource.insert(comment)
     }

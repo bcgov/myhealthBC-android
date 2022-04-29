@@ -39,7 +39,7 @@ class MedicationDetailsViewModel @Inject constructor(
 
             val comments =
                 commentRepository
-                    .getComments(
+                    .getLocalComments(
                         medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
                     )
             val commentsTemp = mutableListOf<Comment>()
