@@ -6,6 +6,7 @@ import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
 import ca.bc.gov.data.datasource.local.CovidOrderLocalDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
+import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import javax.inject.Inject
 
 /**
@@ -13,7 +14,8 @@ import javax.inject.Inject
  */
 class CovidOrderRepository @Inject constructor(
     private val laboratoryRemoteDataSource: LaboratoryRemoteDataSource,
-    private val covidOrderLocalDataSource: CovidOrderLocalDataSource
+    private val covidOrderLocalDataSource: CovidOrderLocalDataSource,
+    private val bcscAuthRepo: BcscAuthRepo
 ) {
 
     suspend fun insert(covidOrder: CovidOrderDto): Long =
@@ -34,4 +36,17 @@ class CovidOrderRepository @Inject constructor(
 
     suspend fun fetchCovidOrders(token: String, hdid: String) =
         laboratoryRemoteDataSource.getCovidTests(token, hdid)
+
+    suspend fun fetchCovidTestPdf(
+        reportId: String,
+        isCovid19: Boolean
+    ): String? {
+        val authParameters = bcscAuthRepo.getAuthParameters()
+        return laboratoryRemoteDataSource.getLabTestInPdf(
+            authParameters.first,
+            authParameters.second,
+            reportId,
+            isCovid19 // true for Covid-19 tests
+        ).resourcePayload?.data
+    }
 }
