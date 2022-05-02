@@ -33,9 +33,8 @@ interface CommentDao : BaseDao<CommentEntity> {
     suspend fun deleteById(id: String)
 
     @Query("SELECT * FROM comments WHERE is_uploaded = :isUploaded")
-    suspend fun findCommentsByUploadFlag(isUploaded: Boolean) : List<CommentEntity>
+    suspend fun findCommentsByUploadFlag(isUploaded: Boolean): List<CommentEntity>
 
     @Query("DELETE FROM comments WHERE is_uploaded = :isUploaded")
     suspend fun delete(isUploaded: Boolean)
-
 }

@@ -255,7 +255,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 }
             }
 
-            //Insert comments
+            // Insert comments
             commentsRepository.delete(true)
             commentsResponse?.let { commentsRepository.insert(it) }
 
