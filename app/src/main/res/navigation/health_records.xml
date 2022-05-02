@@ -41,6 +41,11 @@
         <argument
             android:name="patient_name"
             app:argType="string" />
+
+        <argument
+            android:name="authStatus"
+            app:argType="string" />
+
         <action
             android:id="@+id/action_individualHealthRecordFragment_to_testResultDetailFragment"
             app:destination="@id/testResultDetailFragment" />
@@ -170,7 +175,7 @@
         android:label="fragment_immunization_record_detail"
         tools:layout="@layout/fragment_immunization_record_detail">
         <argument
-            android:name="patientId"
+            android:name="immunizationRecordId"
             app:argType="long" />
     </fragment>
 </navigation>

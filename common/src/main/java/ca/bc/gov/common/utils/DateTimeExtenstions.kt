@@ -5,6 +5,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.ZoneOffset.UTC
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
@@ -36,6 +37,10 @@ fun Instant.toStartOfDayInstant(): Instant {
     return this.truncatedTo(ChronoUnit.DAYS)
 }
 
+/*
+* Required to show the date time based on device time zone if the network response
+* provides the date time in UTC+00:00
+*  */
 fun Instant.toLocalDateTimeInstant(): Instant? {
     return this.atZone(ZoneId.systemDefault())
         ?.toLocalDateTime()?.toInstant(ZoneOffset.UTC)

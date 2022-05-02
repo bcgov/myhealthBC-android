@@ -145,8 +145,10 @@ fun CommentPayload.toDto() = CommentDto(
     entryTypeCode,
     parentEntryId,
     version,
+    createdDateTime = createdDateTime.toDateTime(DateTimeFormatter.ISO_ZONED_DATE_TIME),
     createdDateTime = createdDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
     createdBy,
+    updatedDateTime = updatedDateTime.toDateTime(DateTimeFormatter.ISO_ZONED_DATE_TIME),
     updatedDateTime = updatedDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
     updatedBy
 )

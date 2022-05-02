@@ -63,6 +63,7 @@ class LabTestDetailFragment : Fragment(R.layout.fragment_lab_test_detail) {
             }
 
             ivRightOption.setImageResource(R.drawable.ic_download)
+            ivRightOption.contentDescription = getString(R.string.download)
             ivRightOption.setOnClickListener {
                 if (::labPdfId.isInitialized) {
                     viewModel.getLabTestPdf(labPdfId)
