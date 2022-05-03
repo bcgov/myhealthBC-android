@@ -110,7 +110,3 @@ class CommentRepository @Inject constructor(
         )
     }
 }
-
-enum class CommentEntryTypeCode(val value: String) {
-    MEDICATION("Med")
-}

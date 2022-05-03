@@ -110,3 +110,7 @@ data class Comment(
     val text: String?,
     val date: Instant?
 )
+
+enum class CommentEntryTypeCode(val value: String) {
+    MEDICATION("Med")
+}
