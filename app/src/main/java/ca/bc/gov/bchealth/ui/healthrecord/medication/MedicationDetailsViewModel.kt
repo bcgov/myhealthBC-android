@@ -39,7 +39,7 @@ class MedicationDetailsViewModel @Inject constructor(
 
             val comments =
                 commentRepository
-                    .getComments(
+                    .getLocalComments(
                         medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
                     )
             val commentsTemp = mutableListOf<Comment>()
@@ -65,10 +65,12 @@ class MedicationDetailsViewModel @Inject constructor(
                     onLoading = false,
                     medicationDetails = prePareMedicationDetails(medicationWithSummaryAndPharmacyDto),
                     toolbarTitle = medicationWithSummaryAndPharmacyDto.medicationSummary.brandName,
-                    comments = commentsTemp
+                    comments = commentsTemp,
+                    parentEntryId = medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
                 )
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             _uiState.update {
                 it.copy(
                     onError = true
@@ -157,22 +159,20 @@ class MedicationDetailsViewModel @Inject constructor(
         return medicationDetails
     }
 
-    fun addComment(medicationId: Long, comment: String, entryTypeCode: String) = viewModelScope.launch {
+    fun addComment(comment: String, entryTypeCode: String) = viewModelScope.launch {
         try {
             _uiState.update {
                 it.copy(onLoading = true)
             }
-            val medicationWithSummaryAndPharmacyDto =
-                medicationRecordRepository.getMedicationWithSummaryAndPharmacy(medicationId)
 
             val comments = commentRepository.addComment(
-                medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier, comment, entryTypeCode
+                _uiState.value.parentEntryId, comment, entryTypeCode
             )
             val commentsTemp = mutableListOf<Comment>()
             if (comments.isNotEmpty()) {
                 commentsTemp.add(
                     Comment(
-                        medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier,
+                        _uiState.value.parentEntryId,
                         comments.size.toString(),
                         Instant.now()
                     )
@@ -228,7 +228,8 @@ data class MedicationDetailUiState(
     val onError: Boolean = false,
     val medicationDetails: List<MedicationDetail>? = null,
     val toolbarTitle: String? = null,
-    val comments: List<Comment> = emptyList()
+    val comments: List<Comment> = emptyList(),
+    val parentEntryId: String? = null
 )
 
 data class MedicationDetail(
