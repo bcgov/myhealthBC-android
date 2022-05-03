@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
@@ -176,29 +177,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 setOnMenuItemClickListener { menu ->
                     when (menu.itemId) {
                         R.id.menu_edit -> {
-                            healthRecordsAdapter.canDeleteRecord =
-                                !healthRecordsAdapter.canDeleteRecord
-                            if (healthRecordsAdapter.canDeleteRecord) {
-                                menu.icon =
-                                    (
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.ic_done
-                                        )
-                                        )
-                            } else {
-                                menu.icon =
-                                    (
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.ic_edit
-                                        )
-                                        )
-                            }
-                            concatAdapter.notifyItemRangeChanged(
-                                0,
-                                concatAdapter.itemCount
-                            )
+                            handleEditButtonClick(menu)
                         }
                         R.id.menu_add -> {
                             navigateToAddRecords()
@@ -211,6 +190,32 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 }
             }
         }
+    }
+
+    private fun handleEditButtonClick(menu: MenuItem) {
+        healthRecordsAdapter.canDeleteRecord =
+            !healthRecordsAdapter.canDeleteRecord
+        if (healthRecordsAdapter.canDeleteRecord) {
+            menu.icon =
+                (
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.ic_done
+                    )
+                    )
+        } else {
+            menu.icon =
+                (
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.ic_edit
+                    )
+                    )
+        }
+        concatAdapter.notifyItemRangeChanged(
+            0,
+            concatAdapter.itemCount
+        )
     }
 
     private fun navigateToProfile() {
@@ -228,30 +233,30 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         filterUiState.timelineTypeFilter.forEach {
             when (it) {
                 TimelineTypeFilter.MEDICATION -> {
-                    binding.content.chipMedication.show()
+                    binding.content.chipGroup.chipMedication.show()
                 }
                 TimelineTypeFilter.IMMUNIZATION -> {
-                    binding.content.chipImmunizations.show()
+                    binding.content.chipGroup.chipImmunizations.show()
                 }
                 TimelineTypeFilter.COVID_19_TEST -> {
-                    binding.content.chipCovidTest.show()
+                    binding.content.chipGroup.chipCovidTest.show()
                 }
                 TimelineTypeFilter.LAB_TEST -> {
-                    binding.content.chipLabTest.show()
+                    binding.content.chipGroup.chipLabTest.show()
                 }
             }
         }
     }
 
     private fun resetFilters() {
-        binding.content.chipMedication.hide()
-        binding.content.chipImmunizations.hide()
-        binding.content.chipCovidTest.hide()
-        binding.content.chipLabTest.hide()
+        binding.content.chipGroup.chipMedication.hide()
+        binding.content.chipGroup.chipImmunizations.hide()
+        binding.content.chipGroup.chipCovidTest.hide()
+        binding.content.chipGroup.chipLabTest.hide()
     }
 
     private fun clearFilterClickListener() {
-        binding.content.imgClear.setOnClickListener {
+        binding.content.chipGroup.imgClear.setOnClickListener {
             filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL), null, null)
 
             viewModel.getIndividualsHealthRecord(
@@ -381,8 +386,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         } else {
             setupToolBarForNonBcscUser()
             healthRecordsAdapter.isUpdateRequested = true
-            binding.content.imgClear.visibility = View.GONE
-            binding.content.cgFilter.visibility = View.GONE
+            binding.content.chipGroup.imgClear.visibility = View.GONE
+            binding.content.chipGroup.cgFilter.visibility = View.GONE
         }
         updateHealthRecordsList(uiState)
     }
@@ -708,7 +713,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
                     // update filter date selection
                     if (isFilterDateSelected(filterState)) {
-                        binding.content.chipDate.apply {
+                        binding.content.chipGroup.chipDate.apply {
                             show()
                             text = when {
                                 filterState.filterFromDate.isNullOrBlank() -> {
@@ -723,7 +728,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                             }
                         }
                     } else {
-                        binding.content.chipDate.hide()
+                        binding.content.chipGroup.chipDate.hide()
                     }
 
                     updateTypeFilterSelection(filterState)
@@ -753,9 +758,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 TimelineTypeFilter.ALL
             )
         ) {
-            binding.content.imgClear.hide()
+            binding.content.chipGroup.imgClear.hide()
         } else {
-            binding.content.imgClear.show()
+            binding.content.chipGroup.imgClear.show()
         }
     }
 }

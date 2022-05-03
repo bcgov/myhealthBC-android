@@ -306,7 +306,7 @@ class FetchVaccineRecordFragment : BaseFragment(R.layout.fragment_fetch_vaccine_
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
         with(binding.layoutToolbar.topAppBar) {
-            setNavigationIcon(R.drawable.ic_toolbar_back)
+            setNavigationIcon(R.drawable.ic_scanner_close)
             setNavigationOnClickListener { findNavController().popBackStack() }
             title = getString(R.string.add_a_health_pass)
             inflateMenu(R.menu.help_menu)

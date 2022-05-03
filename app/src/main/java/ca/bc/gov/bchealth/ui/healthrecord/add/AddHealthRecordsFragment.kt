@@ -12,7 +12,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentAddHealthRecordsBinding
@@ -25,6 +24,7 @@ import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
+import ca.bc.gov.bchealth.utils.hide
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,6 +62,10 @@ class AddHealthRecordsFragment : BaseFragment(R.layout.fragment_add_health_recor
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (args.isBackButtonEnabled) {
+            binding.tvHealthRecordTitle.hide()
+        }
 
         observeBcscLogin()
 
@@ -157,17 +161,26 @@ class AddHealthRecordsFragment : BaseFragment(R.layout.fragment_add_health_recor
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
         with(binding.layoutToolbar.topAppBar) {
-            setupWithNavController(findNavController(), appBarConfiguration)
-            setNavigationIcon(R.drawable.ic_toolbar_back)
-            title = getString(R.string.add_health_record)
-            inflateMenu(R.menu.settings_menu)
-            setOnMenuItemClickListener { menu ->
-                when (menu.itemId) {
-                    R.id.menu_settings -> {
-                        findNavController().navigate(R.id.profileFragment)
-                    }
+            if (args.isBackButtonEnabled) {
+                setNavigationOnClickListener {
+                    findNavController().popBackStack()
                 }
-                return@setOnMenuItemClickListener true
+                setNavigationIcon(R.drawable.ic_toolbar_back)
+                title = getString(R.string.add_health_record)
+            } else {
+                with(binding.layoutToolbar.appbar) {
+                    stateListAnimator = null
+                    elevation = 0f
+                }
+                inflateMenu(R.menu.settings_menu)
+                setOnMenuItemClickListener { menu ->
+                    when (menu.itemId) {
+                        R.id.menu_settings -> {
+                            findNavController().navigate(R.id.profileFragment)
+                        }
+                    }
+                    return@setOnMenuItemClickListener true
+                }
             }
         }
     }

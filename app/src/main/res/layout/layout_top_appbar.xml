@@ -11,6 +11,8 @@
         app:titleTextAppearance="?textAppearanceHeadline3"
         app:titleTextColor="@color/primary_blue"
         app:titleCentered="true"
+        android:layout_marginStart="@dimen/space_1_x"
+        android:layout_marginEnd="@dimen/space_2_x"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

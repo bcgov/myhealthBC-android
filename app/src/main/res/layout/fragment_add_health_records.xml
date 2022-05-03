@@ -30,24 +30,6 @@
         app:layout_constraintTop_toBottomOf="@id/layout_toolbar"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_message"
-        style="?textAppearanceBody1"
-        android:visibility="gone"
-        android:layout_width="0dp"
-        app:layout_goneMarginTop="@dimen/space_2_x"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:text="@string/view_the_details_of_all_your_covid_19_health_records"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_health_record_title"
-        android:layout_marginEnd="@dimen/space_4_x" />
-
-
-
     <ca.bc.gov.bchealth.widget.RecyclerView
         android:id="@+id/rv_members"
         android:layout_width="match_parent"
@@ -59,7 +41,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_message" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_health_record_title" />
 
     <ProgressBar
         android:id="@+id/progressBar"
