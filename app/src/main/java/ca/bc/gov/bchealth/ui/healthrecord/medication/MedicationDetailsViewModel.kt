@@ -29,32 +29,6 @@ class MedicationDetailsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(MedicationDetailUiState())
     val uiState: StateFlow<MedicationDetailUiState> = _uiState.asStateFlow()
 
-    fun getParentEntryId(medicationId: Long) = viewModelScope.launch {
-        try {
-            _uiState.update {
-                it.copy(onLoading = true)
-            }
-
-            val medicationWithSummaryAndPharmacyDto = medicationRecordRepository
-                .getMedicationWithSummaryAndPharmacy(medicationId)
-
-            _uiState.update {
-                it.copy(
-                    onLoading = false,
-                    parentEntryId = medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
-                )
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            _uiState.update {
-                it.copy(
-                    onLoading = false,
-                    onError = true
-                )
-            }
-        }
-    }
-
     fun getMedicationDetails(medicationId: Long) = viewModelScope.launch {
         try {
             _uiState.update {
@@ -91,7 +65,8 @@ class MedicationDetailsViewModel @Inject constructor(
                     onLoading = false,
                     medicationDetails = prePareMedicationDetails(medicationWithSummaryAndPharmacyDto),
                     toolbarTitle = medicationWithSummaryAndPharmacyDto.medicationSummary.brandName,
-                    comments = commentsTemp
+                    comments = commentsTemp,
+                    parentEntryId = medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
                 )
             }
         } catch (e: Exception) {

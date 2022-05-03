@@ -17,6 +17,7 @@ import ca.bc.gov.bchealth.databinding.FragmentMedicationDetailsBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.updateCommentEndIcon
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.repository.CommentEntryTypeCode
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -33,7 +34,6 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
-        viewModel.getParentEntryId(args.medicationId)
         if (medicationDetailAdapter.currentList.isEmpty()) {
             viewModel.getMedicationDetails(args.medicationId)
         }
@@ -121,7 +121,7 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
                 if (!binding.comment.edComment.text.isNullOrBlank()) {
                     viewModel.addComment(
                         binding.comment.edComment.text.toString(),
-                        "Med"
+                        CommentEntryTypeCode.MEDICATION.value
                     )
                 }
             }

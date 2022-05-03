@@ -16,6 +16,7 @@ import ca.bc.gov.bchealth.databinding.FragmentCommentsBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.updateCommentEndIcon
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.repository.CommentEntryTypeCode
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -70,7 +71,7 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
                     viewModel.addComment(
                         args.parentEntryId,
                         binding.comment.edComment.text.toString(),
-                        "Med"
+                        CommentEntryTypeCode.MEDICATION.value
                     )
                 }
             }
