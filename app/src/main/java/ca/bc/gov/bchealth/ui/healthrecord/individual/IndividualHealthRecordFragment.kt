@@ -275,7 +275,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun updateHealthRecordsList(uiState: IndividualHealthRecordsUiState) {
-        if (uiState.onNonBcscHealthRecords.isEmpty() && uiState.patientAuthStatus != AuthenticationStatus.AUTHENTICATED) {
+        if (uiState.onNonBcscHealthRecords.isEmpty() && uiState.patientAuthStatus != null && uiState.patientAuthStatus != AuthenticationStatus.AUTHENTICATED) {
             findNavController().previousBackStackEntry?.savedStateHandle
                 ?.set(
                     HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
@@ -284,20 +284,22 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             findNavController().popBackStack()
         }
 
-        if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
-            if (loginStatus == LoginStatus.ACTIVE) {
-                displayBcscRecords(uiState)
-            } else {
-                if (uiState.authenticatedRecordsCount != null &&
-                    ::hiddenHealthRecordAdapter.isInitialized
-                )
-                    hiddenHealthRecordAdapter.submitList(
-                        getHiddenRecordItem(uiState.authenticatedRecordsCount)
+        if (uiState.patientAuthStatus != null) {
+            if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
+                if (loginStatus == LoginStatus.ACTIVE) {
+                    displayBcscRecords(uiState)
+                } else {
+                    if (uiState.authenticatedRecordsCount != null &&
+                        ::hiddenHealthRecordAdapter.isInitialized
                     )
+                        hiddenHealthRecordAdapter.submitList(
+                            getHiddenRecordItem(uiState.authenticatedRecordsCount)
+                        )
+                    displayNonBcscRecords(uiState)
+                }
+            } else {
                 displayNonBcscRecords(uiState)
             }
-        } else {
-            displayNonBcscRecords(uiState)
         }
     }
 
@@ -316,7 +318,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         } else {
             displayBCSCRecordsExceptMedicationFilter(uiState)
         }
-        val filterString = filterSharedViewModel.filterState.value.timelineTypeFilter.joinToString(",")
+        val filterString =
+            filterSharedViewModel.filterState.value.timelineTypeFilter.joinToString(",")
         Log.i("RASHMI", "filterString: $filterString")
         healthRecordsAdapter.filter.filter(filterString)
     }
@@ -664,10 +667,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     updateTypeFilterSelection(filterState)
 
                     updateClearButton(filterState)
-
-                    viewModel.getIndividualsHealthRecord(
-                        args.patientId
-                    )
                 }
             }
         }
