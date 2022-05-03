@@ -16,7 +16,6 @@ import ca.bc.gov.bchealth.databinding.FragmentCommentsBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.updateCommentEndIcon
 import ca.bc.gov.bchealth.utils.viewBindings
-import ca.bc.gov.repository.CommentEntryTypeCode
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

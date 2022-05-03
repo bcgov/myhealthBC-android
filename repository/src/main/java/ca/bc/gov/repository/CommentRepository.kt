@@ -57,19 +57,18 @@ class CommentRepository @Inject constructor(
         comment: String,
         entryTypeCode: String
     ): List<CommentDto> {
-        val (token, hdid) = bcscAuthRepo.getAuthParameters()
         val id = UUID.randomUUID().toString()
         val commentDto = CommentDto(
             id,
-            hdid,
+            null,
             comment,
             entryTypeCode,
             parentEntryId,
             0,
             Instant.now(),
-            hdid,
+            null,
             Instant.now(),
-            hdid,
+            null,
             false
         )
         insert(commentDto)
