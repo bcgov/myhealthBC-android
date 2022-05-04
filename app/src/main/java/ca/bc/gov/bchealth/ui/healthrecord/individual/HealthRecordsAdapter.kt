@@ -27,7 +27,7 @@ class HealthRecordsAdapter(
     ListAdapter<HealthRecordItem, HealthRecordsAdapter.ViewHolder>(HealthRecordDiffCallBacks()),
     Filterable {
 
-    private lateinit var defaultList: MutableList<HealthRecordItem>
+    private lateinit var defaultList: List<HealthRecordItem>
 
     fun interface ItemClickListener {
         fun onItemClick(record: HealthRecordItem)
@@ -85,7 +85,8 @@ class HealthRecordsAdapter(
                     isUpdateRequested = false
                 } else {
                     holder.binding.progressBar.visibility = View.INVISIBLE
-                    holder.binding.ivRightArrow.visibility = if (canDeleteRecord) View.GONE else View.VISIBLE
+                    holder.binding.ivRightArrow.visibility =
+                        if (canDeleteRecord) View.GONE else View.VISIBLE
                 }
             }
             HealthRecordType.MEDICATION_RECORD -> {
@@ -105,43 +106,64 @@ class HealthRecordsAdapter(
         }
     }
 
+    fun setData(list: List<HealthRecordItem>) {
+        defaultList = list
+        submitList(list)
+    }
+
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(charSequence: CharSequence?): FilterResults {
-                defaultList = currentList
                 val filteredList = mutableListOf<HealthRecordItem>()
                 if (charSequence.isNullOrBlank()) {
                     return FilterResults()
                 } else {
-                    Log.i("RASHMI", "charSequence: $charSequence")
                     val list = charSequence.split(",")
                     Log.i("RASHMI", "charSequence list: $list")
-                    list.forEach { type ->
-                        when(type) {
+                    for (i in list.indices) {
+                        when (list[i]) {
                             "ALL" -> {
-                                filteredList.addAll(currentList)
+                                filteredList.addAll(defaultList)
                             }
                             "MEDICATION" -> {
-                                filteredList.addAll(currentList.filter { it.healthRecordType == HealthRecordType.MEDICATION_RECORD })
+                                filteredList.addAll(defaultList.filter { it.healthRecordType == HealthRecordType.MEDICATION_RECORD })
                             }
                             "LAB_TEST" -> {
-                                filteredList.addAll(currentList.filter { it.healthRecordType == HealthRecordType.LAB_TEST })
+                                filteredList.addAll(defaultList.filter { it.healthRecordType == HealthRecordType.LAB_TEST })
                             }
                             "COVID_19_TEST" -> {
-                                filteredList.addAll(currentList.filter { it.healthRecordType == HealthRecordType.COVID_TEST_RECORD })
+                                filteredList.addAll(defaultList.filter { it.healthRecordType == HealthRecordType.COVID_TEST_RECORD })
                             }
                             "IMMUNIZATION" -> {
-                                filteredList.addAll(currentList.filter { it.healthRecordType == HealthRecordType.IMMUNIZATION_RECORD })
+                                filteredList.addAll(defaultList.filter { it.healthRecordType == HealthRecordType.IMMUNIZATION_RECORD })
                             }
                         }
-                        return FilterResults().apply { values = filteredList }
                     }
+                    Log.i("RASHMI", "filter list size: ${filteredList.size}")
+                    // list.forEach { type ->
+                    //     when (type) {
+                    //         "ALL" -> {
+                    //             filteredList.addAll(defaultList)
+                    //         }
+                    //         "MEDICATION" -> {
+                    //             filteredList.addAll(defaultList.filter { it.healthRecordType == HealthRecordType.MEDICATION_RECORD })
+                    //         }
+                    //         "LAB_TEST" -> {
+                    //             filteredList.addAll(defaultList.filter { it.healthRecordType == HealthRecordType.LAB_TEST })
+                    //         }
+                    //         "COVID_19_TEST" -> {
+                    //             filteredList.addAll(defaultList.filter { it.healthRecordType == HealthRecordType.COVID_TEST_RECORD })
+                    //         }
+                    //         "IMMUNIZATION" -> {
+                    //             filteredList.addAll(defaultList.filter { it.healthRecordType == HealthRecordType.IMMUNIZATION_RECORD })
+                    //         }
+                    //     }
+                    // }
+                    return FilterResults().apply { values = filteredList }
                 }
-                return FilterResults().apply { values = currentList }
             }
 
             override fun publishResults(constraint: CharSequence?, result: FilterResults?) {
-                defaultList = currentList
                 if (result?.values == null) {
                     submitList(emptyList())
                 } else {

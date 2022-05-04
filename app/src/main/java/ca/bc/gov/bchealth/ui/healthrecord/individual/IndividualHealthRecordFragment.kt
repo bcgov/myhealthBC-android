@@ -147,9 +147,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         binding.imgClear.setOnClickListener {
             filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL.name), null, null)
 
-            viewModel.getIndividualsHealthRecord(
-                args.patientId
-            )
+            val filterString =
+                filterSharedViewModel.filterState.value.timelineTypeFilter.joinToString(",")
+            healthRecordsAdapter.filter.filter(filterString)
         }
     }
 
@@ -305,7 +305,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private fun displayNonBcscRecords(uiState: IndividualHealthRecordsUiState) {
         if (::healthRecordsAdapter.isInitialized) {
-            healthRecordsAdapter.submitList(uiState.onNonBcscHealthRecords)
+            healthRecordsAdapter.setData(uiState.onNonBcscHealthRecords)
         }
     }
 
@@ -327,14 +327,14 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun displayBCSCRecordsWithMedicationFilter(uiState: IndividualHealthRecordsUiState) {
         if (uiState.medicationRecordsUpdated || !viewModel.isProtectiveWordRequired() || sharedViewModel.isProtectiveWordAdded) {
             if (::healthRecordsAdapter.isInitialized) {
-                healthRecordsAdapter.submitList(uiState.onHealthRecords)
+                healthRecordsAdapter.setData(uiState.onHealthRecords)
             }
             if (::hiddenMedicationRecordsAdapter.isInitialized) {
                 hiddenMedicationRecordsAdapter.submitList(emptyList())
             }
         } else {
             if (::healthRecordsAdapter.isInitialized) {
-                healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
+                healthRecordsAdapter.setData(uiState.healthRecordsExceptMedication)
             }
             if (::hiddenMedicationRecordsAdapter.isInitialized &&
                 uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED
@@ -353,7 +353,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private fun displayBCSCRecordsExceptMedicationFilter(uiState: IndividualHealthRecordsUiState) {
         if (::healthRecordsAdapter.isInitialized) {
-            healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
+            healthRecordsAdapter.setData(uiState.healthRecordsExceptMedication)
         }
         if (::hiddenMedicationRecordsAdapter.isInitialized) {
             hiddenMedicationRecordsAdapter.submitList(emptyList())
