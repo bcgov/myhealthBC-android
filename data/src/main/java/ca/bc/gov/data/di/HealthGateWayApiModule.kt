@@ -94,15 +94,26 @@ class HealthGateWayApiModule {
         cookiesInterceptor: CookiesInterceptor,
         queueItInterceptor: QueueItInterceptor,
         receivedCookieInterceptor: ReceivedCookieInterceptor,
-    ) = OkHttpClient.Builder()
-        .addInterceptor(queueItInterceptor)
-        .addInterceptor(cookiesInterceptor)
-        .addInterceptor(receivedCookieInterceptor)
-        .addInterceptor(loggingInterceptor)
-        .hostnameVerifier { _, _ ->
-            return@hostnameVerifier true
-        }
-        .build()
+        mockInterceptor: MockInterceptor,
+    ) = if (BuildConfig.FLAVOR == "mock") {
+        OkHttpClient.Builder()
+            .addInterceptor(mockInterceptor)
+            .addInterceptor(loggingInterceptor)
+            .hostnameVerifier { _, _ ->
+                return@hostnameVerifier true
+            }
+            .build()
+    } else {
+        OkHttpClient.Builder()
+            .addInterceptor(queueItInterceptor)
+            .addInterceptor(cookiesInterceptor)
+            .addInterceptor(receivedCookieInterceptor)
+            .addInterceptor(loggingInterceptor)
+            .hostnameVerifier { _, _ ->
+                return@hostnameVerifier true
+            }
+            .build()
+    }
 
     @Provides
     fun providesJsonConverterFactory(): GsonConverterFactory = GsonConverterFactory.create(
@@ -113,13 +124,12 @@ class HealthGateWayApiModule {
 
     @Provides
     fun providesRetrofitClient(
-        @ApplicationContext context: Context,
         okHttpClient: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory,
         encryptedPreferenceStorage: EncryptedPreferenceStorage
     ): Retrofit =
         Retrofit.Builder()
-            .baseUrl(encryptedPreferenceStorage.baseUrl)
+            .baseUrl(encryptedPreferenceStorage.baseUrl.toString())
             .client(okHttpClient)
             .addConverterFactory(gsonConverterFactory)
             .build()

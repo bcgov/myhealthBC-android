@@ -1,0 +1,523 @@
+{
+  "resourcePayload": {
+    "loaded": false,
+    "queued": false,
+    "retryin": 1000,
+    "orders": [
+      {
+        "labPdfId": "2.16.840.1.113883.3.851.1.11_17-015-342621",
+        "reportingSource": "VIHA - Department of Laboratory Medicine, Pathology and Medical Genetics",
+        "reportId": "17-015-342621",
+        "collectionDateTime": "2021-07-04T11:45:00",
+        "timelineDateTime": "2021-07-04T11:45:00",
+        "commonName": "Chemistry Lab Results",
+        "orderingProvider": "PLISVCI, BROOKS",
+        "testStatus": "Completed w/Modification",
+        "orderStatus": "Completed w/Modification",
+        "downloadLabel": "Final",
+        "reportAvailable": true,
+        "laboratoryTests": [
+          {
+            "batteryType": "Alanine Aminotransferase",
+            "obxId": "342620439",
+            "outOfRange": false,
+            "loinc": "1742-6",
+            "testStatus": "Cancelled",
+            "filteredTestStatus": "Cancelled",
+            "result": "Cancelled"
+          },
+          {
+            "batteryType": "Auto Differential",
+            "obxId": "342620441",
+            "outOfRange": true,
+            "loinc": "57023-4",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "Out of Range"
+          },
+          {
+            "batteryType": "Bilirubin, Total",
+            "obxId": "342620437",
+            "outOfRange": true,
+            "loinc": "14631-6",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "Out of Range"
+          },
+          {
+            "batteryType": "Carbon Dioxide",
+            "obxId": "342620442",
+            "outOfRange": false,
+            "loinc": "2028-9",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "In Range"
+          },
+          {
+            "batteryType": "CBC",
+            "obxId": "342620433",
+            "outOfRange": false,
+            "loinc": "58410-2",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "In Range"
+          },
+          {
+            "batteryType": "Chloride",
+            "obxId": "342620438",
+            "outOfRange": false,
+            "loinc": "2075-0",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "In Range"
+          },
+          {
+            "batteryType": "Potassium",
+            "obxId": "342620434",
+            "outOfRange": false,
+            "loinc": "2823-3",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "In Range"
+          },
+          {
+            "batteryType": "Sodium",
+            "obxId": "342620431",
+            "outOfRange": false,
+            "loinc": "2951-2",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "In Range"
+          },
+          {
+            "batteryType": "Triacylglycerol Lipase",
+            "obxId": "342620445",
+            "outOfRange": false,
+            "loinc": "3040-3",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "In Range"
+          },
+          {
+            "batteryType": "Troponin I Cardiac",
+            "obxId": "342620444",
+            "outOfRange": false,
+            "loinc": "10839-9",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "In Range"
+          },
+          {
+            "batteryType": "Urea",
+            "obxId": "342620430",
+            "outOfRange": false,
+            "loinc": "22664-7",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "In Range"
+          }
+        ]
+      },
+      {
+        "labPdfId": "2.16.840.1.113883.3.1864.1.11_1715901DWG",
+        "reportingSource": "Valley Medical Laboratories - Vernon",
+        "reportId": "1715901DWG",
+        "collectionDateTime": "2021-06-07T10:40:02",
+        "timelineDateTime": "2021-06-07T10:40:02",
+        "commonName": "Chemistry Lab Results",
+        "orderingProvider": "PLISXCS, LARRY",
+        "testStatus": "Pending",
+        "orderStatus": "Pending",
+        "downloadLabel": "Incomplete",
+        "reportAvailable": true,
+        "laboratoryTests": [
+          {
+            "batteryType": "Creatinine & Glomerular Filtration Rate Predicted Panel",
+            "obxId": "1715901DWG-CRE-0",
+            "outOfRange": true,
+            "loinc": "45066-8",
+            "testStatus": "Active",
+            "filteredTestStatus": "Pending",
+            "result": "Pending"
+          }
+        ]
+      },
+      {
+        "labPdfId": "2.16.840.1.113883.3.1864.1.11_1715801DWG",
+        "reportingSource": "Valley Medical Laboratories - Vernon",
+        "reportId": "1715801DWG",
+        "collectionDateTime": "2021-06-06T10:40:02",
+        "timelineDateTime": "2021-06-06T10:40:02",
+        "commonName": "Chemistry Lab Results",
+        "orderingProvider": "PLISXCS, LARRY",
+        "testStatus": "Corrected",
+        "orderStatus": "Corrected",
+        "downloadLabel": "Final",
+        "reportAvailable": true,
+        "laboratoryTests": [
+          {
+            "batteryType": "Creatinine & Glomerular Filtration Rate Predicted Panel",
+            "obxId": "1715801DWG-CRE-0",
+            "outOfRange": true,
+            "loinc": "45066-8",
+            "testStatus": "Corrected",
+            "filteredTestStatus": "Corrected",
+            "result": "Out of Range"
+          }
+        ]
+      },
+      {
+        "labPdfId": "2.16.840.1.113883.3.1864.1.11_1715701DWG",
+        "reportingSource": "Valley Medical Laboratories - Vernon",
+        "reportId": "1715701DWG",
+        "collectionDateTime": "2021-06-05T10:40:02",
+        "timelineDateTime": "2021-06-05T10:40:02",
+        "commonName": "Chemistry Lab Results",
+        "orderingProvider": "PLISXCS, LARRY",
+        "testStatus": "Completed",
+        "orderStatus": "Completed",
+        "downloadLabel": "Final",
+        "reportAvailable": true,
+        "laboratoryTests": [
+          {
+            "batteryType": "Creatinine & Glomerular Filtration Rate Predicted Panel",
+            "obxId": "1715701DWG-CRE-0",
+            "outOfRange": true,
+            "loinc": "45066-8",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "Out of Range"
+          }
+        ]
+      },
+      {
+        "labPdfId": "2.16.840.1.113883.3.1864.1.11_1715601DWG",
+        "reportingSource": "Valley Medical Laboratories - Vernon",
+        "reportId": "1715601DWG",
+        "collectionDateTime": "2021-06-04T10:40:02",
+        "timelineDateTime": "2021-06-04T10:40:02",
+        "commonName": "Chemistry Lab Results",
+        "orderingProvider": "PLISXCS, LARRY",
+        "testStatus": "Completed",
+        "orderStatus": "Completed",
+        "downloadLabel": "Final",
+        "reportAvailable": true,
+        "laboratoryTests": [
+          {
+            "batteryType": "Creatinine & Glomerular Filtration Rate Predicted Panel",
+            "obxId": "1715601DWG-CRE-0",
+            "outOfRange": true,
+            "loinc": "45066-8",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "Out of Range"
+          }
+        ]
+      },
+      {
+        "labPdfId": "2.16.840.1.113883.3.1864.1.11_1715501DWG",
+        "reportingSource": "Valley Medical Laboratories - Vernon",
+        "reportId": "1715501DWG",
+        "collectionDateTime": "2021-06-03T10:40:02",
+        "timelineDateTime": "2021-06-03T10:40:02",
+        "commonName": "Chemistry Lab Results",
+        "orderingProvider": "PLISXCS, LARRY",
+        "testStatus": "Completed",
+        "orderStatus": "Completed",
+        "downloadLabel": "Final",
+        "reportAvailable": true,
+        "laboratoryTests": [
+          {
+            "batteryType": "Creatinine & Glomerular Filtration Rate Predicted Panel",
+            "obxId": "1715501DWG-CRE-0",
+            "outOfRange": true,
+            "loinc": "45066-8",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "Out of Range"
+          }
+        ]
+      },
+      {
+        "labPdfId": "2.16.840.1.113883.3.3565.1.11_17115034262001",
+        "reportingSource": "Canadian Blood Services BC, Diagnostic Services",
+        "reportId": "17115034262001",
+        "collectionDateTime": "2021-04-25T18:59:00",
+        "timelineDateTime": "2021-04-25T18:59:00",
+        "commonName": "Chemistry Lab Results",
+        "orderingProvider": "PLISVCB, STUART",
+        "testStatus": "Pending",
+        "orderStatus": "Pending",
+        "downloadLabel": "Incomplete",
+        "reportAvailable": true,
+        "laboratoryTests": [
+          {
+            "batteryType": "Potassium",
+            "obxId": "39460453",
+            "outOfRange": false,
+            "loinc": "2823-3",
+            "testStatus": "Active",
+            "filteredTestStatus": "Pending",
+            "result": "Pending"
+          },
+          {
+            "batteryType": "Transfusion Medicine Report",
+            "obxId": "39460452",
+            "outOfRange": false,
+            "loinc": "XXX-2787",
+            "testStatus": "Active",
+            "filteredTestStatus": "Pending",
+            "result": "Pending"
+          }
+        ]
+      },
+      {
+        "labPdfId": "2.16.840.1.113883.3.1343.1.11_315L34262T1050072",
+        "reportingSource": "Vancouver Coastal Health",
+        "reportId": "315L34262T1050072",
+        "collectionDateTime": "2021-03-26T12:45:00",
+        "timelineDateTime": "2021-03-26T12:45:00",
+        "commonName": "Chemistry Lab Results",
+        "orderingProvider": "PLISVCI, BROOKS",
+        "testStatus": "",
+        "orderStatus": "",
+        "downloadLabel": "Incomplete",
+        "reportAvailable": true,
+        "laboratoryTests": [
+          {
+            "batteryType": "Comprehensive Metabolic Panel",
+            "obxId": "315L34262T1050072CMPB",
+            "outOfRange": true,
+            "loinc": "XXX-3185",
+            "testStatus": "3",
+            "filteredTestStatus": "3",
+            "result": "Pending"
+          }
+        ]
+      },
+      {
+        "labPdfId": "2.16.840.1.113883.3.277.1.11_IHLIH-2019-084DWG01",
+        "reportingSource": "Lillooet Hospital & Health Centre",
+        "reportId": "IHLIH-2019-084DWG01",
+        "collectionDateTime": "2021-03-25T08:58:00",
+        "timelineDateTime": "2021-03-25T08:58:00",
+        "commonName": "Chemistry Lab Results",
+        "orderingProvider": "PLISVCI, BROOKS",
+        "testStatus": "Corrected",
+        "orderStatus": "Corrected",
+        "downloadLabel": "Final",
+        "reportAvailable": true,
+        "laboratoryTests": [
+          {
+            "batteryType": "Glucometer; Random Check",
+            "obxId": "IHLIH-2019-PT34262084.0001",
+            "outOfRange": true,
+            "loinc": "XXX-1634",
+            "testStatus": "Corrected",
+            "filteredTestStatus": "Corrected",
+            "result": "Out of Range"
+          }
+        ]
+      },
+      {
+        "labPdfId": "2.16.840.1.113883.3.784.1.11_17-084DWG01",
+        "reportingSource": "Surrey Memorial Hospital",
+        "reportId": "17-084DWG01",
+        "collectionDateTime": "2021-03-24T05:15:00",
+        "timelineDateTime": "2021-03-24T05:15:00",
+        "commonName": "Chemistry Lab Results",
+        "orderingProvider": "PLISVCI, BROOKS",
+        "testStatus": "Corrected",
+        "orderStatus": "Corrected",
+        "downloadLabel": "Final",
+        "reportAvailable": true,
+        "laboratoryTests": [
+          {
+            "batteryType": "Bilirubin Conjugated+Bilirubin Albumin Bound",
+            "obxId": "20210848_500.5300",
+            "outOfRange": true,
+            "loinc": "14629-0",
+            "testStatus": "Corrected",
+            "filteredTestStatus": "Corrected",
+            "result": "Out of Range"
+          },
+          {
+            "batteryType": "Chemistry Panel",
+            "obxId": "20210848_500.4200",
+            "outOfRange": true,
+            "loinc": "XXX-1710",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "Out of Range"
+          },
+          {
+            "batteryType": "Potassium",
+            "obxId": "20210848_500.2000",
+            "outOfRange": true,
+            "loinc": "2823-3",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "Out of Range"
+          },
+          {
+            "batteryType": "Triacylglycerol Lipase",
+            "obxId": "20210848_500.5500",
+            "outOfRange": true,
+            "loinc": "3040-3",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "Out of Range"
+          }
+        ]
+      },
+      {
+        "labPdfId": "2.16.840.1.113883.3.277.1.11_KGH-2017-083DWG01",
+        "reportingSource": "Kelowna General Hospital",
+        "reportId": "KGH-2017-083DWG01",
+        "collectionDateTime": "2021-03-23T13:01:00",
+        "timelineDateTime": "2021-03-23T13:01:00",
+        "commonName": "Other Lab Results",
+        "orderingProvider": "PLISVCI, BROOKS",
+        "testStatus": "Completed",
+        "orderStatus": "Completed",
+        "downloadLabel": "Final",
+        "reportAvailable": true,
+        "laboratoryTests": [
+          {
+            "batteryType": "Renal Panel; Outpatient",
+            "obxId": "KGH-2017-34262083.0001",
+            "outOfRange": true,
+            "loinc": "XXX-1131",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "Out of Range"
+          }
+        ]
+      },
+      {
+        "labPdfId": "2.16.840.1.113883.3.277.1.11_IHKGH-2017-083DWG01",
+        "reportingSource": "Kelowna General Hospital",
+        "reportId": "IHKGH-2017-083DWG01",
+        "collectionDateTime": "2021-03-23T08:30:00",
+        "timelineDateTime": "2021-03-23T08:30:00",
+        "commonName": "Chemistry Lab Results",
+        "orderingProvider": "PLISVCI, BROOKS",
+        "testStatus": "Completed",
+        "orderStatus": "Completed",
+        "downloadLabel": "Final",
+        "reportAvailable": true,
+        "laboratoryTests": [
+          {
+            "batteryType": "Bilirubin Conjugated+Bilirubin Unconjugated",
+            "obxId": "IHKGH-2017-PT34262083.0001",
+            "outOfRange": true,
+            "loinc": "33899-6",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "Out of Range"
+          }
+        ]
+      },
+      {
+        "labPdfId": "2.16.840.1.113883.3.851.1.11_17-083-342621",
+        "reportingSource": "VIHA - Department of Laboratory Medicine, Pathology and Medical Genetics",
+        "reportId": "17-083-342621",
+        "collectionDateTime": "2021-03-23T06:10:00",
+        "timelineDateTime": "2021-03-23T06:10:00",
+        "commonName": "Chemistry Lab Results",
+        "orderingProvider": "PLISVCI, BROOKS",
+        "testStatus": "Completed",
+        "orderStatus": "Completed",
+        "downloadLabel": "Final",
+        "reportAvailable": true,
+        "laboratoryTests": [
+          {
+            "batteryType": "Bilirubin Conjugated",
+            "obxId": "342620560",
+            "outOfRange": true,
+            "loinc": "29760-6",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "Out of Range"
+          }
+        ]
+      },
+      {
+        "labPdfId": "2.16.840.1.113883.3.1863.1.11_17-DWGEXC0820001",
+        "reportingSource": "LifeLabs",
+        "reportId": "17-DWGEXC0820001",
+        "collectionDateTime": "2021-03-22T11:11:00",
+        "timelineDateTime": "2021-03-22T11:11:00",
+        "commonName": "Hematology Lab Results",
+        "orderingProvider": "PLISVCI, BROOKS",
+        "testStatus": "Completed",
+        "orderStatus": "Completed",
+        "downloadLabel": "Final",
+        "reportAvailable": true,
+        "laboratoryTests": [
+          {
+            "batteryType": "INR",
+            "obxId": "17-DWGEXC0820001-PT-0",
+            "outOfRange": false,
+            "loinc": "6301-6",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "In Range"
+          },
+          {
+            "batteryType": "Reticulocytes Panel",
+            "obxId": "17-DWGEXC0820001-RET-1",
+            "outOfRange": false,
+            "loinc": "50262-5",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "In Range"
+          }
+        ]
+      },
+      {
+        "labPdfId": "2.16.840.1.113883.3.1343.1.11_287L34262H513731",
+        "reportingSource": "Providence Health Care",
+        "reportId": "287L34262H513731",
+        "collectionDateTime": "2021-02-14T14:36:00",
+        "timelineDateTime": "2021-02-14T14:36:00",
+        "commonName": "Hematology Lab Results",
+        "orderingProvider": "PLISVCI, BROOKS",
+        "testStatus": "Completed",
+        "orderStatus": "Completed",
+        "downloadLabel": "Final",
+        "reportAvailable": true,
+        "laboratoryTests": [
+          {
+            "batteryType": "CBC",
+            "obxId": "287L34262H513731CBC",
+            "outOfRange": false,
+            "loinc": "58410-2",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "In Range"
+          },
+          {
+            "batteryType": "Renal Panel",
+            "obxId": "287L34262H513731RNLP",
+            "outOfRange": false,
+            "loinc": "XXX-1127",
+            "testStatus": "Completed",
+            "filteredTestStatus": "Completed",
+            "result": "In Range"
+          }
+        ]
+      }
+    ]
+  },
+  "totalResultCount": 15,
+  "pageIndex": null,
+  "pageSize": 25,
+  "resultStatus": 2,
+  "resultError": {
+    "resultMessage": "Refresh in progress",
+    "errorCode": "LaboratoryServer-I",
+    "traceId": "2f001aa000852cbc6353a5a9700100c8",
+    "actionCode": "REFRESH"
+  }
+}
