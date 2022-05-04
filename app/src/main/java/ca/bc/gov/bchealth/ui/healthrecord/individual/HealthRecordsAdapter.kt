@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
 import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.toStartOfDayInstant
 
 /**
  * @author Pinakin Kansara
@@ -115,27 +116,42 @@ class HealthRecordsAdapter(
         return object : Filter() {
             override fun performFiltering(charSequence: CharSequence?): FilterResults {
                 val filteredList = mutableListOf<HealthRecordItem>()
+                val tempList = mutableListOf<HealthRecordItem>()
                 if (charSequence.isNullOrBlank()) {
                     return FilterResults()
                 } else {
                     val list = charSequence.split(",")
                     Log.i("RASHMI", "charSequence list: $list")
+
+                    val fromDate = list.find { it.contains("FROM:") }?.substringAfter(":")
+                    val toDate = list.find { it.contains("TO:") }?.substringAfter(":")
+
+                    if (!fromDate.isNullOrBlank() && !toDate.isNullOrBlank()) {
+                        tempList.addAll(defaultList.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() })
+                    } else if (!fromDate.isNullOrBlank()) {
+                        tempList.addAll(defaultList.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() })
+                    } else if (!toDate.isNullOrBlank()) {
+                        tempList.addAll(defaultList.filter { it.date.toStartOfDayInstant() <= toDate.toDate() })
+                    } else {
+                        tempList.addAll(defaultList)
+                    }
+
                     for (i in list.indices) {
                         when (list[i]) {
                             "ALL" -> {
-                                filteredList.addAll(defaultList)
+                                filteredList.addAll(tempList)
                             }
                             "MEDICATION" -> {
-                                filteredList.addAll(defaultList.filter { it.healthRecordType == HealthRecordType.MEDICATION_RECORD })
+                                filteredList.addAll(tempList.filter { it.healthRecordType == HealthRecordType.MEDICATION_RECORD })
                             }
                             "LAB_TEST" -> {
-                                filteredList.addAll(defaultList.filter { it.healthRecordType == HealthRecordType.LAB_TEST })
+                                filteredList.addAll(tempList.filter { it.healthRecordType == HealthRecordType.LAB_TEST })
                             }
                             "COVID_19_TEST" -> {
-                                filteredList.addAll(defaultList.filter { it.healthRecordType == HealthRecordType.COVID_TEST_RECORD })
+                                filteredList.addAll(tempList.filter { it.healthRecordType == HealthRecordType.COVID_TEST_RECORD })
                             }
                             "IMMUNIZATION" -> {
-                                filteredList.addAll(defaultList.filter { it.healthRecordType == HealthRecordType.IMMUNIZATION_RECORD })
+                                filteredList.addAll(tempList.filter { it.healthRecordType == HealthRecordType.IMMUNIZATION_RECORD })
                             }
                         }
                     }

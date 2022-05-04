@@ -318,9 +318,15 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         } else {
             displayBCSCRecordsExceptMedicationFilter(uiState)
         }
-        val filterString =
+        var filterString =
             filterSharedViewModel.filterState.value.timelineTypeFilter.joinToString(",")
         Log.i("RASHMI", "filterString: $filterString")
+        if(filterSharedViewModel.filterState.value.filterFromDate != null) {
+            filterString = filterString.plus(",FROM:").plus(filterSharedViewModel.filterState.value.filterFromDate)
+        }
+        if(filterSharedViewModel.filterState.value.filterToDate != null) {
+            filterString = filterString.plus(",TO:").plus(filterSharedViewModel.filterState.value.filterToDate)
+        }
         healthRecordsAdapter.filter.filter(filterString)
     }
 
