@@ -120,49 +120,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 var filteredHealthRecords: List<HealthRecordItem> = mutableListOf()
                 var filteredHealthRecordsExceptMedication: List<HealthRecordItem> = mutableListOf()
 
-                // filterList.forEach {
-                //     when (it) {
-                //         TimelineTypeFilter.ALL -> {
-                //             filteredHealthRecords =
-                //                 medicationRecords + covidTestRecords + covidOrders + labTestRecords + immunizationRecords
-                //             filteredHealthRecordsExceptMedication =
-                //                 covidTestRecords + covidOrders + labTestRecords + immunizationRecords
-                //         }
-                //         TimelineTypeFilter.MEDICATION -> {
-                //             filteredHealthRecords += medicationRecords
-                //         }
-                //         TimelineTypeFilter.IMMUNIZATION -> {
-                //             filteredHealthRecords += immunizationRecords
-                //             filteredHealthRecordsExceptMedication += immunizationRecords
-                //         }
-                //         TimelineTypeFilter.COVID_19_TEST -> {
-                //             filteredHealthRecords += covidTestRecords + covidOrders
-                //             filteredHealthRecordsExceptMedication += covidTestRecords + covidOrders
-                //         }
-                //         TimelineTypeFilter.LAB_TEST -> {
-                //             filteredHealthRecords += labTestRecords
-                //             filteredHealthRecordsExceptMedication += labTestRecords
-                //         }
-                //     }
-                // }
-                //
-                // if (!fromDate.isNullOrBlank() && !toDate.isNullOrBlank()) {
-                //     filteredHealthRecords =
-                //         filteredHealthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
-                //     filteredHealthRecordsExceptMedication =
-                //         filteredHealthRecordsExceptMedication.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
-                // } else if (!fromDate.isNullOrBlank()) {
-                //     filteredHealthRecords =
-                //         filteredHealthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
-                //     filteredHealthRecordsExceptMedication =
-                //         filteredHealthRecordsExceptMedication.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
-                // } else if (!toDate.isNullOrBlank()) {
-                //     filteredHealthRecords =
-                //         filteredHealthRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
-                //     filteredHealthRecordsExceptMedication =
-                //         filteredHealthRecordsExceptMedication.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }
-                // }
-
                 filteredHealthRecords =
                     medicationRecords + covidTestRecords + covidOrders + labTestRecords + immunizationRecords
                 filteredHealthRecordsExceptMedication =
