@@ -10,11 +10,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentTestResultDetailBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.viewBindings
-import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
 import ca.bc.gov.common.model.test.CovidTestDto
 import com.google.android.material.tabs.TabLayoutMediator
@@ -25,7 +26,7 @@ import kotlinx.coroutines.launch
  * @author amit metri
  */
 @AndroidEntryPoint
-class CovidTestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) {
+class CovidTestResultDetailFragment : BaseFragment(R.layout.fragment_test_result_detail) {
 
     private val binding by viewBindings(FragmentTestResultDetailBinding::bind)
 
@@ -35,8 +36,6 @@ class CovidTestResultDetailFragment : Fragment(R.layout.fragment_test_result_det
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setToolBar()
 
         viewModel.getCovidOrderWithCovidTests(args.covidOrderId)
 
@@ -67,8 +66,6 @@ class CovidTestResultDetailFragment : Fragment(R.layout.fragment_test_result_det
 
     private fun initUi(covidTestResult: CovidOrderWithCovidTestAndPatientDto) {
 
-        binding.toolbar.tvRightOption.isVisible =
-            covidTestResult.patient.authenticationStatus != AuthenticationStatus.AUTHENTICATED
         val covidTestResultsAdapter = CovidTestResultsAdapter(
             this,
             covidTestResult.covidOrderWithCovidTest.covidTests
@@ -87,19 +84,13 @@ class CovidTestResultDetailFragment : Fragment(R.layout.fragment_test_result_det
         }
     }
 
-    private fun setToolBar() {
-        binding.toolbar.apply {
-            ivLeftOption.visibility = View.VISIBLE
-            ivLeftOption.setImageResource(R.drawable.ic_action_back)
-            ivLeftOption.setOnClickListener {
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.topAppBar) {
+            setNavigationIcon(R.drawable.ic_toolbar_back)
+            setNavigationOnClickListener {
                 findNavController().popBackStack()
             }
-
-            tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.covid_19_test_result)
-
-            tvRightOption.visibility = View.VISIBLE
-            line1.visibility = View.VISIBLE
+            title = getString(R.string.covid_19_test_result)
         }
     }
 

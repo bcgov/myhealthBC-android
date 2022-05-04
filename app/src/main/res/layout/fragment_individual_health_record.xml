@@ -1,268 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:animateLayoutChanges="false"
-    android:filterTouchesWhenObscured="true"
-    tools:context=".ui.healthrecord.individual.IndividualHealthRecordFragment"
-    app:layoutDescription="@xml/fragment_individual_health_record_scene">
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.utils.widget.MockView
-        android:id="@+id/mockView1"
-        android:visibility="invisible"
-        android:layout_width="@dimen/space_4_x"
-        android:layout_height="@dimen/space_4_x"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.utils.widget.MockView
-        android:id="@+id/mockView2"
-        android:visibility="invisible"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/space_2_x"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/mockView1"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/iv_back"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:visibility="gone"
-        android:contentDescription="@string/back"
-        android:src="@drawable/ic_action_back"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        app:layout_constraintTop_toBottomOf="@+id/mockView2"
-        app:layout_constraintStart_toEndOf="@+id/mockView1" />
-
-    <androidx.constraintlayout.utils.widget.MockView
-        android:layout_width="@dimen/space_4_x"
-        android:layout_height="48dp"
-        android:id="@+id/mockView"
-        android:visibility="invisible"
-        android:layout_marginTop="@dimen/space_2_x"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/iv_setting"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/ic_settings"
-        android:visibility="gone"
-        android:contentDescription="@string/settings"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:filterTouchesWhenObscured="true"
-        app:layout_constraintEnd_toStartOf="@+id/iv_add"
-        app:layout_constraintTop_toBottomOf="@+id/mockView2" />
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/iv_add"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:visibility="gone"
-        android:contentDescription="@string/add_health_record"
-        android:src="@drawable/ic_add_card_blue_small"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:filterTouchesWhenObscured="true"
-        app:layout_constraintEnd_toStartOf="@+id/iv_filter"
-        app:layout_constraintTop_toBottomOf="@+id/mockView2" />
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/iv_filter"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/ic_filter"
-        android:visibility="gone"
-        android:contentDescription="@string/filter"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:filterTouchesWhenObscured="true"
-        app:layout_constraintEnd_toStartOf="@+id/iv_edit"
-        app:layout_constraintTop_toBottomOf="@+id/mockView2" />
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/iv_edit"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/ic_edit"
-        android:visibility="gone"
-        android:contentDescription="@string/edit"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:filterTouchesWhenObscured="true"
-        app:layout_constraintEnd_toStartOf="@+id/mockView"
-        app:layout_constraintTop_toBottomOf="@+id/mockView2" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        style="?textAppearanceHeadline2"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@+id/mockView"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/space_4_x"
-        tools:text="JEAN SMITH"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginEnd="@dimen/space_4_x" />
-
-    <ImageView
-        android:id="@+id/img_clear"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/ic_clear"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:visibility="gone"
-        android:filterTouchesWhenObscured="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/horizontal_scrollview"
-        app:layout_constraintBottom_toBottomOf="@+id/horizontal_scrollview"
-        android:contentDescription="@string/clear" />
-
-    <HorizontalScrollView
-        android:id="@+id/horizontal_scrollview"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_1_x"
-        android:layout_marginEnd="@dimen/space_1_x"
-        android:scrollbars="none"
-        android:filterTouchesWhenObscured="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/img_clear"
-        app:layout_constraintTop_toBottomOf="@+id/tv_name">
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/cg_filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:filterTouchesWhenObscured="true"
-            app:singleLine="true">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_date"
-                style="@style/ChipFilterByType"
-                android:focusable="false"
-                android:clickable="false"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_medication"
-                style="@style/ChipFilterByType"
-                android:focusable="false"
-                android:clickable="false"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/medications" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_lab_test"
-                style="@style/ChipFilterByType"
-                android:focusable="false"
-                android:clickable="false"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/lab_tests" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_covid_test"
-                style="@style/ChipFilterByType"
-                android:focusable="false"
-                android:clickable="false"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/covid_19_tests" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_immunizations"
-                style="@style/ChipFilterByType"
-                android:focusable="false"
-                android:clickable="false"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/immunizations" />
-
-        </com.google.android.material.chip.ChipGroup>
-
-    </HorizontalScrollView>
-
-    <ca.bc.gov.bchealth.widget.RecyclerView
-        android:id="@+id/rv_health_records"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/space_1_x"
-        android:layout_marginBottom="@dimen/space_1_x"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:context=".ui.healthrecord.individual.IndividualHealthRecordFragment"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/horizontal_scrollview" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/empty_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone">
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageView
-            android:id="@+id/img_no_records"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/individual_record_app_bar_height"
+            android:fitsSystemWindows="true"
+            style="@style/Widget.MaterialComponents.AppBarLayout.Surface">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/collapsing_toolbar"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+                android:fitsSystemWindows="true"
+                app:toolbarId="@+id/top_app_bar"
+                app:collapsedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Collapsed"
+                app:expandedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Expanded">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/top_app_bar"
+                    app:titleTextAppearance="?textAppearanceHeadline3"
+                    app:titleCentered="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="@dimen/space_1_x"
+                    android:layout_marginEnd="@dimen/space_2_x"
+                    app:layout_collapseMode="pin" />
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <include
+            layout="@layout/content_scrolling"
+            android:id="@+id/content" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_no_record"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription" />
+            android:indeterminate="true"
+            android:layout_gravity="center" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_no_record"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/empty_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="?textAppearanceHeadline2"
-            android:textSize="20sp"
-            android:textColor="@color/blue"
-            android:layout_marginTop="@dimen/space_4_x"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/img_no_records"
-            android:text="@string/no_records_found" />
+            android:layout_gravity="center"
+            android:visibility="gone">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_clear_filter_msg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="?textAppearanceBody2"
-            android:textSize="13sp"
-            android:textColor="@color/grey"
-            android:layout_marginTop="@dimen/space_1_x"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_no_record"
-            android:text="@string/clear_all_filters_and_start_over" />
+            <ImageView
+                android:id="@+id/img_no_records"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_no_record"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_no_record"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?textAppearanceHeadline2"
+                android:textSize="20sp"
+                android:textColor="@color/blue"
+                android:layout_marginTop="@dimen/space_4_x"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/img_no_records"
+                android:text="@string/no_records_found" />
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_clear_filter_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?textAppearanceBody2"
+                android:textSize="13sp"
+                android:textColor="@color/grey"
+                android:layout_marginTop="@dimen/space_1_x"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_no_record"
+                android:text="@string/clear_all_filters_and_start_over" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

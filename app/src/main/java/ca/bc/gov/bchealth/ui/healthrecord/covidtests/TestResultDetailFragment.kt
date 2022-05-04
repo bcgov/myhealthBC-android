@@ -1,6 +1,7 @@
 package ca.bc.gov.bchealth.ui.healthrecord.covidtests
 
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -10,9 +11,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentTestResultDetailBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -27,7 +30,7 @@ import kotlinx.coroutines.launch
  * @author amit metri
  */
 @AndroidEntryPoint
-class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) {
+class TestResultDetailFragment : BaseFragment(R.layout.fragment_test_result_detail) {
 
     private val binding by viewBindings(FragmentTestResultDetailBinding::bind)
 
@@ -38,7 +41,6 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setToolBar()
         viewModel.getTestResultDetail(args.testResultId)
         observeDetails()
     }
@@ -68,7 +70,7 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
 
     private fun initUi(testRecords: List<TestRecordDto>, patientDto: PatientDto) {
 
-        binding.toolbar.tvRightOption.isVisible =
+        menuInflated.getItem(R.id.menu_delete).isVisible =
             patientDto.authenticationStatus != AuthenticationStatus.AUTHENTICATED
         val covidTestResultsAdapter = CovidTestResultsAdapter(
             this,
@@ -88,11 +90,11 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
         }
     }
 
-    private fun setToolBar() {
-        binding.toolbar.apply {
-            ivLeftOption.visibility = View.VISIBLE
-            ivLeftOption.setImageResource(R.drawable.ic_action_back)
-            ivLeftOption.setOnClickListener {
+    private lateinit var menuInflated: Menu
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.topAppBar) {
+            setNavigationIcon(R.drawable.ic_toolbar_back)
+            setNavigationOnClickListener {
                 if (findNavController().previousBackStackEntry?.destination?.id ==
                     R.id.fetchTestRecordFragment
                 ) {
@@ -104,30 +106,30 @@ class TestResultDetailFragment : Fragment(R.layout.fragment_test_result_detail) 
                 }
                 findNavController().popBackStack()
             }
-
-            tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.covid_19_test_result)
-
-            tvRightOption.visibility = View.VISIBLE
-            tvRightOption.text = getString(R.string.delete)
-            tvRightOption.setOnClickListener {
-                AlertDialogHelper.showAlertDialog(
-                    context = requireContext(),
-                    title = getString(R.string.delete_hc_record_title),
-                    msg = getString(R.string.delete_individual_covid_test_record_message),
-                    positiveBtnMsg = getString(R.string.delete),
-                    negativeBtnMsg = getString(R.string.not_now),
-                    positiveBtnCallback = {
-                        binding.progressBar.visibility = View.VISIBLE
-                        viewModel.deleteTestRecord(args.testResultId)
-                            .invokeOnCompletion {
-                                findNavController().popBackStack()
+            title = getString(R.string.covid_19_test_result)
+            inflateMenu(R.menu.menu_details_page_delete)
+            menuInflated = menu
+            setOnMenuItemClickListener { menu ->
+                when (menu.itemId) {
+                    R.id.menu_delete -> {
+                        AlertDialogHelper.showAlertDialog(
+                            context = requireContext(),
+                            title = getString(R.string.delete_hc_record_title),
+                            msg = getString(R.string.delete_individual_covid_test_record_message),
+                            positiveBtnMsg = getString(R.string.delete),
+                            negativeBtnMsg = getString(R.string.not_now),
+                            positiveBtnCallback = {
+                                binding.progressBar.visibility = View.VISIBLE
+                                viewModel.deleteTestRecord(args.testResultId)
+                                    .invokeOnCompletion {
+                                        findNavController().popBackStack()
+                                    }
                             }
+                        )
                     }
-                )
+                }
+                return@setOnMenuItemClickListener true
             }
-
-            line1.visibility = View.VISIBLE
         }
     }
 

@@ -3,14 +3,15 @@ package ca.bc.gov.bchealth.ui.tos
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentTermsOfServiceBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -19,7 +20,7 @@ import kotlinx.coroutines.launch
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
-class TermsOfServiceFragment : Fragment(R.layout.fragment_terms_of_service) {
+class TermsOfServiceFragment : BaseFragment(R.layout.fragment_terms_of_service) {
 
     private val termsOfServiceViewModel: TermsOfServiceViewModel by viewModels()
     private val binding by viewBindings(FragmentTermsOfServiceBinding::bind)
@@ -36,8 +37,6 @@ class TermsOfServiceFragment : Fragment(R.layout.fragment_terms_of_service) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setupToolBar()
         val webViewSettings = binding.wbTosContent.settings
         webViewSettings.textZoom = webViewSettings.textZoom + 10
 
@@ -69,18 +68,13 @@ class TermsOfServiceFragment : Fragment(R.layout.fragment_terms_of_service) {
         termsOfServiceViewModel.getTermsOfServices()
     }
 
-    private fun setupToolBar() {
-        binding.toolbar.apply {
-            ivLeftOption.visibility = View.VISIBLE
-            ivLeftOption.setImageResource(R.drawable.ic_action_back)
-            ivLeftOption.setOnClickListener {
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.topAppBar) {
+            setNavigationIcon(R.drawable.ic_toolbar_back)
+            setNavigationOnClickListener {
                 findNavController().popBackStack()
             }
-
-            tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.terms_of_service)
-
-            line1.visibility = View.VISIBLE
+            title = getString(R.string.terms_of_service)
         }
     }
 }

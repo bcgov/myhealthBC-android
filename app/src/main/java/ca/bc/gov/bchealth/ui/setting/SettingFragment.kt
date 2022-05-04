@@ -5,14 +5,16 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSettingBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -28,7 +30,7 @@ import kotlinx.coroutines.launch
  * @author amit metri
  */
 @AndroidEntryPoint
-class SettingFragment : Fragment(R.layout.fragment_setting) {
+class SettingFragment : BaseFragment(R.layout.fragment_setting) {
 
     private val binding by viewBindings(FragmentSettingBinding::bind)
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
@@ -55,8 +57,6 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
 
     private fun initUi() {
 
-        setUpToolbar()
-
         showLoader(true)
 
         analyticsSwitch()
@@ -66,16 +66,11 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         }
     }
 
-    private fun setUpToolbar() {
-        binding.toolbar.apply {
-            ivLeftOption.visibility = View.VISIBLE
-            ivLeftOption.setImageResource(R.drawable.ic_action_back)
-            tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.settings)
-            ivLeftOption.setOnClickListener {
-                findNavController().popBackStack()
-            }
-            line1.visibility = View.VISIBLE
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.topAppBar) {
+            setupWithNavController(findNavController(), appBarConfiguration)
+            setNavigationIcon(R.drawable.ic_toolbar_back)
+            title = getString(R.string.settings)
         }
     }
 

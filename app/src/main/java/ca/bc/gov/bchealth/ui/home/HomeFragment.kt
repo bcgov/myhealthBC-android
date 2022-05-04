@@ -4,15 +4,16 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHomeBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.auth.BioMetricState
 import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
@@ -23,7 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(R.layout.fragment_home) {
+class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
     private val binding by viewBindings(FragmentHomeBinding::bind)
     private val viewModel: HomeViewModel by viewModels()
@@ -49,8 +50,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setupToolBar()
 
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BioMetricState>(
             BiometricsAuthenticationFragment.BIOMETRIC_STATE
@@ -164,11 +163,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    private fun setupToolBar() {
-        binding.toolbar.ivRightOption.apply {
-            visibility = View.VISIBLE
-            setOnClickListener {
-                findNavController().navigate(R.id.profileFragment)
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.appbar) {
+            stateListAnimator = null
+            elevation = 0f
+        }
+        with(binding.layoutToolbar.topAppBar) {
+            inflateMenu(R.menu.settings_menu)
+            setOnMenuItemClickListener { menu ->
+                when (menu.itemId) {
+                    R.id.menu_settings -> {
+                        findNavController().navigate(R.id.profileFragment)
+                    }
+                }
+                return@setOnMenuItemClickListener true
             }
         }
     }

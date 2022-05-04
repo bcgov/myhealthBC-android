@@ -8,8 +8,8 @@
     tools:context=".ui.healthrecord.add.AddHealthRecordsFragment">
 
     <include
-        android:id="@+id/toolbar"
-        layout="@layout/layout_toolbar"
+        android:id="@+id/layout_toolbar"
+        layout="@layout/layout_top_appbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,28 +24,11 @@
         android:visibility="visible"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_2_x"
         app:layout_goneMarginTop="0dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintTop_toBottomOf="@id/layout_toolbar"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_message"
-        style="?textAppearanceBody1"
-        android:visibility="gone"
-        android:layout_width="0dp"
-        app:layout_goneMarginTop="@dimen/space_2_x"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:text="@string/view_the_details_of_all_your_covid_19_health_records"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_health_record_title"
-        android:layout_marginEnd="@dimen/space_4_x" />
-
-
 
     <ca.bc.gov.bchealth.widget.RecyclerView
         android:id="@+id/rv_members"
@@ -58,7 +41,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_message" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_health_record_title" />
 
     <ProgressBar
         android:id="@+id/progressBar"

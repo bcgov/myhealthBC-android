@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -12,9 +11,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentAddHealthRecordsBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordOptionAdapter
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
@@ -23,6 +24,7 @@ import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
+import ca.bc.gov.bchealth.utils.hide
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,7 +34,7 @@ import kotlinx.coroutines.launch
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
-class AddHealthRecordsFragment : Fragment(R.layout.fragment_add_health_records) {
+class AddHealthRecordsFragment : BaseFragment(R.layout.fragment_add_health_records) {
     private val binding by viewBindings(FragmentAddHealthRecordsBinding::bind)
     private lateinit var optionsAdapter: HealthRecordOptionAdapter
     private val viewModel: AddHealthRecordsOptionsViewModel by viewModels()
@@ -61,7 +63,9 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_add_health_records) 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupToolBar()
+        if (args.isBackButtonEnabled) {
+            binding.tvHealthRecordTitle.hide()
+        }
 
         observeBcscLogin()
 
@@ -155,23 +159,28 @@ class AddHealthRecordsFragment : Fragment(R.layout.fragment_add_health_records) 
         }
     }
 
-    private fun setupToolBar() {
-        if (args.isBackButtonEnabled) {
-            binding.toolbar.ivLeftOption.apply {
-                visibility = View.VISIBLE
-                setOnClickListener {
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.topAppBar) {
+            if (args.isBackButtonEnabled) {
+                setNavigationOnClickListener {
                     findNavController().popBackStack()
                 }
-            }
-            binding.toolbar.tvTitle.apply {
-                visibility = View.VISIBLE
-                setText(R.string.add_health_record)
-            }
-        }
-        binding.toolbar.ivRightOption.apply {
-            isVisible = !args.isBackButtonEnabled
-            setOnClickListener {
-                findNavController().navigate(R.id.profileFragment)
+                setNavigationIcon(R.drawable.ic_toolbar_back)
+                title = getString(R.string.add_health_record)
+            } else {
+                with(binding.layoutToolbar.appbar) {
+                    stateListAnimator = null
+                    elevation = 0f
+                }
+                inflateMenu(R.menu.settings_menu)
+                setOnMenuItemClickListener { menu ->
+                    when (menu.itemId) {
+                        R.id.menu_settings -> {
+                            findNavController().navigate(R.id.profileFragment)
+                        }
+                    }
+                    return@setOnMenuItemClickListener true
+                }
             }
         }
     }

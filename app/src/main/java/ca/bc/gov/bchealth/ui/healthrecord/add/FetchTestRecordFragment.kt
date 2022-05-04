@@ -7,14 +7,15 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchCovidTestResultBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.DatePickerHelper
 import ca.bc.gov.bchealth.utils.PhnHelper
@@ -35,7 +36,7 @@ import java.nio.charset.StandardCharsets
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
-class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_result) {
+class FetchTestRecordFragment : BaseFragment(R.layout.fragment_fetch_covid_test_result) {
     private val binding by viewBindings(FragmentFetchCovidTestResultBinding::bind)
     private val viewModel: FetchTestRecordsViewModel by viewModels()
     private val recentPhnDobViewModel: RecentPhnDobViewModel by viewModels()
@@ -46,8 +47,6 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setupToolBar()
 
         setUpPhnUI()
 
@@ -158,25 +157,20 @@ class FetchTestRecordFragment : Fragment(R.layout.fragment_fetch_covid_test_resu
         }
     }
 
-    private fun setupToolBar() {
-        binding.toolbar.apply {
-            ivLeftOption.visibility = View.VISIBLE
-            ivLeftOption.setImageResource(R.drawable.ic_action_back)
-            ivLeftOption.setOnClickListener {
-                findNavController().popBackStack()
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.topAppBar) {
+            setNavigationIcon(R.drawable.ic_toolbar_back)
+            setNavigationOnClickListener { findNavController().popBackStack() }
+            title = getString(R.string.add_covid_test_result)
+            inflateMenu(R.menu.help_menu)
+            setOnMenuItemClickListener { menu ->
+                when (menu.itemId) {
+                    R.id.menu_help -> {
+                        requireActivity().redirect(getString(R.string.url_help))
+                    }
+                }
+                return@setOnMenuItemClickListener true
             }
-
-            tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.add_covid_test_result)
-
-            ivRightOption.visibility = View.VISIBLE
-            ivRightOption.setImageResource(R.drawable.ic_help)
-            ivRightOption.setOnClickListener {
-                requireActivity().redirect(getString(R.string.url_help))
-            }
-            ivRightOption.contentDescription = getString(R.string.help)
-
-            line1.visibility = View.VISIBLE
         }
     }
 

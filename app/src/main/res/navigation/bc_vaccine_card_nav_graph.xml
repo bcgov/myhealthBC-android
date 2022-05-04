@@ -18,8 +18,7 @@
     <fragment
         android:id="@+id/settingFragment"
         android:name="ca.bc.gov.bchealth.ui.setting.SettingFragment"
-        android:label="fragment_setting"
-        tools:layout="@layout/fragment_setting"></fragment>
+        tools:layout="@layout/fragment_setting"/>
     <fragment
         android:id="@+id/barcodeScannerFragment"
         android:name="ca.bc.gov.bchealth.ui.scanner.BarcodeScannerFragment"
@@ -37,7 +36,6 @@
     <fragment
         android:id="@+id/fetchVaccineRecordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment"
-        android:label="FetchVaccineRecordFragment"
         tools:layout="@layout/fragment_fetch_vaccine_record" />
 
     <include app:graph="@navigation/home" />
@@ -49,13 +47,12 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="ca.bc.gov.bchealth.ui.setting.ProfileFragment"
-        android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile"></fragment>
+        tools:layout="@layout/fragment_profile"/>
     <fragment
         android:id="@+id/biometricsAuthenticationFragment"
         tools:layout="@layout/fragment_biometric_authentication"
         android:name="ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment"
-        android:label="BiometricsAuthenticationFragment">
+        >
         <action
             android:id="@+id/action_biometricsAuthenticationFragment_to_biometricSecurityTipFragment"
             app:destination="@id/biometricSecurityTipFragment" />
@@ -64,7 +61,6 @@
     <fragment
         android:id="@+id/bcscAuthInfoFragment"
         android:name="ca.bc.gov.bchealth.ui.login.BcscAuthInfoFragment"
-        android:label="fragment_login"
         tools:layout="@layout/fragment_bcsc_auth_info">
         <action
             android:id="@+id/action_bcscAuthInfoFragment_to_bcscAuthFragment"
@@ -73,29 +69,24 @@
     <fragment
         android:id="@+id/bcscAuthFragment"
         android:name="ca.bc.gov.bchealth.ui.login.BcscAuthFragment"
-        android:label="fragment_login_info"
         tools:layout="@layout/fragment_bcsc_auth" />
     <fragment
         android:id="@+id/termsOfServiceFragment"
         tools:layout="@layout/fragment_terms_of_service"
-        android:name="ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment"
-        android:label="TermsOfServiceFragment" />
+        android:name="ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment" />
     <fragment
         android:id="@+id/filterFragment"
         tools:layout="@layout/fragment_filter"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.filter.FilterFragment"
-        android:label="FilterFragment"/>
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.filter.FilterFragment" />
 
     <fragment
         android:id="@+id/biometricSecurityTipFragment"
         tools:layout="@layout/fragment_biometric_security_tip"
-        android:name="ca.bc.gov.bchealth.ui.auth.BiometricSecurityTipFragment"
-        android:label="BiometricSecurityTipFragment" />
+        android:name="ca.bc.gov.bchealth.ui.auth.BiometricSecurityTipFragment" />
 
     <fragment
         android:id="@+id/pdfRendererFragment"
         android:name="ca.bc.gov.bchealth.ui.pdf.PdfRendererFragment"
-        android:label="FragmentTravelPass"
         tools:layout="@layout/fragment_pdf_renderer">
         <argument
             android:name="base64pdf"

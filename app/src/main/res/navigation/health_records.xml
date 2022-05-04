@@ -95,7 +95,6 @@
     <fragment
         android:id="@+id/fetchVaccineRecordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment"
-        android:label="FetchVaccineRecordFragment"
         tools:layout="@layout/fragment_fetch_vaccine_record">
         <action
             android:id="@+id/action_fetchVaccineRecordFragment_to_vaccineRecordDetailFragment"

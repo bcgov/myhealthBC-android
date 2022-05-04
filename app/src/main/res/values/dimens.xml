@@ -21,4 +21,6 @@
 
     <dimen name="qr_width_height">200dp</dimen>
 
+    <dimen name="individual_record_app_bar_height">170dp</dimen>
+
 </resources>

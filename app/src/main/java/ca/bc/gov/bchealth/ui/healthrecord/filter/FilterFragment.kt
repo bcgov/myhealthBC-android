@@ -2,31 +2,29 @@ package ca.bc.gov.bchealth.ui.healthrecord.filter
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFilterBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.DatePickerHelper
-import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.utils.toDate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class FilterFragment : Fragment(R.layout.fragment_filter) {
+class FilterFragment : BaseFragment(R.layout.fragment_filter) {
 
     private val binding by viewBindings(FragmentFilterBinding::bind)
     private val filterSharedViewModel: FilterViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setUpToolbar()
 
         applyClickListener()
 
@@ -35,17 +33,13 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
         observeFilterState()
     }
 
-    private fun setUpToolbar() {
-        binding.toolbar.apply {
-            tvTitle.show()
-            tvTitle.text = getString(R.string.filter)
-            line1.visibility = View.VISIBLE
-            ivLeftOption.apply {
-                this.show()
-                setOnClickListener {
-                    findNavController().popBackStack()
-                }
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.topAppBar) {
+            setNavigationIcon(R.drawable.ic_toolbar_back)
+            setNavigationOnClickListener {
+                findNavController().popBackStack()
             }
+            title = getString(R.string.filter)
         }
     }
 

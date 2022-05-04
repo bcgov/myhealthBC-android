@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -12,8 +11,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentAddCardOptionsBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
@@ -30,7 +31,7 @@ import kotlinx.coroutines.launch
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
-class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
+class AddCardOptionFragment : BaseFragment(R.layout.fragment_add_card_options) {
 
     private val binding by viewBindings(FragmentAddCardOptionsBinding::bind)
     private val addOrUpdateCardViewModel: AddOrUpdateCardViewModel by viewModels()
@@ -87,16 +88,13 @@ class AddCardOptionFragment : Fragment(R.layout.fragment_add_card_options) {
         binding.btnEnterInfo.setOnClickListener {
             findNavController().navigate(R.id.fetchVaccineRecordFragment)
         }
+    }
 
-        binding.toolbar.apply {
-            ivLeftOption.visibility = View.VISIBLE
-            ivLeftOption.setImageResource(R.drawable.ic_action_back)
-            tvTitle.visibility = View.VISIBLE
-            tvTitle.text = getString(R.string.add_a_health_pass)
-            ivLeftOption.setOnClickListener {
-                findNavController().popBackStack()
-            }
-            line1.visibility = View.VISIBLE
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.topAppBar) {
+            setNavigationIcon(R.drawable.ic_toolbar_back)
+            setNavigationOnClickListener { findNavController().popBackStack() }
+            title = getString(R.string.add_a_health_pass)
         }
     }
 

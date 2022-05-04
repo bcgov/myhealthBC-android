@@ -11,6 +11,7 @@ versions.swipe_refresh_layout = "1.1.0"
 versions.room = "2.4.1"
 versions.material = "1.4.0"
 versions.recycler = "1.2.1"
+versions.coordinator = "1.2.0"
 
 versions.navigation = "2.3.5"
 

@@ -132,4 +132,12 @@
         <item name="android:textSize">15sp</item>
         <item name="android:textStyle">normal</item>
     </style>
+
+    <style name="TextAppearance.App.CollapsingToolbar.Expanded" parent="HealthGateway.TextAppearance.MaterialComponents.Headline2">
+        <item name="android:textColor">@color/primary_blue</item>
+    </style>
+
+    <style name="TextAppearance.App.CollapsingToolbar.Collapsed" parent="HealthGateway.TextAppearance.MaterialComponents.Headline3">
+        <item name="android:textColor">@color/primary_blue</item>
+    </style>
 </resources>

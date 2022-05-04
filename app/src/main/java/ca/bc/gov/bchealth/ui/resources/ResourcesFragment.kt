@@ -2,12 +2,13 @@ package ca.bc.gov.bchealth.ui.resources
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentResourcesBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
@@ -15,7 +16,7 @@ import ca.bc.gov.common.model.analytics.AnalyticsAction
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ResourcesFragment : Fragment(R.layout.fragment_resources) {
+class ResourcesFragment : BaseFragment(R.layout.fragment_resources) {
 
     private val binding by viewBindings(FragmentResourcesBinding::bind)
     private val resourcesViewModel: ResourcesViewModel by viewModels()
@@ -24,7 +25,6 @@ class ResourcesFragment : Fragment(R.layout.fragment_resources) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupToolBar()
         setupRecyclerView()
     }
 
@@ -43,11 +43,20 @@ class ResourcesFragment : Fragment(R.layout.fragment_resources) {
         analyticsFeatureViewModel.track(AnalyticsAction.RESOURCE_CLICK, url)
     }
 
-    private fun setupToolBar() {
-        binding.toolbar.ivRightOption.apply {
-            visibility = View.VISIBLE
-            setOnClickListener {
-                findNavController().navigate(R.id.profileFragment)
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.appbar) {
+            stateListAnimator = null
+            elevation = 0f
+        }
+        with(binding.layoutToolbar.topAppBar) {
+            inflateMenu(ca.bc.gov.bchealth.R.menu.settings_menu)
+            setOnMenuItemClickListener { menu ->
+                when (menu.itemId) {
+                    ca.bc.gov.bchealth.R.id.menu_settings -> {
+                        findNavController().navigate(ca.bc.gov.bchealth.R.id.profileFragment)
+                    }
+                }
+                return@setOnMenuItemClickListener true
             }
         }
     }

@@ -10,18 +10,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Scene
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHelathPassBinding
+import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment.Companion.BCSC_AUTH_STATUS
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
@@ -43,7 +44,7 @@ import java.io.File
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
-class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
+class HealthPassFragment : BaseFragment(R.layout.fragment_helath_pass) {
 
     private val viewModel: HealthPassViewModel by viewModels()
     private val binding by viewBindings(FragmentHelathPassBinding::bind)
@@ -62,7 +63,6 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupToolBar()
 
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
             BCSC_AUTH_STATUS
@@ -210,11 +210,20 @@ class HealthPassFragment : Fragment(R.layout.fragment_helath_pass) {
         }
     }
 
-    private fun setupToolBar() {
-        binding.toolbar.ivRightOption.apply {
-            visibility = View.VISIBLE
-            setOnClickListener {
-                findNavController().navigate(R.id.profileFragment)
+    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
+        with(binding.layoutToolbar.appbar) {
+            stateListAnimator = null
+            elevation = 0f
+        }
+        with(binding.layoutToolbar.topAppBar) {
+            inflateMenu(R.menu.settings_menu)
+            setOnMenuItemClickListener { menu ->
+                when (menu.itemId) {
+                    R.id.menu_settings -> {
+                        findNavController().navigate(R.id.profileFragment)
+                    }
+                }
+                return@setOnMenuItemClickListener true
             }
         }
     }
