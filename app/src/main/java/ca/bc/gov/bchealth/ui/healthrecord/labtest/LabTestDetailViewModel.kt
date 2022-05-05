@@ -97,7 +97,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                         } else {
                             labTest.outOfRange
                         },
-                        title3 = R.string.test_status,
+                        title3 = R.string.lab_test_status,
                         testStatus = labTest.testStatus,
                         viewType = ITEM_VIEW_TYPE_LAB_TEST
                     )
