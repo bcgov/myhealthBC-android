@@ -16,6 +16,17 @@
         android:layout_marginTop="@dimen/space_2_x"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tv_summary" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_summary"
+        style="?textAppearanceCaption"
+        android:textSize="15sp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:text="@string/date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_header"
         app:layout_constraintBottom_toTopOf="@+id/tv_title1" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -26,7 +37,7 @@
         android:layout_marginTop="@dimen/space_2_x"
         tools:text="@string/date"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_header"
+        app:layout_constraintTop_toBottomOf="@+id/tv_summary"
         app:layout_constraintBottom_toTopOf="@+id/tv_desc1" />
 
     <com.google.android.material.textview.MaterialTextView

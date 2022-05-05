@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemLabTestDetailBinding
+import ca.bc.gov.bchealth.utils.makeLinks
+import ca.bc.gov.bchealth.utils.redirect
 
 /**
  * @author: Created by Rashmi Bambhania on 02,March,2022
@@ -48,33 +50,56 @@ class LabTestDetailAdapter :
             is LabOrderViewHolder -> {
                 holder.binding.apply {
                     tvHeader.visibility = View.GONE
-                    tvTitle1.text = labTestDetail.title1
+                    tvSummary.visibility = View.GONE
                     tvDesc1.text = labTestDetail.timelineDateTime
-                    tvTitle2.text = labTestDetail.title2
                     tvDesc2.text = labTestDetail.orderingProvider
-                    tvTitle3.text = labTestDetail.title3
                     tvDesc3.text = labTestDetail.reportingSource
+                    holder.itemView.context.apply {
+                        tvTitle1.text = getString(labTestDetail.title1)
+                        tvTitle2.text = getString(labTestDetail.title2)
+                        tvTitle3.text = getString(labTestDetail.title3)
+                    }
                 }
             }
             is LabTestViewHolder -> {
                 holder.binding.apply {
                     labTestDetail.header?.let {
-                        tvHeader.text = it
+                        tvHeader.text = holder.itemView.context.getString(it)
                         tvHeader.visibility = View.VISIBLE
                     } ?: run {
                         tvHeader.visibility = View.GONE
                     }
-                    tvTitle1.text = labTestDetail.title1
+                    labTestDetail.summary?.let {
+                        holder.itemView.context.apply {
+                            tvSummary.text = getString(it)
+                            tvSummary.makeLinks(
+                                Pair(
+                                    getString(R.string.learn_more),
+                                    View.OnClickListener {
+                                        redirect(getString(R.string.faq_link))
+                                    }
+                                )
+                            )
+                        }
+                        tvSummary.visibility = View.VISIBLE
+                    } ?: run {
+                        tvSummary.visibility = View.GONE
+                    }
+                    holder.itemView.context.apply {
+                        tvTitle1.text = getString(labTestDetail.title1)
+                        tvTitle2.text = getString(labTestDetail.title2)
+                        tvTitle3.text = getString(labTestDetail.title3)
+                    }
+
                     tvDesc1.text = labTestDetail.testName
 
-                    tvTitle2.text = labTestDetail.title2
                     val pair = getTestResult(labTestDetail.outOfRange, holder.itemView.context)
                     tvDesc2.text = pair.first
                     tvDesc2.setTextColor(pair.second)
-                    val typeface = ResourcesCompat.getFont(holder.itemView.context, R.font.bc_sans_bold)
+                    val typeface =
+                        ResourcesCompat.getFont(holder.itemView.context, R.font.bc_sans_bold)
                     tvDesc2.setTypeface(typeface, Typeface.BOLD)
 
-                    tvTitle3.text = labTestDetail.title3
                     tvDesc3.text = labTestDetail.testStatus
                 }
             }

@@ -18,4 +18,7 @@
     <!--Covid test result-->
     <string name="understanding_test_results_url">http://www.bccdc.ca/results</string>
     <string name="bc_cdc_test_results">"http://www.bccdc.ca/health-info/diseases-conditions/covid-19/testing/test-results"</string>
+
+    <!--FAQ link-->
+    <string name="faq_link">https://www.healthgateway.gov.bc.ca/faq</string>
 </resources>
