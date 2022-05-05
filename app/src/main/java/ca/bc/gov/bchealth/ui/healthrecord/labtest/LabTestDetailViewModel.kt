@@ -1,7 +1,9 @@
 package ca.bc.gov.bchealth.ui.healthrecord.labtest
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.R
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
@@ -50,12 +52,12 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
         val labTestDetails = mutableListOf<LabTestDetail>()
         labTestDetails.add(
             LabTestDetail(
-                title1 = "Collection date:",
+                title1 = R.string.collection_date,
                 collectionDateTime = labOrderWithLabTestDto.labOrder.collectionDateTime.toDate(),
                 timelineDateTime = labOrderWithLabTestDto.labOrder.timelineDateTime.toDateTimeString(),
-                title2 = "Ordering provider:",
+                title2 = R.string.ordering_provider,
                 orderingProvider = labOrderWithLabTestDto.labOrder.orderingProvider,
-                title3 = "Reporting Lab:",
+                title3 = R.string.reporting_lab,
                 reportingSource = labOrderWithLabTestDto.labOrder.reportingSource
             )
         )
@@ -64,11 +66,11 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                 labTestDetails.add(
                     LabTestDetail(
                         id = labTest.id,
-                        header = "Test summary",
-                        summary = "Find resources to learn about your lab test and what the results mean. Learn more",
-                        title1 = "Test name:",
+                        header = R.string.test_summary,
+                        summary = R.string.summary_desc,
+                        title1 = R.string.test_name,
                         testName = labTest.batteryType,
-                        title2 = "Result:",
+                        title2 = R.string.result,
                         outOfRange = if (labTest.testStatus.equals("partial", true) ||
                             labTest.testStatus.equals("cancelled", true)
                         ) {
@@ -76,7 +78,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                         } else {
                             labTest.outOfRange
                         },
-                        title3 = "Test status:",
+                        title3 = R.string.lab_test_status,
                         testStatus = labTest.testStatus,
                         viewType = ITEM_VIEW_TYPE_LAB_TEST
                     )
@@ -85,9 +87,9 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                 labTestDetails.add(
                     LabTestDetail(
                         id = labTest.id,
-                        title1 = "Test name:",
+                        title1 = R.string.test_name,
                         testName = labTest.batteryType,
-                        title2 = "Result:",
+                        title2 = R.string.result,
                         outOfRange = if (labTest.testStatus.equals("partial", true) ||
                             labTest.testStatus.equals("cancelled", true)
                         ) {
@@ -95,7 +97,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                         } else {
                             labTest.outOfRange
                         },
-                        title3 = "Test status:",
+                        title3 = R.string.test_status,
                         testStatus = labTest.testStatus,
                         viewType = ITEM_VIEW_TYPE_LAB_TEST
                     )
@@ -153,11 +155,11 @@ data class LabTestDetailUiState(
 
 data class LabTestDetail(
     var id: Long = -1L,
-    var header: String? = null,
-    var summary: String? = null,
-    val title1: String,
-    val title2: String,
-    val title3: String,
+    @StringRes var header: Int? = null,
+    @StringRes var summary: Int? = null,
+    @StringRes val title1: Int,
+    @StringRes val title2: Int,
+    @StringRes val title3: Int,
     val collectionDateTime: String? = "N/A",
     val timelineDateTime: String? = null,
     val orderingProvider: String? = "N/A",
