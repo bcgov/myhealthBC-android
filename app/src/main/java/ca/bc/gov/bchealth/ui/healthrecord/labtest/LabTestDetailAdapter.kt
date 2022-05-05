@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemLabTestDetailBinding
+import ca.bc.gov.bchealth.utils.makeLinks
+import ca.bc.gov.bchealth.utils.redirect
 
 /**
  * @author: Created by Rashmi Bambhania on 02,March,2022
@@ -48,6 +50,7 @@ class LabTestDetailAdapter :
             is LabOrderViewHolder -> {
                 holder.binding.apply {
                     tvHeader.visibility = View.GONE
+                    tvSummary.visibility = View.GONE
                     tvTitle1.text = labTestDetail.title1
                     tvDesc1.text = labTestDetail.timelineDateTime
                     tvTitle2.text = labTestDetail.title2
@@ -63,6 +66,20 @@ class LabTestDetailAdapter :
                         tvHeader.visibility = View.VISIBLE
                     } ?: run {
                         tvHeader.visibility = View.GONE
+                    }
+                    labTestDetail.summary?.let {
+                        tvSummary.text = it
+                        tvSummary.makeLinks(
+                            Pair(
+                                holder.itemView.context.getString(R.string.learn_more),
+                                View.OnClickListener {
+                                    holder.itemView.context.redirect(holder.itemView.context.getString(R.string.faq_link))
+                                }
+                            )
+                        )
+                        tvSummary.visibility = View.VISIBLE
+                    } ?: run {
+                        tvSummary.visibility = View.GONE
                     }
                     tvTitle1.text = labTestDetail.title1
                     tvDesc1.text = labTestDetail.testName

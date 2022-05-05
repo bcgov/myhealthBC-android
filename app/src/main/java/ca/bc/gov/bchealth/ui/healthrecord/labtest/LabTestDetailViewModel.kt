@@ -65,6 +65,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                     LabTestDetail(
                         id = labTest.id,
                         header = "Test summary",
+                        summary = "Find resources to learn about your lab test and what the results mean. Learn more",
                         title1 = "Test name:",
                         testName = labTest.batteryType,
                         title2 = "Result:",
@@ -153,6 +154,7 @@ data class LabTestDetailUiState(
 data class LabTestDetail(
     var id: Long = -1L,
     var header: String? = null,
+    var summary: String? = null,
     val title1: String,
     val title2: String,
     val title3: String,
