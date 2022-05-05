@@ -116,7 +116,6 @@
         android:layout_height="48dp"
         android:src="@drawable/ic_clear"
         android:layout_marginStart="@dimen/space_4_x"
-        android:visibility="gone"
         android:filterTouchesWhenObscured="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/horizontal_scrollview"

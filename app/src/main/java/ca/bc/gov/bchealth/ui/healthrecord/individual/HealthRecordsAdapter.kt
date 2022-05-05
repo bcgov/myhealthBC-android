@@ -153,6 +153,9 @@ class HealthRecordsAdapter(
                             "IMMUNIZATION" -> {
                                 filteredList.addAll(tempList.filter { it.healthRecordType == HealthRecordType.IMMUNIZATION_RECORD })
                             }
+                            "PROTECTIVE_WORD" -> {
+                                filteredList.removeAll { it.healthRecordType == HealthRecordType.MEDICATION_RECORD }
+                            }
                         }
                     }
                     Log.i("RASHMI", "filter list size: ${filteredList.size}")

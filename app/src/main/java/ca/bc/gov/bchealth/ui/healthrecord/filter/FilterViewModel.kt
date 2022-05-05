@@ -33,6 +33,30 @@ class FilterViewModel @Inject constructor() : ViewModel() {
             )
         }
     }
+
+    fun addFilterType(type: String) {
+        val list = _filterState.value.timelineTypeFilter.toMutableList()
+        list.add(type)
+        _filterState.update { state ->
+            state.copy(
+                timelineTypeFilter = list,
+                filterFromDate = _filterState.value.filterFromDate,
+                filterToDate = _filterState.value.filterToDate
+            )
+        }
+    }
+
+    fun removeFilterType(type: String) {
+        val list = _filterState.value.timelineTypeFilter.toMutableList()
+        list.remove(type)
+        _filterState.update { state ->
+            state.copy(
+                timelineTypeFilter = list,
+                filterFromDate = _filterState.value.filterFromDate,
+                filterToDate = _filterState.value.filterToDate
+            )
+        }
+    }
 }
 
 enum class TimelineTypeFilter {
@@ -40,7 +64,8 @@ enum class TimelineTypeFilter {
     MEDICATION,
     LAB_TEST,
     COVID_19_TEST,
-    IMMUNIZATION
+    IMMUNIZATION,
+    PROTECTIVE_WORD
 }
 
 data class FilterUiState(
