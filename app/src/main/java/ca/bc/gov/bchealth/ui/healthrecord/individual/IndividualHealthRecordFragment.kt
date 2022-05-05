@@ -28,8 +28,6 @@ import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterUiState
 import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterViewModel
 import ca.bc.gov.bchealth.ui.healthrecord.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
-import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_REQUEST
-import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_UPDATED
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
@@ -97,8 +95,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
         setUpRecyclerView()
 
-        protectiveWordFragmentResultListener()
-
         observeBcscLogin()
 
         bcscAuthViewModel.checkSession()
@@ -146,6 +142,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun clearFilterClickListener() {
         binding.imgClear.setOnClickListener {
             filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL.name), null, null)
+
+            updateHiddenMedicationRecordsView(viewModel.uiState.value)
 
             val filterString =
                 filterSharedViewModel.filterState.value.timelineTypeFilter.joinToString(",")
@@ -265,6 +263,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         if (uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED) {
             binding.ivFilter.visibility = View.VISIBLE
             healthRecordsAdapter.isUpdateRequested = false
+            binding.cgFilter.visibility = View.VISIBLE
         } else {
             binding.ivEdit.visibility = View.VISIBLE
             healthRecordsAdapter.isUpdateRequested = true
@@ -314,34 +313,37 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 TimelineTypeFilter.MEDICATION.name
             )
         ) {
-            displayBCSCRecordsWithMedicationFilter(uiState)
+            updateHiddenMedicationRecordsView(uiState)
         } else {
-            displayBCSCRecordsExceptMedicationFilter(uiState)
+            filterSharedViewModel.removeFilterType(TimelineTypeFilter.PROTECTIVE_WORD.name)
+            if (::hiddenMedicationRecordsAdapter.isInitialized) {
+                hiddenMedicationRecordsAdapter.submitList(emptyList())
+            }
+        }
+        if (::healthRecordsAdapter.isInitialized) {
+            healthRecordsAdapter.setData(uiState.onHealthRecords)
         }
         var filterString =
             filterSharedViewModel.filterState.value.timelineTypeFilter.joinToString(",")
         Log.i("RASHMI", "filterString: $filterString")
-        if(filterSharedViewModel.filterState.value.filterFromDate != null) {
-            filterString = filterString.plus(",FROM:").plus(filterSharedViewModel.filterState.value.filterFromDate)
+        if (filterSharedViewModel.filterState.value.filterFromDate != null) {
+            filterString = filterString.plus(",FROM:")
+                .plus(filterSharedViewModel.filterState.value.filterFromDate)
         }
-        if(filterSharedViewModel.filterState.value.filterToDate != null) {
-            filterString = filterString.plus(",TO:").plus(filterSharedViewModel.filterState.value.filterToDate)
+        if (filterSharedViewModel.filterState.value.filterToDate != null) {
+            filterString =
+                filterString.plus(",TO:").plus(filterSharedViewModel.filterState.value.filterToDate)
         }
         healthRecordsAdapter.filter.filter(filterString)
     }
 
-    private fun displayBCSCRecordsWithMedicationFilter(uiState: IndividualHealthRecordsUiState) {
-        if (uiState.medicationRecordsUpdated || !viewModel.isProtectiveWordRequired() || sharedViewModel.isProtectiveWordAdded) {
-            if (::healthRecordsAdapter.isInitialized) {
-                healthRecordsAdapter.setData(uiState.onHealthRecords)
-            }
+    private fun updateHiddenMedicationRecordsView(uiState: IndividualHealthRecordsUiState) {
+        if (!viewModel.isProtectiveWordRequired() || sharedViewModel.isProtectiveWordAdded) {
             if (::hiddenMedicationRecordsAdapter.isInitialized) {
                 hiddenMedicationRecordsAdapter.submitList(emptyList())
             }
+            filterSharedViewModel.removeFilterType(TimelineTypeFilter.PROTECTIVE_WORD.name)
         } else {
-            if (::healthRecordsAdapter.isInitialized) {
-                healthRecordsAdapter.setData(uiState.healthRecordsExceptMedication)
-            }
             if (::hiddenMedicationRecordsAdapter.isInitialized &&
                 uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED
             ) {
@@ -354,17 +356,71 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     )
                 )
             }
+            filterSharedViewModel.addFilterType(TimelineTypeFilter.PROTECTIVE_WORD.name)
         }
     }
-
-    private fun displayBCSCRecordsExceptMedicationFilter(uiState: IndividualHealthRecordsUiState) {
-        if (::healthRecordsAdapter.isInitialized) {
-            healthRecordsAdapter.setData(uiState.healthRecordsExceptMedication)
-        }
-        if (::hiddenMedicationRecordsAdapter.isInitialized) {
-            hiddenMedicationRecordsAdapter.submitList(emptyList())
-        }
-    }
+    // private fun displayBCSCRecordsWithMedicationFilter(uiState: IndividualHealthRecordsUiState) {
+    //     if (uiState.medicationRecordsUpdated || !viewModel.isProtectiveWordRequired() || sharedViewModel.isProtectiveWordAdded) {
+    //         if (::hiddenMedicationRecordsAdapter.isInitialized) {
+    //             hiddenMedicationRecordsAdapter.submitList(emptyList())
+    //         }
+    //         filterSharedViewModel.removeFilterType(TimelineTypeFilter.PROTECTIVE_WORD.name)
+    //         // val typeFilter: MutableList<String> =
+    //         //     filterSharedViewModel.filterState.value.timelineTypeFilter.toMutableList()
+    //         // typeFilter.remove(TimelineTypeFilter.PROTECTIVE_WORD.name)
+    //         //
+    //         // filterSharedViewModel.updateFilter(
+    //         //     typeFilter,
+    //         //     filterSharedViewModel.filterState.value.filterFromDate,
+    //         //     filterSharedViewModel.filterState.value.filterToDate
+    //         // )
+    //     } else {
+    //         filterSharedViewModel.addFilterType(TimelineTypeFilter.PROTECTIVE_WORD.name)
+    //         // val typeFilter: MutableList<String> =
+    //         //     filterSharedViewModel.filterState.value.timelineTypeFilter.toMutableList()
+    //         // typeFilter.add(TimelineTypeFilter.PROTECTIVE_WORD.name)
+    //         //
+    //         // filterSharedViewModel.updateFilter(
+    //         //     typeFilter,
+    //         //     filterSharedViewModel.filterState.value.filterFromDate,
+    //         //     filterSharedViewModel.filterState.value.filterToDate
+    //         // )
+    //         if (::hiddenMedicationRecordsAdapter.isInitialized &&
+    //             uiState.patientAuthStatus == AuthenticationStatus.AUTHENTICATED
+    //         ) {
+    //             hiddenMedicationRecordsAdapter.submitList(
+    //                 listOf(
+    //                     HiddenMedicationRecordItem(
+    //                         getString(R.string.hidden_medication_records),
+    //                         getString(R.string.enter_protective_word_to_access_medication_records)
+    //                     )
+    //                 )
+    //             )
+    //         }
+    //     }
+    //     if (::healthRecordsAdapter.isInitialized) {
+    //         healthRecordsAdapter.setData(uiState.onHealthRecords)
+    //     }
+    // }
+    //
+    // private fun displayBCSCRecordsExceptMedicationFilter(uiState: IndividualHealthRecordsUiState) {
+    //     filterSharedViewModel.addFilterType(TimelineTypeFilter.PROTECTIVE_WORD.name)
+    //     // val typeFilter: MutableList<String> =
+    //     //     filterSharedViewModel.filterState.value.timelineTypeFilter.toMutableList()
+    //     // typeFilter.add(TimelineTypeFilter.PROTECTIVE_WORD.name)
+    //     //
+    //     // filterSharedViewModel.updateFilter(
+    //     //     typeFilter,
+    //     //     filterSharedViewModel.filterState.value.filterFromDate,
+    //     //     filterSharedViewModel.filterState.value.filterToDate
+    //     // )
+    //     if (::healthRecordsAdapter.isInitialized) {
+    //         healthRecordsAdapter.setData(uiState.onHealthRecords)
+    //     }
+    //     if (::hiddenMedicationRecordsAdapter.isInitialized) {
+    //         hiddenMedicationRecordsAdapter.submitList(emptyList())
+    //     }
+    // }
 
     private fun setUpRecyclerView() {
         healthRecordsAdapter = HealthRecordsAdapter(
@@ -595,15 +651,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         findNavController().navigate(R.id.bcscAuthInfoFragment)
     }
 
-    private fun protectiveWordFragmentResultListener() {
-        parentFragmentManager.setFragmentResultListener(
-            KEY_MEDICATION_RECORD_REQUEST,
-            viewLifecycleOwner
-        ) { _, result ->
-            viewModel.medicationRecordsUpdated(result.get(KEY_MEDICATION_RECORD_UPDATED) as Boolean)
-        }
-    }
-
     private fun observeCovidTestRecordAddition() {
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
             FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS
@@ -690,9 +737,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 TimelineTypeFilter.ALL.name
             )
         ) {
-            binding.imgClear.hide()
+            binding.imgClear.visibility = View.GONE
         } else {
-            binding.imgClear.show()
+            binding.imgClear.visibility = View.VISIBLE
         }
     }
 }
