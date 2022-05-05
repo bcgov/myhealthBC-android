@@ -69,14 +69,16 @@ class LabTestDetailAdapter :
                     }
                     labTestDetail.summary?.let {
                         tvSummary.text = it
-                        tvSummary.makeLinks(
-                            Pair(
-                                holder.itemView.context.getString(R.string.learn_more),
-                                View.OnClickListener {
-                                    holder.itemView.context.redirect(holder.itemView.context.getString(R.string.faq_link))
-                                }
+                        holder.itemView.context.apply {
+                            tvSummary.makeLinks(
+                                Pair(
+                                    getString(R.string.learn_more),
+                                    View.OnClickListener {
+                                        redirect(holder.itemView.context.getString(R.string.faq_link))
+                                    }
+                                )
                             )
-                        )
+                        }
                         tvSummary.visibility = View.VISIBLE
                     } ?: run {
                         tvSummary.visibility = View.GONE
@@ -88,7 +90,8 @@ class LabTestDetailAdapter :
                     val pair = getTestResult(labTestDetail.outOfRange, holder.itemView.context)
                     tvDesc2.text = pair.first
                     tvDesc2.setTextColor(pair.second)
-                    val typeface = ResourcesCompat.getFont(holder.itemView.context, R.font.bc_sans_bold)
+                    val typeface =
+                        ResourcesCompat.getFont(holder.itemView.context, R.font.bc_sans_bold)
                     tvDesc2.setTypeface(typeface, Typeface.BOLD)
 
                     tvTitle3.text = labTestDetail.title3
