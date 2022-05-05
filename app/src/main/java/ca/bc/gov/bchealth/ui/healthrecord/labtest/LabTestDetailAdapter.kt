@@ -74,7 +74,7 @@ class LabTestDetailAdapter :
                                 Pair(
                                     getString(R.string.learn_more),
                                     View.OnClickListener {
-                                        redirect(holder.itemView.context.getString(R.string.faq_link))
+                                        redirect(getString(R.string.faq_link))
                                     }
                                 )
                             )
