@@ -60,10 +60,19 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
             )
         )
         labOrderWithLabTestDto.labTests.forEachIndexed { index, labTest ->
-            val testStatus = if (labTest.testStatus.equals("Active", true)) {
-                "Pending"
-            } else {
-                labTest.testStatus ?: ""
+            var testStatus = ""
+            var result: Boolean? = null
+            when {
+                labTest.testStatus.equals("Active", true) -> {
+                    testStatus = "Pending"
+                }
+                labTest.testStatus.equals("cancelled", true) -> {
+                    testStatus = labTest.testStatus ?: ""
+                }
+                else -> {
+                    testStatus = labTest.testStatus ?: ""
+                    result = labTest.outOfRange
+                }
             }
             if (index == 0) {
                 labTestDetails.add(
@@ -73,13 +82,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                         title1 = "Test name:",
                         testName = labTest.batteryType,
                         title2 = "Result:",
-                        outOfRange = if (labTest.testStatus.equals("Active", true) ||
-                            labTest.testStatus.equals("cancelled", true)
-                        ) {
-                            null
-                        } else {
-                            labTest.outOfRange
-                        },
+                        outOfRange = result,
                         title3 = "Test status:",
                         testStatus = testStatus,
                         viewType = ITEM_VIEW_TYPE_LAB_TEST
@@ -92,13 +95,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                         title1 = "Test name:",
                         testName = labTest.batteryType,
                         title2 = "Result:",
-                        outOfRange = if (labTest.testStatus.equals("Active", true) ||
-                            labTest.testStatus.equals("cancelled", true)
-                        ) {
-                            null
-                        } else {
-                            labTest.outOfRange
-                        },
+                        outOfRange = result,
                         title3 = "Test status:",
                         testStatus = testStatus,
                         viewType = ITEM_VIEW_TYPE_LAB_TEST
