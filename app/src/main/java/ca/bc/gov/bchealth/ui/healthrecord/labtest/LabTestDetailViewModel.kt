@@ -62,6 +62,20 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
             )
         )
         labOrderWithLabTestDto.labTests.forEachIndexed { index, labTest ->
+            var testStatus: Int?
+            var result: Boolean? = null
+            when {
+                labTest.testStatus.equals("Active", true) -> {
+                    testStatus = R.string.pending
+                }
+                labTest.testStatus.equals("cancelled", true) -> {
+                    testStatus = R.string.cancelled
+                }
+                else -> {
+                    testStatus = R.string.completed
+                    result = labTest.outOfRange
+                }
+            }
             if (index == 0) {
                 labTestDetails.add(
                     LabTestDetail(
@@ -71,15 +85,9 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                         title1 = R.string.test_name,
                         testName = labTest.batteryType,
                         title2 = R.string.result,
-                        outOfRange = if (labTest.testStatus.equals("partial", true) ||
-                            labTest.testStatus.equals("cancelled", true)
-                        ) {
-                            null
-                        } else {
-                            labTest.outOfRange
-                        },
+                        isOutOfRange = result,
                         title3 = R.string.lab_test_status,
-                        testStatus = labTest.testStatus,
+                        testStatus = testStatus,
                         viewType = ITEM_VIEW_TYPE_LAB_TEST
                     )
                 )
@@ -90,15 +98,9 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                         title1 = R.string.test_name,
                         testName = labTest.batteryType,
                         title2 = R.string.result,
-                        outOfRange = if (labTest.testStatus.equals("partial", true) ||
-                            labTest.testStatus.equals("cancelled", true)
-                        ) {
-                            null
-                        } else {
-                            labTest.outOfRange
-                        },
+                        isOutOfRange = result,
                         title3 = R.string.lab_test_status,
-                        testStatus = labTest.testStatus,
+                        testStatus = testStatus,
                         viewType = ITEM_VIEW_TYPE_LAB_TEST
                     )
                 )
@@ -165,7 +167,7 @@ data class LabTestDetail(
     val orderingProvider: String? = "N/A",
     val reportingSource: String? = "N/A",
     val testName: String? = "N/A",
-    val outOfRange: Boolean? = null,
-    val testStatus: String? = "N/A",
+    val isOutOfRange: Boolean? = null,
+    val testStatus: Int? = null,
     val viewType: Int = LabTestDetailViewModel.ITEM_VIEW_TYPE_LAB_ORDER
 )

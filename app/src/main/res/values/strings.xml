@@ -213,6 +213,8 @@
     <string name="collection_date">Collection date:</string>
     <string name="ordering_provider">Ordering provider:</string>
     <string name="reporting_lab">Reporting Lab:</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="completed">Completed</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>
