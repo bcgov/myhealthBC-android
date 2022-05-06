@@ -104,6 +104,8 @@
     <string name="find_phn_on_care_card_or_the_back_of_driver_s_license">Find PHN on care card or the back of driver’s license.</string>
     <string name="get_federal_travel_pass">Get Canadian COVID-19 proof</string>
     <string name="health_records">Health records</string>
+    <string name="health_records_subtitle">View your lab results, medication history and immunization records. Keep track of what’s important to you and your health.</string>
+    <string name="health_records_subtitle_1">Log in with your BC Services Card to access all health records. The BC Services Card app is a secure way to prove who you are.</string>
     <string name="health_passes">Proof of vaccination</string>
     <string name="home">Home</string>
     <string name="move">move</string>
@@ -215,6 +217,8 @@
     <string name="reporting_lab">Reporting Lab:</string>
     <string name="cancelled">Cancelled</string>
     <string name="completed">Completed</string>
+    <string name="fetching_records">Fetching records…</string>
+    <string name="loading">Loading…</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>

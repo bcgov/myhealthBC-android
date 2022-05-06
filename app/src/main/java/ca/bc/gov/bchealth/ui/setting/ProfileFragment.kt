@@ -16,6 +16,10 @@ import androidx.navigation.ui.setupWithNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentProfileBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
+import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
+import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
+import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
@@ -38,7 +42,15 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
         ActivityResultContracts.StartActivityForResult()
     ) { activityResult ->
         if (activityResult.resultCode == Activity.RESULT_OK) {
-            bcscAuthViewModel.processLogoutResponse()
+            bcscAuthViewModel.processLogoutResponse(requireContext())
+            if (findNavController().previousBackStackEntry?.destination?.id ==
+                R.id.individualHealthRecordFragment
+            ) {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
+                    NavigationAction.ACTION_RE_CHECK
+                )
+            }
         } else {
             AlertDialogHelper.showAlertDialog(
                 context = requireContext(),
@@ -53,6 +65,17 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
         super.onViewCreated(view, savedInstanceState)
 
         checkLogin()
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
+            BcscAuthFragment.BCSC_AUTH_STATUS
+        )?.observe(viewLifecycleOwner) {
+            if (it == BcscAuthState.SUCCESS) {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
+                    NavigationAction.ACTION_RE_CHECK
+                )
+            }
+        }
     }
 
     private fun initClickListeners() {

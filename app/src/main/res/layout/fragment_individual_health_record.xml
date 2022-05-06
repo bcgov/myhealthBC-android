@@ -7,14 +7,14 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:fitsSystemWindows="true"
         tools:context=".ui.healthrecord.individual.IndividualHealthRecordFragment"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
@@ -29,7 +29,7 @@
                 android:id="@+id/collapsing_toolbar"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
                 android:fitsSystemWindows="true"
-                app:toolbarId="@+id/top_app_bar"
+                app:toolbarId="@+id/top_app_bar_1"
                 app:collapsedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Collapsed"
                 app:expandedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Expanded">
 
@@ -51,60 +51,13 @@
             layout="@layout/content_scrolling"
             android:id="@+id/content" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:layout_gravity="center" />
+        <include
+            layout="@layout/empty_view"
+            android:id="@+id/emptyView"/>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/empty_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/img_no_records"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_no_record"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ContentDescription" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_no_record"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="?textAppearanceHeadline2"
-                android:textSize="20sp"
-                android:textColor="@color/blue"
-                android:layout_marginTop="@dimen/space_4_x"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/img_no_records"
-                android:text="@string/no_records_found" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_clear_filter_msg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="?textAppearanceBody2"
-                android:textSize="13sp"
-                android:textColor="@color/grey"
-                android:layout_marginTop="@dimen/space_1_x"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_no_record"
-                android:text="@string/clear_all_filters_and_start_over" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <include
+            layout="@layout/loader_view"
+            android:id="@+id/loaderView"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

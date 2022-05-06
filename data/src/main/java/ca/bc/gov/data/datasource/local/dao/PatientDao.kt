@@ -85,10 +85,7 @@ interface PatientDao {
     suspend fun deletePatientById(patientId: Long): Int
 
     @Transaction
-    @Query(
-        "DELETE FROM patient WHERE id = " +
-            "(SELECT id FROM patient WHERE authentication_status = 'AUTHENTICATED')"
-    )
+    @Query("DELETE FROM patient WHERE id = (SELECT id FROM patient WHERE authentication_status = 'AUTHENTICATED')")
     suspend fun deleteAuthenticatedPatient()
 
     @Query("SELECT count(*) FROM patient WHERE id = :patientId AND authentication_status = 'AUTHENTICATED'")

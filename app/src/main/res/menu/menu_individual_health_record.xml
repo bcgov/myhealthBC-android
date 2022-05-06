@@ -9,12 +9,6 @@
         android:icon="@drawable/ic_settings"/>
 
     <item
-        android:id="@+id/menu_add"
-        android:title="@string/add_health_record"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_add_card_blue_small"/>
-
-    <item
         android:id="@+id/menu_filter"
         android:title="@string/filter"
         app:showAsAction="always"

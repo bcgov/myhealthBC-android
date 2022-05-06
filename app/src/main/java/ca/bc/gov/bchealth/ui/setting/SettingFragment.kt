@@ -41,7 +41,7 @@ class SettingFragment : BaseFragment(R.layout.fragment_setting) {
         ActivityResultContracts.StartActivityForResult()
     ) { activityResult ->
         if (activityResult.resultCode == Activity.RESULT_OK) {
-            bcscAuthViewModel.processLogoutResponse()
+            bcscAuthViewModel.processLogoutResponse(requireContext())
             deleteAllRecordsAndSavedData()
         } else {
             deleteAllRecordsAndSavedData()
