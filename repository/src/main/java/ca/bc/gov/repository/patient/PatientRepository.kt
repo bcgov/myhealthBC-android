@@ -4,9 +4,7 @@ import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
-import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
-import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
@@ -16,7 +14,6 @@ import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.PatientOrderUpdate
 import ca.bc.gov.repository.QrCodeGeneratorRepository
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -43,18 +40,6 @@ class PatientRepository @Inject constructor(
             }
         }
 
-    suspend fun getPatientHealthRecordCount(): List<PatientWithHealthRecordCount> {
-        return patientLocalDataSource.getPatientWithRecordCount().filter { patientHealthRecords ->
-            (
-                patientHealthRecords.vaccineRecordCount +
-                    patientHealthRecords.testResultCount +
-                    patientHealthRecords.medicationRecordCount +
-                    patientHealthRecords.labTestCount +
-                    patientHealthRecords.covidTestCount
-                ) > 0
-        }
-    }
-
     suspend fun getBcscDataRecordCount(): Int {
         return patientLocalDataSource.getBcscSourceHealthRecordCount()
     }
@@ -72,9 +57,6 @@ class PatientRepository @Inject constructor(
             }
         )
     }
-
-    suspend fun getPatientList(): Flow<PatientListDto> =
-        patientLocalDataSource.getPatientList()
 
     suspend fun getPatientWithVaccineAndDoses(patientId: Long): PatientWithVaccineAndDosesDto =
         patientLocalDataSource.getPatientWithVaccineAndDoses(patientId) ?: throw MyHealthException(
@@ -116,9 +98,6 @@ class PatientRepository @Inject constructor(
 
     suspend fun insertAuthenticatedPatient(patientDto: PatientDto): Long =
         patientLocalDataSource.insertAuthenticatedPatient(patientDto)
-
-    suspend fun isAuthenticatedPatient(patientId: Long): Boolean =
-        patientLocalDataSource.isAuthenticatedPatient(patientId)
 
     suspend fun findPatientByAuthStatus(authenticationStatus: AuthenticationStatus): PatientDto =
         patientLocalDataSource.findPatientByAuthStatus(authenticationStatus)

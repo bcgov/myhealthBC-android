@@ -175,34 +175,30 @@ class BcscAuthViewModel @Inject constructor(
     * Check BCSC login
     * */
     fun checkSession() = viewModelScope.launch {
+        _authStatus.update {
+            it.copy(
+                showLoading = true
+            )
+        }
+        val isLoggedSuccess = bcscAuthRepo.checkSession()
+        var userName: String? = null
         try {
-            _authStatus.update {
-                it.copy(
-                    showLoading = true
-                )
-            }
-            val isLoggedSuccess = bcscAuthRepo.checkSession()
-            val userName =
+            userName =
                 patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).fullName
-            val loginSessionStatus = if (isLoggedSuccess) {
-                LoginStatus.ACTIVE
-            } else {
-                LoginStatus.EXPIRED
-            }
-            _authStatus.update {
-                it.copy(
-                    showLoading = false,
-                    userName = userName,
-                    loginStatus = loginSessionStatus
-                )
-            }
         } catch (e: Exception) {
-            _authStatus.update {
-                it.copy(
-                    showLoading = false,
-                    loginStatus = LoginStatus.EXPIRED
-                )
-            }
+            // no implementation required.
+        }
+        val loginSessionStatus = if (isLoggedSuccess) {
+            LoginStatus.ACTIVE
+        } else {
+            LoginStatus.EXPIRED
+        }
+        _authStatus.update {
+            it.copy(
+                showLoading = false,
+                userName = userName,
+                loginStatus = loginSessionStatus
+            )
         }
     }
 
@@ -213,7 +209,7 @@ class BcscAuthViewModel @Inject constructor(
                 authRequestIntent = null,
                 endSessionIntent = null,
                 isError = false,
-                userName = "",
+                userName = null,
                 queItTokenUpdated = false,
                 loginStatus = null,
                 ageLimitCheck = null,
@@ -411,7 +407,7 @@ data class AuthStatus(
     val authRequestIntent: Intent? = null,
     val endSessionIntent: Intent? = null,
     val isError: Boolean = false,
-    val userName: String = "",
+    val userName: String? = null,
     val queItTokenUpdated: Boolean = false,
     val onMustBeQueued: Boolean = false,
     val queItUrl: String? = null,

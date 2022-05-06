@@ -21,10 +21,8 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
-import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
 import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
-import ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment
 import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterUiState
 import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterViewModel
 import ca.bc.gov.bchealth.ui.healthrecord.filter.TimelineTypeFilter
@@ -70,7 +68,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var loginStatus: LoginStatus? = null
     private val filterSharedViewModel: FilterViewModel by activityViewModels()
-    private var isSettingAndAddOptionAvailable = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,10 +106,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
         observeHealthRecordsSyncCompletion()
 
-        observeVaccineRecordAddition()
-
-        observeCovidTestRecordAddition()
-
         clearFilterClickListener()
 
         observeFilterState()
@@ -123,18 +116,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             val names = args.patientName.split(" ")
             val firstName = if (names.isNotEmpty()) names.first() else ""
             binding.topAppBar.title = firstName
-            if (findNavController().previousBackStackEntry?.destination?.id ==
-                R.id.healthRecordsFragment
-            ) {
-                with(binding.topAppBar) {
-                    setNavigationIcon(R.drawable.ic_toolbar_back)
-                    setNavigationOnClickListener {
-                        findNavController().popBackStack()
-                    }
-                }
-            } else {
-                isSettingAndAddOptionAvailable = true
-            }
         }
     }
 
@@ -142,11 +123,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         with(binding.topAppBar) {
             if (willNotDraw()) {
                 setWillNotDraw(false)
-                if (isSettingAndAddOptionAvailable) {
-                    inflateMenu(R.menu.menu_individual_health_record)
-                } else {
-                    inflateMenu(R.menu.menu_individual_health_filter)
-                }
+                inflateMenu(R.menu.menu_individual_health_record)
                 setOnMenuItemClickListener { menu ->
                     when (menu.itemId) {
                         R.id.menu_filter -> {
@@ -169,11 +146,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         with(binding.topAppBar) {
             if (willNotDraw()) {
                 setWillNotDraw(false)
-                if (isSettingAndAddOptionAvailable) {
-                    inflateMenu(R.menu.menu_individual_health_record_non_bcsc)
-                } else {
-                    inflateMenu(R.menu.menu_individual_health_edit)
-                }
+                inflateMenu(R.menu.menu_individual_health_record_non_bcsc)
                 setOnMenuItemClickListener { menu ->
                     when (menu.itemId) {
                         R.id.menu_edit -> {
@@ -278,7 +251,10 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             when (it) {
                 BcscAuthState.SUCCESS -> {
                     findNavController().previousBackStackEntry?.savedStateHandle
-                        ?.set(FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS, 1L)
+                        ?.set(
+                            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
+                            NavigationAction.ACTION_RE_CHECK
+                        )
                     findNavController().popBackStack()
                 }
                 else -> {
@@ -662,47 +638,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             viewLifecycleOwner
         ) { _, result ->
             viewModel.medicationRecordsUpdated(result.get(KEY_MEDICATION_RECORD_UPDATED) as Boolean)
-        }
-    }
-
-    private fun observeCovidTestRecordAddition() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
-            FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS
-        )
-            ?.observe(
-                viewLifecycleOwner
-            ) { recordId ->
-                findNavController().currentBackStackEntry?.savedStateHandle?.remove<Long>(
-                    FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS
-                )
-                if (recordId > 0) {
-                    findNavController().previousBackStackEntry?.savedStateHandle
-                        ?.set(
-                            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
-                            NavigationAction.ACTION_RE_CHECK
-                        )
-                    findNavController().popBackStack()
-                }
-            }
-    }
-
-    private fun observeVaccineRecordAddition() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
-            FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
-        )?.observe(
-            viewLifecycleOwner
-        ) {
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<Long>(
-                FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
-            )
-            if (it > 0) {
-                findNavController().previousBackStackEntry?.savedStateHandle
-                    ?.set(
-                        HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
-                        NavigationAction.ACTION_RE_CHECK
-                    )
-                findNavController().popBackStack()
-            }
         }
     }
 

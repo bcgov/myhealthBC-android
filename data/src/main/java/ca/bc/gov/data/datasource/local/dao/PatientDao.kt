@@ -61,65 +61,6 @@ interface PatientDao {
 
     @Transaction
     @Query(
-        """
-        SELECT *
-        FROM patient P
-        GROUP BY P.id ORDER BY P.authentication_status
-    """
-    )
-    suspend fun getPatientInOrderedFlow(): List<PatientEntity>
-
-    @Transaction
-    @Query(
-        """SELECT COUNT(DISTINCT V.id) FROM patient P
-            LEFT JOIN vaccine_record V
-            ON V.patient_id = P.id
-            WHERE P.id = :patientId """
-    )
-    suspend fun getPatientsVaccineCount(patientId: Long): Int
-
-    @Transaction
-    @Query(
-        """SELECT COUNT(DISTINCT T.id)
-            FROM patient P
-            LEFT JOIN test_result T
-            ON T.patient_id = P.id
-            WHERE P.id = :patientId """
-    )
-    suspend fun getPatientsTestResultCount(patientId: Long): Int
-
-    @Transaction
-    @Query(
-        """SELECT COUNT(DISTINCT V.id)
-            FROM patient P
-            LEFT JOIN lab_order V
-            ON V.patient_id = P.id
-            WHERE P.id = :patientId """
-    )
-    suspend fun getPatientsLabOrderCount(patientId: Long): Int
-
-    @Transaction
-    @Query(
-        """SELECT COUNT(DISTINCT V.id)
-            FROM patient P
-            LEFT JOIN covid_order V
-            ON V.patient_id = P.id
-            WHERE P.id = :patientId """
-    )
-    suspend fun getPatientsCovidOrderCount(patientId: Long): Int
-
-    @Transaction
-    @Query(
-        """SELECT COUNT(DISTINCT V.id)
-            FROM patient P
-            LEFT JOIN medication_record V
-            ON V.patient_id = P.id
-            WHERE P.id = :patientId """
-    )
-    suspend fun getPatientsMedicationCount(patientId: Long): Int
-
-    @Transaction
-    @Query(
         "SELECT" +
             " (SELECT COUNT(*) FROM test_result WHERE data_source = 'BCSC') +" +
             " (SELECT COUNT(*) FROM vaccine_record WHERE data_source = 'BCSC') +" +
