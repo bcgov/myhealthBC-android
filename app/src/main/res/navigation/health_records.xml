@@ -6,19 +6,6 @@
     app:startDestination="@id/healthRecordPlaceholderFragment">
 
     <fragment
-        android:id="@+id/healthRecordsFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.HealthRecordsFragment"
-        android:label="HealthRecordsFragment"
-        tools:layout="@layout/fragment_health_records">
-        <action
-            android:id="@+id/action_healthRecordsFragment_to_individualHealthRecordFragment"
-            app:destination="@id/individualHealthRecordFragment" />
-        <action
-            android:id="@+id/action_healthRecordsFragment_to_addHealthRecordFragment"
-            app:destination="@id/addHealthRecordsFragment" />
-    </fragment>
-
-    <fragment
         android:id="@+id/addHealthRecordsFragment"
         tools:layout="@layout/scene_health_records_add"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.add.AddHealthRecordsFragment"

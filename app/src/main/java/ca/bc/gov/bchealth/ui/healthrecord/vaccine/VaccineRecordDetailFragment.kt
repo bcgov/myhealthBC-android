@@ -100,7 +100,7 @@ class VaccineRecordDetailFragment : BaseFragment(R.layout.fragment_vaccine_recor
                             vaccineRecordId = it
                         }
 
-                        menuInflated.getItem(R.id.menu_delete).isVisible =
+                        menuInflated.getItem(0).isVisible =
                             (
                                 patientAndVaccineRecord.patient.authenticationStatus
                                     != AuthenticationStatus.AUTHENTICATED

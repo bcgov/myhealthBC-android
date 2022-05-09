@@ -9,10 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.databinding.HealthRecordPlaceholderFragmentBinding
-import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment
-import ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment
-import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -28,7 +24,6 @@ class HealthRecordPlaceholderFragment : Fragment(R.layout.health_record_placehol
 
     private val viewModel: HealthRecordPlaceholderViewModel by viewModels()
     private var isHealthRecordsFlowActive = false
-    private val binding by viewBindings(HealthRecordPlaceholderFragmentBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,41 +32,7 @@ class HealthRecordPlaceholderFragment : Fragment(R.layout.health_record_placehol
             isHealthRecordsFlowActive = true
             collectHealthRecordsFlow()
         }
-
-        observeVaccineRecordAddition()
-        observeCovidTestRecordAddition()
         observeNavigationFlow()
-    }
-
-    private fun observeCovidTestRecordAddition() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
-            FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS
-        )
-            ?.observe(
-                viewLifecycleOwner
-            ) { recordId ->
-                findNavController().currentBackStackEntry?.savedStateHandle?.remove<Long>(
-                    FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS
-                )
-                if (recordId > 0) {
-                    collectHealthRecordsFlow()
-                }
-            }
-    }
-
-    private fun observeVaccineRecordAddition() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
-            FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
-        )?.observe(
-            viewLifecycleOwner
-        ) {
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<Long>(
-                FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
-            )
-            if (it > 0) {
-                collectHealthRecordsFlow()
-            }
-        }
     }
 
     private fun observeNavigationFlow() {
@@ -98,29 +59,29 @@ class HealthRecordPlaceholderFragment : Fragment(R.layout.health_record_placehol
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.uiState.collect { uiState ->
-                    uiState.patientsAndHealthRecordCounts?.let { navigate(it) }
+                    navigate(uiState)
                 }
             }
         }
-        viewModel.getPatientsAndHealthRecordCounts()
+        viewModel.getBcscAuthPatient()
     }
 
-    private fun navigate(records: List<PatientHealthRecord>) {
-        if (records.isNotEmpty()) {
-            if (records.size == 1) {
-                val action =
-                    HealthRecordPlaceholderFragmentDirections
-                        .actionHealthRecordsPlaceHolderFragmentToIndividualHealthRecordFragment(
-                            records.first().patientId,
-                            records.first().name,
-                            records.first().authStatus.name
-                        )
-                findNavController().navigate(action)
+    private fun navigate(uiState: PatientRecordsState) {
+        if (uiState.isBcscAuthenticatedPatientAvailable != null) {
+            if (uiState.isBcscAuthenticatedPatientAvailable == BcscAuthPatientAvailability.AVAILABLE) {
+                if (uiState.bcscAuthenticatedPatientDto != null) {
+                    val action =
+                        HealthRecordPlaceholderFragmentDirections
+                            .actionHealthRecordsPlaceHolderFragmentToIndividualHealthRecordFragment(
+                                uiState.bcscAuthenticatedPatientDto.id,
+                                uiState.bcscAuthenticatedPatientDto.fullName,
+                                uiState.bcscAuthenticatedPatientDto.authenticationStatus.name
+                            )
+                    findNavController().navigate(action)
+                }
             } else {
-                findNavController().navigate(R.id.healthRecordsFragment)
+                findNavController().navigate(R.id.addHealthRecordsFragment)
             }
-        } else {
-            findNavController().navigate(R.id.addHealthRecordsFragment)
         }
     }
 
