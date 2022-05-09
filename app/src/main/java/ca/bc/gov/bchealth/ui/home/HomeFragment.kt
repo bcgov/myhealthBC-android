@@ -16,7 +16,10 @@ import ca.bc.gov.bchealth.databinding.FragmentHomeBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.auth.BioMetricState
 import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment
+import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
+import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
+import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -69,6 +72,22 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
             }
         }
 
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
+            BcscAuthFragment.BCSC_AUTH_STATUS
+        )?.observe(viewLifecycleOwner) {
+            findNavController().currentBackStackEntry?.savedStateHandle?.remove<BcscAuthState>(
+                BcscAuthFragment.BCSC_AUTH_STATUS
+            )
+            when (it) {
+                BcscAuthState.SUCCESS -> {
+                    findNavController().navigate(R.id.action_homeFragment_to_health_records)
+                }
+                else -> {
+                    // no implementation required
+                }
+            }
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
@@ -112,7 +131,11 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                 homeAdapter = HomeAdapter {
                     when (it) {
                         HomeNavigationType.HEALTH_RECORD -> {
-                            findNavController().navigate(R.id.action_homeFragment_to_health_records)
+                            if (bcscAuthViewModel.authStatus.value.loginStatus != null && bcscAuthViewModel.authStatus.value.loginStatus == LoginStatus.ACTIVE) {
+                                findNavController().navigate(R.id.action_homeFragment_to_health_records)
+                            } else {
+                                findNavController().navigate(R.id.bcscAuthInfoFragment)
+                            }
                         }
                         HomeNavigationType.VACCINE_PROOF -> {
                             findNavController().navigate(R.id.action_homeFragment_to_health_pass)
