@@ -20,6 +20,7 @@ abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentL
         setOf(
             R.id.homeFragment,
             R.id.healthPassFragment,
+            R.id.individualHealthRecordFragment,
             R.id.resourcesFragment
         ),
         null

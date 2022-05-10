@@ -50,7 +50,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
         ActivityResultContracts.StartActivityForResult()
     ) { activityResult ->
         if (activityResult.resultCode == Activity.RESULT_OK) {
-            viewModel.processLogoutResponse()
+            viewModel.processLogoutResponse(requireContext())
         } else {
             AlertDialogHelper.showAlertDialog(
                 context = requireContext(),

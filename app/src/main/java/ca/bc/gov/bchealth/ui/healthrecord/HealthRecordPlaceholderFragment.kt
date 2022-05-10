@@ -8,13 +8,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 /*
 * HealthRecordPlaceholderFragment will act like placeholder fragment.
-* It will launch IndividualHealthRecordFragment or healthRecordsFragment or addHealthRecordsFragment
+* It will launch IndividualHealthRecordFragment or addHealthRecordsFragment
 * based on number of patients.
 * observeNavigationFlow() will decide whether to recheck the above flow or just navigate back.
 * observeNavigationFlow() is required as user will never stay on this fragment.
@@ -68,21 +71,17 @@ class HealthRecordPlaceholderFragment : Fragment(R.layout.health_record_placehol
 
     private fun navigate(uiState: PatientRecordsState) {
         if (uiState.isBcscAuthenticatedPatientAvailable != null) {
-            if (uiState.isBcscAuthenticatedPatientAvailable == BcscAuthPatientAvailability.AVAILABLE) {
-                if (uiState.bcscAuthenticatedPatientDto != null) {
-                    val action =
-                        HealthRecordPlaceholderFragmentDirections
-                            .actionHealthRecordsPlaceHolderFragmentToIndividualHealthRecordFragment(
-                                uiState.bcscAuthenticatedPatientDto.id,
-                                uiState.bcscAuthenticatedPatientDto.fullName,
-                                uiState.bcscAuthenticatedPatientDto.authenticationStatus.name
-                            )
-                    findNavController().navigate(action)
-                }
+            if (uiState.isBcscAuthenticatedPatientAvailable == BcscAuthPatientAvailability.AVAILABLE ||
+                WorkManager.getInstance(requireContext())
+                    .getWorkInfosForUniqueWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME)
+                    .get()[0].state == WorkInfo.State.RUNNING
+            ) {
+                findNavController().navigate(R.id.individualHealthRecordFragment)
             } else {
                 findNavController().navigate(R.id.addHealthRecordsFragment)
             }
         }
+        viewModel.resetUiState()
     }
 
     companion object {

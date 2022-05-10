@@ -1,8 +1,10 @@
 package ca.bc.gov.bchealth.ui.login
 
+import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkManager
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
@@ -11,6 +13,7 @@ import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.ProfileRepository
 import ca.bc.gov.repository.QueueItTokenRepository
+import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.patient.PatientRepository
@@ -160,7 +163,8 @@ class BcscAuthViewModel @Inject constructor(
         }
     }
 
-    fun processLogoutResponse() = viewModelScope.launch {
+    fun processLogoutResponse(context: Context) = viewModelScope.launch {
+        WorkManager.getInstance(context).cancelUniqueWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME)
         bcscAuthRepo.processLogoutResponse()
         _authStatus.update {
             it.copy(
