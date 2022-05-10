@@ -74,17 +74,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
                     }
                     is MyHealthException -> {
                         when (e.errCode) {
-                            SERVER_ERROR_DATA_MISMATCH -> {
-                                _uiState.tryEmit(
-                                    FetchVaccineRecordUiState(
-                                        errorData = ErrorData(
-                                            R.string.error_data_mismatch_title,
-                                            R.string.error_vaccine_data_mismatch_message
-                                        )
-                                    )
-                                )
-                            }
-                            SERVER_ERROR_INCORRECT_PHN -> {
+                            SERVER_ERROR_DATA_MISMATCH, SERVER_ERROR_INCORRECT_PHN -> {
                                 _uiState.tryEmit(
                                     FetchVaccineRecordUiState(
                                         errorData = ErrorData(
