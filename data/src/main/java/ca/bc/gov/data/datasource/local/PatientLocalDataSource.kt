@@ -4,7 +4,6 @@ import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
-import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
@@ -33,19 +32,6 @@ class PatientLocalDataSource @Inject constructor(
                 patient.toDto()
             }
         }
-
-    suspend fun getPatientWithRecordCount(): List<PatientWithHealthRecordCount> {
-        return patientDao.getPatientInOrderedFlow().map { patientEntity ->
-            PatientWithHealthRecordCount(
-                patientEntity.toDto(),
-                vaccineRecordCount = patientDao.getPatientsVaccineCount(patientEntity.id),
-                testResultCount = patientDao.getPatientsTestResultCount(patientEntity.id),
-                labTestCount = patientDao.getPatientsLabOrderCount(patientEntity.id),
-                covidTestCount = patientDao.getPatientsCovidOrderCount(patientEntity.id),
-                medicationRecordCount = patientDao.getPatientsMedicationCount(patientEntity.id),
-            )
-        }
-    }
 
     suspend fun getBcscSourceHealthRecordCount(): Int {
         return patientDao.getBcscSourceHealthRecordCount()

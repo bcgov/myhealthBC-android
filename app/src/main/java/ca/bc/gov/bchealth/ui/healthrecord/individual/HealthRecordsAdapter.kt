@@ -1,13 +1,10 @@
 package ca.bc.gov.bchealth.ui.healthrecord.individual
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
 import ca.bc.gov.common.utils.toDate
 
@@ -15,24 +12,12 @@ import ca.bc.gov.common.utils.toDate
  * @author Pinakin Kansara
  */
 class HealthRecordsAdapter(
-    private val itemClickListener: ItemClickListener,
-    private val itemDeleteListener: ItemDeleteListener,
-    private val itemUpdateListener: ItemUpdateListener,
-    var canDeleteRecord: Boolean = false,
-    var isUpdateRequested: Boolean
+    private val itemClickListener: ItemClickListener
 ) :
     ListAdapter<HealthRecordItem, HealthRecordsAdapter.ViewHolder>(HealthRecordDiffCallBacks()) {
 
     fun interface ItemClickListener {
         fun onItemClick(record: HealthRecordItem)
-    }
-
-    fun interface ItemDeleteListener {
-        fun onDeleteClick(record: HealthRecordItem)
-    }
-
-    fun interface ItemUpdateListener {
-        fun onUpdateRequested(record: HealthRecordItem)
     }
 
     class ViewHolder(val binding: ItemHealthRecordsAbstractBinding) :
@@ -54,33 +39,9 @@ class HealthRecordsAdapter(
         when (record.healthRecordType) {
             HealthRecordType.VACCINE_RECORD -> {
                 description = record.date.toDate()
-                holder.binding.ivUnlink.isVisible = canDeleteRecord
-                holder.binding.ivRightArrow.isVisible = !canDeleteRecord
-                holder.binding.ivUnlink.setOnClickListener {
-                    itemDeleteListener.onDeleteClick(record)
-                }
             }
             HealthRecordType.COVID_TEST_RECORD -> {
                 description = "${record.testOutcome} • ${record.date.toDate()}"
-                holder.binding.ivUnlink.isVisible = canDeleteRecord
-                holder.binding.ivRightArrow.isVisible = !canDeleteRecord
-                holder.binding.ivUnlink.setOnClickListener {
-                    itemDeleteListener.onDeleteClick(record)
-                }
-                /*
-                * Retry fetching the covid test result for pending record
-                * */
-                if (record.testOutcome == holder.itemView.resources.getString(R.string.pending) &&
-                    isUpdateRequested
-                ) {
-                    holder.binding.progressBar.visibility = View.VISIBLE
-                    holder.binding.ivRightArrow.visibility = View.INVISIBLE
-                    itemUpdateListener.onUpdateRequested(record)
-                    isUpdateRequested = false
-                } else {
-                    holder.binding.progressBar.visibility = View.INVISIBLE
-                    holder.binding.ivRightArrow.visibility = if (canDeleteRecord) View.GONE else View.VISIBLE
-                }
             }
             HealthRecordType.MEDICATION_RECORD -> {
                 description = "${record.description} • ${record.date.toDate()}"

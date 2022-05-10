@@ -3,44 +3,28 @@ package ca.bc.gov.bchealth.ui.healthrecord.add
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentAddHealthRecordsBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
-import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordOptionAdapter
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
 import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
-import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
-import ca.bc.gov.bchealth.ui.login.LoginStatus
-import ca.bc.gov.bchealth.utils.hide
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 /**
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
 class AddHealthRecordsFragment : BaseFragment(R.layout.fragment_add_health_records) {
+
     private val binding by viewBindings(FragmentAddHealthRecordsBinding::bind)
-    private lateinit var optionsAdapter: HealthRecordOptionAdapter
-    private val viewModel: AddHealthRecordsOptionsViewModel by viewModels()
-    private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private val args: AddHealthRecordsFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,38 +47,6 @@ class AddHealthRecordsFragment : BaseFragment(R.layout.fragment_add_health_recor
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (args.isBackButtonEnabled) {
-            binding.tvHealthRecordTitle.hide()
-        }
-
-        observeBcscLogin()
-
-        bcscAuthViewModel.checkSession()
-
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
-            FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS
-        )?.observe(
-            viewLifecycleOwner
-        ) { recordId ->
-            if (recordId > 0) {
-                findNavController().previousBackStackEntry?.savedStateHandle
-                    ?.set(FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS, recordId)
-                findNavController().popBackStack()
-            }
-        }
-
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Long>(
-            FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS
-        )?.observe(
-            viewLifecycleOwner
-        ) {
-            if (it > 0) {
-                findNavController().previousBackStackEntry?.savedStateHandle
-                    ?.set(FetchVaccineRecordFragment.VACCINE_RECORD_ADDED_SUCCESS, it)
-                findNavController().popBackStack()
-            }
-        }
-
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
             BcscAuthFragment.BCSC_AUTH_STATUS
         )?.observe(viewLifecycleOwner) {
@@ -104,7 +56,10 @@ class AddHealthRecordsFragment : BaseFragment(R.layout.fragment_add_health_recor
                 when (it) {
                     BcscAuthState.SUCCESS -> {
                         findNavController().previousBackStackEntry?.savedStateHandle
-                            ?.set(FetchTestRecordFragment.TEST_RECORD_ADDED_SUCCESS, 1L)
+                            ?.set(
+                                HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
+                                NavigationAction.ACTION_RE_CHECK
+                            )
                         findNavController().popBackStack()
                     }
                     BcscAuthState.NOT_NOW,
@@ -115,71 +70,55 @@ class AddHealthRecordsFragment : BaseFragment(R.layout.fragment_add_health_recor
             }
         }
 
-        optionsAdapter = HealthRecordOptionAdapter {
-            when (it) {
-                OptionType.VACCINE -> {
-                    sharedViewModel.destinationId = R.id.fetchVaccineRecordFragment
-                    findNavController().navigate(sharedViewModel.destinationId)
-                }
-                OptionType.TEST -> {
-                    sharedViewModel.destinationId = R.id.fetchTestRecordFragment
-                    findNavController().navigate(sharedViewModel.destinationId)
-                }
-                OptionType.LOGIN -> {
-                    sharedViewModel.destinationId = 0
-                    findNavController().navigate(R.id.bcscAuthInfoFragment)
-                }
-            }
+        binding.btnLogin.setOnClickListener {
+            sharedViewModel.destinationId = 0
+            findNavController().navigate(R.id.bcscAuthInfoFragment)
         }
-        binding.rvMembers.adapter = optionsAdapter
-        binding.rvMembers.layoutManager = LinearLayoutManager(requireContext())
-    }
 
-    private fun observeBcscLogin() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                bcscAuthViewModel.authStatus.collect {
-
-                    binding.progressBar.isVisible = it.showLoading
-
-                    if (it.showLoading) {
-                        return@collect
-                    } else {
-                        if (it.loginStatus == LoginStatus.EXPIRED) {
-                            val list = emptyList<HealthRecordOption>().toMutableList()
-                            list.addAll(viewModel.getLoginOption())
-                            list.addAll(viewModel.getHealthRecordOption())
-                            optionsAdapter.submitList(list)
-                        } else {
-                            optionsAdapter.submitList(viewModel.getHealthRecordOption())
-                        }
-                    }
-                }
-            }
-        }
+        observeNavigationFlow()
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
         with(binding.layoutToolbar.topAppBar) {
-            if (args.isBackButtonEnabled) {
-                setNavigationOnClickListener {
-                    findNavController().popBackStack()
-                }
-                setNavigationIcon(R.drawable.ic_toolbar_back)
-                title = getString(R.string.add_health_record)
-            } else {
-                with(binding.layoutToolbar.appbar) {
-                    stateListAnimator = null
-                    elevation = 0f
-                }
-                inflateMenu(R.menu.settings_menu)
-                setOnMenuItemClickListener { menu ->
-                    when (menu.itemId) {
-                        R.id.menu_settings -> {
-                            findNavController().navigate(R.id.profileFragment)
-                        }
+            with(binding.layoutToolbar.appbar) {
+                stateListAnimator = null
+                elevation = 0f
+            }
+            inflateMenu(R.menu.settings_menu)
+            setOnMenuItemClickListener { menu ->
+                when (menu.itemId) {
+                    R.id.menu_settings -> {
+                        findNavController().navigate(R.id.profileFragment)
                     }
-                    return@setOnMenuItemClickListener true
+                }
+                return@setOnMenuItemClickListener true
+            }
+        }
+    }
+
+    private fun observeNavigationFlow() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<NavigationAction>(
+            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION
+        )?.observe(viewLifecycleOwner) {
+            findNavController().currentBackStackEntry?.savedStateHandle?.remove<NavigationAction>(
+                HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION
+            )
+            it?.let {
+                when (it) {
+                    NavigationAction.ACTION_BACK -> {
+                        findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
+                            NavigationAction.ACTION_BACK
+                        )
+                        findNavController().popBackStack()
+                    }
+                    NavigationAction.ACTION_RE_CHECK -> {
+                        findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
+                            NavigationAction.ACTION_RE_CHECK
+                        )
+                        findNavController().popBackStack()
+                    }
                 }
             }
         }

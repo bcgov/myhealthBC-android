@@ -38,7 +38,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         ActivityResultContracts.StartActivityForResult()
     ) { activityResult ->
         if (activityResult.resultCode == Activity.RESULT_OK) {
-            bcscAuthViewModel.processLogoutResponse().invokeOnCompletion {
+            bcscAuthViewModel.processLogoutResponse(requireContext()).invokeOnCompletion {
                 initRecyclerview()
             }
         } else {

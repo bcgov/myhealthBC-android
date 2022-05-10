@@ -14,7 +14,7 @@ class HiddenMedicationRecordAdapter(private val accessClickListener: ItemClickLi
     ) {
 
     fun interface ItemClickListener {
-        fun onItemClick()
+        fun onItemClick(patientId: Long)
     }
 
     class HiddenMedicationRecordViewHolder(val binding: ItemHiddenMedicationRecordsBinding) :
@@ -38,7 +38,7 @@ class HiddenMedicationRecordAdapter(private val accessClickListener: ItemClickLi
         holder.binding.tvTitle.text = record.title
         holder.binding.tvDesc.text = record.desc
         holder.binding.btnAccess.setOnClickListener {
-            accessClickListener.onItemClick()
+            accessClickListener.onItemClick(record.patientId)
         }
     }
 }

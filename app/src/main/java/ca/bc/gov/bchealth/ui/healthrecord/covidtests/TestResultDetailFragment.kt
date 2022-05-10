@@ -70,7 +70,7 @@ class TestResultDetailFragment : BaseFragment(R.layout.fragment_test_result_deta
 
     private fun initUi(testRecords: List<TestRecordDto>, patientDto: PatientDto) {
 
-        menuInflated.getItem(R.id.menu_delete).isVisible =
+        menuInflated.getItem(0).isVisible =
             patientDto.authenticationStatus != AuthenticationStatus.AUTHENTICATED
         val covidTestResultsAdapter = CovidTestResultsAdapter(
             this,

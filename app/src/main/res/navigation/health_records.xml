@@ -6,50 +6,16 @@
     app:startDestination="@id/healthRecordPlaceholderFragment">
 
     <fragment
-        android:id="@+id/healthRecordsFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.HealthRecordsFragment"
-        android:label="HealthRecordsFragment"
-        tools:layout="@layout/fragment_health_records">
-        <action
-            android:id="@+id/action_healthRecordsFragment_to_individualHealthRecordFragment"
-            app:destination="@id/individualHealthRecordFragment" />
-        <action
-            android:id="@+id/action_healthRecordsFragment_to_addHealthRecordFragment"
-            app:destination="@id/addHealthRecordsFragment" />
-    </fragment>
-
-    <fragment
         android:id="@+id/addHealthRecordsFragment"
         tools:layout="@layout/scene_health_records_add"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.add.AddHealthRecordsFragment"
-        android:label="AddHealthRecordsFragment">
-        <argument
-            android:name="isBackButtonEnabled"
-            app:argType="boolean"
-            android:defaultValue="false" />
-    </fragment>
+        android:label="AddHealthRecordsFragment" />
     <fragment
         android:id="@+id/individualHealthRecordFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.IndividualHealthRecordFragment"
-        android:label="IndividualHealthRecordFragment"
-        tools:layout="@layout/fragment_individual_health_record">
-
-        <argument
-            android:name="patient_id"
-            app:argType="long" />
-
-        <argument
-            android:name="patient_name"
-            app:argType="string" />
-
-        <argument
-            android:name="authStatus"
-            app:argType="string" />
-
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.IndividualHealthRecordFragment">
         <action
             android:id="@+id/action_individualHealthRecordFragment_to_testResultDetailFragment"
             app:destination="@id/testResultDetailFragment" />
-
         <action
             android:id="@+id/action_individualHealthRecordFragment_to_vaccineRecordDetailFragment"
             app:destination="@id/vaccineRecordDetailFragment" />
@@ -62,9 +28,6 @@
         <action
             android:id="@+id/action_individualHealthRecordFragment_to_protectiveWordFragment"
             app:destination="@+id/protectiveWordFragment" />
-        <action
-            android:id="@+id/action_individualHealthRecordFragment_to_addHealthRecordFragment"
-            app:destination="@id/addHealthRecordsFragment" />
         <action
             android:id="@+id/action_individualHealthRecordFragment_to_covidTestResultDetailFragment"
             app:destination="@id/covidTestResultDetailFragment" />

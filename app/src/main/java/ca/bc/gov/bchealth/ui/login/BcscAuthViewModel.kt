@@ -1,8 +1,10 @@
 package ca.bc.gov.bchealth.ui.login
 
+import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkManager
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
@@ -11,6 +13,7 @@ import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.ProfileRepository
 import ca.bc.gov.repository.QueueItTokenRepository
+import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.patient.PatientRepository
@@ -160,7 +163,8 @@ class BcscAuthViewModel @Inject constructor(
         }
     }
 
-    fun processLogoutResponse() = viewModelScope.launch {
+    fun processLogoutResponse(context: Context) = viewModelScope.launch {
+        WorkManager.getInstance(context).cancelUniqueWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME)
         bcscAuthRepo.processLogoutResponse()
         _authStatus.update {
             it.copy(
@@ -175,34 +179,30 @@ class BcscAuthViewModel @Inject constructor(
     * Check BCSC login
     * */
     fun checkSession() = viewModelScope.launch {
+        _authStatus.update {
+            it.copy(
+                showLoading = true
+            )
+        }
+        val isLoggedSuccess = bcscAuthRepo.checkSession()
+        var userName: String? = null
         try {
-            _authStatus.update {
-                it.copy(
-                    showLoading = true
-                )
-            }
-            val isLoggedSuccess = bcscAuthRepo.checkSession()
-            val userName =
+            userName =
                 patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).fullName
-            val loginSessionStatus = if (isLoggedSuccess) {
-                LoginStatus.ACTIVE
-            } else {
-                LoginStatus.EXPIRED
-            }
-            _authStatus.update {
-                it.copy(
-                    showLoading = false,
-                    userName = userName,
-                    loginStatus = loginSessionStatus
-                )
-            }
         } catch (e: Exception) {
-            _authStatus.update {
-                it.copy(
-                    showLoading = false,
-                    loginStatus = LoginStatus.EXPIRED
-                )
-            }
+            // no implementation required.
+        }
+        val loginSessionStatus = if (isLoggedSuccess) {
+            LoginStatus.ACTIVE
+        } else {
+            LoginStatus.EXPIRED
+        }
+        _authStatus.update {
+            it.copy(
+                showLoading = false,
+                userName = userName,
+                loginStatus = loginSessionStatus
+            )
         }
     }
 
@@ -213,7 +213,7 @@ class BcscAuthViewModel @Inject constructor(
                 authRequestIntent = null,
                 endSessionIntent = null,
                 isError = false,
-                userName = "",
+                userName = null,
                 queItTokenUpdated = false,
                 loginStatus = null,
                 ageLimitCheck = null,
@@ -411,7 +411,7 @@ data class AuthStatus(
     val authRequestIntent: Intent? = null,
     val endSessionIntent: Intent? = null,
     val isError: Boolean = false,
-    val userName: String = "",
+    val userName: String? = null,
     val queItTokenUpdated: Boolean = false,
     val onMustBeQueued: Boolean = false,
     val queItUrl: String? = null,

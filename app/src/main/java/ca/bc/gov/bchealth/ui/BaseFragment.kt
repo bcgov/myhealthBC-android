@@ -19,8 +19,8 @@ abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentL
     protected fun getAppBarConfiguration() = AppBarConfiguration(
         setOf(
             R.id.homeFragment,
-            R.id.healthRecordsFragment,
             R.id.healthPassFragment,
+            R.id.individualHealthRecordFragment,
             R.id.resourcesFragment
         ),
         null

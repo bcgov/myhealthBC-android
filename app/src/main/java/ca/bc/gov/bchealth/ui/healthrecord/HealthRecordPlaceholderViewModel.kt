@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.ui.healthrecord
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.repository.patient.PatientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,34 +20,34 @@ class HealthRecordPlaceholderViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PatientRecordsState())
     val uiState: StateFlow<PatientRecordsState> = _uiState.asStateFlow()
 
-    fun getPatientsAndHealthRecordCounts() = viewModelScope.launch {
-        _uiState.update { state ->
-            state.copy(isLoading = true)
-        }
-        val patientHealthRecords = repository.getPatientHealthRecordCount().map { records ->
-            records.toUiModel()
-        }
-        _uiState.update { state ->
-            state.copy(
-                isLoading = false,
-                patientsAndHealthRecordCounts = patientHealthRecords
-            )
+    fun getBcscAuthPatient() = viewModelScope.launch {
+        try {
+            repository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
+            _uiState.update { state ->
+                state.copy(
+                    isBcscAuthenticatedPatientAvailable = BcscAuthPatientAvailability.AVAILABLE
+                )
+            }
+        } catch (e: Exception) {
+            _uiState.update { state ->
+                state.copy(
+                    isBcscAuthenticatedPatientAvailable = BcscAuthPatientAvailability.NOT_AVAILABLE,
+                )
+            }
         }
     }
 
     fun resetUiState() {
         _uiState.update { state ->
             state.copy(
-                isLoading = false,
-                patientsAndHealthRecordCounts = null
+                isBcscAuthenticatedPatientAvailable = null
             )
         }
     }
 }
 
 data class PatientRecordsState(
-    val isLoading: Boolean = false,
-    val patientsAndHealthRecordCounts: List<PatientHealthRecord>? = null
+    val isBcscAuthenticatedPatientAvailable: BcscAuthPatientAvailability? = null
 )
 
 data class PatientHealthRecord(
@@ -57,3 +56,8 @@ data class PatientHealthRecord(
     val totalRecord: Int,
     val authStatus: AuthenticationStatus
 )
+
+enum class BcscAuthPatientAvailability {
+    AVAILABLE,
+    NOT_AVAILABLE
+}
