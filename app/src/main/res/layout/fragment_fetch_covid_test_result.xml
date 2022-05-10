@@ -46,7 +46,6 @@
                     android:id="@+id/ed_phn"
                     style="@style/Widget.MaterialComponents.AutoCompleteTextView.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:maxLength="10"
                     android:layout_height="wrap_content"
                     android:inputType="number" />
 

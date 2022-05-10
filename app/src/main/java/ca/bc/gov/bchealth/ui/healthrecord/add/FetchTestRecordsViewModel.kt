@@ -80,8 +80,8 @@ class FetchTestRecordsViewModel @Inject constructor(
                                 _uiState.tryEmit(
                                     FetchTestRecordUiState(
                                         errorData = ErrorData(
-                                            R.string.error,
-                                            R.string.error_incorrect_phn
+                                            R.string.error_data_mismatch_title,
+                                            R.string.error_vaccine_data_mismatch_message
                                         )
                                     )
                                 )
