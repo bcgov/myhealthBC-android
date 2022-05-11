@@ -154,7 +154,7 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
 
     private fun showLoader(value: Boolean) {
         binding.btnSubmit.isEnabled = !value
-        binding.progressBar.isVisible = value
+        binding.progressBar.indicator.isVisible = value
     }
 
     private fun fetchTravelPass() {
