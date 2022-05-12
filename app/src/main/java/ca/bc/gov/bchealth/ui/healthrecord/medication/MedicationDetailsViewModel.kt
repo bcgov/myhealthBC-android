@@ -102,7 +102,7 @@ class MedicationDetailsViewModel @Inject constructor(
         )
         medicationDetails.add(
             MedicationDetail(
-                "Din:",
+                "DIN:",
                 medicationWithSummaryAndPharmacyDto.medicationSummary.din
             )
         )
@@ -181,7 +181,7 @@ data class MedicationDetailUiState(
 
 data class MedicationDetail(
     val title: String,
-    val description: String? = "N/A",
+    val description: String?,
     val viewType: Int = ITEM_VIEW_TYPE_RECORD
 )
 

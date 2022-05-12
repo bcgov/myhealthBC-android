@@ -9,6 +9,7 @@ import ca.bc.gov.bchealth.databinding.ItemMedicationDetailBinding
 import ca.bc.gov.bchealth.databinding.ItemMedicationDetailDirectionsBinding
 import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_DIRECTIONS
 import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_RECORD
+import ca.bc.gov.bchealth.utils.showIfNullOrBlank
 
 /*
 * Created by amit_metri on 16,February,2022
@@ -46,13 +47,15 @@ class MedicationDetailAdapter :
             is RecordViewHolder -> {
                 holder.binding.apply {
                     tvTitle.text = medicationDetail.title
-                    tvDesc.text = medicationDetail.description
+                    tvDesc.text =
+                        medicationDetail.description.showIfNullOrBlank(holder.itemView.context)
                 }
             }
             is DirectionsViewHolder -> {
                 holder.binding.apply {
                     tvTitle.text = medicationDetail.title
-                    tvDesc.text = medicationDetail.description
+                    tvDesc.text =
+                        medicationDetail.description.showIfNullOrBlank(holder.itemView.context)
                 }
             }
         }
