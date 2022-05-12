@@ -75,7 +75,7 @@ class ProtectiveWordFragment : BaseFragment(R.layout.fragment_protective_word) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { fetchMedicationUiState ->
 
-                    binding.progressBar.isVisible = fetchMedicationUiState.onLoading
+                    binding.progressBar.indicator.isVisible = fetchMedicationUiState.onLoading
                     binding.btnContinue.isEnabled = fetchMedicationUiState.isButtonClickEnabled
 
                     if (fetchMedicationUiState.errorData != null) {

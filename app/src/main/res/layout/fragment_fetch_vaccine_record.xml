@@ -172,7 +172,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_submit"
-        style="@style/HealthGateway.Widget.MaterialComponents.Button1"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_1_x"
@@ -185,14 +185,12 @@
         app:layout_constraintStart_toEndOf="@+id/btn_cancel"
         app:layout_constraintTop_toTopOf="@+id/btn_cancel" />
 
-    <ProgressBar
+    <include
         android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        layout="@layout/full_screen_progress_indicator"
+        app:layout_constraintBottom_toTopOf="@id/btn_submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_toolbar" />
