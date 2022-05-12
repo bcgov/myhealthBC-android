@@ -19,12 +19,6 @@ class PhnHelper {
             showErrorState(textInputLayout)
             return false
         }
-
-        if (textInputLayout.editText?.text?.matches(Regex("^9[0-9]{9}\$")) == false) {
-            textInputLayout.error = context.getString(R.string.invalid_phn)
-            showErrorState(textInputLayout)
-            return false
-        }
         return true
     }
 
