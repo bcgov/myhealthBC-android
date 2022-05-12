@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.medication
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_RECORD
+import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.repository.CommentRepository
@@ -76,13 +77,15 @@ class MedicationDetailsViewModel @Inject constructor(
         medicationDetails.add(
             MedicationDetail(
                 "Quantity:",
-                medicationWithSummaryAndPharmacyDto.medicationSummary.quantity.toString()
+                medicationWithSummaryAndPharmacyDto.medicationSummary.quantity.toInt().toString()
             )
         )
         medicationDetails.add(
             MedicationDetail(
                 "Strength:",
                 medicationWithSummaryAndPharmacyDto.medicationSummary.strength.toString()
+                    .plus(" ")
+                    .plus(medicationWithSummaryAndPharmacyDto.medicationSummary.strengthUnit)
             )
         )
         medicationDetails.add(
@@ -106,7 +109,7 @@ class MedicationDetailsViewModel @Inject constructor(
         medicationDetails.add(
             MedicationDetail(
                 "Filled at:",
-                medicationWithSummaryAndPharmacyDto.medicationSummary.genericName
+                medicationWithSummaryAndPharmacyDto.dispensingPharmacy.name
             )
         )
         medicationDetails.add(
@@ -118,7 +121,7 @@ class MedicationDetailsViewModel @Inject constructor(
         medicationDetails.add(
             MedicationDetail(
                 "Address:",
-                medicationWithSummaryAndPharmacyDto.dispensingPharmacy.addressLine1
+                getAddress(medicationWithSummaryAndPharmacyDto.dispensingPharmacy)
             )
         )
         medicationDetails.add(
@@ -141,6 +144,23 @@ class MedicationDetailsViewModel @Inject constructor(
             )
         )
         return medicationDetails
+    }
+
+    private fun getAddress(dispensingPharmacy: DispensingPharmacyDto): String {
+        var address = ""
+        if (!dispensingPharmacy.addressLine1.isNullOrBlank()) {
+            address = address.plus(dispensingPharmacy.addressLine1)
+        }
+        if (!dispensingPharmacy.addressLine2.isNullOrBlank()) {
+            address = address.plus(", ").plus(dispensingPharmacy.addressLine2)
+        }
+        if (!dispensingPharmacy.city.isNullOrBlank()) {
+            address = address.plus(", ").plus(dispensingPharmacy.city)
+        }
+        if (!dispensingPharmacy.province.isNullOrBlank()) {
+            address = address.plus(", ").plus(dispensingPharmacy.province)
+        }
+        return address
     }
 
     companion object {
