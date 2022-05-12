@@ -26,16 +26,16 @@ class ResourcesViewModel : ViewModel() {
         )
         resources.add(
             Resources(
-                R.drawable.ic_resources_icon_3,
-                R.string.label_resource_3,
-                R.string.url_get_tested_for_covid
+                R.drawable.ic_resources_icon_4,
+                R.string.label_resource_4,
+                R.string.url_covid_symptom_checker
             )
         )
         resources.add(
             Resources(
-                R.drawable.ic_resources_icon_4,
-                R.string.label_resource_4,
-                R.string.url_covid_symptom_checker
+                R.drawable.ic_resources_icon_3,
+                R.string.label_resource_3,
+                R.string.url_get_tested_for_covid
             )
         )
         return resources

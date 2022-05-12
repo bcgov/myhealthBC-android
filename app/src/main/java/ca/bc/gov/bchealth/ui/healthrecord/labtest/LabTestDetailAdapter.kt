@@ -13,6 +13,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemLabTestDetailBinding
 import ca.bc.gov.bchealth.utils.makeLinks
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showIfNullOrBlank
 
 /**
  * @author: Created by Rashmi Bambhania on 02,March,2022
@@ -51,9 +52,9 @@ class LabTestDetailAdapter :
                 holder.binding.apply {
                     tvHeader.visibility = View.GONE
                     tvSummary.visibility = View.GONE
-                    tvDesc1.text = labTestDetail.timelineDateTime
-                    tvDesc2.text = labTestDetail.orderingProvider
-                    tvDesc3.text = labTestDetail.reportingSource
+                    tvDesc1.text = labTestDetail.timelineDateTime.showIfNullOrBlank(holder.itemView.context)
+                    tvDesc2.text = labTestDetail.orderingProvider.showIfNullOrBlank(holder.itemView.context)
+                    tvDesc3.text = labTestDetail.reportingSource.showIfNullOrBlank(holder.itemView.context)
                     holder.itemView.context.apply {
                         tvTitle1.text = getString(labTestDetail.title1)
                         tvTitle2.text = getString(labTestDetail.title2)
@@ -91,10 +92,10 @@ class LabTestDetailAdapter :
                         tvTitle3.text = getString(labTestDetail.title3)
                     }
 
-                    tvDesc1.text = labTestDetail.testName
+                    tvDesc1.text = labTestDetail.testName.showIfNullOrBlank(holder.itemView.context)
 
                     val pair = getTestResult(labTestDetail.isOutOfRange, labTestDetail.testStatus, holder.itemView.context)
-                    tvDesc2.text = pair.first
+                    tvDesc2.text = pair.first.showIfNullOrBlank(holder.itemView.context)
                     tvDesc2.setTextColor(pair.second)
                     val typeface =
                         ResourcesCompat.getFont(holder.itemView.context, R.font.bc_sans_bold)

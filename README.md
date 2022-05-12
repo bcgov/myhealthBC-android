@@ -1,6 +1,6 @@
 # My Helath BC
 
-#### Health Gateway is used to retrieve and store your proof of vaccination, access your health records, view covid test results, access official resources to navigate your way around Covid-19 and stay up to date with important alerts and official announcements
+#### Health Gateway is used to retrieve and store your proof of vaccination, access your health records, view COVID-19 test results, access official resources to navigate your way around Covid-19 and stay up to date with important alerts and official announcements
 
 ## Table of Contents
 

@@ -191,20 +191,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
     fun isProtectiveWordRequired(): Boolean {
         return medicationRecordRepository.getProtectiveWordState() == ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
     }
-
-    fun resetUiState() {
-        _uiState.update { state ->
-            state.copy(
-                onLoading = false,
-                isBcscAuthenticatedPatientAvailable = null,
-                isBcscSessionActive = null,
-                bcscAuthenticatedPatientDto = null,
-                onHealthRecords = emptyList(),
-                healthRecordsExceptMedication = emptyList(),
-                medicationRecordsUpdated = false
-            )
-        }
-    }
 }
 
 data class IndividualHealthRecordsUiState(

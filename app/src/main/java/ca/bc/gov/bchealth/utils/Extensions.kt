@@ -188,3 +188,11 @@ fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {
         LinkMovementMethod.getInstance() // without LinkMovementMethod, link can not click
     this.setText(spannableString, TextView.BufferType.SPANNABLE)
 }
+
+fun String?.showIfNullOrBlank(context: Context): String {
+    return if (this.isNullOrBlank()) {
+        context.resources.getString(R.string.no_data)
+    } else {
+        this
+    }
+}

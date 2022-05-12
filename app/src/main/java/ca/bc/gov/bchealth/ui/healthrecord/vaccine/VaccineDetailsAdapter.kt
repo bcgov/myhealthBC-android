@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemVaccineDetailsBinding
+import ca.bc.gov.bchealth.utils.showIfNullOrBlank
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.utils.toDate
 
@@ -30,7 +31,6 @@ class VaccineDetailsAdapter :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val vaccineData = getItem(position)
-
         holder.binding.apply {
             tvDose.text = holder.itemView.resources.getString(R.string.dose)
                 .plus(" ")
@@ -38,11 +38,11 @@ class VaccineDetailsAdapter :
 
             tvOccurrenceDate.text = vaccineData.date.toDate()
 
-            tvProduct.text = vaccineData.productName
+            tvProduct.text = vaccineData.productName.showIfNullOrBlank(holder.itemView.context)
 
-            tvProvider.text = vaccineData.providerName
+            tvProvider.text = vaccineData.providerName.showIfNullOrBlank(holder.itemView.context)
 
-            tvLotNumber.text = vaccineData.lotNumber
+            tvLotNumber.text = vaccineData.lotNumber.showIfNullOrBlank(holder.itemView.context)
         }
     }
 }
