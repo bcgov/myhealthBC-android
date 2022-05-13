@@ -18,6 +18,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentProtectiveWordBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.makeLinks
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -58,6 +59,8 @@ class ProtectiveWordFragment : BaseFragment(R.layout.fragment_protective_word) {
         }
 
         binding.btnContinue.setOnClickListener {
+            requireContext().hideKeyboard(it)
+            binding.scrollView.clearFocus()
             viewModel.fetchMedicationRecords(
                 args.patientId,
                 binding.etProtectiveWord.text.toString()
@@ -68,6 +71,12 @@ class ProtectiveWordFragment : BaseFragment(R.layout.fragment_protective_word) {
         }
 
         observeMedicationRecords()
+
+        binding.scrollView.setOnTouchListener { view, _ ->
+            requireContext().hideKeyboard(view)
+            view?.clearFocus()
+            return@setOnTouchListener true
+        }
     }
 
     private fun observeMedicationRecords() {
