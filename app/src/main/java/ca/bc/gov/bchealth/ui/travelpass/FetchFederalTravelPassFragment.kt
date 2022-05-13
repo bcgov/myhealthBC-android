@@ -23,6 +23,7 @@ import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.PhnHelper
+import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
@@ -59,6 +60,8 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnSubmit.setOnClickListener {
+            requireContext().hideKeyboard(it)
+            binding.scrollView.clearFocus()
             fetchTravelPass()
         }
 
@@ -116,6 +119,12 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
         }
 
         viewModel.getPatientWithVaccineRecord(args.patientId)
+
+        binding.scrollView.setOnTouchListener { view, _ ->
+            requireContext().hideKeyboard(view)
+            view?.clearFocus()
+            return@setOnTouchListener true
+        }
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {

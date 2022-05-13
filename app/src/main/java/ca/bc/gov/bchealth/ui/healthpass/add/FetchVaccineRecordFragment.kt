@@ -20,6 +20,7 @@ import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.DatePickerHelper
 import ca.bc.gov.bchealth.utils.PhnHelper
+import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
@@ -78,6 +79,12 @@ class FetchVaccineRecordFragment : BaseFragment(R.layout.fragment_fetch_vaccine_
         }
 
         observeVaccineRecordAddition()
+
+        binding.scrollView.setOnTouchListener { view, _ ->
+            requireContext().hideKeyboard(view)
+            view?.clearFocus()
+            return@setOnTouchListener true
+        }
     }
 
     private fun observeVaccineRecordAddition() {
@@ -224,6 +231,8 @@ class FetchVaccineRecordFragment : BaseFragment(R.layout.fragment_fetch_vaccine_
 
     private fun initClickListeners() {
         binding.btnSubmit.setOnClickListener {
+            requireContext().hideKeyboard(it)
+            binding.scrollView.clearFocus()
             fetchVaccineRecord()
         }
 
