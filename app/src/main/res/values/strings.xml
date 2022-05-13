@@ -46,11 +46,11 @@
     <!--Add card-->
     <string name="add_card">Add Card</string>
     <string name="no_cards_message">You don’t have any documents added yet</string>
-    <string name="title_add_card">Choose one of the options below to add a proof of vaccination document.\n\nUpload from your deviceScan a QR code using your cameraEnter vaccination information</string>
+    <string name="title_add_card">Choose one of the options below to add a proof of vaccination document.</string>
     <string name="scan_qr_code">Scan QR using your camera</string>
     <string name="use_image_of_qr">Upload from your device</string>
     <string name="qr_image">QR image</string>
-    <string name="enter_information">Enter information</string>
+    <string name="enter_information">Enter vaccination information</string>
     <string name="help">Help</string>
     <string name="exit">Exit</string>
     <string name="btn_ok">OK</string>
