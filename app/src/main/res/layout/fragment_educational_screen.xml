@@ -50,14 +50,13 @@
                 android:id="@+id/iv_top_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/space_2_x"
+                android:layout_marginBottom="@dimen/space_4_x"
+                android:layout_marginEnd="@dimen/space_2_x"
                 android:visibility="invisible"
                 tools:visibility="visible"
                 tools:src="@drawable/ic_onboarding_health_records"
                 app:layout_constraintBottom_toBottomOf="@+id/img_on_boarding_slider_icon_fixed"
-                app:layout_constraintEnd_toEndOf="@+id/img_on_boarding_slider_icon_fixed"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="@+id/img_on_boarding_slider_icon_fixed" />
+                app:layout_constraintEnd_toEndOf="@+id/img_on_boarding_slider_icon_fixed" />
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_left_icon"

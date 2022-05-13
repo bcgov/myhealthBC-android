@@ -206,7 +206,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         uiState.isBcscAuthenticatedPatientAvailable
                     ) {
                         updateUi(uiState)
-                        viewModel.resetUiState()
                     }
                 }
             }
@@ -218,8 +217,17 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             setToolBar(it.fullName)
         }
         if (uiState.isBcscSessionActive != null && uiState.isBcscSessionActive) {
+            concatAdapter = ConcatAdapter(
+                hiddenMedicationRecordsAdapter,
+                healthRecordsAdapter
+            )
+            binding.content.rvHealthRecords.adapter = concatAdapter
             displayBcscRecords(uiState)
         } else {
+            concatAdapter = ConcatAdapter(
+                hiddenHealthRecordAdapter
+            )
+            binding.content.rvHealthRecords.adapter = concatAdapter
             hiddenHealthRecordAdapter.submitList(getHiddenRecordItem())
         }
     }

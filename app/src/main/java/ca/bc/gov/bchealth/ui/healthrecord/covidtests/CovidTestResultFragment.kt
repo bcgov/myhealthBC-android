@@ -18,6 +18,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSingleTestResultBinding
 import ca.bc.gov.bchealth.model.mapper.CovidTestResultStatus
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showIfNullOrBlank
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.CovidOrderDto
@@ -84,10 +85,11 @@ class CovidTestResultFragment : Fragment(R.layout.fragment_single_test_result) {
                     .plus(
                         covidTest?.collectedDateTime?.toDateTimeString()
                     )
-            tvDot.text = covidTest?.collectedDateTime?.toDateTimeString()
-            tvTestStatus.text = covidTest?.testStatus
-            tvTypeName.text = covidTest?.testType
-            tvProviderClinic.text = covidOrder.orderingProviders
+            tvDot.text =
+                covidTest?.collectedDateTime?.toDateTimeString().showIfNullOrBlank(requireContext())
+            tvTestStatus.text = covidTest?.testStatus.showIfNullOrBlank(requireContext())
+            tvTypeName.text = covidTest?.testType.showIfNullOrBlank(requireContext())
+            tvProviderClinic.text = covidOrder.orderingProviders.showIfNullOrBlank(requireContext())
         }
 
         if (covidTest?.labResultOutcome == CovidTestResultStatus.Positive.toString() ||
