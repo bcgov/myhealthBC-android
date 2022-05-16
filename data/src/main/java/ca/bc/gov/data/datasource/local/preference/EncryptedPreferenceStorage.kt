@@ -1,9 +1,12 @@
 package ca.bc.gov.data.datasource.local.preference
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.settings.AnalyticsFeature
+import ca.bc.gov.data.R
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -12,7 +15,8 @@ import javax.inject.Inject
  * @author Pinakin Kansara
  */
 class EncryptedPreferenceStorage @Inject constructor(
-    private val encryptedSharedPreferences: SharedPreferences
+    private val encryptedSharedPreferences: SharedPreferences,
+    @ApplicationContext private val context: Context
 ) {
 
     companion object {
@@ -29,6 +33,8 @@ class EncryptedPreferenceStorage @Inject constructor(
         private const val POST_LOGIN_CHECK = "POST_LOGIN_CHECK"
         private const val SESSION_TIME = "SESSION_TIME"
         private const val BCSC_SHOWN_POST_BIOMETRIC = "BCSC_SHOWN_POST_BIOMETRIC"
+        private const val BASE_URL = "BASE_URL"
+        private const val BASE_URL_IS_ONLINE = "BASE_URL_IS_ONLINE"
     }
 
     var queueItToken: String?
@@ -117,7 +123,10 @@ class EncryptedPreferenceStorage @Inject constructor(
         }
 
     var protectiveWordState: Int
-        get() = encryptedSharedPreferences.getInt(PROTECTIVE_WORD_STATE, ProtectiveWordState.PROTECTIVE_WORD_NOT_REQUIRED.value)
+        get() = encryptedSharedPreferences.getInt(
+            PROTECTIVE_WORD_STATE,
+            ProtectiveWordState.PROTECTIVE_WORD_NOT_REQUIRED.value
+        )
         set(value) {
             encryptedSharedPreferences.edit().putInt(PROTECTIVE_WORD_STATE, value).apply()
         }
@@ -132,5 +141,20 @@ class EncryptedPreferenceStorage @Inject constructor(
         get() = encryptedSharedPreferences.getLong(SESSION_TIME, -1L)
         set(value) {
             encryptedSharedPreferences.edit().putLong(SESSION_TIME, value).apply()
+        }
+
+    var baseUrl: String?
+        get() = encryptedSharedPreferences.getString(BASE_URL, context.getString(R.string.base_url))
+            ?: context.getString(R.string.base_url)
+        set(value) {
+            encryptedSharedPreferences.edit().putString(BASE_URL, value).apply()
+        }
+
+    var baseUrlIsOnline: Boolean
+        get() = encryptedSharedPreferences.getBoolean(BASE_URL_IS_ONLINE, false)
+        set(value) {
+            encryptedSharedPreferences.edit()
+                .putBoolean(BASE_URL_IS_ONLINE, value)
+                .apply()
         }
 }

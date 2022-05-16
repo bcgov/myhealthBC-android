@@ -94,10 +94,11 @@ class HealthGateWayApiModule {
     fun providesRetrofitClient(
         @ApplicationContext context: Context,
         okHttpClient: OkHttpClient,
-        gsonConverterFactory: GsonConverterFactory
+        gsonConverterFactory: GsonConverterFactory,
+        encryptedPreferenceStorage: EncryptedPreferenceStorage
     ): Retrofit =
         Retrofit.Builder()
-            .baseUrl(context.getString(R.string.base_url))
+            .baseUrl(encryptedPreferenceStorage.baseUrl)
             .client(okHttpClient)
             .addConverterFactory(gsonConverterFactory)
             .build()
