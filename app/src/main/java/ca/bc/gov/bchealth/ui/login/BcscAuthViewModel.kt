@@ -324,12 +324,12 @@ class BcscAuthViewModel @Inject constructor(
     private suspend fun performPatientDetailCheck(authParameters: Pair<String, String>) {
         var patientFromRemoteSource: PatientDto? = null
         try {
-            val patientFromLocalSource = patientRepository
-                .findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
             patientFromRemoteSource = patientWithBCSCLoginRepository.getPatient(
                 authParameters.first,
                 authParameters.second
             )
+            val patientFromLocalSource = patientRepository
+                .findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
             /*
             * If user logs in using different user credentials post session expiry,
             * exiting BCSC user is deleted and new BCSC user details inserted immediately.

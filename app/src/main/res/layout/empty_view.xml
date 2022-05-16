@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_gravity="center"
-    android:visibility="gone">
+    android:visibility="visible">
 
     <ImageView
         android:id="@+id/img_no_records"
@@ -28,8 +28,7 @@
         android:layout_marginTop="@dimen/space_4_x"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_no_records"
-        android:text="@string/no_records_found" />
+        app:layout_constraintTop_toBottomOf="@id/img_no_records" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_clear_filter_msg"
@@ -41,7 +40,6 @@
         android:layout_marginTop="@dimen/space_1_x"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_no_record"
-        android:text="@string/clear_all_filters_and_start_over" />
+        app:layout_constraintTop_toBottomOf="@id/tv_no_record"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

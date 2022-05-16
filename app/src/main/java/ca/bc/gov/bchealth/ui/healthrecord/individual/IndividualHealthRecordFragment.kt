@@ -90,7 +90,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun setToolBar(bcscAuthenticatedPatientName: String) {
         val names = bcscAuthenticatedPatientName.split(" ")
         val firstName = if (names.isNotEmpty()) names.first() else ""
-        with(binding.topAppBar) {
+        binding.topAppBar1.apply {
             title = firstName
             if (willNotDraw()) {
                 setWillNotDraw(false)
@@ -159,11 +159,11 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             when (it) {
                 BcscAuthState.SUCCESS,
                 BcscAuthState.NO_ACTION -> {
-                    viewModel.getIndividualsHealthRecord(
-                        filterSharedViewModel.filterState.value.timelineTypeFilter,
-                        filterSharedViewModel.filterState.value.filterFromDate,
-                        filterSharedViewModel.filterState.value.filterToDate
+                    findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                        HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
+                        NavigationAction.ACTION_RE_CHECK
                     )
+                    findNavController().popBackStack()
                 }
                 else -> {
                     // no implementation required
@@ -190,9 +190,11 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 }
 
                 if (it.firstOrNull()?.state == WorkInfo.State.RUNNING) {
-                    binding.loaderView.tvRetrievingRecords.text = getString(R.string.fetching_records)
+                    binding.emptyView.tvNoRecord.text = getString(R.string.fetching_records)
+                    binding.emptyView.tvClearFilterMsg.text = ""
                 } else {
-                    binding.loaderView.tvRetrievingRecords.text = getString(R.string.loading)
+                    binding.emptyView.tvNoRecord.text = getString(R.string.no_records_found)
+                    binding.emptyView.tvClearFilterMsg.text = getString(R.string.clear_all_filters_and_start_over)
                 }
             }
         }
@@ -248,17 +250,13 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private fun displayBCSCRecordsWithMedicationFilter(uiState: IndividualHealthRecordsUiState) {
         if (uiState.medicationRecordsUpdated || !viewModel.isProtectiveWordRequired() || sharedViewModel.isProtectiveWordAdded) {
-            if (::healthRecordsAdapter.isInitialized) {
+            if (uiState.onHealthRecords.isNotEmpty()) {
                 healthRecordsAdapter.submitList(uiState.onHealthRecords)
-            }
-            if (::hiddenMedicationRecordsAdapter.isInitialized) {
                 hiddenMedicationRecordsAdapter.submitList(emptyList())
             }
         } else {
-            if (::healthRecordsAdapter.isInitialized) {
+            if (uiState.healthRecordsExceptMedication.isNotEmpty()) {
                 healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
-            }
-            if (::hiddenMedicationRecordsAdapter.isInitialized) {
                 hiddenMedicationRecordsAdapter.submitList(
                     uiState.bcscAuthenticatedPatientDto?.id?.let {
                         listOf(
@@ -275,10 +273,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun displayBCSCRecordsExceptMedicationFilter(uiState: IndividualHealthRecordsUiState) {
-        if (::healthRecordsAdapter.isInitialized) {
+        if (uiState.healthRecordsExceptMedication.isNotEmpty()) {
             healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
-        }
-        if (::hiddenMedicationRecordsAdapter.isInitialized) {
             hiddenMedicationRecordsAdapter.submitList(emptyList())
         }
     }
@@ -340,7 +336,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         binding.content.rvHealthRecords.adapter = concatAdapter
         binding.content.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
         binding.content.rvHealthRecords.emptyView = binding.emptyView.root
-        binding.content.rvHealthRecords.loaderView = binding.loaderView.root
     }
 
     private fun onMedicationAccessClick(patientId: Long) {
@@ -436,7 +431,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     }
                     NavigationAction.ACTION_RE_CHECK -> {
                         findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION, NavigationAction.ACTION_RE_CHECK
+                            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
+                            NavigationAction.ACTION_RE_CHECK
                         )
                         findNavController().popBackStack()
                     }

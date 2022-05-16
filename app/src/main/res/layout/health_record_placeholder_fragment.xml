@@ -4,8 +4,4 @@
     android:filterTouchesWhenObscured="true"
     android:layout_height="match_parent">
 
-    <include
-        layout="@layout/loader_view"
-        android:id="@+id/loaderView"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

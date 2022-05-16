@@ -34,7 +34,7 @@
                 app:expandedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Expanded">
 
                 <com.google.android.material.appbar.MaterialToolbar
-                    android:id="@+id/top_app_bar"
+                    android:id="@+id/top_app_bar_1"
                     app:titleTextAppearance="?textAppearanceHeadline3"
                     app:titleCentered="true"
                     android:layout_width="match_parent"
@@ -54,10 +54,6 @@
         <include
             layout="@layout/empty_view"
             android:id="@+id/emptyView"/>
-
-        <include
-            layout="@layout/loader_view"
-            android:id="@+id/loaderView"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

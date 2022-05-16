@@ -6,6 +6,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.repository.CommentRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,7 +46,7 @@ class MedicationDetailsViewModel @Inject constructor(
             val comments = mutableListOf<Comment>()
             if (comment.isNotEmpty()) {
                 comments.add(Comment("${comment.size} Comments", Instant.now()))
-                comments.addAll(comment.map { Comment(it.text, it.createdDateTime) })
+                comments.addAll(comment.map { Comment(it.text, it.createdDateTime?.toLocalDateTimeInstant()) })
             }
             _uiState.update {
                 it.copy(
@@ -187,5 +188,5 @@ data class MedicationDetail(
 
 data class Comment(
     val text: String?,
-    val date: Instant,
+    val date: Instant?,
 )
