@@ -53,7 +53,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val covidOrderRepository: CovidOrderRepository,
     private val covidTestRepository: CovidTestRepository,
     private val encryptedPreferenceStorage: EncryptedPreferenceStorage,
-    private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository
+    private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
+    private val mobileConfigRepository: MobileConfigRepository
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
@@ -68,6 +69,14 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         var isApiFailed = false
 
         try {
+            try {
+                val response = mobileConfigRepository.getBaseUrl()
+                encryptedPreferenceStorage.baseUrl = response.baseUrl
+                encryptedPreferenceStorage.baseUrlIsOnline = response.online
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
             val authParameters = bcscAuthRepo.getAuthParameters()
             var patient: PatientDto? = null
             var patientId = 0L
