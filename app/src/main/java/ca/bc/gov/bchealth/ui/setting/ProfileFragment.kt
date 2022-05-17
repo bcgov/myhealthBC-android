@@ -18,6 +18,8 @@ import ca.bc.gov.bchealth.databinding.FragmentProfileBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
 import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
+import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterViewModel
+import ca.bc.gov.bchealth.ui.healthrecord.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
@@ -38,6 +40,8 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
     private val binding by viewBindings(FragmentProfileBinding::bind)
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
+    private val filterSharedViewModel: FilterViewModel by activityViewModels()
+
     private var logoutResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { activityResult ->
@@ -135,6 +139,7 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
                         if (it.endSessionIntent != null) {
                             logoutResultLauncher.launch(it.endSessionIntent)
                             bcscAuthViewModel.resetAuthStatus()
+                            filterSharedViewModel.updateFilter(mutableListOf(TimelineTypeFilter.ALL), null, null)
                         }
                     }
                 }
