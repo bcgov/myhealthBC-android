@@ -31,6 +31,9 @@ class HomeViewModel @Inject constructor(
     var isForceLogout: Boolean = false
 
     fun launchCheck() = viewModelScope.launch {
+        if (bcscAuthRepo.checkSession()) {
+            onBoardingRepository.onBCSCLoginRequiredPostBiometric = false
+        }
         when {
             onBoardingRepository.onBoardingRequired -> {
                 _uiState.update { state ->

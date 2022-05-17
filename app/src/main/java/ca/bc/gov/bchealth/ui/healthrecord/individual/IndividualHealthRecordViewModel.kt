@@ -52,7 +52,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
         } catch (e: Exception) {
             _uiState.update { state ->
                 state.copy(
-                    onLoading = false,
                     isBcscAuthenticatedPatientAvailable = false,
                     isBcscSessionActive = false
                 )
@@ -167,7 +166,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
 
                 _uiState.update { state ->
                     state.copy(
-                        onLoading = false,
                         isBcscAuthenticatedPatientAvailable = isBcscAuthenticatedPatientAvailable,
                         isBcscSessionActive = isBcscSessionActive,
                         bcscAuthenticatedPatientDto = bcscAuthenticatedPatientDto,
@@ -194,7 +192,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
 }
 
 data class IndividualHealthRecordsUiState(
-    val onLoading: Boolean = false,
     val isBcscAuthenticatedPatientAvailable: Boolean? = null,
     val isBcscSessionActive: Boolean? = null,
     val bcscAuthenticatedPatientDto: PatientDto? = null,

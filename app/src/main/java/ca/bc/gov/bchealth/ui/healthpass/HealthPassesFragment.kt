@@ -119,6 +119,7 @@ class HealthPassesFragment : BaseFragment(R.layout.fragment_helath_passes) {
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
         with(binding.layoutToolbar.topAppBar) {
+            setNavigationIcon(R.drawable.ic_toolbar_back)
             setNavigationOnClickListener { findNavController().popBackStack() }
             title = getString(R.string.bc_vaccine_passes)
             inflateMenu(R.menu.menu_health_pass)

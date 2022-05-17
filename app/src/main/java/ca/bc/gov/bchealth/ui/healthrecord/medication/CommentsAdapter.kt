@@ -48,7 +48,7 @@ class CommentsAdapter :
 
             is CommentsViewHolder -> {
                 holder.binding.tvComment.text = comment.text
-                holder.binding.tvDateTime.text = comment.date.toDateTimeString()
+                holder.binding.tvDateTime.text = comment.date?.toDateTimeString()
             }
         }
     }
