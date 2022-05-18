@@ -42,7 +42,7 @@ class ProcessQrRepository @Inject constructor(
                 return Pair(VaccineRecordState.INVALID, null)
             }
             val (status, shcData) = shcVerifier.getStatus(shcUri)
-            if (status == VaccinationStatus.INVALID) {
+            if (status == VaccinationStatus.INVALID || status == VaccinationStatus.NOT_VACCINATED) {
                 return Pair(VaccineRecordState.INVALID, null)
             }
             val patient = shcData.toPatient()
