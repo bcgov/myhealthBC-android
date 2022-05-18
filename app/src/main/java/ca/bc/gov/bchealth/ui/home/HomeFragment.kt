@@ -80,7 +80,9 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
             )
             when (it) {
                 BcscAuthState.SUCCESS -> {
-                    findNavController().navigate(R.id.action_homeFragment_to_health_records)
+                    if (sharedViewModel.destinationId > 0) {
+                        findNavController().navigate(sharedViewModel.destinationId)
+                    }
                 }
                 else -> {
                     // no implementation required
@@ -134,6 +136,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                             if (bcscAuthViewModel.authStatus.value.loginStatus != null && bcscAuthViewModel.authStatus.value.loginStatus == LoginStatus.ACTIVE) {
                                 findNavController().navigate(R.id.action_homeFragment_to_health_records)
                             } else {
+                                sharedViewModel.destinationId = R.id.health_records
                                 findNavController().navigate(R.id.bcscAuthInfoFragment)
                             }
                         }
@@ -165,6 +168,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
             }
 
             if (uiState.isBcscLoginRequiredPostBiometrics) {
+                sharedViewModel.destinationId = 0
                 findNavController().navigate(R.id.bcscAuthInfoFragment)
                 sharedViewModel.isBCSCAuthShown = true
                 viewModel.onBcscLoginRequired(false)
