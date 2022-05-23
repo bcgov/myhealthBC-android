@@ -4,6 +4,7 @@ import android.content.Context
 import ca.bc.gov.data.BuildConfig
 import ca.bc.gov.data.R
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.data.datasource.remote.api.HealthGatewayMobileConfigApi
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPublicApi
 import ca.bc.gov.data.datasource.remote.interceptor.CookiesInterceptor
@@ -103,6 +104,19 @@ class HealthGateWayApiModule {
             .addConverterFactory(gsonConverterFactory)
             .build()
 
+    @MobileConfigRetrofit
+    @Provides
+    fun providesMobileConfigRetrofitClient(
+        @ApplicationContext context: Context,
+        okHttpClient: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory,
+    ): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(context.getString(R.string.base_url))
+            .client(okHttpClient)
+            .addConverterFactory(gsonConverterFactory)
+            .build()
+
     @Provides
     fun providesHealthGateWayPrivateApi(retrofit: Retrofit): HealthGatewayPrivateApi =
         retrofit.create(HealthGatewayPrivateApi::class.java)
@@ -110,4 +124,8 @@ class HealthGateWayApiModule {
     @Provides
     fun providesHealthGateWayPublicApi(retrofit: Retrofit): HealthGatewayPublicApi =
         retrofit.create(HealthGatewayPublicApi::class.java)
+
+    @Provides
+    fun providesHealthGateWayMobileConfigApi(@MobileConfigRetrofit retrofit: Retrofit): HealthGatewayMobileConfigApi =
+        retrofit.create(HealthGatewayMobileConfigApi::class.java)
 }
