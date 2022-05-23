@@ -195,6 +195,7 @@ fun LabOrderEntity.toDto() = LabOrderDto(
     commonName,
     orderingProvider,
     testStatus,
+    orderStatus,
     reportAvailable
 )
 

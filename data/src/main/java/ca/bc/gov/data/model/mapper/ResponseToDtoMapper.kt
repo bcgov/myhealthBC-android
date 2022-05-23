@@ -123,6 +123,7 @@ fun LabTestResponse.toDto(): List<LabOrderWithLabTestDto> {
                 commonName = order.commonName,
                 orderingProvider = order.orderingProvider,
                 testStatus = order.testStatus,
+                orderStatus = order.orderStatus,
                 reportingAvailable = order.reportAvailable
             ),
             tests

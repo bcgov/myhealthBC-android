@@ -17,6 +17,7 @@ data class LabOrderDto(
     val commonName: String? = null,
     val orderingProvider: String? = null,
     val testStatus: String? = null,
+    val orderStatus: String? = null,
     val reportingAvailable: Boolean = false,
     val dataSorce: DataSource = DataSource.BCSC
 )
