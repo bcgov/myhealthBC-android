@@ -70,9 +70,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
 
         try {
             try {
-                val response = mobileConfigRepository.getBaseUrl()
-                encryptedPreferenceStorage.baseUrl = response.baseUrl
-                encryptedPreferenceStorage.baseUrlIsOnline = response.online
+                mobileConfigRepository.getBaseUrl()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
