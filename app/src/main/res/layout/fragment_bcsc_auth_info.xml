@@ -16,7 +16,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/btn_login">
+        app:layout_constraintBottom_toTopOf="@+id/btn_login"
+        android:id="@+id/scrollView2">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -94,6 +95,7 @@
         android:layout_marginEnd="@dimen/space_4_x"
         android:layout_marginStart="@dimen/space_4_x" />
 
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_not_now"
         style="@style/HealthGateway.Widget.MaterialComponents.Button.OutlinedButton"
@@ -102,11 +104,26 @@
         android:text="@string/not_now"
         android:filterTouchesWhenObscured="true"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:layout_marginBottom="@dimen/space_1_x"
+        app:layout_constraintBottom_toTopOf="@+id/tv_download_app" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="0dp"
+        style="?textAppearanceCaption"
+        android:id="@+id/tv_download_app"
+        android:layout_marginStart="@dimen/space_3_x"
+        android:layout_marginEnd="@dimen/space_3_x"
+        android:layout_marginBottom="@dimen/space_2_x"
+        android:textAlignment="center"
+        android:text="@string/don_t_have_bc_service_card_app_please_download_here"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="@dimen/space_4_x"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:layout_marginEnd="@dimen/space_4_x" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
