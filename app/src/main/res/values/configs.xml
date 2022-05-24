@@ -21,4 +21,7 @@
 
     <!--FAQ link-->
     <string name="faq_link">https://www.healthgateway.gov.bc.ca/faq</string>
+
+    <!--Play store link-->
+    <string name="play_store">"http://play.google.com/store/apps/details?id=ca.bc.gov.myhealth"</string>
 </resources>
