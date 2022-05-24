@@ -7,7 +7,6 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -51,10 +50,8 @@ class CovidTestResultFragment : Fragment(R.layout.fragment_single_test_result) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel.getCovidTestDetail(covidOrderId, covidTestId)
-
         observeTestRecordDetails()
+        viewModel.getCovidTestDetail(covidOrderId, covidTestId)
     }
 
     private fun observeTestRecordDetails() {
@@ -101,14 +98,6 @@ class CovidTestResultFragment : Fragment(R.layout.fragment_single_test_result) {
         }
 
         getCovidTestStatus(covidTest)
-
-        binding.scrollView.viewTreeObserver
-            .addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    binding.scrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    binding.scrollView.smoothScrollTo(0, 0)
-                }
-            })
     }
 
     private fun setResultDescription(resultDescription: List<String>?) {
