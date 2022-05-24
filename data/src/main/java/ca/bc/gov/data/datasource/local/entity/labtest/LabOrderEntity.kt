@@ -44,6 +44,8 @@ data class LabOrderEntity(
     val orderingProvider: String? = null,
     @ColumnInfo(name = "test_status")
     val testStatus: String? = null,
+    @ColumnInfo(name = "order_status")
+    val orderStatus: String? = null,
     @ColumnInfo(name = "report_available")
     val reportAvailable: Boolean = false,
     @ColumnInfo(name = "data_source")
