@@ -29,11 +29,11 @@ interface HealthGatewayPrivateApi {
         private const val AUTHORIZATION = "Authorization"
         private const val REPORT_ID = "reportId"
         private const val IS_COVID_19 = "isCovid19"
-        private const val BASE_IMMUNIZATION_SERVICE = "api/immunizationservice/v1/api"
-        private const val BASE_LABORATORY_SERVICE = "api/laboratoryservice/v1/api"
-        private const val BASE_MEDICATION_SERVICE = "api/medicationservice/v1/api"
-        private const val BASE_PATIENT_SERVICE = "api/patientservice/v1/api"
-        private const val BASE_USER_PROFILE_SERVICE = "v1/api/UserProfile"
+        private const val BASE_IMMUNIZATION_SERVICE = "api/immunizationservice"
+        private const val BASE_LABORATORY_SERVICE = "api/laboratoryservice"
+        private const val BASE_MEDICATION_SERVICE = "api/medicationservice"
+        private const val BASE_PATIENT_SERVICE = "api/patientservice"
+        private const val BASE_USER_PROFILE_SERVICE = "api/gatewayapiservice/UserProfile"
     }
 
     @GET("$BASE_PATIENT_SERVICE/Patient/{hdid}")
