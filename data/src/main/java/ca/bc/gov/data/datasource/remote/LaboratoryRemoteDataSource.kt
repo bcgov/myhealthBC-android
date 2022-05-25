@@ -92,7 +92,7 @@ class LaboratoryRemoteDataSource @Inject constructor(
         val response = safeCall { healthGatewayPrivateApi.getLabTests(token, hdid) }
             ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
-        if (response.error != null) {
+        if (response.error != null && response.error.action != Action.REFRESH) {
             throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
         }
 
