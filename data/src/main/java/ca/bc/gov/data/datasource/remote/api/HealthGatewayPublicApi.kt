@@ -1,13 +1,11 @@
 package ca.bc.gov.data.datasource.remote.api
 
 import ca.bc.gov.data.datasource.remote.model.response.CovidTestResponse
-import ca.bc.gov.data.datasource.remote.model.response.MobileConfigurationResponse
 import ca.bc.gov.data.datasource.remote.model.response.VaccineStatusResponse
 import ca.bc.gov.data.datasource.remote.model.response.VerifyLoadResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.HeaderMap
-import retrofit2.http.Query
 
 /**
  * @author Pinakin Kansara
@@ -28,9 +26,4 @@ interface HealthGatewayPublicApi {
 
     @GET("$MOBILE_CONFIGURATION")
     suspend fun verifyLoad(): Response<VerifyLoadResponse>
-
-    @GET("$MOBILE_CONFIGURATION")
-    suspend fun getBaseUrl(
-        @Query("api-version") apiVersion: String? = null
-    ): Response<MobileConfigurationResponse>
 }

@@ -12,6 +12,7 @@ data class LabTestOrder(
     val commonName: String?,
     val orderingProvider: String?,
     val testStatus: String?,
+    val orderStatus: String?,
     val reportAvailable: Boolean,
     val laboratoryTests: List<LaboratoryTest>
 )

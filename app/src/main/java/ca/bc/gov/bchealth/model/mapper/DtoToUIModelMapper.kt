@@ -133,13 +133,8 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
 
 fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
     var description = ""
-    description = if (labTests.size > 1) {
-        description.plus(labTests.size).plus(" tests").plus(" • ")
-            .plus(labOrder.timelineDateTime.toDate())
-    } else {
-        description.plus(labTests.size).plus(" test").plus(" • ")
-            .plus(labOrder.timelineDateTime.toDate())
-    }
+    description = mapOrderStatus(labOrder.orderStatus ?: "").plus(" • ")
+        .plus(labOrder.timelineDateTime.toDate())
     return HealthRecordItem(
         patientId = labOrder.patientId,
         title = labOrder.commonName ?: "",
@@ -151,6 +146,29 @@ fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
         healthRecordType = HealthRecordType.LAB_TEST,
         dataSource = labOrder.dataSorce.name
     )
+}
+
+fun mapOrderStatus(orderStatus: String): String {
+    return when {
+        orderStatus.equals("Held", true) -> {
+            "Pending"
+        }
+        orderStatus.equals("Pending", true) -> {
+            "Pending"
+        }
+        orderStatus.equals("Partial", true) -> {
+            "Pending"
+        }
+        orderStatus.equals("Completed", true) -> {
+            "Completed"
+        }
+        orderStatus.equals("Cancelled", true) -> {
+            "Cancelled"
+        }
+        else -> {
+            orderStatus
+        }
+    }
 }
 
 fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem {
