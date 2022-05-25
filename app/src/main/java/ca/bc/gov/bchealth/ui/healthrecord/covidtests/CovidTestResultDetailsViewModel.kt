@@ -3,9 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.covidtests
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
-import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
-import ca.bc.gov.repository.testrecord.TestResultRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,8 +17,6 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class CovidTestResultDetailsViewModel @Inject constructor(
-    private val patientRepository: PatientRepository,
-    private val testResultRepository: TestResultRepository,
     private val covidOrderRepository: CovidOrderRepository
 ) : ViewModel() {
 
@@ -37,9 +33,44 @@ class CovidTestResultDetailsViewModel @Inject constructor(
             it.copy(onLoading = false, onCovidTestResultDetail = covidOrder)
         }
     }
+
+    fun getCovidTestInPdf(reportId: String) = viewModelScope.launch {
+        _uiState.update {
+            it.copy(onLoading = true)
+        }
+        try {
+            val pdfData = covidOrderRepository.fetchCovidTestPdf(reportId, true)
+            _uiState.update {
+                it.copy(
+                    pdfData = pdfData,
+                    onLoading = false
+                )
+            }
+        } catch (e: java.lang.Exception) {
+            _uiState.update {
+                it.copy(
+                    onError = true,
+                    onLoading = false
+                )
+            }
+        }
+    }
+
+    fun resetUiState() {
+        _uiState.update {
+            it.copy(
+                onLoading = false,
+                onCovidTestResultDetail = null,
+                pdfData = null,
+                onError = false,
+            )
+        }
+    }
 }
 
 data class CovidResultDetailUiState(
     val onLoading: Boolean = false,
-    val onCovidTestResultDetail: CovidOrderWithCovidTestAndPatientDto? = null
+    val onCovidTestResultDetail: CovidOrderWithCovidTestAndPatientDto? = null,
+    val pdfData: String? = null,
+    val onError: Boolean = false,
 )
