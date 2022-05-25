@@ -13,11 +13,9 @@ import retrofit2.http.HeaderMap
 interface HealthGatewayPublicApi {
 
     companion object {
-        private const val HDID = "hdid"
-        private const val AUTHORIZATION = "Authorization"
-        private const val BASE_IMMUNIZATION_SERVICE = "api/immunizationservice/v1/api"
-        private const val BASE_LABORATORY_SERVICE = "api/laboratoryservice/v1/api"
-        private const val BASE_CONFIG = "v1/api"
+        private const val BASE_IMMUNIZATION_SERVICE = "api/immunizationservice"
+        private const val BASE_LABORATORY_SERVICE = "api/laboratoryservice"
+        private const val MOBILE_CONFIGURATION = "MobileConfiguration"
     }
 
     @GET("$BASE_IMMUNIZATION_SERVICE/PublicVaccineStatus")
@@ -26,6 +24,6 @@ interface HealthGatewayPublicApi {
     @GET("$BASE_LABORATORY_SERVICE/PublicLaboratory/CovidTests")
     suspend fun getCovidTests(@HeaderMap headers: Map<String, String>): Response<CovidTestResponse>
 
-    @GET("$BASE_CONFIG/MobileConfiguration")
+    @GET("$MOBILE_CONFIGURATION")
     suspend fun verifyLoad(): Response<VerifyLoadResponse>
 }
