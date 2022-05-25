@@ -264,6 +264,8 @@
     <string name="age_limit_message">You must be 12 years of age or older to use Health Gateway.</string>
     <string name="terms_of_service_message">You must agree to the Health Gateway terms of service before using this app.</string>
     <string name="bc_services_card">BC Services Card</string>
+    <string name="don_t_have_bc_service_card_app_please_download_here">Don\'t have BC Service Card app, please <b>download</b> here.</string>
+    <string name="download_small_case">download</string>
 
     <!--ERROR-->
     <string name="error">Error!</string>

@@ -12,10 +12,8 @@ import retrofit2.http.HeaderMap
 interface HealthGatewayPublicApi {
 
     companion object {
-        private const val HDID = "hdid"
-        private const val AUTHORIZATION = "Authorization"
-        private const val BASE_IMMUNIZATION_SERVICE = "api/immunizationservice/v1/api"
-        private const val BASE_LABORATORY_SERVICE = "api/laboratoryservice/v1/api"
+        private const val BASE_IMMUNIZATION_SERVICE = "api/immunizationservice"
+        private const val BASE_LABORATORY_SERVICE = "api/laboratoryservice"
     }
 
     @GET("$BASE_IMMUNIZATION_SERVICE/PublicVaccineStatus")
