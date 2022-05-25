@@ -17,6 +17,7 @@ import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.patient.PatientRepository
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,7 +36,8 @@ class BcscAuthViewModel @Inject constructor(
     private val clearStorageRepository: ClearStorageRepository,
     private val profileRepository: ProfileRepository,
     private val patientRepository: PatientRepository,
-    private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository
+    private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
+    private val mobileConfigRepository: MobileConfigRepository
 ) : ViewModel() {
 
     private val _authStatus = MutableStateFlow(AuthStatus())
@@ -51,7 +53,7 @@ class BcscAuthViewModel @Inject constructor(
                     showLoading = true
                 )
             }
-            val canInitiateBcscLogin = bcscAuthRepo.verifyLoad()
+            val canInitiateBcscLogin = mobileConfigRepository.getBaseUrl()
             _authStatus.update {
                 it.copy(
                     showLoading = true,

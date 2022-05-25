@@ -8,6 +8,7 @@ import ca.bc.gov.data.datasource.remote.api.HealthGatewayMobileConfigApi
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPublicApi
 import ca.bc.gov.data.datasource.remote.interceptor.CookiesInterceptor
+import ca.bc.gov.data.datasource.remote.interceptor.HostSelectionInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.MockInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.QueueItInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.ReceivedCookieInterceptor
@@ -64,6 +65,7 @@ class HealthGateWayApiModule {
         queueItInterceptor: QueueItInterceptor,
         receivedCookieInterceptor: ReceivedCookieInterceptor,
         mockInterceptor: MockInterceptor,
+        hostSelectionInterceptor: HostSelectionInterceptor
     ) = if (BuildConfig.FLAVOR == "mock") {
         OkHttpClient.Builder()
             .addInterceptor(mockInterceptor)
@@ -74,6 +76,7 @@ class HealthGateWayApiModule {
             .build()
     } else {
         OkHttpClient.Builder()
+            .addInterceptor(hostSelectionInterceptor)
             .addInterceptor(queueItInterceptor)
             .addInterceptor(cookiesInterceptor)
             .addInterceptor(receivedCookieInterceptor)
@@ -83,6 +86,23 @@ class HealthGateWayApiModule {
             }
             .build()
     }
+
+    @Provides
+    @MobileConfigOkHttp
+    fun providesMobileConfigOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor,
+        cookiesInterceptor: CookiesInterceptor,
+        queueItInterceptor: QueueItInterceptor,
+        receivedCookieInterceptor: ReceivedCookieInterceptor,
+    ) = OkHttpClient.Builder()
+        .addInterceptor(queueItInterceptor)
+        .addInterceptor(cookiesInterceptor)
+        .addInterceptor(receivedCookieInterceptor)
+        .addInterceptor(loggingInterceptor)
+        .hostnameVerifier { _, _ ->
+            return@hostnameVerifier true
+        }
+        .build()
 
     @Provides
     fun providesJsonConverterFactory(): GsonConverterFactory = GsonConverterFactory.create(
@@ -108,7 +128,7 @@ class HealthGateWayApiModule {
     @Provides
     fun providesMobileConfigRetrofitClient(
         @ApplicationContext context: Context,
-        okHttpClient: OkHttpClient,
+        @MobileConfigOkHttp okHttpClient: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory,
     ): Retrofit =
         Retrofit.Builder()
