@@ -71,6 +71,10 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                 labTest.testStatus.equals("cancelled", true) -> {
                     testStatus = R.string.cancelled
                 }
+                labTest.testStatus.equals("corrected", true) -> {
+                    testStatus = R.string.corrected
+                    result = labTest.outOfRange
+                }
                 else -> {
                     testStatus = R.string.completed
                     result = labTest.outOfRange
