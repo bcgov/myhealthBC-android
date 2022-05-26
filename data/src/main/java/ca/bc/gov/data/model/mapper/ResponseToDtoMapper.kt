@@ -117,7 +117,7 @@ fun LabTestResponse.toDto(): List<LabOrderWithLabTestDto> {
             LabOrderDto(
                 labPdfId = order.labPdfId,
                 reportId = order.reportId,
-                collectionDateTime = order.collectionDateTime.toDateTime(),
+                collectionDateTime = order.collectionDateTime?.toDateTime(),
                 timelineDateTime = order.timelineDateTime.toDateTime(),
                 reportingSource = order.reportingSource,
                 commonName = order.commonName,

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ebabbc5a6688294f9a16704af9793eb0",
+    "identityHash": "079625912704fc6da2a11b714fab7194",
     "entities": [
       {
         "tableName": "patient",
@@ -647,7 +647,7 @@
       },
       {
         "tableName": "lab_order",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `lab_pdf_id` TEXT, `report_id` TEXT, `collection_date_time` INTEGER NOT NULL, `timeline_date_time` INTEGER NOT NULL, `reporting_source` TEXT, `common_name` TEXT, `ordering_provider` TEXT, `test_status` TEXT, `report_available` INTEGER NOT NULL, `data_source` TEXT NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `lab_pdf_id` TEXT, `report_id` TEXT, `collection_date_time` INTEGER, `timeline_date_time` INTEGER NOT NULL, `reporting_source` TEXT, `common_name` TEXT, `ordering_provider` TEXT, `test_status` TEXT, `order_status` TEXT, `report_available` INTEGER NOT NULL, `data_source` TEXT NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -677,7 +677,7 @@
             "fieldPath": "collectionDateTime",
             "columnName": "collection_date_time",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "timelineDateTime",
@@ -706,6 +706,12 @@
           {
             "fieldPath": "testStatus",
             "columnName": "test_status",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "orderStatus",
+            "columnName": "order_status",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -1097,7 +1103,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ebabbc5a6688294f9a16704af9793eb0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '079625912704fc6da2a11b714fab7194')"
     ]
   }
 }

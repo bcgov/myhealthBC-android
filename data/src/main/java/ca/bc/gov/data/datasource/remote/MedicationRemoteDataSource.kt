@@ -26,7 +26,7 @@ class MedicationRemoteDataSource @Inject constructor(
         val response = safeCall { healthGatewayPrivateApi.getMedicationStatement(hdid, accessToken, protectiveWord) }
             ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
-        if (response.error != null) {
+        if (response.error != null && response.error.action != Action.REFRESH) {
             if (response.error.action?.code == Action.PROTECTED.code) {
                 throw ProtectiveWordException(PROTECTIVE_WORD_ERROR_CODE, response.error.message)
             }

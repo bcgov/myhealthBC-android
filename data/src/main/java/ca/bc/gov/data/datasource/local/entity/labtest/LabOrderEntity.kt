@@ -33,7 +33,7 @@ data class LabOrderEntity(
     @ColumnInfo(name = "report_id")
     val reportId: String? = null,
     @ColumnInfo(name = "collection_date_time")
-    val collectionDateTime: Instant,
+    val collectionDateTime: Instant?,
     @ColumnInfo(name = "timeline_date_time")
     val timelineDateTime: Instant,
     @ColumnInfo(name = "reporting_source")

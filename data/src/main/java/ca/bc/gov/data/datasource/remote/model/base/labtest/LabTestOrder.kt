@@ -7,7 +7,7 @@ data class LabTestOrder(
     val labPdfId: String,
     val reportingSource: String?,
     val reportId: String?,
-    val collectionDateTime: String,
+    val collectionDateTime: String?,
     val timelineDateTime: String,
     val commonName: String?,
     val orderingProvider: String?,
