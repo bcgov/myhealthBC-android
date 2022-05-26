@@ -61,8 +61,9 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                 reportingSource = labOrderWithLabTestDto.labOrder.reportingSource
             )
         )
+
+        var testStatus = 0
         labOrderWithLabTestDto.labTests.forEachIndexed { index, labTest ->
-            var testStatus: Int?
             var result: Boolean? = null
             when {
                 labTest.testStatus.equals("Active", true) -> {
@@ -76,6 +77,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                     result = labTest.outOfRange
                 }
             }
+
             if (index == 0) {
                 labTestDetails.add(
                     LabTestDetail(
@@ -107,6 +109,26 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
             }
         }
 
+        if (labOrderWithLabTestDto.labTests.isEmpty() && testStatus == 0) {
+            labTestDetails.add(
+                0,
+                LabTestDetail(
+                    bannerText = R.string.lab_test_detail_banner_1,
+                    viewType = ITEM_VIEW_TYPE_LAB_TEST_BANNER
+                )
+            )
+        }
+
+        if (testStatus == R.string.pending) {
+            labTestDetails.add(
+                0,
+                LabTestDetail(
+                    bannerText = R.string.lab_test_detail_banner_2,
+                    viewType = ITEM_VIEW_TYPE_LAB_TEST_BANNER
+                )
+            )
+        }
+
         return labTestDetails
     }
 
@@ -129,6 +151,7 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
     companion object {
         const val ITEM_VIEW_TYPE_LAB_ORDER = 0
         const val ITEM_VIEW_TYPE_LAB_TEST = 1
+        const val ITEM_VIEW_TYPE_LAB_TEST_BANNER = 2
     }
 
     fun resetUiState() {
@@ -159,9 +182,9 @@ data class LabTestDetail(
     var id: Long = -1L,
     @StringRes var header: Int? = null,
     @StringRes var summary: Int? = null,
-    @StringRes val title1: Int,
-    @StringRes val title2: Int,
-    @StringRes val title3: Int,
+    @StringRes val title1: Int? = null,
+    @StringRes val title2: Int? = null,
+    @StringRes val title3: Int? = null,
     val collectionDateTime: String? = "N/A",
     val timelineDateTime: String? = null,
     val orderingProvider: String? = "N/A",
@@ -169,5 +192,6 @@ data class LabTestDetail(
     val testName: String? = "N/A",
     val isOutOfRange: Boolean? = null,
     val testStatus: Int? = null,
+    val bannerText: Int? = null,
     val viewType: Int = LabTestDetailViewModel.ITEM_VIEW_TYPE_LAB_ORDER
 )
