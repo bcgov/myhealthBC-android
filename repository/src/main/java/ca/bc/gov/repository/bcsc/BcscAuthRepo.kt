@@ -76,11 +76,12 @@ class BcscAuthRepo(
         val authRequestBuilder =
             AuthorizationRequest.Builder(
                 authServiceConfiguration, // the authorization service configuration
-                CLIENT_ID, // the client ID, typically pre-registered and static
+                applicationContext.getString(R.string.client_id), // the client ID, typically pre-registered and static
                 ResponseTypeValues.CODE, // the response_type value: we want a code
                 Uri.parse(REDIRECT_URI) // the redirect URI to which the auth response is sent
             )
 
+        val params = mapOf("kc_idp_hint" to applicationContext.getString(R.string.kc_idp_hint))
         val authorizationRequest = authRequestBuilder
             .setScope(SCOPE)
             .setPrompt(PROMPT)
@@ -202,9 +203,7 @@ class BcscAuthRepo(
     }
 
     companion object {
-        private const val CLIENT_ID = "myhealthapp"
         const val REDIRECT_URI = "myhealthbc://*"
-        private val params = mapOf("kc_idp_hint" to "bcsc")
         private const val SCOPE = "openid email profile"
         private const val PROMPT = "login"
         private const val HDID = "hdid"
