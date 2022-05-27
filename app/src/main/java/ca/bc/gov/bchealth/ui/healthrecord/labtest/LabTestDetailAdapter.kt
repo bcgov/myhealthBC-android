@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.databinding.ItemLabTestDetailBannerBinding
 import ca.bc.gov.bchealth.databinding.ItemLabTestDetailBinding
 import ca.bc.gov.bchealth.utils.makeLinks
 import ca.bc.gov.bchealth.utils.redirect
@@ -21,6 +22,9 @@ import ca.bc.gov.bchealth.utils.showIfNullOrBlank
 class LabTestDetailAdapter :
     ListAdapter<LabTestDetail, RecyclerView.ViewHolder>(LabTestRecordsDiffCallBacks()) {
 
+    class LabTestBannerViewHolder(val binding: ItemLabTestDetailBannerBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
     class LabOrderViewHolder(val binding: ItemLabTestDetailBinding) :
         RecyclerView.ViewHolder(binding.root)
 
@@ -29,6 +33,12 @@ class LabTestDetailAdapter :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
+            LabTestDetailViewModel.ITEM_VIEW_TYPE_LAB_TEST_BANNER -> {
+                val binding = ItemLabTestDetailBannerBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false
+                )
+                LabTestBannerViewHolder(binding)
+            }
             LabTestDetailViewModel.ITEM_VIEW_TYPE_LAB_ORDER -> {
                 val binding = ItemLabTestDetailBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
@@ -48,6 +58,21 @@ class LabTestDetailAdapter :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val labTestDetail = getItem(position)
         when (holder) {
+            is LabTestBannerViewHolder -> {
+                holder.binding.apply {
+                    holder.itemView.context.apply {
+                        tvInfo.text = labTestDetail.bannerText?.let { getString(it) }
+                        tvInfo.makeLinks(
+                            Pair(
+                                getString(R.string.learn_more),
+                                View.OnClickListener {
+                                    redirect(getString(R.string.faq_link))
+                                }
+                            )
+                        )
+                    }
+                }
+            }
             is LabOrderViewHolder -> {
                 holder.binding.apply {
                     tvHeader.visibility = View.GONE
@@ -56,9 +81,9 @@ class LabTestDetailAdapter :
                     tvDesc2.text = labTestDetail.orderingProvider.showIfNullOrBlank(holder.itemView.context)
                     tvDesc3.text = labTestDetail.reportingSource.showIfNullOrBlank(holder.itemView.context)
                     holder.itemView.context.apply {
-                        tvTitle1.text = getString(labTestDetail.title1)
-                        tvTitle2.text = getString(labTestDetail.title2)
-                        tvTitle3.text = getString(labTestDetail.title3)
+                        tvTitle1.text = labTestDetail.title1?.let { getString(it) }
+                        tvTitle2.text = labTestDetail.title2?.let { getString(it) }
+                        tvTitle3.text = labTestDetail.title3?.let { getString(it) }
                     }
                 }
             }
@@ -87,9 +112,9 @@ class LabTestDetailAdapter :
                         tvSummary.visibility = View.GONE
                     }
                     holder.itemView.context.apply {
-                        tvTitle1.text = getString(labTestDetail.title1)
-                        tvTitle2.text = getString(labTestDetail.title2)
-                        tvTitle3.text = getString(labTestDetail.title3)
+                        tvTitle1.text = labTestDetail.title1?.let { getString(it) }
+                        tvTitle2.text = labTestDetail.title2?.let { getString(it) }
+                        tvTitle3.text = labTestDetail.title3?.let { getString(it) }
                     }
 
                     tvDesc1.text = labTestDetail.testName.showIfNullOrBlank(holder.itemView.context)

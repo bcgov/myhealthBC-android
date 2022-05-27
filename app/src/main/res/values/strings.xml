@@ -306,6 +306,9 @@
 
     <!--Lab test-->
     <string name="lab_test">Lab test</string>
+    <string name="results_are_pending">Results are pending</string>
+    <string name="lab_test_detail_banner_1">It can take between 1 and 7 days to complete. Find resources to learn about your lab test and what the results mean. Learn more</string>
+    <string name="lab_test_detail_banner_2">It can take between 1 and 7 days to complete.</string>
 
     <!-- Home screen -->
     <string name="hello">Hello</string>

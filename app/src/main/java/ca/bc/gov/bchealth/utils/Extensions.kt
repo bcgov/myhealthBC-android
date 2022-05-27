@@ -179,10 +179,14 @@ fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {
             }
         }
         startIndexOfLink = this.text.toString().indexOf(link.first, startIndexOfLink + 1)
-        spannableString.setSpan(
-            clickableSpan, startIndexOfLink, startIndexOfLink + link.first.length,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+        try {
+            spannableString.setSpan(
+                clickableSpan, startIndexOfLink, startIndexOfLink + link.first.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        } catch (e: Exception) {
+            // no implementation required.
+        }
     }
     this.movementMethod =
         LinkMovementMethod.getInstance() // without LinkMovementMethod, link can not click
