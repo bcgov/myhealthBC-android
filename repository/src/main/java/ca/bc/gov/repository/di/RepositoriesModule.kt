@@ -47,6 +47,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 /**
@@ -132,9 +133,10 @@ class RepositoriesModule {
     @Singleton
     fun providesClearStorageRepository(
         localDataSource: LocalDataSource,
-        preferenceStorage: EncryptedPreferenceStorage
+        preferenceStorage: EncryptedPreferenceStorage,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher
     ) =
-        ClearStorageRepository(localDataSource, preferenceStorage)
+        ClearStorageRepository(localDataSource, preferenceStorage, ioDispatcher)
 
     @Provides
     @Singleton

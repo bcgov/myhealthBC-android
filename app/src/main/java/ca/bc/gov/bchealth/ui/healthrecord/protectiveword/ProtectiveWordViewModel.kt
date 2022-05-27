@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.ErrorData
+import ca.bc.gov.repository.CacheRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProtectiveWordViewModel @Inject constructor(
     private val medicationRecordRepository: MedicationRecordRepository,
-    private val bcscAuthRepo: BcscAuthRepo
+    private val bcscAuthRepo: BcscAuthRepo,
+    private val cacheRepository: CacheRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FetchMedicationUiState())
@@ -115,6 +117,10 @@ class ProtectiveWordViewModel @Inject constructor(
                 isButtonClickEnabled = false
             )
         }
+    }
+
+    fun updateProtectiveWordAdded(isProtectiveWordAdded: Boolean) {
+        cacheRepository.updateProtectiveWordAdded(isProtectiveWordAdded)
     }
 }
 
