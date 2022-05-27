@@ -9,6 +9,7 @@ import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.utils.toUniquePatientName
+import ca.bc.gov.repository.CacheRepository
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.ProfileRepository
@@ -37,7 +38,8 @@ class BcscAuthViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val patientRepository: PatientRepository,
     private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
-    private val mobileConfigRepository: MobileConfigRepository
+    private val mobileConfigRepository: MobileConfigRepository,
+    private val cacheRepository: CacheRepository
 ) : ViewModel() {
 
     private val _authStatus = MutableStateFlow(AuthStatus())
@@ -119,7 +121,6 @@ class BcscAuthViewModel @Inject constructor(
             }
             val isLoggedSuccess = bcscAuthRepo.processAuthResponse(data)
             if (isLoggedSuccess) {
-                clearStorageRepository.clearMedicationPreferences()
                 _authStatus.update {
                     it.copy(
                         showLoading = true,
@@ -166,6 +167,8 @@ class BcscAuthViewModel @Inject constructor(
     }
 
     fun processLogoutResponse(context: Context) = viewModelScope.launch {
+        cacheRepository.updateProtectiveWordAdded(false)
+        clearStorageRepository.clearMedicationPreferences()
         WorkManager.getInstance(context).cancelUniqueWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME)
         bcscAuthRepo.processLogoutResponse()
         _authStatus.update {

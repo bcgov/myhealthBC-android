@@ -3,7 +3,7 @@ package ca.bc.gov.repository
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.data.datasource.local.LocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -12,19 +12,21 @@ import javax.inject.Inject
  */
 class ClearStorageRepository @Inject constructor(
     private val localDataSource: LocalDataSource,
-    private val preferenceStorage: EncryptedPreferenceStorage
+    private val preferenceStorage: EncryptedPreferenceStorage,
+    private val ioDispatcher: CoroutineDispatcher
 ) {
 
-    suspend fun clearDataBase() = withContext(Dispatchers.IO) {
+    suspend fun clearDataBase() = withContext(ioDispatcher) {
         localDataSource.clearDataBase()
     }
 
-    suspend fun clearPreferences() = withContext(Dispatchers.IO) {
+    suspend fun clearPreferences() = withContext(ioDispatcher) {
         preferenceStorage.clear()
     }
 
-    suspend fun clearMedicationPreferences() = withContext(Dispatchers.IO) {
+    suspend fun clearMedicationPreferences() = withContext(ioDispatcher) {
         preferenceStorage.protectiveWord = null
-        preferenceStorage.protectiveWordState = ProtectiveWordState.PROTECTIVE_WORD_NOT_REQUIRED.value
+        preferenceStorage.protectiveWordState =
+            ProtectiveWordState.PROTECTIVE_WORD_NOT_REQUIRED.value
     }
 }

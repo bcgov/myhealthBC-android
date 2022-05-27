@@ -9,6 +9,7 @@ import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toStartOfDayInstant
+import ca.bc.gov.repository.CacheRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.patient.PatientRepository
@@ -28,7 +29,8 @@ import javax.inject.Inject
 class IndividualHealthRecordViewModel @Inject constructor(
     private val patientRepository: PatientRepository,
     private val medicationRecordRepository: MedicationRecordRepository,
-    private val bcscAuthRepo: BcscAuthRepo
+    private val bcscAuthRepo: BcscAuthRepo,
+    private val cacheRepository: CacheRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(IndividualHealthRecordsUiState())
@@ -188,6 +190,10 @@ class IndividualHealthRecordViewModel @Inject constructor(
 
     fun isProtectiveWordRequired(): Boolean {
         return medicationRecordRepository.getProtectiveWordState() == ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
+    }
+
+    fun isProtectiveWordAdded(): Boolean {
+        return cacheRepository.isProtectiveWordAdded()
     }
 }
 

@@ -103,7 +103,7 @@ class ProtectiveWordFragment : BaseFragment(R.layout.fragment_protective_word) {
                     }
 
                     if (fetchMedicationUiState.isRecordsUpdated) {
-                        sharedViewModel.isProtectiveWordAdded = true
+                        viewModel.updateProtectiveWordAdded(true)
                         parentFragmentManager.setFragmentResult(
                             KEY_MEDICATION_RECORD_REQUEST,
                             bundleOf(
