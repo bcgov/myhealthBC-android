@@ -20,7 +20,6 @@ suspend inline fun <T> safeCall(crossinline responseFun: suspend () -> Response<
             )
         }
     } catch (e: Exception) {
-        e.printStackTrace()
         when (e) {
             is ProtectiveWordException -> {
                 throw e

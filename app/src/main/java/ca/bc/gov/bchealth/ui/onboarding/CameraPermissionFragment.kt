@@ -106,7 +106,7 @@ class CameraPermissionFragment : Fragment(R.layout.fragment_camera_permission) {
                     intent.data = uri
                     startActivity(intent)
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    // no implementation required
                 }
             }
         )

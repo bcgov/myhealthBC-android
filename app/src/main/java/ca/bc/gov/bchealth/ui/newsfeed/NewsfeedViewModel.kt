@@ -59,7 +59,7 @@ class NewsfeedViewModel @Inject constructor() : ViewModel() {
 
             newsfeedMutableLiveData.postValue(newsFeeds)
         } catch (e: Exception) {
-            e.printStackTrace()
+            // no implementation required
         }
     }
 

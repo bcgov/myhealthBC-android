@@ -21,31 +21,15 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.graphics.drawable.toBitmap
 import ca.bc.gov.bchealth.R
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
-import java.util.Locale
 
 /*
 * For displaying Toast
 * */
 fun Context.toast(message: String) =
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-
-/*
-* For date to be shown under every news feed
-* */
-fun Long.getNewsFeedDate(): String {
-    return try {
-        val date = Date(this)
-        val format = SimpleDateFormat("y-MM-d", Locale.CANADA)
-        format.format(date)
-    } catch (e: java.lang.Exception) {
-        e.printStackTrace()
-        ""
-    }
-}
 
 /*
 * Check is network connection
@@ -94,7 +78,6 @@ fun Context.redirect(url: String) {
             Uri.parse(url)
         )
     } catch (e: Exception) {
-        e.printStackTrace()
         showURLFallBack(this, url)
     }
 }
