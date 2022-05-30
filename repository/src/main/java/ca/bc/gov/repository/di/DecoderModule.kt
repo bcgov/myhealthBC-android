@@ -57,7 +57,7 @@ class DecoderModule {
                 val jwks = Gson().fromJson(jwksKeysJson, Jwks::class.java)
                 defaultKeys.add(DefaultJWKSKeys(issuer.iss, jwks.keys))
             } catch (e: Exception) {
-                e.printStackTrace()
+                // no implementation required
             }
         }
         return defaultKeys.toList()

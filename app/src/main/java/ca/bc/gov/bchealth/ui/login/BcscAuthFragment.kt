@@ -166,12 +166,13 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
     private fun handleQueueIt(authStatus: AuthStatus) {
         if (authStatus.onMustBeQueued && authStatus.queItUrl != null) {
+            viewModel.resetAuthStatus()
             queUser(authStatus.queItUrl)
         }
 
         if (authStatus.queItTokenUpdated) {
             viewModel.resetAuthStatus()
-            viewModel.verifyLoad()
+            viewModel.checkAgeLimit() // Queueit exception is thrown for age limit check API
         }
     }
 

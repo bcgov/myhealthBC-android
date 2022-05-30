@@ -3,8 +3,10 @@ package ca.bc.gov.repository.worker
 import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
+import androidx.work.Data
 import androidx.work.WorkerParameters
 import ca.bc.gov.common.R
+import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
@@ -57,23 +59,28 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val mobileConfigRepository: MobileConfigRepository
 ) : CoroutineWorker(context, workerParams) {
 
+    var queueItUrl = ""
+
     override suspend fun doWork(): Result {
         if (bcscAuthRepo.getPostLoginCheck() == PostLoginCheck.IN_PROGRESS.name) {
             return Result.failure()
         }
         fetchAuthRecords()
-        return Result.success()
+        if (queueItUrl.isNotBlank()) {
+            return Result.failure(
+                Data.Builder()
+                    .putString("queueItUrl", queueItUrl)
+                    .build()
+            )
+        } else {
+            return Result.success()
+        }
     }
 
     private suspend fun fetchAuthRecords() {
         var isApiFailed = false
 
         try {
-            try {
-                mobileConfigRepository.getBaseUrl()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
 
             val authParameters = bcscAuthRepo.getAuthParameters()
             var patient: PatientDto? = null
@@ -88,13 +95,19 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             )
 
             try {
+                mobileConfigRepository.getBaseUrl()
+            } catch (e: Exception) {
+                handleQueueItException(e)
+            }
+
+            try {
                 patient = patientWithBCSCLoginRepository.getPatient(
                     authParameters.first,
                     authParameters.second
                 )
             } catch (e: Exception) {
+                handleQueueItException(e)
                 isApiFailed = true
-                e.printStackTrace()
             }
 
             /*
@@ -108,8 +121,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                     )
                 }
             } catch (e: Exception) {
+                handleQueueItException(e)
                 isApiFailed = true
-                e.printStackTrace()
             }
 
             /*
@@ -123,8 +136,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                     )
                 }
             } catch (e: Exception) {
+                handleQueueItException(e)
                 isApiFailed = true
-                e.printStackTrace()
             }
 
             /*
@@ -139,11 +152,16 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                     )
                 }
             } catch (e: Exception) {
-                if (e is ProtectiveWordException) {
-                    encryptedPreferenceStorage.protectiveWordState =
-                        ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
-                } else {
-                    isApiFailed = true
+                when (e) {
+                    is MustBeQueuedException ->
+                        queueItUrl = e.message.toString()
+                    is ProtectiveWordException -> {
+                        encryptedPreferenceStorage.protectiveWordState =
+                            ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
+                    }
+                    else -> {
+                        isApiFailed = true
+                    }
                 }
             }
 
@@ -159,6 +177,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                         )
                 }
             } catch (e: Exception) {
+                handleQueueItException(e)
                 isApiFailed = true
             }
 
@@ -207,7 +226,13 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 notificationHelper.updateNotification(context.getString(R.string.notification_title_on_success))
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            // no implementation required.
+        }
+    }
+
+    private fun handleQueueItException(e: Exception) {
+        if (e is MustBeQueuedException) {
+            queueItUrl = e.message.toString()
         }
     }
 }

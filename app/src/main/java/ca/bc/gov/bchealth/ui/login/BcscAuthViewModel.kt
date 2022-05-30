@@ -224,7 +224,8 @@ class BcscAuthViewModel @Inject constructor(
                 ageLimitCheck = null,
                 canInitiateBcscLogin = null,
                 onMustBeQueued = false,
-                tosAccepted = null
+                tosAccepted = null,
+                queItUrl = null
             )
         }
     }

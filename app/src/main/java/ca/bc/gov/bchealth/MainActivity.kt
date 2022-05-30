@@ -1,6 +1,8 @@
 package ca.bc.gov.bchealth
 
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -9,13 +11,22 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import androidx.work.WorkManager
 import ca.bc.gov.bchealth.databinding.ActivityMainBinding
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.common.model.settings.AnalyticsFeature
+import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
+import com.queue_it.androidsdk.Error
+import com.queue_it.androidsdk.QueueITEngine
+import com.queue_it.androidsdk.QueueListener
+import com.queue_it.androidsdk.QueuePassedInfo
+import com.queue_it.androidsdk.QueueService
 import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 /**
  * [MainActivity]
@@ -26,8 +37,8 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private val binding by viewBindings(ActivityMainBinding::bind)
-
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +71,8 @@ class MainActivity : AppCompatActivity() {
                 else -> hideBottomNav()
             }
         }
+
+        observeQueueItExceptionFromWorker()
     }
 
     private fun toggleAnalyticsFeature() {
@@ -82,5 +95,58 @@ class MainActivity : AppCompatActivity() {
 
     private fun hideBottomNav() {
         binding.bottomNav.visibility = View.GONE
+    }
+
+    private fun observeQueueItExceptionFromWorker() {
+        val workRequest = WorkManager.getInstance(applicationContext)
+            .getWorkInfosForUniqueWorkLiveData(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME)
+        if (!workRequest.hasObservers()) {
+            workRequest.observe(
+                this
+            ) {
+                if (it.firstOrNull()?.state?.name == "FAILED") {
+                    val queueItUrl = it.firstOrNull()!!.outputData.getString("queueItUrl")
+                    Log.d("TAG", queueItUrl.toString())
+                    queUser(queueItUrl.toString())
+                }
+            }
+        }
+    }
+
+    private fun queUser(value: String) {
+        try {
+            val uri = Uri.parse(URLDecoder.decode(value, StandardCharsets.UTF_8.name()))
+            val customerId = uri.getQueryParameter("c")
+            val waitingRoomId = uri.getQueryParameter("e")
+            QueueService.IsTest = false
+            val queueITEngine =
+                QueueITEngine(this, customerId, waitingRoomId, "", "", queueListener)
+            queueITEngine.run(this)
+        } catch (e: Exception) {
+            Log.i(this::class.java.name, "Exception in queUser: ${e.message}")
+        }
+    }
+
+    private val queueListener = object : QueueListener() {
+        override fun onQueuePassed(queuePassedInfo: QueuePassedInfo?) {
+            Log.d("TAG", "setQueItToken: token = $queuePassedInfo?.queueItToken")
+            viewModel.setQueItToken(queuePassedInfo?.queueItToken)
+        }
+
+        override fun onQueueDisabled() {
+            // Do nothing
+        }
+
+        override fun onQueueViewWillOpen() {
+            // Do nothing
+        }
+
+        override fun onError(error: Error?, errorMessage: String?) {
+            // Do nothing
+        }
+
+        override fun onQueueItUnavailable() {
+            // Do nothing
+        }
     }
 }

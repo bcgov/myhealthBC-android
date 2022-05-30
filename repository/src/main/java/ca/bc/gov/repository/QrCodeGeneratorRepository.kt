@@ -43,7 +43,6 @@ class QrCodeGeneratorRepository {
 
             return addWhiteBorder(scaledBitMap, 10)
         } catch (e: Exception) {
-            e.printStackTrace()
             return null
         }
     }

@@ -362,7 +362,7 @@ class FetchVaccineRecordFragment : BaseFragment(R.layout.fragment_fetch_vaccine_
             )
             queueITEngine.run(requireActivity())
         } catch (e: Exception) {
-            e.printStackTrace()
+            // no implementation required
         }
     }
 }
