@@ -61,7 +61,7 @@ class SettingFragment : BaseFragment(R.layout.fragment_setting) {
 
         analyticsSwitch()
 
-        binding.tvDeleteAllRecords.setOnClickListener {
+        binding.layoutDeleteAllRecords.setOnClickListener {
             showDeleteRecordsAlertDialog()
         }
     }
