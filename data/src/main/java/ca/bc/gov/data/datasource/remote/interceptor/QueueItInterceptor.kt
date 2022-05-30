@@ -49,9 +49,9 @@ class QueueItInterceptor @Inject constructor(
 
         var retryCount = 0
         var response: Response?
-        var body: ResponseBody? = null
-        var stringBody: String? = null
-        var loaded = false
+        var body: ResponseBody?
+        var stringBody: String?
+        var loaded: Boolean
         do {
             response = chain.proceed(request)
             if (mustQueue(response)) {
@@ -79,8 +79,8 @@ class QueueItInterceptor @Inject constructor(
             }
         } while (!loaded && retryCount < 3)
 
-        if (!loaded || response == null) {
-            throw IOException("Getting cached data from health gateway")
+        if (response == null) {
+            throw IOException("No data from health gateway!")
         }
 
         val newBody = stringBody?.toResponseBody(body?.contentType())
