@@ -70,7 +70,7 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
                     viewModel.addComment(
                         args.parentEntryId,
                         binding.comment.edComment.text.toString(),
-                        "Med"
+                        CommentEntryTypeCode.MEDICATION.value
                     )
                 }
             }

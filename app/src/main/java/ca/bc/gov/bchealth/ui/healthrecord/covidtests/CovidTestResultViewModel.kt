@@ -47,11 +47,48 @@ class CovidTestResultViewModel @Inject constructor(
             // no implementation required
         }
     }
+
+    fun getCovidTestInPdf(reportId: String) = viewModelScope.launch {
+        _uiState.update {
+            it.copy(onLoading = true)
+        }
+        try {
+            val pdfData = covidOrderRepository.fetchCovidTestPdf(reportId, true)
+            _uiState.update {
+                it.copy(
+                    pdfData = pdfData,
+                    onLoading = false
+                )
+            }
+        } catch (e: java.lang.Exception) {
+            _uiState.update {
+                it.copy(
+                    onError = true,
+                    onLoading = false
+                )
+            }
+        }
+    }
+
+    fun resetUiState() {
+        _uiState.update {
+            it.copy(
+                onLoading = false,
+                covidOrder = null,
+                covidTest = null,
+                patient = null,
+                pdfData = null,
+                onError = false
+            )
+        }
+    }
 }
 
 data class CovidTestResultDetailUiModel(
     val onLoading: Boolean = false,
     val covidOrder: CovidOrderDto? = null,
     val covidTest: CovidTestDto? = null,
-    val patient: PatientDto? = null
+    val patient: PatientDto? = null,
+    val pdfData: String? = null,
+    val onError: Boolean = false,
 )

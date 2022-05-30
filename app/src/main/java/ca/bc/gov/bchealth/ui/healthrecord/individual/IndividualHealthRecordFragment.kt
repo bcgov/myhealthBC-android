@@ -180,7 +180,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             .getWorkInfosForUniqueWorkLiveData(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME)
         if (!workRequest.hasObservers()) {
             workRequest.observe(viewLifecycleOwner) {
-                if (it.firstOrNull()?.state == WorkInfo.State.SUCCEEDED &&
+                if ((it.firstOrNull()?.state == WorkInfo.State.SUCCEEDED || it.firstOrNull()?.state == WorkInfo.State.RUNNING) &&
                     args.authStatus == AuthenticationStatus.AUTHENTICATED.source
                 ) {
                     viewModel.getIndividualsHealthRecord()

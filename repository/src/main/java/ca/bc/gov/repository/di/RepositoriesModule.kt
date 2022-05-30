@@ -207,9 +207,10 @@ class RepositoriesModule {
     fun provideCommentRepository(
         commentLocalDataSource: CommentLocalDataSource,
         commentRemoteDataSource: CommentRemoteDataSource,
-        bcscAuthRepo: BcscAuthRepo
+        bcscAuthRepo: BcscAuthRepo,
+        @ApplicationContext context: Context
     ): CommentRepository =
-        CommentRepository(commentRemoteDataSource, commentLocalDataSource, bcscAuthRepo)
+        CommentRepository(commentRemoteDataSource, commentLocalDataSource, bcscAuthRepo, context)
 
     @Provides
     @Singleton
@@ -221,9 +222,10 @@ class RepositoriesModule {
     @Singleton
     fun provideCovidOrderRepository(
         laboratoryRemoteDataSource: LaboratoryRemoteDataSource,
-        covidOrderLocalDataSource: CovidOrderLocalDataSource
+        covidOrderLocalDataSource: CovidOrderLocalDataSource,
+        bcscAuthRepo: BcscAuthRepo
     ): CovidOrderRepository =
-        CovidOrderRepository(laboratoryRemoteDataSource, covidOrderLocalDataSource)
+        CovidOrderRepository(laboratoryRemoteDataSource, covidOrderLocalDataSource, bcscAuthRepo)
 
     @Provides
     @Singleton

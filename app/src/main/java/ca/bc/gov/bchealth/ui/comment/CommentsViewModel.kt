@@ -32,7 +32,7 @@ class CommentsViewModel @Inject constructor(
         }
 
         try {
-            val commentsDtoList = commentRepository.getComments(parentEntryId) as MutableList
+            val commentsDtoList = commentRepository.getLocalComments(parentEntryId) as MutableList
             commentsDtoList.sortByDescending { it.createdDateTime }
             _uiState.update { it ->
                 it.copy(
@@ -110,3 +110,7 @@ data class Comment(
     val text: String?,
     val date: Instant?
 )
+
+enum class CommentEntryTypeCode(val value: String) {
+    MEDICATION("Med")
+}

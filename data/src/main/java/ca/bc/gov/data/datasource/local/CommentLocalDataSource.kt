@@ -27,5 +27,12 @@ class CommentLocalDataSource @Inject constructor(
         return commentDao.insert(comments.map { it.toEntity() })
     }
 
-    suspend fun delete(parentEntryId: String?) = commentDao.delete(parentEntryId)
+    suspend fun delete(parentEntryId: String?, isUploaded: Boolean) = commentDao.delete(parentEntryId, isUploaded)
+
+    suspend fun deleteById(id: String) = commentDao.deleteById(id)
+
+    suspend fun findCommentsByUploadFlag(isUploaded: Boolean): List<CommentDto> =
+        commentDao.findCommentsByUploadFlag(isUploaded).map { it.toDto() }
+
+    suspend fun delete(isUploaded: Boolean) = commentDao.delete(isUploaded)
 }

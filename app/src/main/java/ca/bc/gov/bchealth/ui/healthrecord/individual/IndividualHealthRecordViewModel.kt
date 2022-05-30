@@ -42,11 +42,15 @@ class IndividualHealthRecordViewModel @Inject constructor(
 
     fun getIndividualsHealthRecord() = viewModelScope.launch {
         // Patient Id will change post sync of health records
-        val bcscUserPatientId =
-            patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).id
-        getIndividualsHealthRecord(
-            bcscUserPatientId
-        )
+        try {
+            val bcscUserPatientId =
+                patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).id
+            getIndividualsHealthRecord(
+                bcscUserPatientId,
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun getIndividualsHealthRecord(

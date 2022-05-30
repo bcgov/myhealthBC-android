@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentMedicationDetailsBinding
+import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.updateCommentEndIcon
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -88,7 +89,6 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
 
                     if (state.comments.isNotEmpty()) {
                         commentsAdapter.submitList(state.comments)
-                        viewModel.resetUiState()
                         // clear comment
                         binding.comment.edComment.setText("")
                     }
@@ -120,9 +120,8 @@ class MedicationDetailsFragment : Fragment(R.layout.fragment_medication_details)
             setEndIconOnClickListener {
                 if (!binding.comment.edComment.text.isNullOrBlank()) {
                     viewModel.addComment(
-                        args.medicationId,
                         binding.comment.edComment.text.toString(),
-                        "Med"
+                        CommentEntryTypeCode.MEDICATION.value
                     )
                 }
             }
