@@ -139,7 +139,7 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
                         if (it.endSessionIntent != null) {
                             logoutResultLauncher.launch(it.endSessionIntent)
                             bcscAuthViewModel.resetAuthStatus()
-                            filterSharedViewModel.updateFilter(mutableListOf(TimelineTypeFilter.ALL), null, null)
+                            filterSharedViewModel.updateFilter(mutableListOf(TimelineTypeFilter.ALL.name), null, null)
                         }
                     }
                 }

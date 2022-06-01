@@ -3,7 +3,6 @@ package ca.bc.gov.bchealth.ui.healthrecord.protectiveword
 import android.os.Bundle
 import android.text.InputFilter
 import android.view.View
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
@@ -25,9 +24,6 @@ import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-
-const val KEY_MEDICATION_RECORD_REQUEST = "KEY_MEDICATION_RECORD_REQUEST"
-const val KEY_MEDICATION_RECORD_UPDATED = "KEY_MEDICATION_RECORD_UPDATED"
 
 @AndroidEntryPoint
 class ProtectiveWordFragment : BaseFragment(R.layout.fragment_protective_word) {
@@ -104,12 +100,6 @@ class ProtectiveWordFragment : BaseFragment(R.layout.fragment_protective_word) {
 
                     if (fetchMedicationUiState.isRecordsUpdated) {
                         viewModel.updateProtectiveWordAdded(true)
-                        parentFragmentManager.setFragmentResult(
-                            KEY_MEDICATION_RECORD_REQUEST,
-                            bundleOf(
-                                KEY_MEDICATION_RECORD_UPDATED to true,
-                            )
-                        )
                         findNavController().popBackStack()
                     }
                 }

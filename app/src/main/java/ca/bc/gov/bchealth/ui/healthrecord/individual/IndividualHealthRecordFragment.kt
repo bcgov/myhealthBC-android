@@ -22,8 +22,6 @@ import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterUiState
 import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterViewModel
 import ca.bc.gov.bchealth.ui.healthrecord.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
-import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_REQUEST
-import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.KEY_MEDICATION_RECORD_UPDATED
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.utils.hide
@@ -74,8 +72,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
         handleBcscAuthResponse()
 
-        protectiveWordFragmentResultListener()
-
         observeHealthRecords()
 
         observeHealthRecordsSyncCompletion()
@@ -114,16 +110,16 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         resetFilters()
         filterUiState.timelineTypeFilter.forEach {
             when (it) {
-                TimelineTypeFilter.MEDICATION -> {
+                TimelineTypeFilter.MEDICATION.name -> {
                     binding.content.chipGroup.chipMedication.show()
                 }
-                TimelineTypeFilter.IMMUNIZATION -> {
+                TimelineTypeFilter.IMMUNIZATION.name -> {
                     binding.content.chipGroup.chipImmunizations.show()
                 }
-                TimelineTypeFilter.COVID_19_TEST -> {
+                TimelineTypeFilter.COVID_19_TEST.name -> {
                     binding.content.chipGroup.chipCovidTest.show()
                 }
-                TimelineTypeFilter.LAB_TEST -> {
+                TimelineTypeFilter.LAB_TEST.name -> {
                     binding.content.chipGroup.chipLabTest.show()
                 }
             }
@@ -139,13 +135,11 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private fun clearFilterClickListener() {
         binding.content.chipGroup.imgClear.setOnClickListener {
-            filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL), null, null)
+            filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL.name), null, null)
 
-            viewModel.getIndividualsHealthRecord(
-                filterSharedViewModel.filterState.value.timelineTypeFilter,
-                filterSharedViewModel.filterState.value.filterFromDate,
-                filterSharedViewModel.filterState.value.filterToDate
-            )
+            updateHiddenMedicationRecordsView(viewModel.uiState.value)
+
+            healthRecordsAdapter.filter.filter(getFilterString())
         }
     }
 
@@ -182,11 +176,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         if (!workRequest.hasObservers()) {
             workRequest.observe(viewLifecycleOwner) {
                 if (it.firstOrNull()?.state == WorkInfo.State.SUCCEEDED) {
-                    viewModel.getIndividualsHealthRecord(
-                        filterSharedViewModel.filterState.value.timelineTypeFilter,
-                        filterSharedViewModel.filterState.value.filterFromDate,
-                        filterSharedViewModel.filterState.value.filterToDate
-                    )
+                    viewModel.getIndividualsHealthRecord()
                 }
 
                 if (it.firstOrNull()?.state == WorkInfo.State.RUNNING) {
@@ -194,7 +184,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     binding.emptyView.tvClearFilterMsg.text = ""
                 } else {
                     binding.emptyView.tvNoRecord.text = getString(R.string.no_records_found)
-                    binding.emptyView.tvClearFilterMsg.text = getString(R.string.clear_all_filters_and_start_over)
+                    binding.emptyView.tvClearFilterMsg.text =
+                        getString(R.string.clear_all_filters_and_start_over)
                 }
             }
         }
@@ -226,6 +217,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             binding.content.rvHealthRecords.adapter = concatAdapter
             displayBcscRecords(uiState)
         } else {
+            //clear filter when session is expired
+            filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL.name), null, null)
             concatAdapter = ConcatAdapter(
                 hiddenHealthRecordAdapter
             )
@@ -236,46 +229,41 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private fun displayBcscRecords(uiState: IndividualHealthRecordsUiState) {
         if (filterSharedViewModel.filterState.value.timelineTypeFilter.contains(
-                TimelineTypeFilter.ALL
+                TimelineTypeFilter.ALL.name
             ) ||
             filterSharedViewModel.filterState.value.timelineTypeFilter.contains(
-                    TimelineTypeFilter.MEDICATION
+                    TimelineTypeFilter.MEDICATION.name
                 )
         ) {
-            displayBCSCRecordsWithMedicationFilter(uiState)
+            updateHiddenMedicationRecordsView(uiState)
         } else {
-            displayBCSCRecordsExceptMedicationFilter(uiState)
+            if (::hiddenMedicationRecordsAdapter.isInitialized) {
+                hiddenMedicationRecordsAdapter.submitList(emptyList())
+            }
         }
+        if (::healthRecordsAdapter.isInitialized) {
+            healthRecordsAdapter.setData(uiState.onHealthRecords)
+        }
+        healthRecordsAdapter.filter.filter(getFilterString())
     }
 
-    private fun displayBCSCRecordsWithMedicationFilter(uiState: IndividualHealthRecordsUiState) {
-        if (uiState.medicationRecordsUpdated || !viewModel.isProtectiveWordRequired() || viewModel.isProtectiveWordAdded()) {
-            if (uiState.onHealthRecords.isNotEmpty()) {
-                healthRecordsAdapter.submitList(uiState.onHealthRecords)
+    private fun updateHiddenMedicationRecordsView(uiState: IndividualHealthRecordsUiState) {
+        if (viewModel.isShowMedicationRecords()) {
+            if (::hiddenMedicationRecordsAdapter.isInitialized) {
                 hiddenMedicationRecordsAdapter.submitList(emptyList())
             }
         } else {
-            if (uiState.healthRecordsExceptMedication.isNotEmpty()) {
-                healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
-                hiddenMedicationRecordsAdapter.submitList(
-                    uiState.bcscAuthenticatedPatientDto?.id?.let {
-                        listOf(
-                            HiddenMedicationRecordItem(
-                                uiState.bcscAuthenticatedPatientDto.id,
-                                getString(R.string.hidden_medication_records),
-                                getString(R.string.enter_protective_word_to_access_medication_records)
-                            )
+            hiddenMedicationRecordsAdapter.submitList(
+                uiState.bcscAuthenticatedPatientDto?.id?.let {
+                    listOf(
+                        HiddenMedicationRecordItem(
+                            uiState.bcscAuthenticatedPatientDto.id,
+                            getString(R.string.hidden_medication_records),
+                            getString(R.string.enter_protective_word_to_access_medication_records)
                         )
-                    }
-                )
-            }
-        }
-    }
-
-    private fun displayBCSCRecordsExceptMedicationFilter(uiState: IndividualHealthRecordsUiState) {
-        if (uiState.healthRecordsExceptMedication.isNotEmpty()) {
-            healthRecordsAdapter.submitList(uiState.healthRecordsExceptMedication)
-            hiddenMedicationRecordsAdapter.submitList(emptyList())
+                    )
+                }
+            )
         }
     }
 
@@ -351,15 +339,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         findNavController().navigate(R.id.bcscAuthInfoFragment)
     }
 
-    private fun protectiveWordFragmentResultListener() {
-        parentFragmentManager.setFragmentResultListener(
-            KEY_MEDICATION_RECORD_REQUEST,
-            viewLifecycleOwner
-        ) { _, result ->
-            viewModel.medicationRecordsUpdated(result.get(KEY_MEDICATION_RECORD_UPDATED) as Boolean)
-        }
-    }
-
     private fun observeFilterState() {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -388,12 +367,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     updateTypeFilterSelection(filterState)
 
                     updateClearButton(filterState)
-
-                    viewModel.getIndividualsHealthRecord(
-                        filterSharedViewModel.filterState.value.timelineTypeFilter,
-                        filterSharedViewModel.filterState.value.filterFromDate,
-                        filterSharedViewModel.filterState.value.filterToDate
-                    )
                 }
             }
         }
@@ -408,7 +381,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private fun updateClearButton(filterState: FilterUiState) {
         if (!isFilterDateSelected(filterState) && filterState.timelineTypeFilter.contains(
-                TimelineTypeFilter.ALL
+                TimelineTypeFilter.ALL.name
             )
         ) {
             binding.content.chipGroup.imgClear.hide()
@@ -439,5 +412,20 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 }
             }
         }
+    }
+
+    private fun getFilterString(): String {
+        var filterString =
+            filterSharedViewModel.filterState.value.timelineTypeFilter.joinToString(",")
+        if (filterSharedViewModel.filterState.value.filterFromDate != null) {
+            filterString = filterString.plus(",FROM:")
+                .plus(filterSharedViewModel.filterState.value.filterFromDate)
+        }
+        if (filterSharedViewModel.filterState.value.filterToDate != null) {
+            filterString =
+                filterString.plus(",TO:").plus(filterSharedViewModel.filterState.value.filterToDate)
+        }
+
+        return filterString
     }
 }
