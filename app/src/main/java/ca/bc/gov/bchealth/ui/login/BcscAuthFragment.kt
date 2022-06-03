@@ -20,6 +20,7 @@ import ca.bc.gov.bchealth.databinding.FragmentBcscAuthBinding
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -130,8 +131,12 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
     private fun handleLoadVerification(authStatus: AuthStatus) {
         if (authStatus.canInitiateBcscLogin != null) {
+            if (authStatus.canInitiateBcscLogin) {
+                viewModel.initiateLogin()
+            } else {
+                binding.root.showServiceDownMessage(requireContext())
+            }
             viewModel.resetAuthStatus()
-            viewModel.initiateLogin()
         }
     }
 

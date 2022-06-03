@@ -13,6 +13,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.databinding.ActivityMainBinding
+import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.common.model.settings.AnalyticsFeature
@@ -105,8 +106,13 @@ class MainActivity : AppCompatActivity() {
                 this
             ) {
                 if (it.firstOrNull()?.state?.name == "FAILED") {
+                    val isHgServicesUp =
+                        it.firstOrNull()!!.outputData.getBoolean("isHgServicesUp", true)
+                    if (!isHgServicesUp) {
+                        binding.navHostFragment.showServiceDownMessage(this)
+                        return@observe
+                    }
                     val queueItUrl = it.firstOrNull()!!.outputData.getString("queueItUrl")
-                    Log.d("TAG", queueItUrl.toString())
                     queUser(queueItUrl.toString())
                 }
             }

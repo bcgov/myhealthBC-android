@@ -21,6 +21,7 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.graphics.drawable.toBitmap
 import ca.bc.gov.bchealth.R
+import com.google.android.material.snackbar.Snackbar
 import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
@@ -182,4 +183,17 @@ fun String?.showIfNullOrBlank(context: Context): String {
     } else {
         this
     }
+}
+
+fun View.showServiceDownMessage(context: Context) {
+    val snackBar = Snackbar.make(
+        this,
+        context.getString(R.string.service_down), 10000
+    )
+    snackBar.setAction(context.getString(R.string.dismiss)) {
+        performClick()
+    }
+    snackBar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines =
+        10
+    snackBar.show()
 }

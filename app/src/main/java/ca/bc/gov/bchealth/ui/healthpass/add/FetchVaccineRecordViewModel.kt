@@ -52,19 +52,28 @@ class FetchVaccineRecordViewModel @Inject constructor(
             )
 
             try {
-                mobileConfigRepository.getBaseUrl()
+                val isHgServicesUp = mobileConfigRepository.getBaseUrl()
 
-                val vaccineRecord = fetchVaccineRecordRepository.fetchVaccineRecord(
-                    phn,
-                    dateOfBirth,
-                    dateOfVaccine
-                )
-                _uiState.tryEmit(
-                    FetchVaccineRecordUiState(
-                        onLoading = false,
-                        vaccineRecord = vaccineRecord
+                if (isHgServicesUp) {
+                    val vaccineRecord = fetchVaccineRecordRepository.fetchVaccineRecord(
+                        phn,
+                        dateOfBirth,
+                        dateOfVaccine
                     )
-                )
+                    _uiState.tryEmit(
+                        FetchVaccineRecordUiState(
+                            onLoading = false,
+                            vaccineRecord = vaccineRecord
+                        )
+                    )
+                } else {
+                    _uiState.tryEmit(
+                        FetchVaccineRecordUiState(
+                            isHgServicesUp = isHgServicesUp,
+                            onLoading = false
+                        )
+                    )
+                }
             } catch (e: Exception) {
                 when (e) {
                     is MustBeQueuedException -> {
@@ -118,9 +127,25 @@ class FetchVaccineRecordViewModel @Inject constructor(
             FetchVaccineRecordUiState(onLoading = false, patientDataDto = record)
         )
     }
+
+    fun resetUiState() {
+        _uiState.tryEmit(
+            FetchVaccineRecordUiState(
+                isHgServicesUp = null,
+                onLoading = false,
+                queItTokenUpdated = false,
+                onMustBeQueued = false,
+                queItUrl = null,
+                patientDataDto = null,
+                vaccineRecord = null,
+                errorData = null
+            )
+        )
+    }
 }
 
 data class FetchVaccineRecordUiState(
+    val isHgServicesUp: Boolean? = null,
     val onLoading: Boolean = false,
     val queItTokenUpdated: Boolean = false,
     val onMustBeQueued: Boolean = false,
