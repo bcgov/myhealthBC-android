@@ -111,7 +111,9 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:$versions.hilt"
 
     //app auth
-    implementation "net.openid:appauth:$versions.appauth"
+    //implementation "net.openid:appauth:$versions.appauth"
+    api "androidx.browser:browser:1.3.0"
+    implementation "androidx.annotation:annotation:1.3.0"
 
     //work manager
     api "androidx.work:work-runtime-ktx:$versions.work"

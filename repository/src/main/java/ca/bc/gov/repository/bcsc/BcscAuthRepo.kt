@@ -17,15 +17,15 @@ import ca.bc.gov.common.utils.titleCase
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.repository.R
+import ca.bc.gov.repository.library.java.net.openid.appauth.AuthState
+import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationException
+import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationRequest
+import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationResponse
+import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationService
+import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationServiceConfiguration
+import ca.bc.gov.repository.library.java.net.openid.appauth.EndSessionRequest
+import ca.bc.gov.repository.library.java.net.openid.appauth.ResponseTypeValues
 import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker
-import net.openid.appauth.AuthState
-import net.openid.appauth.AuthorizationException
-import net.openid.appauth.AuthorizationRequest
-import net.openid.appauth.AuthorizationResponse
-import net.openid.appauth.AuthorizationService
-import net.openid.appauth.AuthorizationServiceConfiguration
-import net.openid.appauth.EndSessionRequest
-import net.openid.appauth.ResponseTypeValues
 import org.json.JSONObject
 import java.io.UnsupportedEncodingException
 import java.nio.charset.Charset
@@ -113,7 +113,8 @@ class BcscAuthRepo(
     * Check for logged in session
     * */
     suspend fun checkSession(): Boolean {
-        return encryptedPreferenceStorage.sessionTime > Instant.now().epochSecond
+        val authState = getAuthState() ?: return false
+        return !authState.needsTokenRefresh
     }
 
     /*

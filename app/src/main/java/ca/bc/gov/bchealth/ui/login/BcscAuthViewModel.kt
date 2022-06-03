@@ -130,6 +130,7 @@ class BcscAuthViewModel @Inject constructor(
                 setPostLoginCheck(PostLoginCheck.IN_PROGRESS)
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             _authStatus.update {
                 it.copy(
                     showLoading = false,
