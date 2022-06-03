@@ -113,7 +113,8 @@ class BcscAuthRepo(
     * Check for logged in session
     * */
     suspend fun checkSession(): Boolean {
-        return encryptedPreferenceStorage.sessionTime > Instant.now().epochSecond
+        val authState = getAuthState() ?: return false
+        return !authState.needsTokenRefresh
     }
 
     /*
