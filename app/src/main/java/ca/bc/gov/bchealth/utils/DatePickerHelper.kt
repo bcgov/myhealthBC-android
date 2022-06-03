@@ -1,6 +1,8 @@
 package ca.bc.gov.bchealth.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.view.MotionEvent
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.FragmentManager
 import ca.bc.gov.bchealth.R
@@ -19,6 +21,7 @@ class DatePickerHelper {
 
     private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CANADA)
 
+    @SuppressLint("ClickableViewAccessibility")
     fun initializeDatePicker(
         textInputLayout: TextInputLayout,
         title: String,
@@ -30,12 +33,13 @@ class DatePickerHelper {
                 .setTitleText(title)
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                 .build()
-        textInputLayout.editText?.setOnClickListener {
-            datePicker.show(parentFragmentManager, tag)
+        textInputLayout.editText?.setOnTouchListener { _, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                datePicker.show(parentFragmentManager, tag)
+            }
+            false
         }
-        textInputLayout.setEndIconOnClickListener {
-            datePicker.show(parentFragmentManager, tag)
-        }
+
         datePicker.addOnPositiveButtonClickListener {
             textInputLayout.editText?.setText(simpleDateFormat.format(it.adjustOffset()))
         }
