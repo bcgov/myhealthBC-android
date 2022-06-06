@@ -96,4 +96,8 @@ class MedicationRecordRepository @Inject constructor(
     fun saveProtectiveWord(word: String) {
         encryptedPreferenceStorage.protectiveWord = word
     }
+
+    suspend fun deleteMedicationData(patientId: Long) {
+        medicationRecordLocalDataSource.deletePatientMedicationRecords(patientId)
+    }
 }

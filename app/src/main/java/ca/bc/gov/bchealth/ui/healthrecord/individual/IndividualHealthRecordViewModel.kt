@@ -6,6 +6,7 @@ import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.repository.CacheRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
@@ -62,8 +63,13 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 val testResultWithRecords =
                     patientRepository.getPatientWithTestResultsAndRecords(patientId)
                 val vaccineWithDoses = listOfNotNull(patientWithVaccineRecords.vaccineWithDoses)
-                val patientAndMedicationRecords =
-                    patientRepository.getPatientWithMedicationRecords(patientId)
+                var patientAndMedicationRecords: PatientWithMedicationRecordDto? = null
+                try {
+                    patientAndMedicationRecords =
+                        patientRepository.getPatientWithMedicationRecords(patientId)
+                } catch (e: Exception) {
+                    medicationRecordRepository.deleteMedicationData(patientId)
+                }
                 val patientWithLabOrdersAndLabTests =
                     patientRepository.getPatientWithLabOrdersAndLabTests(patientId)
                 val patientWithCovidOrderAndTests =
@@ -75,7 +81,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 val vaccineRecords = vaccineWithDoses.map {
                     it.toUiModel()
                 }
-                val medicationRecords = patientAndMedicationRecords.medicationRecord.map {
+                val medicationRecords = patientAndMedicationRecords?.medicationRecord?.map {
                     it.toUiModel()
                 }
                 val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
@@ -96,7 +102,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 val isBcscSessionActive: Boolean = bcscAuthRepo.checkSession()
 
                 val filteredHealthRecords = if (isShowMedicationRecords()) {
-                    medicationRecords + covidTestRecords + covidOrders + labTestRecords + vaccineRecords
+                    (medicationRecords ?: emptyList()) + covidTestRecords + covidOrders + labTestRecords + vaccineRecords
                 } else {
                     covidTestRecords + covidOrders + labTestRecords + vaccineRecords
                 }

@@ -19,7 +19,6 @@ import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
 import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
 import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterViewModel
-import ca.bc.gov.bchealth.ui.healthrecord.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
@@ -139,7 +138,6 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
                         if (it.endSessionIntent != null) {
                             logoutResultLauncher.launch(it.endSessionIntent)
                             bcscAuthViewModel.resetAuthStatus()
-                            filterSharedViewModel.updateFilter(mutableListOf(TimelineTypeFilter.ALL.name), null, null)
                         }
                     }
                 }

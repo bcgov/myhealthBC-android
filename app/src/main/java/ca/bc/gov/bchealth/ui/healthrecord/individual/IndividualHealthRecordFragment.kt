@@ -182,6 +182,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 if (it.firstOrNull()?.state == WorkInfo.State.RUNNING) {
                     binding.emptyView.tvNoRecord.text = getString(R.string.fetching_records)
                     binding.emptyView.tvClearFilterMsg.text = ""
+                    viewModel.getIndividualsHealthRecord()
                 } else {
                     binding.emptyView.tvNoRecord.text = getString(R.string.no_records_found)
                     binding.emptyView.tvClearFilterMsg.text =
@@ -217,7 +218,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             binding.content.rvHealthRecords.adapter = concatAdapter
             displayBcscRecords(uiState)
         } else {
-            //clear filter when session is expired
+            // clear filter when session is expired
             filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL.name), null, null)
             concatAdapter = ConcatAdapter(
                 hiddenHealthRecordAdapter
