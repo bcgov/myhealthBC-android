@@ -54,6 +54,42 @@
             android:authorities="${applicationId}.androidx-startup"
             tools:node="remove">
         </provider>
+
+        <activity
+            android:name="ca.bc.gov.repository.library.java.net.openid.appauth.RedirectUriReceiverActivity"
+            tools:node="replace"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="https"
+                    android:host="www2.gov.bc.ca"
+                    android:path="/gov/content/health/managing-your-health/health-gateway*"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="myhealthbc"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name="ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationManagementActivity"
+            android:exported="false"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboard|keyboardHidden"
+            android:theme="@style/Theme.HealthGateway.Transparent"
+            android:launchMode="singleTask" />
+
     </application>
+
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
 
 </manifest>
