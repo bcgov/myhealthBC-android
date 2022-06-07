@@ -24,6 +24,7 @@ import ca.bc.gov.bchealth.ui.healthpass.add.Status
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.PhnHelper
 import ca.bc.gov.bchealth.utils.hideKeyboard
+import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
@@ -76,6 +77,11 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
                 viewModel.uiState.collect { uiState ->
 
                     showLoader(uiState.onLoading)
+
+                    if (uiState.isHgServicesUp != null && !uiState.isHgServicesUp) {
+                        binding.root.showServiceDownMessage(requireContext())
+                        viewModel.resetUiState()
+                    }
 
                     if (uiState.errorData != null) {
                         AlertDialogHelper.showAlertDialog(

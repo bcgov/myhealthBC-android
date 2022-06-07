@@ -59,45 +59,38 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val mobileConfigRepository: MobileConfigRepository
 ) : CoroutineWorker(context, workerParams) {
 
-    var queueItUrl = ""
+    var isApiFailed = false
 
     override suspend fun doWork(): Result {
-        if (bcscAuthRepo.getPostLoginCheck() == PostLoginCheck.IN_PROGRESS.name) {
+        if (bcscAuthRepo.getPostLoginCheck() == PostLoginCheck.IN_PROGRESS.name ||
+            !bcscAuthRepo.checkSession()
+        ) {
             return Result.failure()
         }
-        fetchAuthRecords()
-        if (queueItUrl.isNotBlank()) {
-            return Result.failure(
-                Data.Builder()
-                    .putString("queueItUrl", queueItUrl)
-                    .build()
-            )
-        } else {
-            return Result.success()
-        }
+        return fetchAuthRecords()
     }
 
-    private suspend fun fetchAuthRecords() {
-        var isApiFailed = false
+    private suspend fun fetchAuthRecords(): Result {
+
+        isApiFailed = false
 
         try {
 
             val authParameters = bcscAuthRepo.getAuthParameters()
             var patient: PatientDto? = null
             var patientId = 0L
-            var vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>? = null
-            var covidOrderResponse: List<CovidOrderWithCovidTestDto>? = null
-            var medicationResponse: MedicationStatementResponse? = null
-            var labOrdersResponse: List<LabOrderWithLabTestDto>? = null
 
             notificationHelper.showNotification(
                 context.getString(R.string.notification_title_while_fetching_data)
             )
 
             try {
-                mobileConfigRepository.getBaseUrl()
+                val isHgServicesUp = mobileConfigRepository.getBaseUrl()
+                if (!isHgServicesUp) {
+                    respondToHgServicesDown()
+                }
             } catch (e: Exception) {
-                handleQueueItException(e)
+                respondToHgServicesDown()
             }
 
             try {
@@ -106,80 +99,21 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                     authParameters.second
                 )
             } catch (e: Exception) {
-                handleQueueItException(e)
-                isApiFailed = true
-            }
-
-            /*
-            * Fetch vaccine records
-            * */
-            try {
-                withContext(dispatcher) {
-                    vaccineRecordsResponse = fetchVaccineRecordRepository.fetchVaccineRecord(
-                        authParameters.first,
-                        authParameters.second
-                    )
-                }
-            } catch (e: Exception) {
-                handleQueueItException(e)
-                isApiFailed = true
-            }
-
-            /*
-            * Fetch covid test results
-            * */
-            try {
-                withContext(dispatcher) {
-                    covidOrderResponse = covidOrderRepository.fetchCovidOrders(
-                        authParameters.first,
-                        authParameters.second
-                    )
-                }
-            } catch (e: Exception) {
-                handleQueueItException(e)
-                isApiFailed = true
-            }
-
-            /*
-            * Fetch medication records
-            * */
-            try {
-                withContext(dispatcher) {
-                    medicationResponse = medicationRecordRepository.fetchMedicationStatement(
-                        authParameters.first,
-                        authParameters.second,
-                        encryptedPreferenceStorage.protectiveWord
-                    )
-                }
-            } catch (e: Exception) {
-                when (e) {
-                    is MustBeQueuedException ->
-                        queueItUrl = e.message.toString()
-                    is ProtectiveWordException -> {
-                        encryptedPreferenceStorage.protectiveWordState =
-                            ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
-                    }
-                    else -> {
-                        isApiFailed = true
-                    }
+                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
+                    handleQueueItException(e)
+                } else {
+                    isApiFailed = true
                 }
             }
 
-            /*
-            * Fetch lab test results
-            * */
-            try {
-                withContext(dispatcher) {
-                    labOrdersResponse =
-                        labOrderRepository.fetchLabOrders(
-                            authParameters.first,
-                            authParameters.second
-                        )
-                }
-            } catch (e: Exception) {
-                handleQueueItException(e)
-                isApiFailed = true
-            }
+            val vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>? =
+                fetchVaccineRecords(authParameters)
+
+            val covidOrderResponse: List<CovidOrderWithCovidTestDto>? = fetchCovidTestResults(authParameters)
+
+            val medicationResponse: MedicationStatementResponse? = fetchMedicationResponse(authParameters)
+
+            val labOrdersResponse: List<LabOrderWithLabTestDto>? = fetchLabTestResults(authParameters)
 
             /*
             * DB Operations
@@ -228,11 +162,123 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         } catch (e: Exception) {
             // no implementation required.
         }
+        return Result.success()
     }
 
-    private fun handleQueueItException(e: Exception) {
-        if (e is MustBeQueuedException) {
-            queueItUrl = e.message.toString()
+    /*
+     * Fetch lab test results
+     * */
+    private suspend fun fetchLabTestResults(authParameters: Pair<String, String>): List<LabOrderWithLabTestDto>? {
+
+        var labOrdersResponse: List<LabOrderWithLabTestDto>? = null
+        try {
+            withContext(dispatcher) {
+                labOrdersResponse =
+                    labOrderRepository.fetchLabOrders(
+                        authParameters.first,
+                        authParameters.second
+                    )
+            }
+        } catch (e: Exception) {
+            if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
+                handleQueueItException(e)
+            } else {
+                isApiFailed = true
+            }
         }
+        return labOrdersResponse
+    }
+
+    /*
+    * Fetch medication records
+    * */
+    private suspend fun fetchMedicationResponse(authParameters: Pair<String, String>): MedicationStatementResponse? {
+
+        var medicationResponse: MedicationStatementResponse? = null
+
+        try {
+            withContext(dispatcher) {
+                medicationResponse = medicationRecordRepository.fetchMedicationStatement(
+                    authParameters.first,
+                    authParameters.second,
+                    encryptedPreferenceStorage.protectiveWord
+                )
+            }
+        } catch (e: Exception) {
+            when (e) {
+                is MustBeQueuedException ->
+                    if (e.message.toString().isNotBlank()) {
+                        handleQueueItException(e)
+                    }
+                is ProtectiveWordException -> {
+                    encryptedPreferenceStorage.protectiveWordState =
+                        ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
+                }
+                else -> {
+                    isApiFailed = true
+                }
+            }
+        }
+        return medicationResponse
+    }
+
+    /*
+    * Fetch vaccine records
+    * */
+    private suspend fun fetchVaccineRecords(authParameters: Pair<String, String>): Pair<VaccineRecordState, PatientVaccineRecord?>? {
+        var vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>? = null
+        try {
+            withContext(dispatcher) {
+                vaccineRecordsResponse = fetchVaccineRecordRepository.fetchVaccineRecord(
+                    authParameters.first,
+                    authParameters.second
+                )
+            }
+        } catch (e: Exception) {
+            if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
+                handleQueueItException(e)
+            } else {
+                isApiFailed = true
+            }
+        }
+        return vaccineRecordsResponse
+    }
+
+    /*
+    * Fetch covid test results
+    * */
+    private suspend fun fetchCovidTestResults(authParameters: Pair<String, String>): List<CovidOrderWithCovidTestDto>? {
+        var covidOrderResponse: List<CovidOrderWithCovidTestDto>? = null
+        try {
+            withContext(dispatcher) {
+                covidOrderResponse = covidOrderRepository.fetchCovidOrders(
+                    authParameters.first,
+                    authParameters.second
+                )
+            }
+        } catch (e: Exception) {
+            if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
+                handleQueueItException(e)
+            } else {
+                isApiFailed = true
+            }
+        }
+        return covidOrderResponse
+    }
+
+    private fun handleQueueItException(e: java.lang.Exception): Result {
+        return Result.failure(
+            Data.Builder()
+                .putString("queueItUrl", e.message.toString())
+                .build()
+        )
+    }
+
+    private fun respondToHgServicesDown(): Result {
+        return Result.failure(
+            Data.Builder()
+                .putBoolean("isHgServicesUp", false)
+                .build()
+        )
     }
 }
