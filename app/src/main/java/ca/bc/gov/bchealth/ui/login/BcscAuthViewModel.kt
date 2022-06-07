@@ -112,7 +112,7 @@ class BcscAuthViewModel @Inject constructor(
         }
     }
 
-    fun processAuthResponse(data: Intent?) = viewModelScope.launch {
+    fun processAuthResponse(data: Intent?, context: Context) = viewModelScope.launch {
         try {
             _authStatus.update {
                 it.copy(
@@ -121,6 +121,10 @@ class BcscAuthViewModel @Inject constructor(
             }
             val isLoggedSuccess = bcscAuthRepo.processAuthResponse(data)
             if (isLoggedSuccess) {
+                // clear medication pref
+                cacheRepository.updateProtectiveWordAdded(false)
+                clearStorageRepository.clearMedicationPreferences()
+
                 _authStatus.update {
                     it.copy(
                         showLoading = true,
@@ -168,8 +172,7 @@ class BcscAuthViewModel @Inject constructor(
     }
 
     fun processLogoutResponse(context: Context) = viewModelScope.launch {
-        cacheRepository.updateProtectiveWordAdded(false)
-        clearStorageRepository.clearMedicationPreferences()
+        // cancel work manager
         WorkManager.getInstance(context).cancelUniqueWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME)
         bcscAuthRepo.processLogoutResponse()
         _authStatus.update {
