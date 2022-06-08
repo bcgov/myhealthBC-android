@@ -40,6 +40,8 @@ class MainActivity : AppCompatActivity() {
     private val binding by viewBindings(ActivityMainBinding::bind)
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
     private val viewModel: MainViewModel by viewModels()
+    // isWorkerStarted is required to avoid capturing "FAILED" state of worker at app launch
+    private var isWorkerStarted: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,15 +107,23 @@ class MainActivity : AppCompatActivity() {
             workRequest.observe(
                 this
             ) {
+                if (it.firstOrNull()?.state?.name == "RUNNING") {
+                    isWorkerStarted = true
+                }
+
                 if (it.firstOrNull()?.state?.name == "FAILED") {
-                    val isHgServicesUp =
-                        it.firstOrNull()!!.outputData.getBoolean("isHgServicesUp", true)
-                    if (!isHgServicesUp) {
-                        binding.navHostFragment.showServiceDownMessage(this)
-                        return@observe
+                    if (isWorkerStarted) {
+                        val isHgServicesUp =
+                            it.firstOrNull()!!.outputData.getBoolean("isHgServicesUp", true)
+                        if (!isHgServicesUp) {
+                            binding.navHostFragment.showServiceDownMessage(this)
+                            return@observe
+                        }
                     }
                     val queueItUrl = it.firstOrNull()!!.outputData.getString("queueItUrl")
-                    queUser(queueItUrl.toString())
+                    if (queueItUrl?.isNotBlank() == true) {
+                        queUser(queueItUrl.toString())
+                    }
                 }
             }
         }
