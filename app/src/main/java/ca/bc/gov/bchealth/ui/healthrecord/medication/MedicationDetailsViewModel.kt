@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.medication
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_RECORD
+import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.utils.toDate
@@ -57,10 +58,22 @@ class MedicationDetailsViewModel @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-            _uiState.update {
-                it.copy(
-                    onError = true
-                )
+            when (e) {
+                is NetworkConnectionException -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            onLoading = false,
+                            isConnected = false
+                        )
+                    }
+                }
+                else -> {
+                    _uiState.update {
+                        it.copy(
+                            onError = true
+                        )
+                    }
+                }
             }
         }
     }
@@ -177,7 +190,8 @@ data class MedicationDetailUiState(
     val onError: Boolean = false,
     val medicationDetails: List<MedicationDetail>? = null,
     val toolbarTitle: String? = null,
-    val comments: List<Comment> = emptyList()
+    val comments: List<Comment> = emptyList(),
+    val isConnected: Boolean = true
 )
 
 data class MedicationDetail(

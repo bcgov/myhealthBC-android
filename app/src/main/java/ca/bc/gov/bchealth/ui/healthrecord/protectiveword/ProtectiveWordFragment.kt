@@ -20,6 +20,7 @@ import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.makeLinks
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -101,6 +102,11 @@ class ProtectiveWordFragment : BaseFragment(R.layout.fragment_protective_word) {
                     if (fetchMedicationUiState.isRecordsUpdated) {
                         viewModel.updateProtectiveWordAdded(true)
                         findNavController().popBackStack()
+                    }
+
+                    if(!fetchMedicationUiState.isConnected) {
+                        viewModel.resetUiState()
+                        binding.root.showServiceDownMessage(requireContext())
                     }
                 }
             }

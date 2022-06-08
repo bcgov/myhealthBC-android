@@ -16,6 +16,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentMedicationDetailsBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -77,6 +78,10 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
 
                     if (state.onError) {
                         showError()
+                    }
+
+                    if(!state.isConnected) {
+                        binding.root.showServiceDownMessage(requireContext())
                     }
                 }
             }

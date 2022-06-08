@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.protectiveword
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.ErrorData
 import ca.bc.gov.repository.CacheRepository
@@ -80,6 +81,15 @@ class ProtectiveWordViewModel @Inject constructor(
                     }
                 } catch (e: Exception) {
                     when (e) {
+                        is NetworkConnectionException -> {
+                            _uiState.update { state ->
+                                state.copy(
+                                    onLoading = false,
+                                    isConnected = false,
+                                    isButtonClickEnabled = true
+                                )
+                            }
+                        }
                         is ProtectiveWordException -> {
                             _uiState.update { state ->
                                 state.copy(
@@ -114,7 +124,8 @@ class ProtectiveWordViewModel @Inject constructor(
                 isRecordsUpdated = false,
                 errorData = null,
                 wrongProtectiveWord = false,
-                isButtonClickEnabled = false
+                isButtonClickEnabled = false,
+                isConnected = true
             )
         }
     }
@@ -129,5 +140,6 @@ data class FetchMedicationUiState(
     val isRecordsUpdated: Boolean = false,
     val errorData: ErrorData? = null,
     val wrongProtectiveWord: Boolean = false,
-    val isButtonClickEnabled: Boolean = false
+    val isButtonClickEnabled: Boolean = false,
+    val isConnected: Boolean = true
 )
