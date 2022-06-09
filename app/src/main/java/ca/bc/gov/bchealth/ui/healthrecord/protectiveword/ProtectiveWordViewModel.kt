@@ -53,7 +53,6 @@ class ProtectiveWordViewModel @Inject constructor(
                     _uiState.update { state ->
                         state.copy(
                             wrongProtectiveWord = true,
-                            isButtonClickEnabled = true
                         )
                     }
                 }
@@ -61,7 +60,6 @@ class ProtectiveWordViewModel @Inject constructor(
                 _uiState.update { state ->
                     state.copy(
                         onLoading = true,
-                        isButtonClickEnabled = false
                     )
                 }
                 try {
@@ -85,8 +83,7 @@ class ProtectiveWordViewModel @Inject constructor(
                             _uiState.update { state ->
                                 state.copy(
                                     onLoading = false,
-                                    isConnected = false,
-                                    isButtonClickEnabled = true
+                                    isConnected = false
                                 )
                             }
                         }
@@ -94,8 +91,7 @@ class ProtectiveWordViewModel @Inject constructor(
                             _uiState.update { state ->
                                 state.copy(
                                     onLoading = false,
-                                    wrongProtectiveWord = true,
-                                    isButtonClickEnabled = true
+                                    wrongProtectiveWord = true
                                 )
                             }
                         }
@@ -107,7 +103,6 @@ class ProtectiveWordViewModel @Inject constructor(
                                         R.string.error,
                                         R.string.error_message
                                     ),
-                                    isButtonClickEnabled = true
                                 )
                             }
                         }
@@ -124,7 +119,6 @@ class ProtectiveWordViewModel @Inject constructor(
                 isRecordsUpdated = false,
                 errorData = null,
                 wrongProtectiveWord = false,
-                isButtonClickEnabled = false,
                 isConnected = true
             )
         }
@@ -140,6 +134,5 @@ data class FetchMedicationUiState(
     val isRecordsUpdated: Boolean = false,
     val errorData: ErrorData? = null,
     val wrongProtectiveWord: Boolean = false,
-    val isButtonClickEnabled: Boolean = false,
     val isConnected: Boolean = true
 )

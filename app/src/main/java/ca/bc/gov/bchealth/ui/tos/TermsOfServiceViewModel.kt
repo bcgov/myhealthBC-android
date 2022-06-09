@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.tos
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.exceptions.MustBeQueuedException
+import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.repository.TermsOfServiceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +30,14 @@ class TermsOfServiceViewModel @Inject constructor(
             _tosUiState.update { it.copy(showLoading = false, tos = tos) }
         } catch (e: Exception) {
             when (e) {
+                is NetworkConnectionException -> {
+                    _tosUiState.update {
+                        it.copy(
+                            showLoading = false,
+                            isConnected = false
+                        )
+                    }
+                }
                 is MustBeQueuedException -> {
                     _tosUiState.update {
                         it.copy(
@@ -56,5 +65,6 @@ data class TermsOfServiceUiModel(
     val isError: Boolean = false,
     val onMustBeQueued: Boolean = false,
     val queItUrl: String? = null,
-    val tos: String? = null
+    val tos: String? = null,
+    val isConnected: Boolean = true
 )

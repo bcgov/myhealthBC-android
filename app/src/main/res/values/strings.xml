@@ -287,6 +287,7 @@
     <string name="error_biometric_unknown">Unable to perform authentication at the moment try again later.</string>
     <string name="service_down">We are unable to access our services to refresh your data at this time.</string>
     <string name="dismiss">Dismiss</string>
+    <string name="no_internet_connection">Unable to refresh your data. Please check your internet connection.</string>
 
     <!--Timeline View-->
     <string name="type">Type</string>

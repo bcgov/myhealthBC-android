@@ -22,6 +22,7 @@ import ca.bc.gov.bchealth.utils.DatePickerHelper
 import ca.bc.gov.bchealth.utils.PhnHelper
 import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
@@ -219,8 +220,17 @@ class FetchVaccineRecordFragment : BaseFragment(R.layout.fragment_fetch_vaccine_
                         // savedStateHandle.set(VACCINE_RECORD_ADDED_SUCCESS, uiState.vaccineRecord)
                         addOrUpdateCardViewModel.processResult(uiState.vaccineRecord)
                     }
+
+                    handleNoInternetConnection(uiState)
                 }
             }
+        }
+    }
+
+    private fun handleNoInternetConnection(uiState: FetchVaccineRecordUiState) {
+        if (!uiState.isConnected) {
+            binding.root.showNoInternetConnectionMessage(requireContext())
+            viewModel.resetUiState()
         }
     }
 

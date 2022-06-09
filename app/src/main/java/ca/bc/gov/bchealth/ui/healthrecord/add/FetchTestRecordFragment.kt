@@ -20,6 +20,7 @@ import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.DatePickerHelper
 import ca.bc.gov.bchealth.utils.PhnHelper
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
 import com.queue_it.androidsdk.Error
@@ -116,6 +117,10 @@ class FetchTestRecordFragment : BaseFragment(R.layout.fragment_fetch_covid_test_
 
                     if (state.onMustBeQueued && state.queItUrl != null) {
                         queUser(state.queItUrl)
+                    }
+
+                    if (!state.isConnected) {
+                        binding.root.showNoInternetConnectionMessage(requireContext())
                     }
                 }
             }

@@ -70,6 +70,7 @@ class MedicationDetailsViewModel @Inject constructor(
                 else -> {
                     _uiState.update {
                         it.copy(
+                            onLoading = false,
                             onError = true
                         )
                     }
