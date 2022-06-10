@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
 import ca.bc.gov.common.exceptions.MustBeQueuedException
+import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.utils.toUniquePatientName
@@ -64,6 +65,14 @@ class BcscAuthViewModel @Inject constructor(
             }
         } catch (e: Exception) {
             when (e) {
+                is NetworkConnectionException -> {
+                    _authStatus.update {
+                        it.copy(
+                            showLoading = false,
+                            isConnected = false
+                        )
+                    }
+                }
                 is MustBeQueuedException -> {
                     _authStatus.update {
                         it.copy(
@@ -229,7 +238,8 @@ class BcscAuthViewModel @Inject constructor(
                 canInitiateBcscLogin = null,
                 onMustBeQueued = false,
                 tosAccepted = null,
-                queItUrl = null
+                queItUrl = null,
+                isConnected = true
             )
         }
     }
@@ -266,6 +276,14 @@ class BcscAuthViewModel @Inject constructor(
             }
         } catch (e: Exception) {
             when (e) {
+                is NetworkConnectionException -> {
+                    _authStatus.update {
+                        it.copy(
+                            showLoading = false,
+                            isConnected = false
+                        )
+                    }
+                }
                 is MustBeQueuedException -> {
                     _authStatus.update {
                         it.copy(
@@ -310,6 +328,14 @@ class BcscAuthViewModel @Inject constructor(
             }
         } catch (e: Exception) {
             when (e) {
+                is NetworkConnectionException -> {
+                    _authStatus.update {
+                        it.copy(
+                            showLoading = false,
+                            isConnected = false
+                        )
+                    }
+                }
                 is MustBeQueuedException -> {
                     _authStatus.update {
                         it.copy(
@@ -388,6 +414,14 @@ class BcscAuthViewModel @Inject constructor(
             }
         } catch (e: Exception) {
             when (e) {
+                is NetworkConnectionException -> {
+                    _authStatus.update {
+                        it.copy(
+                            showLoading = false,
+                            isConnected = false
+                        )
+                    }
+                }
                 is MustBeQueuedException -> {
                     _authStatus.update {
                         it.copy(
@@ -428,7 +462,8 @@ data class AuthStatus(
     val loginStatus: LoginStatus? = null,
     val ageLimitCheck: AgeLimitCheck? = null,
     val canInitiateBcscLogin: Boolean? = null,
-    val tosAccepted: TOSAccepted? = null
+    val tosAccepted: TOSAccepted? = null,
+    val isConnected: Boolean = true
 )
 
 enum class LoginStatus {

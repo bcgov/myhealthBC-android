@@ -8,6 +8,7 @@ import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.model.ErrorData
 import ca.bc.gov.repository.FetchTestResultRepository
 import ca.bc.gov.repository.QueueItTokenRepository
@@ -54,6 +55,14 @@ class FetchTestRecordsViewModel @Inject constructor(
                 )
             } catch (e: Exception) {
                 when (e) {
+                    is NetworkConnectionException -> {
+                        _uiState.tryEmit(
+                            FetchTestRecordUiState(
+                                onLoading = false,
+                                isConnected = false
+                            )
+                        )
+                    }
                     is MustBeQueuedException -> {
                         _uiState.tryEmit(
                             FetchTestRecordUiState(
@@ -121,5 +130,6 @@ data class FetchTestRecordUiState(
     val onTestResultFetched: Long = -1L,
     val isError: Boolean = false,
     val errorData: ErrorData? = null,
-    val patientId: Long = -1L
+    val patientId: Long = -1L,
+    val isConnected: Boolean = true
 )

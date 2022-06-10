@@ -12,6 +12,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentTermsOfServiceBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -61,6 +62,10 @@ class TermsOfServiceFragment : BaseFragment(R.layout.fragment_terms_of_service) 
                     }
 
                     binding.progressBar.isVisible = uiState.showLoading
+
+                    if (!uiState.isConnected) {
+                        binding.root.showNoInternetConnectionMessage(requireContext())
+                    }
                 }
             }
         }

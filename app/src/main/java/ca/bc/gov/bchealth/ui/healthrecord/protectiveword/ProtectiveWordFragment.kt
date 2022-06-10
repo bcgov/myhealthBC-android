@@ -20,6 +20,7 @@ import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.makeLinks
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,6 +58,7 @@ class ProtectiveWordFragment : BaseFragment(R.layout.fragment_protective_word) {
         binding.btnContinue.setOnClickListener {
             requireContext().hideKeyboard(it)
             binding.scrollView.clearFocus()
+            binding.btnContinue.isEnabled = false
             viewModel.fetchMedicationRecords(
                 args.patientId,
                 binding.etProtectiveWord.text.toString()
@@ -80,8 +82,9 @@ class ProtectiveWordFragment : BaseFragment(R.layout.fragment_protective_word) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { fetchMedicationUiState ->
 
+                    enableContinueButton(fetchMedicationUiState)
+
                     binding.progressBar.indicator.isVisible = fetchMedicationUiState.onLoading
-                    binding.btnContinue.isEnabled = fetchMedicationUiState.isButtonClickEnabled
 
                     if (fetchMedicationUiState.errorData != null) {
                         viewModel.resetUiState()
@@ -102,8 +105,26 @@ class ProtectiveWordFragment : BaseFragment(R.layout.fragment_protective_word) {
                         viewModel.updateProtectiveWordAdded(true)
                         findNavController().popBackStack()
                     }
+
+                    handleNoInternetConnection(fetchMedicationUiState)
                 }
             }
+        }
+    }
+
+    private fun enableContinueButton(fetchMedicationUiState: FetchMedicationUiState) {
+        if (fetchMedicationUiState.onLoading) {
+            binding.btnContinue.isEnabled = false
+        } else {
+            binding.btnContinue.isEnabled =
+                !binding.etProtectiveWord.text.isNullOrBlank()
+        }
+    }
+
+    private fun handleNoInternetConnection(uiState: FetchMedicationUiState) {
+        if (!uiState.isConnected) {
+            viewModel.resetUiState()
+            binding.root.showNoInternetConnectionMessage(requireContext())
         }
     }
 

@@ -23,6 +23,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.repository.bcsc.PostLoginCheck
@@ -123,6 +124,11 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                     handleTosCheck(it)
 
                     handleEndSessionRequest(it)
+
+                    if (!it.isConnected) {
+                        viewModel.resetAuthStatus()
+                        binding.root.showNoInternetConnectionMessage(requireContext())
+                    }
                 }
             }
         }

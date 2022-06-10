@@ -197,3 +197,16 @@ fun View.showServiceDownMessage(context: Context) {
         10
     snackBar.show()
 }
+
+fun View.showNoInternetConnectionMessage(context: Context) {
+    val snackBar = Snackbar.make(
+        this,
+        context.getString(R.string.no_internet_connection), 10000
+    )
+    snackBar.setAction(context.getString(R.string.dismiss)) {
+        performClick()
+    }
+    snackBar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines =
+        10
+    snackBar.show()
+}

@@ -8,6 +8,7 @@ import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.model.ErrorData
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.repository.FetchVaccineRecordRepository
@@ -76,6 +77,14 @@ class FetchVaccineRecordViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 when (e) {
+                    is NetworkConnectionException -> {
+                        _uiState.tryEmit(
+                            FetchVaccineRecordUiState(
+                                onLoading = false,
+                                isConnected = false
+                            )
+                        )
+                    }
                     is MustBeQueuedException -> {
                         _uiState.tryEmit(
                             FetchVaccineRecordUiState(
@@ -138,7 +147,8 @@ class FetchVaccineRecordViewModel @Inject constructor(
                 queItUrl = null,
                 patientDataDto = null,
                 vaccineRecord = null,
-                errorData = null
+                errorData = null,
+                isConnected = true
             )
         )
     }
@@ -152,5 +162,6 @@ data class FetchVaccineRecordUiState(
     val queItUrl: String? = null,
     val patientDataDto: PatientWithVaccineAndDosesDto? = null,
     val vaccineRecord: Pair<VaccineRecordState, PatientVaccineRecord?>? = null,
-    val errorData: ErrorData? = null
+    val errorData: ErrorData? = null,
+    val isConnected: Boolean = true
 )

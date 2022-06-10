@@ -10,6 +10,7 @@ import ca.bc.gov.data.datasource.remote.api.HealthGatewayPublicApi
 import ca.bc.gov.data.datasource.remote.interceptor.CookiesInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.HostSelectionInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.MockInterceptor
+import ca.bc.gov.data.datasource.remote.interceptor.NetworkConnectionInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.QueueItInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.ReceivedCookieInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.UserAgentInterceptor
@@ -59,13 +60,18 @@ class HealthGateWayApiModule {
         MockInterceptor(context)
 
     @Provides
+    fun providesNetworkConnectionInterceptor(@ApplicationContext context: Context) =
+        NetworkConnectionInterceptor(context)
+
+    @Provides
     fun providesOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
         cookiesInterceptor: CookiesInterceptor,
         queueItInterceptor: QueueItInterceptor,
         receivedCookieInterceptor: ReceivedCookieInterceptor,
         mockInterceptor: MockInterceptor,
-        hostSelectionInterceptor: HostSelectionInterceptor
+        hostSelectionInterceptor: HostSelectionInterceptor,
+        networkConnectionInterceptor: NetworkConnectionInterceptor
     ) = if (BuildConfig.FLAVOR == "mock") {
         OkHttpClient.Builder()
             .addInterceptor(mockInterceptor)
@@ -76,11 +82,12 @@ class HealthGateWayApiModule {
             .build()
     } else {
         OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .addInterceptor(networkConnectionInterceptor)
             .addInterceptor(hostSelectionInterceptor)
             .addInterceptor(queueItInterceptor)
             .addInterceptor(cookiesInterceptor)
             .addInterceptor(receivedCookieInterceptor)
-            .addInterceptor(loggingInterceptor)
             .hostnameVerifier { _, _ ->
                 return@hostnameVerifier true
             }
@@ -95,6 +102,7 @@ class HealthGateWayApiModule {
         queueItInterceptor: QueueItInterceptor,
         receivedCookieInterceptor: ReceivedCookieInterceptor,
         mockInterceptor: MockInterceptor,
+        networkConnectionInterceptor: NetworkConnectionInterceptor
     ) = if (BuildConfig.FLAVOR == "mock") {
         OkHttpClient.Builder()
             .addInterceptor(mockInterceptor)
@@ -105,10 +113,11 @@ class HealthGateWayApiModule {
             .build()
     } else {
         OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .addInterceptor(networkConnectionInterceptor)
             .addInterceptor(queueItInterceptor)
             .addInterceptor(cookiesInterceptor)
             .addInterceptor(receivedCookieInterceptor)
-            .addInterceptor(loggingInterceptor)
             .hostnameVerifier { _, _ ->
                 return@hostnameVerifier true
             }
