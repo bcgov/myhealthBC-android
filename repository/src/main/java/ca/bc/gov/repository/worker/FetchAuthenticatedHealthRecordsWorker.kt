@@ -212,7 +212,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
      * Fetch lab test results
      * */
     private suspend fun fetchLabTestResults(authParameters: Pair<String, String>): List<LabOrderWithLabTestDto>? {
-        var labOrdersResponse: List<LabOrderWithLabTestDto>? = null
+        var labOrdersResponse: List<LabOrderWithLabTestDto>?
         withContext(dispatcher) {
             labOrdersResponse =
                 labOrderRepository.fetchLabOrders(
@@ -227,7 +227,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     * Fetch medication records
     * */
     private suspend fun fetchMedicationResponse(authParameters: Pair<String, String>): MedicationStatementResponse? {
-        var medicationResponse: MedicationStatementResponse? = null
+        var medicationResponse: MedicationStatementResponse?
         withContext(dispatcher) {
             medicationResponse = medicationRecordRepository.fetchMedicationStatement(
                 authParameters.first,
@@ -242,7 +242,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     * Fetch vaccine records
     * */
     private suspend fun fetchVaccineRecords(authParameters: Pair<String, String>): Pair<VaccineRecordState, PatientVaccineRecord?>? {
-        var vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>? = null
+        var vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>?
         withContext(dispatcher) {
             vaccineRecordsResponse = fetchVaccineRecordRepository.fetchVaccineRecord(
                 authParameters.first,
@@ -256,7 +256,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     * Fetch covid test results
     * */
     private suspend fun fetchCovidTestResults(authParameters: Pair<String, String>): List<CovidOrderWithCovidTestDto>? {
-        var covidOrderResponse: List<CovidOrderWithCovidTestDto>? = null
+        var covidOrderResponse: List<CovidOrderWithCovidTestDto>?
         withContext(dispatcher) {
             covidOrderResponse = covidOrderRepository.fetchCovidOrders(
                 authParameters.first,

@@ -112,7 +112,7 @@ class BcscAuthRepo(
     /*
     * Check for logged in session
     * */
-    suspend fun checkSession(): Boolean {
+    fun checkSession(): Boolean {
         val authState = getAuthState() ?: return false
         return !authState.needsTokenRefresh
     }
