@@ -19,11 +19,13 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFetchTravelPassBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.healthpass.add.AddOrUpdateCardViewModel
+import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordUiState
 import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.PhnHelper
 import ca.bc.gov.bchealth.utils.hideKeyboard
+import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
@@ -107,6 +109,8 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
                     if (uiState.patientDataDto != null) {
                         patientDataDto = uiState.patientDataDto
                     }
+
+                    handleNoInternetConnection(uiState)
                 }
             }
         }
@@ -130,6 +134,13 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
             requireContext().hideKeyboard(view)
             view?.clearFocus()
             return@setOnTouchListener true
+        }
+    }
+
+    private fun handleNoInternetConnection(uiState: FetchVaccineRecordUiState) {
+        if (!uiState.isConnected) {
+            binding.root.showNoInternetConnectionMessage(requireContext())
+            viewModel.resetUiState()
         }
     }
 

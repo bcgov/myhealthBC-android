@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
@@ -146,8 +147,23 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                 it.copy(pdfData = pdfData)
             }
         } catch (e: java.lang.Exception) {
-            _uiState.update {
-                it.copy(onError = true)
+            when (e) {
+                is NetworkConnectionException -> {
+                    _uiState.update {
+                        it.copy(
+                            onLoading = false,
+                            isConnected = false
+                        )
+                    }
+                }
+                else -> {
+                    _uiState.update {
+                        it.copy(
+                            onLoading = false,
+                            onError = true
+                        )
+                    }
+                }
             }
         }
     }
@@ -166,7 +182,8 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                 labTestDetails = null,
                 toolbarTitle = null,
                 showDownloadOption = false,
-                pdfData = null
+                pdfData = null,
+                isConnected = true
             )
         }
     }
@@ -179,7 +196,8 @@ data class LabTestDetailUiState(
     val labTestDetails: List<LabTestDetail>? = null,
     val toolbarTitle: String? = null,
     val showDownloadOption: Boolean = false,
-    val pdfData: String? = null
+    val pdfData: String? = null,
+    val isConnected: Boolean = true
 )
 
 data class LabTestDetail(
