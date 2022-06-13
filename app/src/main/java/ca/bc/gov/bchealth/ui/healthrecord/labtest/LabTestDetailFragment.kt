@@ -19,6 +19,7 @@ import ca.bc.gov.bchealth.databinding.FragmentLabTestDetailBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.PdfHelper
+import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -105,8 +106,17 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
                     }
 
                     handlePdfDownload(state)
+
+                    handleNoInternetConnection(state)
                 }
             }
+        }
+    }
+
+    private fun handleNoInternetConnection(uiState: LabTestDetailUiState) {
+        if (!uiState.isConnected) {
+            binding.root.showNoInternetConnectionMessage(requireContext())
+            viewModel.resetUiState()
         }
     }
 

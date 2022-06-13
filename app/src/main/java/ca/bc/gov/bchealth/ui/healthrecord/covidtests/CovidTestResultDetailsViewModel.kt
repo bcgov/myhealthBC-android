@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.covidtests
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,11 +48,23 @@ class CovidTestResultDetailsViewModel @Inject constructor(
                 )
             }
         } catch (e: java.lang.Exception) {
-            _uiState.update {
-                it.copy(
-                    onError = true,
-                    onLoading = false
-                )
+            when (e) {
+                is NetworkConnectionException -> {
+                    _uiState.update {
+                        it.copy(
+                            onLoading = false,
+                            isConnected = false
+                        )
+                    }
+                }
+                else -> {
+                    _uiState.update {
+                        it.copy(
+                            onLoading = false,
+                            onError = true
+                        )
+                    }
+                }
             }
         }
     }
@@ -63,6 +76,7 @@ class CovidTestResultDetailsViewModel @Inject constructor(
                 onCovidTestResultDetail = null,
                 pdfData = null,
                 onError = false,
+                isConnected = true
             )
         }
     }
@@ -73,4 +87,5 @@ data class CovidResultDetailUiState(
     val onCovidTestResultDetail: CovidOrderWithCovidTestAndPatientDto? = null,
     val pdfData: String? = null,
     val onError: Boolean = false,
+    val isConnected: Boolean = true
 )

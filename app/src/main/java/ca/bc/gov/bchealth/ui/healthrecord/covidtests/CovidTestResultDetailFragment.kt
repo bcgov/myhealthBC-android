@@ -19,6 +19,7 @@ import ca.bc.gov.bchealth.databinding.FragmentTestResultDetailBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.PdfHelper
+import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
@@ -72,8 +73,17 @@ class CovidTestResultDetailFragment : BaseFragment(R.layout.fragment_test_result
                         showError()
                         viewModel.resetUiState()
                     }
+
+                    handleNoInternetConnection(state)
                 }
             }
+        }
+    }
+
+    private fun handleNoInternetConnection(uiState: CovidResultDetailUiState) {
+        if (!uiState.isConnected) {
+            binding.root.showNoInternetConnectionMessage(requireContext())
+            viewModel.resetUiState()
         }
     }
 
