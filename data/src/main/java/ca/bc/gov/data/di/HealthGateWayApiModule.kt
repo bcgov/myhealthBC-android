@@ -24,6 +24,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 /**
  * @author Pinakin Kansara
@@ -72,56 +73,46 @@ class HealthGateWayApiModule {
         mockInterceptor: MockInterceptor,
         hostSelectionInterceptor: HostSelectionInterceptor,
         networkConnectionInterceptor: NetworkConnectionInterceptor
-    ) = if (BuildConfig.FLAVOR == "mock") {
-        OkHttpClient.Builder()
-            .addInterceptor(mockInterceptor)
+    ): OkHttpClient {
+        val okHttpClient = OkHttpClient.Builder()
+            .callTimeout(2, TimeUnit.MINUTES)
             .addInterceptor(loggingInterceptor)
             .hostnameVerifier { _, _ ->
                 return@hostnameVerifier true
             }
-            .build()
-    } else {
-        OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .addInterceptor(networkConnectionInterceptor)
-            .addInterceptor(hostSelectionInterceptor)
-            .addInterceptor(queueItInterceptor)
-            .addInterceptor(cookiesInterceptor)
-            .addInterceptor(receivedCookieInterceptor)
-            .hostnameVerifier { _, _ ->
-                return@hostnameVerifier true
-            }
-            .build()
+        if (BuildConfig.FLAVOR == "mock") {
+            okHttpClient
+                .addInterceptor(mockInterceptor)
+        } else {
+            okHttpClient
+                .addInterceptor(networkConnectionInterceptor)
+                .addInterceptor(hostSelectionInterceptor)
+                .addInterceptor(queueItInterceptor)
+                .addInterceptor(cookiesInterceptor)
+                .addInterceptor(receivedCookieInterceptor)
+        }
+        return okHttpClient.build()
     }
 
     @Provides
     @MobileConfigOkHttp
     fun providesMobileConfigOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
-        cookiesInterceptor: CookiesInterceptor,
-        queueItInterceptor: QueueItInterceptor,
-        receivedCookieInterceptor: ReceivedCookieInterceptor,
         mockInterceptor: MockInterceptor,
-        networkConnectionInterceptor: NetworkConnectionInterceptor
-    ) = if (BuildConfig.FLAVOR == "mock") {
-        OkHttpClient.Builder()
-            .addInterceptor(mockInterceptor)
+        networkConnectionInterceptor: NetworkConnectionInterceptor,
+    ): OkHttpClient {
+        val okHttpClient = OkHttpClient.Builder()
+            .callTimeout(2, TimeUnit.MINUTES)
             .addInterceptor(loggingInterceptor)
             .hostnameVerifier { _, _ ->
                 return@hostnameVerifier true
             }
-            .build()
-    } else {
-        OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
             .addInterceptor(networkConnectionInterceptor)
-            .addInterceptor(queueItInterceptor)
-            .addInterceptor(cookiesInterceptor)
-            .addInterceptor(receivedCookieInterceptor)
-            .hostnameVerifier { _, _ ->
-                return@hostnameVerifier true
-            }
-            .build()
+        if (BuildConfig.FLAVOR == "mock") {
+            okHttpClient
+                .addInterceptor(mockInterceptor)
+        }
+        return okHttpClient.build()
     }
 
     @Provides
