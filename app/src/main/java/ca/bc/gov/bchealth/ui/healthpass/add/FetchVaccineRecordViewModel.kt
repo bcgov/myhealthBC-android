@@ -140,7 +140,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
     fun resetUiState() {
         _uiState.tryEmit(
             FetchVaccineRecordUiState(
-                isHgServicesUp = null,
+                isHgServicesUp = true,
                 onLoading = false,
                 queItTokenUpdated = false,
                 onMustBeQueued = false,
@@ -155,7 +155,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
 }
 
 data class FetchVaccineRecordUiState(
-    val isHgServicesUp: Boolean? = null,
+    val isHgServicesUp: Boolean = true,
     val onLoading: Boolean = false,
     val queItTokenUpdated: Boolean = false,
     val onMustBeQueued: Boolean = false,

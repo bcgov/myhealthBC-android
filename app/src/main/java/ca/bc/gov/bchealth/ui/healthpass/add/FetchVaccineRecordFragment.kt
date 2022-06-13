@@ -200,7 +200,7 @@ class FetchVaccineRecordFragment : BaseFragment(R.layout.fragment_fetch_vaccine_
 
                     showLoader(uiState.onLoading)
 
-                    if (uiState.isHgServicesUp != null && !uiState.isHgServicesUp) {
+                    if (!uiState.isHgServicesUp) {
                         binding.root.showServiceDownMessage(requireContext())
                         viewModel.resetUiState()
                     }

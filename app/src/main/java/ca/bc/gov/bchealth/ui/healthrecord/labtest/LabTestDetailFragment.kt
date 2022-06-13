@@ -20,6 +20,7 @@ import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.PdfHelper
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
+import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -91,6 +92,8 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
 
                     binding.progressBar.isVisible = state.onLoading
 
+                    handledServiceDown(state)
+
                     if (state.labTestDetails?.isNotEmpty() == true) {
                         labTestDetailAdapter.submitList(state.labTestDetails)
                         binding.layoutToolbar.topAppBar.title = state.toolbarTitle
@@ -110,6 +113,13 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
                     handleNoInternetConnection(state)
                 }
             }
+        }
+    }
+
+    private fun handledServiceDown(state: LabTestDetailUiState) {
+        if (!state.isHgServicesUp) {
+            binding.root.showServiceDownMessage(requireContext())
+            viewModel.resetUiState()
         }
     }
 
