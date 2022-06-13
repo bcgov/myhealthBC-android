@@ -84,10 +84,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             var patient: PatientDto? = null
             var patientId = 0L
 
-            notificationHelper.showNotification(
-                context.getString(R.string.notification_title_while_fetching_data)
-            )
-
             try {
                 val isHgServicesUp = mobileConfigRepository.getBaseUrl()
                 if (!isHgServicesUp) {
@@ -96,6 +92,10 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             } catch (e: Exception) {
                 return respondToHgServicesDown()
             }
+
+            notificationHelper.showNotification(
+                context.getString(R.string.notification_title_while_fetching_data)
+            )
 
             try {
                 patient = patientWithBCSCLoginRepository.getPatient(
