@@ -9,6 +9,7 @@ import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
 import ca.bc.gov.repository.labtest.LabOrderRepository
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +19,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LabTestDetailViewModel @Inject constructor(private val labOrderRepository: LabOrderRepository) :
+class LabTestDetailViewModel @Inject constructor(
+    private val labOrderRepository: LabOrderRepository,
+    private val mobileConfigRepository: MobileConfigRepository
+) :
     ViewModel() {
 
     private val _uiState = MutableStateFlow(LabTestDetailUiState())
@@ -142,9 +146,19 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
             it.copy(onLoading = true)
         }
         try {
-            val pdfData = labOrderRepository.fetchLabTestPdf(labOrderId, false)
-            _uiState.update {
-                it.copy(pdfData = pdfData)
+            val isHgServicesUp = mobileConfigRepository.getBaseUrl()
+            if (isHgServicesUp) {
+                val pdfData = labOrderRepository.fetchLabTestPdf(labOrderId, false)
+                _uiState.update {
+                    it.copy(pdfData = pdfData)
+                }
+            } else {
+                _uiState.update {
+                    it.copy(
+                        onLoading = false,
+                        isHgServicesUp = false
+                    )
+                }
             }
         } catch (e: java.lang.Exception) {
             when (e) {
@@ -183,7 +197,8 @@ class LabTestDetailViewModel @Inject constructor(private val labOrderRepository:
                 toolbarTitle = null,
                 showDownloadOption = false,
                 pdfData = null,
-                isConnected = true
+                isConnected = true,
+                isHgServicesUp = true
             )
         }
     }
@@ -197,6 +212,7 @@ data class LabTestDetailUiState(
     val toolbarTitle: String? = null,
     val showDownloadOption: Boolean = false,
     val pdfData: String? = null,
+    val isHgServicesUp: Boolean = true,
     val isConnected: Boolean = true
 )
 

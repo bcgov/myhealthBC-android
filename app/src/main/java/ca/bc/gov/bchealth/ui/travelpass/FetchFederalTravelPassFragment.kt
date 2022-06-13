@@ -80,7 +80,7 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
 
                     showLoader(uiState.onLoading)
 
-                    if (uiState.isHgServicesUp != null && !uiState.isHgServicesUp) {
+                    if (!uiState.isHgServicesUp) {
                         binding.root.showServiceDownMessage(requireContext())
                         viewModel.resetUiState()
                     }
