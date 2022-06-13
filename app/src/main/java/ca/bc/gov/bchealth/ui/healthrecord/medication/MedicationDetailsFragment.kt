@@ -72,13 +72,23 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
                         binding.layoutToolbar.topAppBar.title = state.toolbarTitle
                     }
 
+                    handleError(state.onError)
+
+                    fetchComments(state)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.commentState.collect { state ->
+                    binding.progressBar.isVisible = state.onLoading
+
                     if (state.comments.isNotEmpty()) {
                         commentsAdapter.submitList(state.comments)
                     }
 
-                    if (state.onError) {
-                        showError()
-                    }
+                    handleError(state.onError)
 
                     handleNoInternetConnection(state)
                 }
@@ -86,21 +96,29 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
         }
     }
 
-    private fun handleNoInternetConnection(uiState: MedicationDetailUiState) {
+    private fun handleNoInternetConnection(uiState: CommentUiState) {
         if (!uiState.isConnected) {
             binding.root.showNoInternetConnectionMessage(requireContext())
         }
     }
 
-    private fun showError() {
-        AlertDialogHelper.showAlertDialog(
-            context = requireContext(),
-            title = getString(R.string.error),
-            msg = getString(R.string.error_message),
-            positiveBtnMsg = getString(R.string.dialog_button_ok),
-            positiveBtnCallback = {
-                findNavController().popBackStack()
-            }
-        )
+    private fun fetchComments(uiState: MedicationDetailUiState) {
+        if (uiState.parentEntryId != null) {
+            viewModel.fetchComments()
+        }
+    }
+
+    private fun handleError(isFailed: Boolean) {
+        if (isFailed) {
+            AlertDialogHelper.showAlertDialog(
+                context = requireContext(),
+                title = getString(R.string.error),
+                msg = getString(R.string.error_message),
+                positiveBtnMsg = getString(R.string.dialog_button_ok),
+                positiveBtnCallback = {
+                    findNavController().popBackStack()
+                }
+            )
+        }
     }
 }
