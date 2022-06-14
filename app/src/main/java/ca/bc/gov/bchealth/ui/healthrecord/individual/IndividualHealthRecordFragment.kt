@@ -175,19 +175,15 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             .getWorkInfosForUniqueWorkLiveData(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME)
         if (!workRequest.hasObservers()) {
             workRequest.observe(viewLifecycleOwner) {
-                if (it.firstOrNull()?.state == WorkInfo.State.SUCCEEDED) {
-                    viewModel.getIndividualsHealthRecord()
-                }
-
                 if (it.firstOrNull()?.state == WorkInfo.State.RUNNING) {
                     binding.emptyView.tvNoRecord.text = getString(R.string.fetching_records)
                     binding.emptyView.tvClearFilterMsg.text = ""
-                    viewModel.getIndividualsHealthRecord()
                 } else {
                     binding.emptyView.tvNoRecord.text = getString(R.string.no_records_found)
                     binding.emptyView.tvClearFilterMsg.text =
                         getString(R.string.clear_all_filters_and_start_over)
                 }
+                viewModel.getIndividualsHealthRecord()
             }
         }
     }
