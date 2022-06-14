@@ -36,6 +36,7 @@ class QueueItInterceptor @Inject constructor(
         private const val BAD_RESPONSE = "Bad response!"
     }
 
+    var queueItRequiredUrl: String = ""
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestUrlBuilder = chain.request().url.newBuilder()
@@ -57,6 +58,7 @@ class QueueItInterceptor @Inject constructor(
             if (mustQueue(response)) {
                 preferenceStorage.queueItToken = null
                 val responseHeaders = response.headers
+                queueItRequiredUrl = response.request.url.toString()
                 throw MustBeQueuedException(
                     MUST_QUEUED,
                     responseHeaders[HEADER_QUEUE_IT_REDIRECT_URL]
@@ -109,11 +111,14 @@ class QueueItInterceptor @Inject constructor(
     }
 
     private fun checkQueueItTokenInPref(requestUrlBuilder: HttpUrl.Builder) {
-        if (preferenceStorage.queueItToken != null) {
+        if (preferenceStorage.queueItToken != null &&
+            requestUrlBuilder.toString() == queueItRequiredUrl
+        ) {
             requestUrlBuilder.addQueryParameter(
                 HEADER_QUEUE_IT_TOKEN,
                 preferenceStorage.queueItToken
             )
+            queueItRequiredUrl = ""
         }
     }
 
