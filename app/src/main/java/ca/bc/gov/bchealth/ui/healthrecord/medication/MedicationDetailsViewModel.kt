@@ -31,6 +31,9 @@ class MedicationDetailsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(MedicationDetailUiState())
     val uiState: StateFlow<MedicationDetailUiState> = _uiState.asStateFlow()
 
+    private val _commentState = MutableStateFlow(CommentUiState())
+    val commentState: StateFlow<CommentUiState> = _commentState.asStateFlow()
+
     fun getMedicationDetails(medicationId: Long) = viewModelScope.launch {
         try {
             _uiState.update {
@@ -39,28 +42,57 @@ class MedicationDetailsViewModel @Inject constructor(
             val medicationWithSummaryAndPharmacyDto = medicationRecordRepository
                 .getMedicationWithSummaryAndPharmacy(medicationId)
 
-            val comment =
-                commentRepository
-                    .getComments(
-                        medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
-                    )
-            val comments = mutableListOf<Comment>()
-            if (comment.isNotEmpty()) {
-                comments.add(Comment("${comment.size} Comments", Instant.now()))
-                comments.addAll(comment.map { Comment(it.text, it.createdDateTime?.toLocalDateTimeInstant()) })
-            }
             _uiState.update {
                 it.copy(
                     onLoading = false,
                     medicationDetails = prePareMedicationDetails(medicationWithSummaryAndPharmacyDto),
                     toolbarTitle = medicationWithSummaryAndPharmacyDto.medicationSummary.brandName,
+                    parentEntryId = medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
+                )
+            }
+        } catch (e: Exception) {
+            _uiState.update {
+                it.copy(
+                    onLoading = false,
+                    onError = true
+                )
+            }
+        }
+    }
+
+    fun fetchComments() = viewModelScope.launch {
+        try {
+            _commentState.update {
+                it.copy(onLoading = true)
+            }
+            val comment =
+                commentRepository
+                    .getComments(
+                        _uiState.value.parentEntryId
+                    )
+            val comments = mutableListOf<Comment>()
+            if (comment.isNotEmpty()) {
+                comments.add(Comment("${comment.size} Comments", Instant.now()))
+                comments.addAll(
+                    comment.map {
+                        Comment(
+                            it.text,
+                            it.createdDateTime?.toLocalDateTimeInstant()
+                        )
+                    }
+                )
+            }
+
+            _commentState.update {
+                it.copy(
+                    onLoading = false,
                     comments = comments
                 )
             }
         } catch (e: Exception) {
             when (e) {
                 is NetworkConnectionException -> {
-                    _uiState.update { state ->
+                    _commentState.update { state ->
                         state.copy(
                             onLoading = false,
                             isConnected = false
@@ -68,7 +100,7 @@ class MedicationDetailsViewModel @Inject constructor(
                     }
                 }
                 else -> {
-                    _uiState.update {
+                    _commentState.update {
                         it.copy(
                             onLoading = false,
                             onError = true
@@ -191,8 +223,7 @@ data class MedicationDetailUiState(
     val onError: Boolean = false,
     val medicationDetails: List<MedicationDetail>? = null,
     val toolbarTitle: String? = null,
-    val comments: List<Comment> = emptyList(),
-    val isConnected: Boolean = true
+    val parentEntryId: String? = null
 )
 
 data class MedicationDetail(
@@ -204,4 +235,11 @@ data class MedicationDetail(
 data class Comment(
     val text: String?,
     val date: Instant?,
+)
+
+data class CommentUiState(
+    val onLoading: Boolean = false,
+    val onError: Boolean = false,
+    val comments: List<Comment> = emptyList(),
+    val isConnected: Boolean = true
 )
