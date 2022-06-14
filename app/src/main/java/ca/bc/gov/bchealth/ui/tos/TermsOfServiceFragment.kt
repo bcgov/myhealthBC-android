@@ -58,7 +58,10 @@ class TermsOfServiceFragment : BaseFragment(R.layout.fragment_terms_of_service) 
 
                 termsOfServiceViewModel.tosUiState.collect { uiState ->
                     if (!uiState.tos.isNullOrBlank()) {
-                        binding.wbTosContent.loadData(uiState.tos, "text/html; charset=UTF-8", null)
+                        binding.wbTosContent.loadDataWithBaseURL(
+                            "app:htmlPage",
+                            uiState.tos, "text/html", "utf-8", null
+                        )
                     }
 
                     binding.progressBar.isVisible = uiState.showLoading
