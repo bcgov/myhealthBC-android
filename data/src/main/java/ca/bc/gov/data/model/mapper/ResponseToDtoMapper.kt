@@ -6,6 +6,7 @@ import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
+import ca.bc.gov.common.model.TermsOfServiceDto
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
@@ -17,6 +18,7 @@ import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.data.datasource.remote.model.base.LabResult
 import ca.bc.gov.data.datasource.remote.model.base.Order
+import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
 import ca.bc.gov.data.datasource.remote.model.base.comment.CommentPayload
 import ca.bc.gov.data.datasource.remote.model.base.covidtest.CovidTestRecord
 import ca.bc.gov.data.datasource.remote.model.base.medication.DispensingPharmacy
@@ -184,3 +186,9 @@ fun AuthenticatedCovidTestResponse.toDto(): List<CovidOrderWithCovidTestDto> {
         CovidOrderWithCovidTestDto(covidOrder, covidTest)
     }
 }
+
+fun TermsOfServicePayload.toDto() = TermsOfServiceDto(
+    id,
+    content,
+    effectiveDate
+)

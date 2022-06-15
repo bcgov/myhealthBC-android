@@ -22,6 +22,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterViewModel
 import ca.bc.gov.bchealth.ui.healthrecord.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceStatus
+import ca.bc.gov.bchealth.ui.tos.TermsOfServiceViewModel
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
@@ -47,6 +48,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
     private val binding by viewBindings(FragmentBcscAuthBinding::bind)
     private val viewModel: BcscAuthViewModel by viewModels()
     private val filterSharedViewModel: FilterViewModel by activityViewModels()
+    private val termsOfServiceViewModel: TermsOfServiceViewModel by activityViewModels()
     private val authResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { activityResult ->
@@ -83,7 +85,11 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             )
             when (it) {
                 TermsOfServiceStatus.ACCEPTED -> {
-                    viewModel.acceptTermsAndService()
+                    if (termsOfServiceViewModel.tosUiState.value.termsOfServiceId != null) {
+                        viewModel.acceptTermsAndService(termsOfServiceViewModel.tosUiState.value.termsOfServiceId!!)
+                    } else {
+                        respondToError()
+                    }
                 }
                 else -> {
                     showTosNotAcceptedDialog()

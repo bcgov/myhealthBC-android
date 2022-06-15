@@ -27,7 +27,13 @@ class TermsOfServiceViewModel @Inject constructor(
         _tosUiState.update { it.copy(showLoading = true) }
         try {
             val tos = termsOfServiceRepository.getTermsOfService()
-            _tosUiState.update { it.copy(showLoading = false, tos = tos) }
+            _tosUiState.update {
+                it.copy(
+                    showLoading = false,
+                    tos = tos.content,
+                    termsOfServiceId = tos.id
+                )
+            }
         } catch (e: Exception) {
             when (e) {
                 is NetworkConnectionException -> {
@@ -66,5 +72,6 @@ data class TermsOfServiceUiModel(
     val onMustBeQueued: Boolean = false,
     val queItUrl: String? = null,
     val tos: String? = null,
+    val termsOfServiceId: String? = null,
     val isConnected: Boolean = true
 )
