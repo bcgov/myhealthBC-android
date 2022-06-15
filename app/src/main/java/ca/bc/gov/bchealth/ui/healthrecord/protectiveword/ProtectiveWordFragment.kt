@@ -21,6 +21,7 @@ import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.makeLinks
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
+import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -86,6 +87,8 @@ class ProtectiveWordFragment : BaseFragment(R.layout.fragment_protective_word) {
 
                     binding.progressBar.indicator.isVisible = fetchMedicationUiState.onLoading
 
+                    handleServiceDown(fetchMedicationUiState)
+
                     if (fetchMedicationUiState.errorData != null) {
                         viewModel.resetUiState()
                         AlertDialogHelper.showAlertDialog(
@@ -109,6 +112,13 @@ class ProtectiveWordFragment : BaseFragment(R.layout.fragment_protective_word) {
                     handleNoInternetConnection(fetchMedicationUiState)
                 }
             }
+        }
+    }
+
+    private fun handleServiceDown(fetchMedicationUiState: FetchMedicationUiState) {
+        if (!fetchMedicationUiState.isHgServicesUp) {
+            binding.root.showServiceDownMessage(requireContext())
+            viewModel.resetUiState()
         }
     }
 

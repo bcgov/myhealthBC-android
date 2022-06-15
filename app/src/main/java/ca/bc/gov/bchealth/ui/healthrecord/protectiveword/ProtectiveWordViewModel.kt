@@ -9,6 +9,7 @@ import ca.bc.gov.common.model.ErrorData
 import ca.bc.gov.repository.CacheRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +22,8 @@ import javax.inject.Inject
 class ProtectiveWordViewModel @Inject constructor(
     private val medicationRecordRepository: MedicationRecordRepository,
     private val bcscAuthRepo: BcscAuthRepo,
-    private val cacheRepository: CacheRepository
+    private val cacheRepository: CacheRepository,
+    private val mobileConfigRepository: MobileConfigRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FetchMedicationUiState())
@@ -41,7 +43,8 @@ class ProtectiveWordViewModel @Inject constructor(
 
     fun fetchMedicationRecords(patientId: Long, protectiveWord: String) {
         viewModelScope.launch {
-            val isRecordsAvailable = medicationRecordRepository.isMedicationRecordsAvailableForPatient(patientId)
+            val isRecordsAvailable =
+                medicationRecordRepository.isMedicationRecordsAvailableForPatient(patientId)
             if (isRecordsAvailable) {
                 if (isProtectiveWordValid(protectiveWord)) {
                     _uiState.update { state ->
@@ -57,55 +60,69 @@ class ProtectiveWordViewModel @Inject constructor(
                     }
                 }
             } else {
+                fetchMedicationRecordsFromServer(patientId, protectiveWord)
+            }
+        }
+    }
+
+    private suspend fun fetchMedicationRecordsFromServer(patientId: Long, protectiveWord: String) {
+        _uiState.update { state ->
+            state.copy(
+                onLoading = true,
+            )
+        }
+        try {
+            val authParameters = bcscAuthRepo.getAuthParameters()
+            val isHgServicesUp = mobileConfigRepository.getBaseUrl()
+            if (isHgServicesUp) {
+                medicationRecordRepository.fetchMedicationStatement(
+                    patientId,
+                    authParameters.first,
+                    authParameters.second,
+                    protectiveWord
+                )
+                saveProtectiveWord(protectiveWord)
                 _uiState.update { state ->
                     state.copy(
-                        onLoading = true,
+                        onLoading = false,
+                        isRecordsUpdated = true
                     )
                 }
-                try {
-                    val authParameters = bcscAuthRepo.getAuthParameters()
-                    medicationRecordRepository.fetchMedicationStatement(
-                        patientId,
-                        authParameters.first,
-                        authParameters.second,
-                        protectiveWord
+            } else {
+                _uiState.tryEmit(
+                    FetchMedicationUiState(
+                        isHgServicesUp = isHgServicesUp,
+                        onLoading = false
                     )
-                    saveProtectiveWord(protectiveWord)
+                )
+            }
+        } catch (e: Exception) {
+            when (e) {
+                is NetworkConnectionException -> {
                     _uiState.update { state ->
                         state.copy(
                             onLoading = false,
-                            isRecordsUpdated = true
+                            isConnected = false
                         )
                     }
-                } catch (e: Exception) {
-                    when (e) {
-                        is NetworkConnectionException -> {
-                            _uiState.update { state ->
-                                state.copy(
-                                    onLoading = false,
-                                    isConnected = false
-                                )
-                            }
-                        }
-                        is ProtectiveWordException -> {
-                            _uiState.update { state ->
-                                state.copy(
-                                    onLoading = false,
-                                    wrongProtectiveWord = true
-                                )
-                            }
-                        }
-                        else -> {
-                            _uiState.update { state ->
-                                state.copy(
-                                    onLoading = false,
-                                    errorData = ErrorData(
-                                        R.string.error,
-                                        R.string.error_message
-                                    ),
-                                )
-                            }
-                        }
+                }
+                is ProtectiveWordException -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            onLoading = false,
+                            wrongProtectiveWord = true
+                        )
+                    }
+                }
+                else -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            onLoading = false,
+                            errorData = ErrorData(
+                                R.string.error,
+                                R.string.error_message
+                            ),
+                        )
                     }
                 }
             }
@@ -119,7 +136,8 @@ class ProtectiveWordViewModel @Inject constructor(
                 isRecordsUpdated = false,
                 errorData = null,
                 wrongProtectiveWord = false,
-                isConnected = true
+                isConnected = true,
+                isHgServicesUp = true
             )
         }
     }
@@ -134,5 +152,6 @@ data class FetchMedicationUiState(
     val isRecordsUpdated: Boolean = false,
     val errorData: ErrorData? = null,
     val wrongProtectiveWord: Boolean = false,
-    val isConnected: Boolean = true
+    val isConnected: Boolean = true,
+    val isHgServicesUp: Boolean = true
 )
