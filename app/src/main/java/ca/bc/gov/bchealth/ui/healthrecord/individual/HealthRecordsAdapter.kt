@@ -56,6 +56,9 @@ class HealthRecordsAdapter(
             HealthRecordType.LAB_TEST -> {
                 description = record.description
             }
+            HealthRecordType.IMMUNIZATION_RECORD -> {
+                description = record.date.toDate()
+            }
         }
 
         holder.binding.tvDesc.text = description
@@ -99,7 +102,7 @@ class HealthRecordsAdapter(
                                 filteredList.addAll(tempList.filter { it.healthRecordType == HealthRecordType.COVID_TEST_RECORD })
                             }
                             TimelineTypeFilter.IMMUNIZATION.name -> {
-                                filteredList.addAll(tempList.filter { it.healthRecordType == HealthRecordType.VACCINE_RECORD })
+                                filteredList.addAll(tempList.filter { it.healthRecordType == HealthRecordType.IMMUNIZATION_RECORD })
                             }
                         }
                     }

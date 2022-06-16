@@ -3,6 +3,8 @@ package ca.bc.gov.data.di
 import ca.bc.gov.data.datasource.local.CommentLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidTestLocalDataSource
+import ca.bc.gov.data.datasource.local.ImmunizationForecastLocalDataSource
+import ca.bc.gov.data.datasource.local.ImmunizationRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
 import ca.bc.gov.data.datasource.local.LocalDataSource
@@ -79,6 +81,16 @@ class LocalDataSourceModule {
     fun provideCovidTestLocalDataSource(
         db: MyHealthDataBase
     ): CovidTestLocalDataSource = CovidTestLocalDataSource(db.getCovidTestDao())
+
+    @Provides
+    @Singleton
+    fun provideImmunizationRecordLocalDataSource(db: MyHealthDataBase): ImmunizationRecordLocalDataSource =
+        ImmunizationRecordLocalDataSource(db.getImmunizationRecordDao())
+
+    @Provides
+    @Singleton
+    fun provideImmunizationForecastLocalDataSource(db: MyHealthDataBase): ImmunizationForecastLocalDataSource =
+        ImmunizationForecastLocalDataSource(db.getImmunizationForecastDao())
 
     @Provides
     @Singleton
