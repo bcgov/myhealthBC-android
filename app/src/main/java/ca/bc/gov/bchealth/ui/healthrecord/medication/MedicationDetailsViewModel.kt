@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.medication
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_RECORD
 import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.model.DispensingPharmacyDto
@@ -117,19 +118,19 @@ class MedicationDetailsViewModel @Inject constructor(
         val medicationDetails = mutableListOf<MedicationDetail>()
         medicationDetails.add(
             MedicationDetail(
-                "Practitioner:",
+                R.string.practitioner,
                 medicationWithSummaryAndPharmacyDto.medicationRecord.practitionerSurname
             )
         )
         medicationDetails.add(
             MedicationDetail(
-                "Quantity:",
+                R.string.quantity,
                 medicationWithSummaryAndPharmacyDto.medicationSummary.quantity.toInt().toString()
             )
         )
         medicationDetails.add(
             MedicationDetail(
-                "Strength:",
+                R.string.strength,
                 medicationWithSummaryAndPharmacyDto.medicationSummary.strength.toString()
                     .plus(" ")
                     .plus(medicationWithSummaryAndPharmacyDto.medicationSummary.strengthUnit)
@@ -137,55 +138,56 @@ class MedicationDetailsViewModel @Inject constructor(
         )
         medicationDetails.add(
             MedicationDetail(
-                "Form:",
+                R.string.form,
                 medicationWithSummaryAndPharmacyDto.medicationSummary.form
             )
         )
         medicationDetails.add(
             MedicationDetail(
-                "Manufacturer:",
+                R.string.manufacturer,
                 medicationWithSummaryAndPharmacyDto.medicationSummary.manufacturer
             )
         )
         medicationDetails.add(
             MedicationDetail(
-                "DIN:",
+                if (medicationWithSummaryAndPharmacyDto.medicationSummary.isPin) R.string.pin else
+                    R.string.din,
                 medicationWithSummaryAndPharmacyDto.medicationSummary.din
             )
         )
         medicationDetails.add(
             MedicationDetail(
-                "Filled at:",
+                R.string.filled_at,
                 medicationWithSummaryAndPharmacyDto.dispensingPharmacy.name
             )
         )
         medicationDetails.add(
             MedicationDetail(
-                "Filled date:",
+                R.string.filled_date,
                 medicationWithSummaryAndPharmacyDto.medicationRecord.dispenseDate.toDate()
             )
         )
         medicationDetails.add(
             MedicationDetail(
-                "Address:",
+                R.string.address,
                 getAddress(medicationWithSummaryAndPharmacyDto.dispensingPharmacy)
             )
         )
         medicationDetails.add(
             MedicationDetail(
-                "Phone Number:",
+                R.string.phone_number,
                 medicationWithSummaryAndPharmacyDto.dispensingPharmacy.phoneNumber
             )
         )
         medicationDetails.add(
             MedicationDetail(
-                "Fax:",
+                R.string.fax,
                 medicationWithSummaryAndPharmacyDto.dispensingPharmacy.faxNumber
             )
         )
         medicationDetails.add(
             MedicationDetail(
-                "Direction for use",
+                R.string.direction_for_use,
                 medicationWithSummaryAndPharmacyDto.medicationRecord.directions,
                 ITEM_VIEW_TYPE_DIRECTIONS
             )
@@ -227,7 +229,7 @@ data class MedicationDetailUiState(
 )
 
 data class MedicationDetail(
-    val title: String,
+    val title: Int,
     val description: String?,
     val viewType: Int = ITEM_VIEW_TYPE_RECORD
 )
