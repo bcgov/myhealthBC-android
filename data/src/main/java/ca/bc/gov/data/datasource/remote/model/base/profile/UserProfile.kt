@@ -5,5 +5,5 @@ package ca.bc.gov.data.datasource.remote.model.base.profile
  */
 data class UserProfile(
     val hdId: String,
-    val acceptedTermsOfService: Boolean
+    val termsOfServiceId: String
 )
