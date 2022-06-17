@@ -46,14 +46,14 @@ class MedicationDetailAdapter :
         when (holder) {
             is RecordViewHolder -> {
                 holder.binding.apply {
-                    tvTitle.text = medicationDetail.title
+                    tvTitle.text = holder.itemView.resources.getString(medicationDetail.title)
                     tvDesc.text =
                         medicationDetail.description.showIfNullOrBlank(holder.itemView.context)
                 }
             }
             is DirectionsViewHolder -> {
                 holder.binding.apply {
-                    tvTitle.text = medicationDetail.title
+                    tvTitle.text = holder.itemView.resources.getString(medicationDetail.title)
                     tvDesc.text =
                         medicationDetail.description.showIfNullOrBlank(holder.itemView.context)
                 }
