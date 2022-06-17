@@ -131,9 +131,8 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
     }
 
     private fun handlePdfDownload(state: LabTestDetailUiState) {
-        if (state.showDownloadOption) {
-            menuInflated.getItem(0).isVisible = true
-        }
+
+        menuInflated.getItem(0).isVisible = state.showDownloadOption
 
         if (state.pdfData?.isNotEmpty() == true) {
             pdfDecoderViewModel.base64ToPDFFile(state.pdfData)
