@@ -388,7 +388,7 @@ class BcscAuthViewModel @Inject constructor(
         }
     }
 
-    fun acceptTermsAndService() = viewModelScope.launch {
+    fun acceptTermsAndService(termsOfServiceId: String) = viewModelScope.launch {
         _authStatus.update {
             it.copy(
                 showLoading = true
@@ -399,7 +399,8 @@ class BcscAuthViewModel @Inject constructor(
             val authParameters = bcscAuthRepo.getAuthParameters()
             val isTosAccepted = profileRepository.acceptTermsOfService(
                 authParameters.first,
-                authParameters.second
+                authParameters.second,
+                termsOfServiceId
             )
 
             if (isTosAccepted) {
