@@ -125,7 +125,7 @@ class MedicationDetailsViewModel @Inject constructor(
         medicationDetails.add(
             MedicationDetail(
                 R.string.quantity,
-                medicationWithSummaryAndPharmacyDto.medicationSummary.quantity.toInt().toString()
+                medicationWithSummaryAndPharmacyDto.medicationSummary.quantity.toString()
             )
         )
         medicationDetails.add(
