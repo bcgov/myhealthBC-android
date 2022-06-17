@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">My Health BC</string>
+    <string name="app_name">Health Gateway</string>
 
     <!--Informational screen for camera permission-->
-    <string name="allow">Allow</string>
-    <string name="permission_required">Permission Required</string>
-    <string name="allow_vaxwallet">Allow My Health BC to use your camera to scan QR codes to store your card.</string>
+    <string name="allow">Allow camera access</string>
+    <string name="permission_required">Permission required</string>
+    <string name="allow_vaxwallet">Allow Health Gateway to use your camera to scan QR codes to store your card.</string>
     <string name="skip_for_now">Skip for now</string>
     <string name="camera_permission_required_title">Camera permission required!</string>
     <string name="camera_permission_message">Camera permission is required to scan BC Vaccine Card QR codes.</string>
@@ -13,61 +13,77 @@
 
     <!--Resources-->
     <string name="resources">Resources</string>
-    <string name="resource_screen_message">Find useful information and learn how to get vaccinated or tested for COVID-19</string>
-    <string name="label_resource_1">Get vaccinated for COVID-19</string>
-    <string name="label_resource_2">Get tested for COVID-19</string>
-    <string name="label_resource_3">COVID-19 symptom checker</string>
-    <string name="label_resource_4">K-12 Daily Check</string>
-    <string name="health_resources">Health Resources</string>
+    <string name="resource_screen_message">Connect with HealthLink BC for health advice and get the latest information about COVID-19.</string>
+    <string name="label_resource_1">Get health advice</string>
+    <string name="label_resource_2">Get vaccinated for COVID-19</string>
+    <string name="label_resource_3">Get a COVID-19 test</string>
+    <string name="label_resource_4">COVID-19 self-assessment</string>
+    <string name="health_resources">Health resources</string>
 
     <!--Settings-->
     <string name="settings">Settings</string>
-    <string name="settings_message">BC Vaccine Card app is the official mobile application from the Government of British Columbia. It allows you to store and organize a proof of vaccination for you and your family members.</string>
-    <string name="privacy_statement">Privacy Statement</string>
+    <string name="privacy_statement">Privacy statement</string>
     <string name="no_app_found">No app found to open link!</string>
-    <string name="disable_analytics">Disable analytics</string>
-    <string name="anonymized_behavioural_data_is_used_to_help_improve_the_user_experience">Anonymized behavioural data is used to help improve the user experience</string>
+    <string name="turn_on_analytics">Turn on analytics</string>
+    <string name="anonymized_behavioural_data_is_used_to_help_improve_the_user_experience">Share data about how you use the app. This will help us know how we can make it better. All data is anonymous.</string>
+    <string name="delete_all_records_and_saved_data">Delete all records and saved data</string>
+    <string name="delete_data">Delete data</string>
+    <string name="delete_data_message">Are you sure you want to delete all records and saved data?</string>
+    <string name="profile_settings">Profile &amp; settings</string>
+    <string name="security_and_data"><![CDATA[Security & data]]></string>
+    <string name="view_profile"><![CDATA[View profile >]]></string>
+    <string name="data">Data</string>
+    <string name="delete_all_records_desc">Log out of the app and delete all records and saved information.</string>
+    <string name="logins">Logins</string>
+    <string name="log_in_with_bc_services_card_desc">When logged in, recrods will be automatically added and updated</string>
+    <string name="logout_dialog_title">Log out of Health Gateway</string>
+    <string name="logout_dialog_message">You won\'t be able to access your health records until you log in again.</string>
+    <string name="log_out">Log out</string>
+
+    <!--News feed-->
+    <string name="news_feed">News feed</string>
 
     <!--Add card-->
     <string name="add_card">Add Card</string>
-    <string name="no_cards_message">You don\'t have any card yet</string>
-    <string name="title_add_card">Please select one of the following options to add an <b><font face='@font/bc_sans_bold'>official Health Pass</font></b> containing a QR code</string>
-    <string name="add_card_options_message">Scan, upload or get access to your proof of vaccination.</string>
-    <string name="scan_qr_code">Scan using your camera</string>
+    <string name="no_cards_message">You don’t have any documents added yet</string>
+    <string name="title_add_card">Choose one of the options below to add a proof of vaccination document.</string>
+    <string name="scan_qr_code">Scan QR using your camera</string>
     <string name="use_image_of_qr">Upload from your device</string>
-    <string name="enter_information">Enter information</string>
+    <string name="qr_image">QR image</string>
+    <string name="enter_information">Enter vaccination information</string>
     <string name="help">Help</string>
     <string name="exit">Exit</string>
     <string name="btn_ok">OK</string>
     <string name="bc_no_rear_camera_title">Oops!</string>
     <string name="bc_nor_rear_camera_message">Oops, It seems your device does not have a rear camera\nWe do not support scanning BC Vaccine Card QR codes using the front camera at the moment.</string>
-    <string name="scan_next">Scan Next</string>
-    <string name="to_access_your_bc_vaccine_card">To access your BC Vaccine Card, please provide the following information:</string>
-    <string name="personal_health_number">Personal Health Number</string>
-    <string name="date_of_birth">Date of Birth (YYYY-MM-DD)</string>
-    <string name="date_of_vaccination">Date of Vaccination (YYYY-MM-DD)</string>
-    <string name="select_date">Select date</string>
-    <string name="dose_1_or_dose_2">Dose 1 or Dose 2</string>
-    <string name="privacy_statement_info">Your information is being collected to provide you with your COVID-19 vaccination status under s. 26(c) of the Freedom of Information and Protection of Privacy Act. Contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849 if you have any questions about this collection.</string>
+    <string name="scan_next">Scan next</string>
+    <string name="personal_health_number">Personal Health Number (PHN)</string>
+    <string name="date_of_birth">Date of Birth (yyyy-mm-dd)</string>
+    <string name="date_of_vaccination">Date of vaccination (yyyy-mm-dd)</string>
+    <string name="enter_dob">Enter date of birth</string>
+    <string name="enter_dot">Enter date of test</string>
+    <string name="enter_dov">Enter date of vaccination</string>
+    <string name="privacy_statement_info_vaccine">Your information is being collected to provide you with your COVID-19 vaccination status under s. 26(c) of the Freedom of Information and Protection of Privacy Act. If you have any questions, contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849.</string>
+    <string name="privacy_statement_info_test_result">Your information is being collected to provide you with your COVID-19 test results under s. 26(c) of the Freedom of Information and Protection of Privacy Act. Contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849 if you have any questions about this collection.</string>
     <string name="phn_number_required">Personal Health Number is required</string>
-    <string name="phn_should_be_10_digit">PHN should be 10 characters</string>
     <string name="dob_required">Date of Birth is required</string>
     <string name="enter_valid_date_format">Please enter a valid date format</string>
-    <string name="dov_required">Date of Vaccination is required</string>
-    <string name="add_a_health_pass">Add a Health Pass</string>
-    <string name="remember_my_phn_and_dob_for_next_time">Remember my PHN and DoB for next time.</string>
+    <string name="dov_required">Date of vaccination is required</string>
+    <string name="add_a_health_pass">Add proof of vaccination</string>
+    <string name="remember_my_phn_and_dob_for_next_time">Remember my PHN and date of birth for next time.</string>
     <string name="replace">Replace</string>
     <string name="replace_health_pass_title">Proof of vaccination is updated.</string>
-    <string name="replace_health_pass_message">Would you like to replace the health pass?</string>
+    <string name="replace_health_pass_message">Would you like to replace the vaccine card?</string>
+    <string name="add_the_date_of_vaccination_for_any_dose">Add the date of vaccination for any dose.</string>
 
     <!--Health Passes-->
-    <string name="passes">Passes</string>
-    <string name="bc_vaccine_pass">BC Vaccine Pass</string>
-    <string name="bc_vaccine_passes">BC Vaccine Passes</string>
-    <string name="health_passes_message">Use Health Passes as an easy way to access and show your proof of vaccination.</string>
-    <string name="health_passes_message_1">Save a <b><font face='@font/bc_sans_bold'>BC Vaccine Card</font></b> and <b><font face='@font/bc_sans_bold'>Federal Proof of Vaccination</font></b> here.</string>
+    <string name="passes">Proofs</string>
+    <string name="bc_vaccine_card">BC Vaccine Card</string>
+    <string name="bc_vaccine_passes">BC Vaccine Cards</string>
+    <string name="health_passes_message">Add proof of vaccination documents for you and your family, including kids under 12.\n\nYou may need to show proof of vaccination to access travel, events, businesses or services.</string>
     <string name="vaccinated">Vaccinated</string>
-    <string name="partially_vaccinated">Partially Vaccinated</string>
+    <string name="health_passes_message_1">Save a <b><font face='@font/bc_sans_bold'>BC Vaccine Card</font></b> and <b><font face='@font/bc_sans_bold'>Federal Proof of Vaccination</font></b> here.</string>
+    <string name="partially_vaccinated">Partially vaccinated</string>
     <string name="no_record">No Record</string>
     <string name="manage_cards">Manage Cards</string>
     <string name="done">Done</string>
@@ -77,16 +93,26 @@
     <string name="unlink_card">Unlink Card</string>
     <string name="unlink">Unlink</string>
     <string name="issued_on">Issued on</string>
-    <string name="view_all">View All</string>
+    <string name="view_all">View all</string>
     <string name="undo">Undo</string>
-    <string name="bc_vaccine_card_unlinked">BC Vaccine Pass unlinked.</string>
+    <string name="bc_vaccine_card_unlinked">BC vaccine card unlinked.</string>
     <string name="edit">Edit</string>
-    <string name="travel_pass">Travel Pass</string>
-    <string name="get_federal_proof_of_vaccination">Get Federal Proof of Vaccination</string>
-    <string name="show_federal_proof_of_vaccination">Show Federal Proof of Vaccination</string>
-    <string name="domestic_and_international_travel">Domestic and International Travel</string>
-    <string name="find_phn_on_care_card_or_the_back_of_driver_s_license">Find PHN on care card or the back of driver’s license.</string>
-    <string name="get_federal_travel_pass">Get Federal Travel Pass</string>
+    <string name="travel_pass">Federal proof of vaccination</string>
+    <string name="get_federal_proof_of_vaccination">Get federal proof of vaccination</string>
+    <string name="show_federal_proof_of_vaccination">Show federal proof of vaccination</string>
+    <string name="domestic_and_international_travel">Domestic and international travel</string>
+    <string name="find_phn_on_care_card_or_the_back_of_driver_s_license">Find PHN on the back of BC driver\'s license or CareCard.</string>
+    <string name="get_federal_travel_pass">Get Canadian COVID-19 proof</string>
+    <string name="health_records">Health records</string>
+    <string name="health_records_subtitle">View your lab results, medication history and immunization records. Keep track of what’s important to you and your health.</string>
+    <string name="health_records_subtitle_1">Log in with your BC Services Card to access all health records. The BC Services Card app is a secure way to prove who you are.</string>
+    <string name="health_passes">Proof of vaccination</string>
+    <string name="home">Home</string>
+    <string name="move">move</string>
+    <plurals name="cards_count">
+        <item quantity="one">%1$d card</item>
+        <item quantity="other">%1$d cards</item>
+    </plurals>
 
     <!-- In app updates -->
     <string name="update_success">Update Success!</string>
@@ -98,24 +124,120 @@
 
     <!--Educational screens text at on-boarding experience-->
     <string name="next">Next</string>
-    <string name="get_started">Get Started</string>
-    <string name="health_passes">Health Passes</string>
-    <string name="onboarding_message_1">Keep your BC Vaccine Cards and Federal COVID-19 Travel Proofs in a single place</string>
-    <string name="health_resource">Health Resources</string>
-    <string name="onboarding_message_2">Find COVID-19 health information and testing resources</string>
-    <string name="news_feed">News Feed</string>
-    <string name="onboarding_message_3">Get the latest BC government COVID-19 news</string>
+    <string name="get_started">Get started</string>
+    <string name="onboarding_health_passes_title">Proof of vaccination</string>
+    <string name="onboarding_health_passes_desc">Save proof of vaccination documents for you and your family. Have them ready for travel or to access events and services that require it.</string>
+    <string name="onboarding_health_records_title">Health records</string>
+    <string name="onboarding_health_records_desc">Access your lab results, medication history and vaccine records. Keep track of what\'s important to you and your health.</string>
+    <string name="onboarding_health_resources_title">Health resources</string>
+    <string name="onboarding_health_resources_desc">Connect with HealthLink BC for health advice and get the latest information about COVID-19.</string>
+    <string name="onboarding_news_feed_title">News feed</string>
+    <string name="onboarding_news_feed_desc">Get the latest COVID-19 news from  the Government of B.C.</string>
     <string name="new_string">New</string>
     <string name="ok_camel_case">Ok</string>
-    <string name="health_records">Health Records</string>
+    <string name="skip">Skip intro</string>
+
+    <!--Health Records-->
+    <string name="view_the_details_of_all_your_covid_19_health_records">View the details of all your COVID-19 Health Records</string>
+    <string name="records">Records</string>
+    <string name="get_vaccination_records">Vaccination records</string>
+    <string name="access_to_the_details_of_you_and_your_family_s_covid_19_vaccination_records">Add COVID-19 vaccination records for you and your family</string>
+    <string name="get_covid_19_test_results">COVID-19 test results</string>
+    <string name="access_to_the_details_of_you_and_your_family_s_covid_19_test_results">Add COVID-19 test results for you and your family</string>
+    <string name="add_bc_vaccine_record">Add a BC vaccine record</string>
+    <string name="add_covid_test_result">Add COVID-19 test result</string>
+    <string name="date_of_test">Date of test (yyyy-mm-dd)</string>
+    <string name="member_records_toolbar_title">\'s records</string>
+    <string name="space_records">" records"</string>
+    <string name="space_record">" record"</string>
+    <string name="dot_required">Date of Test is required</string>
+    <string name="covid_19_test_result">COVID-19 test result</string>
+    <string name="covid_19_vaccination">COVID-19 vaccination</string>
+    <string name="statins">Statins</string>
+    <string name="delete">Delete</string>
+    <string name="instructions_details">
+        You need to self-isolate now.\n
+        The people you live with will also need to self-isolate if they are not fully vaccinated.\n
+        Public health will contact you.\n
+        Monitor your health and contact a health care provider or call 8-1-1 if you are concerned about your symptoms.\n
+        Go to Understanding Test Results for more information.
+    </string>
+    <string name="understanding_test_results">Understanding Test Results.</string>
+    <string name="tested_on">Tested on</string>
+    <string name="name">Name</string>
+    <string name="date_of_testing">Date of Testing</string>
+    <string name="test_status">Test Status</string>
+    <string name="test_result">Test Result</string>
+    <string name="type_name">Type Name</string>
+    <string name="provider_clinic">Provider / Clinic:</string>
+    <string name="delete_hc_record_title">Delete Record</string>
+    <string name="delete_individual_covid_test_record_message">This action cannot be undone. You will be required to enter your health information again to access the record.</string>
+    <string name="delete_individual_vaccine_record_message">Vaccine card linked to this record will be removed. You will be required to enter your health information again to access the record.</string>
+    <string name="vaccination_record">Vaccination record</string>
+    <string name="date">Date:</string>
+    <string name="product">Product:</string>
+    <string name="lot_number">Lot number:</string>
+    <string name="dose">Dose</string>
+    <string name="covid_test_result_cancelled">There was a problem with your test. Please visit BC CDC Test Results for more information</string>
+    <string name="covid_test_result_pending">Your test is being processed and can take up to 48 hours to complete.</string>
+    <string name="pending">Pending</string>
+    <string name="result_description">Result Description:</string>
+    <plurals name="hidden_records_count">
+        <item quantity="one">%1$d Hidden record</item>
+        <item quantity="other">%1$d Hidden records</item>
+    </plurals>
+    <string name="login_to_view_hidden_records_msg">Log in again to view all the health records</string>
+    <string name="out_of_range">Out of Range</string>
+    <string name="in_range">In Range</string>
+    <string name="add_health_record">Add health record</string>
+    <string name="add_health_record_title">Manage your records</string>
+    <string name="add_health_record_message">Log in with your BC Services Card to view all the records and customize health plans</string>
+    <string name="hidden_medication_records">Medication history</string>
+    <string name="enter_protective_word_to_access_medication_records">Some of your health records are locked. You need to enter your protective word to unlock them.</string>
+    <string name="more">more</string>
+    <string name="wrong_protective_word">Invalid protective word. Try again.</string>
+    <string name="restricted_pharmanet_records">Restricted PharmaNet Records</string>
+    <string name="view_your_medication_records">View your medication records</string>
+    <string name="protective_word_desc">Enter the protective word to access your medication history from PharmaNet. Find out more</string>
+    <string name="protective_word">Protective word</string>
+    <string name="unlock_records">Unlock records</string>
+    <string name="e_g_pa6729bc">e.g. PA6729BC</string>
+    <string name="enter_from_date">Enter from date</string>
+    <string name="enter_to_date">Enter to date</string>
+    <string name="after">and after</string>
+    <string name="before">and before</string>
+    <string name="download">Download</string>
+    <string name="test_summary">Test summary</string>
+    <string name="summary_desc">Find resources to learn about your lab test and what the results mean. Learn more</string>
+    <string name="test_name">Test name:</string>
+    <string name="result">Result:</string>
+    <string name="lab_test_status">Test status:</string>
+    <string name="collection_date">Collection date:</string>
+    <string name="ordering_provider">Ordering provider:</string>
+    <string name="reporting_lab">Reporting Lab:</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="completed">Completed</string>
+    <string name="fetching_records">Fetching records…</string>
+    <string name="loading">Loading…</string>
+    <string name="corrected">Corrected</string>
+
+    <!--BIOMETRICS-->
+    <string name="btn_use_biometrics">Use biometrics</string>
+    <string name="tv_biometric_heading">Protect your personal information</string>
+    <string name="dialog_biometric_description">Log in using your biometric credential</string>
+    <string name="biometric_description">To keep your data safe, your device security features must be turned on.</string>
+    <string name="biometric_learn_more">Learn more about keeping your data secure</string>
+    <string name="biometric_security_tip_info">Health information for you and your family can be stored on this device. To keep this data private, you must have your device security features turned on.</string>
+    <string name="biometric_security_tip_title">Keeping your data secure</string>
+    <string name="biometric_security_tip_1">Do not turn off your fingerprint ID or face ID</string>
+    <string name="biometric_security_tip_2">Do not share or turn off your passcode</string>
+    <string name="biometric_security_tip_3">Do not leave your device unlocked</string>
 
     <!--Miscellaneous-->
     <string name="coming_soon">Coming soon!</string>
     <string name="back">Back</string>
     <string name="submit">Submit</string>
     <string name="cancel">Cancel</string>
-    <string name="error">Error!</string>
-    <string name="error_message">Something went wrong. Please retry.</string>
     <string name="no_internet">No internet!</string>
     <string name="check_connection">Please check network connection.</string>
     <string name="place_holder_text">Place holder text</string>
@@ -123,6 +245,104 @@
     <string name="select_phn">select personal health number</string>
     <string name="federal_proof">federal proof</string>
     <string name="torch">torch</string>
-     <!--TODO any new strings below needs to be grouped logically as above-->
+    <string name="dialog_btn_not_now">Not now</string>
+    <string name="dialog_btn_settings">Settings</string>
+    <string name="dialog_button_ok">Ok</string>
+    <string name="no_data">--</string>
 
+    <!-- Login -->
+    <string name="leaving_my_health_bc">Leaving Health Gateway</string>
+    <string name="login_info_message">You will be temporarily redirected to log in with your BC Services Card.\n\nYou will then be automatically returned to Health Gateway.</string>
+    <string name="btn_continue">Continue</string>
+    <string name="tv_login_title">Log in with your BC Services Card to access all health records</string>
+    <string name="tv_login_message">The BC Services Card app is a secure way to prove who you are. Follow the instructions to get set up and log in.</string>
+    <string name="tv_login_skip_message">You can complete this step any time. If you choose to skip it for now, you\'ll only be able to access proof of vaccination and health resources.</string>
+    <string name="log_in_with_bc_services_card">Log in with BC Services Card</string>
+    <string name="incorrect_credentials">Please enter valid credentials</string>
+    <string name="login_success_title">Log in successful</string>
+    <string name="login_success_message">Your records will be automatically added and updated in Health Gateway. This may take a few moments.</string>
+    <string name="age_limit_title">Age Restriction</string>
+    <string name="age_limit_message">You must be 12 years of age or older to use Health Gateway.</string>
+    <string name="terms_of_service_message">You must agree to the Health Gateway terms of service before using this app.</string>
+    <string name="bc_services_card">BC Services Card</string>
+    <string name="don_t_have_bc_service_card_app_please_download_here">Don\'t have BC Service Card app, please <b>download</b> here.</string>
+    <string name="download_small_case">download</string>
+
+    <!--ERROR-->
+    <string name="error">Error!</string>
+    <string name="error_message">Something went wrong. Please retry.</string>
+    <string name="error_duplicate_title">Duplicate!</string>
+    <string name="error_duplicate_message">This record is already added.</string>
+    <string name="error_invalid_qr_code_title">Invalid QR Code!</string>
+    <string name="error_invalid_qr_code_message">Please scan an official proof of vaccination.</string>
+    <string name="error_data_mismatch_title">The information does not match</string>
+    <string name="error_test_result_data_mismatch_message">If it has been 48 hours from the time of your test, contact the BC COVID-19 Results Line (1‐833‐707‐2792) to investigate the issue.</string>
+    <string name="error_vaccine_data_mismatch_message">The information you entered does not match our records. Please try again.</string>
+    <string name="invalid_phn">Please enter a valid PHN</string>
+    <string name="error_incorrect_phn">There was an error with your Personal Health Number. Please check that it is correct and try again.</string>
+    <string name="error_biometric_enrollment_title">Enable Biometric</string>
+    <string name="error_biometric_enrollment_message">Health Gateway requires to authenticate using Biometric or passcode. Go to Settings > To enable Biometric or Passcode.</string>
+    <string name="error_biometric_authentication_title">Authentication error</string>
+    <string name="error_biometric_no_hardware">Unable to find supported hardware to perform biometric authentication.</string>
+    <string name="error_biometric_unknown">Unable to perform authentication at the moment try again later.</string>
+    <string name="service_down">Maintenance is underway. Please try later.</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="no_internet_connection">Unable to refresh your data. Please check your internet connection.</string>
+
+    <!--Timeline View-->
+    <string name="type">Type</string>
+    <string name="time">Time</string>
+    <string name="immunization">Immunization</string>
+    <string name="medications">Medications</string>
+    <string name="covid_19">COVID-19</string>
+    <string name="show_results">Show results</string>
+    <string name="filter_by_type">Filter by type</string>
+    <string name="clear">Clear</string>
+    <string name="_2022">2022</string>
+    <string name="_2021">2021</string>
+    <string name="_2020">2020</string>
+    <string name="before_2020">Before 2020</string>
+    <string name="all_records_from">All records from</string>
+    <string name="from_yyyy_mm_dd">From (yyyy-mm-dd)</string>
+    <string name="to_yyyy_mm_dd">To (yyyy-mm-dd)</string>
+    <string name="timeline">Timeline</string>
+
+    <!--Lab test-->
+    <string name="lab_test">Lab test</string>
+    <string name="results_are_pending">Results are pending</string>
+    <string name="lab_test_detail_banner_1">It can take between 1 and 7 days to complete. Find resources to learn about your lab test and what the results mean. Learn more</string>
+    <string name="lab_test_detail_banner_2">It can take between 1 and 7 days to complete.</string>
+
+    <!-- Home screen -->
+    <string name="hello">Hello</string>
+    <string name="hi">Hi</string>
+    <string name="health_records_home">Health Records</string>
+    <string name="view_records">View records</string>
+    <string name="health_records_desc">Access your lab results, medication history and vaccination records</string>
+    <string name="proof_of_vaccination_desc">Save proof of vaccination documents for you and your family</string>
+    <string name="add_proofs">Add proofs</string>
+    <string name="resources_desc">Find trusted health information and resources</string>
+    <string name="learn_more">Learn more</string>
+
+    <!--Terms of service-->
+    <string name="terms_of_service">Terms of service</string>
+    <string name="btn_agree">Agree</string>
+
+    <!-- Filter screen -->
+    <string name="clear_all">Clear all</string>
+    <string name="record_type">Record type</string>
+    <string name="lab_tests">Lab tests</string>
+    <string name="covid_19_tests">COVID-19 tests</string>
+    <string name="immunizations">Immunizations</string>
+    <string name="filter">Filter</string>
+    <string name="apply">Apply</string>
+    <string name="no_records_found">No records found</string>
+    <string name="clear_all_filters_and_start_over">Clear all filters and start over</string>
+    <string name="date_range">Date range</string>
+    <string name="from">From</string>
+    <string name="date_hint">yyyy-mm-dd</string>
+    <string name="to">To</string>
+    <string name="enter_valid_date">Please enter a valid date</string>
+    <string name="date_filter_validation_msg">FROM date should be on or before TO date</string>
+    <string name="session_time_out">Your session has timed out</string>
 </resources>

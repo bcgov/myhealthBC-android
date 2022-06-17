@@ -22,6 +22,7 @@
 
 #KEEP MODEL
 -keep class ca.bc.gov.bchealth.model.** { *; }
+-keep class ca.bc.gov.bchealth.data.local.entity.*
 
 #JJWKT
 -keepattributes InnerClasses
@@ -33,3 +34,7 @@
 -keep class org.bouncycastle.** { *; }
 -keepnames class org.bouncycastle.** { *; }
 -dontwarn org.bouncycastle.**
+
+# SqlCipher
+-keep,includedescriptorclasses class net.sqlcipher.** { *; }
+-keep,includedescriptorclasses interface net.sqlcipher.** { *; }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/space_2_x"
+    android:background="@drawable/layout_shape_rectangle"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:filterTouchesWhenObscured="true"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_get_vaccination_record_title"
+        style="?textAppearanceHeadline3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_2_x"
+        android:layout_marginTop="@dimen/space_3_x"
+        android:text="@string/get_vaccination_records"
+        android:textColor="@color/blue"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_get_vaccination_record_subtitle"
+        style="?textAppearanceCaption"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_2_x"
+        android:layout_marginEnd="@dimen/space_1_x"
+        android:layout_marginBottom="@dimen/space_3_x"
+        android:text="@string/access_to_the_details_of_you_and_your_family_s_covid_19_vaccination_records"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/iv_vaccination_record_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_get_vaccination_record_title" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_add_vaccination_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/space_2_x"
+        android:contentDescription="@string/add_card"
+        android:src="@drawable/ic_add_health_record"
+        android:filterTouchesWhenObscured="true"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_get_vaccination_record_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_get_vaccination_record_title" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_vaccination_record_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/space_6_x"
+        tools:ignore="contentDescription"
+        tools:src="@drawable/ic_health_record_add_vaccine"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_get_vaccination_record_subtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_get_vaccination_record_title" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

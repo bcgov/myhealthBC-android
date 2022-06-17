@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:filterTouchesWhenObscured="true"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/layout_toolbar"
+        layout="@layout/layout_top_appbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/space_1_x"
+        android:fillViewport="true"
+        android:filterTouchesWhenObscured="true"
+        app:layout_constraintBottom_toTopOf="@+id/btn_apply"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_toolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_type_title"
+                style="?textAppearanceHeadline3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_2_x"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:gravity="start"
+                android:textAlignment="textStart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="@string/record_type" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cg_filter_by_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_1_x"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:filterTouchesWhenObscured="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_type_title">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_medication"
+                    style="@style/ChipFilterByType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/medications" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_lab_test"
+                    style="@style/ChipFilterByType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lab_tests" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_covid_test"
+                    style="@style/ChipFilterByType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/covid_19_tests" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_immunizations"
+                    style="@style/ChipFilterByType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/immunizations" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <View
+                android:id="@+id/line"
+                android:layout_width="0dp"
+                android:layout_height="1.5dp"
+                android:layout_marginTop="@dimen/space_2_x"
+                android:background="@drawable/solid_line"
+                app:layout_constraintTop_toBottomOf="@+id/cg_filter_by_type"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_date_range"
+                style="?textAppearanceHeadline3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_2_x"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:gravity="start"
+                android:textAlignment="textStart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line"
+                android:text="@string/date_range" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_from"
+                style="?textAppearanceHeadline4"
+                android:textSize="15sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_1_x"
+                android:layout_marginStart="@dimen/space_5_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:gravity="start"
+                android:textAlignment="textStart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_date_range"
+                android:text="@string/from" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tip_from"
+                style="@style/HealthGateway.Widget.App.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_5_x"
+                android:layout_marginTop="@dimen/space_1_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:hint="@string/date_hint"
+                android:filterTouchesWhenObscured="true"
+                app:endIconContentDescription="@string/enter_from_date"
+                app:endIconDrawable="@drawable/ic_date"
+                app:endIconMode="custom"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_from">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_from"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="date" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_to"
+                style="?textAppearanceHeadline4"
+                android:textSize="15sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_2_x"
+                android:layout_marginStart="@dimen/space_5_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:gravity="start"
+                android:textAlignment="textStart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tip_from"
+                android:text="@string/to" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tip_to"
+                style="@style/HealthGateway.Widget.App.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_5_x"
+                android:layout_marginTop="@dimen/space_1_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:hint="@string/date_hint"
+                android:filterTouchesWhenObscured="true"
+                app:endIconContentDescription="@string/enter_to_date"
+                app:endIconDrawable="@drawable/ic_date"
+                app:endIconMode="custom"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_to">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_to"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="date" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_apply"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginStart="@dimen/space_1_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:layout_marginBottom="@dimen/space_2_x"
+        android:text="@string/apply"
+        android:filterTouchesWhenObscured="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_clear" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_clear"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginEnd="@dimen/space_1_x"
+        android:layout_marginBottom="@dimen/space_2_x"
+        android:text="@string/clear_all"
+        android:filterTouchesWhenObscured="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_apply"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

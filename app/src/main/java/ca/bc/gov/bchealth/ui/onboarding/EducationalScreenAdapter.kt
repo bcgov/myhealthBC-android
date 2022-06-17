@@ -12,11 +12,6 @@ class EducationalScreenAdapter(fragment: Fragment) : FragmentStateAdapter(fragme
 
     override fun createFragment(position: Int): Fragment {
 
-        return when (position) {
-            0 -> OnboardingHealthPassesFragment()
-            1 -> OnboardingHealthResourcesFragment()
-            2 -> OnboardingNewsFeedFragment()
-            else -> OnboardingHealthPassesFragment()
-        }
+        return EducationalScreenFragment.newInstance(position)
     }
 }

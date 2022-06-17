@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/space_4_x"
+    android:layout_marginEnd="@dimen/space_4_x"
+    android:layout_marginTop="@dimen/space_2_x"
+    android:filterTouchesWhenObscured="true"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="@dimen/space_1_x">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/img_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_4_x"
+            android:layout_marginTop="@dimen/space_4_x"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_login_info" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_title"
+            style="?textAppearanceHeadline3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_1_x"
+            android:layout_marginEnd="@dimen/space_4_x"
+            app:layout_constraintBottom_toBottomOf="@+id/img_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/img_icon"
+            tools:text="Health Records"
+            app:layout_constraintTop_toTopOf="@+id/img_icon" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_desc"
+            style="?textAppearanceHeadline4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_1_x"
+            android:layout_marginStart="@dimen/space_4_x"
+            android:layout_marginEnd="@dimen/space_4_x"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_icon"
+            tools:text="View and manage all your available health records, including dispensed medications, health visits, COVID-19 test results, immunizations and more." />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_continue"
+            style="@style/HealthGateway.Widget.MaterialComponents.Button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_1_x"
+            android:layout_marginStart="@dimen/space_4_x"
+            android:layout_marginEnd="@dimen/space_4_x"
+            android:layout_marginBottom="@dimen/space_4_x"
+            android:clickable="false"
+            android:focusable="false"
+            android:filterTouchesWhenObscured="true"
+            app:layout_constraintTop_toBottomOf="@+id/tv_desc"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

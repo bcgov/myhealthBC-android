@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/space_4_x"
+    android:layout_marginEnd="@dimen/space_4_x"
+    android:layout_marginBottom="@dimen/space_3_x"
+    android:animateLayoutChanges="true"
+    android:animationCache="true"
+    android:filterTouchesWhenObscured="true"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="@dimen/space_1_x">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txt_full_name"
+            style="?textAppearanceHeadline3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/navy_blue"
+            android:padding="@dimen/space_1_x"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toStartOf="@+id/img_unlink"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="JEAN SMITH Here for testing the length of the name " />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_vaccine_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/status_green"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="@id/txt_full_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_full_name">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/txt_vaccine_status"
+                style="?textAppearanceHeadline4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawablePadding="@dimen/space_1_x"
+                android:gravity="center"
+                android:padding="@dimen/space_1_x"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="VACCINATED" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/img_unlink"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/unlink"
+            android:focusable="true"
+            android:visibility="gone"
+            android:filterTouchesWhenObscured="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ic_reorder"
+            app:layout_constraintTop_toTopOf="@+id/txt_full_name"
+            app:srcCompat="@drawable/ic_un_link"
+            tools:visibility="visible" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ic_reorder"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/move"
+            android:focusable="true"
+            android:visibility="gone"
+            android:filterTouchesWhenObscured="true"
+            app:layout_constraintBottom_toBottomOf="@+id/img_unlink"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/img_unlink"
+            app:srcCompat="@drawable/ic_reorder"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_qr_code"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/layout_vaccine_status"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_vaccine_status"
+            tools:visibility="visible">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/txt_issue_date"
+                style="?textAppearanceHeadline6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Issued on August-31-2021, 13:51" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_qr_code"
+                android:layout_width="@dimen/qr_width_height"
+                android:layout_height="@dimen/qr_width_height"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/space_1_x"
+                android:clickable="true"
+                android:contentDescription="@string/tap_to_zoom_in"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_issue_date"
+                tools:src="@drawable/ic_check_mark" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/txt_tap_to_zoom"
+                style="?textAppearanceHeadline6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/space_1_x"
+                android:drawableStart="@drawable/ic_mycards_tap_to_zoom"
+                android:drawablePadding="@dimen/space_1_x"
+                android:text="@string/tap_to_zoom_in"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img_qr_code" />
+
+            <View
+                android:id="@+id/view_federal_proof"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/space_1_x"
+                android:background="@color/white"
+                android:clickable="true"
+                android:contentDescription="@string/federal_proof"
+                android:foreground="?attr/selectableItemBackground"
+                app:layout_constraintBottom_toBottomOf="@+id/layout_qr_code"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_tap_to_zoom" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_federal_pass_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_2_x"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_federal_pass_icon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/view_federal_proof" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_federal_pass_title"
+                style="?textAppearanceHeadline3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_2_x"
+                android:layout_marginTop="@dimen/space_1_x"
+                android:layout_marginEnd="@dimen/space_1_x"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@+id/iv_federal_pass_action"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iv_federal_pass_icon"
+                tools:text="@string/get_federal_proof_of_vaccination" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_federal_pass_desc"
+                style="?textAppearanceHeadline4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_2_x"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="@dimen/space_2_x"
+                android:layout_marginBottom="16dp"
+                android:text="@string/domestic_and_international_travel"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="@id/view_federal_proof"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_federal_pass_title" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_federal_pass_action"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="@dimen/space_1_x"
+                android:filterTouchesWhenObscured="true"
+                android:src="@drawable/ic_federal_pass_add"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_federal_pass_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_federal_pass_title" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

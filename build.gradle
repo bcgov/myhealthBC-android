@@ -1,10 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     apply from: './scripts/versions.gradle'
+
+
     repositories {
         google()
         mavenCentral()
     }
+
     dependencies {
         classpath "com.android.tools.build:gradle:$versions.gradle"
 
@@ -13,7 +16,7 @@ buildscript {
         //Nav SafeARGS
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
 
-        classpath "com.diffplug.spotless:spotless-plugin-gradle:5.14.3"
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:$versions.spotless"
 
         //Dagger Hilt
         classpath "com.google.dagger:hilt-android-gradle-plugin:$versions.hilt"
@@ -23,18 +26,52 @@ buildscript {
     }
 }
 
-apply plugin: "com.diffplug.spotless"
+def localProperties = new Properties()
+if(project.file("local.properties").exists()){
+    localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/FreshworksStudio/BCVAX-Android")
+            credentials {
+                username = localProperties['USER'] ?: System.getenv("USER")
+                password = localProperties['TOKEN'] ?: System.getenv("TOKEN")
+            }
+        }
+        jcenter()
+    }
+    apply plugin: "com.diffplug.spotless"
+}
+
 
 spotless {
-//    ratchetFrom 'origin/main'
 
     kotlin {
         target '**/*.kt'
-        ktlint().userData(['android': 'true', 'color': 'true', 'reporter': 'checkstyle', 'insert_final_newline': 'false'])
+        ktlint()
         trimTrailingWhitespace()
+        indentWithSpaces()
     }
+
     kotlinGradle {
         target '*.gradle.kts'
         ktlint()
+    }
+
+    format 'misc', {
+        target '**/*.gradle', '**/*.md', '**/.gitignore'
+        indentWithSpaces()
+        trimTrailingWhitespace()
+    }
+
+    format 'xml', {
+        target '**/*.xml'
+        indentWithSpaces()
+        trimTrailingWhitespace()
     }
 }

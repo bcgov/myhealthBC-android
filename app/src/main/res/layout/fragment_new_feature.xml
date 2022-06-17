@@ -4,12 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:filterTouchesWhenObscured="true"
     tools:context=".ui.onboarding.CameraPermissionFragment">
 
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -25,7 +27,7 @@
                 android:id="@+id/img_on_boarding_slider_icon_fixed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_onboarding_mobile2"
+                android:src="@drawable/ic_onboarding_mobile"
                 app:layout_constraintBottom_toTopOf="@+id/txt_slider_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -38,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/space_1_x"
-                android:src="@drawable/ic_onboarding_icon2"
+                android:src="@drawable/ic_onboarding_health_records"
                 app:layout_constraintBottom_toBottomOf="@+id/img_on_boarding_slider_icon_fixed"
                 app:layout_constraintEnd_toEndOf="@+id/img_on_boarding_slider_icon_fixed"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -61,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_2_x"
                 android:layout_marginEnd="@dimen/space_2_x"
-                android:text="@string/health_records"
+                android:text="@string/onboarding_health_records_title"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
@@ -77,7 +79,7 @@
                 android:layout_marginStart="@dimen/space_4_x"
                 android:layout_marginTop="@dimen/space_2_x"
                 android:layout_marginEnd="@dimen/space_4_x"
-                android:text="@string/onboarding_message_2"
+                android:text="@string/onboarding_health_records_desc"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -90,16 +92,29 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_ok"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button1"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/space_8_x"
         android:text="@string/ok_camel_case"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         android:contentDescription="@string/next" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.71000004" />
 
+</androidx.constraintlayout.widget.ConstraintLayout>

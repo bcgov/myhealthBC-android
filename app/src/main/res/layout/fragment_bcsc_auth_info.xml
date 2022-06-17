@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:filterTouchesWhenObscured="true"
+    tools:context=".ui.login.BcscAuthInfoFragment">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:filterTouchesWhenObscured="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_login"
+        android:id="@+id/scrollView2">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_login"
+                android:layout_marginTop="@dimen/space_7_x"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_login_message"
+                android:layout_marginBottom="@dimen/space_4_x" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="0dp"
+                style="?textAppearanceCaption"
+                android:id="@+id/tv_login_skip_message"
+                android:layout_marginStart="@dimen/space_8_x"
+                android:layout_marginEnd="@dimen/space_8_x"
+                android:textAlignment="center"
+                android:text="@string/tv_login_skip_message"
+                android:layout_marginTop="@dimen/space_3_x"
+                app:layout_constraintTop_toBottomOf="@id/img_login"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_login_title"
+                style="?textAppearanceHeadline2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_4_x"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:text="@string/tv_login_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_login_message"
+                style="?textAppearanceBody1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginTop="@dimen/space_2_x"
+                android:layout_marginEnd="@dimen/space_4_x"
+                android:text="@string/tv_login_message"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_login_title" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_login"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/log_in_with_bc_services_card"
+        android:filterTouchesWhenObscured="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintBottom_toTopOf="@+id/btn_not_now"
+        android:layout_marginBottom="@dimen/space_1_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:layout_marginStart="@dimen/space_4_x" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_not_now"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/not_now"
+        android:filterTouchesWhenObscured="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:layout_marginBottom="@dimen/space_1_x"
+        app:layout_constraintBottom_toTopOf="@+id/tv_download_app" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="0dp"
+        style="?textAppearanceCaption"
+        android:id="@+id/tv_download_app"
+        android:layout_marginStart="@dimen/space_3_x"
+        android:layout_marginEnd="@dimen/space_3_x"
+        android:layout_marginBottom="@dimen/space_2_x"
+        android:textAlignment="center"
+        android:text="@string/don_t_have_bc_service_card_app_please_download_here"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

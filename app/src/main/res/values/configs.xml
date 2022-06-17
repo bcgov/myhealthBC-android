@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="url_privacy_policy">https://www2.gov.bc.ca/gov/content/health/managing-your-health/health-gateway/myhealth-app-privacy</string>
+    <string name="url_privacy_policy">https://www.healthgateway.gov.bc.ca/termsofservice</string>
     <string name="url_help">https://www2.gov.bc.ca/gov/content/covid-19/vaccine/proof#help</string>
     <string name="url_news_feed">https://news.gov.bc.ca/news-subscribe/covid-19/feed</string>
 
     <!--Resources-->
+    <string name="url_get_health_advice">https://www.healthlinkbc.ca/</string>
     <string name="url_how_to_get_covid_vaccinated">https://www2.gov.bc.ca/gov/content/covid-19/vaccine/register</string>
     <string name="url_get_tested_for_covid">http://www.bccdc.ca/health-info/diseases-conditions/covid-19/testing/where-to-get-a-covid-19-test-in-bc</string>
     <string name="url_covid_symptom_checker">https://bc.thrive.health/covid19/en</string>
@@ -14,4 +15,13 @@
     <!--HGS endpoint-->
     <string name="retrofit_url_immunization">https://dev.healthgateway.gov.bc.ca/</string>
 
+    <!--Covid test result-->
+    <string name="understanding_test_results_url">http://www.bccdc.ca/results</string>
+    <string name="bc_cdc_test_results">"http://www.bccdc.ca/health-info/diseases-conditions/covid-19/testing/test-results"</string>
+
+    <!--FAQ link-->
+    <string name="faq_link">https://www.healthgateway.gov.bc.ca/faq</string>
+
+    <!--Play store link-->
+    <string name="play_store">"https://play.google.com/store/apps/details?id=ca.bc.gov.id.servicescard"</string>
 </resources>

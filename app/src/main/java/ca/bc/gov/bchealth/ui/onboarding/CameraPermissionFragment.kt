@@ -17,8 +17,8 @@ import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentCameraPermissionBinding
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -92,15 +92,13 @@ class CameraPermissionFragment : Fragment(R.layout.fragment_camera_permission) {
     }
 
     private fun showRationalDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.camera_permission_required_title))
-            .setCancelable(false)
-            .setMessage(getString(R.string.camera_permission_message))
-            .setNegativeButton(getString(R.string.not_now)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setPositiveButton(getString(R.string.grant)) { dialog, _ ->
-                dialog.dismiss()
+        AlertDialogHelper.showAlertDialog(
+            context = requireContext(),
+            title = getString(R.string.camera_permission_required_title),
+            msg = getString(R.string.camera_permission_message),
+            positiveBtnMsg = getString(R.string.grant),
+            negativeBtnMsg = getString(R.string.not_now),
+            positiveBtnCallback = {
                 try {
                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                     val uri: Uri =
@@ -108,10 +106,10 @@ class CameraPermissionFragment : Fragment(R.layout.fragment_camera_permission) {
                     intent.data = uri
                     startActivity(intent)
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    // no implementation required
                 }
             }
-            .show()
+        )
     }
 
     private fun navigateToScanner() {

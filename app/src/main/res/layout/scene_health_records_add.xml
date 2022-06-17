@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:filterTouchesWhenObscured="true">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_resource"
+        style="?textAppearanceHeadline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_4_x"
+        android:text="@string/health_records"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_resource_message"
+        style="?textAppearanceBody1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:text="@string/view_the_details_of_all_your_covid_19_health_records"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_resource" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/vg_get_vaccination_records"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_3_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:background="@drawable/layout_shape_rectangle"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:filterTouchesWhenObscured="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_resource_message">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_get_vaccination_record_title"
+            style="?textAppearanceSubtitle1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_2_x"
+            android:layout_marginTop="@dimen/space_3_x"
+            android:text="@string/get_vaccination_records"
+            android:textSize="17sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_get_vaccination_record_subtitle"
+            style="?textAppearanceHeadline4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_2_x"
+            android:layout_marginEnd="@dimen/space_1_x"
+            android:layout_marginBottom="@dimen/space_3_x"
+            android:text="@string/access_to_the_details_of_you_and_your_family_s_covid_19_vaccination_records"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_vaccination_record_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_get_vaccination_record_title" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_add_vaccination_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/space_2_x"
+            android:contentDescription="@string/add_bc_vaccine_record"
+            android:src="@drawable/ic_add_health_record"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_get_vaccination_record_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_get_vaccination_record_title" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_vaccination_record_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/space_6_x"
+            tools:ignore="contentDescription"
+            android:src="@drawable/ic_health_record_add_vaccine"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_get_vaccination_record_subtitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_get_vaccination_record_title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/vg_get_covid_test_results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_3_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:background="@drawable/layout_shape_rectangle"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:filterTouchesWhenObscured="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vg_get_vaccination_records">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_get_covid_test_result_title"
+            style="?textAppearanceSubtitle1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_2_x"
+            android:layout_marginTop="@dimen/space_3_x"
+            android:text="@string/get_covid_19_test_results"
+            android:textSize="17sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_get_covid_test_result_subtitle"
+            style="?textAppearanceHeadline4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_2_x"
+            android:layout_marginEnd="@dimen/space_1_x"
+            android:layout_marginBottom="@dimen/space_3_x"
+            android:text="@string/access_to_the_details_of_you_and_your_family_s_covid_19_test_results"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_covid_test_result_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_get_covid_test_result_title" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_add_covid_test_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/space_2_x"
+            android:contentDescription="@string/add_covid_test_result"
+            android:src="@drawable/ic_add_health_record"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_get_covid_test_result_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_get_covid_test_result_title" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_covid_test_result_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/space_4_x"
+            tools:ignore="contentDescription"
+            android:src="@drawable/ic_covid_test_result"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_get_covid_test_result_subtitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_get_covid_test_result_title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

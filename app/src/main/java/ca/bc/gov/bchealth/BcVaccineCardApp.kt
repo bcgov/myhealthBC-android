@@ -2,6 +2,8 @@ package ca.bc.gov.bchealth
 
 import android.app.Application
 import android.util.Log
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import com.snowplowanalytics.snowplow.Snowplow
 import com.snowplowanalytics.snowplow.configuration.NetworkConfiguration
 import com.snowplowanalytics.snowplow.configuration.SessionConfiguration
@@ -12,6 +14,7 @@ import com.snowplowanalytics.snowplow.tracker.LoggerDelegate
 import com.snowplowanalytics.snowplow.util.TimeMeasure
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * [BcVaccineCardApp].
@@ -19,7 +22,10 @@ import java.util.concurrent.TimeUnit
  * @author Pinakin Kansara
  */
 @HiltAndroidApp
-class BcVaccineCardApp : Application() {
+class BcVaccineCardApp : Application(), Configuration.Provider {
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
 
     companion object {
         const val COLLECTOR_URL_NON_PROD = "spm.apps.gov.bc.ca"
@@ -97,4 +103,9 @@ class BcVaccineCardApp : Application() {
             sessionConfig
         )
     }
+
+    override fun getWorkManagerConfiguration() =
+        Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 }

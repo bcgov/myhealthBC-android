@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/homeFragment"
+    android:id="@+id/home">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="ca.bc.gov.bchealth.ui.home.HomeFragment"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_health_records"
+            app:destination="@id/health_records" />
+        <action
+            android:id="@+id/action_homeFragment_to_health_pass"
+            app:destination="@id/health_pass" />
+        <action
+            android:id="@+id/action_homeFragment_to_resources"
+            app:destination="@id/resources" />
+    </fragment>
+
+    <include app:graph="@navigation/health_pass" />
+    <include app:graph="@navigation/health_records" />
+    <include app:graph="@navigation/resources" />
+
+</navigation>

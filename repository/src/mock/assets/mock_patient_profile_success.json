@@ -1,0 +1,67 @@
+{
+  "resourcePayload": {
+    "hdId": "P6FFO433A5WPMVTGM7T4ZVWBKCSVNAYGTWTU3J2LWMGUMERKI72A",
+    "acceptedTermsOfService": true,
+    "email": null,
+    "isEmailVerified": false,
+    "smsNumber": "2501234567",
+    "isSMSNumberVerified": false,
+    "hasTermsOfServiceUpdated": false,
+    "lastLoginDateTime": "2022-05-27T07:57:34Z",
+    "lastLoginDateTimes": [
+      "2022-05-27T07:57:34Z",
+      "2022-05-27T06:10:05Z",
+      "2022-05-27T05:08:07Z",
+      "2022-05-27T05:06:22Z",
+      "2022-05-27T01:20:47Z"
+    ],
+    "closedDateTime": null,
+    "preferences": {
+      "tutorialMenuNote": {
+        "hdId": "P6FFO433A5WPMVTGM7T4ZVWBKCSVNAYGTWTU3J2LWMGUMERKI72A",
+        "preference": "tutorialMenuNote",
+        "value": "false",
+        "version": 24933984,
+        "createdDateTime": "2022-05-27T00:45:06.68918Z",
+        "createdBy": "System",
+        "updatedDateTime": "2022-05-27T00:45:06.68918Z",
+        "updatedBy": "System"
+      },
+      "tutorialMenuExport": {
+        "hdId": "P6FFO433A5WPMVTGM7T4ZVWBKCSVNAYGTWTU3J2LWMGUMERKI72A",
+        "preference": "tutorialMenuExport",
+        "value": "false",
+        "version": 24933985,
+        "createdDateTime": "2022-05-27T00:45:06.689917Z",
+        "createdBy": "System",
+        "updatedDateTime": "2022-05-27T00:45:06.689917Z",
+        "updatedBy": "System"
+      },
+      "quickLinks": {
+        "hdId": "P6FFO433A5WPMVTGM7T4ZVWBKCSVNAYGTWTU3J2LWMGUMERKI72A",
+        "preference": "quickLinks",
+        "value": "[]",
+        "version": 24934773,
+        "createdDateTime": "2022-05-27T00:49:23.625177Z",
+        "createdBy": "P6FFO433A5WPMVTGM7T4ZVWBKCSVNAYGTWTU3J2LWMGUMERKI72A",
+        "updatedDateTime": "2022-05-27T00:49:37.344246Z",
+        "updatedBy": "P6FFO433A5WPMVTGM7T4ZVWBKCSVNAYGTWTU3J2LWMGUMERKI72A"
+      },
+      "actionedCovidModalAt": {
+        "hdId": "P6FFO433A5WPMVTGM7T4ZVWBKCSVNAYGTWTU3J2LWMGUMERKI72A",
+        "preference": "actionedCovidModalAt",
+        "value": "2022-05-27T00:50:22.377+00:00",
+        "version": 24934917,
+        "createdDateTime": "2022-05-27T00:45:06.688301Z",
+        "createdBy": "System",
+        "updatedDateTime": "2022-05-27T00:50:22.536341Z",
+        "updatedBy": "P6FFO433A5WPMVTGM7T4ZVWBKCSVNAYGTWTU3J2LWMGUMERKI72A"
+      }
+    }
+  },
+  "totalResultCount": null,
+  "pageIndex": null,
+  "pageSize": null,
+  "resultStatus": 1,
+  "resultError": null
+}

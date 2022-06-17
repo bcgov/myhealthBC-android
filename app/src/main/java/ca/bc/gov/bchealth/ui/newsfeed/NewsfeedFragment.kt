@@ -7,41 +7,40 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.analytics.AnalyticsAction
-import ca.bc.gov.bchealth.analytics.SelfDescribingEvent
 import ca.bc.gov.bchealth.databinding.FragmentNewsfeedBinding
 import ca.bc.gov.bchealth.model.rss.Newsfeed
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.snowplowanalytics.snowplow.Snowplow
+import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
+import ca.bc.gov.common.model.analytics.AnalyticsAction
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
 
     private lateinit var newsfeedAdapter: NewsfeedAdapter
-
     private var newsFeeds: MutableList<Newsfeed> = mutableListOf()
-
     private val binding by viewBindings(FragmentNewsfeedBinding::bind)
-
     private val viewModel: NewsfeedViewModel by viewModels()
+    private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupToolBar()
+
         newsfeedAdapter = NewsfeedAdapter(newsFeeds) {
             it.link?.let { it1 ->
                 requireActivity().redirect(it1)
-
                 // Snowplow event
-                Snowplow.getDefaultTracker()?.track(
-                    SelfDescribingEvent.get(AnalyticsAction.NewsLinkSelected.value, it1)
-                )
+                analyticsFeatureViewModel.track(AnalyticsAction.NEWS_FEED_SELECTED, it1)
             }
         }
 
@@ -65,9 +64,11 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
 
         viewModel.newsfeedLiveData.observe(viewLifecycleOwner, {
             if (it.isNullOrEmpty()) {
-                showError(
-                    getString(R.string.error),
-                    getString(R.string.error_message)
+                AlertDialogHelper.showAlertDialog(
+                    context = requireContext(),
+                    title = getString(R.string.error),
+                    msg = getString(R.string.error_message),
+                    positiveBtnMsg = getString(R.string.btn_ok)
                 )
             } else {
                 newsfeedAdapter.newsFeeds = it
@@ -77,14 +78,12 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
         })
     }
 
-    private fun showError(title: String, message: String) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(title)
-            .setCancelable(false)
-            .setMessage(message)
-            .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
-                dialog.dismiss()
+    private fun setupToolBar() {
+        binding.toolbar.ivRightOption.apply {
+            visibility = View.VISIBLE
+            setOnClickListener {
+                findNavController().navigate(R.id.profileFragment)
             }
-            .show()
+        }
     }
 }

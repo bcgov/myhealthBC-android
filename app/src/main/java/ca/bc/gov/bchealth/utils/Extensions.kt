@@ -3,68 +3,34 @@ package ca.bc.gov.bchealth.utils
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
+import android.text.Selection
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.graphics.drawable.toBitmap
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.ui.mycards.qrgen.QrCode
-import ca.bc.gov.bchealth.ui.mycards.qrgen.QrSegment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.text.SimpleDateFormat
+import com.google.android.material.snackbar.Snackbar
 import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
-import java.util.Locale
-
-/**
- * Helper function to read file from asset
- * and return String JSON.
- */
-fun Context.readJsonFromAsset(fileName: String) =
-    this.assets.open(fileName).bufferedReader().use { it.readText() }
 
 /*
 * For displaying Toast
 * */
 fun Context.toast(message: String) =
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-
-/*
-* For converting epoch datetime format to human readable format
-* */
-fun Long.getDateTime(): String {
-    return try {
-        val date1 = Date(this * 1000)
-        val format = SimpleDateFormat("MMMM-dd-y, HH:mm", Locale.CANADA)
-        format.format(date1)
-    } catch (e: java.lang.Exception) {
-        e.printStackTrace()
-        ""
-    }
-}
-
-/*
-* For converting epoch datetime format to human readable format (YYYY-MM-DD)
-* */
-fun Long.getNewsFeedDateTime(): String {
-    return try {
-        val date1 = Date(this)
-        val format = SimpleDateFormat("y-MM-d", Locale.CANADA)
-        format.format(date1)
-    } catch (e: java.lang.Exception) {
-        e.printStackTrace()
-        ""
-    }
-}
 
 /*
 * Check is network connection
@@ -113,7 +79,6 @@ fun Context.redirect(url: String) {
             Uri.parse(url)
         )
     } catch (e: Exception) {
-        e.printStackTrace()
         showURLFallBack(this, url)
     }
 }
@@ -157,60 +122,6 @@ fun Long.adjustOffset(): Date {
 }
 
 /*
-* Get BitMap of QR
-* */
-fun String.getBarcode(): Bitmap? {
-
-    try {
-        val segments: MutableList<QrSegment> = QrSegment.makeSegments(this)
-        val qrCode: QrCode = QrCode.encodeSegments(
-            segments,
-            QrCode.Ecc.LOW,
-            5,
-            40,
-            2,
-            false
-        )
-
-        val size = qrCode.size
-
-        val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-
-        for (y in 0 until size) {
-            for (x in 0 until size) {
-                bitmap.setPixel(
-                    x, y,
-                    if (qrCode.getModule(x, y))
-                        Color.BLACK
-                    else
-                        Color.WHITE
-                )
-            }
-        }
-
-        val scaledBitMap = Bitmap.createScaledBitmap(bitmap, 400, 400, false)
-
-        return addWhiteBorder(scaledBitMap, 10)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        return null
-    }
-}
-
-private fun addWhiteBorder(bmp: Bitmap, borderSize: Int): Bitmap? {
-    val bmpWithBorder = Bitmap
-        .createBitmap(
-            bmp.width + borderSize * 2,
-            bmp.height + borderSize * 2,
-            bmp.config
-        )
-    val canvas = Canvas(bmpWithBorder)
-    canvas.drawColor(Color.WHITE)
-    canvas.drawBitmap(bmp, borderSize.toFloat(), borderSize.toFloat(), null)
-    return bmpWithBorder
-}
-
-/*
 * Close keypad
 * */
 fun Context.hideKeyboard(view: View) {
@@ -218,20 +129,84 @@ fun Context.hideKeyboard(view: View) {
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
-/*
-* Show alert while replacing existing health pass
-* */
-fun Context.showCardReplacementDialog(runnable: Runnable) {
+/**
+ * Makes View visible
+ */
+fun View.show() {
+    this.visibility = View.VISIBLE
+}
 
-    MaterialAlertDialogBuilder(this)
-        .setTitle(getString(R.string.replace_health_pass_title))
-        .setCancelable(false)
-        .setMessage(getString(R.string.replace_health_pass_message))
-        .setPositiveButton(getString(R.string.replace)) { dialog, _ ->
-            runnable.run()
-            dialog.dismiss()
-        }.setNegativeButton(getString(R.string.not_now)) { dialog, _ ->
-            dialog.dismiss()
+/**
+ * Makes view invisible, and it doesn't take any space for layout purposes.
+ */
+fun View.hide() {
+    this.visibility = View.GONE
+}
+
+fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {
+    val spannableString = SpannableString(this.text)
+    var startIndexOfLink = -1
+    for (link in links) {
+        val clickableSpan = object : ClickableSpan() {
+            override fun updateDrawState(textPaint: TextPaint) {
+                // use this to change the link color
+                textPaint.color = textPaint.linkColor
+                // toggle below value to enable/disable
+                // the underline shown below the clickable text
+                textPaint.isUnderlineText = true
+            }
+
+            override fun onClick(view: View) {
+                Selection.setSelection((view as TextView).text as Spannable, 0)
+                view.invalidate()
+                link.second.onClick(view)
+            }
         }
-        .show()
+        startIndexOfLink = this.text.toString().indexOf(link.first, startIndexOfLink + 1)
+        try {
+            spannableString.setSpan(
+                clickableSpan, startIndexOfLink, startIndexOfLink + link.first.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        } catch (e: Exception) {
+            // no implementation required.
+        }
+    }
+    this.movementMethod =
+        LinkMovementMethod.getInstance() // without LinkMovementMethod, link can not click
+    this.setText(spannableString, TextView.BufferType.SPANNABLE)
+}
+
+fun String?.showIfNullOrBlank(context: Context): String {
+    return if (this.isNullOrBlank()) {
+        context.resources.getString(R.string.no_data)
+    } else {
+        this
+    }
+}
+
+fun View.showServiceDownMessage(context: Context) {
+    val snackBar = Snackbar.make(
+        this,
+        context.getString(R.string.service_down), 10000
+    )
+    snackBar.setAction(context.getString(R.string.dismiss)) {
+        performClick()
+    }
+    snackBar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines =
+        10
+    snackBar.show()
+}
+
+fun View.showNoInternetConnectionMessage(context: Context) {
+    val snackBar = Snackbar.make(
+        this,
+        context.getString(R.string.no_internet_connection), 10000
+    )
+    snackBar.setAction(context.getString(R.string.dismiss)) {
+        performClick()
+    }
+    snackBar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines =
+        10
+    snackBar.show()
 }

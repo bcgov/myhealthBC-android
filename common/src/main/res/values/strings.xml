@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Health Gateway</string>
+    <string name="notification_channel_name">Health Gateway</string>
+    <string name="notification_channel_work">Health Gateway Notifications</string>
+    <string name="notification_title_while_fetching_data">Retrieving records.</string>
+    <string name="notification_title_on_success">Records updated.</string>
+    <string name="notification_title_on_failed">Failed to retrieve records.</string>
+</resources>

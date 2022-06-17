@@ -4,18 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.addcard.FetchVaccineCardFragment">
+    android:filterTouchesWhenObscured="true"
+    tools:context=".ui.travelpass.FetchFederalTravelPassFragment">
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="@dimen/space_1_x"
         android:fillViewport="true"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toTopOf="@+id/btn_cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/layoutToolbar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -23,15 +26,17 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/ed_phn_number"
-                style="@style/BC_VAX.Widget.App.TextInputLayout"
+                style="@style/HealthGateway.Widget.App.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
                 android:layout_marginTop="@dimen/space_4_x"
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:hint="@string/personal_health_number"
+                android:filterTouchesWhenObscured="true"
                 app:endIconContentDescription="@string/select_phn"
                 app:endIconMode="custom"
+                app:helperText="@string/find_phn_on_care_card_or_the_back_of_driver_s_license"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -46,21 +51,6 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_phn_info"
-                style="?textAppearanceHeadline5"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_1_x"
-                android:layout_marginEnd="@dimen/space_4_x"
-                android:text="@string/find_phn_on_care_card_or_the_back_of_driver_s_license"
-                android:textColor="@color/shadow_grey"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ed_phn_number" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_privacy_statement"
@@ -73,22 +63,23 @@
                 android:autoLink="email|phone"
                 android:linksClickable="true"
                 android:textIsSelectable="true"
-                android:text="@string/privacy_statement_info"
+                android:text="@string/privacy_statement_info_vaccine"
                 android:textAlignment="textStart"
                 android:textColorLink="@color/blue"
                 android:textSize="14sp"
+                android:filterTouchesWhenObscured="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_phn_info" />
+                app:layout_constraintTop_toBottomOf="@+id/ed_phn_number" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <include
-        android:id="@+id/toolbar"
-        layout="@layout/layout_toolbar"
+        android:id="@+id/layoutToolbar"
+        layout="@layout/layout_top_appbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -97,13 +88,14 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_cancel"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button.OutlinedButton"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_1_x"
         android:layout_marginBottom="@dimen/space_3_x"
         android:text="@string/cancel"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_submit"
         app:layout_constraintHorizontal_bias="0.5"
@@ -111,28 +103,27 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_submit"
-        style="@style/BC_VAX.Widget.MaterialComponents.Button1"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_1_x"
         android:layout_marginEnd="@dimen/space_4_x"
         android:text="@string/submit"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toBottomOf="@+id/btn_cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btn_cancel"
         app:layout_constraintTop_toTopOf="@+id/btn_cancel" />
 
-    <ProgressBar
+    <include
         android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        layout="@layout/full_screen_progress_indicator"
+        app:layout_constraintBottom_toTopOf="@id/btn_submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/layoutToolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
