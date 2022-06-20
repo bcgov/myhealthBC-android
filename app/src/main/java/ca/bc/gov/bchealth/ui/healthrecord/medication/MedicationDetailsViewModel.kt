@@ -61,33 +61,33 @@ class MedicationDetailsViewModel @Inject constructor(
         }
     }
 
-    fun fetchComments() = viewModelScope.launch {
+    fun fetchComments(parentEntryId: String) = viewModelScope.launch {
         try {
             _commentState.update {
                 it.copy(onLoading = true)
             }
-            val comment =
+            val comments =
                 commentRepository
-                    .getComments(
-                        _uiState.value.parentEntryId
+                    .getLocalComments(
+                        parentEntryId
                     )
-            val comments = mutableListOf<Comment>()
-            if (comment.isNotEmpty()) {
-                comments.add(Comment("${comment.size} Comments", Instant.now()))
-                comments.addAll(
-                    comment.map {
-                        Comment(
-                            it.text,
-                            it.createdDateTime?.toLocalDateTimeInstant()
-                        )
-                    }
+            val commentsTemp = mutableListOf<Comment>()
+            if (comments.isNotEmpty()) {
+                commentsTemp.add(Comment(parentEntryId, "${comments.size}", Instant.now()))
+                val firsComment = comments.maxByOrNull { it.createdDateTime }
+                commentsTemp.add(
+                    Comment(
+                        firsComment?.parentEntryId,
+                        firsComment?.text,
+                        firsComment?.createdDateTime?.toLocalDateTimeInstant()
+                    )
                 )
             }
 
             _commentState.update {
                 it.copy(
                     onLoading = false,
-                    comments = comments
+                    comments = commentsTemp
                 )
             }
         } catch (e: Exception) {
@@ -212,6 +212,62 @@ class MedicationDetailsViewModel @Inject constructor(
         return address
     }
 
+    fun addComment(comment: String, entryTypeCode: String) = viewModelScope.launch {
+        try {
+            _uiState.update {
+                it.copy(onLoading = true)
+            }
+
+            val comments = commentRepository.addComment(
+                _uiState.value.parentEntryId, comment, entryTypeCode
+            )
+            val commentsTemp = mutableListOf<Comment>()
+            if (comments.isNotEmpty()) {
+                commentsTemp.add(
+                    Comment(
+                        _uiState.value.parentEntryId,
+                        comments.size.toString(),
+                        Instant.now()
+                    )
+                )
+                val firsComment = comments.maxByOrNull { it.createdDateTime }
+                commentsTemp.add(
+                    Comment(
+                        firsComment?.parentEntryId,
+                        firsComment?.text,
+                        firsComment?.createdDateTime?.toLocalDateTimeInstant()
+                    )
+                )
+            }
+            _uiState.update {
+                it.copy(
+                    onLoading = false,
+                    comments = commentsTemp
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _uiState.update {
+                it.copy(
+                    onError = true,
+                    onLoading = false
+                )
+            }
+        }
+    }
+
+    fun resetUiState() {
+        _uiState.update {
+            it.copy(
+                onLoading = false,
+                onError = false,
+                medicationDetails = null,
+                toolbarTitle = null,
+                comments = emptyList()
+            )
+        }
+    }
+
     companion object {
         const val ITEM_VIEW_TYPE_RECORD = 0
         const val ITEM_VIEW_TYPE_DIRECTIONS = 1
@@ -225,6 +281,7 @@ data class MedicationDetailUiState(
     val onError: Boolean = false,
     val medicationDetails: List<MedicationDetail>? = null,
     val toolbarTitle: String? = null,
+    val comments: List<Comment> = emptyList(),
     val parentEntryId: String? = null
 )
 
@@ -235,6 +292,7 @@ data class MedicationDetail(
 )
 
 data class Comment(
+    val parentEntryId: String?,
     val text: String?,
     val date: Instant?,
 )
