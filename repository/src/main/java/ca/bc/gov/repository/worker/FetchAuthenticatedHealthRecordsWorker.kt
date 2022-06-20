@@ -9,6 +9,7 @@ import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.ProtectiveWordState
+import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
@@ -22,6 +23,8 @@ import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.di.IoDispatcher
+import ca.bc.gov.repository.immunization.ImmunizationForecastRepository
+import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.labtest.LabTestRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
@@ -56,7 +59,9 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val covidTestRepository: CovidTestRepository,
     private val encryptedPreferenceStorage: EncryptedPreferenceStorage,
     private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
-    private val mobileConfigRepository: MobileConfigRepository
+    private val mobileConfigRepository: MobileConfigRepository,
+    private val immunizationRecordRepository: ImmunizationRecordRepository,
+    private val immunizationForecastRepository: ImmunizationForecastRepository,
 ) : CoroutineWorker(context, workerParams) {
 
     var isApiFailed = false
@@ -77,6 +82,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         var covidOrderResponse: List<CovidOrderWithCovidTestDto>? = null
         var medicationResponse: MedicationStatementResponse? = null
         var labOrdersResponse: List<LabOrderWithLabTestDto>? = null
+        var immunizationResponse: List<ImmunizationRecordWithForecastDto>? = null
 
         try {
 
@@ -159,6 +165,19 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             /*
+             * Fetch Immunization record
+             */
+            try {
+                immunizationResponse = fetchImmunisations(authParameters)
+            } catch (e: Exception) {
+                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
+                    return handleQueueItException(e)
+                } else {
+                    isApiFailed = true
+                }
+            }
+
+            /*
             * DB Operations
             * */
             // Insert patient details
@@ -196,6 +215,18 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 }
                 labTestRepository.insert(it.labTests)
             }
+            // Insert immunization records
+            immunizationRecordRepository.delete(patientId)
+            immunizationResponse?.forEach {
+                it.immunizationRecord.patientId = patientId
+                val id = immunizationRecordRepository.insert(it.immunizationRecord)
+                it.immunizationForecast?.immunizationRecordId = id
+                it.immunizationForecast?.let { forecast ->
+                    immunizationForecastRepository.insert(
+                        forecast
+                    )
+                }
+            }
 
             if (isApiFailed) {
                 notificationHelper.updateNotification(context.getString(R.string.notification_title_on_failed))
@@ -206,6 +237,21 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             // no implementation required.
         }
         return Result.success()
+    }
+
+    /*
+     * Fetch immunisations
+     * */
+    private suspend fun fetchImmunisations(authParameters: Pair<String, String>): List<ImmunizationRecordWithForecastDto>? {
+        var immunisationResponse: List<ImmunizationRecordWithForecastDto>?
+        withContext(dispatcher) {
+            immunisationResponse =
+                immunizationRecordRepository.fetchImmunization(
+                    authParameters.first,
+                    authParameters.second
+                )
+        }
+        return immunisationResponse
     }
 
     /*

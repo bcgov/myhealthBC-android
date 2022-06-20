@@ -8,6 +8,9 @@ import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.TermsOfServiceDto
 import ca.bc.gov.common.model.comment.CommentDto
+import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
+import ca.bc.gov.common.model.immunization.ImmunizationRecordDto
+import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabTestDto
@@ -21,6 +24,8 @@ import ca.bc.gov.data.datasource.remote.model.base.Order
 import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
 import ca.bc.gov.data.datasource.remote.model.base.comment.CommentPayload
 import ca.bc.gov.data.datasource.remote.model.base.covidtest.CovidTestRecord
+import ca.bc.gov.data.datasource.remote.model.base.immunization.Forecast
+import ca.bc.gov.data.datasource.remote.model.base.immunization.ImmunizationRecord
 import ca.bc.gov.data.datasource.remote.model.base.medication.DispensingPharmacy
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationStatementPayload
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationSummary
@@ -28,6 +33,7 @@ import ca.bc.gov.data.datasource.remote.model.base.vaccine.Media
 import ca.bc.gov.data.datasource.remote.model.base.vaccine.VaccineResourcePayload
 import ca.bc.gov.data.datasource.remote.model.response.AuthenticatedCovidTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
+import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.model.MediaMetaData
 import ca.bc.gov.data.model.VaccineStatus
@@ -192,3 +198,42 @@ fun TermsOfServicePayload.toDto() = TermsOfServiceDto(
     content,
     effectiveDate
 )
+
+fun ImmunizationRecord.toDto(): ImmunizationRecordDto {
+
+    val agent = immunization.immunizationAgents.firstOrNull()
+
+    return ImmunizationRecordDto(
+        immunizationId = id,
+        dateOfImmunization = dateOfImmunization.toDateTime(),
+        status = status,
+        isValid = valid,
+        provideOrClinic = providerOrClinic,
+        targetedDisease = targetedDisease,
+        immunizationName = immunization.name,
+        agentName = agent?.name,
+        agentCode = agent?.code,
+        lotNumber = agent?.lotNumber,
+        productName = agent?.productName
+    )
+}
+
+fun Forecast.toDto() = ImmunizationForecastDto(
+    recommendationId = recommendationId,
+    createDate = createDate.toDateTime(),
+    status = status,
+    displayName = displayName,
+    eligibleDate = eligibleDate.toDateTime(),
+    dueDate = dueDate.toDateTime()
+)
+
+fun ImmunizationResponse.toDto(): List<ImmunizationRecordWithForecastDto> {
+
+    return this.payload.immunizations.map {
+
+        ImmunizationRecordWithForecastDto(
+            it.toDto(),
+            it.forecast?.toDto()
+        )
+    }
+}
