@@ -345,4 +345,19 @@
     <string name="enter_valid_date">Please enter a valid date</string>
     <string name="date_filter_validation_msg">FROM date should be on or before TO date</string>
     <string name="session_time_out">Your session has timed out</string>
+
+    <!--Medication details-->
+    <string name="practitioner">Practitioner:</string>
+    <string name="quantity">Quantity:</string>
+    <string name="strength">Strength:</string>
+    <string name="form">Form:</string>
+    <string name="manufacturer">Manufacturer:</string>
+    <string name="pin">PIN:</string>
+    <string name="din">DIN</string>
+    <string name="filled_at">Filled at:</string>
+    <string name="filled_date">Filled date:</string>
+    <string name="address">Address:</string>
+    <string name="phone_number">Phone Number:</string>
+    <string name="fax">Fax:</string>
+    <string name="direction_for_use">Direction for use</string>
 </resources>

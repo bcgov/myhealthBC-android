@@ -3,7 +3,7 @@ package ca.bc.gov.bchealth.ui.tos
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class TermsOfServiceFragment : BaseFragment(R.layout.fragment_terms_of_service) {
 
-    private val termsOfServiceViewModel: TermsOfServiceViewModel by viewModels()
+    private val termsOfServiceViewModel: TermsOfServiceViewModel by activityViewModels()
     private val binding by viewBindings(FragmentTermsOfServiceBinding::bind)
 
     companion object {
