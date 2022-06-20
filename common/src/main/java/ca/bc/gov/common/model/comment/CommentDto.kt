@@ -15,5 +15,6 @@ data class CommentDto(
     val createdDateTime: Instant,
     val createdBy: String?,
     val updatedDateTime: Instant,
-    val updatedBy: String?
+    val updatedBy: String?,
+    var isUploaded: Boolean = true
 )

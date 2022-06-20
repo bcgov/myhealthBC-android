@@ -31,6 +31,8 @@ import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationStatemen
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationSummary
 import ca.bc.gov.data.datasource.remote.model.base.vaccine.Media
 import ca.bc.gov.data.datasource.remote.model.base.vaccine.VaccineResourcePayload
+import ca.bc.gov.data.datasource.remote.model.response.AddCommentResponse
+import ca.bc.gov.data.datasource.remote.model.response.AllCommentsResponse
 import ca.bc.gov.data.datasource.remote.model.response.AuthenticatedCovidTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
@@ -152,8 +154,33 @@ fun CommentPayload.toDto() = CommentDto(
     updatedBy
 )
 
+fun CommentPayload.toAddCommentDto() = CommentDto(
+    id,
+    userProfileId,
+    text,
+    entryTypeCode,
+    parentEntryId,
+    version,
+    createdDateTime = createdDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+    createdBy,
+    updatedDateTime = updatedDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+    updatedBy
+)
+
 fun CommentResponse.toDto(): List<CommentDto> {
     return payload.map { it.toDto() }
+}
+
+fun AddCommentResponse.toDto(): CommentDto {
+    return payload.toAddCommentDto()
+}
+
+fun AllCommentsResponse.toDto(): List<CommentDto> {
+    val listCommentDto: MutableList<CommentDto> = mutableListOf()
+    payload.values.forEach { commentPayloadList ->
+        listCommentDto.addAll(commentPayloadList.map { it.toDto() })
+    }
+    return listCommentDto
 }
 
 fun Order.toDto() = CovidOrderDto(

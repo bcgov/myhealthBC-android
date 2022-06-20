@@ -206,9 +206,10 @@ class RepositoriesModule {
     fun provideCommentRepository(
         commentLocalDataSource: CommentLocalDataSource,
         commentRemoteDataSource: CommentRemoteDataSource,
-        bcscAuthRepo: BcscAuthRepo
+        bcscAuthRepo: BcscAuthRepo,
+        @ApplicationContext context: Context
     ): CommentRepository =
-        CommentRepository(commentRemoteDataSource, commentLocalDataSource, bcscAuthRepo)
+        CommentRepository(commentRemoteDataSource, commentLocalDataSource, bcscAuthRepo, context)
 
     @Provides
     @Singleton

@@ -1,6 +1,9 @@
 package ca.bc.gov.data.datasource.remote.api
 
+import ca.bc.gov.data.datasource.remote.model.request.CommentRequest
 import ca.bc.gov.data.datasource.remote.model.request.UserProfileRequest
+import ca.bc.gov.data.datasource.remote.model.response.AddCommentResponse
+import ca.bc.gov.data.datasource.remote.model.response.AllCommentsResponse
 import ca.bc.gov.data.datasource.remote.model.response.AuthenticatedCovidTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
@@ -105,9 +108,22 @@ interface HealthGatewayPrivateApi {
         @Body profileRequest: UserProfileRequest
     ): Response<UserProfileResponse>
 
+    @POST("$BASE_USER_PROFILE_SERVICE/{$HDID}/Comment")
+    suspend fun addComment(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String,
+        @Body commentRequest: CommentRequest
+    ): Response<AddCommentResponse>
+
     @GET("$BASE_IMMUNIZATION_SERVICE/Immunization")
     suspend fun getImmunization(
         @Header(AUTHORIZATION) accessToken: String,
         @Query(HDID) hdid: String,
     ): Response<ImmunizationResponse>
+
+    @GET("$BASE_USER_PROFILE_SERVICE/{$HDID}/Comment")
+    suspend fun getAllComments(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String
+    ): Response<AllCommentsResponse>
 }
