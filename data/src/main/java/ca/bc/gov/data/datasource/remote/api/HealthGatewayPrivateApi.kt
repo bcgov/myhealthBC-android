@@ -3,6 +3,7 @@ package ca.bc.gov.data.datasource.remote.api
 import ca.bc.gov.data.datasource.remote.model.request.UserProfileRequest
 import ca.bc.gov.data.datasource.remote.model.response.AuthenticatedCovidTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
+import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsResponse
 import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestPdfResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
@@ -35,7 +36,8 @@ interface HealthGatewayPrivateApi {
         private const val BASE_MEDICATION_SERVICE = "api/medicationservice"
         private const val BASE_PATIENT_SERVICE = "api/patientservice"
         private const val BASE_USER_PROFILE_SERVICE = "api/gatewayapiservice/UserProfile"
-    }
+        private const val BASE_HEALTH_VISIT_SERVICE = "api/encounterservice"
+     }
 
     @GET("$BASE_PATIENT_SERVICE/Patient/{hdid}")
     suspend fun getPatient(
@@ -110,4 +112,10 @@ interface HealthGatewayPrivateApi {
         @Header(AUTHORIZATION) accessToken: String,
         @Query(HDID) hdid: String,
     ): Response<ImmunizationResponse>
+
+    @GET("$BASE_HEALTH_VISIT_SERVICE/Encounter/{hdid}")
+    suspend fun getHealthVisits(
+        @Header(AUTHORIZATION) accessToken: String,
+        @Path(HDID) hdid: String,
+    ): Response<HealthVisitsResponse>
 }

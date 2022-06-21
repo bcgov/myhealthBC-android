@@ -8,6 +8,8 @@ import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.TermsOfServiceDto
 import ca.bc.gov.common.model.comment.CommentDto
+import ca.bc.gov.common.model.healthvisits.ClinicDto
+import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
@@ -24,6 +26,8 @@ import ca.bc.gov.data.datasource.remote.model.base.Order
 import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
 import ca.bc.gov.data.datasource.remote.model.base.comment.CommentPayload
 import ca.bc.gov.data.datasource.remote.model.base.covidtest.CovidTestRecord
+import ca.bc.gov.data.datasource.remote.model.base.healthvisits.Clinic
+import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsPayload
 import ca.bc.gov.data.datasource.remote.model.base.immunization.Forecast
 import ca.bc.gov.data.datasource.remote.model.base.immunization.ImmunizationRecord
 import ca.bc.gov.data.datasource.remote.model.base.medication.DispensingPharmacy
@@ -33,6 +37,7 @@ import ca.bc.gov.data.datasource.remote.model.base.vaccine.Media
 import ca.bc.gov.data.datasource.remote.model.base.vaccine.VaccineResourcePayload
 import ca.bc.gov.data.datasource.remote.model.response.AuthenticatedCovidTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
+import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsResponse
 import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.model.MediaMetaData
@@ -237,3 +242,19 @@ fun ImmunizationResponse.toDto(): List<ImmunizationRecordWithForecastDto> {
         )
     }
 }
+
+fun HealthVisitsResponse.toDto(): List<HealthVisitsDto> {
+    return payload.map { it.toDto() }
+}
+
+fun HealthVisitsPayload.toDto() = HealthVisitsDto(
+    id,
+    encounterDate,
+    specialtyDescription,
+    practitionerName,
+    clinic.toDto()
+)
+
+fun Clinic.toDto() = ClinicDto(
+    name
+)
