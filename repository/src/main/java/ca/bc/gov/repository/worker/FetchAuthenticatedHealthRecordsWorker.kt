@@ -10,6 +10,7 @@ import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.comment.CommentDto
+import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
@@ -25,6 +26,7 @@ import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.di.IoDispatcher
+import ca.bc.gov.repository.healthvisits.HealthVisitsRepository
 import ca.bc.gov.repository.immunization.ImmunizationForecastRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
@@ -64,7 +66,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val mobileConfigRepository: MobileConfigRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
     private val immunizationForecastRepository: ImmunizationForecastRepository,
-    private val commentsRepository: CommentRepository
+    private val commentsRepository: CommentRepository,
+    private val healthVisitsRepository: HealthVisitsRepository
 ) : CoroutineWorker(context, workerParams) {
 
     var isApiFailed = false
@@ -87,6 +90,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         var labOrdersResponse: List<LabOrderWithLabTestDto>? = null
         var immunizationResponse: List<ImmunizationRecordWithForecastDto>? = null
         var commentsResponse: List<CommentDto>? = null
+        var healthVisitsResponse: List<HealthVisitsDto>? = null
 
         try {
 
@@ -193,6 +197,19 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+            }
+
+            /*
+            Fetch Health visits
+             */
+            try {
+                healthVisitsResponse = fetchHealthVisits(authParameters)
+            } catch (e: Exception) {
+                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
+                    return handleQueueItException(e)
+                } else {
+                    isApiFailed = true
+                }
             }
 
             /*
@@ -332,6 +349,21 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             )
         }
         return covidOrderResponse
+    }
+
+    /*
+     * Fetch health visits
+     * */
+    private suspend fun fetchHealthVisits(authParameters: Pair<String, String>): List<HealthVisitsDto>? {
+        var healthVisitsResponse: List<HealthVisitsDto>?
+        withContext(dispatcher) {
+            healthVisitsResponse =
+                healthVisitsRepository.getHealthVisits(
+                    authParameters.first,
+                    authParameters.second
+                )
+        }
+        return healthVisitsResponse
     }
 
     private fun handleQueueItException(e: java.lang.Exception): Result {
