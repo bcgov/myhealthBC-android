@@ -1,15 +1,16 @@
-package ca.bc.gov.data.datasource.remote.model.base.healthvisits
+package ca.bc.gov.data.datasource.remote.model.response
 
 import ca.bc.gov.data.datasource.remote.model.base.Error
 import ca.bc.gov.data.datasource.remote.model.base.Status
+import ca.bc.gov.data.datasource.remote.model.base.comment.CommentPayload
 import com.google.gson.annotations.SerializedName
 
 /**
- * @author: Created by Rashmi Bambhania on 20,June,2022
+ * @author: Created by Rashmi Bambhania on 29,April,2022
  */
-class HealthVisitsResponse(
+data class AllCommentsResponse(
     @SerializedName("resourcePayload")
-    val payload: List<HealthVisitsPayload> = emptyList(),
+    val payload: HashMap<String, List<CommentPayload>> = hashMapOf(),
     val totalResultCount: Int,
     val pageIndex: Int,
     val pageSize: Int,

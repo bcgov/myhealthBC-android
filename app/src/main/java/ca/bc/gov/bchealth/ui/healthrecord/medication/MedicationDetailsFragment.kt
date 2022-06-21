@@ -15,8 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentMedicationDetailsBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
+import ca.bc.gov.bchealth.utils.updateCommentEndIcon
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -34,12 +36,15 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
-        viewModel.getMedicationDetails(args.medicationId)
+        if (medicationDetailAdapter.currentList.isEmpty()) {
+            viewModel.getMedicationDetails(args.medicationId)
+        }
         observeUiState()
     }
 
     private fun initUI() {
         setUpRecyclerView()
+        addCommentListener()
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
@@ -52,7 +57,13 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
     }
 
     private fun setUpRecyclerView() {
-        commentsAdapter = CommentsAdapter()
+        commentsAdapter = CommentsAdapter { parentEntryId ->
+            val action = MedicationDetailsFragmentDirections
+                .actionMedicationDetailsFragmentToCommentsFragment(
+                    parentEntryId
+                )
+            findNavController().navigate(action)
+        }
         medicationDetailAdapter = MedicationDetailAdapter()
         concatAdapter = ConcatAdapter(medicationDetailAdapter, commentsAdapter)
         val recyclerView = binding.rvMedicationDetailList
@@ -86,6 +97,8 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
 
                     if (state.comments.isNotEmpty()) {
                         commentsAdapter.submitList(state.comments)
+                        // clear comment
+                        binding.comment.edComment.setText("")
                     }
 
                     handleError(state.onError)
@@ -104,7 +117,7 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
 
     private fun fetchComments(uiState: MedicationDetailUiState) {
         if (uiState.parentEntryId != null) {
-            viewModel.fetchComments()
+            viewModel.fetchComments(uiState.parentEntryId)
         }
     }
 
@@ -119,6 +132,20 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
                     findNavController().popBackStack()
                 }
             )
+        }
+    }
+
+    private fun addCommentListener() {
+        binding.comment.tipComment.apply {
+            updateCommentEndIcon(requireContext())
+            setEndIconOnClickListener {
+                if (!binding.comment.edComment.text.isNullOrBlank()) {
+                    viewModel.addComment(
+                        binding.comment.edComment.text.toString(),
+                        CommentEntryTypeCode.MEDICATION.value
+                    )
+                }
+            }
         }
     }
 }

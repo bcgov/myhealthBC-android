@@ -9,6 +9,7 @@ import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.ProtectiveWordState
+import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
@@ -16,6 +17,7 @@ import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
+import ca.bc.gov.repository.CommentRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
@@ -64,6 +66,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val mobileConfigRepository: MobileConfigRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
     private val immunizationForecastRepository: ImmunizationForecastRepository,
+    private val commentsRepository: CommentRepository,
     private val healthVisitsRepository: HealthVisitsRepository
 ) : CoroutineWorker(context, workerParams) {
 
@@ -86,6 +89,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         var medicationResponse: MedicationStatementResponse? = null
         var labOrdersResponse: List<LabOrderWithLabTestDto>? = null
         var immunizationResponse: List<ImmunizationRecordWithForecastDto>? = null
+        var commentsResponse: List<CommentDto>? = null
         var healthVisitsResponse: List<HealthVisitsDto>? = null
 
         try {
@@ -181,6 +185,20 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 }
             }
 
+            /**
+             * Fetch comments
+             */
+            try {
+                withContext(dispatcher) {
+                    commentsResponse = commentsRepository.getComments(
+                        authParameters.first,
+                        authParameters.second
+                    )
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
             /*
             Fetch Health visits
              */
@@ -244,6 +262,10 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                     )
                 }
             }
+
+            // Insert comments
+            commentsRepository.delete(true)
+            commentsResponse?.let { commentsRepository.insert(it) }
 
             if (isApiFailed) {
                 notificationHelper.updateNotification(context.getString(R.string.notification_title_on_failed))

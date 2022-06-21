@@ -9,23 +9,37 @@
     tools:context="ca.bc.gov.bchealth.ui.healthrecord.vaccine.VaccineRecordDetailFragment">
 
     <include
-        android:id="@+id/layout_toolbar"
-        layout="@layout/layout_top_appbar"
+        android:id="@+id/toolbar"
+        layout="@layout/layout_toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_sub_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="?textAppearanceHeadline4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        android:text="@string/comments_medication_subtitle"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginEnd="@dimen/space_4_x" />
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_medication_detail_list"
+        android:id="@+id/rv_comments_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scrollbars="vertical"
-        android:layout_marginBottom="@dimen/space_2_x"
-        app:layout_constraintBottom_toTopOf="@+id/comment"
+        android:layout_marginTop="@dimen/space_1_x"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_sub_title"
+        app:layout_constraintBottom_toTopOf="@+id/comment" />
 
     <ProgressBar
         android:id="@+id/progressBar"

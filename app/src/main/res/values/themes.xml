@@ -12,6 +12,8 @@
     <!-- Base application theme. -->
     <style name="Theme.HealthGateway" parent="Theme.MaterialComponents.Light.NoActionBar">
 
+        <item name="android:windowBackground">@color/white</item>
+
         <item name="colorPrimary">@color/navy_blue</item>
 
         <item name="colorPrimaryVariant">@color/white</item>
