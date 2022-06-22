@@ -11,6 +11,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
+import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPatientDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
@@ -269,6 +270,19 @@ fun ImmunizationRecordWithForecastAndPatientDto.toUiModel(): ImmunizationRecordD
         )
     )
 }
+
+fun HealthVisitsDto.toUiModel() =
+    HealthRecordItem(
+        patientId = patientId,
+        healthVisitId = healthVisitId,
+        title = specialtyDescription ?: "",
+        description = practitionerName ?: "",
+        testOutcome = "",
+        icon = R.drawable.ic_health_record_health_visit,
+        date = encounterDate,
+        healthRecordType = HealthRecordType.HEALTH_VISIT_RECORD,
+        dataSource = dataSource.name
+    )
 
 enum class CovidTestResultStatus {
     Negative,

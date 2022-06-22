@@ -227,7 +227,7 @@
     <string name="fetching_records">Fetching records…</string>
     <string name="loading">Loading…</string>
     <string name="corrected">Corrected</string>
-    <string name="posting">Posting...</string>
+    <string name="posting">Posting…</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>
@@ -343,6 +343,7 @@
     <string name="lab_tests">Lab tests</string>
     <string name="covid_19_tests">COVID-19 tests</string>
     <string name="immunizations">Immunizations</string>
+    <string name="health_visits">Health Visits</string>
     <string name="filter">Filter</string>
     <string name="apply">Apply</string>
     <string name="no_records_found">No records found</string>
@@ -369,5 +370,9 @@
     <string name="phone_number">Phone Number:</string>
     <string name="fax">Fax:</string>
     <string name="direction_for_use">Direction for use</string>
+
+    <!--Health Visit Details-->
+    <string name="clinic_practitioner">Clinic/Practitioner</string>
+    <string name="information_is_from_the_billing_claim">Information is from the billing claim and may show a different practitioner or clinic from the one you visisted. For more information, visit the page.</string>
 
 </resources>

@@ -21,4 +21,8 @@ class HealthVisitsRepository @Inject constructor(
     }
 
     suspend fun deleteHealthVisits(patientId: Long): Int = healthVisitsLocalDataSource.deleteHealthVisits(patientId)
+
+    suspend fun getHealthVisitDetails(id: Long): HealthVisitsDto? {
+        return healthVisitsLocalDataSource.getHealthVisitDetails(id)
+    }
 }

@@ -2,6 +2,7 @@ package ca.bc.gov.data.datasource.local
 
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.data.datasource.local.dao.HealthVisitsDao
+import ca.bc.gov.data.model.mapper.toDto
 import ca.bc.gov.data.model.mapper.toEntity
 import javax.inject.Inject
 
@@ -18,4 +19,6 @@ class HealthVisitsLocalDataSource @Inject constructor(
             it.toEntity()
         }
     )
+
+    suspend fun getHealthVisitDetails(id: Long) = healthVisitsDao.getHealthVisitDetails(id)?.toDto()
 }

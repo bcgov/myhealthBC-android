@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b57ac4ab913890e53c432807d1b8020b",
+    "identityHash": "3691a20aa54e0b7e8b77cb885f8b6082",
     "entities": [
       {
         "tableName": "patient",
@@ -1291,10 +1291,10 @@
       },
       {
         "tableName": "health_visits",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`health_visit_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `id` TEXT, `encounter_date` INTEGER, `specialty_description` TEXT, `practitioner_name` TEXT, `data_source` TEXT NOT NULL, `name` TEXT, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`health_visit_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `id` TEXT, `encounter_date` INTEGER NOT NULL, `specialty_description` TEXT, `practitioner_name` TEXT, `data_source` TEXT NOT NULL, `name` TEXT, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
-            "fieldPath": "health_visit_id",
+            "fieldPath": "healthVisitId",
             "columnName": "health_visit_id",
             "affinity": "INTEGER",
             "notNull": true
@@ -1315,7 +1315,7 @@
             "fieldPath": "encounterDate",
             "columnName": "encounter_date",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "specialtyDescription",
@@ -1367,7 +1367,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b57ac4ab913890e53c432807d1b8020b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3691a20aa54e0b7e8b77cb885f8b6082')"
     ]
   }
 }
