@@ -9,6 +9,7 @@ import ca.bc.gov.data.datasource.local.dao.CommentDao
 import ca.bc.gov.data.datasource.local.dao.CovidOrderDao
 import ca.bc.gov.data.datasource.local.dao.CovidTestDao
 import ca.bc.gov.data.datasource.local.dao.DispensingPharmacyDao
+import ca.bc.gov.data.datasource.local.dao.HealthVisitsDao
 import ca.bc.gov.data.datasource.local.dao.ImmunizationForecastDao
 import ca.bc.gov.data.datasource.local.dao.ImmunizationRecordDao
 import ca.bc.gov.data.datasource.local.dao.LabOrderDao
@@ -26,6 +27,7 @@ import ca.bc.gov.data.datasource.local.entity.covid.test.TestRecordEntity
 import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
+import ca.bc.gov.data.datasource.local.entity.healthvisits.HealthVisitEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationForecastEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.labtest.LabOrderEntity
@@ -53,7 +55,8 @@ import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
         CovidOrderEntity::class,
         CovidTestEntity::class,
         ImmunizationRecordEntity::class,
-        ImmunizationForecastEntity::class
+        ImmunizationForecastEntity::class,
+        HealthVisitEntity::class
     ],
     version = 1,
     exportSchema = true
@@ -86,4 +89,6 @@ abstract class MyHealthDataBase : RoomDatabase() {
     abstract fun getImmunizationRecordDao(): ImmunizationRecordDao
 
     abstract fun getImmunizationForecastDao(): ImmunizationForecastDao
+
+    abstract fun getHealthVisitDao(): HealthVisitsDao
 }

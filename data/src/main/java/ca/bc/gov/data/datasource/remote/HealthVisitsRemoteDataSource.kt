@@ -12,7 +12,9 @@ import javax.inject.Inject
 /**
  * @author: Created by Rashmi Bambhania on 20,June,2022
  */
-class HealthVisitsRemoteDataSource @Inject constructor(private val healthGatewayPrivateApi: HealthGatewayPrivateApi) {
+class HealthVisitsRemoteDataSource @Inject constructor(
+    private val healthGatewayPrivateApi: HealthGatewayPrivateApi
+) {
 
     suspend fun getHealthVisits(token: String, hdid: String): List<HealthVisitsDto> {
         val response = safeCall { healthGatewayPrivateApi.getHealthVisits(token, hdid) }

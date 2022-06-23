@@ -4,6 +4,7 @@ import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
+import ca.bc.gov.common.model.patient.PatientWithHealthVisitsDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
@@ -128,4 +129,7 @@ class PatientLocalDataSource @Inject constructor(
     suspend fun deleteByPatientId(patientId: Long) {
         patientDao.deletePatientById(patientId)
     }
+
+    suspend fun getPatientWithHealthVisits(patientId: Long): PatientWithHealthVisitsDto? =
+        patientDao.getPatientWithHealthVisits(patientId)?.toDto()
 }

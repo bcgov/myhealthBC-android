@@ -172,9 +172,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 }
             }
 
-            /*
-             * Fetch Immunization record
-             */
             try {
                 immunizationResponse = fetchImmunisations(authParameters)
             } catch (e: Exception) {
@@ -185,23 +182,16 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 }
             }
 
-            /**
-             * Fetch comments
-             */
             try {
-                withContext(dispatcher) {
-                    commentsResponse = commentsRepository.getComments(
-                        authParameters.first,
-                        authParameters.second
-                    )
-                }
+                commentsResponse = fetchComments(authParameters)
             } catch (e: Exception) {
-                e.printStackTrace()
+                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
+                    return handleQueueItException(e)
+                } else {
+                    isApiFailed = true
+                }
             }
 
-            /*
-            Fetch Health visits
-             */
             try {
                 healthVisitsResponse = fetchHealthVisits(authParameters)
             } catch (e: Exception) {
@@ -212,9 +202,9 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 }
             }
 
-            /*
-            * DB Operations
-            * */
+            /**
+             * DB Operations
+             * */
             // Insert patient details
             patient?.let {
                 patientId = patientRepository.insertAuthenticatedPatient(it)
@@ -267,6 +257,13 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             commentsRepository.delete(true)
             commentsResponse?.let { commentsRepository.insert(it) }
 
+            // Insert Health Visits
+            healthVisitsRepository.deleteHealthVisits(patientId)
+            healthVisitsResponse?.forEach {
+                it.patientId = patientId
+            }
+            healthVisitsResponse?.let { healthVisitsRepository.insert(it) }
+
             if (isApiFailed) {
                 notificationHelper.updateNotification(context.getString(R.string.notification_title_on_failed))
             } else {
@@ -276,6 +273,20 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             // no implementation required.
         }
         return Result.success()
+    }
+
+    /*
+    * Fetch comments
+    * */
+    private suspend fun fetchComments(authParameters: Pair<String, String>): List<CommentDto>? {
+        var commentsResponse: List<CommentDto>?
+        withContext(dispatcher) {
+            commentsResponse = commentsRepository.getComments(
+                authParameters.first,
+                authParameters.second
+            )
+        }
+        return commentsResponse
     }
 
     /*

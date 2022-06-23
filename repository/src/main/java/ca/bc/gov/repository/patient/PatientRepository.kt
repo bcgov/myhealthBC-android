@@ -5,6 +5,7 @@ import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
+import ca.bc.gov.common.model.patient.PatientWithHealthVisitsDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
@@ -115,4 +116,7 @@ class PatientRepository @Inject constructor(
     suspend fun deleteByPatientId(patientId: Long) {
         patientLocalDataSource.deleteByPatientId(patientId)
     }
+
+    suspend fun getPatientWithHealthVisits(patientId: Long): PatientWithHealthVisitsDto? =
+        patientLocalDataSource.getPatientWithHealthVisits(patientId)
 }

@@ -275,11 +275,14 @@ fun HealthVisitsResponse.toDto(): List<HealthVisitsDto> {
 }
 
 fun HealthVisitsPayload.toDto() = HealthVisitsDto(
+    healthVisitId = 0,
+    patientId = 0,
     id,
-    encounterDate,
+    encounterDate?.toDateTime(),
     specialtyDescription,
     practitionerName,
-    clinic.toDto()
+    clinic.toDto(),
+    dataSource = DataSource.BCSC
 )
 
 fun Clinic.toDto() = ClinicDto(
