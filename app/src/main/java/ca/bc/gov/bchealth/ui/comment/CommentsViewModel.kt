@@ -42,7 +42,8 @@ class CommentsViewModel @Inject constructor(
                         Comment(
                             it.id,
                             it.text,
-                            it.createdDateTime.toLocalDateTimeInstant()
+                            it.createdDateTime.toLocalDateTimeInstant(),
+                            it.isUploaded
                         )
                     }
                 )
@@ -73,7 +74,8 @@ class CommentsViewModel @Inject constructor(
                             Comment(
                                 it.id,
                                 it.text,
-                                it.createdDateTime.toLocalDateTimeInstant()
+                                it.createdDateTime.toLocalDateTimeInstant(),
+                                it.isUploaded
                             )
                         }
                     )
@@ -109,7 +111,8 @@ data class CommentsUiState(
 data class Comment(
     val id: String,
     val text: String?,
-    val date: Instant?
+    val date: Instant?,
+    val isUploaded: Boolean = true
 )
 
 enum class CommentEntryTypeCode(val value: String) {

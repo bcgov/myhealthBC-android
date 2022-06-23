@@ -11,11 +11,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentCommentsBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.updateCommentEndIcon
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.repository.SYNC_COMMENTS
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -32,6 +35,7 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
         initUi()
         observeComments()
         viewModel.getComments(args.parentEntryId)
+        observeCommentsSyncCompletion()
     }
 
     private fun initUi() {
@@ -110,5 +114,17 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
                 findNavController().popBackStack()
             }
         )
+    }
+
+    private fun observeCommentsSyncCompletion() {
+        val workRequest = WorkManager.getInstance(requireContext())
+            .getWorkInfosForUniqueWorkLiveData(SYNC_COMMENTS)
+        if (!workRequest.hasObservers()) {
+            workRequest.observe(viewLifecycleOwner) {
+                if (it.firstOrNull()?.state == WorkInfo.State.SUCCEEDED) {
+                    viewModel.getComments(args.parentEntryId)
+                }
+            }
+        }
     }
 }

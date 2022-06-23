@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemCommentWithOptionsBinding
 import ca.bc.gov.common.utils.toDateTimeString
 
@@ -28,7 +29,11 @@ class CommentsAdapter :
         val comment = getItem(position)
         holder.binding.apply {
             tvComment.text = comment.text
-            tvDateTime.text = comment.date?.toDateTimeString()
+            if (comment.isUploaded) {
+                tvDateTime.text = comment.date?.toDateTimeString()
+            } else {
+                tvDateTime.text = holder.itemView.context.getString(R.string.posting)
+            }
         }
     }
 }

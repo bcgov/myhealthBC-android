@@ -67,7 +67,11 @@ class CommentsAdapter(
 
             is CommentsViewHolder -> {
                 holder.binding.tvComment.text = comment.text
-                holder.binding.tvDateTime.text = comment.date?.toDateTimeString()
+                if (comment.isUploaded) {
+                    holder.binding.tvDateTime.text = comment.date?.toDateTimeString()
+                } else {
+                    holder.binding.tvDateTime.text = holder.itemView.context.getString(R.string.posting)
+                }
             }
         }
     }
