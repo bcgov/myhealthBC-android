@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="1dp"
-    android:outlineProvider="bounds">
+    android:outlineProvider="bounds"
+    android:animateLayoutChanges="true">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tip_comment"
@@ -15,7 +16,7 @@
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginEnd="@dimen/space_4_x"
         android:layout_marginBottom="@dimen/space_2_x"
-        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginTop="@dimen/space_1_x"
         android:hint="@string/comment_here"
         android:filterTouchesWhenObscured="true"
         app:startIconDrawable="@drawable/ic_lock_solid_grey"
@@ -26,14 +27,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:counterEnabled="true"
-        app:counterMaxLength="1000">
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/ed_comment"
             android:inputType="text"
-            android:maxLength="1000"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

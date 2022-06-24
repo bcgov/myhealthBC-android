@@ -16,8 +16,8 @@ import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentCommentsBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
-import ca.bc.gov.bchealth.utils.updateCommentEndIcon
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.widget.AddCommentCallback
 import ca.bc.gov.repository.SYNC_COMMENTS
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -67,18 +67,15 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
     }
 
     private fun addCommentListener() {
-        binding.comment.tipComment.apply {
-            updateCommentEndIcon(requireContext())
-            setEndIconOnClickListener {
-                if (!binding.comment.edComment.text.isNullOrBlank()) {
-                    viewModel.addComment(
-                        args.parentEntryId,
-                        binding.comment.edComment.text.toString(),
-                        CommentEntryTypeCode.MEDICATION.value
-                    )
-                }
+        binding.comment.addCommentListener(object : AddCommentCallback {
+            override fun onSubmitComment(commentText: String) {
+                viewModel.addComment(
+                    args.parentEntryId,
+                    commentText,
+                    CommentEntryTypeCode.MEDICATION.value
+                )
             }
-        }
+        })
     }
 
     private fun observeComments() {
@@ -92,7 +89,7 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
                         commentsAdapter.submitList(state.commentsList)
                         viewModel.resetUiState()
                         // clear comment
-                        binding.comment.edComment.setText("")
+                        binding.comment.clearComment()
                     }
 
                     if (state.onError) {
