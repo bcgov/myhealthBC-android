@@ -12,6 +12,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentMedicationDetailsBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
@@ -20,6 +22,7 @@ import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.updateCommentEndIcon
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.repository.SYNC_COMMENTS
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -40,6 +43,7 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
             viewModel.getMedicationDetails(args.medicationId)
         }
         observeUiState()
+        observeCommentsSyncCompletion()
     }
 
     private fun initUI() {
@@ -85,7 +89,7 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
 
                     handleError(state.onError)
 
-                    fetchComments(state)
+                    viewModel.fetchComments()
                 }
             }
         }
@@ -115,12 +119,6 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
         }
     }
 
-    private fun fetchComments(uiState: MedicationDetailUiState) {
-        if (uiState.parentEntryId != null) {
-            viewModel.fetchComments(uiState.parentEntryId)
-        }
-    }
-
     private fun handleError(isFailed: Boolean) {
         if (isFailed) {
             AlertDialogHelper.showAlertDialog(
@@ -144,6 +142,18 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
                         binding.comment.edComment.text.toString(),
                         CommentEntryTypeCode.MEDICATION.value
                     )
+                }
+            }
+        }
+    }
+
+    private fun observeCommentsSyncCompletion() {
+        val workRequest = WorkManager.getInstance(requireContext())
+            .getWorkInfosForUniqueWorkLiveData(SYNC_COMMENTS)
+        if (!workRequest.hasObservers()) {
+            workRequest.observe(viewLifecycleOwner) {
+                if (it.firstOrNull()?.state == WorkInfo.State.SUCCEEDED) {
+                    viewModel.fetchComments()
                 }
             }
         }

@@ -61,51 +61,56 @@ class MedicationDetailsViewModel @Inject constructor(
         }
     }
 
-    fun fetchComments(parentEntryId: String) = viewModelScope.launch {
-        try {
-            _commentState.update {
-                it.copy(onLoading = true)
-            }
-            val comments =
-                commentRepository
-                    .getLocalComments(
-                        parentEntryId
-                    )
-            val commentsTemp = mutableListOf<Comment>()
-            if (comments.isNotEmpty()) {
-                commentsTemp.add(Comment(parentEntryId, "${comments.size}", Instant.now()))
-                val firsComment = comments.maxByOrNull { it.createdDateTime }
-                commentsTemp.add(
-                    Comment(
-                        firsComment?.parentEntryId,
-                        firsComment?.text,
-                        firsComment?.createdDateTime?.toLocalDateTimeInstant()
-                    )
-                )
-            }
+    fun fetchComments() = viewModelScope.launch {
+        if (_uiState.value.parentEntryId != null) {
+            val parentEntryId = _uiState.value.parentEntryId
 
-            _commentState.update {
-                it.copy(
-                    onLoading = false,
-                    comments = commentsTemp
-                )
-            }
-        } catch (e: Exception) {
-            when (e) {
-                is NetworkConnectionException -> {
-                    _commentState.update { state ->
-                        state.copy(
-                            onLoading = false,
-                            isConnected = false
-                        )
-                    }
+            try {
+                _commentState.update {
+                    it.copy(onLoading = true)
                 }
-                else -> {
-                    _commentState.update {
-                        it.copy(
-                            onLoading = false,
-                            onError = true
+                val comments =
+                    commentRepository
+                        .getLocalComments(
+                            parentEntryId
                         )
+                val commentsTemp = mutableListOf<Comment>()
+                if (comments.isNotEmpty()) {
+                    commentsTemp.add(Comment(parentEntryId, "${comments.size}", Instant.now()))
+                    val firsComment = comments.maxByOrNull { it.createdDateTime }
+                    commentsTemp.add(
+                        Comment(
+                            firsComment?.parentEntryId,
+                            firsComment?.text,
+                            firsComment?.createdDateTime?.toLocalDateTimeInstant(),
+                            firsComment?.isUploaded ?: true
+                        )
+                    )
+                }
+
+                _commentState.update {
+                    it.copy(
+                        onLoading = false,
+                        comments = commentsTemp
+                    )
+                }
+            } catch (e: Exception) {
+                when (e) {
+                    is NetworkConnectionException -> {
+                        _commentState.update { state ->
+                            state.copy(
+                                onLoading = false,
+                                isConnected = false
+                            )
+                        }
+                    }
+                    else -> {
+                        _commentState.update {
+                            it.copy(
+                                onLoading = false,
+                                onError = true
+                            )
+                        }
                     }
                 }
             }
@@ -227,7 +232,8 @@ class MedicationDetailsViewModel @Inject constructor(
                     Comment(
                         _uiState.value.parentEntryId,
                         comments.size.toString(),
-                        Instant.now()
+                        Instant.now(),
+                        true
                     )
                 )
                 val firsComment = comments.maxByOrNull { it.createdDateTime }
@@ -235,7 +241,8 @@ class MedicationDetailsViewModel @Inject constructor(
                     Comment(
                         firsComment?.parentEntryId,
                         firsComment?.text,
-                        firsComment?.createdDateTime?.toLocalDateTimeInstant()
+                        firsComment?.createdDateTime?.toLocalDateTimeInstant(),
+                        firsComment?.isUploaded ?: true
                     )
                 )
             }
@@ -295,6 +302,7 @@ data class Comment(
     val parentEntryId: String?,
     val text: String?,
     val date: Instant?,
+    val isUploaded: Boolean = true
 )
 
 data class CommentUiState(
