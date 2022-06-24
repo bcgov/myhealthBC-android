@@ -20,8 +20,8 @@ import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
-import ca.bc.gov.bchealth.utils.updateCommentEndIcon
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.widget.AddCommentCallback
 import ca.bc.gov.repository.SYNC_COMMENTS
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -102,7 +102,7 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
                     if (state.comments.isNotEmpty()) {
                         commentsAdapter.submitList(state.comments)
                         // clear comment
-                        binding.comment.edComment.setText("")
+                        binding.comment.clearComment()
                     }
 
                     handleError(state.onError)
@@ -134,17 +134,14 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
     }
 
     private fun addCommentListener() {
-        binding.comment.tipComment.apply {
-            updateCommentEndIcon(requireContext())
-            setEndIconOnClickListener {
-                if (!binding.comment.edComment.text.isNullOrBlank()) {
-                    viewModel.addComment(
-                        binding.comment.edComment.text.toString(),
-                        CommentEntryTypeCode.MEDICATION.value
-                    )
-                }
+        binding.comment.addCommentListener(object : AddCommentCallback {
+            override fun onSubmitComment(commentText: String) {
+                viewModel.addComment(
+                    commentText,
+                    CommentEntryTypeCode.MEDICATION.value
+                )
             }
-        }
+        })
     }
 
     private fun observeCommentsSyncCompletion() {
