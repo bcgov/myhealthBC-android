@@ -34,7 +34,7 @@ data class HealthVisitEntity(
     @ColumnInfo(name = "id")
     val id: String? = null,
     @ColumnInfo(name = "encounter_date")
-    val encounterDate: Instant?,
+    val encounterDate: Instant,
     @ColumnInfo(name = "specialty_description")
     val specialtyDescription: String? = null,
     @ColumnInfo(name = "practitioner_name")

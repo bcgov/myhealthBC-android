@@ -10,7 +10,7 @@ data class HealthVisitsDto(
     val healthVisitId: Long = 0,
     var patientId: Long,
     val id: String? = null,
-    val encounterDate: Instant?,
+    val encounterDate: Instant,
     val specialtyDescription: String? = null,
     val practitionerName: String? = null,
     val clinicDto: ClinicDto? = null,

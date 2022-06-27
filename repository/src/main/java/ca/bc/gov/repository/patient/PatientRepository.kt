@@ -117,6 +117,9 @@ class PatientRepository @Inject constructor(
         patientLocalDataSource.deleteByPatientId(patientId)
     }
 
-    suspend fun getPatientWithHealthVisits(patientId: Long): PatientWithHealthVisitsDto? =
+    suspend fun getPatientWithHealthVisits(patientId: Long): PatientWithHealthVisitsDto =
         patientLocalDataSource.getPatientWithHealthVisits(patientId)
+            ?: throw MyHealthException(
+                DATABASE_ERROR, "No record found for patient id=  $patientId"
+            )
 }

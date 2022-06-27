@@ -76,6 +76,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     patientRepository.getPatientWithCovidOrdersAndCovidTests(patientId)
                 val patientWithImmunizationRecordAndForecast =
                     patientRepository.getPatientWithImmunizationRecordAndForecast(patientId)
+                val patientWithHealthVisits =
+                    patientRepository.getPatientWithHealthVisits(patientId)
 
                 val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
                     it.toUiModel()
@@ -95,6 +97,9 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     patientWithImmunizationRecordAndForecast.immunizationRecords.map {
                         it.toUiModel()
                     }
+                val healthVisits = patientWithHealthVisits.healthVisits.map {
+                    it.toUiModel()
+                }
 
                 var bcscAuthenticatedPatientDto: PatientDto? = null
                 val isBcscAuthenticatedPatientAvailable: Boolean? = try {
@@ -108,9 +113,10 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 val isBcscSessionActive: Boolean = bcscAuthRepo.checkSession()
 
                 val filteredHealthRecords = if (isShowMedicationRecords()) {
-                    (medicationRecords ?: emptyList()) + covidTestRecords + covidOrders + labTestRecords + immunizationRecords
+                    (medicationRecords ?: emptyList()) + covidTestRecords + covidOrders +
+                        labTestRecords + immunizationRecords + healthVisits
                 } else {
-                    covidTestRecords + covidOrders + labTestRecords + immunizationRecords
+                    covidTestRecords + covidOrders + labTestRecords + immunizationRecords + healthVisits
                 }
 
                 _uiState.update { state ->
@@ -147,6 +153,7 @@ data class HealthRecordItem(
     val labOrderId: Long = -1L,
     val immunizationRecordId: Long = -1L,
     val covidOrderId: String? = null,
+    val healthVisitId: Long = -1L,
     val icon: Int,
     val title: String,
     val description: String,
@@ -165,7 +172,8 @@ enum class HealthRecordType {
     COVID_TEST_RECORD,
     MEDICATION_RECORD,
     LAB_TEST,
-    IMMUNIZATION_RECORD
+    IMMUNIZATION_RECORD,
+    HEALTH_VISIT_RECORD
 }
 
 data class HiddenMedicationRecordItem(

@@ -122,6 +122,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 TimelineTypeFilter.LAB_TEST.name -> {
                     binding.content.chipGroup.chipLabTest.show()
                 }
+                TimelineTypeFilter.HEALTH_VISIT.name -> {
+                    binding.content.chipGroup.chipHealthVisits.show()
+                }
             }
         }
     }
@@ -131,6 +134,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         binding.content.chipGroup.chipImmunizations.hide()
         binding.content.chipGroup.chipCovidTest.hide()
         binding.content.chipGroup.chipLabTest.hide()
+        binding.content.chipGroup.chipHealthVisits.hide()
     }
 
     private fun clearFilterClickListener() {
@@ -309,6 +313,13 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     val action = IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordFragmentToImmunizationRecordDetailFragment(
                             it.immunizationRecordId
+                        )
+                    findNavController().navigate(action)
+                }
+                HealthRecordType.HEALTH_VISIT_RECORD -> {
+                    val action = IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToHealthVisitDetailsFragment(
+                            it.healthVisitId
                         )
                     findNavController().navigate(action)
                 }

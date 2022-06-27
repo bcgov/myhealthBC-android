@@ -12,4 +12,7 @@ interface HealthVisitsDao : BaseDao<HealthVisitEntity> {
 
     @Query("DELETE FROM health_visits WHERE patient_id = :patientId")
     suspend fun delete(patientId: Long): Int
+
+    @Query("SELECT * FROM health_visits WHERE health_visit_id = :id")
+    suspend fun getHealthVisitDetails(id: Long): HealthVisitEntity?
 }
