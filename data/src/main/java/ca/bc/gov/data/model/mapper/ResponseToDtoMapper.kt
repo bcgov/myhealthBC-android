@@ -16,6 +16,7 @@ import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabTestDto
+import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
@@ -34,6 +35,8 @@ import ca.bc.gov.data.datasource.remote.model.base.immunization.ImmunizationReco
 import ca.bc.gov.data.datasource.remote.model.base.medication.DispensingPharmacy
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationStatementPayload
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationSummary
+import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityPayload
+import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityResponse
 import ca.bc.gov.data.datasource.remote.model.base.vaccine.Media
 import ca.bc.gov.data.datasource.remote.model.base.vaccine.VaccineResourcePayload
 import ca.bc.gov.data.datasource.remote.model.response.AddCommentResponse
@@ -287,4 +290,19 @@ fun HealthVisitsPayload.toDto() = HealthVisitsDto(
 
 fun Clinic.toDto() = ClinicDto(
     name
+)
+
+fun SpecialAuthorityResponse.toDto(): List<SpecialAuthorityDto> {
+    return payload.map { it.toDto() }
+}
+
+fun SpecialAuthorityPayload.toDto() = SpecialAuthorityDto(
+    drugName,
+    effectiveDate,
+    expiryDate,
+    prescriberFirstName,
+    prescriberLastName,
+    referenceNumber,
+    requestStatus,
+    requestedDate
 )
