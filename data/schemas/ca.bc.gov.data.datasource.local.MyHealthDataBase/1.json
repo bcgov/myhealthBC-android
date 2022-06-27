@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3691a20aa54e0b7e8b77cb885f8b6082",
+    "identityHash": "51e155dcd2bf35d95004f7af4a5b17c0",
     "entities": [
       {
         "tableName": "patient",
@@ -1362,12 +1362,104 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "special_authority",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`special_authority_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `reference_number` TEXT, `drug_name` TEXT, `request_status` TEXT, `prescriber_first_name` TEXT, `prescriber_last_name` TEXT, `requested_date` INTEGER, `effective_date` INTEGER, `expiry_date` INTEGER, `data_source` TEXT NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "specialAuthorityId",
+            "columnName": "special_authority_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "patientId",
+            "columnName": "patient_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "referenceNumber",
+            "columnName": "reference_number",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "drugName",
+            "columnName": "drug_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "requestStatus",
+            "columnName": "request_status",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "prescriberFirstName",
+            "columnName": "prescriber_first_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "prescriberLastName",
+            "columnName": "prescriber_last_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "requestedDate",
+            "columnName": "requested_date",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "effectiveDate",
+            "columnName": "effective_date",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "expiryDate",
+            "columnName": "expiry_date",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dataSource",
+            "columnName": "data_source",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "special_authority_id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "patient",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "patient_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3691a20aa54e0b7e8b77cb885f8b6082')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '51e155dcd2bf35d95004f7af4a5b17c0')"
     ]
   }
 }

@@ -278,6 +278,15 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
             healthVisitsResponse?.let { healthVisitsRepository.insert(it) }
 
+            // Insert Special authority
+            specialAuthorityRepository.deleteSpecialAuthorities(patientId)
+            specialAuthorityResponse?.forEach {
+                it.patientId = patientId
+            }
+            specialAuthorityResponse?.let {
+                specialAuthorityRepository.insert(it)
+            }
+
             if (isApiFailed) {
                 notificationHelper.updateNotification(context.getString(R.string.notification_title_on_failed))
             } else {

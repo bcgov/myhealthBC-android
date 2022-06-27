@@ -49,6 +49,7 @@ import ca.bc.gov.data.model.MediaMetaData
 import ca.bc.gov.data.model.VaccineStatus
 import java.time.Instant
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME
 
 fun CovidTestRecord.toTestRecord() = TestRecordDto(
     id = reportId,
@@ -297,12 +298,15 @@ fun SpecialAuthorityResponse.toDto(): List<SpecialAuthorityDto> {
 }
 
 fun SpecialAuthorityPayload.toDto() = SpecialAuthorityDto(
+    specialAuthorityId = 0,
+    patientId = 0,
+    referenceNumber,
     drugName,
-    effectiveDate,
-    expiryDate,
+    requestStatus,
     prescriberFirstName,
     prescriberLastName,
-    referenceNumber,
-    requestStatus,
-    requestedDate
+    requestedDate?.toDateTime(ISO_ZONED_DATE_TIME),
+    effectiveDate?.toDateTime(),
+    expiryDate?.toDateTime(),
+    dataSource = DataSource.BCSC
 )
