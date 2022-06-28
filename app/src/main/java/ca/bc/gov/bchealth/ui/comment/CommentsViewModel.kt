@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.comment
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.repository.CommentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,6 +36,10 @@ class CommentsViewModel @Inject constructor(
         try {
             val commentsDtoList = commentRepository.getLocalComments(parentEntryId) as MutableList
             commentsDtoList.sortByDescending { it.createdDateTime }
+
+            // latest comment
+            val commentsTemp = getLatestComment(commentsDtoList, parentEntryId)
+
             _uiState.update { it ->
                 it.copy(
                     onLoading = false,
@@ -45,7 +50,8 @@ class CommentsViewModel @Inject constructor(
                             it.createdDateTime.toLocalDateTimeInstant(),
                             it.isUploaded
                         )
-                    }
+                    },
+                    latestComment = commentsTemp
                 )
             }
         } catch (e: Exception) {
@@ -65,8 +71,16 @@ class CommentsViewModel @Inject constructor(
                     it.copy(onLoading = true)
                 }
 
-                val commentsDtoList = commentRepository.addComment(parentEntryId, comment, entryTypeCode) as MutableList
+                val commentsDtoList = commentRepository.addComment(
+                    parentEntryId,
+                    comment,
+                    entryTypeCode
+                ) as MutableList
                 commentsDtoList.sortByDescending { it.createdDateTime }
+
+                // latest comment
+                val commentsTemp = getLatestComment(commentsDtoList, parentEntryId)
+
                 _uiState.update { it ->
                     it.copy(
                         onLoading = false,
@@ -77,7 +91,8 @@ class CommentsViewModel @Inject constructor(
                                 it.createdDateTime.toLocalDateTimeInstant(),
                                 it.isUploaded
                             )
-                        }
+                        },
+                        latestComment = commentsTemp
                     )
                 }
             } catch (e: Exception) {
@@ -91,12 +106,39 @@ class CommentsViewModel @Inject constructor(
             }
         }
 
+    private fun getLatestComment(
+        commentsDtoList: MutableList<CommentDto>,
+        parentEntryId: String
+    ): MutableList<Comment> {
+        val commentsList = mutableListOf<Comment>()
+        if (commentsDtoList.isNotEmpty()) {
+            commentsList.add(
+                Comment(
+                    parentEntryId,
+                    "${commentsDtoList.size}",
+                    Instant.now()
+                )
+            )
+            val latestComment = commentsDtoList.firstOrNull()
+            commentsList.add(
+                Comment(
+                    latestComment?.parentEntryId,
+                    latestComment?.text,
+                    latestComment?.createdDateTime?.toLocalDateTimeInstant(),
+                    latestComment?.isUploaded ?: true
+                )
+            )
+        }
+        return commentsList
+    }
+
     fun resetUiState() {
         _uiState.update {
             it.copy(
                 onLoading = false,
                 onError = false,
-                commentsList = null
+                commentsList = emptyList(),
+                latestComment = emptyList()
             )
         }
     }
@@ -105,11 +147,12 @@ class CommentsViewModel @Inject constructor(
 data class CommentsUiState(
     val onLoading: Boolean = false,
     val onError: Boolean = false,
-    val commentsList: List<Comment>? = null
+    val commentsList: List<Comment> = emptyList(),
+    val latestComment: List<Comment> = emptyList()
 )
 
 data class Comment(
-    val id: String,
+    val id: String? = null,
     val text: String?,
     val date: Instant?,
     val isUploaded: Boolean = true

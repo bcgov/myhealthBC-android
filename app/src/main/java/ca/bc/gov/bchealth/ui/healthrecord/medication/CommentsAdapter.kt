@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemCommentBinding
 import ca.bc.gov.bchealth.databinding.ItemCommentsCountBinding
+import ca.bc.gov.bchealth.ui.comment.Comment
 import ca.bc.gov.common.utils.toDateTimeString
 
 /**
@@ -61,7 +62,7 @@ class CommentsAdapter(
                     }
 
                 holder.itemView.setOnClickListener {
-                    comment.parentEntryId?.let { it1 -> itemClickListener.onItemClick(it1) }
+                    comment.id?.let { it1 -> itemClickListener.onItemClick(it1) }
                 }
             }
 

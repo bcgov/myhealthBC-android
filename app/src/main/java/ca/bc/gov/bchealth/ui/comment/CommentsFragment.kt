@@ -85,7 +85,7 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
 
                     binding.progressBar.isVisible = state.onLoading
 
-                    if (state.commentsList != null) {
+                    if (state.commentsList.isNotEmpty()) {
                         commentsAdapter.submitList(state.commentsList)
                         viewModel.resetUiState()
                         // clear comment
