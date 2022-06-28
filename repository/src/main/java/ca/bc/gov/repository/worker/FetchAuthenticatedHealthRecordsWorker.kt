@@ -14,6 +14,7 @@ import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
@@ -34,6 +35,7 @@ import ca.bc.gov.repository.labtest.LabTestRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.VaccineRecordState
+import ca.bc.gov.repository.specialauthority.SpecialAuthorityRepository
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.testrecord.CovidTestRepository
 import ca.bc.gov.repository.utils.NotificationHelper
@@ -67,7 +69,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val immunizationRecordRepository: ImmunizationRecordRepository,
     private val immunizationForecastRepository: ImmunizationForecastRepository,
     private val commentsRepository: CommentRepository,
-    private val healthVisitsRepository: HealthVisitsRepository
+    private val healthVisitsRepository: HealthVisitsRepository,
+    private val specialAuthorityRepository: SpecialAuthorityRepository
 ) : CoroutineWorker(context, workerParams) {
 
     var isApiFailed = false
@@ -91,6 +94,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         var immunizationResponse: List<ImmunizationRecordWithForecastDto>? = null
         var commentsResponse: List<CommentDto>? = null
         var healthVisitsResponse: List<HealthVisitsDto>? = null
+        var specialAuthorityResponse: List<SpecialAuthorityDto>? = null
 
         try {
 
@@ -194,6 +198,16 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
 
             try {
                 healthVisitsResponse = fetchHealthVisits(authParameters)
+            } catch (e: Exception) {
+                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
+                    return handleQueueItException(e)
+                } else {
+                    isApiFailed = true
+                }
+            }
+
+            try {
+                specialAuthorityResponse = fetchSpecialAuthority(authParameters)
             } catch (e: Exception) {
                 if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
                     return handleQueueItException(e)
@@ -362,9 +376,9 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         return covidOrderResponse
     }
 
-    /*
+    /**
      * Fetch health visits
-     * */
+     */
     private suspend fun fetchHealthVisits(authParameters: Pair<String, String>): List<HealthVisitsDto>? {
         var healthVisitsResponse: List<HealthVisitsDto>?
         withContext(dispatcher) {
@@ -375,6 +389,21 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 )
         }
         return healthVisitsResponse
+    }
+
+    /**
+     * Fetch special authority
+     */
+    private suspend fun fetchSpecialAuthority(authParameters: Pair<String, String>): List<SpecialAuthorityDto>? {
+        var specialAuthorityResponse: List<SpecialAuthorityDto>?
+        withContext(dispatcher) {
+            specialAuthorityResponse =
+                specialAuthorityRepository.getSpecialAuthority(
+                    authParameters.first,
+                    authParameters.second
+                )
+        }
+        return specialAuthorityResponse
     }
 
     private fun handleQueueItException(e: java.lang.Exception): Result {

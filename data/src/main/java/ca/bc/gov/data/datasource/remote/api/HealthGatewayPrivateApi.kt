@@ -1,6 +1,7 @@
 package ca.bc.gov.data.datasource.remote.api
 
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsResponse
+import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityResponse
 import ca.bc.gov.data.datasource.remote.model.request.CommentRequest
 import ca.bc.gov.data.datasource.remote.model.request.UserProfileRequest
 import ca.bc.gov.data.datasource.remote.model.response.AddCommentResponse
@@ -134,4 +135,10 @@ interface HealthGatewayPrivateApi {
         @Path(HDID) hdid: String,
         @Header(AUTHORIZATION) accessToken: String
     ): Response<AllCommentsResponse>
+
+    @GET("$BASE_MEDICATION_SERVICE/MedicationRequest/{hdid}")
+    suspend fun getSpecialAuthority(
+        @Header(AUTHORIZATION) accessToken: String,
+        @Path(HDID) hdid: String,
+    ): Response<SpecialAuthorityResponse>
 }
