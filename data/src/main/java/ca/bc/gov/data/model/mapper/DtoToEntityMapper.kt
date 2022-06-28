@@ -12,6 +12,7 @@ import ca.bc.gov.common.model.immunization.ImmunizationRecordDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.model.test.TestRecordDto
@@ -33,6 +34,7 @@ import ca.bc.gov.data.datasource.local.entity.labtest.LabTestEntity
 import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
+import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 
 fun PatientDto.toEntity() = PatientEntity(
     id,
@@ -215,4 +217,18 @@ fun HealthVisitsDto.toEntity() = HealthVisitEntity(
     practitionerName,
     Clinic(clinicDto?.name),
     dataSource = dataSource
+)
+
+fun SpecialAuthorityDto.toEntity() = SpecialAuthorityEntity(
+    specialAuthorityId,
+    patientId,
+    referenceNumber,
+    drugName,
+    requestStatus,
+    prescriberFirstName,
+    prescriberLastName,
+    requestedDate,
+    effectiveDate,
+    expiryDate,
+    dataSource
 )

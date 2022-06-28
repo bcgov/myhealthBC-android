@@ -29,6 +29,7 @@ import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsAndPatientDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
+import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
@@ -69,6 +70,7 @@ import ca.bc.gov.data.datasource.local.entity.relations.PatientWithVaccineAndDos
 import ca.bc.gov.data.datasource.local.entity.relations.TestResultWithRecord
 import ca.bc.gov.data.datasource.local.entity.relations.TestResultWithRecordsAndPatient
 import ca.bc.gov.data.datasource.local.entity.relations.VaccineRecordWithDose
+import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import java.time.Instant
 
 fun PatientEntity.toDto() = PatientDto(
@@ -340,4 +342,18 @@ fun HealthVisitEntity.toDto() = HealthVisitsDto(
     practitionerName,
     ClinicDto(name = clinic?.name),
     dataSource = dataSource
+)
+
+fun SpecialAuthorityEntity.toDto() = SpecialAuthorityDto(
+    specialAuthorityId,
+    patientId,
+    referenceNumber,
+    drugName,
+    requestStatus,
+    prescriberFirstName,
+    prescriberLastName,
+    requestedDate,
+    effectiveDate,
+    expiryDate,
+    dataSource
 )

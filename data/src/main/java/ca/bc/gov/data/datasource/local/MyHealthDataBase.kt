@@ -17,6 +17,7 @@ import ca.bc.gov.data.datasource.local.dao.LabTestDao
 import ca.bc.gov.data.datasource.local.dao.MedicationRecordDao
 import ca.bc.gov.data.datasource.local.dao.MedicationSummaryDao
 import ca.bc.gov.data.datasource.local.dao.PatientDao
+import ca.bc.gov.data.datasource.local.dao.SpecialAuthorityDao
 import ca.bc.gov.data.datasource.local.dao.TestResultDao
 import ca.bc.gov.data.datasource.local.dao.VaccineRecordDao
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
@@ -35,6 +36,7 @@ import ca.bc.gov.data.datasource.local.entity.labtest.LabTestEntity
 import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
+import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 
 /**
  * @author Pinakin Kansara
@@ -56,7 +58,8 @@ import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
         CovidTestEntity::class,
         ImmunizationRecordEntity::class,
         ImmunizationForecastEntity::class,
-        HealthVisitEntity::class
+        HealthVisitEntity::class,
+        SpecialAuthorityEntity::class
     ],
     version = 1,
     exportSchema = true
@@ -91,4 +94,6 @@ abstract class MyHealthDataBase : RoomDatabase() {
     abstract fun getImmunizationForecastDao(): ImmunizationForecastDao
 
     abstract fun getHealthVisitDao(): HealthVisitsDao
+
+    abstract fun getSpecialAuthorityDao(): SpecialAuthorityDao
 }
