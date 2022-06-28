@@ -373,6 +373,7 @@
 
     <!--Health Visit Details-->
     <string name="clinic_practitioner">Clinic/Practitioner</string>
-    <string name="information_is_from_the_billing_claim">Information is from the billing claim and may show a different practitioner or clinic from the one you visisted. For more information, visit the page.</string>
+    <string name="information_is_from_the_billing_claim">Information is from the billing claim and may show a different practitioner or clinic from the one you visisted. For more information, visit the FAQ page.</string>
+    <string name="faq">FAQ</string>
 
 </resources>
