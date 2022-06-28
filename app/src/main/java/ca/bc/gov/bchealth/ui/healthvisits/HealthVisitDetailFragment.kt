@@ -14,6 +14,8 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHealthVisitDetailBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.makeLinks
+import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -29,6 +31,14 @@ class HealthVisitDetailFragment : BaseFragment(R.layout.fragment_health_visit_de
         super.onViewCreated(view, savedInstanceState)
         observeHealthVisitDetails()
         viewModel.fetchHealthVisitDetails(args.healthVisitRecordId)
+        binding.tvSubtitle.makeLinks(
+            Pair(
+                getString(R.string.faq),
+                View.OnClickListener {
+                    requireContext().redirect(getString(R.string.faq_link))
+                }
+            )
+        )
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
