@@ -61,6 +61,7 @@ class LabTestDetailAdapter :
             is LabTestBannerViewHolder -> {
                 holder.binding.apply {
                     holder.itemView.context.apply {
+                        tvTitle.text = labTestDetail.bannerTitle?.let { getString(it) }
                         tvInfo.text = labTestDetail.bannerText?.let { getString(it) }
                         tvInfo.makeLinks(
                             Pair(

@@ -122,20 +122,33 @@ class LabTestDetailViewModel @Inject constructor(
             labTestDetails.add(
                 0,
                 LabTestDetail(
+                    bannerTitle = R.string.results_are_pending,
                     bannerText = R.string.lab_test_detail_banner_1,
                     viewType = ITEM_VIEW_TYPE_LAB_TEST_BANNER
                 )
             )
         }
-
-        if (testStatus == R.string.pending) {
-            labTestDetails.add(
-                0,
-                LabTestDetail(
-                    bannerText = R.string.lab_test_detail_banner_2,
-                    viewType = ITEM_VIEW_TYPE_LAB_TEST_BANNER
+        when (testStatus) {
+            R.string.pending -> {
+                labTestDetails.add(
+                    0,
+                    LabTestDetail(
+                        bannerTitle = R.string.results_are_pending,
+                        bannerText = R.string.lab_test_detail_banner_2,
+                        viewType = ITEM_VIEW_TYPE_LAB_TEST_BANNER
+                    )
                 )
-            )
+            }
+            R.string.cancelled -> {
+                labTestDetails.add(
+                    0,
+                    LabTestDetail(
+                        bannerTitle = R.string.lab_test_has_been_cancelled,
+                        bannerText = R.string.find_resources_to_learn_about_lab_test,
+                        viewType = ITEM_VIEW_TYPE_LAB_TEST_BANNER
+                    )
+                )
+            }
         }
 
         return labTestDetails
@@ -230,6 +243,7 @@ data class LabTestDetail(
     val testName: String? = "N/A",
     val isOutOfRange: Boolean? = null,
     val testStatus: Int? = null,
+    val bannerTitle: Int? = null,
     val bannerText: Int? = null,
     val viewType: Int = LabTestDetailViewModel.ITEM_VIEW_TYPE_LAB_ORDER
 )

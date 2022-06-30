@@ -321,6 +321,8 @@
     <string name="results_are_pending">Results are pending</string>
     <string name="lab_test_detail_banner_1">It can take between 1 and 7 days to complete. Find resources to learn about your lab test and what the results mean. Learn more</string>
     <string name="lab_test_detail_banner_2">It can take between 1 and 7 days to complete.</string>
+    <string name="lab_test_has_been_cancelled">Your test has been cancelled</string>
+    <string name="find_resources_to_learn_about_lab_test">Find resources to learn about your lab test and what the results mean. Learn more</string>
 
     <!-- Home screen -->
     <string name="hello">Hello</string>
