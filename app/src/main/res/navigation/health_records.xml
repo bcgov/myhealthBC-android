@@ -37,6 +37,9 @@
         <action
             android:id="@+id/action_individualHealthRecordFragment_to_healthVisitDetailsFragment"
             app:destination="@id/healthVisitDetailFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_specialAuthorityDetailsFragment"
+            app:destination="@id/specialAuthorityDetailFragment" />
     </fragment>
 
 
@@ -145,11 +148,20 @@
     </fragment>
     <fragment
         android:id="@+id/healthVisitDetailFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthvisits.HealthVisitDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.healthvisits.HealthVisitDetailFragment"
         android:label="fragment_health_visit_detail"
         tools:layout="@layout/fragment_health_visit_detail" >
         <argument
             android:name="healthVisitRecordId"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/specialAuthorityDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.specialauthority.SpecialAuthorityDetailFragment"
+        android:label="fragment_special_authority_detail"
+        tools:layout="@layout/fragment_special_authority_detail" >
+        <argument
+            android:name="specialAuthorityId"
             app:argType="long" />
     </fragment>
 </navigation>

@@ -7,6 +7,7 @@ import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithHealthVisitsDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
+import ca.bc.gov.common.model.patient.PatientWithSpecialAuthorityDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
@@ -132,4 +133,7 @@ class PatientLocalDataSource @Inject constructor(
 
     suspend fun getPatientWithHealthVisits(patientId: Long): PatientWithHealthVisitsDto? =
         patientDao.getPatientWithHealthVisits(patientId)?.toDto()
+
+    suspend fun getPatientWithSpecialAuthority(patientId: Long): PatientWithSpecialAuthorityDto? =
+        patientDao.getPatientWithSpecialAuthority(patientId)?.toDto()
 }
