@@ -25,6 +25,8 @@ import ca.bc.gov.bchealth.databinding.FragmentBarcodeScannerBinding
 import ca.bc.gov.bchealth.ui.healthpass.add.AddOrUpdateCardViewModel
 import ca.bc.gov.bchealth.ui.healthpass.add.Status
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.underlineText
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -108,6 +110,11 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                     }
                 }
             }
+        }
+
+        binding.btnPrivacy.underlineText()
+        binding.btnPrivacy.setOnClickListener {
+            requireActivity().redirect(getString(R.string.url_privacy_policy))
         }
     }
 

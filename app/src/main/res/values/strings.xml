@@ -2,6 +2,7 @@
     <string name="app_name">Health Gateway</string>
 
     <!--Informational screen for camera permission-->
+    <string name="privacy_policy">Privacy Policy</string>
     <string name="allow">Allow camera access</string>
     <string name="permission_required">Permission required</string>
     <string name="allow_vaxwallet">Allow Health Gateway to use your camera to scan QR codes to store your card.</string>
@@ -360,4 +361,5 @@
     <string name="phone_number">Phone Number:</string>
     <string name="fax">Fax:</string>
     <string name="direction_for_use">Direction for use</string>
+
 </resources>
