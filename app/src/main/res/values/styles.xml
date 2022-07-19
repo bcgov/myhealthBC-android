@@ -11,6 +11,13 @@
         <item name="fontFamily">@font/bc_sans_bold</item>
     </style>
 
+    <style name="HealthGateway.FullWidthButton" parent="HealthGateway.Widget.MaterialComponents.Button1">
+        <item name="cornerRadius">0dp</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
     <style name="HealthGateway.Widget.MaterialComponents.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:textColor">@color/blue</item>
         <item name="android:minHeight">56dp</item>
