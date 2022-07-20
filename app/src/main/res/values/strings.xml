@@ -345,6 +345,7 @@
     <string name="covid_19_tests">COVID-19 tests</string>
     <string name="immunizations">Immunizations</string>
     <string name="health_visits">Health Visits</string>
+    <string name="special_authorities">Special Authorities</string>
     <string name="filter">Filter</string>
     <string name="apply">Apply</string>
     <string name="no_records_found">No records found</string>
@@ -376,5 +377,12 @@
     <string name="clinic_practitioner">Clinic/Practitioner</string>
     <string name="information_is_from_the_billing_claim">Information is from the billing claim and may show a different practitioner or clinic from the one you visisted. For more information, visit the FAQ page.</string>
     <string name="faq">FAQ</string>
+
+    <!--SpecialAuthority Details-->
+    <string name="status">Status:</string>
+    <string name="prescriber_name">Prescriber Name:</string>
+    <string name="effective_date">Effective Date:</string>
+    <string name="expiry_date">Expiry Date:</string>
+    <string name="reference_number">Reference Number:</string>
 
 </resources>

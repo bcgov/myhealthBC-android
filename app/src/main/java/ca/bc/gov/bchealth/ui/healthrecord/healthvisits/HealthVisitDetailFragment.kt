@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.healthvisits
+package ca.bc.gov.bchealth.ui.healthrecord.healthvisits
 
 import android.os.Bundle
 import android.view.View

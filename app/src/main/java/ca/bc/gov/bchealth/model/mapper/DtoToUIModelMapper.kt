@@ -20,6 +20,7 @@ import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
+import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
@@ -281,6 +282,19 @@ fun HealthVisitsDto.toUiModel() =
         icon = R.drawable.ic_health_record_health_visit,
         date = encounterDate,
         healthRecordType = HealthRecordType.HEALTH_VISIT_RECORD,
+        dataSource = dataSource.name
+    )
+
+fun SpecialAuthorityDto.toUiModel() =
+    HealthRecordItem(
+        patientId = patientId,
+        specialAuthorityId = specialAuthorityId,
+        title = drugName ?: "",
+        description = requestStatus ?: "",
+        testOutcome = "",
+        icon = R.drawable.ic_health_record_special_authority,
+        date = requestedDate!!,
+        healthRecordType = HealthRecordType.SPECIAL_AUTHORITY_RECORD,
         dataSource = dataSource.name
     )
 
