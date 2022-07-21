@@ -58,6 +58,12 @@ class FilterFragment : BaseFragment(R.layout.fragment_filter) {
                 TimelineTypeFilter.LAB_TEST.name -> {
                     binding.chipLabTest.isChecked = true
                 }
+                TimelineTypeFilter.HEALTH_VISIT.name -> {
+                    binding.chipHealthVisit.isChecked = true
+                }
+                TimelineTypeFilter.SPECIAL_AUTHORITY.name -> {
+                    binding.chipSpecialAuthority.isChecked = true
+                }
             }
         }
     }
@@ -80,6 +86,12 @@ class FilterFragment : BaseFragment(R.layout.fragment_filter) {
                         }
                         R.id.chip_immunizations -> {
                             filterList.add(TimelineTypeFilter.IMMUNIZATION.name)
+                        }
+                        R.id.chip_health_visit -> {
+                            filterList.add(TimelineTypeFilter.HEALTH_VISIT.name)
+                        }
+                        R.id.chip_special_authority -> {
+                            filterList.add(TimelineTypeFilter.SPECIAL_AUTHORITY.name)
                         }
                     }
                 }

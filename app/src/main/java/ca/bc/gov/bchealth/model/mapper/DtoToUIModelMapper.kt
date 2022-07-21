@@ -5,16 +5,22 @@ import ca.bc.gov.bchealth.ui.healthpass.FederalTravelPassState
 import ca.bc.gov.bchealth.ui.healthpass.HealthPass
 import ca.bc.gov.bchealth.ui.healthpass.PassState
 import ca.bc.gov.bchealth.ui.healthrecord.PatientHealthRecord
+import ca.bc.gov.bchealth.ui.healthrecord.immunization.ImmunizationDoseDetailItem
+import ca.bc.gov.bchealth.ui.healthrecord.immunization.ImmunizationRecordDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
+import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
+import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPatientDto
+import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
+import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
@@ -210,6 +216,21 @@ fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem {
     )
 }
 
+fun ImmunizationRecordWithForecastDto.toUiModel(): HealthRecordItem {
+
+    return HealthRecordItem(
+        patientId = immunizationRecord.patientId,
+        immunizationRecordId = immunizationRecord.id,
+        title = immunizationRecord.immunizationName ?: "",
+        description = "",
+        testOutcome = "",
+        icon = R.drawable.ic_health_record_vaccine,
+        date = immunizationRecord.dateOfImmunization,
+        healthRecordType = HealthRecordType.IMMUNIZATION_RECORD,
+        dataSource = immunizationRecord.dataSorce.name
+    )
+}
+
 fun getHealthPassStateResources(state: ImmunizationStatus?): PassState = when (state) {
     ImmunizationStatus.FULLY_IMMUNIZED -> {
         PassState(R.color.status_green, R.string.vaccinated, R.drawable.ic_check_mark)
@@ -231,6 +252,51 @@ fun PatientWithHealthRecordCount.toUiModel(): PatientHealthRecord {
         authStatus = patientDto.authenticationStatus
     )
 }
+
+fun ImmunizationRecordWithForecastAndPatientDto.toUiModel(): ImmunizationRecordDetailItem {
+
+    return ImmunizationRecordDetailItem(
+        id = immunizationRecordWithForecast.immunizationRecord.id,
+        status = immunizationRecordWithForecast.immunizationRecord.status,
+        dueDate = immunizationRecordWithForecast.immunizationForecast?.dueDate?.toDate(),
+        name = immunizationRecordWithForecast.immunizationRecord.immunizationName,
+        doseDetails = listOf(
+            ImmunizationDoseDetailItem(
+                id = immunizationRecordWithForecast.immunizationRecord.id,
+                date = immunizationRecordWithForecast.immunizationRecord.dateOfImmunization.toDate(),
+                productName = immunizationRecordWithForecast.immunizationRecord.productName,
+                providerOrClinicName = immunizationRecordWithForecast.immunizationRecord.provideOrClinic,
+                lotNumber = immunizationRecordWithForecast.immunizationRecord.lotNumber
+            )
+        )
+    )
+}
+
+fun HealthVisitsDto.toUiModel() =
+    HealthRecordItem(
+        patientId = patientId,
+        healthVisitId = healthVisitId,
+        title = specialtyDescription ?: "",
+        description = practitionerName ?: "",
+        testOutcome = "",
+        icon = R.drawable.ic_health_record_health_visit,
+        date = encounterDate,
+        healthRecordType = HealthRecordType.HEALTH_VISIT_RECORD,
+        dataSource = dataSource.name
+    )
+
+fun SpecialAuthorityDto.toUiModel() =
+    HealthRecordItem(
+        patientId = patientId,
+        specialAuthorityId = specialAuthorityId,
+        title = drugName ?: "",
+        description = requestStatus ?: "",
+        testOutcome = "",
+        icon = R.drawable.ic_health_record_special_authority,
+        date = requestedDate!!,
+        healthRecordType = HealthRecordType.SPECIAL_AUTHORITY_RECORD,
+        dataSource = dataSource.name
+    )
 
 enum class CovidTestResultStatus {
     Negative,

@@ -5,7 +5,10 @@ import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
+import ca.bc.gov.common.model.patient.PatientWithHealthVisitsDto
+import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
+import ca.bc.gov.common.model.patient.PatientWithSpecialAuthorityDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
@@ -96,6 +99,12 @@ class PatientRepository @Inject constructor(
                 DATABASE_ERROR, "No record found for patient id=  $patientId"
             )
 
+    suspend fun getPatientWithImmunizationRecordAndForecast(patientId: Long): PatientWithImmunizationRecordAndForecastDto =
+        patientLocalDataSource.getPatientWithImmunizationRecordAndForecast(patientId)
+            ?: throw MyHealthException(
+                DATABASE_ERROR, "No record found for patient id=  $patientId"
+            )
+
     suspend fun insertAuthenticatedPatient(patientDto: PatientDto): Long =
         patientLocalDataSource.insertAuthenticatedPatient(patientDto)
 
@@ -108,4 +117,16 @@ class PatientRepository @Inject constructor(
     suspend fun deleteByPatientId(patientId: Long) {
         patientLocalDataSource.deleteByPatientId(patientId)
     }
+
+    suspend fun getPatientWithHealthVisits(patientId: Long): PatientWithHealthVisitsDto =
+        patientLocalDataSource.getPatientWithHealthVisits(patientId)
+            ?: throw MyHealthException(
+                DATABASE_ERROR, "No record found for patient id=  $patientId"
+            )
+
+    suspend fun getPatientWithSpecialAuthority(patientId: Long): PatientWithSpecialAuthorityDto =
+        patientLocalDataSource.getPatientWithSpecialAuthority(patientId)
+            ?: throw MyHealthException(
+                DATABASE_ERROR, "No record found for patient id=  $patientId"
+            )
 }

@@ -12,12 +12,17 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentMedicationDetailsBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
+import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
-import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.widget.AddCommentCallback
+import ca.bc.gov.repository.SYNC_COMMENTS
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -30,16 +35,21 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
     private lateinit var medicationDetailAdapter: MedicationDetailAdapter
     private lateinit var commentsAdapter: CommentsAdapter
     private lateinit var concatAdapter: ConcatAdapter
+    private val commentsViewModel: CommentsViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
-        viewModel.getMedicationDetails(args.medicationId)
+        if (medicationDetailAdapter.currentList.isEmpty()) {
+            viewModel.getMedicationDetails(args.medicationId)
+        }
         observeUiState()
+        observeCommentsSyncCompletion()
     }
 
     private fun initUI() {
         setUpRecyclerView()
+        addCommentListener()
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
@@ -52,7 +62,13 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
     }
 
     private fun setUpRecyclerView() {
-        commentsAdapter = CommentsAdapter()
+        commentsAdapter = CommentsAdapter { parentEntryId ->
+            val action = MedicationDetailsFragmentDirections
+                .actionMedicationDetailsFragmentToCommentsFragment(
+                    parentEntryId
+                )
+            findNavController().navigate(action)
+        }
         medicationDetailAdapter = MedicationDetailAdapter()
         concatAdapter = ConcatAdapter(medicationDetailAdapter, commentsAdapter)
         val recyclerView = binding.rvMedicationDetailList
@@ -74,37 +90,25 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
 
                     handleError(state.onError)
 
-                    fetchComments(state)
+                    viewModel.uiState.value.parentEntryId?.let { commentsViewModel.getComments(it) }
                 }
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.commentState.collect { state ->
+                commentsViewModel.uiState.collect { state ->
                     binding.progressBar.isVisible = state.onLoading
 
-                    if (state.comments.isNotEmpty()) {
-                        commentsAdapter.submitList(state.comments)
+                    if (state.latestComment.isNullOrEmpty().not()) {
+                        commentsAdapter.submitList(state.latestComment)
+                        // clear comment
+                        binding.comment.clearComment()
                     }
 
                     handleError(state.onError)
-
-                    handleNoInternetConnection(state)
                 }
             }
-        }
-    }
-
-    private fun handleNoInternetConnection(uiState: CommentUiState) {
-        if (!uiState.isConnected) {
-            binding.root.showNoInternetConnectionMessage(requireContext())
-        }
-    }
-
-    private fun fetchComments(uiState: MedicationDetailUiState) {
-        if (uiState.parentEntryId != null) {
-            viewModel.fetchComments()
         }
     }
 
@@ -119,6 +123,36 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
                     findNavController().popBackStack()
                 }
             )
+        }
+    }
+
+    private fun addCommentListener() {
+        binding.comment.addCommentListener(object : AddCommentCallback {
+            override fun onSubmitComment(commentText: String) {
+                viewModel.uiState.value.parentEntryId?.let {
+                    commentsViewModel.addComment(
+                        it,
+                        commentText,
+                        CommentEntryTypeCode.MEDICATION.value,
+                    )
+                }
+            }
+        })
+    }
+
+    private fun observeCommentsSyncCompletion() {
+        val workRequest = WorkManager.getInstance(requireContext())
+            .getWorkInfosForUniqueWorkLiveData(SYNC_COMMENTS)
+        if (!workRequest.hasObservers()) {
+            workRequest.observe(viewLifecycleOwner) {
+                if (it.firstOrNull()?.state == WorkInfo.State.SUCCEEDED) {
+                    viewModel.uiState.value.parentEntryId?.let { parentEntryId ->
+                        commentsViewModel.getComments(
+                            parentEntryId
+                        )
+                    }
+                }
+            }
         }
     }
 }

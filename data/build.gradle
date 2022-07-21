@@ -47,7 +47,7 @@ android {
 
         stage {
             dimension "version"
-            resValue "string", "base_url", "https://dev.healthgateway.gov.bc.ca/"
+            resValue "string", "base_url", "https://test.healthgateway.gov.bc.ca/"
         }
 
         prod {

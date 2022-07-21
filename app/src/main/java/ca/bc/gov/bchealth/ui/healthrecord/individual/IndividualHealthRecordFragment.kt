@@ -122,6 +122,12 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 TimelineTypeFilter.LAB_TEST.name -> {
                     binding.content.chipGroup.chipLabTest.show()
                 }
+                TimelineTypeFilter.HEALTH_VISIT.name -> {
+                    binding.content.chipGroup.chipHealthVisits.show()
+                }
+                TimelineTypeFilter.SPECIAL_AUTHORITY.name -> {
+                    binding.content.chipGroup.chipSpecialAuthority.show()
+                }
             }
         }
     }
@@ -131,6 +137,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         binding.content.chipGroup.chipImmunizations.hide()
         binding.content.chipGroup.chipCovidTest.hide()
         binding.content.chipGroup.chipLabTest.hide()
+        binding.content.chipGroup.chipHealthVisits.hide()
+        binding.content.chipGroup.chipSpecialAuthority.hide()
     }
 
     private fun clearFilterClickListener() {
@@ -304,6 +312,27 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                             )
                         findNavController().navigate(action)
                     }
+                }
+                HealthRecordType.IMMUNIZATION_RECORD -> {
+                    val action = IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToImmunizationRecordDetailFragment(
+                            it.immunizationRecordId
+                        )
+                    findNavController().navigate(action)
+                }
+                HealthRecordType.HEALTH_VISIT_RECORD -> {
+                    val action = IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToHealthVisitDetailsFragment(
+                            it.healthVisitId
+                        )
+                    findNavController().navigate(action)
+                }
+                HealthRecordType.SPECIAL_AUTHORITY_RECORD -> {
+                    val action = IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToSpecialAuthorityDetailsFragment(
+                            it.specialAuthorityId
+                        )
+                    findNavController().navigate(action)
                 }
             }
         }
