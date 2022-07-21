@@ -14,7 +14,7 @@ android {
         applicationId "ca.bc.gov.myhealth"
         minSdk 27
         targetSdk 31
-        versionCode 18
+        versionCode 19
         versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -31,7 +31,7 @@ android {
 
     buildTypes {
         release {
-            debuggable true
+            debuggable false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

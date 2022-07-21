@@ -22,6 +22,7 @@ import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithHealthVisitsDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
+import ca.bc.gov.common.model.patient.PatientWithSpecialAuthorityDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
@@ -65,6 +66,7 @@ import ca.bc.gov.data.datasource.local.entity.relations.PatientWithHealthVisits
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithImmunizationRecordAndForecast
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithLabOrdersAndLabTests
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithMedicationRecords
+import ca.bc.gov.data.datasource.local.entity.relations.PatientWithSpecialAuthorities
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithTestResultsAndRecords
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithVaccineAndDoses
 import ca.bc.gov.data.datasource.local.entity.relations.TestResultWithRecord
@@ -205,6 +207,11 @@ fun PatientWithImmunizationRecordAndForecast.toDto() = PatientWithImmunizationRe
 fun PatientWithHealthVisits.toDto() = PatientWithHealthVisitsDto(
     patient = patient.toDto(),
     healthVisits = healthVisits.map { it.toDto() }
+)
+
+fun PatientWithSpecialAuthorities.toDto() = PatientWithSpecialAuthorityDto(
+    patient = patient.toDto(),
+    specialAuthorities = specialAuthorities.map { it.toDto() }
 )
 
 fun List<PatientEntity>.toDto() = PatientListDto(

@@ -78,6 +78,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     patientRepository.getPatientWithImmunizationRecordAndForecast(patientId)
                 val patientWithHealthVisits =
                     patientRepository.getPatientWithHealthVisits(patientId)
+                val patientWithSpecialAuthorities =
+                    patientRepository.getPatientWithSpecialAuthority(patientId)
 
                 val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
                     it.toUiModel()
@@ -100,6 +102,9 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 val healthVisits = patientWithHealthVisits.healthVisits.map {
                     it.toUiModel()
                 }
+                val specialAuthorities = patientWithSpecialAuthorities.specialAuthorities.filter {
+                    it.requestedDate != null
+                }.map { it.toUiModel() }
 
                 var bcscAuthenticatedPatientDto: PatientDto? = null
                 val isBcscAuthenticatedPatientAvailable: Boolean? = try {
@@ -107,6 +112,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                         patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
                     true
                 } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
                     false
                 }
 
@@ -114,9 +120,10 @@ class IndividualHealthRecordViewModel @Inject constructor(
 
                 val filteredHealthRecords = if (isShowMedicationRecords()) {
                     (medicationRecords ?: emptyList()) + covidTestRecords + covidOrders +
-                        labTestRecords + immunizationRecords + healthVisits
+                        labTestRecords + immunizationRecords + healthVisits + specialAuthorities
                 } else {
-                    covidTestRecords + covidOrders + labTestRecords + immunizationRecords + healthVisits
+                    covidTestRecords + covidOrders + labTestRecords + immunizationRecords + healthVisits +
+                        specialAuthorities
                 }
 
                 _uiState.update { state ->
@@ -128,6 +135,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     )
                 }
             } catch (e: java.lang.Exception) {
+                e.printStackTrace()
                 // no implementation required.
             }
         }
@@ -154,6 +162,7 @@ data class HealthRecordItem(
     val immunizationRecordId: Long = -1L,
     val covidOrderId: String? = null,
     val healthVisitId: Long = -1L,
+    val specialAuthorityId: Long = -1L,
     val icon: Int,
     val title: String,
     val description: String,
@@ -173,7 +182,8 @@ enum class HealthRecordType {
     MEDICATION_RECORD,
     LAB_TEST,
     IMMUNIZATION_RECORD,
-    HEALTH_VISIT_RECORD
+    HEALTH_VISIT_RECORD,
+    SPECIAL_AUTHORITY_RECORD
 }
 
 data class HiddenMedicationRecordItem(

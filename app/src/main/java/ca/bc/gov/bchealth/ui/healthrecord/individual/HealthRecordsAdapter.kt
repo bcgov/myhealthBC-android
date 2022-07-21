@@ -62,6 +62,9 @@ class HealthRecordsAdapter(
             HealthRecordType.HEALTH_VISIT_RECORD -> {
                 description = "${record.description} • ${record.date.toDate()}"
             }
+            HealthRecordType.SPECIAL_AUTHORITY_RECORD -> {
+                description = "Status:${record.description} • ${record.date.toDate()}"
+            }
         }
 
         holder.binding.tvDesc.text = description
@@ -109,6 +112,9 @@ class HealthRecordsAdapter(
                             }
                             TimelineTypeFilter.HEALTH_VISIT.name -> {
                                 filteredList.addAll(tempList.filter { it.healthRecordType == HealthRecordType.HEALTH_VISIT_RECORD })
+                            }
+                            TimelineTypeFilter.SPECIAL_AUTHORITY.name -> {
+                                filteredList.addAll(tempList.filter { it.healthRecordType == HealthRecordType.SPECIAL_AUTHORITY_RECORD })
                             }
                         }
                     }

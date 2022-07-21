@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.healthvisits
+package ca.bc.gov.bchealth.ui.healthrecord.healthvisits
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
