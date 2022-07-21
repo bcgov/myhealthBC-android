@@ -18,6 +18,8 @@ import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentCameraPermissionBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.underlineText
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -64,6 +66,11 @@ class CameraPermissionFragment : Fragment(R.layout.fragment_camera_permission) {
 
         binding.txtSkipForNow.setOnClickListener {
             findNavController().popBackStack()
+        }
+
+        binding.btnPrivacy.underlineText()
+        binding.btnPrivacy.setOnClickListener {
+            requireActivity().redirect(getString(R.string.url_privacy_policy))
         }
     }
 
