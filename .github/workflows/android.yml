@@ -6,6 +6,7 @@ on:
       - main
       - develop
       - health-visits
+      - releases
 
 jobs:
   build:
