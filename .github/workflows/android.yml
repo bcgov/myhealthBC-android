@@ -6,6 +6,8 @@ on:
       - main
       - develop
       - feature/bcsc
+      - health-visits
+      - releases
 
 jobs:
   build:
