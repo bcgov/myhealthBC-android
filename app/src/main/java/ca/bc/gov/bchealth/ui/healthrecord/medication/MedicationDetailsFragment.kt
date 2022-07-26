@@ -20,8 +20,10 @@ import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.widget.AddCommentCallback
+import ca.bc.gov.common.BuildConfig.FLAG_COMMENTS
 import ca.bc.gov.repository.SYNC_COMMENTS
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -44,12 +46,17 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
             viewModel.getMedicationDetails(args.medicationId)
         }
         observeUiState()
-        observeCommentsSyncCompletion()
+        if (FLAG_COMMENTS) {
+            observeCommentsSyncCompletion()
+        }
     }
 
     private fun initUI() {
         setUpRecyclerView()
-        addCommentListener()
+        binding.comment.toggleVisibility(FLAG_COMMENTS)
+        if (FLAG_COMMENTS) {
+            addCommentListener()
+        }
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
@@ -62,6 +69,21 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
     }
 
     private fun setUpRecyclerView() {
+        medicationDetailAdapter = MedicationDetailAdapter()
+
+        concatAdapter = if (FLAG_COMMENTS) {
+            initCommentsAdapter()
+            ConcatAdapter(medicationDetailAdapter, commentsAdapter)
+        } else {
+            ConcatAdapter(medicationDetailAdapter)
+        }
+
+        val recyclerView = binding.rvMedicationDetailList
+        recyclerView.adapter = concatAdapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+    }
+
+    private fun initCommentsAdapter() {
         commentsAdapter = CommentsAdapter { parentEntryId ->
             val action = MedicationDetailsFragmentDirections
                 .actionMedicationDetailsFragmentToCommentsFragment(
@@ -69,11 +91,6 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
                 )
             findNavController().navigate(action)
         }
-        medicationDetailAdapter = MedicationDetailAdapter()
-        concatAdapter = ConcatAdapter(medicationDetailAdapter, commentsAdapter)
-        val recyclerView = binding.rvMedicationDetailList
-        recyclerView.adapter = concatAdapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun observeUiState() {
@@ -90,11 +107,25 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
 
                     handleError(state.onError)
 
-                    viewModel.uiState.value.parentEntryId?.let { commentsViewModel.getComments(it) }
+                    if (FLAG_COMMENTS) {
+                        getComments()
+                    }
                 }
             }
         }
 
+        if (FLAG_COMMENTS) {
+            observeComments()
+        }
+    }
+
+    private fun getComments() {
+        viewModel.uiState.value.parentEntryId?.let {
+            commentsViewModel.getComments(it)
+        }
+    }
+
+    private fun observeComments() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 commentsViewModel.uiState.collect { state ->
