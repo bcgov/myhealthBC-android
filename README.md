@@ -68,6 +68,28 @@ Concurrency: __Coroutines, Kotlin Flow__
 
 ## Configuration
 ---
+After cloning the project, open the **local.properties** file under the project root folder, add the following information and Sync Project with Gradle Files:
+> USER = your_user_name
+> TOKEN = your_github_personal_access_token
+
+### Generating Personal Access Token
+1. Log in to your Github account
+2. Go to **Settings/Developer settings**
+3. On **Personal access tokens**, click **Generate new token**
+4. Add a note - *i.e.*: **my-health-bc-android**
+5. Set the expiration
+6. Check the following fields:
+  - [x] **workflow**
+  - [x] **write:packages**
+  - [x] **admin:org**
+  - [x] **admin:public_key**
+  - [x] **gist**
+  - [x] **write:discussion**
+  - [x] **project**
+
+8. Click **Generate token**
+
+>Make sure to copy your personal access token now. You won’t be able to see it again.
 
 ### Build Variants
 
@@ -117,4 +139,4 @@ Builds generated manually, distributed through Google Play.
 ## Contributors
 ---
 
-List past and present contributors. Will S, Pinakin Kansara, Amit Metri, Rashmi Bambhania
+List past and present contributors. Will S, Pinakin Kansara, Amit Metri, Rashmi Bambhania, Bruno Savoini

@@ -86,7 +86,7 @@ class CovidTestResultFragment : Fragment(R.layout.fragment_single_test_result) {
                 covidTest?.collectedDateTime?.toDateTimeString().showIfNullOrBlank(requireContext())
             tvTestStatus.text = covidTest?.testStatus.showIfNullOrBlank(requireContext())
             tvTypeName.text = covidTest?.testType.showIfNullOrBlank(requireContext())
-            tvProviderClinic.text = covidOrder.orderingProviders.showIfNullOrBlank(requireContext())
+            tvProviderClinic.text = covidOrder.reportingLab.showIfNullOrBlank(requireContext())
         }
 
         if (covidTest?.labResultOutcome == CovidTestResultStatus.Positive.toString() ||
