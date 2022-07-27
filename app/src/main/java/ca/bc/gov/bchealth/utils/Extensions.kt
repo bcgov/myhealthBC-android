@@ -147,6 +147,14 @@ fun View.hide() {
     this.visibility = View.GONE
 }
 
+fun View.toggleVisibility(display: Boolean) {
+    if (display) {
+        this.show()
+    } else {
+        this.hide()
+    }
+}
+
 fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {
     val spannableString = SpannableString(this.text)
     var startIndexOfLink = -1

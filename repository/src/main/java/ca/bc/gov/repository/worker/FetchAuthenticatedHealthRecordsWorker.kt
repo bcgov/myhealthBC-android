@@ -5,6 +5,7 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
+import ca.bc.gov.common.BuildConfig.FLAG_COMMENTS
 import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.ProtectiveWordException
@@ -186,13 +187,15 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 }
             }
 
-            try {
-                commentsResponse = fetchComments(authParameters)
-            } catch (e: Exception) {
-                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
-                    return handleQueueItException(e)
-                } else {
-                    isApiFailed = true
+            if (FLAG_COMMENTS) {
+                try {
+                    commentsResponse = fetchComments(authParameters)
+                } catch (e: Exception) {
+                    if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
+                        return handleQueueItException(e)
+                    } else {
+                        isApiFailed = true
+                    }
                 }
             }
 
@@ -268,8 +271,10 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             // Insert comments
-            commentsRepository.delete(true)
-            commentsResponse?.let { commentsRepository.insert(it) }
+            if (FLAG_COMMENTS) {
+                commentsRepository.delete(true)
+                commentsResponse?.let { commentsRepository.insert(it) }
+            }
 
             // Insert Health Visits
             healthVisitsRepository.deleteHealthVisits(patientId)
