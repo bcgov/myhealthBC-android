@@ -63,7 +63,7 @@ class HealthRecordsAdapter(
                 description = "${record.description} • ${record.date.toDate()}"
             }
             HealthRecordType.SPECIAL_AUTHORITY_RECORD -> {
-                description = "Status:${record.description} • ${record.date.toDate()}"
+                description = "${record.description} • ${record.date.toDate()}"
             }
         }
 
