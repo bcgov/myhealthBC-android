@@ -56,6 +56,7 @@ data class ImmunizationDoseDetailItem(
     val id: Long,
     val date: String? = null,
     val productName: String? = null,
+    val immunizingAgent: String? = null,
     val providerOrClinicName: String? = null,
     val lotNumber: String? = null
 )

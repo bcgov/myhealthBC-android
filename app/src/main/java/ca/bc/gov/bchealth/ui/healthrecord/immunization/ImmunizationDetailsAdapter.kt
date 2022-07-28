@@ -34,6 +34,7 @@ class ImmunizationDetailsAdapter :
             tvDose.text = ""
             tvOccurrenceDate.text = immunizationData.date ?: "--"
             tvProduct.text = immunizationData.productName ?: "--"
+            tvImmunizingAgent.text = immunizationData.immunizingAgent ?: "--"
             tvProvider.text = immunizationData.providerOrClinicName ?: "--"
             tvLotNumber.text = immunizationData.lotNumber ?: "--"
         }
