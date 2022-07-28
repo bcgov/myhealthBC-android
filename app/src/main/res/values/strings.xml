@@ -129,7 +129,7 @@
     <string name="onboarding_health_passes_title">Proof of vaccination</string>
     <string name="onboarding_health_passes_desc">Save proof of vaccination documents for you and your family. Have them ready for travel or to access events and services that require it.</string>
     <string name="onboarding_health_records_title">Health records</string>
-    <string name="onboarding_health_records_desc">Access your lab results, medication history and vaccine records. Keep track of what\'s important to you and your health.</string>
+    <string name="onboarding_health_records_desc">Access your lab test results, medication history, immunization records, health visits and more. Keep track of what\'s important to you and your health.</string>
     <string name="onboarding_health_resources_title">Health resources</string>
     <string name="onboarding_health_resources_desc">Connect with HealthLink BC for health advice and get the latest information about COVID-19.</string>
     <string name="onboarding_news_feed_title">News feed</string>
@@ -329,7 +329,7 @@
     <string name="hi">Hi</string>
     <string name="health_records_home">Health Records</string>
     <string name="view_records">View records</string>
-    <string name="health_records_desc">Access your lab results, medication history and vaccination records</string>
+    <string name="health_records_desc">Access your lab test results, medication history, immunization records, health visits and more</string>
     <string name="proof_of_vaccination_desc">Save proof of vaccination documents for you and your family</string>
     <string name="add_proofs">Add proofs</string>
     <string name="resources_desc">Find trusted health information and resources</string>
