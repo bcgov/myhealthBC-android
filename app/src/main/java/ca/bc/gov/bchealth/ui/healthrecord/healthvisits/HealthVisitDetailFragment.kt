@@ -56,7 +56,8 @@ class HealthVisitDetailFragment : BaseFragment(R.layout.fragment_health_visit_de
                 viewModel.uiState.collect { state ->
                     binding.progressBar.isVisible = state.onLoading
                     binding.layoutToolbar.topAppBar.title = state.title
-                    binding.tvDesc1.text = state.desc
+                    binding.tvClinic.text = state.clinic
+                    binding.tvPractitioner.text = state.practitioner
                     if (state.onError) {
                         showError()
                         viewModel.resetUiState()
