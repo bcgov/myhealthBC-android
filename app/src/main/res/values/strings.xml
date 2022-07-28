@@ -375,8 +375,9 @@
     <string name="direction_for_use">Direction for use</string>
 
     <!--Health Visit Details-->
-    <string name="clinic_practitioner">Clinic/Practitioner</string>
-    <string name="information_is_from_the_billing_claim">Information is from the billing claim and may show a different practitioner or clinic from the one you visisted. For more information, visit the FAQ page.</string>
+    <string name="clinic_name">Clinic Name:</string>
+    <string name="practitioner_name">Practitioner Name:</string>
+    <string name="information_is_from_the_billing_claim">Information is from the billing claim and may show a different practitioner or clinic from the one you visited. For more information, visit the FAQ page.</string>
     <string name="faq">FAQ</string>
 
     <!--SpecialAuthority Details-->

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     tools:context=".ui.healthrecord.healthvisits.HealthVisitDetailFragment">
 
@@ -16,43 +16,66 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_title1"
-        style="?textAppearanceHeadline3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_4_x"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:text="@string/clinic_practitioner"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_toolbar" />
-
-    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_subtitle"
         style="@style/HealthGateway.TextAppearance.MaterialComponents.Headline5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginEnd="@dimen/space_4_x"
         android:text="@string/information_is_from_the_billing_claim"
         android:textSize="14sp"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title1"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_toolbar" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_desc1"
+        android:id="@+id/tv_clinic_title"
+        style="?textAppearanceHeadline3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:text="@string/clinic_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_subtitle" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_clinic"
         style="?textAppearanceBody1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_0_5_x"
         android:layout_marginEnd="@dimen/space_4_x"
-        android:layout_marginTop="@dimen/space_1_x"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="FRANCIS N WER WERASDF"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintTop_toBottomOf="@+id/tv_subtitle" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_clinic_title"
+        tools:text="FRANCIS N WER WERASDF" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_practitioner_title"
+        style="?textAppearanceHeadline3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:text="@string/practitioner_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_clinic" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_practitioner"
+        style="?textAppearanceBody1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_0_5_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_practitioner_title"
+        tools:text="Daniel Ho" />
 
     <ProgressBar
         android:id="@+id/progressBar"

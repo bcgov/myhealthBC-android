@@ -34,7 +34,8 @@ class HealthVisitViewModel @Inject constructor(
                     onLoading = false,
                     onError = false,
                     title = healthVisitDto?.specialtyDescription,
-                    desc = healthVisitDto?.clinicDto?.name
+                    clinic = healthVisitDto?.clinicDto?.name,
+                    practitioner = healthVisitDto?.practitionerName
                 )
             }
         } catch (e: Exception) {
@@ -53,7 +54,8 @@ class HealthVisitViewModel @Inject constructor(
                 onLoading = false,
                 onError = false,
                 title = null,
-                desc = null
+                clinic = null,
+                practitioner = null
             )
         }
     }
@@ -63,5 +65,6 @@ data class HealthVisitDetailUiState(
     val onLoading: Boolean = false,
     val onError: Boolean = false,
     val title: String? = null,
-    val desc: String? = null,
+    val clinic: String? = null,
+    val practitioner: String? = null,
 )
