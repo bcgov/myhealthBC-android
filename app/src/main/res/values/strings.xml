@@ -177,6 +177,7 @@
     <string name="vaccination_record">Vaccination record</string>
     <string name="date">Date:</string>
     <string name="product">Product:</string>
+    <string name="immunizing_agent">Immunizing Agent:</string>
     <string name="lot_number">Lot number:</string>
     <string name="dose">Dose</string>
     <string name="covid_test_result_cancelled">There was a problem with your test. Please visit BC CDC Test Results for more information</string>

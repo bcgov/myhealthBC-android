@@ -265,6 +265,7 @@ fun ImmunizationRecordWithForecastAndPatientDto.toUiModel(): ImmunizationRecordD
                 id = immunizationRecordWithForecast.immunizationRecord.id,
                 date = immunizationRecordWithForecast.immunizationRecord.dateOfImmunization.toDate(),
                 productName = immunizationRecordWithForecast.immunizationRecord.productName,
+                immunizingAgent = immunizationRecordWithForecast.immunizationRecord.agentName,
                 providerOrClinicName = immunizationRecordWithForecast.immunizationRecord.provideOrClinic,
                 lotNumber = immunizationRecordWithForecast.immunizationRecord.lotNumber
             )
