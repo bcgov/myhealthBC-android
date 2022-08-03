@@ -36,7 +36,6 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
     private val args: LabTestDetailFragmentArgs by navArgs()
     private val pdfDecoderViewModel: PdfDecoderViewModel by viewModels()
     private var fileInMemory: File? = null
-    private lateinit var labPdfId: String
     private var resultListener = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { _ ->
@@ -68,9 +67,7 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
             menuInflated = menu
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
-                    R.id.menu_download -> {
-                        viewModel.getLabTestPdf(labPdfId)
-                    }
+                    R.id.menu_download -> viewModel.getLabTestPdf()
                 }
                 return@setOnMenuItemClickListener true
             }
@@ -97,10 +94,6 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
                     if (state.labTestDetails?.isNotEmpty() == true) {
                         labTestDetailAdapter.submitList(state.labTestDetails)
                         binding.layoutToolbar.topAppBar.title = state.toolbarTitle
-                    }
-
-                    if (!state.labPdfId.isNullOrBlank()) {
-                        labPdfId = state.labPdfId
                     }
 
                     if (state.onError) {

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
+import ca.bc.gov.common.model.labtest.LabOrderWithLabTestsAndPatientDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
 import ca.bc.gov.repository.labtest.LabOrderRepository
@@ -22,34 +23,37 @@ import javax.inject.Inject
 class LabTestDetailViewModel @Inject constructor(
     private val labOrderRepository: LabOrderRepository,
     private val mobileConfigRepository: MobileConfigRepository
-) :
-    ViewModel() {
+) : ViewModel() {
+
+    private var labPdfId: String? = null
 
     private val _uiState = MutableStateFlow(LabTestDetailUiState())
     val uiState: StateFlow<LabTestDetailUiState> = _uiState.asStateFlow()
 
     fun getLabTestDetails(labOrderId: Long) = viewModelScope.launch {
         try {
-            _uiState.update {
-                it.copy(onLoading = true)
-            }
+            _uiState.update { it.copy(onLoading = true) }
             val labOrderWithLabTestsAndPatientDto = labOrderRepository.findByLabOrderId(labOrderId)
+
+            updateLabPdfId(labOrderWithLabTestsAndPatientDto)
 
             _uiState.update {
                 it.copy(
                     onLoading = false,
-                    labPdfId = labOrderWithLabTestsAndPatientDto.labOrderWithLabTest.labOrder.labPdfId,
                     labTestDetails = prepareLabTestDetailsData(labOrderWithLabTestsAndPatientDto.labOrderWithLabTest),
                     toolbarTitle = labOrderWithLabTestsAndPatientDto.labOrderWithLabTest.labOrder.commonName,
                     showDownloadOption = labOrderWithLabTestsAndPatientDto.labOrderWithLabTest.labOrder.reportingAvailable
                 )
             }
         } catch (e: Exception) {
-            _uiState.update {
-                it.copy(
-                    onError = true
-                )
-            }
+            _uiState.update { it.copy(onError = true) }
+        }
+    }
+
+    private fun updateLabPdfId(dto: LabOrderWithLabTestsAndPatientDto) {
+        val id = dto.labOrderWithLabTest.labOrder.labPdfId
+        if (!id.isNullOrBlank()) {
+            labPdfId = id
         }
     }
 
@@ -87,35 +91,20 @@ class LabTestDetailViewModel @Inject constructor(
                 }
             }
 
-            if (index == 0) {
-                labTestDetails.add(
-                    LabTestDetail(
-                        id = labTest.id,
-                        header = R.string.test_summary,
-                        summary = R.string.summary_desc,
-                        title1 = R.string.test_name,
-                        testName = labTest.batteryType,
-                        title2 = R.string.result,
-                        isOutOfRange = result,
-                        title3 = R.string.lab_test_status,
-                        testStatus = testStatus,
-                        viewType = ITEM_VIEW_TYPE_LAB_TEST
-                    )
+            labTestDetails.add(
+                LabTestDetail(
+                    id = labTest.id,
+                    header = if (index == 0) R.string.test_summary else null,
+                    summary = if (index == 0) R.string.summary_desc else null,
+                    title1 = R.string.test_name,
+                    testName = labTest.batteryType,
+                    title2 = R.string.result,
+                    isOutOfRange = result,
+                    title3 = R.string.lab_test_status,
+                    testStatus = testStatus,
+                    viewType = ITEM_VIEW_TYPE_LAB_TEST
                 )
-            } else {
-                labTestDetails.add(
-                    LabTestDetail(
-                        id = labTest.id,
-                        title1 = R.string.test_name,
-                        testName = labTest.batteryType,
-                        title2 = R.string.result,
-                        isOutOfRange = result,
-                        title3 = R.string.lab_test_status,
-                        testStatus = testStatus,
-                        viewType = ITEM_VIEW_TYPE_LAB_TEST
-                    )
-                )
-            }
+            )
         }
 
         if (labOrderWithLabTestDto.labTests.isEmpty() && testStatus == 0) {
@@ -141,16 +130,14 @@ class LabTestDetailViewModel @Inject constructor(
         return labTestDetails
     }
 
-    fun getLabTestPdf(labOrderId: String) = viewModelScope.launch {
-        _uiState.update {
-            it.copy(onLoading = true)
-        }
+    fun getLabTestPdf() = viewModelScope.launch {
+        _uiState.update { it.copy(onLoading = true) }
         try {
             val isHgServicesUp = mobileConfigRepository.getBaseUrl()
             if (isHgServicesUp) {
-                val pdfData = labOrderRepository.fetchLabTestPdf(labOrderId, false)
-                _uiState.update {
-                    it.copy(pdfData = pdfData)
+                labPdfId?.apply {
+                    val pdfData = labOrderRepository.fetchLabTestPdf(this, false)
+                    _uiState.update { it.copy(pdfData = pdfData) }
                 }
             } else {
                 _uiState.update {
@@ -195,7 +182,6 @@ class LabTestDetailViewModel @Inject constructor(
                 onError = false,
                 labTestDetails = null,
                 toolbarTitle = null,
-                showDownloadOption = false,
                 pdfData = null,
                 isConnected = true,
                 isHgServicesUp = true
@@ -207,7 +193,6 @@ class LabTestDetailViewModel @Inject constructor(
 data class LabTestDetailUiState(
     val onLoading: Boolean = false,
     val onError: Boolean = false,
-    val labPdfId: String? = null,
     val labTestDetails: List<LabTestDetail>? = null,
     val toolbarTitle: String? = null,
     val showDownloadOption: Boolean = false,
