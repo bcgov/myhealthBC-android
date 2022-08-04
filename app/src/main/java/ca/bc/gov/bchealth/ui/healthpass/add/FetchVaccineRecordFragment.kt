@@ -21,6 +21,7 @@ import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.DatePickerHelper
 import ca.bc.gov.bchealth.utils.PhnHelper
 import ca.bc.gov.bchealth.utils.hideKeyboard
+import ca.bc.gov.bchealth.utils.inflateHelpButton
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
@@ -331,17 +332,11 @@ class FetchVaccineRecordFragment : BaseFragment(R.layout.fragment_fetch_vaccine_
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
         with(binding.layoutToolbar.topAppBar) {
-            setNavigationIcon(R.drawable.ic_scanner_close)
+            setNavigationIcon(R.drawable.ic_toolbar_back)
             setNavigationOnClickListener { findNavController().popBackStack() }
             title = getString(R.string.add_a_health_pass)
-            inflateMenu(R.menu.help_menu)
-            setOnMenuItemClickListener { menu ->
-                when (menu.itemId) {
-                    R.id.menu_help -> {
-                        requireActivity().redirect(getString(R.string.url_help))
-                    }
-                }
-                return@setOnMenuItemClickListener true
+            inflateHelpButton {
+                requireActivity().redirect(getString(R.string.url_help))
             }
         }
     }
