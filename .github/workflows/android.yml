@@ -99,4 +99,19 @@ jobs:
           SLACK_USERNAME: "My Health Android Bot"
           SLACK_TITLE: "Firebase build uploaded"
           SLACK_LINK_NAMES: true
-          SLACK_MESSAGE: " <@U01NY5TPAE8> New build is available for testing on Firebase :-) :rocket: "
+          SLACK_MESSAGE: "New build is available for testing on Firebase :-) :rocket: "
+          
+      - name: Saucelabs delete and upload
+        env:
+          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+        run: |
+          curl -u "$SAUCE_USERNAME:$SAUCE_ACCESS_KEY" --location \
+          --request DELETE 'https://api.us-west-1.saucelabs.com/v1/storage/groups/1696366' | json_pp
+
+          curl -u "$SAUCE_USERNAME:$SAUCE_ACCESS_KEY" --location \
+          --request POST 'https://api.us-west-1.saucelabs.com/v1/storage/upload' \
+          --form 'payload=@"app/build/outputs/apk/dev/debug/app-dev-debug.apk"' \
+          --form 'name="app-dev-debug.apk"' \
+          --form 'description=“android dev app"'
+          
