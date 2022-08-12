@@ -1,8 +1,11 @@
 package ca.bc.gov.data.datasource.local
 
+import androidx.room.AutoMigration
 import androidx.room.Database
+import androidx.room.RenameTable
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.AutoMigrationSpec
 import ca.bc.gov.data.datasource.local.converter.AuthenticationStatusTypeConverter
 import ca.bc.gov.data.datasource.local.converter.DateTimeConverter
 import ca.bc.gov.data.datasource.local.dao.CommentDao
@@ -42,6 +45,7 @@ import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityE
  * @author Pinakin Kansara
  */
 @Database(
+    version = 2,
     entities = [
         PatientEntity::class,
         VaccineRecordEntity::class,
@@ -61,7 +65,6 @@ import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityE
         HealthVisitEntity::class,
         SpecialAuthorityEntity::class
     ],
-    version = 1,
     exportSchema = true
 )
 @TypeConverters(DateTimeConverter::class, AuthenticationStatusTypeConverter::class)
