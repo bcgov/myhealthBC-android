@@ -3,6 +3,7 @@ package ca.bc.gov.data.datasource.local.migration
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
+//Important: New migrations should be added to MigrationTest.kt
 val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("ALTER TABLE comments ADD COLUMN is_uploaded INTEGER NOT NULL")

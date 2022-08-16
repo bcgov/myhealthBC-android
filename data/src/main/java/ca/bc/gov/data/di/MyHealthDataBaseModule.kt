@@ -42,8 +42,7 @@ class MyHealthDataBaseModule {
             context,
             MyHealthDataBase::class.java,
             "my_health_db"
-        )
-             .addMigrations(MIGRATION_1_2)
+        ).addMigrations(MIGRATION_1_2)
 
 
         if (BuildConfig.FLAVOR != "dev" &&
