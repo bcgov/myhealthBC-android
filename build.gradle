@@ -37,7 +37,7 @@ allprojects {
         mavenCentral()
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/FreshworksStudio/BCVAX-Android")
+            url = uri("https://maven.pkg.github.com/EYDS-CA/BCVAX-Android")
             credentials {
                 username = localProperties['USER'] ?: System.getenv("USER")
                 password = localProperties['TOKEN'] ?: System.getenv("TOKEN")
