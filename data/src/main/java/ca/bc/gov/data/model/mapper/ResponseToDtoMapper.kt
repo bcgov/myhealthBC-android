@@ -305,7 +305,7 @@ fun SpecialAuthorityPayload.toDto() = SpecialAuthorityDto(
     requestStatus,
     prescriberFirstName,
     prescriberLastName,
-    requestedDate?.toDateTime(ISO_ZONED_DATE_TIME),
+    requestedDate?.toDateTime(),
     effectiveDate?.toDateTime(),
     expiryDate?.toDateTime(),
     dataSource = DataSource.BCSC

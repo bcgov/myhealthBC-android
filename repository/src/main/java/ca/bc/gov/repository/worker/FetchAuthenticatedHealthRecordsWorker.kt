@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
+import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import ca.bc.gov.common.BuildConfig.FLAG_COMMENTS
 import ca.bc.gov.common.R
@@ -122,36 +123,31 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                     authParameters.second
                 )
             } catch (e: Exception) {
-                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
-                    return handleQueueItException(e)
-                } else {
-                    isApiFailed = true
+                handleException(e)?.let { failureResult ->
+                    return failureResult
                 }
             }
 
             try {
                 vaccineRecordsResponse = fetchVaccineRecords(authParameters)
             } catch (e: Exception) {
-                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
-                    return handleQueueItException(e)
-                } else {
-                    isApiFailed = true
+                handleException(e)?.let { failureResult ->
+                    return failureResult
                 }
             }
 
             try {
                 covidOrderResponse = fetchCovidTestResults(authParameters)
             } catch (e: Exception) {
-                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
-                    return handleQueueItException(e)
-                } else {
-                    isApiFailed = true
+                handleException(e)?.let { failureResult ->
+                    return failureResult
                 }
             }
 
             try {
                 medicationResponse = fetchMedicationResponse(authParameters)
             } catch (e: Exception) {
+                e.printStackTrace()
                 when (e) {
                     is MustBeQueuedException ->
                         if (e.message.toString().isNotBlank()) {
@@ -170,20 +166,16 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             try {
                 labOrdersResponse = fetchLabTestResults(authParameters)
             } catch (e: Exception) {
-                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
-                    return handleQueueItException(e)
-                } else {
-                    isApiFailed = true
+                handleException(e)?.let { failureResult ->
+                    return failureResult
                 }
             }
 
             try {
                 immunizationResponse = fetchImmunisations(authParameters)
             } catch (e: Exception) {
-                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
-                    return handleQueueItException(e)
-                } else {
-                    isApiFailed = true
+                handleException(e)?.let { failureResult ->
+                    return failureResult
                 }
             }
 
@@ -191,10 +183,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 try {
                     commentsResponse = fetchComments(authParameters)
                 } catch (e: Exception) {
-                    if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
-                        return handleQueueItException(e)
-                    } else {
-                        isApiFailed = true
+                    handleException(e)?.let { failureResult ->
+                        return failureResult
                     }
                 }
             }
@@ -202,20 +192,16 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             try {
                 healthVisitsResponse = fetchHealthVisits(authParameters)
             } catch (e: Exception) {
-                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
-                    return handleQueueItException(e)
-                } else {
-                    isApiFailed = true
+                handleException(e)?.let { failureResult ->
+                    return failureResult
                 }
             }
 
             try {
                 specialAuthorityResponse = fetchSpecialAuthority(authParameters)
             } catch (e: Exception) {
-                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
-                    return handleQueueItException(e)
-                } else {
-                    isApiFailed = true
+                handleException(e)?.let { failureResult ->
+                    return failureResult
                 }
             }
 
@@ -299,9 +285,23 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
         } catch (e: Exception) {
             // no implementation required.
+            e.printStackTrace()
         }
         return Result.success()
     }
+
+    private fun handleException(exception: Exception): ListenableWorker.Result? {
+        exception.printStackTrace()
+        return if (isQueueException(exception)) {
+            handleQueueItException(exception)
+        } else {
+            isApiFailed = true
+            null
+        }
+    }
+
+    private fun isQueueException(exception: Exception) =
+        exception is MustBeQueuedException && exception.message.toString().isNotBlank()
 
     /*
     * Fetch comments
