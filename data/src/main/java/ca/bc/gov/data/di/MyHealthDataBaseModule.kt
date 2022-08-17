@@ -44,7 +44,6 @@ class MyHealthDataBaseModule {
             "my_health_db"
         ).addMigrations(MIGRATION_1_2)
 
-
         if (BuildConfig.FLAVOR != "dev" &&
             BuildConfig.FLAVOR != "stage" &&
             BuildConfig.FLAVOR != "mock"

@@ -31,7 +31,7 @@ class MigrationTest {
     fun validate_all_migrations() {
         helper.createDatabase(migrationTestDb, 1)
             .close()
-        
+
         Room.databaseBuilder(
             InstrumentationRegistry.getInstrumentation().targetContext,
             MyHealthDataBase::class.java,

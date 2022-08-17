@@ -1,11 +1,8 @@
 package ca.bc.gov.data.datasource.local
 
-import androidx.room.AutoMigration
 import androidx.room.Database
-import androidx.room.RenameTable
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.room.migration.AutoMigrationSpec
 import ca.bc.gov.data.datasource.local.converter.AuthenticationStatusTypeConverter
 import ca.bc.gov.data.datasource.local.converter.DateTimeConverter
 import ca.bc.gov.data.datasource.local.dao.CommentDao
