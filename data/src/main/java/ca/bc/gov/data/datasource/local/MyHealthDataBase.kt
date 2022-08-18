@@ -42,6 +42,7 @@ import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityE
  * @author Pinakin Kansara
  */
 @Database(
+    version = 2,
     entities = [
         PatientEntity::class,
         VaccineRecordEntity::class,
@@ -61,7 +62,6 @@ import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityE
         HealthVisitEntity::class,
         SpecialAuthorityEntity::class
     ],
-    version = 1,
     exportSchema = true
 )
 @TypeConverters(DateTimeConverter::class, AuthenticationStatusTypeConverter::class)
