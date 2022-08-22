@@ -320,9 +320,15 @@
 
     <!--Lab test-->
     <string name="lab_test">Lab test</string>
-    <string name="results_are_pending">Results are pending</string>
-    <string name="lab_test_detail_banner_1">It can take between 1 and 7 days to complete. Find resources to learn about your lab test and what the results mean. Learn more</string>
-    <string name="lab_test_detail_banner_2">It can take between 1 and 7 days to complete.</string>
+
+    <string name="lab_test_banner_cancelled_title">Your test has been cancelled</string>
+    <string name="lab_test_banner_cancelled_message">Find resources to learn about your lab test and what the results mean</string>
+    <string name="lab_test_banner_cancelled_message_clickable_text">your lab test and what the results mean</string>
+
+    <string name="lab_test_banner_pending_title">Results are pending</string>
+    <string name="lab_test_banner_pending_message_1">It can take between 1 and 7 days to complete. Find resources to learn about your lab test and what the results mean. Learn more</string>
+    <string name="lab_test_banner_pending_message_2">It can take between 1 and 7 days to complete.</string>
+    <string name="lab_test_banner_pending_clickable_text">Learn more</string>
 
     <!-- Home screen -->
     <string name="hello">Hello</string>
