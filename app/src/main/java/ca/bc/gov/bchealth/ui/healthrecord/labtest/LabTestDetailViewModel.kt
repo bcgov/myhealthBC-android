@@ -107,27 +107,52 @@ class LabTestDetailViewModel @Inject constructor(
             )
         }
 
-        if (labOrderWithLabTestDto.labTests.isEmpty() && testStatus == 0) {
-            labTestDetails.add(
-                0,
-                LabTestDetail(
-                    bannerText = R.string.lab_test_detail_banner_1,
-                    viewType = ITEM_VIEW_TYPE_LAB_TEST_BANNER
-                )
-            )
-        }
-
-        if (testStatus == R.string.pending) {
-            labTestDetails.add(
-                0,
-                LabTestDetail(
-                    bannerText = R.string.lab_test_detail_banner_2,
-                    viewType = ITEM_VIEW_TYPE_LAB_TEST_BANNER
-                )
-            )
-        }
+        handleBanner(labOrderWithLabTestDto, testStatus, labTestDetails)
 
         return labTestDetails
+    }
+
+    private fun handleBanner(
+        dto: LabOrderWithLabTestDto,
+        testStatus: Int,
+        labTestDetails: MutableList<LabTestDetail>
+    ) {
+        when {
+            dto.labTests.isEmpty() && testStatus == 0 -> {
+                labTestDetails.add(
+                    0,
+                    LabTestDetail(
+                        bannerHeader = R.string.lab_test_banner_pending_title,
+                        bannerText = R.string.lab_test_banner_pending_message_1,
+                        bannerClickableText = R.string.lab_test_banner_pending_clickable_text,
+                        viewType = ITEM_VIEW_TYPE_LAB_TEST_BANNER
+                    )
+                )
+            }
+
+            testStatus == R.string.pending -> {
+                labTestDetails.add(
+                    0,
+                    LabTestDetail(
+                        bannerHeader = R.string.lab_test_banner_pending_title,
+                        bannerText = R.string.lab_test_banner_pending_message_2,
+                        viewType = ITEM_VIEW_TYPE_LAB_TEST_BANNER
+                    )
+                )
+            }
+
+            testStatus == R.string.cancelled -> {
+                labTestDetails.add(
+                    0,
+                    LabTestDetail(
+                        bannerHeader = R.string.lab_test_banner_cancelled_title,
+                        bannerText = R.string.lab_test_banner_cancelled_message,
+                        bannerClickableText = R.string.lab_test_banner_cancelled_message_clickable_text,
+                        viewType = ITEM_VIEW_TYPE_LAB_TEST_BANNER
+                    )
+                )
+            }
+        }
     }
 
     fun getLabTestPdf() = viewModelScope.launch {
@@ -215,6 +240,8 @@ data class LabTestDetail(
     val testName: String? = "N/A",
     val isOutOfRange: Boolean? = null,
     val testStatus: Int? = null,
+    val bannerHeader: Int? = null,
     val bannerText: Int? = null,
+    val bannerClickableText: Int? = null,
     val viewType: Int = LabTestDetailViewModel.ITEM_VIEW_TYPE_LAB_ORDER
 )
