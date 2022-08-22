@@ -1,10 +1,10 @@
 package ca.bc.gov.repository.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
-import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import ca.bc.gov.common.BuildConfig.FLAG_COMMENTS
 import ca.bc.gov.common.R
@@ -172,7 +172,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             try {
-                immunizationResponse = fetchImmunisations(authParameters)
+                immunizationResponse = fetchImmunizations(authParameters)
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
                     return failureResult
@@ -290,7 +290,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         return Result.success()
     }
 
-    private fun handleException(exception: Exception): ListenableWorker.Result? {
+    private fun handleException(exception: Exception): Result? {
+        Log.e("RecordsWorker", "Handling Exception:")
         exception.printStackTrace()
         return if (isQueueException(exception)) {
             handleQueueItException(exception)
@@ -318,18 +319,18 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     }
 
     /*
-     * Fetch immunisations
+     * Fetch immunizations
      * */
-    private suspend fun fetchImmunisations(authParameters: Pair<String, String>): List<ImmunizationRecordWithForecastDto>? {
-        var immunisationResponse: List<ImmunizationRecordWithForecastDto>?
+    private suspend fun fetchImmunizations(authParameters: Pair<String, String>): List<ImmunizationRecordWithForecastDto>? {
+        var immunizationResponse: List<ImmunizationRecordWithForecastDto>?
         withContext(dispatcher) {
-            immunisationResponse =
+            immunizationResponse =
                 immunizationRecordRepository.fetchImmunization(
                     authParameters.first,
                     authParameters.second
                 )
         }
-        return immunisationResponse
+        return immunizationResponse
     }
 
     /*
