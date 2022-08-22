@@ -202,7 +202,7 @@ fun ImmunizationForecastDto.toEntity() = ImmunizationForecastEntity(
     immunizationRecordId,
     recommendationId,
     createDate,
-    status,
+    status?.text,
     displayName,
     eligibleDate,
     dueDate
