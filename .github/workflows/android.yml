@@ -110,12 +110,12 @@ jobs:
           --request DELETE 'https://api.us-west-1.saucelabs.com/v1/storage/groups/1696366' | json_pp
 
           curl -u "$SAUCE_USERNAME:$SAUCE_ACCESS_KEY" --location \
-          --request POST 'https://api.us-west-1.saucelabs.com/v1/storage/upload' \
-          --form 'payload=@"app/build/outputs/apk/dev/debug/app-dev-debug.apk"' \
-          --form 'name="app-dev-debug.apk"' \
-          --form 'description=“android dev app"'
+          --request POST 'https://api.us-west-1.saucelabs.com/v1/storage/upload' \    
+          --form 'payload=@"app/build/outputs/apk/stage/debug/app-stage-debug.apk"' \
+          --form 'name="app-stage-debug.apk"' \
+          --form 'description=“android stage app"'
           
-      - name: Repository Dispatch
+      - name: Testing
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
