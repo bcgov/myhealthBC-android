@@ -25,6 +25,8 @@ import ca.bc.gov.bchealth.ui.healthpass.add.Status
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.PhnHelper
 import ca.bc.gov.bchealth.utils.hideKeyboard
+import ca.bc.gov.bchealth.utils.inflateHelpButton
+import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -151,6 +153,9 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
                 findNavController().popBackStack()
             }
             title = getString(R.string.get_federal_travel_pass)
+            inflateHelpButton {
+                requireActivity().redirect(getString(R.string.url_help))
+            }
         }
     }
 

@@ -4,16 +4,23 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
+import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
+import ca.bc.gov.common.BuildConfig.FLAG_COMMENTS
 import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.ProtectiveWordState
+import ca.bc.gov.common.model.comment.CommentDto
+import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
+import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
+import ca.bc.gov.repository.CommentRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
@@ -22,11 +29,15 @@ import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.di.IoDispatcher
+import ca.bc.gov.repository.healthvisits.HealthVisitsRepository
+import ca.bc.gov.repository.immunization.ImmunizationForecastRepository
+import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.labtest.LabTestRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.VaccineRecordState
+import ca.bc.gov.repository.specialauthority.SpecialAuthorityRepository
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.testrecord.CovidTestRepository
 import ca.bc.gov.repository.utils.NotificationHelper
@@ -56,7 +67,12 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val covidTestRepository: CovidTestRepository,
     private val encryptedPreferenceStorage: EncryptedPreferenceStorage,
     private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
-    private val mobileConfigRepository: MobileConfigRepository
+    private val mobileConfigRepository: MobileConfigRepository,
+    private val immunizationRecordRepository: ImmunizationRecordRepository,
+    private val immunizationForecastRepository: ImmunizationForecastRepository,
+    private val commentsRepository: CommentRepository,
+    private val healthVisitsRepository: HealthVisitsRepository,
+    private val specialAuthorityRepository: SpecialAuthorityRepository
 ) : CoroutineWorker(context, workerParams) {
 
     var isApiFailed = false
@@ -77,6 +93,10 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         var covidOrderResponse: List<CovidOrderWithCovidTestDto>? = null
         var medicationResponse: MedicationStatementResponse? = null
         var labOrdersResponse: List<LabOrderWithLabTestDto>? = null
+        var immunizationResponse: List<ImmunizationRecordWithForecastDto>? = null
+        var commentsResponse: List<CommentDto>? = null
+        var healthVisitsResponse: List<HealthVisitsDto>? = null
+        var specialAuthorityResponse: List<SpecialAuthorityDto>? = null
 
         try {
 
@@ -103,36 +123,31 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                     authParameters.second
                 )
             } catch (e: Exception) {
-                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
-                    return handleQueueItException(e)
-                } else {
-                    isApiFailed = true
+                handleException(e)?.let { failureResult ->
+                    return failureResult
                 }
             }
 
             try {
                 vaccineRecordsResponse = fetchVaccineRecords(authParameters)
             } catch (e: Exception) {
-                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
-                    return handleQueueItException(e)
-                } else {
-                    isApiFailed = true
+                handleException(e)?.let { failureResult ->
+                    return failureResult
                 }
             }
 
             try {
                 covidOrderResponse = fetchCovidTestResults(authParameters)
             } catch (e: Exception) {
-                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
-                    return handleQueueItException(e)
-                } else {
-                    isApiFailed = true
+                handleException(e)?.let { failureResult ->
+                    return failureResult
                 }
             }
 
             try {
                 medicationResponse = fetchMedicationResponse(authParameters)
             } catch (e: Exception) {
+                e.printStackTrace()
                 when (e) {
                     is MustBeQueuedException ->
                         if (e.message.toString().isNotBlank()) {
@@ -151,16 +166,48 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             try {
                 labOrdersResponse = fetchLabTestResults(authParameters)
             } catch (e: Exception) {
-                if (e is MustBeQueuedException && e.message.toString().isNotBlank()) {
-                    return handleQueueItException(e)
-                } else {
-                    isApiFailed = true
+                handleException(e)?.let { failureResult ->
+                    return failureResult
                 }
             }
 
-            /*
-            * DB Operations
-            * */
+            try {
+                immunizationResponse = fetchImmunisations(authParameters)
+            } catch (e: Exception) {
+                handleException(e)?.let { failureResult ->
+                    return failureResult
+                }
+            }
+
+            if (FLAG_COMMENTS) {
+                try {
+                    commentsResponse = fetchComments(authParameters)
+                } catch (e: Exception) {
+                    handleException(e)?.let { failureResult ->
+                        return failureResult
+                    }
+                }
+            }
+
+            try {
+                healthVisitsResponse = fetchHealthVisits(authParameters)
+            } catch (e: Exception) {
+                handleException(e)?.let { failureResult ->
+                    return failureResult
+                }
+            }
+
+            try {
+                specialAuthorityResponse = fetchSpecialAuthority(authParameters)
+            } catch (e: Exception) {
+                handleException(e)?.let { failureResult ->
+                    return failureResult
+                }
+            }
+
+            /**
+             * DB Operations
+             * */
             // Insert patient details
             patient?.let {
                 patientId = patientRepository.insertAuthenticatedPatient(it)
@@ -196,6 +243,40 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 }
                 labTestRepository.insert(it.labTests)
             }
+            // Insert immunization records
+            immunizationRecordRepository.delete(patientId)
+            immunizationResponse?.forEach {
+                it.immunizationRecord.patientId = patientId
+                val id = immunizationRecordRepository.insert(it.immunizationRecord)
+                it.immunizationForecast?.immunizationRecordId = id
+                it.immunizationForecast?.let { forecast ->
+                    immunizationForecastRepository.insert(
+                        forecast
+                    )
+                }
+            }
+
+            // Insert comments
+            if (FLAG_COMMENTS) {
+                commentsRepository.delete(true)
+                commentsResponse?.let { commentsRepository.insert(it) }
+            }
+
+            // Insert Health Visits
+            healthVisitsRepository.deleteHealthVisits(patientId)
+            healthVisitsResponse?.forEach {
+                it.patientId = patientId
+            }
+            healthVisitsResponse?.let { healthVisitsRepository.insert(it) }
+
+            // Insert Special authority
+            specialAuthorityRepository.deleteSpecialAuthorities(patientId)
+            specialAuthorityResponse?.forEach {
+                it.patientId = patientId
+            }
+            specialAuthorityResponse?.let {
+                specialAuthorityRepository.insert(it)
+            }
 
             if (isApiFailed) {
                 notificationHelper.updateNotification(context.getString(R.string.notification_title_on_failed))
@@ -204,8 +285,51 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
         } catch (e: Exception) {
             // no implementation required.
+            e.printStackTrace()
         }
         return Result.success()
+    }
+
+    private fun handleException(exception: Exception): ListenableWorker.Result? {
+        exception.printStackTrace()
+        return if (isQueueException(exception)) {
+            handleQueueItException(exception)
+        } else {
+            isApiFailed = true
+            null
+        }
+    }
+
+    private fun isQueueException(exception: Exception) =
+        exception is MustBeQueuedException && exception.message.toString().isNotBlank()
+
+    /*
+    * Fetch comments
+    * */
+    private suspend fun fetchComments(authParameters: Pair<String, String>): List<CommentDto>? {
+        var commentsResponse: List<CommentDto>?
+        withContext(dispatcher) {
+            commentsResponse = commentsRepository.getComments(
+                authParameters.first,
+                authParameters.second
+            )
+        }
+        return commentsResponse
+    }
+
+    /*
+     * Fetch immunisations
+     * */
+    private suspend fun fetchImmunisations(authParameters: Pair<String, String>): List<ImmunizationRecordWithForecastDto>? {
+        var immunisationResponse: List<ImmunizationRecordWithForecastDto>?
+        withContext(dispatcher) {
+            immunisationResponse =
+                immunizationRecordRepository.fetchImmunization(
+                    authParameters.first,
+                    authParameters.second
+                )
+        }
+        return immunisationResponse
     }
 
     /*
@@ -264,6 +388,36 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             )
         }
         return covidOrderResponse
+    }
+
+    /**
+     * Fetch health visits
+     */
+    private suspend fun fetchHealthVisits(authParameters: Pair<String, String>): List<HealthVisitsDto>? {
+        var healthVisitsResponse: List<HealthVisitsDto>?
+        withContext(dispatcher) {
+            healthVisitsResponse =
+                healthVisitsRepository.getHealthVisits(
+                    authParameters.first,
+                    authParameters.second
+                )
+        }
+        return healthVisitsResponse
+    }
+
+    /**
+     * Fetch special authority
+     */
+    private suspend fun fetchSpecialAuthority(authParameters: Pair<String, String>): List<SpecialAuthorityDto>? {
+        var specialAuthorityResponse: List<SpecialAuthorityDto>?
+        withContext(dispatcher) {
+            specialAuthorityResponse =
+                specialAuthorityRepository.getSpecialAuthority(
+                    authParameters.first,
+                    authParameters.second
+                )
+        }
+        return specialAuthorityResponse
     }
 
     private fun handleQueueItException(e: java.lang.Exception): Result {

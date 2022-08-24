@@ -66,17 +66,16 @@ class HealthGateWayApiModule {
 
     @Provides
     fun providesOkHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor,
         cookiesInterceptor: CookiesInterceptor,
         queueItInterceptor: QueueItInterceptor,
         receivedCookieInterceptor: ReceivedCookieInterceptor,
         mockInterceptor: MockInterceptor,
         hostSelectionInterceptor: HostSelectionInterceptor,
-        networkConnectionInterceptor: NetworkConnectionInterceptor
+        networkConnectionInterceptor: NetworkConnectionInterceptor,
+        loggingInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient {
         val okHttpClient = OkHttpClient.Builder()
             .callTimeout(2, TimeUnit.MINUTES)
-            .addInterceptor(loggingInterceptor)
             .hostnameVerifier { _, _ ->
                 return@hostnameVerifier true
             }
@@ -91,19 +90,19 @@ class HealthGateWayApiModule {
                 .addInterceptor(cookiesInterceptor)
                 .addInterceptor(receivedCookieInterceptor)
         }
+        okHttpClient.addInterceptor(loggingInterceptor)
         return okHttpClient.build()
     }
 
     @Provides
     @MobileConfigOkHttp
     fun providesMobileConfigOkHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor,
         mockInterceptor: MockInterceptor,
         networkConnectionInterceptor: NetworkConnectionInterceptor,
+        loggingInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient {
         val okHttpClient = OkHttpClient.Builder()
             .callTimeout(2, TimeUnit.MINUTES)
-            .addInterceptor(loggingInterceptor)
             .hostnameVerifier { _, _ ->
                 return@hostnameVerifier true
             }
@@ -112,6 +111,7 @@ class HealthGateWayApiModule {
             okHttpClient
                 .addInterceptor(mockInterceptor)
         }
+        okHttpClient.addInterceptor(loggingInterceptor)
         return okHttpClient.build()
     }
 

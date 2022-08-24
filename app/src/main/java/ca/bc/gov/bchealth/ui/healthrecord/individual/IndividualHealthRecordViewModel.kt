@@ -74,6 +74,12 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     patientRepository.getPatientWithLabOrdersAndLabTests(patientId)
                 val patientWithCovidOrderAndTests =
                     patientRepository.getPatientWithCovidOrdersAndCovidTests(patientId)
+                val patientWithImmunizationRecordAndForecast =
+                    patientRepository.getPatientWithImmunizationRecordAndForecast(patientId)
+                val patientWithHealthVisits =
+                    patientRepository.getPatientWithHealthVisits(patientId)
+                val patientWithSpecialAuthorities =
+                    patientRepository.getPatientWithSpecialAuthority(patientId)
 
                 val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
                     it.toUiModel()
@@ -89,6 +95,16 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 }
                 val covidOrders =
                     patientWithCovidOrderAndTests.covidOrderAndTests.map { it.toUiModel() }
+                val immunizationRecords =
+                    patientWithImmunizationRecordAndForecast.immunizationRecords.map {
+                        it.toUiModel()
+                    }
+                val healthVisits = patientWithHealthVisits.healthVisits.map {
+                    it.toUiModel()
+                }
+                val specialAuthorities = patientWithSpecialAuthorities.specialAuthorities.filter {
+                    it.requestedDate != null
+                }.map { it.toUiModel() }
 
                 var bcscAuthenticatedPatientDto: PatientDto? = null
                 val isBcscAuthenticatedPatientAvailable: Boolean? = try {
@@ -96,15 +112,18 @@ class IndividualHealthRecordViewModel @Inject constructor(
                         patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
                     true
                 } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
                     false
                 }
 
                 val isBcscSessionActive: Boolean = bcscAuthRepo.checkSession()
 
                 val filteredHealthRecords = if (isShowMedicationRecords()) {
-                    (medicationRecords ?: emptyList()) + covidTestRecords + covidOrders + labTestRecords + vaccineRecords
+                    (medicationRecords ?: emptyList()) + covidTestRecords + covidOrders +
+                        labTestRecords + immunizationRecords + healthVisits + specialAuthorities
                 } else {
-                    covidTestRecords + covidOrders + labTestRecords + vaccineRecords
+                    covidTestRecords + covidOrders + labTestRecords + immunizationRecords + healthVisits +
+                        specialAuthorities
                 }
 
                 _uiState.update { state ->
@@ -116,6 +135,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     )
                 }
             } catch (e: java.lang.Exception) {
+                e.printStackTrace()
                 // no implementation required.
             }
         }
@@ -139,7 +159,10 @@ data class HealthRecordItem(
     val testResultId: Long = -1L,
     val medicationRecordId: Long = -1L,
     val labOrderId: Long = -1L,
+    val immunizationRecordId: Long = -1L,
     val covidOrderId: String? = null,
+    val healthVisitId: Long = -1L,
+    val specialAuthorityId: Long = -1L,
     val icon: Int,
     val title: String,
     val description: String,
@@ -157,7 +180,10 @@ enum class HealthRecordType {
     VACCINE_RECORD,
     COVID_TEST_RECORD,
     MEDICATION_RECORD,
-    LAB_TEST
+    LAB_TEST,
+    IMMUNIZATION_RECORD,
+    HEALTH_VISIT_RECORD,
+    SPECIAL_AUTHORITY_RECORD
 }
 
 data class HiddenMedicationRecordItem(

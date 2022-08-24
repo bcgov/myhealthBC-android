@@ -3,12 +3,16 @@ package ca.bc.gov.data.di
 import ca.bc.gov.data.datasource.local.CommentLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidTestLocalDataSource
+import ca.bc.gov.data.datasource.local.HealthVisitsLocalDataSource
+import ca.bc.gov.data.datasource.local.ImmunizationForecastLocalDataSource
+import ca.bc.gov.data.datasource.local.ImmunizationRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
 import ca.bc.gov.data.datasource.local.LocalDataSource
 import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.MyHealthDataBase
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
+import ca.bc.gov.data.datasource.local.SpecialAuthorityLocalDataSource
 import ca.bc.gov.data.datasource.local.TestResultLocalDataSource
 import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import dagger.Module
@@ -82,5 +86,25 @@ class LocalDataSourceModule {
 
     @Provides
     @Singleton
+    fun provideImmunizationRecordLocalDataSource(db: MyHealthDataBase): ImmunizationRecordLocalDataSource =
+        ImmunizationRecordLocalDataSource(db.getImmunizationRecordDao())
+
+    @Provides
+    @Singleton
+    fun provideImmunizationForecastLocalDataSource(db: MyHealthDataBase): ImmunizationForecastLocalDataSource =
+        ImmunizationForecastLocalDataSource(db.getImmunizationForecastDao())
+
+    @Provides
+    @Singleton
     fun providesLocalDataSource(db: MyHealthDataBase) = LocalDataSource(db)
+
+    @Provides
+    @Singleton
+    fun provideHealthVisitsLocalDataSource(db: MyHealthDataBase): HealthVisitsLocalDataSource =
+        HealthVisitsLocalDataSource(db.getHealthVisitDao())
+
+    @Provides
+    @Singleton
+    fun provideSpecialAuthorityLocalDataSource(db: MyHealthDataBase): SpecialAuthorityLocalDataSource =
+        SpecialAuthorityLocalDataSource(db.getSpecialAuthorityDao())
 }

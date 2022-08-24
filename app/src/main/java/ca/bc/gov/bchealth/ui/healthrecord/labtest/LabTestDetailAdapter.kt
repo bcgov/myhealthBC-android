@@ -58,85 +58,102 @@ class LabTestDetailAdapter :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val labTestDetail = getItem(position)
         when (holder) {
-            is LabTestBannerViewHolder -> {
-                holder.binding.apply {
-                    holder.itemView.context.apply {
-                        tvInfo.text = labTestDetail.bannerText?.let { getString(it) }
-                        tvInfo.makeLinks(
-                            Pair(
-                                getString(R.string.learn_more),
-                                View.OnClickListener {
-                                    redirect(getString(R.string.faq_link))
-                                }
-                            )
-                        )
-                    }
-                }
-            }
-            is LabOrderViewHolder -> {
-                holder.binding.apply {
-                    tvHeader.visibility = View.GONE
-                    tvSummary.visibility = View.GONE
-                    tvDesc1.text = labTestDetail.timelineDateTime.showIfNullOrBlank(holder.itemView.context)
-                    tvDesc2.text = labTestDetail.orderingProvider.showIfNullOrBlank(holder.itemView.context)
-                    tvDesc3.text = labTestDetail.reportingSource.showIfNullOrBlank(holder.itemView.context)
-                    holder.itemView.context.apply {
-                        tvTitle1.text = labTestDetail.title1?.let { getString(it) }
-                        tvTitle2.text = labTestDetail.title2?.let { getString(it) }
-                        tvTitle3.text = labTestDetail.title3?.let { getString(it) }
-                    }
-                }
-            }
-            is LabTestViewHolder -> {
-                holder.binding.apply {
-                    labTestDetail.header?.let {
-                        tvHeader.text = holder.itemView.context.getString(it)
-                        tvHeader.visibility = View.VISIBLE
-                    } ?: run {
-                        tvHeader.visibility = View.GONE
-                    }
-                    labTestDetail.summary?.let {
-                        holder.itemView.context.apply {
-                            tvSummary.text = getString(it)
-                            tvSummary.makeLinks(
-                                Pair(
-                                    getString(R.string.learn_more),
-                                    View.OnClickListener {
-                                        redirect(getString(R.string.faq_link))
-                                    }
-                                )
-                            )
-                        }
-                        tvSummary.visibility = View.VISIBLE
-                    } ?: run {
-                        tvSummary.visibility = View.GONE
-                    }
-                    holder.itemView.context.apply {
-                        tvTitle1.text = labTestDetail.title1?.let { getString(it) }
-                        tvTitle2.text = labTestDetail.title2?.let { getString(it) }
-                        tvTitle3.text = labTestDetail.title3?.let { getString(it) }
-                    }
+            is LabTestBannerViewHolder -> displayBanner(holder, labTestDetail)
+            is LabOrderViewHolder -> displayLabOrder(holder, labTestDetail)
+            is LabTestViewHolder -> displayLabTest(holder, labTestDetail)
+        }
+    }
 
-                    tvDesc1.text = labTestDetail.testName.showIfNullOrBlank(holder.itemView.context)
-
-                    val pair = getTestResult(labTestDetail.isOutOfRange, labTestDetail.testStatus, holder.itemView.context)
-                    tvDesc2.text = pair.first.showIfNullOrBlank(holder.itemView.context)
-                    tvDesc2.setTextColor(pair.second)
-                    val typeface =
-                        ResourcesCompat.getFont(holder.itemView.context, R.font.bc_sans_bold)
-                    tvDesc2.setTypeface(typeface, Typeface.BOLD)
-
-                    tvDesc3.text = labTestDetail.testStatus?.let {
-                        holder.itemView.context.getString(
-                            it
-                        )
-                    }
+    private fun displayBanner(holder: LabTestBannerViewHolder, labTestDetail: LabTestDetail) {
+        holder.binding.apply {
+            holder.itemView.context.apply {
+                tvTitle.text = labTestDetail.bannerHeader?.let { getString(it) }
+                tvInfo.text = labTestDetail.bannerText?.let { getString(it) }
+                labTestDetail.bannerClickableText?.let {
+                    tvInfo.makeLinks(
+                        getString(it) to View.OnClickListener {
+                            redirect(getString(R.string.faq_link))
+                        },
+                    )
                 }
             }
         }
     }
 
-    private fun getTestResult(outOfRange: Boolean?, testStatus: Int?, context: Context): Pair<String, Int> {
+    private fun displayLabOrder(holder: LabOrderViewHolder, labTestDetail: LabTestDetail) {
+        holder.binding.apply {
+            tvHeader.visibility = View.GONE
+            tvSummary.visibility = View.GONE
+            tvDesc1.text =
+                labTestDetail.timelineDateTime.showIfNullOrBlank(holder.itemView.context)
+            tvDesc2.text =
+                labTestDetail.orderingProvider.showIfNullOrBlank(holder.itemView.context)
+            tvDesc3.text =
+                labTestDetail.reportingSource.showIfNullOrBlank(holder.itemView.context)
+            holder.itemView.context.apply {
+                tvTitle1.text = labTestDetail.title1?.let { getString(it) }
+                tvTitle2.text = labTestDetail.title2?.let { getString(it) }
+                tvTitle3.text = labTestDetail.title3?.let { getString(it) }
+            }
+        }
+    }
+
+    private fun displayLabTest(holder: LabTestViewHolder, labTestDetail: LabTestDetail) {
+        holder.binding.apply {
+            labTestDetail.header?.let {
+                tvHeader.text = holder.itemView.context.getString(it)
+                tvHeader.visibility = View.VISIBLE
+            } ?: run {
+                tvHeader.visibility = View.GONE
+            }
+            labTestDetail.summary?.let {
+                holder.itemView.context.apply {
+                    tvSummary.text = getString(it)
+                    tvSummary.makeLinks(
+                        Pair(
+                            getString(R.string.learn_more),
+                            View.OnClickListener {
+                                redirect(getString(R.string.faq_link))
+                            }
+                        )
+                    )
+                }
+                tvSummary.visibility = View.VISIBLE
+            } ?: run {
+                tvSummary.visibility = View.GONE
+            }
+            holder.itemView.context.apply {
+                tvTitle1.text = labTestDetail.title1?.let { getString(it) }
+                tvTitle2.text = labTestDetail.title2?.let { getString(it) }
+                tvTitle3.text = labTestDetail.title3?.let { getString(it) }
+            }
+
+            tvDesc1.text = labTestDetail.testName.showIfNullOrBlank(holder.itemView.context)
+
+            val pair = getTestResult(
+                labTestDetail.isOutOfRange,
+                labTestDetail.testStatus,
+                holder.itemView.context
+            )
+            tvDesc2.text = pair.first.showIfNullOrBlank(holder.itemView.context)
+            tvDesc2.setTextColor(pair.second)
+            val typeface =
+                ResourcesCompat.getFont(holder.itemView.context, R.font.bc_sans_bold)
+            tvDesc2.setTypeface(typeface, Typeface.BOLD)
+
+            tvDesc3.text = labTestDetail.testStatus?.let {
+                holder.itemView.context.getString(
+                    it
+                )
+            }
+        }
+    }
+
+    private fun getTestResult(
+        outOfRange: Boolean?,
+        testStatus: Int?,
+        context: Context
+    ): Pair<String, Int> {
         outOfRange?.let {
             return if (outOfRange) {
                 Pair(

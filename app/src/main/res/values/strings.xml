@@ -129,7 +129,7 @@
     <string name="onboarding_health_passes_title">Proof of vaccination</string>
     <string name="onboarding_health_passes_desc">Save proof of vaccination documents for you and your family. Have them ready for travel or to access events and services that require it.</string>
     <string name="onboarding_health_records_title">Health records</string>
-    <string name="onboarding_health_records_desc">Access your lab results, medication history and vaccine records. Keep track of what\'s important to you and your health.</string>
+    <string name="onboarding_health_records_desc">Access your lab test results, medication history, immunization records, health visits and more. Keep track of what\'s important to you and your health.</string>
     <string name="onboarding_health_resources_title">Health resources</string>
     <string name="onboarding_health_resources_desc">Connect with HealthLink BC for health advice and get the latest information about COVID-19.</string>
     <string name="onboarding_news_feed_title">News feed</string>
@@ -177,6 +177,7 @@
     <string name="vaccination_record">Vaccination record</string>
     <string name="date">Date:</string>
     <string name="product">Product:</string>
+    <string name="immunizing_agent">Immunizing Agent:</string>
     <string name="lot_number">Lot number:</string>
     <string name="dose">Dose</string>
     <string name="covid_test_result_cancelled">There was a problem with your test. Please visit BC CDC Test Results for more information</string>
@@ -207,6 +208,13 @@
     <string name="enter_to_date">Enter to date</string>
     <string name="after">and after</string>
     <string name="before">and before</string>
+    <plurals name="comments">
+        <item quantity="one">%1$s Comment</item>
+        <item quantity="other">%1$s Comments</item>
+    </plurals>
+    <string name="comment_here">Comment here</string>
+    <string name="comments">Comments</string>
+    <string name="comments_medication_subtitle">Only you can see comments added to your medical records.</string>
     <string name="download">Download</string>
     <string name="test_summary">Test summary</string>
     <string name="summary_desc">Find resources to learn about your lab test and what the results mean. Learn more</string>
@@ -221,6 +229,7 @@
     <string name="fetching_records">Fetching records…</string>
     <string name="loading">Loading…</string>
     <string name="corrected">Corrected</string>
+    <string name="posting">Posting…</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>
@@ -289,6 +298,7 @@
     <string name="service_down">Maintenance is underway. Please try later.</string>
     <string name="dismiss">Dismiss</string>
     <string name="no_internet_connection">Unable to refresh your data. Please check your internet connection.</string>
+    <string name="error_max_character">Maximum 1000 characters</string>
 
     <!--Timeline View-->
     <string name="type">Type</string>
@@ -310,16 +320,22 @@
 
     <!--Lab test-->
     <string name="lab_test">Lab test</string>
-    <string name="results_are_pending">Results are pending</string>
-    <string name="lab_test_detail_banner_1">It can take between 1 and 7 days to complete. Find resources to learn about your lab test and what the results mean. Learn more</string>
-    <string name="lab_test_detail_banner_2">It can take between 1 and 7 days to complete.</string>
+
+    <string name="lab_test_banner_cancelled_title">Your test has been cancelled</string>
+    <string name="lab_test_banner_cancelled_message">Find resources to learn about your lab test and what the results mean</string>
+    <string name="lab_test_banner_cancelled_message_clickable_text">your lab test and what the results mean</string>
+
+    <string name="lab_test_banner_pending_title">Results are pending</string>
+    <string name="lab_test_banner_pending_message_1">It can take between 1 and 7 days to complete. Find resources to learn about your lab test and what the results mean. Learn more</string>
+    <string name="lab_test_banner_pending_message_2">It can take between 1 and 7 days to complete.</string>
+    <string name="lab_test_banner_pending_clickable_text">Learn more</string>
 
     <!-- Home screen -->
     <string name="hello">Hello</string>
     <string name="hi">Hi</string>
     <string name="health_records_home">Health Records</string>
     <string name="view_records">View records</string>
-    <string name="health_records_desc">Access your lab results, medication history and vaccination records</string>
+    <string name="health_records_desc">Access your lab test results, medication history, immunization records, health visits and more</string>
     <string name="proof_of_vaccination_desc">Save proof of vaccination documents for you and your family</string>
     <string name="add_proofs">Add proofs</string>
     <string name="resources_desc">Find trusted health information and resources</string>
@@ -335,6 +351,8 @@
     <string name="lab_tests">Lab tests</string>
     <string name="covid_19_tests">COVID-19 tests</string>
     <string name="immunizations">Immunizations</string>
+    <string name="health_visits">Health Visits</string>
+    <string name="special_authorities">Special Authorities</string>
     <string name="filter">Filter</string>
     <string name="apply">Apply</string>
     <string name="no_records_found">No records found</string>
@@ -361,5 +379,18 @@
     <string name="phone_number">Phone Number:</string>
     <string name="fax">Fax:</string>
     <string name="direction_for_use">Direction for use</string>
+
+    <!--Health Visit Details-->
+    <string name="clinic_name">Clinic Name:</string>
+    <string name="practitioner_name">Practitioner Name:</string>
+    <string name="information_is_from_the_billing_claim">Information is from the billing claim and may show a different practitioner or clinic from the one you visited. For more information, visit the FAQ page.</string>
+    <string name="faq">FAQ</string>
+
+    <!--SpecialAuthority Details-->
+    <string name="status">Status:</string>
+    <string name="prescriber_name">Prescriber Name:</string>
+    <string name="effective_date">Effective Date:</string>
+    <string name="expiry_date">Expiry Date:</string>
+    <string name="reference_number">Reference Number:</string>
 
 </resources>

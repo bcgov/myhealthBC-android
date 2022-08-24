@@ -10,8 +10,6 @@ android {
     defaultConfig {
         minSdk 27
         targetSdk 31
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -23,6 +21,30 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "version"
+    productFlavors {
+
+        mock {
+            dimension "version"
+            buildConfigField "boolean", "FLAG_COMMENTS", "false"
+        }
+        dev {
+            dimension "version"
+            buildConfigField "boolean", "FLAG_COMMENTS", "false"
+        }
+
+        stage {
+            dimension "version"
+            buildConfigField "boolean", "FLAG_COMMENTS", "false"
+        }
+
+        prod {
+            dimension "version"
+            buildConfigField "boolean", "FLAG_COMMENTS", "false"
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
