@@ -393,4 +393,10 @@
     <string name="expiry_date">Expiry Date:</string>
     <string name="reference_number">Reference Number:</string>
 
+    <!--Immnz Forecast-->
+    <string name="immnz_forecast_title">Next dose:</string>
+    <string name="immnz_forecast_body">Find out more about what is immunization forecast and what does the status mean.</string>
+    <string name="immnz_forecast_status">Status: %s</string>
+    <string name="immnz_forecast_due_date">Due date: %s</string>
+
 </resources>

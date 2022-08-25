@@ -5,7 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemImmunizationDetailBinding
+import ca.bc.gov.bchealth.utils.hide
+import ca.bc.gov.bchealth.utils.orPlaceholder
+import ca.bc.gov.bchealth.utils.setColorSpannable
+import ca.bc.gov.bchealth.utils.show
+import ca.bc.gov.common.model.immunization.ForecastStatus
 
 /**
  * @author: Created by Rashmi Bambhania on 14,April,2022
@@ -32,12 +38,51 @@ class ImmunizationDetailsAdapter :
 
         holder.binding.apply {
             tvDose.text = ""
-            tvOccurrenceDate.text = immunizationData.date ?: "--"
-            tvProduct.text = immunizationData.productName ?: "--"
-            tvImmunizingAgent.text = immunizationData.immunizingAgent ?: "--"
-            tvProvider.text = immunizationData.providerOrClinicName ?: "--"
-            tvLotNumber.text = immunizationData.lotNumber ?: "--"
+            tvOccurrenceDate.text = immunizationData.date.orPlaceholder()
+            tvProduct.text = immunizationData.productName.orPlaceholder()
+            tvImmunizingAgent.text = immunizationData.immunizingAgent.orPlaceholder()
+            tvProvider.text = immunizationData.providerOrClinicName.orPlaceholder()
+            tvLotNumber.text = immunizationData.lotNumber.orPlaceholder()
+
+            immunizationData.forecast?.let {
+                displayForecast(it)
+            } ?: viewForecast.hide()
         }
+    }
+
+    private fun ItemImmunizationDetailBinding.displayForecast(forecast: ForecastDetailItem) {
+        val fullStatus: String
+        val statusOrPlaceholder: String = forecast.status?.text.orPlaceholder()
+        val date: String
+        this.root.context.apply {
+            fullStatus = getString(R.string.immnz_forecast_status, statusOrPlaceholder)
+            date = getString(R.string.immnz_forecast_due_date, forecast.date)
+        }
+
+        val icon: Int
+        val colorId: Int
+
+        when (forecast.status) {
+            ForecastStatus.ELIGIBLE, ForecastStatus.UP_TO_DATE -> {
+                icon = R.drawable.ic_forecast_green
+                colorId = R.color.status_green
+            }
+            else -> {
+                icon = R.drawable.ic_forecast_grey
+                colorId = R.color.error
+            }
+        }
+
+        includeForecast.ivIcon.setBackgroundResource(icon)
+        includeForecast.tvTitle.text = forecast.name
+        includeForecast.tvStatus.setColorSpannable(
+            fullStatus,
+            statusOrPlaceholder,
+            this.root.context.getColor(colorId)
+        )
+        includeForecast.tvDueDate.text = date
+
+        viewForecast.show()
     }
 }
 
