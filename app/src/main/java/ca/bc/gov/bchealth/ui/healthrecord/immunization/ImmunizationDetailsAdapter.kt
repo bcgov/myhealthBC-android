@@ -73,15 +73,16 @@ class ImmunizationDetailsAdapter :
             }
         }
 
-        includeForecast.ivIcon.setBackgroundResource(icon)
-        includeForecast.tvTitle.text = forecast.name
-        includeForecast.tvStatus.setColorSpannable(
-            fullStatus,
-            statusOrPlaceholder,
-            this.root.context.getColor(colorId)
-        )
-        includeForecast.tvDueDate.text = date
-
+        includeForecast.apply {
+            ivIcon.setBackgroundResource(icon)
+            tvTitle.text = forecast.name
+            tvStatus.setColorSpannable(
+                fullStatus,
+                statusOrPlaceholder,
+                this.root.context.getColor(colorId)
+            )
+            tvDueDate.text = date
+        }
         viewForecast.show()
     }
 }
