@@ -10,6 +10,7 @@ import ca.bc.gov.common.model.TermsOfServiceDto
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.healthvisits.ClinicDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
+import ca.bc.gov.common.model.immunization.ForecastStatus
 import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
@@ -257,7 +258,7 @@ fun ImmunizationRecord.toDto(): ImmunizationRecordDto {
 fun Forecast.toDto() = ImmunizationForecastDto(
     recommendationId = recommendationId,
     createDate = createDate.toDateTime(),
-    status = status,
+    status = ForecastStatus.getByText(status),
     displayName = displayName,
     eligibleDate = eligibleDate.toDateTime(),
     dueDate = dueDate.toDateTime()

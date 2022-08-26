@@ -5,13 +5,16 @@ import ca.bc.gov.bchealth.ui.healthpass.FederalTravelPassState
 import ca.bc.gov.bchealth.ui.healthpass.HealthPass
 import ca.bc.gov.bchealth.ui.healthpass.PassState
 import ca.bc.gov.bchealth.ui.healthrecord.PatientHealthRecord
+import ca.bc.gov.bchealth.ui.healthrecord.immunization.ForecastDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.immunization.ImmunizationDoseDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.immunization.ImmunizationRecordDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
+import ca.bc.gov.bchealth.utils.orPlaceholder
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
+import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPatientDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
@@ -267,7 +270,8 @@ fun ImmunizationRecordWithForecastAndPatientDto.toUiModel(): ImmunizationRecordD
                 productName = immunizationRecordWithForecast.immunizationRecord.productName,
                 immunizingAgent = immunizationRecordWithForecast.immunizationRecord.agentName,
                 providerOrClinicName = immunizationRecordWithForecast.immunizationRecord.provideOrClinic,
-                lotNumber = immunizationRecordWithForecast.immunizationRecord.lotNumber
+                lotNumber = immunizationRecordWithForecast.immunizationRecord.lotNumber,
+                forecast = immunizationRecordWithForecast.immunizationForecast?.toUiModel()
             )
         )
     )
@@ -298,6 +302,12 @@ fun SpecialAuthorityDto.toUiModel() =
         healthRecordType = HealthRecordType.SPECIAL_AUTHORITY_RECORD,
         dataSource = dataSource.name
     )
+
+private fun ImmunizationForecastDto.toUiModel() = ForecastDetailItem(
+    name = this.displayName.orPlaceholder(),
+    status = this.status,
+    date = this.dueDate.toDate(),
+)
 
 enum class CovidTestResultStatus {
     Negative,
