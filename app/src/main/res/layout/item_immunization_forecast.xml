@@ -38,9 +38,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/space_1_x"
             android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_icon"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Hepatitis A" />
+            tools:text="COVID-19 Non-replicating Viral Vaccination" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_status"
@@ -48,6 +49,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_0_5_x"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tv_title"
             app:layout_constraintTop_toBottomOf="@+id/tv_title"
             tools:text="Status: Eligible" />
@@ -57,6 +59,7 @@
             style="@style/TextAppearance.App.Headline"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tv_title"
             app:layout_constraintTop_toBottomOf="@+id/tv_status"
             tools:text="Due date: 2022-Jan-7" />
