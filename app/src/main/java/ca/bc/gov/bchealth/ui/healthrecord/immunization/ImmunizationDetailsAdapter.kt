@@ -63,13 +63,19 @@ class ImmunizationDetailsAdapter :
         val colorId: Int
 
         when (forecast.status) {
-            ForecastStatus.ELIGIBLE, ForecastStatus.UP_TO_DATE -> {
+            ForecastStatus.Eligible -> {
                 icon = R.drawable.ic_forecast_green
                 colorId = R.color.status_green
             }
+
+            ForecastStatus.Overdue -> {
+                icon = R.drawable.ic_forecast_grey
+                colorId = R.color.status_red
+            }
+
             else -> {
                 icon = R.drawable.ic_forecast_grey
-                colorId = R.color.error
+                colorId = R.color.status_grey
             }
         }
 

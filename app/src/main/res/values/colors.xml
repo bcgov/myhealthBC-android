@@ -5,6 +5,8 @@
     <color name="barcode_reticle_background">#99000000</color>
     <color name="barcode_reticle_stroke">#ffffff</color>
     <color name="white">#FFFFFF</color>
+    <color name="status_grey">#606060</color>
+    <color name="status_red">#D8292F</color>
     <color name="status_green">#2E8540</color>
     <color name="status_blue">#38598A</color>
 
