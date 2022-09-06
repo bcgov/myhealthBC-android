@@ -53,7 +53,7 @@
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/img_icon"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
             tools:text="View and manage all your available health records, including dispensed medications, health visits, COVID-19 test results, immunizations and more." />
 
         <com.google.android.material.button.MaterialButton

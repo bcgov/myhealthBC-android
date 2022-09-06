@@ -146,6 +146,9 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                         HomeNavigationType.RESOURCES -> {
                             findNavController().navigate(R.id.action_homeFragment_to_resources)
                         }
+                        HomeNavigationType.RECOMMENDATIONS -> {
+                            findNavController().navigate(R.id.action_homeFragment_to_recommendations)
+                        }
                     }
                 }
                 binding.rvHome.adapter = homeAdapter
