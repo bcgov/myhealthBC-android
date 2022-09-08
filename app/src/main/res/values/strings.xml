@@ -15,6 +15,8 @@
     <!--Recommendations-->
     <string name="recommendations">Recommendations</string>
     <string name="recommendations_home_title">Recommended immunizations</string>
+    <string name="recommendations_description">For more information on vaccines recommendation and eligibility, please visit immunizeBC or speak to your health care provider.</string>
+    <string name="recommendations_description_clickable">immunizeBC</string>
 
     <!--Resources-->
     <string name="resources">Resources</string>
