@@ -2,13 +2,17 @@ package ca.bc.gov.bchealth.ui.recommendations
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemRecommendationBinding
+import ca.bc.gov.bchealth.utils.orPlaceholder
+import ca.bc.gov.bchealth.utils.setColorSpannable
 import ca.bc.gov.bchealth.utils.toggleVisibility
 
-class RecommendationAdapter() : ListAdapter<Recommendation, RecommendationAdapter.ViewHolder>(
+class RecommendationAdapter : ListAdapter<Recommendation, RecommendationAdapter.ViewHolder>(
     RecommendationDiffCallBacks()
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
@@ -21,8 +25,38 @@ class RecommendationAdapter() : ListAdapter<Recommendation, RecommendationAdapte
         val recommendation = getItem(position)
 
         tvTitle.text = recommendation.title
-        tvStatus.text = recommendation.status
-        tvDueDate.text = recommendation.date
+
+        val icon = if (recommendation.status == "Completed") {
+            R.drawable.ic_recommendation_checked
+        } else {
+            R.drawable.ic_recommendation
+        }
+        ivIcon.setImageDrawable(
+            AppCompatResources.getDrawable(this.root.context, icon)
+        )
+
+        val fullStatus: String
+        val statusOrPlaceholder: String = recommendation.status.orPlaceholder()
+        val date: String
+        this.root.context.apply {
+            fullStatus = getString(R.string.immnz_forecast_status, statusOrPlaceholder)
+            date = getString(R.string.immnz_forecast_due_date, recommendation.date)
+        }
+
+        val colorId: Int = when (recommendation.status) {
+            "Eligible" -> R.color.status_green
+            "Overdue" -> R.color.status_red
+            else -> R.color.status_grey
+        }
+
+        tvStatus.setColorSpannable(
+            fullStatus,
+            statusOrPlaceholder,
+            this.root.context.getColor(colorId),
+            true
+        )
+        tvDueDate.text = date
+
         renderContentState(recommendation.fullContent)
 
         holder.itemView.setOnClickListener {

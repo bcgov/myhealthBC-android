@@ -122,7 +122,7 @@ class HomeViewModel @Inject constructor(
                 HomeNavigationType.RESOURCES
             ),
             HomeRecordItem(
-                R.drawable.ic_recommendations,
+                R.drawable.ic_recommendation,
                 R.string.home_recommendations_title,
                 R.string.home_recommendations_body,
                 R.drawable.ic_right_arrow,
