@@ -2,6 +2,7 @@ package ca.bc.gov.repository.immunization
 
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPatientDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
@@ -31,7 +32,7 @@ class ImmunizationRecordRepository @Inject constructor(
 
     suspend fun delete(patientId: Long): Int = immunizationRecordLocalDataSource.delete(patientId)
 
-    suspend fun fetchImmunization(token: String, hdid: String): List<ImmunizationRecordWithForecastDto> {
+    suspend fun fetchImmunization(token: String, hdid: String): ImmunizationDto {
         return immunizationRemoteDataSource.getImmunization(token, hdid)
     }
 }
