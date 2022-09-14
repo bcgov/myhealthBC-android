@@ -7,7 +7,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentRecommendationsBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
-import ca.bc.gov.bchealth.utils.setLinkSpannable
+import ca.bc.gov.bchealth.utils.makeLinks
+import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -40,10 +41,11 @@ class RecommendationsFragment : BaseFragment(R.layout.fragment_recommendations) 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
-        tvDescription.setLinkSpannable(
-            getString(R.string.recommendations_description),
-            getString(R.string.recommendations_description_clickable),
-            getString(R.string.url_immunize_bc)
+        tvDescription.makeLinks(
+            getString(R.string.recommendations_description_clickable) to
+                View.OnClickListener {
+                    it.context.redirect(getString(R.string.url_immunize_bc))
+                }
         )
 
         val list = listOf(
@@ -57,7 +59,6 @@ class RecommendationsFragment : BaseFragment(R.layout.fragment_recommendations) 
             Recommendation("Title 08", "status8", "Oct 8, 2022", false),
             Recommendation("Title 09", "status9", "Oct 8, 2022", false),
             Recommendation("Title 10", "status10", "Oct 10, 2022", false),
-
         )
 
         val adapter = RecommendationAdapter()

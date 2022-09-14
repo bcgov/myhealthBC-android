@@ -37,15 +37,6 @@ fun TextView.setColorSpannable(
     setSpannable(fullContent, coloredText, color, null, isBold)
 }
 
-fun TextView.setLinkSpannable(
-    fullContent: String,
-    clickableText: String,
-    url: String,
-) {
-    val color = this.context.getColor(R.color.blue)
-    setSpannable(fullContent, clickableText, color, url, false)
-}
-
 private fun TextView.setSpannable(
     fullContent: String,
     coloredText: String,
