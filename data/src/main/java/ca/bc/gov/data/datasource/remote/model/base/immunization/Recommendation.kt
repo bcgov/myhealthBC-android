@@ -1,15 +1,32 @@
 package ca.bc.gov.data.datasource.remote.model.base.immunization
 
+import com.google.gson.annotations.SerializedName
+
 /**
  * @author Pinakin Kansara
  */
 data class Recommendation(
+    @SerializedName("recommendationSetId")
     val recommendationSetId: String?,
-    val disseaseEligibleDate: String?,
+
+    @SerializedName("diseaseEligibleDate")
+    val diseaseEligibleDate: String?,
+
+    @SerializedName("diseaseDueDate")
     val diseaseDueDate: String?,
+
+    @SerializedName("agentEligibleDate")
     val agentEligibleDate: String?,
+
+    @SerializedName("agentDueDate")
     val agentDueDate: String?,
+
+    @SerializedName("status")
     val status: String?,
+
+    @SerializedName("targetDiseases")
     val targetDiseases: List<TargetDisease> = emptyList(),
+
+    @SerializedName("immunization")
     val immunization: Immunization
 )

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recommendations"
+    app:startDestination="@id/recommendationsFragment">
+    <fragment
+        android:id="@+id/recommendationsFragment"
+        android:name="ca.bc.gov.bchealth.ui.recommendations.RecommendationsFragment"
+        android:label="RecommendationsFragment"
+        tools:layout="@layout/fragment_recommendations" />
+</navigation>

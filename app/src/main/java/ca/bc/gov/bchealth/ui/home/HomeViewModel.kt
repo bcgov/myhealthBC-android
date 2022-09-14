@@ -120,6 +120,14 @@ class HomeViewModel @Inject constructor(
                 R.drawable.ic_right_arrow,
                 R.string.learn_more,
                 HomeNavigationType.RESOURCES
+            ),
+            HomeRecordItem(
+                R.drawable.ic_recommendation,
+                R.string.home_recommendations_title,
+                R.string.home_recommendations_body,
+                R.drawable.ic_right_arrow,
+                R.string.learn_more,
+                HomeNavigationType.RECOMMENDATIONS
             )
         )
     }
@@ -148,5 +156,6 @@ data class HomeRecordItem(
 enum class HomeNavigationType {
     HEALTH_RECORD,
     VACCINE_PROOF,
-    RESOURCES
+    RESOURCES,
+    RECOMMENDATIONS,
 }

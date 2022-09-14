@@ -18,10 +18,16 @@
         <action
             android:id="@+id/action_homeFragment_to_resources"
             app:destination="@id/resources" />
+
+        <action
+            android:id="@+id/action_homeFragment_to_recommendations"
+            app:destination="@id/recommendations" />
+
     </fragment>
 
     <include app:graph="@navigation/health_pass" />
     <include app:graph="@navigation/health_records" />
     <include app:graph="@navigation/resources" />
+    <include app:graph="@navigation/recommendations" />
 
 </navigation>
