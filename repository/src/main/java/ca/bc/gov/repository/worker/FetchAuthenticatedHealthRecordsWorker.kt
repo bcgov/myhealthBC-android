@@ -13,7 +13,7 @@ import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
-import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
+import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
@@ -31,6 +31,7 @@ import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.healthvisits.HealthVisitsRepository
 import ca.bc.gov.repository.immunization.ImmunizationForecastRepository
+import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.labtest.LabTestRepository
@@ -70,6 +71,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val mobileConfigRepository: MobileConfigRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
     private val immunizationForecastRepository: ImmunizationForecastRepository,
+    private val immunizationRecommendationRepository: ImmunizationRecommendationRepository,
     private val commentsRepository: CommentRepository,
     private val healthVisitsRepository: HealthVisitsRepository,
     private val specialAuthorityRepository: SpecialAuthorityRepository
@@ -93,7 +95,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         var covidOrderResponse: List<CovidOrderWithCovidTestDto>? = null
         var medicationResponse: MedicationStatementResponse? = null
         var labOrdersResponse: List<LabOrderWithLabTestDto>? = null
-        var immunizationResponse: List<ImmunizationRecordWithForecastDto>? = null
+        var immunizationDto: ImmunizationDto? = null
         var commentsResponse: List<CommentDto>? = null
         var healthVisitsResponse: List<HealthVisitsDto>? = null
         var specialAuthorityResponse: List<SpecialAuthorityDto>? = null
@@ -172,7 +174,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             try {
-                immunizationResponse = fetchImmunizations(authParameters)
+                immunizationDto = fetchImmunizations(authParameters)
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
                     return failureResult
@@ -245,15 +247,22 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
             // Insert immunization records
             immunizationRecordRepository.delete(patientId)
-            immunizationResponse?.forEach {
+
+            immunizationDto?.records?.forEach {
                 it.immunizationRecord.patientId = patientId
                 val id = immunizationRecordRepository.insert(it.immunizationRecord)
+
                 it.immunizationForecast?.immunizationRecordId = id
                 it.immunizationForecast?.let { forecast ->
                     immunizationForecastRepository.insert(
                         forecast
                     )
                 }
+            }
+
+            immunizationDto?.recommendations?.forEach {
+                it.patientId = patientId
+                immunizationRecommendationRepository.insert(it)
             }
 
             // Insert comments
@@ -321,16 +330,16 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     /*
      * Fetch immunizations
      * */
-    private suspend fun fetchImmunizations(authParameters: Pair<String, String>): List<ImmunizationRecordWithForecastDto>? {
-        var immunizationResponse: List<ImmunizationRecordWithForecastDto>?
+    private suspend fun fetchImmunizations(authParameters: Pair<String, String>): ImmunizationDto? {
+        var immunizationDto: ImmunizationDto?
         withContext(dispatcher) {
-            immunizationResponse =
+            immunizationDto =
                 immunizationRecordRepository.fetchImmunization(
                     authParameters.first,
                     authParameters.second
                 )
         }
-        return immunizationResponse
+        return immunizationDto
     }
 
     /*

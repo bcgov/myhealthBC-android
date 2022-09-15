@@ -5,6 +5,7 @@ import ca.bc.gov.data.datasource.local.CovidOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidTestLocalDataSource
 import ca.bc.gov.data.datasource.local.HealthVisitsLocalDataSource
 import ca.bc.gov.data.datasource.local.ImmunizationForecastLocalDataSource
+import ca.bc.gov.data.datasource.local.ImmunizationRecommendationLocalDataSource
 import ca.bc.gov.data.datasource.local.ImmunizationRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
@@ -88,6 +89,11 @@ class LocalDataSourceModule {
     @Singleton
     fun provideImmunizationRecordLocalDataSource(db: MyHealthDataBase): ImmunizationRecordLocalDataSource =
         ImmunizationRecordLocalDataSource(db.getImmunizationRecordDao())
+
+    @Provides
+    @Singleton
+    fun provideImmunizationRecommendationLocalDataSource(db: MyHealthDataBase): ImmunizationRecommendationLocalDataSource =
+        ImmunizationRecommendationLocalDataSource(db.getImmunizationRecommendationDao())
 
     @Provides
     @Singleton

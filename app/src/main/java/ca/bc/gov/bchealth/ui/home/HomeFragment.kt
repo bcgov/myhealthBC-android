@@ -152,7 +152,11 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                     }
                 }
                 binding.rvHome.adapter = homeAdapter
-                homeAdapter.submitList(viewModel.getHomeRecordsList())
+
+                viewModel.homeList.observe(viewLifecycleOwner) {
+                    homeAdapter.submitList(it)
+                }
+                viewModel.getHomeRecordsList()
             }
         }
     }
