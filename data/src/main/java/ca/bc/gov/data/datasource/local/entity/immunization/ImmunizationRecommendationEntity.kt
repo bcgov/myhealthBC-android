@@ -40,6 +40,6 @@ data class ImmunizationRecommendationEntity(
     val status: String?,
 
     @ColumnInfo(name = "disease_due_date")
-    val diseaseDueDate: String?,
+    val diseaseDueDate: Instant?,
 )
 

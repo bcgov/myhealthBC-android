@@ -53,7 +53,6 @@ import ca.bc.gov.data.model.MediaMetaData
 import ca.bc.gov.data.model.VaccineStatus
 import java.time.Instant
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME
 
 fun CovidTestRecord.toTestRecord() = TestRecordDto(
     id = reportId,
@@ -321,6 +320,6 @@ fun Recommendation.toDto(): ImmunizationRecommendationsDto {
         recommendationSetId = this.recommendationSetId,
         immunizationName = agent?.name,
         status = this.status,
-        diseaseDueDate = this.diseaseDueDate,
+        diseaseDueDate = this.diseaseDueDate?.toDateTime(),
     )
 }

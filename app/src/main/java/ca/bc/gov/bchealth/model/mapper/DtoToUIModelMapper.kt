@@ -10,11 +10,13 @@ import ca.bc.gov.bchealth.ui.healthrecord.immunization.ImmunizationDoseDetailIte
 import ca.bc.gov.bchealth.ui.healthrecord.immunization.ImmunizationRecordDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
+import ca.bc.gov.bchealth.ui.recommendations.RecommendationDetailItem
 import ca.bc.gov.bchealth.utils.orPlaceholder
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
+import ca.bc.gov.common.model.immunization.ImmunizationRecommendationsDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPatientDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
@@ -302,6 +304,13 @@ fun SpecialAuthorityDto.toUiModel() =
         healthRecordType = HealthRecordType.SPECIAL_AUTHORITY_RECORD,
         dataSource = dataSource.name
     )
+
+
+fun ImmunizationRecommendationsDto.toUiModel() = RecommendationDetailItem(
+    title = this.immunizationName.orPlaceholder(),
+    status = this.status,
+    date = this.diseaseDueDate?.toDate().orPlaceholder(),
+)
 
 private fun ImmunizationForecastDto.toUiModel() = ForecastDetailItem(
     name = this.displayName.orPlaceholder(),

@@ -12,7 +12,7 @@ import ca.bc.gov.bchealth.utils.orPlaceholder
 import ca.bc.gov.bchealth.utils.setColorSpannable
 import ca.bc.gov.bchealth.utils.toggleVisibility
 
-class RecommendationAdapter : ListAdapter<Recommendation, RecommendationAdapter.ViewHolder>(
+class RecommendationAdapter : ListAdapter<RecommendationDetailItem, RecommendationAdapter.ViewHolder>(
     RecommendationDiffCallBacks()
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
@@ -73,10 +73,10 @@ class RecommendationAdapter : ListAdapter<Recommendation, RecommendationAdapter.
     class ViewHolder(val binding: ItemRecommendationBinding) : RecyclerView.ViewHolder(binding.root)
 }
 
-class RecommendationDiffCallBacks : DiffUtil.ItemCallback<Recommendation>() {
-    override fun areItemsTheSame(oldItem: Recommendation, newItem: Recommendation) =
+class RecommendationDiffCallBacks : DiffUtil.ItemCallback<RecommendationDetailItem>() {
+    override fun areItemsTheSame(oldItem: RecommendationDetailItem, newItem: RecommendationDetailItem) =
         oldItem == newItem
 
-    override fun areContentsTheSame(oldItem: Recommendation, newItem: Recommendation) =
+    override fun areContentsTheSame(oldItem: RecommendationDetailItem, newItem: RecommendationDetailItem) =
         oldItem.title == newItem.title
 }
