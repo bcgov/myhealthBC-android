@@ -4,11 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
-import ca.bc.gov.data.datasource.remote.model.base.immunization.Immunization
-import ca.bc.gov.data.datasource.remote.model.base.immunization.TargetDisease
-import com.google.gson.annotations.SerializedName
 import java.time.Instant
 
 @Entity(
@@ -42,4 +38,3 @@ data class ImmunizationRecommendationEntity(
     @ColumnInfo(name = "disease_due_date")
     val diseaseDueDate: Instant?,
 )
-

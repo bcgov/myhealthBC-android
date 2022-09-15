@@ -305,7 +305,6 @@ fun SpecialAuthorityDto.toUiModel() =
         dataSource = dataSource.name
     )
 
-
 fun ImmunizationRecommendationsDto.toUiModel() = RecommendationDetailItem(
     title = this.immunizationName.orPlaceholder(),
     status = this.status,

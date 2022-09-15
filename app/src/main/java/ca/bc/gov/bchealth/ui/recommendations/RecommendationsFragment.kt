@@ -65,7 +65,6 @@ class RecommendationsFragment : BaseFragment(R.layout.fragment_recommendations) 
                         adapter.submitList(list)
                     }
                 }
-
             }
         }
     }

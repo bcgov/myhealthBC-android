@@ -5,7 +5,6 @@ import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPatientDto
-import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.data.datasource.local.ImmunizationRecordLocalDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import javax.inject.Inject
