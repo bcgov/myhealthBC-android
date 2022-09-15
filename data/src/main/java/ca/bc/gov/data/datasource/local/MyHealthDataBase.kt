@@ -44,7 +44,7 @@ import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityE
  * @author Pinakin Kansara
  */
 @Database(
-    version = 2,
+    version = 3,
     entities = [
         PatientEntity::class,
         VaccineRecordEntity::class,
