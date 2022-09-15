@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import ca.bc.gov.data.datasource.local.MyHealthDataBase
 import ca.bc.gov.data.datasource.local.migration.MIGRATION_1_2
+import ca.bc.gov.data.datasource.local.migration.MIGRATION_2_3
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,6 +18,7 @@ class MigrationTest {
     private val migrationTestDb = "migration-test"
     private val migrations = arrayOf(
         MIGRATION_1_2,
+        MIGRATION_2_3,
     )
 
     @get:Rule
