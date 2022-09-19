@@ -15,4 +15,3 @@ data class ImmunizationForecastDto(
     val eligibleDate: Instant,
     val dueDate: Instant
 )
-

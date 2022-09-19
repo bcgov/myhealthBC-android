@@ -14,7 +14,15 @@ class RecommendationsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val recommendationList = recommendationRepository.getAllRecommendations().map { list ->
-        list.map { it.toUiModel() }
+        list.mapIndexed { index, dto ->
+            dto.toUiModel().apply {
+                expandFirstItem(index)
+            }
+        }
+    }
+
+    private fun RecommendationDetailItem.expandFirstItem(index: Int) {
+        if (index == 0) this.fullContent = true
     }
 }
 
