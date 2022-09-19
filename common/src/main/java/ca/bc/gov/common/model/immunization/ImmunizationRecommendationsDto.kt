@@ -6,6 +6,6 @@ data class ImmunizationRecommendationsDto(
     val recommendationSetId: String?,
     var patientId: Long = 0,
     val immunizationName: String?,
-    val status: String?,
+    val status: ForecastStatus? = null,
     val diseaseDueDate: Instant?,
 )

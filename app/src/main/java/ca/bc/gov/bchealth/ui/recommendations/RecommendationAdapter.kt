@@ -11,6 +11,7 @@ import ca.bc.gov.bchealth.databinding.ItemRecommendationBinding
 import ca.bc.gov.bchealth.utils.orPlaceholder
 import ca.bc.gov.bchealth.utils.setColorSpannable
 import ca.bc.gov.bchealth.utils.toggleVisibility
+import ca.bc.gov.common.model.immunization.ForecastStatus
 
 class RecommendationAdapter : ListAdapter<RecommendationDetailItem, RecommendationAdapter.ViewHolder>(
     RecommendationDiffCallBacks()
@@ -26,7 +27,7 @@ class RecommendationAdapter : ListAdapter<RecommendationDetailItem, Recommendati
 
         tvTitle.text = recommendation.title
 
-        val icon = if (recommendation.status == "Completed") {
+        val icon = if (recommendation.status is ForecastStatus.Completed) {
             R.drawable.ic_recommendation_checked
         } else {
             R.drawable.ic_recommendation
@@ -36,16 +37,16 @@ class RecommendationAdapter : ListAdapter<RecommendationDetailItem, Recommendati
         )
 
         val fullStatus: String
-        val statusOrPlaceholder: String = recommendation.status.orPlaceholder()
+        val statusOrPlaceholder: String = recommendation.status?.text.orPlaceholder()
         val date: String
         this.root.context.apply {
             fullStatus = getString(R.string.immnz_forecast_status, statusOrPlaceholder)
             date = getString(R.string.immnz_forecast_due_date, recommendation.date)
         }
 
-        val colorId: Int = when (recommendation.status?.lowercase()) {
-            "Eligible".lowercase() -> R.color.status_green
-            "Overdue".lowercase() -> R.color.status_red
+        val colorId: Int = when (recommendation.status) {
+            is ForecastStatus.Eligible -> R.color.status_green
+            is ForecastStatus.Overdue -> R.color.status_red
             else -> R.color.status_grey
         }
 
