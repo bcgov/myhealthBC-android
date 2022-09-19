@@ -43,9 +43,9 @@ class RecommendationAdapter : ListAdapter<RecommendationDetailItem, Recommendati
             date = getString(R.string.immnz_forecast_due_date, recommendation.date)
         }
 
-        val colorId: Int = when (recommendation.status) {
-            "Eligible" -> R.color.status_green
-            "Overdue" -> R.color.status_red
+        val colorId: Int = when (recommendation.status?.lowercase()) {
+            "Eligible".lowercase() -> R.color.status_green
+            "Overdue".lowercase() -> R.color.status_red
             else -> R.color.status_grey
         }
 

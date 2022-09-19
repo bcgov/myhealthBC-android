@@ -24,11 +24,11 @@ sealed class ForecastStatus(open val text: String) {
     data class Other(override val text: String) : ForecastStatus(text)
 
     companion object {
-        fun getByText(text: String?): ForecastStatus? = when (text) {
-            UpToDate.text -> UpToDate
-            Eligible.text -> Eligible
-            Due.text -> Due
-            Overdue.text -> Overdue
+        fun getByText(text: String?): ForecastStatus? = when (text?.lowercase()) {
+            UpToDate.text.lowercase() -> UpToDate
+            Eligible.text.lowercase() -> Eligible
+            Due.text.lowercase() -> Due
+            Overdue.text.lowercase() -> Overdue
             null -> null
             else -> Other(text)
         }
