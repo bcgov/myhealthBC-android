@@ -406,5 +406,6 @@
     <string name="immnz_forecast_body">Find out more about what is immunization forecast and what does the status mean.</string>
     <string name="immnz_forecast_status">Status: %s</string>
     <string name="immnz_forecast_due_date">Due date: %s</string>
+    <string name="home_subtitle">What do you want to focus on today?</string>
 
 </resources>
