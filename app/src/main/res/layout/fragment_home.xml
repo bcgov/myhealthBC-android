@@ -59,8 +59,10 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
             <include
-                android:id="@+id/view_banner"
-                layout="@layout/include_home_banner" />
+                android:id="@+id/include_banner"
+                layout="@layout/include_home_banner"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <ca.bc.gov.bchealth.widget.RecyclerView
                 android:id="@+id/rv_home"
@@ -74,7 +76,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_banner"
+                app:layout_constraintTop_toBottomOf="@+id/include_banner"
                 tools:itemCount="4"
                 tools:listitem="@layout/item_home_with_button_bg" />
 

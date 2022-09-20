@@ -31,6 +31,11 @@ class HomeViewModel @Inject constructor(
     recommendationRepository: ImmunizationRecommendationRepository
 ) : ViewModel() {
 
+    private var bannerRequested = false
+    private val _bannerState: MutableLiveData<BannerItem> = MutableLiveData()
+    val bannerState: LiveData<BannerItem>
+        get() = _bannerState
+
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     var isAuthenticationRequired: Boolean = true
@@ -49,14 +54,15 @@ class HomeViewModel @Inject constructor(
         HomeNavigationType.RECOMMENDATIONS
     )
 
-    private val displayRecommendations = recommendationRepository.getAllRecommendations().map { list ->
-        val isLoggedIn: Boolean = try {
-            bcscAuthRepo.checkSession()
-        } catch (e: Exception) {
-            false
+    private val displayRecommendations =
+        recommendationRepository.getAllRecommendations().map { list ->
+            val isLoggedIn: Boolean = try {
+                bcscAuthRepo.checkSession()
+            } catch (e: Exception) {
+                false
+            }
+            list.isNotEmpty() && isLoggedIn
         }
-        list.isNotEmpty() && isLoggedIn
-    }
 
     fun launchCheck() = viewModelScope.launch {
         if (bcscAuthRepo.checkSession()) {
@@ -173,8 +179,35 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun executeOneTimeDataFetch() = bcscAuthRepo.executeOneTimeDatFetch()
+    fun executeOneTimeDataFetch() {
+        fetchBanner()
+        bcscAuthRepo.executeOneTimeDatFetch()
+    }
+
+    private fun fetchBanner() {
+        if (bannerRequested.not()) {
+            //fetch data
+            _bannerState.postValue(BannerItem("title 01", "body 02", true, null, null, null))
+            bannerRequested = true
+        }
+    }
+
+    fun toggleBanner(){
+        _bannerState.value?.let {
+            it.expanded = it.expanded.not()
+            _bannerState.postValue(it)
+        }
+    }
 }
+
+data class BannerItem(
+    val title: String,
+    val body: String,
+    var expanded: Boolean,
+    val url: String?,
+    val startDate: String?,
+    val endDate: String?,
+)
 
 data class HomeUiState(
     val isLoading: Boolean = false,

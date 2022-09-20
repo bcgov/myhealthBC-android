@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/view_banner"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/space_4_x"
@@ -38,13 +39,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/space_1_x"
             android:layout_marginTop="@dimen/space_2_x"
-            app:layout_constraintEnd_toStartOf="@+id/iv_content_state"
+            app:layout_constraintEnd_toStartOf="@+id/iv_toggle"
             app:layout_constraintStart_toEndOf="@+id/iv_banner_icon"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Great news! Really Big Announcement!" />
 
         <ImageView
-            android:id="@+id/iv_content_state"
+            android:id="@+id/iv_toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="20dp"
@@ -54,13 +55,14 @@
             app:layout_constraintTop_toTopOf="@id/tv_title" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_desc"
+            android:id="@+id/tv_body"
             style="?textAppearanceHeadline4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_1_x"
+            android:layout_marginEnd="@dimen/space_2_x"
             android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="@+id/iv_content_state"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tv_title"
             app:layout_constraintTop_toBottomOf="@+id/tv_title"
             tools:text="View and manage all your available health records, including dispensed medications, health visits, COVID-19 test results, immunizations and more." />
@@ -85,14 +87,14 @@
             android:drawableStart="@drawable/ic_dismiss"
             android:text="@string/dismiss"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_desc" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_body" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_full_content"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="visible"
-            app:constraint_referenced_ids="tv_dismiss,tv_learn_more,tv_desc" />
+            app:constraint_referenced_ids="tv_dismiss,tv_learn_more,tv_body" />
 
         <!-- Minimum padding when content is collapsed -->
         <Space

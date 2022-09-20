@@ -21,6 +21,8 @@ import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.show
+import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +32,7 @@ import kotlinx.coroutines.launch
 class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
     private val binding by viewBindings(FragmentHomeBinding::bind)
-    private val viewModel: HomeViewModel by viewModels()
+    private val viewModel: HomeViewModel by activityViewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var homeAdapter: HomeAdapter
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
@@ -99,14 +101,13 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         }
 
         initRecyclerview()
-
         observeAuthStatus()
 
         bcscAuthViewModel.checkSession()
 
         viewModel.launchCheck()
-
         viewModel.getAuthenticatedPatientName()
+        viewModel.bannerState.observe(viewLifecycleOwner) { displayBanner(it) }
     }
 
     private fun observeAuthStatus() {
@@ -213,5 +214,24 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                 return@setOnMenuItemClickListener true
             }
         }
+    }
+
+    private fun displayBanner(banner: BannerItem) = with(binding.includeBanner) {
+        tvTitle.text = banner.title
+        tvBody.text = banner.body
+        ivToggle.isSelected = banner.expanded
+        groupFullContent.toggleVisibility(banner.expanded)
+
+        ivToggle.setOnClickListener {
+            viewModel.toggleBanner()
+        }
+        tvLearnMore.setOnClickListener {
+            println("learn more")
+        }
+        tvDismiss.setOnClickListener {
+            println("dismiss")
+        }
+
+        viewBanner.show()
     }
 }
