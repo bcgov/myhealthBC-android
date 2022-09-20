@@ -164,4 +164,14 @@
         <item name="android:layout_marginEnd">@dimen/space_4_x</item>
     </style>
 
+    <style name="BannerButton" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="fontFamily">@font/bc_sans_bold</item>
+        <item name="android:fontFamily">@font/bc_sans_bold</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:drawablePadding">@dimen/space_0_5_x</item>
+        <item name="android:paddingTop">@dimen/space_2_x</item>
+        <item name="android:paddingBottom">@dimen/space_2_x</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/primary_blue</item>
+    </style>
 </resources>

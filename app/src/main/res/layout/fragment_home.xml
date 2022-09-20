@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:filterTouchesWhenObscured="true"
@@ -20,45 +20,50 @@
         style="?textAppearanceHeadline1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginEnd="@dimen/space_4_x"
-        android:textSize="28sp"
         android:gravity="start"
+        android:text="@string/hello"
         android:textAlignment="textStart"
+        android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_toolbar"
-        android:text="@string/hello" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_toolbar" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_desc"
         style="?textAppearanceHeadline2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_1_x"
         android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_1_x"
         android:layout_marginEnd="@dimen/space_4_x"
         android:gravity="start"
-        android:textSize="20sp"
-        android:textColor="@color/blue"
+        android:text="What do you want to focus on today?"
         android:textAlignment="textStart"
+        android:textColor="@color/blue"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_name"
-        android:text="What do you want to focus on today?" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+
+    <include
+        android:id="@+id/view_banner"
+        layout="@layout/include_home_banner" />
 
     <ca.bc.gov.bchealth.widget.RecyclerView
         android:id="@+id/rv_home"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/space_1_x"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/space_2_x"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_desc"
-        android:paddingBottom="@dimen/space_2_x"
-        android:clipToPadding="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        app:layout_constraintTop_toBottomOf="@+id/view_banner"
+        tools:listitem="@layout/item_home_with_button_bg" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
