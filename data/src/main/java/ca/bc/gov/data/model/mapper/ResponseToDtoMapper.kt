@@ -319,7 +319,7 @@ fun Recommendation.toDto(): ImmunizationRecommendationsDto {
     return ImmunizationRecommendationsDto(
         recommendationSetId = this.recommendationSetId,
         immunizationName = agent?.name,
-        status = this.status,
+        status = ForecastStatus.getByText(status),
         diseaseDueDate = this.diseaseDueDate?.toDateTime(),
     )
 }
