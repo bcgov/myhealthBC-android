@@ -1,5 +1,6 @@
 package ca.bc.gov.data.di
 
+import ca.bc.gov.data.datasource.remote.BannerRemoteDataSource
 import ca.bc.gov.data.datasource.remote.CommentRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
@@ -60,4 +61,10 @@ class RemoteDataSourceModule {
     fun providesTermsOfServiceRemoteDataSource(
         healthGatewayPrivateApi: HealthGatewayPrivateApi
     ): TermsOfServiceRemoteDataSource = TermsOfServiceRemoteDataSource(healthGatewayPrivateApi)
+
+    @Provides
+    @Singleton
+    fun provideBannerRemoteDataSource(
+        healthGatewayPublicApi: HealthGatewayPublicApi
+    ) = BannerRemoteDataSource(healthGatewayPublicApi)
 }

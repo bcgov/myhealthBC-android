@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.utils.INDEX_NOT_FOUND
 import ca.bc.gov.common.model.AuthenticationStatus
+import ca.bc.gov.common.model.banner.BannerDto
+import ca.bc.gov.repository.BannerRepository
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
@@ -28,7 +30,8 @@ class HomeViewModel @Inject constructor(
     private val onBoardingRepository: OnBoardingRepository,
     private val patientRepository: PatientRepository,
     private val bcscAuthRepo: BcscAuthRepo,
-    recommendationRepository: ImmunizationRecommendationRepository
+    recommendationRepository: ImmunizationRecommendationRepository,
+    private val bannerRepository: BannerRepository
 ) : ViewModel() {
 
     private var bannerRequested = false
@@ -186,13 +189,35 @@ class HomeViewModel @Inject constructor(
 
     private fun fetchBanner() {
         if (bannerRequested.not()) {
-            //fetch data
-            _bannerState.postValue(BannerItem("title 01", "body 02", true, null, null, null))
+            viewModelScope.launch {
+                try {
+                    bannerRepository.getBanner()?.apply {
+                        if (validateBannerDates(this)) {
+                            _bannerState.postValue(
+                                BannerItem(
+                                    expanded = true,
+                                    title,
+                                    body
+                                )
+                            )
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
             bannerRequested = true
         }
     }
 
-    fun toggleBanner(){
+    private fun validateBannerDates(bannerDto: BannerDto): Boolean {
+        val currentTime = System.currentTimeMillis()
+        return bannerDto.startDate.toEpochMilli() >= currentTime &&
+            bannerDto.endDate.toEpochMilli() < currentTime
+    }
+
+    fun toggleBanner() {
         _bannerState.value?.let {
             it.expanded = it.expanded.not()
             _bannerState.postValue(it)
@@ -201,12 +226,9 @@ class HomeViewModel @Inject constructor(
 }
 
 data class BannerItem(
-    val title: String,
-    val body: String,
     var expanded: Boolean,
-    val url: String?,
-    val startDate: String?,
-    val endDate: String?,
+    val title: String,
+    val body: String
 )
 
 data class HomeUiState(

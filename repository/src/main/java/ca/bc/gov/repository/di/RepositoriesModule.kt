@@ -14,11 +14,13 @@ import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.TestResultLocalDataSource
 import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.data.datasource.remote.BannerRemoteDataSource
 import ca.bc.gov.data.datasource.remote.CommentRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.TermsOfServiceRemoteDataSource
+import ca.bc.gov.repository.BannerRepository
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.CommentRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
@@ -248,4 +250,11 @@ class RepositoriesModule {
         immunizationForecastLocalDataSource: ImmunizationForecastLocalDataSource
     ): ImmunizationForecastRepository =
         ImmunizationForecastRepository(immunizationForecastLocalDataSource)
+
+    @Provides
+    @Singleton
+    fun providesBannerRepository(
+        remoteDataSource: BannerRemoteDataSource
+    ): BannerRepository =
+        BannerRepository(remoteDataSource)
 }
