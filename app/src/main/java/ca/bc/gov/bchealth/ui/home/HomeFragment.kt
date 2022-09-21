@@ -2,6 +2,9 @@ package ca.bc.gov.bchealth.ui.home
 
 import android.app.Activity
 import android.os.Bundle
+import android.text.Html
+import android.text.Html.FROM_HTML_MODE_LEGACY
+import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
@@ -218,7 +221,10 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
     private fun displayBanner(banner: BannerItem) = with(binding.includeBanner) {
         tvTitle.text = banner.title
-        tvBody.text = banner.body
+
+        tvBody.movementMethod = LinkMovementMethod.getInstance()
+        tvBody.text = Html.fromHtml(banner.body, FROM_HTML_MODE_LEGACY)
+
         ivToggle.isSelected = banner.expanded
         groupFullContent.toggleVisibility(banner.expanded)
 
