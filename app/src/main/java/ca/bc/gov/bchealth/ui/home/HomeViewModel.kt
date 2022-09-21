@@ -7,7 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.utils.COMMUNICATION_BANNER_MAX_LENGTH
 import ca.bc.gov.bchealth.utils.INDEX_NOT_FOUND
+import ca.bc.gov.bchealth.utils.fromHtml
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.banner.BannerDto
 import ca.bc.gov.repository.BannerRepository
@@ -196,8 +198,9 @@ class HomeViewModel @Inject constructor(
                             _bannerState.postValue(
                                 BannerItem(
                                     expanded = true,
-                                    title,
-                                    body
+                                    title = title,
+                                    body = body,
+                                    displayReadMore = shouldDisplayReadMore(body)
                                 )
                             )
                         }
@@ -213,8 +216,8 @@ class HomeViewModel @Inject constructor(
 
     private fun validateBannerDates(bannerDto: BannerDto): Boolean {
         val currentTime = System.currentTimeMillis()
-        return bannerDto.startDate.toEpochMilli() >= currentTime &&
-            bannerDto.endDate.toEpochMilli() < currentTime
+        return bannerDto.startDate.toEpochMilli() <= currentTime &&
+            currentTime < bannerDto.endDate.toEpochMilli()
     }
 
     fun toggleBanner() {
@@ -223,12 +226,16 @@ class HomeViewModel @Inject constructor(
             _bannerState.postValue(it)
         }
     }
+
+    private fun shouldDisplayReadMore(body: String): Boolean =
+        body.fromHtml().length > COMMUNICATION_BANNER_MAX_LENGTH
 }
 
 data class BannerItem(
     var expanded: Boolean,
     val title: String,
-    val body: String
+    val body: String,
+    val displayReadMore: Boolean
 )
 
 data class HomeUiState(

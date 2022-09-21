@@ -2,8 +2,6 @@ package ca.bc.gov.bchealth.ui.home
 
 import android.app.Activity
 import android.os.Bundle
-import android.text.Html
-import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,6 +22,7 @@ import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.fromHtml
 import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -223,7 +222,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         tvTitle.text = banner.title
 
         tvBody.movementMethod = LinkMovementMethod.getInstance()
-        tvBody.text = Html.fromHtml(banner.body, FROM_HTML_MODE_LEGACY)
+        tvBody.text = banner.body.fromHtml().trimEnd()
 
         ivToggle.isSelected = banner.expanded
         groupFullContent.toggleVisibility(banner.expanded)
@@ -231,6 +230,8 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         ivToggle.setOnClickListener {
             viewModel.toggleBanner()
         }
+
+        tvLearnMore.toggleVisibility(banner.displayReadMore && banner.expanded)
         tvLearnMore.setOnClickListener {
             println("learn more")
         }
