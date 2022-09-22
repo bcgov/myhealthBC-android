@@ -23,6 +23,7 @@ import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.fromHtml
+import ca.bc.gov.bchealth.utils.hide
 import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -219,6 +220,11 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
     }
 
     private fun displayBanner(banner: BannerItem) = with(binding.includeBanner) {
+        if (banner.isHidden) {
+            viewBanner.hide()
+            return
+        }
+
         tvTitle.text = banner.title
 
         tvBody.movementMethod = LinkMovementMethod.getInstance()
@@ -241,7 +247,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
             findNavController().navigate(action)
         }
         tvDismiss.setOnClickListener {
-            println("dismiss")
+            viewModel.dismissBanner()
         }
 
         viewBanner.show()

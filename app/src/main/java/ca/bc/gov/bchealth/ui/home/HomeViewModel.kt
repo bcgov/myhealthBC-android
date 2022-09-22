@@ -199,11 +199,10 @@ class HomeViewModel @Inject constructor(
                         if (validateBannerDates(this)) {
                             _bannerState.postValue(
                                 BannerItem(
-                                    expanded = true,
                                     title = title,
                                     date = startDate.toDate(yyyy_MM_dd),
                                     body = body,
-                                    displayReadMore = shouldDisplayReadMore(body)
+                                    displayReadMore = shouldDisplayReadMore(body),
                                 )
                             )
                         }
@@ -230,16 +229,24 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun dismissBanner() {
+        _bannerState.value?.let {
+            it.isHidden = true
+            _bannerState.postValue(it)
+        }
+    }
+
     private fun shouldDisplayReadMore(body: String): Boolean =
         body.fromHtml().length > COMMUNICATION_BANNER_MAX_LENGTH
 }
 
 data class BannerItem(
-    var expanded: Boolean,
     val title: String,
     val date: String,
     val body: String,
-    val displayReadMore: Boolean
+    val displayReadMore: Boolean,
+    var expanded: Boolean = true,
+    var isHidden: Boolean = false
 )
 
 data class HomeUiState(
