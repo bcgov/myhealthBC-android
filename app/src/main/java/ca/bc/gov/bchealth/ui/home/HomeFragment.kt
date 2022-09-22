@@ -233,7 +233,12 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
         tvLearnMore.toggleVisibility(banner.displayReadMore && banner.expanded)
         tvLearnMore.setOnClickListener {
-            println("learn more")
+            val action = HomeFragmentDirections.actionHomeFragmentToBannerDetail(
+                title = banner.title,
+                date = banner.date,
+                body = banner.body,
+            )
+            findNavController().navigate(action)
         }
         tvDismiss.setOnClickListener {
             println("dismiss")

@@ -12,6 +12,8 @@ import ca.bc.gov.bchealth.utils.INDEX_NOT_FOUND
 import ca.bc.gov.bchealth.utils.fromHtml
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.banner.BannerDto
+import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.BannerRepository
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
@@ -199,6 +201,7 @@ class HomeViewModel @Inject constructor(
                                 BannerItem(
                                     expanded = true,
                                     title = title,
+                                    date = startDate.toDate(yyyy_MM_dd),
                                     body = body,
                                     displayReadMore = shouldDisplayReadMore(body)
                                 )
@@ -234,6 +237,7 @@ class HomeViewModel @Inject constructor(
 data class BannerItem(
     var expanded: Boolean,
     val title: String,
+    val date: String,
     val body: String,
     val displayReadMore: Boolean
 )
