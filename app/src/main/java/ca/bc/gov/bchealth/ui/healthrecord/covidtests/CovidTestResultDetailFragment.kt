@@ -117,7 +117,8 @@ class CovidTestResultDetailFragment : BaseFragment(R.layout.fragment_test_result
 
         val covidTestResultsAdapter = CovidTestResultsAdapter(
             this,
-            covidTestResult.covidOrderWithCovidTest.covidTests
+            covidTestResult.covidOrderWithCovidTest.covidTests,
+            covidTestResult.covidOrderWithCovidTest.covidOrder.reportAvailable
         )
         binding.viewpagerCovidTestResults.adapter = covidTestResultsAdapter
         if (covidTestResult.covidOrderWithCovidTest.covidTests.size > 1) {
@@ -128,7 +129,7 @@ class CovidTestResultDetailFragment : BaseFragment(R.layout.fragment_test_result
             ) { _, _ -> }.attach()
         }
 
-        if (covidTestResult.covidOrderWithCovidTest.covidOrder.reportAvailable) {
+        /*if (covidTestResult.covidOrderWithCovidTest.covidOrder.reportAvailable) {
             with(binding.layoutToolbar.topAppBar) {
                 if (willNotDraw()) {
                     setWillNotDraw(false)
@@ -143,7 +144,7 @@ class CovidTestResultDetailFragment : BaseFragment(R.layout.fragment_test_result
                     }
                 }
             }
-        }
+        }*/
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
@@ -158,7 +159,8 @@ class CovidTestResultDetailFragment : BaseFragment(R.layout.fragment_test_result
 
     inner class CovidTestResultsAdapter(
         fragment: Fragment,
-        private val covidTests: List<CovidTestDto>
+        private val covidTests: List<CovidTestDto>,
+        private val reportAvailable: Boolean
     ) : FragmentStateAdapter(fragment) {
 
         override fun getItemCount(): Int = covidTests.size
@@ -167,7 +169,9 @@ class CovidTestResultDetailFragment : BaseFragment(R.layout.fragment_test_result
 
             return CovidTestResultFragment.newInstance(
                 args.covidOrderId,
-                covidTests[position].id
+                covidTests[position].id,
+                reportAvailable,
+                itemClickListener = { viewModel.getCovidTestInPdf(args.covidOrderId) }
             )
         }
     }

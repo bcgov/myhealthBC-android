@@ -63,19 +63,21 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
                 findNavController().popBackStack()
             }
             title = getString(R.string.filter)
-            inflateMenu(R.menu.menu_lab_test_details)
-            menuInflated = menu
-            setOnMenuItemClickListener { menu ->
-                when (menu.itemId) {
-                    R.id.menu_download -> viewModel.getLabTestPdf()
-                }
-                return@setOnMenuItemClickListener true
-            }
+            /* inflateMenu(R.menu.menu_lab_test_details)
+             menuInflated = menu
+             setOnMenuItemClickListener { menu ->
+                 when (menu.itemId) {
+                     R.id.menu_download -> viewModel.getLabTestPdf()
+                 }
+                 return@setOnMenuItemClickListener true
+             }*/
         }
     }
 
     private fun setUpRecyclerView() {
-        labTestDetailAdapter = LabTestDetailAdapter()
+        labTestDetailAdapter = LabTestDetailAdapter(
+            viewPdfClickListener = { viewModel.getLabTestPdf() }
+        )
         binding.rvLabTestDetailList.apply {
             adapter = labTestDetailAdapter
             addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
@@ -125,7 +127,7 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
 
     private fun handlePdfDownload(state: LabTestDetailUiState) {
 
-        menuInflated.getItem(0).isVisible = state.showDownloadOption
+        // menuInflated.getItem(0).isVisible = state.showDownloadOption
 
         if (state.pdfData?.isNotEmpty() == true) {
             pdfDecoderViewModel.base64ToPDFFile(state.pdfData)
