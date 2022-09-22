@@ -276,7 +276,13 @@ fun ImmunizationResponse.toDto() = ImmunizationDto(
             it.forecast?.toDto()
         )
     },
-    recommendations = this.payload.recommendations.map { it.toDto() }
+    recommendations = this.payload.recommendations.mapNotNull {
+        if (it.recommendedVaccinations.isNullOrBlank()) {
+            null
+        } else {
+            it.toDto()
+        }
+    }
 )
 
 fun HealthVisitsResponse.toDto(): List<HealthVisitsDto> {
