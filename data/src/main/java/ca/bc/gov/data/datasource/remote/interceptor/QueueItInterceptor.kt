@@ -133,6 +133,8 @@ class QueueItInterceptor @Inject constructor(
     )
 
     private fun checkException(json: JsonObject) {
+        if (json.get(RESULT_ERROR).isJsonNull) return
+
         val resultError = json.getAsJsonObject(RESULT_ERROR)
         if (!resultError.get(ACTION_CODE).isJsonNull) {
             if (resultError.get(ACTION_CODE)?.asString == PROTECTED)

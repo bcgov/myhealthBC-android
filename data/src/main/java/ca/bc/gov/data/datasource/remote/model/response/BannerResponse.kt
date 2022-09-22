@@ -9,5 +9,5 @@ data class BannerResponse(
     val payload: BannerPayload? = null,
 
     @SerializedName("resultError")
-    val error: Error?
+    val error: Error? = null
 )
