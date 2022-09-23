@@ -28,5 +28,9 @@ data class Recommendation(
     val targetDiseases: List<TargetDisease> = emptyList(),
 
     @SerializedName("immunization")
-    val immunization: Immunization
+    val immunization: Immunization,
+
+    @SerializedName("recommendedVaccinations")
+    val recommendedVaccinations: String?
+
 )
