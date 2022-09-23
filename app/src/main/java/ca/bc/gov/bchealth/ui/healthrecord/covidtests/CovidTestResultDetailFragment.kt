@@ -128,23 +128,6 @@ class CovidTestResultDetailFragment : BaseFragment(R.layout.fragment_test_result
                 binding.viewpagerCovidTestResults
             ) { _, _ -> }.attach()
         }
-
-        /*if (covidTestResult.covidOrderWithCovidTest.covidOrder.reportAvailable) {
-            with(binding.layoutToolbar.topAppBar) {
-                if (willNotDraw()) {
-                    setWillNotDraw(false)
-                    inflateMenu(R.menu.menu_lab_test_details)
-                    setOnMenuItemClickListener { menu ->
-                        when (menu.itemId) {
-                            R.id.menu_download -> {
-                                viewModel.getCovidTestInPdf(args.covidOrderId)
-                            }
-                        }
-                        return@setOnMenuItemClickListener true
-                    }
-                }
-            }
-        }*/
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
