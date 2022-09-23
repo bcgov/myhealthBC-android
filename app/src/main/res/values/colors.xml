@@ -20,6 +20,8 @@
     <color name="error">#D8292F</color>
     <color name="red">#D72E3D</color>
 
+    <color name="home_banner_background">#D9EAF7</color>
+
     <!--Covid Test Result colors-->
     <color name="covid_test_blue">#D2E2EF</color>
     <color name="covid_test_green">#D8ECDC</color>

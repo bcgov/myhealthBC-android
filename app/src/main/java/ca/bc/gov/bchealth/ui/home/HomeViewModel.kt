@@ -7,8 +7,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.utils.COMMUNICATION_BANNER_MAX_LENGTH
 import ca.bc.gov.bchealth.utils.INDEX_NOT_FOUND
+import ca.bc.gov.bchealth.utils.fromHtml
 import ca.bc.gov.common.model.AuthenticationStatus
+import ca.bc.gov.common.model.banner.BannerDto
+import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.yyyy_MM_dd
+import ca.bc.gov.repository.BannerRepository
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
@@ -28,8 +34,14 @@ class HomeViewModel @Inject constructor(
     private val onBoardingRepository: OnBoardingRepository,
     private val patientRepository: PatientRepository,
     private val bcscAuthRepo: BcscAuthRepo,
-    recommendationRepository: ImmunizationRecommendationRepository
+    recommendationRepository: ImmunizationRecommendationRepository,
+    private val bannerRepository: BannerRepository
 ) : ViewModel() {
+
+    private var bannerRequested = false
+    private val _bannerState: MutableLiveData<BannerItem> = MutableLiveData()
+    val bannerState: LiveData<BannerItem>
+        get() = _bannerState
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -49,14 +61,15 @@ class HomeViewModel @Inject constructor(
         HomeNavigationType.RECOMMENDATIONS
     )
 
-    private val displayRecommendations = recommendationRepository.getAllRecommendations().map { list ->
-        val isLoggedIn: Boolean = try {
-            bcscAuthRepo.checkSession()
-        } catch (e: Exception) {
-            false
+    private val displayRecommendations =
+        recommendationRepository.getAllRecommendations().map { list ->
+            val isLoggedIn: Boolean = try {
+                bcscAuthRepo.checkSession()
+            } catch (e: Exception) {
+                false
+            }
+            list.isNotEmpty() && isLoggedIn
         }
-        list.isNotEmpty() && isLoggedIn
-    }
 
     fun launchCheck() = viewModelScope.launch {
         if (bcscAuthRepo.checkSession()) {
@@ -173,8 +186,68 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun executeOneTimeDataFetch() = bcscAuthRepo.executeOneTimeDatFetch()
+    fun executeOneTimeDataFetch() {
+        fetchBanner()
+        bcscAuthRepo.executeOneTimeDatFetch()
+    }
+
+    private fun fetchBanner() {
+        if (bannerRequested.not()) {
+            viewModelScope.launch {
+                try {
+                    bannerRepository.getBanner()?.apply {
+                        if (validateBannerDates(this)) {
+                            _bannerState.postValue(
+                                BannerItem(
+                                    title = title,
+                                    date = startDate.toDate(yyyy_MM_dd),
+                                    body = body,
+                                    displayReadMore = shouldDisplayReadMore(body),
+                                )
+                            )
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            bannerRequested = true
+        }
+    }
+
+    private fun validateBannerDates(bannerDto: BannerDto): Boolean {
+        val currentTime = System.currentTimeMillis()
+        return bannerDto.startDate.toEpochMilli() <= currentTime &&
+            currentTime < bannerDto.endDate.toEpochMilli()
+    }
+
+    fun toggleBanner() {
+        _bannerState.value?.let {
+            it.expanded = it.expanded.not()
+            _bannerState.postValue(it)
+        }
+    }
+
+    fun dismissBanner() {
+        _bannerState.value?.let {
+            it.isHidden = true
+            _bannerState.postValue(it)
+        }
+    }
+
+    private fun shouldDisplayReadMore(body: String): Boolean =
+        body.fromHtml().length > COMMUNICATION_BANNER_MAX_LENGTH
 }
+
+data class BannerItem(
+    val title: String,
+    val date: String,
+    val body: String,
+    val displayReadMore: Boolean,
+    var expanded: Boolean = true,
+    var isHidden: Boolean = false
+)
 
 data class HomeUiState(
     val isLoading: Boolean = false,

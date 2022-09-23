@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.home
 
 import android.app.Activity
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
@@ -21,6 +22,10 @@ import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.fromHtml
+import ca.bc.gov.bchealth.utils.hide
+import ca.bc.gov.bchealth.utils.show
+import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +35,7 @@ import kotlinx.coroutines.launch
 class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
     private val binding by viewBindings(FragmentHomeBinding::bind)
-    private val viewModel: HomeViewModel by viewModels()
+    private val viewModel: HomeViewModel by activityViewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var homeAdapter: HomeAdapter
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
@@ -99,14 +104,13 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         }
 
         initRecyclerview()
-
         observeAuthStatus()
 
         bcscAuthViewModel.checkSession()
 
         viewModel.launchCheck()
-
         viewModel.getAuthenticatedPatientName()
+        viewModel.bannerState.observe(viewLifecycleOwner) { displayBanner(it) }
     }
 
     private fun observeAuthStatus() {
@@ -213,5 +217,39 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                 return@setOnMenuItemClickListener true
             }
         }
+    }
+
+    private fun displayBanner(banner: BannerItem) = with(binding.includeBanner) {
+        if (banner.isHidden) {
+            viewBanner.hide()
+            return
+        }
+
+        tvTitle.text = banner.title
+
+        tvBody.movementMethod = LinkMovementMethod.getInstance()
+        tvBody.text = banner.body.fromHtml().trimEnd()
+
+        ivToggle.isSelected = banner.expanded
+        groupFullContent.toggleVisibility(banner.expanded)
+
+        ivToggle.setOnClickListener {
+            viewModel.toggleBanner()
+        }
+
+        tvLearnMore.toggleVisibility(banner.displayReadMore && banner.expanded)
+        tvLearnMore.setOnClickListener {
+            val action = HomeFragmentDirections.actionHomeFragmentToBannerDetail(
+                title = banner.title,
+                date = banner.date,
+                body = banner.body,
+            )
+            findNavController().navigate(action)
+        }
+        tvDismiss.setOnClickListener {
+            viewModel.dismissBanner()
+        }
+
+        viewBanner.show()
     }
 }
