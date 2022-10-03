@@ -59,6 +59,13 @@ class LabTestDetailViewModel @Inject constructor(
 
     private fun prepareLabTestDetailsData(labOrderWithLabTestDto: LabOrderWithLabTestDto): List<LabTestDetail> {
         val labTestDetails = mutableListOf<LabTestDetail>()
+        if (labOrderWithLabTestDto.labOrder.reportingAvailable) {
+            labTestDetails.add(
+                LabTestDetail(
+                    viewType = ITEM_VIEW_PDF
+                )
+            )
+        }
         labTestDetails.add(
             LabTestDetail(
                 title1 = R.string.collection_date,
@@ -198,6 +205,7 @@ class LabTestDetailViewModel @Inject constructor(
         const val ITEM_VIEW_TYPE_LAB_ORDER = 0
         const val ITEM_VIEW_TYPE_LAB_TEST = 1
         const val ITEM_VIEW_TYPE_LAB_TEST_BANNER = 2
+        const val ITEM_VIEW_PDF = 3
     }
 
     fun resetUiState() {

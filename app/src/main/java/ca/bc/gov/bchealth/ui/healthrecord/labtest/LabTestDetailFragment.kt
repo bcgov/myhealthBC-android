@@ -1,7 +1,6 @@
 package ca.bc.gov.bchealth.ui.healthrecord.labtest
 
 import android.os.Bundle
-import android.view.Menu
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
@@ -55,7 +54,6 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
         setUpRecyclerView()
     }
 
-    private lateinit var menuInflated: Menu
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
         with(binding.layoutToolbar.topAppBar) {
             setNavigationIcon(R.drawable.ic_toolbar_back)
@@ -63,19 +61,13 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
                 findNavController().popBackStack()
             }
             title = getString(R.string.filter)
-            inflateMenu(R.menu.menu_lab_test_details)
-            menuInflated = menu
-            setOnMenuItemClickListener { menu ->
-                when (menu.itemId) {
-                    R.id.menu_download -> viewModel.getLabTestPdf()
-                }
-                return@setOnMenuItemClickListener true
-            }
         }
     }
 
     private fun setUpRecyclerView() {
-        labTestDetailAdapter = LabTestDetailAdapter()
+        labTestDetailAdapter = LabTestDetailAdapter(
+            viewPdfClickListener = { viewModel.getLabTestPdf() }
+        )
         binding.rvLabTestDetailList.apply {
             adapter = labTestDetailAdapter
             addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
@@ -124,8 +116,6 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
     }
 
     private fun handlePdfDownload(state: LabTestDetailUiState) {
-
-        menuInflated.getItem(0).isVisible = state.showDownloadOption
 
         if (state.pdfData?.isNotEmpty() == true) {
             pdfDecoderViewModel.base64ToPDFFile(state.pdfData)

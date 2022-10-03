@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemLabTestDetailBannerBinding
 import ca.bc.gov.bchealth.databinding.ItemLabTestDetailBinding
+import ca.bc.gov.bchealth.databinding.ItemViewPdfBinding
 import ca.bc.gov.bchealth.utils.makeLinks
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showIfNullOrBlank
@@ -19,7 +20,7 @@ import ca.bc.gov.bchealth.utils.showIfNullOrBlank
 /**
  * @author: Created by Rashmi Bambhania on 02,March,2022
  */
-class LabTestDetailAdapter :
+class LabTestDetailAdapter(private val viewPdfClickListener: ViewPdfClickListener) :
     ListAdapter<LabTestDetail, RecyclerView.ViewHolder>(LabTestRecordsDiffCallBacks()) {
 
     class LabTestBannerViewHolder(val binding: ItemLabTestDetailBannerBinding) :
@@ -30,6 +31,13 @@ class LabTestDetailAdapter :
 
     class LabTestViewHolder(val binding: ItemLabTestDetailBinding) :
         RecyclerView.ViewHolder(binding.root)
+
+    class LabTestViewPdfViewHolder(val binding: ItemViewPdfBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
+    fun interface ViewPdfClickListener {
+        fun onClick()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -51,6 +59,12 @@ class LabTestDetailAdapter :
                 )
                 LabTestViewHolder(binding)
             }
+            LabTestDetailViewModel.ITEM_VIEW_PDF -> {
+                val binding = ItemViewPdfBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false
+                )
+                LabTestViewPdfViewHolder(binding)
+            }
             else -> throw ClassCastException("Unknown viewType $viewType")
         }
     }
@@ -61,6 +75,9 @@ class LabTestDetailAdapter :
             is LabTestBannerViewHolder -> displayBanner(holder, labTestDetail)
             is LabOrderViewHolder -> displayLabOrder(holder, labTestDetail)
             is LabTestViewHolder -> displayLabTest(holder, labTestDetail)
+            is LabTestViewPdfViewHolder -> {
+                holder.binding.btnViewPdf.setOnClickListener { viewPdfClickListener.onClick() }
+            }
         }
     }
 
