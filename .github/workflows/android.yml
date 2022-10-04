@@ -8,6 +8,7 @@ on:
       - feature/bcsc
       - health-visits
       - releases
+      - MVP_1
 
 jobs:
   build:
