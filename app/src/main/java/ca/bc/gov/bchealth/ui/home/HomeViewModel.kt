@@ -20,6 +20,7 @@ import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.patient.PatientRepository
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,7 +36,8 @@ class HomeViewModel @Inject constructor(
     private val patientRepository: PatientRepository,
     private val bcscAuthRepo: BcscAuthRepo,
     recommendationRepository: ImmunizationRecommendationRepository,
-    private val bannerRepository: BannerRepository
+    private val bannerRepository: BannerRepository,
+    private val mobileConfigRepository: MobileConfigRepository,
 ) : ViewModel() {
 
     private var bannerRequested = false
@@ -195,6 +197,8 @@ class HomeViewModel @Inject constructor(
         if (bannerRequested.not()) {
             viewModelScope.launch {
                 try {
+                    mobileConfigRepository.getBaseUrl()
+
                     bannerRepository.getBanner()?.apply {
                         if (validateBannerDates(this)) {
                             _bannerState.postValue(
