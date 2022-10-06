@@ -12,9 +12,6 @@ data class Recommendation(
     @SerializedName("diseaseEligibleDate")
     val diseaseEligibleDate: String?,
 
-    @SerializedName("diseaseDueDate")
-    val diseaseDueDate: String?,
-
     @SerializedName("agentEligibleDate")
     val agentEligibleDate: String?,
 

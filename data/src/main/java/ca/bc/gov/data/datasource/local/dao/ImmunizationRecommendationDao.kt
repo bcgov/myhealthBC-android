@@ -11,7 +11,7 @@ interface ImmunizationRecommendationDao : BaseDao<ImmunizationRecommendationEnti
     @Query(
         "SELECT *, " +
             "(SELECT id FROM patient WHERE authentication_status = 'AUTHENTICATED') AS patientId " +
-            "FROM immunization_recommendation WHERE patient_id = patientId ORDER BY disease_due_date DESC"
+            "FROM immunization_recommendation WHERE patient_id = patientId ORDER BY agentDueDate DESC"
     )
     fun selectRecommendations(): Flow<List<ImmunizationRecommendationEntity>>
 

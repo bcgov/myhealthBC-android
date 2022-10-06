@@ -372,6 +372,6 @@ fun ImmunizationRecommendationEntity.toDto() = ImmunizationRecommendationsDto(
     recommendationSetId = this.recommendationSetId,
     immunizationName = this.immunizationName,
     status = ForecastStatus.getByText(status),
-    diseaseDueDate = this.diseaseDueDate,
+    agentDueDate = this.agentDueDate,
     recommendedVaccinations = this.recommendedVaccinations
 )
