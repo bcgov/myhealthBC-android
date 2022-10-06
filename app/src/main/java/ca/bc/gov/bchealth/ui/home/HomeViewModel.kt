@@ -196,20 +196,14 @@ class HomeViewModel @Inject constructor(
     private fun fetchBanner() {
         if (bannerRequested.not()) {
             viewModelScope.launch {
-                try {
-                    mobileConfigRepository.getBaseUrl()
 
-                    bannerRepository.getBanner()?.apply {
-                        if (validateBannerDates(this)) {
-                            _bannerState.postValue(
-                                BannerItem(
-                                    title = title,
-                                    date = startDate.toDate(yyyy_MM_dd),
-                                    body = body,
-                                    displayReadMore = shouldDisplayReadMore(body),
-                                )
-                            )
-                        }
+                try {
+                    val isHgServicesUp = mobileConfigRepository.getBaseUrl()
+
+                    if (isHgServicesUp) {
+                        callBannerRepository()
+                    } else {
+                        displayServiceDownMessage()
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -217,6 +211,27 @@ class HomeViewModel @Inject constructor(
             }
 
             bannerRequested = true
+        }
+    }
+
+    private fun displayServiceDownMessage() {
+        _uiState.update { state ->
+            state.copy(displayServiceDownMessage = true)
+        }
+    }
+
+    private suspend fun callBannerRepository() {
+        bannerRepository.getBanner()?.apply {
+            if (validateBannerDates(this)) {
+                _bannerState.postValue(
+                    BannerItem(
+                        title = title,
+                        date = startDate.toDate(yyyy_MM_dd),
+                        body = body,
+                        displayReadMore = shouldDisplayReadMore(body),
+                    )
+                )
+            }
         }
     }
 
@@ -242,6 +257,10 @@ class HomeViewModel @Inject constructor(
 
     private fun shouldDisplayReadMore(body: String): Boolean =
         body.fromHtml().length > COMMUNICATION_BANNER_MAX_LENGTH
+
+    fun resetUiState() {
+        _uiState.tryEmit(HomeUiState())
+    }
 }
 
 data class BannerItem(
@@ -259,7 +278,8 @@ data class HomeUiState(
     val isAuthenticationRequired: Boolean = false,
     val isBcscLoginRequiredPostBiometrics: Boolean = false,
     val patientFirstName: String? = null,
-    val isForceLogout: Boolean = false
+    val isForceLogout: Boolean = false,
+    val displayServiceDownMessage: Boolean = false
 )
 
 data class HomeRecordItem(
