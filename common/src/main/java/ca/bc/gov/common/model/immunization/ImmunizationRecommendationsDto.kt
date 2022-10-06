@@ -8,4 +8,5 @@ data class ImmunizationRecommendationsDto(
     val immunizationName: String?,
     val status: ForecastStatus? = null,
     val diseaseDueDate: Instant?,
+    val recommendedVaccinations : String?
 )

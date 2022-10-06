@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "02fb5ec377e928b6d89f456de5e3ca70",
+    "identityHash": "5b8b350982cdb0dedb00c4c556017196",
     "entities": [
       {
         "tableName": "patient",
@@ -1217,7 +1217,7 @@
       },
       {
         "tableName": "immunization_recommendation",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `recommendation_set_id` TEXT, `immunization_name` TEXT, `status` TEXT, `disease_due_date` INTEGER, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `recommendation_set_id` TEXT, `immunization_name` TEXT, `status` TEXT, `disease_due_date` INTEGER, `recommendedVaccinations` TEXT, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1253,6 +1253,12 @@
             "fieldPath": "diseaseDueDate",
             "columnName": "disease_due_date",
             "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "recommendedVaccinations",
+            "columnName": "recommendedVaccinations",
+            "affinity": "TEXT",
             "notNull": false
           }
         ],
@@ -1521,7 +1527,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '02fb5ec377e928b6d89f456de5e3ca70')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5b8b350982cdb0dedb00c4c556017196')"
     ]
   }
 }

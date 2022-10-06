@@ -37,4 +37,7 @@ data class ImmunizationRecommendationEntity(
 
     @ColumnInfo(name = "disease_due_date")
     val diseaseDueDate: Instant?,
+
+    @ColumnInfo(name = "recommendedVaccinations")
+    val recommendedVaccinations: String?,
 )

@@ -241,4 +241,5 @@ fun ImmunizationRecommendationsDto.toEntity() = ImmunizationRecommendationEntity
     immunizationName = this.immunizationName,
     status = this.status?.text,
     diseaseDueDate = this.diseaseDueDate,
+    recommendedVaccinations = this.recommendedVaccinations
 )
