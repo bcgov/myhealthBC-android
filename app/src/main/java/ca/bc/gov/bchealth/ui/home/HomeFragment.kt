@@ -25,6 +25,7 @@ import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.fromHtml
 import ca.bc.gov.bchealth.utils.hide
 import ca.bc.gov.bchealth.utils.show
+import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -197,6 +198,11 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
             if (uiState.isForceLogout) {
                 bcscAuthViewModel.getEndSessionIntent()
                 viewModel.onForceLogout(false)
+            }
+
+            if (uiState.displayServiceDownMessage) {
+                binding.root.showServiceDownMessage(requireContext())
+                viewModel.resetUiState()
             }
         }
     }

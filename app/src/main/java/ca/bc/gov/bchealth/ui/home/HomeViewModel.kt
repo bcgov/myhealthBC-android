@@ -20,6 +20,7 @@ import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.patient.PatientRepository
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,7 +36,8 @@ class HomeViewModel @Inject constructor(
     private val patientRepository: PatientRepository,
     private val bcscAuthRepo: BcscAuthRepo,
     recommendationRepository: ImmunizationRecommendationRepository,
-    private val bannerRepository: BannerRepository
+    private val bannerRepository: BannerRepository,
+    private val mobileConfigRepository: MobileConfigRepository,
 ) : ViewModel() {
 
     private var bannerRequested = false
@@ -194,18 +196,14 @@ class HomeViewModel @Inject constructor(
     private fun fetchBanner() {
         if (bannerRequested.not()) {
             viewModelScope.launch {
+
                 try {
-                    bannerRepository.getBanner()?.apply {
-                        if (validateBannerDates(this)) {
-                            _bannerState.postValue(
-                                BannerItem(
-                                    title = title,
-                                    date = startDate.toDate(yyyy_MM_dd),
-                                    body = body,
-                                    displayReadMore = shouldDisplayReadMore(body),
-                                )
-                            )
-                        }
+                    val isHgServicesUp = mobileConfigRepository.getBaseUrl()
+
+                    if (isHgServicesUp) {
+                        callBannerRepository()
+                    } else {
+                        displayServiceDownMessage()
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -213,6 +211,27 @@ class HomeViewModel @Inject constructor(
             }
 
             bannerRequested = true
+        }
+    }
+
+    private fun displayServiceDownMessage() {
+        _uiState.update { state ->
+            state.copy(displayServiceDownMessage = true)
+        }
+    }
+
+    private suspend fun callBannerRepository() {
+        bannerRepository.getBanner()?.apply {
+            if (validateBannerDates(this)) {
+                _bannerState.postValue(
+                    BannerItem(
+                        title = title,
+                        date = startDate.toDate(yyyy_MM_dd),
+                        body = body,
+                        displayReadMore = shouldDisplayReadMore(body),
+                    )
+                )
+            }
         }
     }
 
@@ -238,6 +257,10 @@ class HomeViewModel @Inject constructor(
 
     private fun shouldDisplayReadMore(body: String): Boolean =
         body.fromHtml().length > COMMUNICATION_BANNER_MAX_LENGTH
+
+    fun resetUiState() {
+        _uiState.tryEmit(HomeUiState())
+    }
 }
 
 data class BannerItem(
@@ -255,7 +278,8 @@ data class HomeUiState(
     val isAuthenticationRequired: Boolean = false,
     val isBcscLoginRequiredPostBiometrics: Boolean = false,
     val patientFirstName: String? = null,
-    val isForceLogout: Boolean = false
+    val isForceLogout: Boolean = false,
+    val displayServiceDownMessage: Boolean = false
 )
 
 data class HomeRecordItem(
