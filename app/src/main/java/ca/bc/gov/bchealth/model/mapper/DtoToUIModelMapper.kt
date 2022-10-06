@@ -306,9 +306,9 @@ fun SpecialAuthorityDto.toUiModel() =
     )
 
 fun ImmunizationRecommendationsDto.toUiModel() = RecommendationDetailItem(
-    title = this.immunizationName.orPlaceholder(),
+    title = this.recommendedVaccinations.orPlaceholder(),
     status = this.status,
-    date = this.diseaseDueDate?.toDate().orPlaceholder(),
+    date = this.agentDueDate?.toDate().orPlaceholder(),
 )
 
 private fun ImmunizationForecastDto.toUiModel() = ForecastDetailItem(

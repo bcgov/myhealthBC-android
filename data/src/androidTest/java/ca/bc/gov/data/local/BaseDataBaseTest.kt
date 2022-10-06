@@ -78,7 +78,7 @@ abstract class BaseDataBaseTest {
     }
 
     protected fun getLabOrder(
-        id: String = "ccee5028-6d51-4474-ce18-08d91c31b95b",
+        id: Long = 99999L,
         patientId: Long = 1,
         collectionDateTime: Instant = Instant.now(),
         reportAvailable: Boolean = false,
@@ -203,7 +203,9 @@ abstract class BaseDataBaseTest {
             patientEntity = patientEntity,
             vaccineRecordCount = 2,
             testRecordCount = 2,
-            medicationRecordCount = 1
+            medicationRecordCount = 1,
+            covidTestCount = 0,
+            labTestCount = 0
         )
 
     protected fun getPatientWithHealthRecordCount2(patientEntity: PatientEntity) =
@@ -211,6 +213,8 @@ abstract class BaseDataBaseTest {
             patientEntity = patientEntity,
             vaccineRecordCount = 0,
             testRecordCount = 1,
-            medicationRecordCount = 0
+            medicationRecordCount = 0,
+            labTestCount = 0,
+            covidTestCount = 0
         )
 }
