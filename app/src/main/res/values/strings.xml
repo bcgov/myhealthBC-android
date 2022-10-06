@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Health Gateway</string>
+    <string name="app_name_development">Health Gateway - DEV</string>
+    <string name="app_name_mock">Health Gateway - MOCK</string>
+    <string name="app_name_stage">Health Gateway - STG</string>
 
     <!--Informational screen for camera permission-->
     <string name="privacy_policy">Privacy Policy</string>
