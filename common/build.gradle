@@ -36,12 +36,12 @@ android {
 
         stage {
             dimension "version"
-            buildConfigField "boolean", "FLAG_COMMENTS", "true"
+            buildConfigField "boolean", "FLAG_COMMENTS", "false"
         }
 
         prod {
             dimension "version"
-            buildConfigField "boolean", "FLAG_COMMENTS", "true"
+            buildConfigField "boolean", "FLAG_COMMENTS", "false"
         }
     }
 
