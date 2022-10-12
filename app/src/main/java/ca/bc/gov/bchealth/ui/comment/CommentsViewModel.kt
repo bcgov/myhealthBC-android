@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.comment
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.repository.CommentRepository
@@ -119,15 +120,29 @@ class CommentsViewModel @Inject constructor(
                     Instant.now()
                 )
             )
-            val latestComment = commentsDtoList.firstOrNull()
-            commentsList.add(
-                Comment(
-                    latestComment?.parentEntryId,
-                    latestComment?.text,
-                    latestComment?.createdDateTime?.toLocalDateTimeInstant(),
-                    latestComment?.isUploaded ?: true
+
+            if (FLAG_ADD_COMMENTS) {
+                val latestComment = commentsDtoList.firstOrNull()
+                commentsList.add(
+                    Comment(
+                        latestComment?.parentEntryId,
+                        latestComment?.text,
+                        latestComment?.createdDateTime?.toLocalDateTimeInstant(),
+                        latestComment?.isUploaded ?: true
+                    )
                 )
-            )
+            } else {
+                commentsList.addAll(
+                    commentsDtoList.map {
+                        Comment(
+                            it.parentEntryId,
+                            it.text,
+                            it.createdDateTime?.toLocalDateTimeInstant(),
+                            it.isUploaded ?: true
+                        )
+                    }
+                )
+            }
         }
         return commentsList
     }
