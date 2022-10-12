@@ -6,7 +6,6 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
-import ca.bc.gov.common.BuildConfig.FLAG_COMMENTS
 import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.ProtectiveWordException
@@ -181,13 +180,11 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 }
             }
 
-            if (FLAG_COMMENTS) {
-                try {
-                    commentsResponse = fetchComments(authParameters)
-                } catch (e: Exception) {
-                    handleException(e)?.let { failureResult ->
-                        return failureResult
-                    }
+            try {
+                commentsResponse = fetchComments(authParameters)
+            } catch (e: Exception) {
+                handleException(e)?.let { failureResult ->
+                    return failureResult
                 }
             }
 
@@ -266,10 +263,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             // Insert comments
-            if (FLAG_COMMENTS) {
-                commentsRepository.delete(true)
-                commentsResponse?.let { commentsRepository.insert(it) }
-            }
+            commentsRepository.delete(true)
+            commentsResponse?.let { commentsRepository.insert(it) }
 
             // Insert Health Visits
             healthVisitsRepository.deleteHealthVisits(patientId)
