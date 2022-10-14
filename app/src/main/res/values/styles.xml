@@ -174,4 +174,21 @@
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/primary_blue</item>
     </style>
+
+    <style name="RegistrationLabel" parent="TextAppearance.MaterialComponents.Headline4">>
+        <item name="android:layout_marginStart">@dimen/space_4_x</item>
+        <item name="android:layout_marginTop">@dimen/space_2_x</item>
+        <item name="android:layout_marginEnd">@dimen/space_4_x</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="RegistrationTextInputLayout" parent="HealthGateway.Widget.App.TextInputLayout">
+        <item name="android:layout_marginStart">@dimen/space_4_x</item>
+        <item name="android:layout_marginEnd">@dimen/space_4_x</item>
+        <item name="android:filterTouchesWhenObscured">true</item>
+        <item name="endIconMode">custom</item>
+    </style>
+
 </resources>
