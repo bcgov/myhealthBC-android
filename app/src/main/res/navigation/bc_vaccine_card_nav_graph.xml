@@ -42,6 +42,7 @@
     <include app:graph="@navigation/health_pass" />
     <include app:graph="@navigation/health_records" />
     <include app:graph="@navigation/news_feed" />
+    <include app:graph="@navigation/dependents" />
     <include app:graph="@navigation/resources" />
 
     <fragment
