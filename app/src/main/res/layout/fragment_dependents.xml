@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:filterTouchesWhenObscured="true"
+    tools:context=".ui.dependents.DependentsFragment">
+
+    <include
+        android:id="@+id/layout_toolbar"
+        layout="@layout/layout_top_appbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_title"
+        style="?textAppearanceHeadline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:text="@string/dependents_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_toolbar" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_body"
+        style="?textAppearanceHeadline4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:text="@string/dependents_body"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title" />
+
+    <FrameLayout
+        android:id="@+id/container_image_empty"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_1_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:layout_marginBottom="@dimen/space_1_x"
+        app:layout_constraintBottom_toTopOf="@+id/btn_add_dependent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_body">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:src="@drawable/img_dependents_empty" />
+
+    </FrameLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_add_dependent"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:layout_marginBottom="@dimen/space_1_x"
+        android:filterTouchesWhenObscured="true"
+        android:text="@string/dependents_add_dependent"
+        app:icon="@drawable/ic_add_dependent"
+        app:iconGravity="textStart"
+        app:iconPadding="@dimen/space_1_x"
+        app:layout_constraintBottom_toTopOf="@+id/btn_manage_dependent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_manage_dependent"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:layout_marginBottom="@dimen/space_2_x"
+        android:filterTouchesWhenObscured="true"
+        android:text="@string/dependents_manage_dependent"
+        android:visibility="gone"
+        app:icon="@drawable/ic_manage_dependent"
+        app:iconGravity="textStart"
+        app:iconPadding="@dimen/space_1_x"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
