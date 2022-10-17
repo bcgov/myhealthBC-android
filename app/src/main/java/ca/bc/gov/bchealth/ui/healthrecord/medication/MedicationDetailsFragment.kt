@@ -23,7 +23,7 @@ import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.widget.AddCommentCallback
-import ca.bc.gov.common.BuildConfig.FLAG_COMMENTS
+import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
 import ca.bc.gov.repository.SYNC_COMMENTS
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -46,17 +46,13 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
             viewModel.getMedicationDetails(args.medicationId)
         }
         observeUiState()
-        if (FLAG_COMMENTS) {
-            observeCommentsSyncCompletion()
-        }
+        observeCommentsSyncCompletion()
     }
 
     private fun initUI() {
         setUpRecyclerView()
-        binding.comment.toggleVisibility(FLAG_COMMENTS)
-        if (FLAG_COMMENTS) {
-            addCommentListener()
-        }
+        binding.comment.toggleVisibility(FLAG_ADD_COMMENTS)
+        addCommentListener()
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
@@ -70,13 +66,8 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
 
     private fun setUpRecyclerView() {
         medicationDetailAdapter = MedicationDetailAdapter()
-
-        concatAdapter = if (FLAG_COMMENTS) {
-            initCommentsAdapter()
-            ConcatAdapter(medicationDetailAdapter, commentsAdapter)
-        } else {
-            ConcatAdapter(medicationDetailAdapter)
-        }
+        initCommentsAdapter()
+        concatAdapter = ConcatAdapter(medicationDetailAdapter, commentsAdapter)
 
         val recyclerView = binding.rvMedicationDetailList
         recyclerView.adapter = concatAdapter
@@ -107,16 +98,12 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
 
                     handleError(state.onError)
 
-                    if (FLAG_COMMENTS) {
-                        getComments()
-                    }
+                    getComments()
                 }
             }
         }
 
-        if (FLAG_COMMENTS) {
-            observeComments()
-        }
+        observeComments()
     }
 
     private fun getComments() {
@@ -134,7 +121,9 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
                     if (state.latestComment.isNullOrEmpty().not()) {
                         commentsAdapter.submitList(state.latestComment)
                         // clear comment
-                        binding.comment.clearComment()
+                        if (FLAG_ADD_COMMENTS) {
+                            binding.comment.clearComment()
+                        }
                     }
 
                     handleError(state.onError)

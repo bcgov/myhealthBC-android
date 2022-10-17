@@ -35,7 +35,7 @@ class MockInterceptor(private val context: Context) : Interceptor {
             uri.contains("Report?hdid") ->
                 context.assets.readAssetsFile("lab_report.json")
             uri.contains("/api/immunizationservice/Immunization?hdid=") ->
-                context.assets.readAssetsFile("mock_immunisations_success.json")
+                context.assets.readAssetsFile("mock_immunizations_success.json")
             else -> ""
         }
 

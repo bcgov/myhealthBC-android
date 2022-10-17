@@ -13,8 +13,8 @@
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginEnd="@dimen/space_4_x"
-        android:visibility="gone"
         android:background="@drawable/solid_line"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,11 +27,11 @@
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginTop="@dimen/space_2_x"
         android:layout_marginEnd="@dimen/space_4_x"
-        app:layout_goneMarginTop="0dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_line"
+        app:layout_goneMarginTop="0dp"
         tools:text="Dose 1" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -41,10 +41,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginTop="@dimen/space_2_x"
-        app:layout_goneMarginTop="@dimen/space_1_x"
         android:text="@string/date"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_dose" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_dose"
+        app:layout_goneMarginTop="@dimen/space_1_x" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_occurrence_date"
@@ -127,7 +127,6 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_provider_title"
         tools:text="Vancouver convention centre" />
 
-
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_lot_number_title"
         style="?textAppearanceHeadline3"
@@ -150,5 +149,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_lot_number_title"
         tools:text="FD2503" />
+
+    <LinearLayout
+        android:id="@+id/view_forecast"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/tv_lot_number">
+
+        <View
+            style="@style/ContentDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_lot_number" />
+
+        <com.google.android.material.textview.MaterialTextView
+            style="?textAppearanceHeadline3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_4_x"
+            android:layout_marginEnd="@dimen/space_4_x"
+            android:text="@string/immnz_forecast_title" />
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/TextAppearance.App.Headline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_4_x"
+            android:layout_marginTop="@dimen/space_0_5_x"
+            android:layout_marginEnd="@dimen/space_4_x"
+            android:text="@string/immnz_forecast_body" />
+
+        <include
+            android:id="@+id/include_forecast"
+            layout="@layout/item_immunization_forecast" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

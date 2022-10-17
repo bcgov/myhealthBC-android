@@ -117,7 +117,8 @@ class CovidTestResultDetailFragment : BaseFragment(R.layout.fragment_test_result
 
         val covidTestResultsAdapter = CovidTestResultsAdapter(
             this,
-            covidTestResult.covidOrderWithCovidTest.covidTests
+            covidTestResult.covidOrderWithCovidTest.covidTests,
+            covidTestResult.covidOrderWithCovidTest.covidOrder.reportAvailable
         )
         binding.viewpagerCovidTestResults.adapter = covidTestResultsAdapter
         if (covidTestResult.covidOrderWithCovidTest.covidTests.size > 1) {
@@ -126,23 +127,6 @@ class CovidTestResultDetailFragment : BaseFragment(R.layout.fragment_test_result
                 binding.tabCovidTestResults,
                 binding.viewpagerCovidTestResults
             ) { _, _ -> }.attach()
-        }
-
-        if (covidTestResult.covidOrderWithCovidTest.covidOrder.reportAvailable) {
-            with(binding.layoutToolbar.topAppBar) {
-                if (willNotDraw()) {
-                    setWillNotDraw(false)
-                    inflateMenu(R.menu.menu_lab_test_details)
-                    setOnMenuItemClickListener { menu ->
-                        when (menu.itemId) {
-                            R.id.menu_download -> {
-                                viewModel.getCovidTestInPdf(args.covidOrderId)
-                            }
-                        }
-                        return@setOnMenuItemClickListener true
-                    }
-                }
-            }
         }
     }
 
@@ -158,7 +142,8 @@ class CovidTestResultDetailFragment : BaseFragment(R.layout.fragment_test_result
 
     inner class CovidTestResultsAdapter(
         fragment: Fragment,
-        private val covidTests: List<CovidTestDto>
+        private val covidTests: List<CovidTestDto>,
+        private val reportAvailable: Boolean
     ) : FragmentStateAdapter(fragment) {
 
         override fun getItemCount(): Int = covidTests.size
@@ -167,7 +152,9 @@ class CovidTestResultDetailFragment : BaseFragment(R.layout.fragment_test_result
 
             return CovidTestResultFragment.newInstance(
                 args.covidOrderId,
-                covidTests[position].id
+                covidTests[position].id,
+                reportAvailable,
+                itemClickListener = { viewModel.getCovidTestInPdf(args.covidOrderId) }
             )
         }
     }

@@ -10,7 +10,7 @@ data class ImmunizationForecastDto(
     var immunizationRecordId: Long = 0,
     val recommendationId: String? = null,
     val createDate: Instant,
-    val status: String? = null,
+    val status: ForecastStatus? = null,
     val displayName: String? = null,
     val eligibleDate: Instant,
     val dueDate: Instant

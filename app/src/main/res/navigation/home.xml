@@ -10,6 +10,9 @@
         android:name="ca.bc.gov.bchealth.ui.home.HomeFragment"
         tools:layout="@layout/fragment_home">
         <action
+            android:id="@+id/action_homeFragment_to_banner_detail"
+            app:destination="@id/bannerDetailFragment" />
+        <action
             android:id="@+id/action_homeFragment_to_health_records"
             app:destination="@id/health_records" />
         <action
@@ -18,10 +21,32 @@
         <action
             android:id="@+id/action_homeFragment_to_resources"
             app:destination="@id/resources" />
+
+        <action
+            android:id="@+id/action_homeFragment_to_recommendations"
+            app:destination="@id/recommendations" />
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/bannerDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.home.banner.BannerDetailFragment"
+        android:label="@string/home_banner_toolbar_title">
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="date"
+            app:argType="string" />
+        <argument
+            android:name="body"
+            app:argType="string" />
     </fragment>
 
     <include app:graph="@navigation/health_pass" />
     <include app:graph="@navigation/health_records" />
     <include app:graph="@navigation/resources" />
+    <include app:graph="@navigation/recommendations" />
 
 </navigation>

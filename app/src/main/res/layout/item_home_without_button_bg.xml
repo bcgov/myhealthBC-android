@@ -35,11 +35,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/space_1_x"
-            android:layout_marginEnd="@dimen/space_4_x"
             app:layout_constraintBottom_toBottomOf="@+id/img_icon"
+            android:layout_marginEnd="@dimen/space_4_x"
+            app:layout_constraintVertical_bias="0.35"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/img_icon"
-            tools:text="Health Records"
+            tools:text="Recommended immunizations"
             app:layout_constraintTop_toTopOf="@+id/img_icon" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -53,7 +54,7 @@
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/img_icon"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
             tools:text="View and manage all your available health records, including dispensed medications, health visits, COVID-19 test results, immunizations and more." />
 
         <com.google.android.material.textview.MaterialTextView

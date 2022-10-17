@@ -8,6 +8,7 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -28,23 +29,30 @@ import kotlinx.coroutines.launch
 
 private const val COVID_ORDER_ID = "COVID_ORDER_ID"
 private const val COVID_TEST_ID = "COVID_TEST_ID"
+private const val REPORT_AVAILABLE = "REPORT_AVAILABLE"
 
 /**
  * @author amit metri
  */
 @AndroidEntryPoint
-class CovidTestResultFragment : Fragment(R.layout.fragment_single_test_result) {
+class CovidTestResultFragment(private val itemClickListener: ItemClickListener) : Fragment(R.layout.fragment_single_test_result) {
 
     private val binding by viewBindings(FragmentSingleTestResultBinding::bind)
     private lateinit var covidOrderId: String
     private lateinit var covidTestId: String
+    private var reportAvailable: Boolean = false
     private val viewModel: CovidTestResultViewModel by viewModels()
+
+    fun interface ItemClickListener {
+        fun onItemClick()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             covidOrderId = it.getString(COVID_ORDER_ID).toString()
             covidTestId = it.getString(COVID_TEST_ID).toString()
+            reportAvailable = it.getBoolean(REPORT_AVAILABLE)
         }
     }
 
@@ -73,6 +81,9 @@ class CovidTestResultFragment : Fragment(R.layout.fragment_single_test_result) {
         covidTest: CovidTestDto?,
         patientDto: PatientDto?
     ) {
+        binding.btnViewPdf.isVisible = reportAvailable
+        binding.btnViewPdf.setOnClickListener { itemClickListener.onItemClick() }
+
         binding.apply {
             tvFullName.text = patientDto?.fullName
             tvTestResult.text = covidTest?.labResultOutcome
@@ -278,11 +289,12 @@ class CovidTestResultFragment : Fragment(R.layout.fragment_single_test_result) {
     companion object {
 
         @JvmStatic
-        fun newInstance(covidOrderId: String, covidTestId: String) =
-            CovidTestResultFragment().apply {
+        fun newInstance(covidOrderId: String, covidTestId: String, reportAvailable: Boolean, itemClickListener: ItemClickListener) =
+            CovidTestResultFragment(itemClickListener).apply {
                 arguments = Bundle().apply {
                     putString(COVID_ORDER_ID, covidOrderId)
                     putString(COVID_TEST_ID, covidTestId)
+                    putBoolean(REPORT_AVAILABLE, reportAvailable)
                 }
             }
     }

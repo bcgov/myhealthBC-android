@@ -8,7 +8,9 @@ import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.healthvisits.ClinicDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
+import ca.bc.gov.common.model.immunization.ForecastStatus
 import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
+import ca.bc.gov.common.model.immunization.ImmunizationRecommendationsDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPatientDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
@@ -50,6 +52,7 @@ import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
 import ca.bc.gov.data.datasource.local.entity.healthvisits.HealthVisitEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationForecastEntity
+import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecommendationEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecordWithForecast
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecordWithForecastAndPatient
@@ -324,7 +327,7 @@ fun ImmunizationForecastEntity.toDto() = ImmunizationForecastDto(
     immunizationRecordId,
     recommendationId,
     createDate,
-    status,
+    ForecastStatus.getByText(status),
     displayName,
     eligibleDate,
     dueDate
@@ -363,4 +366,12 @@ fun SpecialAuthorityEntity.toDto() = SpecialAuthorityDto(
     effectiveDate,
     expiryDate,
     dataSource
+)
+
+fun ImmunizationRecommendationEntity.toDto() = ImmunizationRecommendationsDto(
+    recommendationSetId = this.recommendationSetId,
+    immunizationName = this.immunizationName,
+    status = ForecastStatus.getByText(status),
+    agentDueDate = this.agentDueDate,
+    recommendedVaccinations = this.recommendedVaccinations
 )

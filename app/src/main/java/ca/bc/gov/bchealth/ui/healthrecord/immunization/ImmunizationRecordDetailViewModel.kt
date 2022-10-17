@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.immunization
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
+import ca.bc.gov.common.model.immunization.ForecastStatus
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,5 +59,12 @@ data class ImmunizationDoseDetailItem(
     val productName: String? = null,
     val immunizingAgent: String? = null,
     val providerOrClinicName: String? = null,
-    val lotNumber: String? = null
+    val lotNumber: String? = null,
+    val forecast: ForecastDetailItem? = null
+)
+
+data class ForecastDetailItem(
+    val name: String,
+    val status: ForecastStatus?,
+    val date: String,
 )

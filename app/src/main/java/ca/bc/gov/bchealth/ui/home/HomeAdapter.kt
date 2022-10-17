@@ -34,7 +34,7 @@ class HomeAdapter(
                 )
                 HomeWithButtonBgViewHolder(binding)
             }
-            HomeNavigationType.VACCINE_PROOF.ordinal, HomeNavigationType.RESOURCES.ordinal -> {
+            HomeNavigationType.VACCINE_PROOF.ordinal, HomeNavigationType.RESOURCES.ordinal, HomeNavigationType.RECOMMENDATIONS.ordinal -> {
                 val binding = ItemHomeWithoutButtonBgBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 )

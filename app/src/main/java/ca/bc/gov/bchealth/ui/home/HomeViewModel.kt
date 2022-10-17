@@ -2,18 +2,30 @@ package ca.bc.gov.bchealth.ui.home
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.utils.COMMUNICATION_BANNER_MAX_LENGTH
+import ca.bc.gov.bchealth.utils.INDEX_NOT_FOUND
+import ca.bc.gov.bchealth.utils.fromHtml
 import ca.bc.gov.common.model.AuthenticationStatus
+import ca.bc.gov.common.model.banner.BannerDto
+import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.yyyy_MM_dd
+import ca.bc.gov.repository.BannerRepository
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
+import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.patient.PatientRepository
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,13 +34,44 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val onBoardingRepository: OnBoardingRepository,
     private val patientRepository: PatientRepository,
-    private val bcscAuthRepo: BcscAuthRepo
+    private val bcscAuthRepo: BcscAuthRepo,
+    recommendationRepository: ImmunizationRecommendationRepository,
+    private val bannerRepository: BannerRepository,
+    private val mobileConfigRepository: MobileConfigRepository,
 ) : ViewModel() {
+
+    private var bannerRequested = false
+    private val _bannerState: MutableLiveData<BannerItem> = MutableLiveData()
+    val bannerState: LiveData<BannerItem>
+        get() = _bannerState
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     var isAuthenticationRequired: Boolean = true
     var isForceLogout: Boolean = false
+
+    private val _homeList = MutableLiveData<List<HomeRecordItem>>()
+    val homeList: LiveData<List<HomeRecordItem>>
+        get() = _homeList
+
+    private val recommendationItem = HomeRecordItem(
+        R.drawable.ic_recommendation,
+        R.string.home_recommendations_title,
+        R.string.home_recommendations_body,
+        R.drawable.ic_right_arrow,
+        R.string.learn_more,
+        HomeNavigationType.RECOMMENDATIONS
+    )
+
+    private val displayRecommendations =
+        recommendationRepository.getAllRecommendations().map { list ->
+            val isLoggedIn: Boolean = try {
+                bcscAuthRepo.checkSession()
+            } catch (e: Exception) {
+                false
+            }
+            list.isNotEmpty() && isLoggedIn
+        }
 
     fun launchCheck() = viewModelScope.launch {
         if (bcscAuthRepo.checkSession()) {
@@ -89,14 +132,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun getHomeRecordsList(): MutableList<HomeRecordItem> {
+    suspend fun getHomeRecordsList() {
         val isLoggedIn: Boolean = try {
             bcscAuthRepo.checkSession()
         } catch (e: Exception) {
             false
         }
 
-        return mutableListOf(
+        val list = mutableListOf(
             HomeRecordItem(
                 R.drawable.ic_login_info,
                 R.string.health_records,
@@ -122,10 +165,112 @@ class HomeViewModel @Inject constructor(
                 HomeNavigationType.RESOURCES
             )
         )
+
+        _homeList.postValue(list)
+        displayRecommendations.collect {
+            manageRecommendationCard(it)
+        }
     }
 
-    fun executeOneTimeDataFetch() = bcscAuthRepo.executeOneTimeDatFetch()
+    private fun manageRecommendationCard(display: Boolean) {
+        _homeList.value?.let { list ->
+            val cardIndex = list.indexOfLast { it.recordType == recommendationItem.recordType }
+
+            if (display) {
+                if (cardIndex == INDEX_NOT_FOUND) {
+                    _homeList.postValue(list.toMutableList().apply { add(recommendationItem) })
+                }
+            } else {
+                if (cardIndex > INDEX_NOT_FOUND) {
+                    _homeList.postValue(list.toMutableList().apply { removeAt(cardIndex) })
+                }
+            }
+        }
+    }
+
+    fun executeOneTimeDataFetch() {
+        fetchBanner()
+        bcscAuthRepo.executeOneTimeDatFetch()
+    }
+
+    private fun fetchBanner() {
+        if (bannerRequested.not()) {
+            viewModelScope.launch {
+
+                try {
+                    val isHgServicesUp = mobileConfigRepository.getBaseUrl()
+
+                    if (isHgServicesUp) {
+                        callBannerRepository()
+                    } else {
+                        displayServiceDownMessage()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            bannerRequested = true
+        }
+    }
+
+    private fun displayServiceDownMessage() {
+        _uiState.update { state ->
+            state.copy(displayServiceDownMessage = true)
+        }
+    }
+
+    private suspend fun callBannerRepository() {
+        bannerRepository.getBanner()?.apply {
+            if (validateBannerDates(this)) {
+                _bannerState.postValue(
+                    BannerItem(
+                        title = title,
+                        date = startDate.toDate(yyyy_MM_dd),
+                        body = body,
+                        displayReadMore = shouldDisplayReadMore(body),
+                    )
+                )
+            }
+        }
+    }
+
+    private fun validateBannerDates(bannerDto: BannerDto): Boolean {
+        val currentTime = System.currentTimeMillis()
+        return bannerDto.startDate.toEpochMilli() <= currentTime &&
+            currentTime < bannerDto.endDate.toEpochMilli()
+    }
+
+    fun toggleBanner() {
+        _bannerState.value?.let {
+            it.expanded = it.expanded.not()
+            _bannerState.postValue(it)
+        }
+    }
+
+    fun dismissBanner() {
+        _bannerState.value?.let {
+            it.isHidden = true
+            _bannerState.postValue(it)
+        }
+    }
+
+    private fun shouldDisplayReadMore(body: String): Boolean =
+        body.fromHtml().length > COMMUNICATION_BANNER_MAX_LENGTH
+
+    fun resetUiState() {
+        _uiState.tryEmit(HomeUiState())
+    }
 }
+
+data class BannerItem(
+    val title: String,
+    val date: String,
+    val body: String,
+    val displayReadMore: Boolean,
+    var expanded: Boolean = true,
+    var isHidden: Boolean = false
+)
 
 data class HomeUiState(
     val isLoading: Boolean = false,
@@ -133,7 +278,8 @@ data class HomeUiState(
     val isAuthenticationRequired: Boolean = false,
     val isBcscLoginRequiredPostBiometrics: Boolean = false,
     val patientFirstName: String? = null,
-    val isForceLogout: Boolean = false
+    val isForceLogout: Boolean = false,
+    val displayServiceDownMessage: Boolean = false
 )
 
 data class HomeRecordItem(
@@ -148,5 +294,6 @@ data class HomeRecordItem(
 enum class HomeNavigationType {
     HEALTH_RECORD,
     VACCINE_PROOF,
-    RESOURCES
+    RESOURCES,
+    RECOMMENDATIONS,
 }

@@ -9,6 +9,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemCommentBinding
 import ca.bc.gov.bchealth.databinding.ItemCommentsCountBinding
 import ca.bc.gov.bchealth.ui.comment.Comment
+import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
 import ca.bc.gov.common.utils.toDateTimeString
 
 /**
@@ -61,8 +62,10 @@ class CommentsAdapter(
                         )
                     }
 
-                holder.itemView.setOnClickListener {
-                    comment.id?.let { it1 -> itemClickListener.onItemClick(it1) }
+                if (FLAG_ADD_COMMENTS) {
+                    holder.itemView.setOnClickListener {
+                        comment.id?.let { it1 -> itemClickListener.onItemClick(it1) }
+                    }
                 }
             }
 
@@ -71,7 +74,8 @@ class CommentsAdapter(
                 if (comment.isUploaded) {
                     holder.binding.tvDateTime.text = comment.date?.toDateTimeString()
                 } else {
-                    holder.binding.tvDateTime.text = holder.itemView.context.getString(R.string.posting)
+                    holder.binding.tvDateTime.text =
+                        holder.itemView.context.getString(R.string.posting)
                 }
             }
         }

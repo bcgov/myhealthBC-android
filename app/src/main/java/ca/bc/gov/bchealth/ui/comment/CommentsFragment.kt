@@ -18,7 +18,7 @@ import ca.bc.gov.bchealth.databinding.FragmentCommentsBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.widget.AddCommentCallback
-import ca.bc.gov.common.BuildConfig.FLAG_COMMENTS
+import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
 import ca.bc.gov.repository.SYNC_COMMENTS
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -33,7 +33,7 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (FLAG_COMMENTS) {
+        if (FLAG_ADD_COMMENTS) {
             initUi()
             observeComments()
             viewModel.getComments(args.parentEntryId)

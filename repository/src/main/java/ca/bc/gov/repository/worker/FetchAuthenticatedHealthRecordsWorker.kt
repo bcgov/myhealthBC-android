@@ -1,19 +1,18 @@
 package ca.bc.gov.repository.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
-import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
-import ca.bc.gov.common.BuildConfig.FLAG_COMMENTS
 import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
-import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
+import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
@@ -31,6 +30,7 @@ import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.healthvisits.HealthVisitsRepository
 import ca.bc.gov.repository.immunization.ImmunizationForecastRepository
+import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.labtest.LabTestRepository
@@ -70,6 +70,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val mobileConfigRepository: MobileConfigRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
     private val immunizationForecastRepository: ImmunizationForecastRepository,
+    private val immunizationRecommendationRepository: ImmunizationRecommendationRepository,
     private val commentsRepository: CommentRepository,
     private val healthVisitsRepository: HealthVisitsRepository,
     private val specialAuthorityRepository: SpecialAuthorityRepository
@@ -93,7 +94,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         var covidOrderResponse: List<CovidOrderWithCovidTestDto>? = null
         var medicationResponse: MedicationStatementResponse? = null
         var labOrdersResponse: List<LabOrderWithLabTestDto>? = null
-        var immunizationResponse: List<ImmunizationRecordWithForecastDto>? = null
+        var immunizationDto: ImmunizationDto? = null
         var commentsResponse: List<CommentDto>? = null
         var healthVisitsResponse: List<HealthVisitsDto>? = null
         var specialAuthorityResponse: List<SpecialAuthorityDto>? = null
@@ -172,20 +173,18 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             try {
-                immunizationResponse = fetchImmunisations(authParameters)
+                immunizationDto = fetchImmunizations(authParameters)
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
                     return failureResult
                 }
             }
 
-            if (FLAG_COMMENTS) {
-                try {
-                    commentsResponse = fetchComments(authParameters)
-                } catch (e: Exception) {
-                    handleException(e)?.let { failureResult ->
-                        return failureResult
-                    }
+            try {
+                commentsResponse = fetchComments(authParameters)
+            } catch (e: Exception) {
+                handleException(e)?.let { failureResult ->
+                    return failureResult
                 }
             }
 
@@ -245,9 +244,11 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
             // Insert immunization records
             immunizationRecordRepository.delete(patientId)
-            immunizationResponse?.forEach {
+
+            immunizationDto?.records?.forEach {
                 it.immunizationRecord.patientId = patientId
                 val id = immunizationRecordRepository.insert(it.immunizationRecord)
+
                 it.immunizationForecast?.immunizationRecordId = id
                 it.immunizationForecast?.let { forecast ->
                     immunizationForecastRepository.insert(
@@ -256,11 +257,14 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 }
             }
 
-            // Insert comments
-            if (FLAG_COMMENTS) {
-                commentsRepository.delete(true)
-                commentsResponse?.let { commentsRepository.insert(it) }
+            immunizationDto?.recommendations?.forEach {
+                it.patientId = patientId
+                immunizationRecommendationRepository.insert(it)
             }
+
+            // Insert comments
+            commentsRepository.delete(true)
+            commentsResponse?.let { commentsRepository.insert(it) }
 
             // Insert Health Visits
             healthVisitsRepository.deleteHealthVisits(patientId)
@@ -290,7 +294,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         return Result.success()
     }
 
-    private fun handleException(exception: Exception): ListenableWorker.Result? {
+    private fun handleException(exception: Exception): Result? {
+        Log.e("RecordsWorker", "Handling Exception:")
         exception.printStackTrace()
         return if (isQueueException(exception)) {
             handleQueueItException(exception)
@@ -318,18 +323,18 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     }
 
     /*
-     * Fetch immunisations
+     * Fetch immunizations
      * */
-    private suspend fun fetchImmunisations(authParameters: Pair<String, String>): List<ImmunizationRecordWithForecastDto>? {
-        var immunisationResponse: List<ImmunizationRecordWithForecastDto>?
+    private suspend fun fetchImmunizations(authParameters: Pair<String, String>): ImmunizationDto? {
+        var immunizationDto: ImmunizationDto?
         withContext(dispatcher) {
-            immunisationResponse =
+            immunizationDto =
                 immunizationRecordRepository.fetchImmunization(
                     authParameters.first,
                     authParameters.second
                 )
         }
-        return immunisationResponse
+        return immunizationDto
     }
 
     /*

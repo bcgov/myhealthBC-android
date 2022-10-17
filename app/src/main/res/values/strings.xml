@@ -12,6 +12,12 @@
     <string name="grant">Grant</string>
     <string name="not_now">Not now</string>
 
+    <!--Recommendations-->
+    <string name="recommendations">Recommendations</string>
+    <string name="recommendations_home_title">Recommended immunizations</string>
+    <string name="recommendations_description">For more information on vaccines recommendation and eligibility, please visit immunizeBC or speak to your health care provider.</string>
+    <string name="recommendations_description_clickable">immunizeBC</string>
+
     <!--Resources-->
     <string name="resources">Resources</string>
     <string name="resource_screen_message">Connect with HealthLink BC for health advice and get the latest information about COVID-19.</string>
@@ -339,7 +345,11 @@
     <string name="proof_of_vaccination_desc">Save proof of vaccination documents for you and your family</string>
     <string name="add_proofs">Add proofs</string>
     <string name="resources_desc">Find trusted health information and resources</string>
+    <string name="home_recommendations_title">Recommended immunizations</string>
+    <string name="home_recommendations_body">Find out which vaccinations are recommended for you</string>
     <string name="learn_more">Learn more</string>
+    <string name="home_subtitle">What do you want to focus on today?</string>
+    <string name="home_banner_toolbar_title">New updates</string>
 
     <!--Terms of service-->
     <string name="terms_of_service">Terms of service</string>
@@ -392,5 +402,12 @@
     <string name="effective_date">Effective Date:</string>
     <string name="expiry_date">Expiry Date:</string>
     <string name="reference_number">Reference Number:</string>
+
+    <!--Immnz Forecast-->
+    <string name="immnz_forecast_title">Next dose:</string>
+    <string name="immnz_forecast_body">Find out more about what is immunization forecast and what does the status mean.</string>
+    <string name="immnz_forecast_status">Status: %s</string>
+    <string name="immnz_forecast_due_date">Due date: %s</string>
+    <string name="view_pdf">View PDF</string>
 
 </resources>

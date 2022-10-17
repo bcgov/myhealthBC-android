@@ -84,7 +84,8 @@
         <item name="colorError">@color/error</item>
         <item name="textAppearanceSubtitle1">@style/TextAppearance.App.Subtitle1</item>
         <item name="textAppearanceCaption">@style/TextAppearance.App.Caption</item>
-        <item name="editTextStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox</item>
+        <item name="editTextStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox
+        </item>
     </style>
 
     <style name="TextAppearance.App.HelperText" parent="TextAppearance.MaterialComponents.Caption">
@@ -104,6 +105,12 @@
         <item name="fontFamily">@font/bc_sans_regular</item>
         <item name="android:fontFamily">@font/bc_sans_regular</item>
         <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="TextAppearance.App.Headline" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="fontFamily">@font/bc_sans_regular</item>
+        <item name="android:fontFamily">@font/bc_sans_regular</item>
+        <item name="android:textSize">13sp</item>
     </style>
 
     <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
@@ -126,6 +133,7 @@
         <item name="android:colorAccent">@color/blue</item>
         <item name="boxStrokeColor">@color/blue</item>
     </style>
+
     <style name="ChipFilterByType" parent="Widget.MaterialComponents.Chip.Filter">
         <item name="chipCornerRadius">@dimen/space_1_x</item>
         <item name="chipStrokeWidth">1dp</item>
@@ -145,6 +153,25 @@
     </style>
 
     <style name="TextAppearance.App.CollapsingToolbar.Collapsed" parent="HealthGateway.TextAppearance.MaterialComponents.Headline3">
+        <item name="android:textColor">@color/primary_blue</item>
+    </style>
+
+    <style name="ContentDivider" parent="android:Widget">
+        <item name="android:background">@color/shadow_grey</item>
+        <item name="android:layout_marginTop">@dimen/space_3_x</item>
+        <item name="android:layout_marginBottom">@dimen/space_3_x</item>
+        <item name="android:layout_marginStart">@dimen/space_4_x</item>
+        <item name="android:layout_marginEnd">@dimen/space_4_x</item>
+    </style>
+
+    <style name="BannerButton" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="fontFamily">@font/bc_sans_bold</item>
+        <item name="android:fontFamily">@font/bc_sans_bold</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:drawablePadding">@dimen/space_0_5_x</item>
+        <item name="android:paddingTop">@dimen/space_2_x</item>
+        <item name="android:paddingBottom">@dimen/space_2_x</item>
+        <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/primary_blue</item>
     </style>
 </resources>

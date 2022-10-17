@@ -181,6 +181,7 @@ fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         } catch (e: Exception) {
+            e.printStackTrace()
             // no implementation required.
         }
     }

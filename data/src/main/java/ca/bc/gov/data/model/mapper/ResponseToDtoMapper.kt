@@ -7,10 +7,14 @@ import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.TermsOfServiceDto
+import ca.bc.gov.common.model.banner.BannerDto
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.healthvisits.ClinicDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
+import ca.bc.gov.common.model.immunization.ForecastStatus
+import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
+import ca.bc.gov.common.model.immunization.ImmunizationRecommendationsDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
@@ -22,9 +26,11 @@ import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.utils.toDateTime
+import ca.bc.gov.common.utils.toDateTimeZ
 import ca.bc.gov.data.datasource.remote.model.base.LabResult
 import ca.bc.gov.data.datasource.remote.model.base.Order
 import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
+import ca.bc.gov.data.datasource.remote.model.base.banner.BannerPayload
 import ca.bc.gov.data.datasource.remote.model.base.comment.CommentPayload
 import ca.bc.gov.data.datasource.remote.model.base.covidtest.CovidTestRecord
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.Clinic
@@ -32,6 +38,7 @@ import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsPayl
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsResponse
 import ca.bc.gov.data.datasource.remote.model.base.immunization.Forecast
 import ca.bc.gov.data.datasource.remote.model.base.immunization.ImmunizationRecord
+import ca.bc.gov.data.datasource.remote.model.base.immunization.Recommendation
 import ca.bc.gov.data.datasource.remote.model.base.medication.DispensingPharmacy
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationStatementPayload
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationSummary
@@ -49,7 +56,6 @@ import ca.bc.gov.data.model.MediaMetaData
 import ca.bc.gov.data.model.VaccineStatus
 import java.time.Instant
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME
 
 fun CovidTestRecord.toTestRecord() = TestRecordDto(
     id = reportId,
@@ -257,22 +263,27 @@ fun ImmunizationRecord.toDto(): ImmunizationRecordDto {
 fun Forecast.toDto() = ImmunizationForecastDto(
     recommendationId = recommendationId,
     createDate = createDate.toDateTime(),
-    status = status,
+    status = ForecastStatus.getByText(status),
     displayName = displayName,
     eligibleDate = eligibleDate.toDateTime(),
     dueDate = dueDate.toDateTime()
 )
 
-fun ImmunizationResponse.toDto(): List<ImmunizationRecordWithForecastDto> {
-
-    return this.payload.immunizations.map {
-
+fun ImmunizationResponse.toDto() = ImmunizationDto(
+    records = this.payload.immunizations.map {
         ImmunizationRecordWithForecastDto(
             it.toDto(),
             it.forecast?.toDto()
         )
+    },
+    recommendations = this.payload.recommendations.mapNotNull {
+        if (it.recommendedVaccinations.isNullOrBlank()) {
+            null
+        } else {
+            it.toDto()
+        }
     }
-}
+)
 
 fun HealthVisitsResponse.toDto(): List<HealthVisitsDto> {
     return payload.map { it.toDto() }
@@ -309,4 +320,23 @@ fun SpecialAuthorityPayload.toDto() = SpecialAuthorityDto(
     effectiveDate?.toDateTime(),
     expiryDate?.toDateTime(),
     dataSource = DataSource.BCSC
+)
+
+fun Recommendation.toDto(): ImmunizationRecommendationsDto {
+    val agent = immunization.immunizationAgents.firstOrNull()
+
+    return ImmunizationRecommendationsDto(
+        recommendationSetId = this.recommendationSetId,
+        immunizationName = agent?.name,
+        status = ForecastStatus.getByText(status),
+        agentDueDate = this.agentDueDate?.toDateTime(),
+        recommendedVaccinations = this.recommendedVaccinations
+    )
+}
+
+fun BannerPayload.toDto() = BannerDto(
+    title = this.title,
+    body = this.body,
+    startDate = this.startDate.toDateTimeZ(),
+    endDate = this.endDate.toDateTimeZ()
 )
