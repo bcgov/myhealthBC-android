@@ -21,6 +21,13 @@
     <string name="recommendations_description">For more information on vaccines recommendation and eligibility, please visit immunizeBC or speak to your health care provider.</string>
     <string name="recommendations_description_clickable">immunizeBC</string>
 
+    <!--Dependents-->
+    <string name="dependent">Dependent</string>
+    <string name="dependents_title">Dependents</string>
+    <string name="dependents_body">You can add your dependents under the age of 12 to view their COVID-19 results. Please complete the form with your dependent’s information, exactly as it appears on their BC Services Card.</string>
+    <string name="dependents_add_dependent">Add dependent</string>
+    <string name="dependents_manage_dependent">Manage dependents</string>
+
     <!--Resources-->
     <string name="resources">Resources</string>
     <string name="resource_screen_message">Connect with HealthLink BC for health advice and get the latest information about COVID-19.</string>
