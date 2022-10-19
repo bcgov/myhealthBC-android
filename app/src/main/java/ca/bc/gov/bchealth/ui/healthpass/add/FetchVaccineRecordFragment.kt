@@ -263,20 +263,9 @@ class FetchVaccineRecordFragment : BaseFragment(R.layout.fragment_fetch_vaccine_
         val dob = binding.edDob.text.toString()
         val dov = binding.edDov.text.toString()
 
-        if (PhnHelper().validatePhnData(
-                binding.edPhnNumber,
-                requireContext()
-            ) &&
-            DatePickerHelper().validateDatePickerData(
-                    binding.tipDob,
-                    requireContext(),
-                    getString(R.string.dob_required)
-                ) &&
-            DatePickerHelper().validateDatePickerData(
-                    binding.tipDov,
-                    requireContext(),
-                    getString(R.string.dov_required)
-                )
+        if (PhnHelper().validatePhnData(binding.edPhnNumber) &&
+            DatePickerHelper().validateDatePickerData(binding.tipDob, R.string.dob_required) &&
+            DatePickerHelper().validateDatePickerData(binding.tipDov, R.string.dov_required)
         ) {
             viewModel.fetchVaccineRecord(phn, dob, dov)
         }
@@ -285,7 +274,7 @@ class FetchVaccineRecordFragment : BaseFragment(R.layout.fragment_fetch_vaccine_
     private fun setUpDovUI() {
         DatePickerHelper().initializeDatePicker(
             binding.tipDov,
-            getString(R.string.enter_dov),
+            R.string.enter_dov,
             parentFragmentManager,
             "DATE_OF_VACCINATION"
         )
@@ -294,7 +283,7 @@ class FetchVaccineRecordFragment : BaseFragment(R.layout.fragment_fetch_vaccine_
     private fun setUpDobUI() {
         DatePickerHelper().initializeDatePicker(
             binding.tipDob,
-            getString(R.string.enter_dob),
+            R.string.enter_dob,
             parentFragmentManager,
             "DATE_OF_BIRTH"
         )
