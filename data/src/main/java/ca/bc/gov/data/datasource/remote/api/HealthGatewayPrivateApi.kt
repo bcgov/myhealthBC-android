@@ -3,11 +3,13 @@ package ca.bc.gov.data.datasource.remote.api
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsResponse
 import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityResponse
 import ca.bc.gov.data.datasource.remote.model.request.CommentRequest
+import ca.bc.gov.data.datasource.remote.model.request.DependentRegistrationRequest
 import ca.bc.gov.data.datasource.remote.model.request.UserProfileRequest
 import ca.bc.gov.data.datasource.remote.model.response.AddCommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.AllCommentsResponse
 import ca.bc.gov.data.datasource.remote.model.response.AuthenticatedCovidTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
+import ca.bc.gov.data.datasource.remote.model.response.DependentResponse
 import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestPdfResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
@@ -141,4 +143,11 @@ interface HealthGatewayPrivateApi {
         @Header(AUTHORIZATION) accessToken: String,
         @Path(HDID) hdid: String,
     ): Response<SpecialAuthorityResponse>
+
+    @POST("$BASE_USER_PROFILE_SERVICE/{$HDID}/Dependent")
+    suspend fun addDependent(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String,
+        @Body dependentRegistrationRequest: DependentRegistrationRequest
+    ): Response<DependentResponse>
 }

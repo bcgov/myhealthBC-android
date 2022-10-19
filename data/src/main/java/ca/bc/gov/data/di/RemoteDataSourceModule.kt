@@ -2,6 +2,7 @@ package ca.bc.gov.data.di
 
 import ca.bc.gov.data.datasource.remote.BannerRemoteDataSource
 import ca.bc.gov.data.datasource.remote.CommentRemoteDataSource
+import ca.bc.gov.data.datasource.remote.DependentsRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
@@ -55,6 +56,12 @@ class RemoteDataSourceModule {
     fun provideCommentRemoteDataSource(
         healthGatewayPrivateApi: HealthGatewayPrivateApi
     ) = CommentRemoteDataSource(healthGatewayPrivateApi)
+
+    @Provides
+    @Singleton
+    fun provideDependentsRemoteDataSource(
+        healthGatewayPrivateApi: HealthGatewayPrivateApi
+    ) = DependentsRemoteDataSource(healthGatewayPrivateApi)
 
     @Singleton
     @Provides

@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.dependents.registration
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
@@ -14,9 +15,12 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AddDependentFragment : BaseFragment(R.layout.fragment_add_dependent) {
     private val binding by viewBindings(FragmentAddDependentBinding::bind)
+    private val viewModel: AddDependentsViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.btnRegister.setOnClickListener {
+        }
         binding.btnCancel.setOnClickListener { findNavController().popBackStack() }
         setUpDobUI()
     }
