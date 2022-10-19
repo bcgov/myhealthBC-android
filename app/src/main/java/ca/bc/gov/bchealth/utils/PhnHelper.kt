@@ -1,6 +1,5 @@
 package ca.bc.gov.bchealth.utils
 
-import android.content.Context
 import androidx.core.widget.doOnTextChanged
 import ca.bc.gov.bchealth.R
 import com.google.android.material.textfield.TextInputLayout
@@ -10,12 +9,9 @@ import com.google.android.material.textfield.TextInputLayout
 */
 class PhnHelper {
 
-    fun validatePhnData(
-        textInputLayout: TextInputLayout,
-        context: Context
-    ): Boolean {
+    fun validatePhnData(textInputLayout: TextInputLayout): Boolean {
         if (textInputLayout.editText?.text.isNullOrEmpty()) {
-            textInputLayout.error = context.getString(R.string.phn_number_required)
+            textInputLayout.error = textInputLayout.context.getString(R.string.phn_number_required)
             showErrorState(textInputLayout)
             return false
         }

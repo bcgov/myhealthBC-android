@@ -33,10 +33,12 @@
     <string name="dependents_add_dependent">Add dependent</string>
     <string name="dependents_manage_dependent">Manage dependents</string>
     <string name="dependents_registration_title">Dependent Registration</string>
-    <string name="dependents_registration_given_name">Given Names</string>
-    <string name="dependents_registration_given_name_hint">John Alexander</string>
+    <string name="dependents_registration_first_name">Given Names</string>
+    <string name="dependents_registration_first_name_hint">John Alexander</string>
+    <string name="dependents_registration_first_name_error">Given Names is required</string>
     <string name="dependents_registration_given_last_name">Last Name</string>
     <string name="dependents_registration_given_last_name_hint">Doe</string>
+    <string name="dependents_registration_given_last_name_error">Last Name is required</string>
     <string name="dependents_registration_date_of_birth">Date of birth (DoB)</string>
     <string name="dependents_registration_phn">Personal Health Number (PHN)</string>
     <string name="dependents_registration_phn_hint" tools:ignore="Typos">xxxx xxx xxx</string>

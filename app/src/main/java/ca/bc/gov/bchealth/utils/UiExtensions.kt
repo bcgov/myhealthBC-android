@@ -11,8 +11,11 @@ import android.text.style.StyleSpan
 import android.text.style.URLSpan
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import androidx.annotation.StringRes
+import androidx.core.widget.doOnTextChanged
 import ca.bc.gov.bchealth.R
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.textfield.TextInputLayout
 
 fun TextView.underlineText() {
     this.paintFlags = this.paintFlags or Paint.UNDERLINE_TEXT_FLAG
@@ -25,6 +28,25 @@ fun MaterialToolbar.inflateHelpButton(action: () -> Unit) {
             R.id.menu_help -> action.invoke()
         }
         return@setOnMenuItemClickListener true
+    }
+}
+
+fun TextInputLayout.validateEmptyInputLayout(@StringRes message: Int): Boolean {
+    if (editText?.text.isNullOrEmpty()) {
+        error = context.getString(message)
+        showErrorState(this)
+        return false
+    }
+    return true
+}
+
+private fun showErrorState(textInputLayout: TextInputLayout) {
+    textInputLayout.isErrorEnabled = true
+    textInputLayout.editText?.doOnTextChanged { text, _, _, _ ->
+        if (text != null && text.isNotEmpty()) {
+            textInputLayout.isErrorEnabled = false
+            textInputLayout.error = null
+        }
     }
 }
 

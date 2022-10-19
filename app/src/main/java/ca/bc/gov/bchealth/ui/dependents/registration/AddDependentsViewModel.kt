@@ -11,6 +11,12 @@ import javax.inject.Inject
 class AddDependentsViewModel @Inject constructor(
     private val dependentsRepository: DependentsRepository,
 ) : ViewModel() {
+//login screen
+
+    //todo: mobile conf
+    //todo: handle non authenticades (display screen)
+    //todo: handle MyHealthException(AUTH_ERROR_DO_LOGIN)
+    //todo: different validation error (backend)
 
     fun registerDependent(
         firstName: String,
@@ -19,9 +25,14 @@ class AddDependentsViewModel @Inject constructor(
         phn: String,
     ) {
         viewModelScope.launch {
-            dependentsRepository.addDependent(
-                firstName, lastName, dob, phn,
-            )
+            try {
+                dependentsRepository.addDependent(
+                    firstName, lastName, dob, phn,
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
+
 }
