@@ -145,7 +145,7 @@ class FilterFragment : BaseFragment(R.layout.fragment_filter) {
 
     private fun observeFilterState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 filterSharedViewModel.filterState.collect { filterState ->
 
                     binding.etFrom.setText(filterState.filterFromDate)

@@ -57,7 +57,7 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
         binding.recItems.layoutManager = LinearLayoutManager(requireContext())
 
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.fetchNewsFeed(getString(R.string.url_news_feed))
             }
         }

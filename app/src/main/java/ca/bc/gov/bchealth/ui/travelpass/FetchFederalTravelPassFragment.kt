@@ -77,7 +77,7 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
         setUpPhnUI()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
 
                     showLoader(uiState.onLoading)
@@ -118,7 +118,7 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 addOrUpdateCardViewModel.uiState.collect { state ->
 
@@ -161,7 +161,7 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
 
     private fun setUpPhnUI() {
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 recentPhnDobViewModel.recentPhnDob.collect { recentPhnDob ->
                     val (phn, dob) = recentPhnDob
                     val phnArray = arrayOf(phn)
