@@ -106,7 +106,6 @@ class FetchVaccineRecordFragment : BaseFragment(R.layout.fragment_fetch_vaccine_
 
     private fun performActionBasedOnState(state: AddCardOptionUiState) {
         when (state.state) {
-
             Status.CAN_INSERT -> {
                 state.vaccineRecord?.let { insert(it) }
                 addOrUpdateCardViewModel.resetStatus()
@@ -156,6 +155,7 @@ class FetchVaccineRecordFragment : BaseFragment(R.layout.fragment_fetch_vaccine_
                     positiveBtnMsg = getString(R.string.btn_ok)
                 )
             }
+            null -> return
         }
     }
 
