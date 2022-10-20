@@ -78,6 +78,11 @@ android {
 
     buildFeatures {
         viewBinding true
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = versions.compose_compiler
     }
 
     testOptions {
@@ -99,6 +104,12 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swipe_refresh_layout"
     implementation "androidx.coordinatorlayout:coordinatorlayout:$versions.coordinator"
+
+    //Compose
+    implementation "androidx.compose.ui:ui-tooling-preview:$versions.compose_ui"
+    debugImplementation "androidx.compose.ui:ui-tooling:$versions.compose_ui"
+    implementation "androidx.compose.material:material:$versions.compose_ui"
+    implementation "com.google.android.material:compose-theme-adapter:$versions.compose_theme"
 
     //Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$versions.navigation"
