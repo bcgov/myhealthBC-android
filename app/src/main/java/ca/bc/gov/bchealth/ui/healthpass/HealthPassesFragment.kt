@@ -90,13 +90,13 @@ class HealthPassesFragment : BaseFragment(R.layout.fragment_helath_passes) {
         )
 
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 collectHealthPasses()
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 pdfDecoderViewModel.uiState.collect { uiState ->
                     if (uiState.pdf != null) {
                         val (federalTravelPass, file) = uiState.pdf
