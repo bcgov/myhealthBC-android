@@ -191,11 +191,13 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
     private fun fetchTravelPass() {
         val phn = binding.edPhn.text.toString()
         if (PhnHelper().validatePhnData(binding.edPhnNumber, requireContext())) {
-            viewModel.fetchVaccineRecord(
-                phn,
-                patientDataDto.patient.dateOfBirth.toDate(yyyy_MM_dd),
-                patientDataDto.vaccineWithDoses?.doses!!.last().date.toDate(yyyy_MM_dd)
-            )
+            patientDataDto.vaccineWithDoses?.doses?.let { doses ->
+                viewModel.fetchVaccineRecord(
+                    phn,
+                    patientDataDto.patient.dateOfBirth.toDate(yyyy_MM_dd),
+                    doses.last().date.toDate(yyyy_MM_dd)
+                )
+            }
         }
     }
 
