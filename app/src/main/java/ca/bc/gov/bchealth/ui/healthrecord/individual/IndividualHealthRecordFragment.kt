@@ -6,9 +6,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,12 +22,12 @@ import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordA
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.utils.hide
+import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 /**
  * @author Pinakin Kansara
@@ -197,14 +194,12 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun observeHealthRecords() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { uiState ->
-                    if (uiState.isBcscAuthenticatedPatientAvailable != null &&
-                        uiState.isBcscAuthenticatedPatientAvailable
-                    ) {
-                        updateUi(uiState)
-                    }
+        launchOnStart {
+            viewModel.uiState.collect { uiState ->
+                if (uiState.isBcscAuthenticatedPatientAvailable != null &&
+                    uiState.isBcscAuthenticatedPatientAvailable
+                ) {
+                    updateUi(uiState)
                 }
             }
         }
@@ -366,34 +361,32 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun observeFilterState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                filterSharedViewModel.filterState.collect { filterState ->
+        launchOnStart {
+            filterSharedViewModel.filterState.collect { filterState ->
 
-                    // update filter date selection
-                    if (isFilterDateSelected(filterState)) {
-                        binding.content.chipGroup.chipDate.apply {
-                            show()
-                            text = when {
-                                filterState.filterFromDate.isNullOrBlank() -> {
-                                    filterState.filterToDate + " " + getString(R.string.before)
-                                }
-                                filterState.filterToDate.isNullOrBlank() -> {
-                                    filterState.filterFromDate + " " + getString(R.string.after)
-                                }
-                                else -> {
-                                    filterState.filterFromDate + " - " + filterState.filterToDate
-                                }
+                // update filter date selection
+                if (isFilterDateSelected(filterState)) {
+                    binding.content.chipGroup.chipDate.apply {
+                        show()
+                        text = when {
+                            filterState.filterFromDate.isNullOrBlank() -> {
+                                filterState.filterToDate + " " + getString(R.string.before)
+                            }
+                            filterState.filterToDate.isNullOrBlank() -> {
+                                filterState.filterFromDate + " " + getString(R.string.after)
+                            }
+                            else -> {
+                                filterState.filterFromDate + " - " + filterState.filterToDate
                             }
                         }
-                    } else {
-                        binding.content.chipGroup.chipDate.hide()
                     }
-
-                    updateTypeFilterSelection(filterState)
-
-                    updateClearButton(filterState)
+                } else {
+                    binding.content.chipGroup.chipDate.hide()
                 }
+
+                updateTypeFilterSelection(filterState)
+
+                updateClearButton(filterState)
             }
         }
     }

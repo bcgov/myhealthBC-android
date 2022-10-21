@@ -100,7 +100,6 @@ class AddCardOptionFragment : BaseFragment(R.layout.fragment_add_card_options) {
 
     private fun performActionBasedOnState(state: AddCardOptionUiState) {
         when (state.state) {
-
             Status.CAN_INSERT -> {
                 state.vaccineRecord?.let { insert(it) }
                 addOrUpdateCardViewModel.resetStatus()
@@ -139,6 +138,7 @@ class AddCardOptionFragment : BaseFragment(R.layout.fragment_add_card_options) {
                     }
                 )
             }
+            null -> return
         }
     }
 

@@ -6,10 +6,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,11 +14,11 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHelathPassesBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.PdfHelper
+import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import java.io.File
 
 /**
@@ -89,31 +86,9 @@ class HealthPassesFragment : BaseFragment(R.layout.fragment_helath_passes) {
             }
         )
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                collectHealthPasses()
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                pdfDecoderViewModel.uiState.collect { uiState ->
-                    if (uiState.pdf != null) {
-                        val (federalTravelPass, file) = uiState.pdf
-                        if (file != null) {
-                            try {
-                                fileInMemory = file
-                                PdfHelper().showPDF(file, requireActivity(), resultListener)
-                            } catch (e: Exception) {
-                                navigateToViewTravelPass(federalTravelPass)
-                            }
-                        } else {
-                            navigateToViewTravelPass(federalTravelPass)
-                        }
-                        pdfDecoderViewModel.resetUiState()
-                    }
-                }
-            }
+        launchOnStart {
+            collectHealthPasses()
+            collectUiState()
         }
     }
 
@@ -162,6 +137,25 @@ class HealthPassesFragment : BaseFragment(R.layout.fragment_helath_passes) {
                 sharedViewModel.setModifiedRecordId(-1L)
                 healthPassAdapter.submitList(passes)
                 binding.recCardsList.layoutManager?.scrollToPosition(position)
+            }
+        }
+    }
+
+    private suspend fun collectUiState() {
+        pdfDecoderViewModel.uiState.collect { uiState ->
+            if (uiState.pdf != null) {
+                val (federalTravelPass, file) = uiState.pdf
+                if (file != null) {
+                    try {
+                        fileInMemory = file
+                        PdfHelper().showPDF(file, requireActivity(), resultListener)
+                    } catch (e: Exception) {
+                        navigateToViewTravelPass(federalTravelPass)
+                    }
+                } else {
+                    navigateToViewTravelPass(federalTravelPass)
+                }
+                pdfDecoderViewModel.resetUiState()
             }
         }
     }
