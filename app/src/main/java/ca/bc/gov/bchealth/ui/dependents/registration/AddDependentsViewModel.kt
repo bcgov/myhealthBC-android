@@ -1,12 +1,11 @@
 package ca.bc.gov.bchealth.ui.dependents.registration
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordUiState
 import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
-import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.model.ErrorData
@@ -28,9 +27,6 @@ class AddDependentsViewModel @Inject constructor(
     private val _uiState = MutableSharedFlow<AddDependentsUiState>(extraBufferCapacity = 1)
     val uiState: SharedFlow<AddDependentsUiState> = _uiState.asSharedFlow()
 
-    //todo: handle non authenticated (display screen)
-    //todo: handle MyHealthException(AUTH_ERROR_DO_LOGIN)
-
     fun registerDependent(
         firstName: String,
         lastName: String,
@@ -38,13 +34,13 @@ class AddDependentsViewModel @Inject constructor(
         phn: String,
     ) {
         viewModelScope.launch {
-            _uiState.tryEmit(AddDependentsUiState(onLoading = true))
+            emitLoading(true)
             try {
                 val isHgServicesUp = mobileConfigRepository.getBaseUrl()
 
                 if (isHgServicesUp) {
                     dependentsRepository.addDependent(firstName, lastName, dob, phn)
-                    _uiState.tryEmit(AddDependentsUiState(onLoading = false))
+                    emitLoading(false)
                 } else {
                     _uiState.tryEmit(
                         AddDependentsUiState(isHgServicesUp = false, onLoading = false)
@@ -63,33 +59,32 @@ class AddDependentsViewModel @Inject constructor(
                     }
                     is MyHealthException -> {
                         when (e.errCode) {
-                            SERVER_ERROR_DATA_MISMATCH, SERVER_ERROR_INCORRECT_PHN -> {
-                                _uiState.tryEmit(
-                                    AddDependentsUiState(
-                                        errorData = ErrorData(
-                                            R.string.error_data_mismatch_title,
-                                            R.string.error_vaccine_data_mismatch_message
-                                        )
-                                    )
-                                )
-                            }
+                            SERVER_ERROR_DATA_MISMATCH, SERVER_ERROR_INCORRECT_PHN -> emitError(
+                                R.string.error_data_mismatch_title,
+                                R.string.error_vaccine_data_mismatch_message
+                            )
+                            else -> emitError()
                         }
                     }
 
-                    else -> {
-                        _uiState.tryEmit(
-                            AddDependentsUiState(
-                                errorData = ErrorData(
-                                    R.string.error,
-                                    R.string.error_message
-                                )
-                            )
-                        )
-                    }
+                    else -> emitError()
                 }
             }
         }
     }
+
+    private fun emitLoading(state: Boolean) {
+        _uiState.tryEmit(AddDependentsUiState(onLoading = state))
+    }
+
+    private fun emitError(
+        @StringRes title: Int = R.string.error,
+        @StringRes message: Int = R.string.error_message
+    ) = _uiState.tryEmit(
+        AddDependentsUiState(
+            errorData = ErrorData(title, message)
+        )
+    )
 
     fun resetUiState() {
         _uiState.tryEmit(
@@ -97,7 +92,7 @@ class AddDependentsViewModel @Inject constructor(
                 isHgServicesUp = true,
                 onLoading = false,
                 errorData = null,
-                isConnected = true
+                isConnected = true,
             )
         )
     }
@@ -107,5 +102,5 @@ data class AddDependentsUiState(
     val isHgServicesUp: Boolean = true,
     val onLoading: Boolean = false,
     val errorData: ErrorData? = null,
-    val isConnected: Boolean = true
+    val isConnected: Boolean = true,
 )

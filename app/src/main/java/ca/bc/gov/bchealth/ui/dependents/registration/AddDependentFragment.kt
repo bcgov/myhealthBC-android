@@ -4,25 +4,21 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentAddDependentBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
-import ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordUiState
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.DatePickerHelper
 import ca.bc.gov.bchealth.utils.PhnHelper
 import ca.bc.gov.bchealth.utils.hideKeyboard
+import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.validateEmptyInputLayout
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddDependentFragment : BaseFragment(R.layout.fragment_add_dependent) {
@@ -38,28 +34,26 @@ class AddDependentFragment : BaseFragment(R.layout.fragment_add_dependent) {
     }
 
     private fun observeUiState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { uiState ->
+        launchOnStart {
+            viewModel.uiState.collect { uiState ->
 
-                    showLoader(uiState.onLoading)
+                showLoader(uiState.onLoading)
 
-                    if (!uiState.isHgServicesUp) {
-                        binding.root.showServiceDownMessage(requireContext())
-                        viewModel.resetUiState()
-                    }
-
-                    if (uiState.errorData != null) {
-                        AlertDialogHelper.showAlertDialog(
-                            context = requireContext(),
-                            title = getString(uiState.errorData.title),
-                            msg = getString(uiState.errorData.message),
-                            positiveBtnMsg = getString(R.string.btn_ok)
-                        )
-                    }
-
-                    handleNoInternetConnection(uiState)
+                if (!uiState.isHgServicesUp) {
+                    binding.root.showServiceDownMessage(requireContext())
+                    viewModel.resetUiState()
                 }
+
+                if (uiState.errorData != null) {
+                    AlertDialogHelper.showAlertDialog(
+                        context = requireContext(),
+                        title = getString(uiState.errorData.title),
+                        msg = getString(uiState.errorData.message),
+                        positiveBtnMsg = getString(R.string.btn_ok)
+                    )
+                }
+
+                handleNoInternetConnection(uiState)
             }
         }
     }

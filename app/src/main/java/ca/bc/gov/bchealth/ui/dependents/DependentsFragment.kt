@@ -22,8 +22,7 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnAddDependent.setOnClickListener {
-            // todo: next PR
-            // findNavController().navigate(R.id.addDependentFragment)
+            findNavController().navigate(R.id.addDependentFragment)
         }
         binding.btnLogIn.setOnClickListener {
             findNavController().navigate(R.id.bcscAuthInfoFragment)
