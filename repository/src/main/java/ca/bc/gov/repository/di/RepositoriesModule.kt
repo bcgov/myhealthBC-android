@@ -16,6 +16,7 @@ import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.BannerRemoteDataSource
 import ca.bc.gov.data.datasource.remote.CommentRemoteDataSource
+import ca.bc.gov.data.datasource.remote.DependentsRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
@@ -23,6 +24,7 @@ import ca.bc.gov.data.datasource.remote.TermsOfServiceRemoteDataSource
 import ca.bc.gov.repository.BannerRepository
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.CommentRepository
+import ca.bc.gov.repository.DependentsRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.OnBoardingRepository
@@ -212,6 +214,14 @@ class RepositoriesModule {
         @ApplicationContext context: Context
     ): CommentRepository =
         CommentRepository(commentRemoteDataSource, commentLocalDataSource, bcscAuthRepo, context)
+
+    @Provides
+    @Singleton
+    fun provideDependentsRepository(
+        dependentsRemoteDataSource: DependentsRemoteDataSource,
+        bcscAuthRepo: BcscAuthRepo,
+    ): DependentsRepository =
+        DependentsRepository(dependentsRemoteDataSource, bcscAuthRepo)
 
     @Provides
     @Singleton
