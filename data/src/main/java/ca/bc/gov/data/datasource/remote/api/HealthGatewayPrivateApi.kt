@@ -9,6 +9,7 @@ import ca.bc.gov.data.datasource.remote.model.response.AddCommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.AllCommentsResponse
 import ca.bc.gov.data.datasource.remote.model.response.AuthenticatedCovidTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
+import ca.bc.gov.data.datasource.remote.model.response.DependentListResponse
 import ca.bc.gov.data.datasource.remote.model.response.DependentResponse
 import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestPdfResponse
@@ -143,6 +144,12 @@ interface HealthGatewayPrivateApi {
         @Header(AUTHORIZATION) accessToken: String,
         @Path(HDID) hdid: String,
     ): Response<SpecialAuthorityResponse>
+
+    @GET("$BASE_USER_PROFILE_SERVICE/{$HDID}/Dependent")
+    suspend fun fetchAllDependents(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String
+    ): Response<DependentListResponse>
 
     @POST("$BASE_USER_PROFILE_SERVICE/{$HDID}/Dependent")
     suspend fun addDependent(
