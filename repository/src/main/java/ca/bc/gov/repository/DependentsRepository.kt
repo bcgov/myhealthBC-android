@@ -25,6 +25,5 @@ class DependentsRepository @Inject constructor(
             phn,
             token,
         )
-
     }
 }

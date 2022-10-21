@@ -30,7 +30,7 @@ class DependentsRemoteDataSource @Inject constructor(
             dateOfBirth = dateOfBirth,
             phn = phn
         )
-      val response =   safeCall {
+        val response = safeCall {
             healthGatewayPrivateApi.addDependent(hdid, accessToken, request)
         } ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
