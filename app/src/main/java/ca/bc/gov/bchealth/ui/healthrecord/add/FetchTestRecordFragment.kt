@@ -142,22 +142,10 @@ class FetchTestRecordFragment : BaseFragment(R.layout.fragment_fetch_covid_test_
         val dob = binding.edtDob.text.toString()
         val dot = binding.edtDoc.text.toString()
 
-        if (PhnHelper().validatePhnData(
-                binding.edPhnNumber,
-                requireContext()
-            ) &&
-            DatePickerHelper().validateDatePickerData(
-                    binding.tipDob,
-                    requireContext(),
-                    getString(R.string.dob_required)
-                ) &&
-            DatePickerHelper().validateDatePickerData(
-                    binding.tipDot,
-                    requireContext(),
-                    getString(R.string.dot_required)
-                )
+        if (PhnHelper().validatePhnData(binding.edPhnNumber) &&
+            DatePickerHelper().validateDatePickerData(binding.tipDob, R.string.dob_required) &&
+            DatePickerHelper().validateDatePickerData(binding.tipDot, R.string.dot_required)
         ) {
-
             viewModel.fetchTestRecord(phn, dob, dot)
         }
     }
@@ -212,7 +200,7 @@ class FetchTestRecordFragment : BaseFragment(R.layout.fragment_fetch_covid_test_
     private fun setUpDobUI() {
         DatePickerHelper().initializeDatePicker(
             binding.tipDob,
-            getString(R.string.enter_dob),
+            R.string.enter_dob,
             parentFragmentManager,
             "DATE_OF_BIRTH"
         )
@@ -221,7 +209,7 @@ class FetchTestRecordFragment : BaseFragment(R.layout.fragment_fetch_covid_test_
     private fun setUpDotUI() {
         DatePickerHelper().initializeDatePicker(
             binding.tipDot,
-            getString(R.string.enter_dot),
+            R.string.enter_dot,
             parentFragmentManager,
             "DATE_OF_TEST"
         )

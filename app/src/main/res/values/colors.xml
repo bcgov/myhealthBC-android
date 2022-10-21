@@ -15,6 +15,7 @@
     <color name="blue">#1A5A96</color>
     <color name="text_black">#313132</color>
     <color name="grey">#606060</color>
+    <color name="medium_grey">#B7B7B7</color>
     <color name="shadow_grey">#CFCFCF</color>
     <color name="light_grey">#F7F7F7</color>
     <color name="error">#D8292F</color>

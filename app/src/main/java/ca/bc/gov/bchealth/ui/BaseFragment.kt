@@ -16,12 +16,12 @@ abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentL
 
     abstract fun setToolBar(appBarConfiguration: AppBarConfiguration)
 
-    protected fun getAppBarConfiguration() = AppBarConfiguration(
+    private fun getAppBarConfiguration() = AppBarConfiguration(
         setOf(
             R.id.homeFragment,
             R.id.healthPassFragment,
             R.id.individualHealthRecordFragment,
-            R.id.resourcesFragment
+            R.id.dependentsFragment
         ),
         null
     )

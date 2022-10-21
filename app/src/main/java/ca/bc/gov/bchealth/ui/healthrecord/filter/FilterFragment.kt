@@ -114,13 +114,9 @@ class FilterFragment : BaseFragment(R.layout.fragment_filter) {
     private fun validateSelectedDate(): Boolean {
         if (DatePickerHelper().validateDatePickerData(
                 textInputLayout = binding.tipFrom,
-                context = requireContext(),
-                errorMessage = "",
                 isBlankAllowed = true
             ) && DatePickerHelper().validateDatePickerData(
                     textInputLayout = binding.tipTo,
-                    context = requireContext(),
-                    errorMessage = "",
                     isBlankAllowed = true
                 )
         ) {
