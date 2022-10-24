@@ -6,9 +6,13 @@ import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface DependentsDao : BaseDao<DependentEntity> {
+interface DependentDao : BaseDao<DependentEntity> {
 
-    @Query("SELECT * FROM dependent")
+    @Query(
+        "SELECT *, " +
+            "(SELECT id FROM patient WHERE authentication_status = 'AUTHENTICATED') AS patientId " +
+            "FROM dependent WHERE patient_id = patientId"
+    )
     fun findDependents(): Flow<List<DependentEntity>>
 
     @Query("DELETE FROM dependent")

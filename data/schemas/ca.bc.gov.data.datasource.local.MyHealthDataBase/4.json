@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "02aa5929a18bff5ffa5d15cbc93e954c",
+    "identityHash": "14778f9a657c365507fc0d39d39c9076",
     "entities": [
       {
         "tableName": "patient",
@@ -1107,11 +1107,17 @@
       },
       {
         "tableName": "dependent",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `hdid` TEXT NOT NULL, `firstname` TEXT NOT NULL, `lastname` TEXT NOT NULL, `PHN` TEXT NOT NULL, `gender` TEXT NOT NULL, `dateOfBirth` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `hdid` TEXT NOT NULL, `firstname` TEXT NOT NULL, `lastname` TEXT NOT NULL, `PHN` TEXT NOT NULL, `gender` TEXT NOT NULL, `dateOfBirth` INTEGER NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "patientId",
+            "columnName": "patient_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -1159,7 +1165,19 @@
           "autoGenerate": true
         },
         "indices": [],
-        "foreignKeys": []
+        "foreignKeys": [
+          {
+            "table": "patient",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "patient_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "immunization_record",
@@ -1583,7 +1601,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '02aa5929a18bff5ffa5d15cbc93e954c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '14778f9a657c365507fc0d39d39c9076')"
     ]
   }
 }

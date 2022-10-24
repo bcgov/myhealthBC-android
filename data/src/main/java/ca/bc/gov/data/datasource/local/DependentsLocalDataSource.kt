@@ -1,12 +1,12 @@
 package ca.bc.gov.data.datasource.local
 
-import ca.bc.gov.data.datasource.local.dao.DependentsDao
+import ca.bc.gov.data.datasource.local.dao.DependentDao
 import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class DependentsLocalDataSource @Inject constructor(
-    private val dependentsDao: DependentsDao
+    private val dependentsDao: DependentDao
 ) {
 
     fun getAllDependents(): Flow<List<DependentEntity>> = dependentsDao.findDependents()

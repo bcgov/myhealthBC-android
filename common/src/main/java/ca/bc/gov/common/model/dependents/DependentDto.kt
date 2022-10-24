@@ -9,4 +9,5 @@ data class DependentDto(
     val PHN: String,
     val dateOfBirth: Instant,
     val gender: String,
+    val patientId : Long = 0
 )

@@ -238,19 +238,20 @@ fun SpecialAuthorityDto.toEntity() = SpecialAuthorityEntity(
 )
 
 fun ImmunizationRecommendationsDto.toEntity() = ImmunizationRecommendationEntity(
-    recommendationSetId = this.recommendationSetId,
-    patientId = this.patientId,
-    immunizationName = this.immunizationName,
-    status = this.status?.text,
-    agentDueDate = this.agentDueDate,
-    recommendedVaccinations = this.recommendedVaccinations
+    recommendationSetId = recommendationSetId,
+    patientId = patientId,
+    immunizationName = immunizationName,
+    status = status?.text,
+    agentDueDate = agentDueDate,
+    recommendedVaccinations = recommendedVaccinations
 )
 
-fun DependentDto.toEntity() = DependentEntity(
+fun DependentDto.toEntity(patientId : Long) = DependentEntity(
     hdid = hdid,
     firstname = firstname,
     lastname = lastname,
     PHN = PHN,
     dateOfBirth = dateOfBirth,
     gender = gender,
+    patientId = patientId
 )

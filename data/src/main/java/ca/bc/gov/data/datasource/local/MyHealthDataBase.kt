@@ -8,7 +8,7 @@ import ca.bc.gov.data.datasource.local.converter.DateTimeConverter
 import ca.bc.gov.data.datasource.local.dao.CommentDao
 import ca.bc.gov.data.datasource.local.dao.CovidOrderDao
 import ca.bc.gov.data.datasource.local.dao.CovidTestDao
-import ca.bc.gov.data.datasource.local.dao.DependentsDao
+import ca.bc.gov.data.datasource.local.dao.DependentDao
 import ca.bc.gov.data.datasource.local.dao.DispensingPharmacyDao
 import ca.bc.gov.data.datasource.local.dao.HealthVisitsDao
 import ca.bc.gov.data.datasource.local.dao.ImmunizationForecastDao
@@ -95,7 +95,7 @@ abstract class MyHealthDataBase : RoomDatabase() {
 
     abstract fun getCovidTestDao(): CovidTestDao
 
-    abstract fun getDependentDao(): DependentsDao
+    abstract fun getDependentDao(): DependentDao
 
     abstract fun getImmunizationRecordDao(): ImmunizationRecordDao
 
