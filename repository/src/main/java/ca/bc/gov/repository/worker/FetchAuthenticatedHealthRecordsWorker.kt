@@ -12,6 +12,7 @@ import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.comment.CommentDto
+import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
@@ -21,6 +22,7 @@ import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
 import ca.bc.gov.repository.CommentRepository
+import ca.bc.gov.repository.DependentsRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
@@ -61,6 +63,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val medicationRecordRepository: MedicationRecordRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
     private val patientRepository: PatientRepository,
+    private val dependentsRepository: DependentsRepository,
     private val notificationHelper: NotificationHelper,
     private val labOrderRepository: LabOrderRepository,
     private val labTestRepository: LabTestRepository,
@@ -102,6 +105,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         var labOrdersResponse: List<LabOrderWithLabTestDto>? = null
         var immunizationDto: ImmunizationDto? = null
         var commentsResponse: List<CommentDto>? = null
+        var dependentsList: List<DependentDto>? = null
         var healthVisitsResponse: List<HealthVisitsDto>? = null
         var specialAuthorityResponse: List<SpecialAuthorityDto>? = null
 
@@ -195,6 +199,14 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             try {
+                dependentsList = fetchDependents(authParameters)
+            } catch (e: Exception) {
+                handleException(e)?.let { failureResult ->
+                    return failureResult
+                }
+            }
+
+            try {
                 healthVisitsResponse = fetchHealthVisits(authParameters)
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
@@ -272,6 +284,9 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             commentsRepository.delete(true)
             commentsResponse?.let { commentsRepository.insert(it) }
 
+            //Insert dependents
+            dependentsList?.let { dependentsRepository.storeDependents(it) }
+
             // Insert Health Visits
             healthVisitsRepository.deleteHealthVisits(patientId)
             healthVisitsResponse?.forEach {
@@ -326,6 +341,16 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             )
         }
         return commentsResponse
+    }
+
+    private suspend fun fetchDependents(authParameters: Pair<String, String>): List<DependentDto>? {
+        var dependents: List<DependentDto>?
+        withContext(dispatcher) {
+            dependents = dependentsRepository.fetchAllDependents(
+                token = authParameters.first, hdid = authParameters.second
+            )
+        }
+        return dependents
     }
 
     /*
