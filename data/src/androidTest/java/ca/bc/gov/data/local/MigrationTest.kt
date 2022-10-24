@@ -8,6 +8,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import ca.bc.gov.data.datasource.local.MyHealthDataBase
 import ca.bc.gov.data.datasource.local.migration.MIGRATION_1_2
 import ca.bc.gov.data.datasource.local.migration.MIGRATION_2_3
+import ca.bc.gov.data.datasource.local.migration.MIGRATION_3_4
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,6 +20,7 @@ class MigrationTest {
     private val migrations = arrayOf(
         MIGRATION_1_2,
         MIGRATION_2_3,
+        MIGRATION_3_4,
     )
 
     @get:Rule
