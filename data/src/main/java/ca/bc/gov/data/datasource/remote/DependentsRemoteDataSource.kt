@@ -19,7 +19,7 @@ class DependentsRemoteDataSource @Inject constructor(
     suspend fun fetchAllDependents(hdid: String, accessToken: String) =
         safeCall {
             healthGatewayPrivateApi.fetchAllDependents(hdid, accessToken)
-        } ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
+        }?.payload ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
     suspend fun addDependent(
         hdid: String,

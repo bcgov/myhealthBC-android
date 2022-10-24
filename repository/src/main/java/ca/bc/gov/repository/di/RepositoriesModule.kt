@@ -4,6 +4,7 @@ import android.content.Context
 import ca.bc.gov.data.datasource.local.CommentLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidTestLocalDataSource
+import ca.bc.gov.data.datasource.local.DependentsLocalDataSource
 import ca.bc.gov.data.datasource.local.ImmunizationForecastLocalDataSource
 import ca.bc.gov.data.datasource.local.ImmunizationRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
@@ -219,9 +220,10 @@ class RepositoriesModule {
     @Singleton
     fun provideDependentsRepository(
         dependentsRemoteDataSource: DependentsRemoteDataSource,
+        dependentsLocalDataSource: DependentsLocalDataSource,
         bcscAuthRepo: BcscAuthRepo,
     ): DependentsRepository =
-        DependentsRepository(dependentsRemoteDataSource, bcscAuthRepo)
+        DependentsRepository(dependentsRemoteDataSource, dependentsLocalDataSource, bcscAuthRepo)
 
     @Provides
     @Singleton
