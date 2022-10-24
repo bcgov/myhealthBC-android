@@ -3,6 +3,9 @@ package ca.bc.gov.bchealth.ui.dependents
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
@@ -12,6 +15,7 @@ import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
@@ -29,8 +33,8 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
         }
 
         launchOnStart {
-            observeUiState()
-            observeDependentList()
+            launch { observeUiState() }
+            launch { observeDependentList() }
         }
         viewModel.loadDependents()
     }
