@@ -39,7 +39,7 @@ class AddDependentsViewModel @Inject constructor(
                 val isHgServicesUp = mobileConfigRepository.getBaseUrl()
 
                 if (isHgServicesUp) {
-                    dependentsRepository.addDependent(firstName, lastName, dob, phn)
+                    dependentsRepository.registerDependent(firstName, lastName, dob, phn)
                     emitLoading(false)
                 } else {
                     _uiState.tryEmit(

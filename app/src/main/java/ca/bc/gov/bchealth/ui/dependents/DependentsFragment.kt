@@ -28,21 +28,25 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
             findNavController().navigate(R.id.bcscAuthInfoFragment)
         }
 
-        observeUiState()
-        viewModel.checkBcscAuthentication()
+        launchOnStart {
+            observeUiState()
+            observeDependentList()
+        }
+        viewModel.loadDependents()
     }
 
-    private fun observeUiState() {
-        launchOnStart {
-            viewModel.uiState.collect { uiState ->
+    private suspend fun observeUiState() {
+        viewModel.uiState.collect { uiState ->
+            binding.progressBar.indicator.toggleVisibility(uiState.onLoading)
 
-                binding.progressBar.indicator.toggleVisibility(uiState.onLoading)
+            binding.groupLogIn.toggleVisibility(uiState.isBcscAuthenticated == false)
+            binding.containerImageEmpty.toggleVisibility(uiState.isBcscAuthenticated == true)
+            binding.btnAddDependent.toggleVisibility(uiState.isBcscAuthenticated == true)
+        }
+    }
 
-                binding.groupLogIn.toggleVisibility(uiState.isBcscAuthenticated == false)
-                // todo: HAPP-1092: will handle the actual list and session expiry
-                binding.containerImageEmpty.toggleVisibility(uiState.isBcscAuthenticated == true)
-                binding.btnAddDependent.toggleVisibility(uiState.isBcscAuthenticated == true)
-            }
+    private suspend fun observeDependentList() {
+        viewModel.dependentsList.collect { list ->
         }
     }
 
