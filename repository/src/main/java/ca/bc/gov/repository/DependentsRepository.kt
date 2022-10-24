@@ -27,9 +27,9 @@ class DependentsRepository @Inject constructor(
         }
     }
 
-    suspend fun storeDependents(list: List<DependentDto>) {
+    suspend fun storeDependents(list: List<DependentDto>, patientId : Long) {
         localDataSource.clearTable()
-        localDataSource.insertDependents(list.map { it.toEntity() })
+        localDataSource.insertDependents(list.map { it.toEntity(patientId) })
     }
 
     suspend fun registerDependent(

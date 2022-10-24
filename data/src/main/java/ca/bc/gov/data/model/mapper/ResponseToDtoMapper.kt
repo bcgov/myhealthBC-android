@@ -349,6 +349,6 @@ fun DependentInformation.toDto() = DependentDto(
     firstname = firstname,
     lastname = lastname,
     PHN = PHN,
-    dateOfBirth = dateOfBirth.toDate(),
+    dateOfBirth = dateOfBirth.toDateTime(),
     gender = gender,
 )
