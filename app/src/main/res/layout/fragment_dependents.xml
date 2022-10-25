@@ -39,6 +39,26 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_title"
         tools:visibility="visible" />
 
+    <View
+        android:id="@+id/divider_list"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:background="@color/shadow_grey"
+        app:layout_constraintTop_toBottomOf="@+id/tv_body" />
+
+    <ca.bc.gov.bchealth.widget.RecyclerView
+        android:id="@+id/list_dependents"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/space_2_x"
+        app:layout_constraintBottom_toTopOf="@+id/btn_add_dependent"
+        app:layout_constraintTop_toBottomOf="@+id/divider_list"
+        tools:itemCount="1"
+        tools:listitem="@layout/item_dependent" />
+
     <FrameLayout
         android:id="@+id/container_image_empty"
         android:layout_width="0dp"
@@ -113,7 +133,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_body"
         app:layout_constraintVertical_chainStyle="packed" />
-    ¬
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_log_in"
