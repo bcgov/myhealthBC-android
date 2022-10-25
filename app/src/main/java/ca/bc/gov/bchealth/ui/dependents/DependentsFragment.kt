@@ -43,10 +43,12 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
             binding.apply {
                 progressBar.indicator.toggleVisibility(uiState.onLoading)
                 groupLogIn.toggleVisibility(uiState.isBcscAuthenticated == false)
-                tvBody.toggleVisibility(uiState.isSessionActive == true)
                 viewSessionExpired.content.toggleVisibility(uiState.isSessionActive == false)
-                containerImageEmpty.toggleVisibility(uiState.isSessionActive == true)
+                tvBody.toggleVisibility(uiState.isSessionActive == true)
                 btnAddDependent.toggleVisibility(uiState.isSessionActive == true)
+                containerImageEmpty.toggleVisibility(uiState.isSessionActive == true)
+                btnManageDependent.toggleVisibility(uiState.isSessionActive == true)
+                dividerList.toggleVisibility(uiState.isSessionActive == true)
             }
 
             if (uiState.isSessionActive == true) {
@@ -59,6 +61,11 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
 
     private suspend fun observeDependentList() {
         viewModel.dependentsList.collect { list ->
+            binding.apply {
+                containerImageEmpty.toggleVisibility(list.isEmpty())
+                btnManageDependent.toggleVisibility(list.isNotEmpty())
+                dividerList.toggleVisibility(list.isNotEmpty())
+            }
         }
     }
 
