@@ -17,6 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
     private val binding by viewBindings(FragmentDependentsBinding::bind)
     private val viewModel: DependentsViewModel by viewModels()
+    private val dependentAdapter = DependentAdapter(::onClickDependent)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -49,6 +50,7 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
                 containerImageEmpty.toggleVisibility(uiState.isSessionActive == true)
                 btnManageDependent.toggleVisibility(uiState.isSessionActive == true)
                 dividerList.toggleVisibility(uiState.isSessionActive == true)
+                listDependents.toggleVisibility(uiState.isSessionActive == true)
             }
 
             if (uiState.isSessionActive == true) {
@@ -65,8 +67,14 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
                 containerImageEmpty.toggleVisibility(list.isEmpty())
                 btnManageDependent.toggleVisibility(list.isNotEmpty())
                 dividerList.toggleVisibility(list.isNotEmpty())
+                listDependents.toggleVisibility(list.isNotEmpty())
+                listDependents.adapter = dependentAdapter
+                dependentAdapter.submitList(list.toMutableList())
             }
         }
+    }
+
+    private fun onClickDependent(dependent: DependentDetailItem) {
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {

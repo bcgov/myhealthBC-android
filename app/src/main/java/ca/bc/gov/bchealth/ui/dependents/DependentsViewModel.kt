@@ -2,13 +2,13 @@ package ca.bc.gov.bchealth.ui.dependents
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.model.AuthenticationStatus
-import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.repository.DependentsRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
+import ca.bc.gov.repository.extensions.mapFlowContent
 import ca.bc.gov.repository.patient.PatientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,7 +26,7 @@ class DependentsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(DependentsUiState())
     val uiState: StateFlow<DependentsUiState> = _uiState.asStateFlow()
 
-    val dependentsList: Flow<List<DependentDto>> = dependentsRepository.getAllDependents()
+    val dependentsList = dependentsRepository.getAllDependents().mapFlowContent { it.toUiModel() }
 
     fun loadAuthenticationState() = viewModelScope.launch {
         _uiState.update { DependentsUiState(onLoading = true) }
@@ -63,4 +63,9 @@ data class DependentsUiState(
     val onLoading: Boolean = false,
     val isBcscAuthenticated: Boolean? = null,
     val isSessionActive: Boolean? = null,
+)
+
+data class DependentDetailItem(
+    val id: String,
+    val fullName: String,
 )
