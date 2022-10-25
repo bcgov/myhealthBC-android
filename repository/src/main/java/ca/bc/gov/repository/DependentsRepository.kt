@@ -55,5 +55,4 @@ class DependentsRepository @Inject constructor(
 
         localDataSource.insertDependents(listOf(response.toDto().toEntity(patientId)))
     }
-    }
 }

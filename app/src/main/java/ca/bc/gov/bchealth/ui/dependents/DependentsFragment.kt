@@ -3,9 +3,6 @@ package ca.bc.gov.bchealth.ui.dependents
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
@@ -15,7 +12,6 @@ import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
@@ -26,26 +22,38 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnAddDependent.setOnClickListener {
-            findNavController().navigate(R.id.addDependentFragment)
+            navigate(R.id.addDependentFragment)
         }
         binding.btnLogIn.setOnClickListener {
-            findNavController().navigate(R.id.bcscAuthInfoFragment)
+            navigate(R.id.bcscAuthInfoFragment)
+        }
+
+        binding.viewSessionExpired.btnLogin.setOnClickListener {
+            navigate(R.id.bcscAuthInfoFragment)
         }
 
         launchOnStart {
-            launch { observeUiState() }
-            launch { observeDependentList() }
+            observeUiState()
         }
-        viewModel.loadDependents()
+        viewModel.loadAuthenticationState()
     }
 
     private suspend fun observeUiState() {
         viewModel.uiState.collect { uiState ->
-            binding.progressBar.indicator.toggleVisibility(uiState.onLoading)
+            binding.apply {
+                progressBar.indicator.toggleVisibility(uiState.onLoading)
+                groupLogIn.toggleVisibility(uiState.isBcscAuthenticated == false)
+                tvBody.toggleVisibility(uiState.isSessionActive == true)
+                viewSessionExpired.content.toggleVisibility(uiState.isSessionActive == false)
+                containerImageEmpty.toggleVisibility(uiState.isSessionActive == true)
+                btnAddDependent.toggleVisibility(uiState.isSessionActive == true)
+            }
 
-            binding.groupLogIn.toggleVisibility(uiState.isBcscAuthenticated == false)
-            binding.containerImageEmpty.toggleVisibility(uiState.isBcscAuthenticated == true)
-            binding.btnAddDependent.toggleVisibility(uiState.isBcscAuthenticated == true)
+            if (uiState.isSessionActive == true) {
+                launchOnStart {
+                    observeDependentList()
+                }
+            }
         }
     }
 
