@@ -3,9 +3,12 @@ package ca.bc.gov.bchealth.ui.dependents
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.model.AuthenticationStatus
+import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.repository.DependentsRepository
+import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.patient.PatientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,35 +19,41 @@ import javax.inject.Inject
 @HiltViewModel
 class DependentsViewModel @Inject constructor(
     private val patientRepository: PatientRepository,
-    private val dependentsRepository: DependentsRepository,
+    private val bcscAuthRepo: BcscAuthRepo,
+    dependentsRepository: DependentsRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DependentsUiState())
     val uiState: StateFlow<DependentsUiState> = _uiState.asStateFlow()
 
-    val dependentsList = dependentsRepository.getAllDependents()
+    val dependentsList: Flow<List<DependentDto>> = dependentsRepository.getAllDependents()
 
-    fun loadDependents() = viewModelScope.launch {
+    fun loadAuthenticationState() = viewModelScope.launch {
         _uiState.update { DependentsUiState(onLoading = true) }
 
         try {
             checkAuthentication()
+            val isSessionActive: Boolean = bcscAuthRepo.checkSession()
+            _uiState.update {
+                it.copy(onLoading = false, isSessionActive = isSessionActive)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
-            _uiState.update { DependentsUiState(onLoading = false, isBcscAuthenticated = false) }
+            _uiState.update { it.copy(onLoading = false, isBcscAuthenticated = false) }
         }
     }
 
     private suspend fun checkAuthentication() {
         patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
-        _uiState.update { DependentsUiState(onLoading = false, isBcscAuthenticated = true) }
+        _uiState.update { it.copy(isBcscAuthenticated = true) }
     }
 
     fun resetUiState() {
         _uiState.tryEmit(
             DependentsUiState(
                 onLoading = false,
-                isBcscAuthenticated = null
+                isBcscAuthenticated = null,
+                isSessionActive = null
             )
         )
     }
@@ -53,4 +62,5 @@ class DependentsViewModel @Inject constructor(
 data class DependentsUiState(
     val onLoading: Boolean = false,
     val isBcscAuthenticated: Boolean? = null,
+    val isSessionActive: Boolean? = null,
 )
