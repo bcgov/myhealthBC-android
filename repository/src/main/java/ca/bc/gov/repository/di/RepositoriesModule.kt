@@ -221,9 +221,15 @@ class RepositoriesModule {
     fun provideDependentsRepository(
         dependentsRemoteDataSource: DependentsRemoteDataSource,
         dependentsLocalDataSource: DependentsLocalDataSource,
+        patientLocalDataSource: PatientLocalDataSource,
         bcscAuthRepo: BcscAuthRepo,
     ): DependentsRepository =
-        DependentsRepository(dependentsRemoteDataSource, dependentsLocalDataSource, bcscAuthRepo)
+        DependentsRepository(
+            dependentsRemoteDataSource,
+            dependentsLocalDataSource,
+            patientLocalDataSource,
+            bcscAuthRepo
+        )
 
     @Provides
     @Singleton
