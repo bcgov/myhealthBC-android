@@ -2,6 +2,7 @@ package ca.bc.gov.repository
 
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.data.datasource.local.DependentsLocalDataSource
+import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.remote.DependentsRemoteDataSource
 import ca.bc.gov.data.model.mapper.toDto
 import ca.bc.gov.data.model.mapper.toEntity
@@ -13,6 +14,7 @@ import javax.inject.Inject
 class DependentsRepository @Inject constructor(
     private val remoteDataSource: DependentsRemoteDataSource,
     private val localDataSource: DependentsLocalDataSource,
+    private val patientLocalDataSource: PatientLocalDataSource,
     private val bcscAuthRepo: BcscAuthRepo,
 ) {
 
@@ -27,7 +29,7 @@ class DependentsRepository @Inject constructor(
         }
     }
 
-    suspend fun storeDependents(list: List<DependentDto>, patientId : Long) {
+    suspend fun storeDependents(list: List<DependentDto>, patientId: Long) {
         localDataSource.clearTable()
         localDataSource.insertDependents(list.map { it.toEntity(patientId) })
     }
@@ -40,7 +42,9 @@ class DependentsRepository @Inject constructor(
     ) {
         val (token, hdid) = bcscAuthRepo.getAuthParameters()
 
-        remoteDataSource.addDependent(
+        val patientId = patientLocalDataSource.getAuthenticatedPatientId()
+
+        val response = remoteDataSource.addDependent(
             hdid,
             firstName,
             lastName,
@@ -48,5 +52,8 @@ class DependentsRepository @Inject constructor(
             phn,
             token,
         )
+
+        localDataSource.insertDependents(listOf(response.toDto().toEntity(patientId)))
+    }
     }
 }

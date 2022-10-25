@@ -120,4 +120,7 @@ interface PatientDao {
     @Transaction
     @Query("SELECT * FROM patient WHERE id = :patientId")
     suspend fun getPatientWithSpecialAuthority(patientId: Long): PatientWithSpecialAuthorities?
+
+    @Query("SELECT id FROM patient WHERE authentication_status = 'AUTHENTICATED'")
+    suspend fun getAuthenticatedPatientId(): Long?
 }

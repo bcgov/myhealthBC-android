@@ -29,20 +29,15 @@ class DependentsViewModel @Inject constructor(
 
         try {
             checkAuthentication()
-            fetchDependents()
         } catch (e: Exception) {
             e.printStackTrace()
-            DependentsUiState(onLoading = false, isBcscAuthenticated = false)
+            _uiState.update { DependentsUiState(onLoading = false, isBcscAuthenticated = false) }
         }
     }
 
     private suspend fun checkAuthentication() {
         patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
         _uiState.update { DependentsUiState(onLoading = false, isBcscAuthenticated = true) }
-    }
-
-    private fun fetchDependents() {
-        dependentsRepository.getAllDependents()
     }
 
     fun resetUiState() {
