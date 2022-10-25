@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
-import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecordEntity
 import java.time.Instant
 
 @Entity(

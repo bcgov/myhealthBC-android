@@ -1,6 +1,7 @@
 package ca.bc.gov.bchealth.model.mapper
 
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.ui.dependents.DependentDetailItem
 import ca.bc.gov.bchealth.ui.healthpass.FederalTravelPassState
 import ca.bc.gov.bchealth.ui.healthpass.HealthPass
 import ca.bc.gov.bchealth.ui.healthpass.PassState
@@ -14,6 +15,7 @@ import ca.bc.gov.bchealth.ui.recommendations.RecommendationDetailItem
 import ca.bc.gov.bchealth.utils.orPlaceholder
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
+import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecommendationsDto
@@ -309,6 +311,11 @@ fun ImmunizationRecommendationsDto.toUiModel() = RecommendationDetailItem(
     title = this.recommendedVaccinations.orPlaceholder(),
     status = this.status,
     date = this.agentDueDate?.toDate().orPlaceholder(),
+)
+
+fun DependentDto.toUiModel() = DependentDetailItem(
+    id = hdid,
+    fullName = firstname + " " + lastname
 )
 
 private fun ImmunizationForecastDto.toUiModel() = ForecastDetailItem(
