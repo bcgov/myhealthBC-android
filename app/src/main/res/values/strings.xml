@@ -24,6 +24,7 @@
     <!--Dependents-->
     <string name="dependent">Dependent</string>
     <string name="dependents_title">Dependents</string>
+    <string name="dependents_session_expired">Log in again to access all dependents’ records.</string>
     <string name="dependents_body">You can add your dependents under the age of 12 to view their COVID-19 results. Please complete the form with your dependent’s information, exactly as it appears on their BC Services Card.</string>
     <string name="dependents_log_in">Log in with your BC Services Card to access all dependents’ records. The BC Services Card app is a secure way to prove who you are.</string>
     <string name="dependents_add_dependent">Add dependent</string>

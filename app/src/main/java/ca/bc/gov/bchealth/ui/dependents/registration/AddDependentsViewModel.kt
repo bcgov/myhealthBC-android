@@ -39,8 +39,10 @@ class AddDependentsViewModel @Inject constructor(
                 val isHgServicesUp = mobileConfigRepository.getBaseUrl()
 
                 if (isHgServicesUp) {
-                    dependentsRepository.addDependent(firstName, lastName, dob, phn)
-                    emitLoading(false)
+                    dependentsRepository.registerDependent(firstName, lastName, dob, phn)
+                    _uiState.tryEmit(
+                        AddDependentsUiState(registrationFinished = true, onLoading = false)
+                    )
                 } else {
                     _uiState.tryEmit(
                         AddDependentsUiState(isHgServicesUp = false, onLoading = false)
@@ -93,6 +95,7 @@ class AddDependentsViewModel @Inject constructor(
                 onLoading = false,
                 errorData = null,
                 isConnected = true,
+                registrationFinished = null
             )
         )
     }
@@ -103,4 +106,5 @@ data class AddDependentsUiState(
     val onLoading: Boolean = false,
     val errorData: ErrorData? = null,
     val isConnected: Boolean = true,
+    val registrationFinished: Boolean? = null,
 )

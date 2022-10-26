@@ -42,6 +42,7 @@ import com.queue_it.androidsdk.QueueListener
 import com.queue_it.androidsdk.QueuePassedInfo
 import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
@@ -72,9 +73,9 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
         }
 
         launchOnStart {
-            collectPhnUi()
-            collectUiState()
-            collectCardUiState()
+            launch { collectPhnUi() }
+            launch { collectUiState() }
+            launch { collectCardUiState() }
         }
 
         viewModel.getPatientWithVaccineRecord(args.patientId)

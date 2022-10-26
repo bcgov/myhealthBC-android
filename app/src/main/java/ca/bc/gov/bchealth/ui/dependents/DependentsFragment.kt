@@ -17,33 +17,64 @@ import dagger.hilt.android.AndroidEntryPoint
 class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
     private val binding by viewBindings(FragmentDependentsBinding::bind)
     private val viewModel: DependentsViewModel by viewModels()
+    private val dependentAdapter = DependentAdapter(::onClickDependent)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnAddDependent.setOnClickListener {
-            findNavController().navigate(R.id.addDependentFragment)
+            navigate(R.id.addDependentFragment)
         }
         binding.btnLogIn.setOnClickListener {
-            findNavController().navigate(R.id.bcscAuthInfoFragment)
+            navigate(R.id.bcscAuthInfoFragment)
         }
 
-        observeUiState()
-        viewModel.checkBcscAuthentication()
+        binding.viewSessionExpired.btnLogin.setOnClickListener {
+            navigate(R.id.bcscAuthInfoFragment)
+        }
+
+        launchOnStart {
+            observeUiState()
+        }
+        viewModel.loadAuthenticationState()
     }
 
-    private fun observeUiState() {
-        launchOnStart {
-            viewModel.uiState.collect { uiState ->
+    private suspend fun observeUiState() {
+        viewModel.uiState.collect { uiState ->
+            binding.apply {
+                progressBar.indicator.toggleVisibility(uiState.onLoading)
+                groupLogIn.toggleVisibility(uiState.isBcscAuthenticated == false)
+                viewSessionExpired.content.toggleVisibility(uiState.isSessionActive == false)
+                tvBody.toggleVisibility(uiState.isSessionActive == true)
+                btnAddDependent.toggleVisibility(uiState.isSessionActive == true)
+                containerImageEmpty.toggleVisibility(uiState.isSessionActive == true)
+                btnManageDependent.toggleVisibility(uiState.isSessionActive == true)
+                dividerList.toggleVisibility(uiState.isSessionActive == true)
+                listDependents.toggleVisibility(uiState.isSessionActive == true)
+            }
 
-                binding.progressBar.indicator.toggleVisibility(uiState.onLoading)
-
-                binding.groupLogIn.toggleVisibility(uiState.isBcscAuthenticated == false)
-                // todo: HAPP-1092: will handle the actual list and session expiry
-                binding.containerImageEmpty.toggleVisibility(uiState.isBcscAuthenticated == true)
-                binding.btnAddDependent.toggleVisibility(uiState.isBcscAuthenticated == true)
+            if (uiState.isSessionActive == true) {
+                launchOnStart {
+                    observeDependentList()
+                }
             }
         }
+    }
+
+    private suspend fun observeDependentList() {
+        viewModel.dependentsList.collect { list ->
+            binding.apply {
+                containerImageEmpty.toggleVisibility(list.isEmpty())
+                btnManageDependent.toggleVisibility(list.isNotEmpty())
+                dividerList.toggleVisibility(list.isNotEmpty())
+                listDependents.toggleVisibility(list.isNotEmpty())
+                listDependents.adapter = dependentAdapter
+                dependentAdapter.submitList(list.toMutableList())
+            }
+        }
+    }
+
+    private fun onClickDependent(dependent: DependentDetailItem) {
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {

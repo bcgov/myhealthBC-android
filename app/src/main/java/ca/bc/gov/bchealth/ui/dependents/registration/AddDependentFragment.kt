@@ -39,6 +39,11 @@ class AddDependentFragment : BaseFragment(R.layout.fragment_add_dependent) {
 
                 showLoader(uiState.onLoading)
 
+                if (uiState.registrationFinished == true) {
+                    navigateBack()
+                    return@collect
+                }
+
                 if (!uiState.isHgServicesUp) {
                     binding.root.showServiceDownMessage(requireContext())
                     viewModel.resetUiState()
@@ -122,6 +127,10 @@ class AddDependentFragment : BaseFragment(R.layout.fragment_add_dependent) {
             msg = getString(message),
             positiveBtnMsg = getString(R.string.btn_ok),
         )
+    }
+
+    private fun navigateBack() {
+        findNavController().popBackStack()
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {

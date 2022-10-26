@@ -9,6 +9,7 @@ import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.TermsOfServiceDto
 import ca.bc.gov.common.model.banner.BannerDto
 import ca.bc.gov.common.model.comment.CommentDto
+import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.ClinicDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.common.model.immunization.ForecastStatus
@@ -33,6 +34,7 @@ import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
 import ca.bc.gov.data.datasource.remote.model.base.banner.BannerPayload
 import ca.bc.gov.data.datasource.remote.model.base.comment.CommentPayload
 import ca.bc.gov.data.datasource.remote.model.base.covidtest.CovidTestRecord
+import ca.bc.gov.data.datasource.remote.model.base.dependent.DependentInformation
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.Clinic
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsPayload
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsResponse
@@ -339,4 +341,13 @@ fun BannerPayload.toDto() = BannerDto(
     body = this.body,
     startDate = this.startDate.toDateTimeZ(),
     endDate = this.endDate.toDateTimeZ()
+)
+
+fun DependentInformation.toDto() = DependentDto(
+    hdid = hdid,
+    firstname = firstname,
+    lastname = lastname,
+    PHN = PHN,
+    dateOfBirth = dateOfBirth.toDateTime(),
+    gender = gender,
 )

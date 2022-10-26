@@ -19,6 +19,7 @@ import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.io.File
 
 /**
@@ -87,8 +88,8 @@ class HealthPassesFragment : BaseFragment(R.layout.fragment_helath_passes) {
         )
 
         launchOnStart {
-            collectHealthPasses()
-            collectUiState()
+            launch { collectHealthPasses() }
+            launch { collectUiState() }
         }
     }
 

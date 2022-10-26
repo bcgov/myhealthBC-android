@@ -19,3 +19,9 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
         database.execSQL("CREATE TABLE IF NOT EXISTS `immunization_recommendation` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `recommendation_set_id` TEXT, `immunization_name` TEXT, `status` TEXT, `agentDueDate` INTEGER, `recommendedVaccinations` TEXT, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )")
     }
 }
+
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("CREATE TABLE IF NOT EXISTS `dependent` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `hdid` TEXT NOT NULL, `firstname` TEXT NOT NULL, `lastname` TEXT NOT NULL, `PHN` TEXT NOT NULL, `gender` TEXT NOT NULL, `dateOfBirth` INTEGER NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )")
+    }
+}

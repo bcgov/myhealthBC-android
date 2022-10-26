@@ -6,6 +6,7 @@ import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.comment.CommentDto
+import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecommendationsDto
@@ -26,6 +27,7 @@ import ca.bc.gov.data.datasource.local.entity.covid.test.TestRecordEntity
 import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
+import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
 import ca.bc.gov.data.datasource.local.entity.healthvisits.Clinic
 import ca.bc.gov.data.datasource.local.entity.healthvisits.HealthVisitEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationForecastEntity
@@ -236,10 +238,20 @@ fun SpecialAuthorityDto.toEntity() = SpecialAuthorityEntity(
 )
 
 fun ImmunizationRecommendationsDto.toEntity() = ImmunizationRecommendationEntity(
-    recommendationSetId = this.recommendationSetId,
-    patientId = this.patientId,
-    immunizationName = this.immunizationName,
-    status = this.status?.text,
-    agentDueDate = this.agentDueDate,
-    recommendedVaccinations = this.recommendedVaccinations
+    recommendationSetId = recommendationSetId,
+    patientId = patientId,
+    immunizationName = immunizationName,
+    status = status?.text,
+    agentDueDate = agentDueDate,
+    recommendedVaccinations = recommendedVaccinations
+)
+
+fun DependentDto.toEntity(patientId: Long) = DependentEntity(
+    hdid = hdid,
+    firstname = firstname,
+    lastname = lastname,
+    PHN = PHN,
+    dateOfBirth = dateOfBirth,
+    gender = gender,
+    patientId = patientId
 )
