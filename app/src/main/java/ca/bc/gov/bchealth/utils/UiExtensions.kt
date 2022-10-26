@@ -12,9 +12,11 @@ import android.text.style.URLSpan
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import ca.bc.gov.bchealth.R
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.textfield.TextInputLayout
 
 fun TextView.underlineText() {
@@ -29,6 +31,21 @@ fun MaterialToolbar.inflateHelpButton(action: () -> Unit) {
         }
         return@setOnMenuItemClickListener true
     }
+}
+
+fun MaterialCheckBox.validateCheckbox(): Boolean {
+    if (isChecked.not()) {
+        val errorColour = ContextCompat.getColor(this.context, R.color.error)
+        val regularColour = ContextCompat.getColor(this.context, R.color.text_black)
+
+        this.setTextColor(errorColour)
+        this.setOnCheckedChangeListener { _, checked ->
+            val colour = if (checked) regularColour else errorColour
+            this.setTextColor(colour)
+        }
+    }
+
+    return isChecked
 }
 
 fun TextInputLayout.validateEmptyInputLayout(@StringRes message: Int): Boolean {

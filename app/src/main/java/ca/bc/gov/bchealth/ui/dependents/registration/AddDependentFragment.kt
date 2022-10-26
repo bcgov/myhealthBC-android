@@ -16,6 +16,7 @@ import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
+import ca.bc.gov.bchealth.utils.validateCheckbox
 import ca.bc.gov.bchealth.utils.validateEmptyInputLayout
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
@@ -106,9 +107,9 @@ class AddDependentFragment : BaseFragment(R.layout.fragment_add_dependent) {
         )
         val isPhnValid = PhnHelper().validatePhnData(binding.tilPhn)
 
-        val isChecked = binding.checkboxRemember.isChecked
+        val isCheckboxValid = binding.checkboxTerms.validateCheckbox()
 
-        return isDobValid && isFirstNameValid && isLastNameValid && isPhnValid && isChecked
+        return isDobValid && isFirstNameValid && isLastNameValid && isPhnValid && isCheckboxValid
     }
 
     private fun setUpDobUI() {
