@@ -85,8 +85,8 @@ class AddDependentFragment : BaseFragment(R.layout.fragment_add_dependent) {
 
             if (validateInputFields()) {
                 viewModel.registerDependent(
-                    firstName = etFirstName.text.toString(),
-                    lastName = etLastName.text.toString(),
+                    firstName = etFirstName.text.toString().trim(),
+                    lastName = etLastName.text.toString().trim(),
                     dob = etDob.text.toString(),
                     phn = etPhn.text.toString(),
                 )
