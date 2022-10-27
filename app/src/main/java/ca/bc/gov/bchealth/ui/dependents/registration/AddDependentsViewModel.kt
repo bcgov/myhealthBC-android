@@ -35,6 +35,12 @@ class AddDependentsViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             emitLoading(true)
+
+            if (dependentsRepository.checkDuplicateRecord(phn)) {
+                emitError(message = R.string.dependents_registration_error_duplicate)
+                return@launch
+            }
+
             try {
                 val isHgServicesUp = mobileConfigRepository.getBaseUrl()
 

@@ -15,6 +15,13 @@ interface DependentDao : BaseDao<DependentEntity> {
     )
     fun findDependents(): Flow<List<DependentEntity>>
 
+    @Query(
+        "SELECT *, " +
+            "(SELECT id FROM patient WHERE authentication_status = 'AUTHENTICATED') AS patientId " +
+            "FROM dependent WHERE patient_id = patientId AND phn = :phn"
+    )
+    suspend fun findDependent(phn: String): List<DependentEntity>
+
     @Query("DELETE FROM dependent")
     suspend fun deleteAll(): Int
 }

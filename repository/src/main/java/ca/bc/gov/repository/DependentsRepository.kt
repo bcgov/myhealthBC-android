@@ -55,4 +55,9 @@ class DependentsRepository @Inject constructor(
 
         localDataSource.insertDependents(listOf(response.toDto().toEntity(patientId)))
     }
+
+    suspend fun checkDuplicateRecord(phn: String): Boolean {
+        val count = localDataSource.findDependent(phn).size
+        return count > 0
+    }
 }
