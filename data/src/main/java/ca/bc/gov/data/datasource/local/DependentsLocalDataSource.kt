@@ -16,4 +16,7 @@ class DependentsLocalDataSource @Inject constructor(
 
     suspend fun insertDependents(list: List<DependentEntity>) =
         dependentsDao.insert(list)
+
+    suspend fun findDependent(phn: String) =
+        dependentsDao.findDependent(phn)
 }
