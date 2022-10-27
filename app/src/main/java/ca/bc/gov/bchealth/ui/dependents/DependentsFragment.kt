@@ -45,7 +45,7 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
                 progressBar.indicator.toggleVisibility(uiState.onLoading)
                 groupLogIn.toggleVisibility(uiState.isBcscAuthenticated == false)
                 viewSessionExpired.content.toggleVisibility(uiState.isSessionActive == false)
-                tvBody.toggleVisibility(uiState.isSessionActive == true)
+                tvBody.toggleVisibility(uiState.isSessionActive != false)
                 btnAddDependent.toggleVisibility(uiState.isSessionActive == true)
                 containerImageEmpty.toggleVisibility(uiState.isSessionActive == true)
                 btnManageDependent.toggleVisibility(uiState.isSessionActive == true)
