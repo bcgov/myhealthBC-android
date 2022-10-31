@@ -13,7 +13,12 @@
 
     <fragment
         android:id="@+id/addDependentFragment"
-        tools:layout="@layout/fragment_add_dependent"
-        android:name="ca.bc.gov.bchealth.ui.dependents.registration.AddDependentFragment" />
+        android:name="ca.bc.gov.bchealth.ui.dependents.registration.AddDependentFragment"
+        tools:layout="@layout/fragment_add_dependent" />
+
+    <fragment
+        android:id="@+id/dependentRecordsFragment"
+        android:name="ca.bc.gov.bchealth.ui.dependents.records.DependentRecordsFragment"
+        tools:layout="@layout/fragment_dependent_records" />
 
 </navigation>

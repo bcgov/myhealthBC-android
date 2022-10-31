@@ -75,6 +75,7 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
     }
 
     private fun onClickDependent(dependent: DependentDetailItem) {
+        navigate(R.id.dependentRecordsFragment)
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
