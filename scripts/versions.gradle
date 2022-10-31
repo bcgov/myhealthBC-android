@@ -13,7 +13,9 @@ versions.material = "1.4.0"
 versions.recycler = "1.2.1"
 versions.coordinator = "1.2.0"
 
-versions.navigation = "2.4.1"
+//Caution: upgrading navigation to 2.4.1+ may lead to issues in findNavController().currentBackStackEntry?.savedStateHandle?
+//ie.: When you log in or out from a tab, the state does not propagate to the records screen. Check HAPP-1153 for more information
+versions.navigation = "2.3.5"
 
 versions.viewmodel = "2.4.0-beta01"
 versions.lifecycle = "2.4.0-beta01"
