@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.dependents
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -75,7 +76,13 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
     }
 
     private fun onClickDependent(dependent: DependentDetailItem) {
-        navigate(R.id.dependentRecordsFragment)
+        navigate(
+            R.id.dependentRecordsFragment,
+            bundleOf(
+                "id" to dependent.id,
+                "fullName" to dependent.fullName
+            )
+        )
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {

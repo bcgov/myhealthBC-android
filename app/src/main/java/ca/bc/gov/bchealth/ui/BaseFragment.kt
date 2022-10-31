@@ -18,8 +18,8 @@ abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentL
 
     abstract fun setToolBar(appBarConfiguration: AppBarConfiguration)
 
-    protected fun navigate(@IdRes screenId: Int) {
-        findNavController().navigate(screenId)
+    protected fun navigate(@IdRes screenId: Int, args: Bundle? = null) {
+        findNavController().navigate(screenId, args)
     }
 
     private fun getAppBarConfiguration() = AppBarConfiguration(

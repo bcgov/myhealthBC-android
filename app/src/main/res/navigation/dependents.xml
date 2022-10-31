@@ -19,6 +19,18 @@
     <fragment
         android:id="@+id/dependentRecordsFragment"
         android:name="ca.bc.gov.bchealth.ui.dependents.records.DependentRecordsFragment"
-        tools:layout="@layout/fragment_dependent_records" />
+        tools:layout="@layout/fragment_dependent_records">
+
+        <argument
+            android:name="id"
+            android:defaultValue=""
+            app:argType="string" />
+
+        <argument
+            android:name="fullName"
+            android:defaultValue=""
+            app:argType="string" />
+
+    </fragment>
 
 </navigation>
