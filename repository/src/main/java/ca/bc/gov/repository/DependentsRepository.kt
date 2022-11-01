@@ -40,17 +40,17 @@ class DependentsRepository @Inject constructor(
         dateOfBirth: String,
         phn: String,
     ) {
-        val (token, hdid) = bcscAuthRepo.getAuthParameters()
+        val authParameters = bcscAuthRepo.getAuthParametersDto()
 
         val patientId = patientLocalDataSource.getAuthenticatedPatientId()
 
         val response = remoteDataSource.addDependent(
-            hdid,
+            authParameters.hdid,
             firstName,
             lastName,
             dateOfBirth,
             phn,
-            token,
+            authParameters.token,
         )
 
         localDataSource.insertDependents(listOf(response.toDto().toEntity(patientId)))

@@ -13,6 +13,7 @@ import androidx.work.WorkManager
 import ca.bc.gov.common.const.AUTH_ERROR
 import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.utils.titleCase
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
@@ -141,8 +142,18 @@ class BcscAuthRepo(
         setAuthState(null)
     }
 
+    suspend fun getAuthParametersDto(): AuthParametersDto {
+        val pair: Pair<String, String> = getAuthParameters()
+        return AuthParametersDto(
+            token = pair.first,
+            hdid = pair.second,
+        )
+    }
+
+    @Deprecated("Consider using getAuthParametersDto for better readability")
     suspend fun getAuthParameters(): Pair<String, String> {
-        val authState = getAuthState() ?: throw MyHealthException(AUTH_ERROR_DO_LOGIN, "Login again!")
+        val authState =
+            getAuthState() ?: throw MyHealthException(AUTH_ERROR_DO_LOGIN, "Login again!")
         val accessToken = awaitPerformActionWithFreshTokens(applicationContext, authState)
         val json = decodeAccessToken(accessToken)
         val hdId = json.get(HDID).toString()
