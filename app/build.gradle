@@ -126,7 +126,10 @@ dependencies {
     //Custom chrome tab
     implementation "androidx.browser:browser:$versions.browser"
 
-    implementation "com.google.android.play:core-ktx:$versions.play"
+
+    //In-app updates
+    implementation "com.google.android.play:app-update:$versions.app_update"
+    implementation "com.google.android.play:app-update-ktx:$versions.app_update"
 
     //Queue.it
     implementation "com.queue-it.androidsdk:library-androidx:$versions.queue_it"

@@ -36,7 +36,8 @@ versions.jjwt = "0.11.1"
 versions.bouncycastle = "1.69"
 
 versions.browser = "1.4.0"
-versions.play = "1.8.1"
+
+versions.app_update = "2.0.1"
 versions.queue_it = "2.0.34"
 versions.datastore = "1.0.0"
 
