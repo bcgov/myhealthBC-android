@@ -30,6 +30,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.inappupdate.InAppUpdateActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.HealthGateway.Splash" />
+
         <activity
             android:name=".MainActivity"
             android:exported="false"
