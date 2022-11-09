@@ -126,7 +126,6 @@ dependencies {
     //Custom chrome tab
     implementation "androidx.browser:browser:$versions.browser"
 
-
     //In-app updates
     implementation "com.google.android.play:app-update:$versions.app_update"
     implementation "com.google.android.play:app-update-ktx:$versions.app_update"
