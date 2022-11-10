@@ -13,7 +13,7 @@
     <string name="not_now">Not now</string>
 
     <!--    In-app Update-->
-    <string name="in_app_update_body">This version of Health Gateway mobile is expired. To continue using the application, please go the App Store to download the latest version.</string>
+    <string name="in_app_update_body">This version of Health Gateway mobile is expired. To continue using the application, please go the Play Store to download the latest version.</string>
     <string name="in_app_update_button">Update now</string>
     <string name="in_app_update_footer">Please contact Health Gateway team (healthgateway@gov.bc.ca) for more information</string>
     <!--Recommendations-->
