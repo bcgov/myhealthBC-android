@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -27,7 +28,7 @@ class SplashViewModel @Inject constructor(
             try {
                 val remoteVersion = mobileConfigRepository.getRemoteApiVersion()
 
-                val updateType = if (BuildConfig.HARDCODED_API_VERSION < remoteVersion) {
+                val updateType = if (LOCAL_API_VERSION < remoteVersion) {
                     UpdateType.FORCE_UPDATE
                 } else {
                     UpdateType.CHECK_SOFT_UPDATE

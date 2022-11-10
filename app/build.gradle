@@ -16,7 +16,6 @@ android {
         targetSdk 31
         versionCode 30
         versionName "1.2.0"
-        buildConfigField "int", "HARDCODED_API_VERSION",  "1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
