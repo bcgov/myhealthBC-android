@@ -81,8 +81,8 @@ class BcscAuthRepo(
         authState = AuthState(authServiceConfiguration)
         val authRequestBuilder =
             AuthorizationRequest.Builder(
-                authServiceConfiguration,  // the authorization service configuration
-                clientId,                 // the client ID, typically pre-registered
+                authServiceConfiguration, // the authorization service configuration
+                clientId, // the client ID, typically pre-registered
                 ResponseTypeValues.CODE, // the response_type value: we want a code
                 Uri.parse(REDIRECT_URI) // the redirect URI to which the auth response is sent
             )
