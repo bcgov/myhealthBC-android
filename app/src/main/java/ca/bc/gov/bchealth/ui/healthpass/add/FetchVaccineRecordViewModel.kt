@@ -53,7 +53,7 @@ class FetchVaccineRecordViewModel @Inject constructor(
             )
 
             try {
-                val isHgServicesUp = mobileConfigRepository.getBaseUrl()
+                val isHgServicesUp = mobileConfigRepository.refreshMobileConfiguration()
 
                 if (isHgServicesUp) {
                     val vaccineRecord = fetchVaccineRecordRepository.fetchVaccineRecord(
