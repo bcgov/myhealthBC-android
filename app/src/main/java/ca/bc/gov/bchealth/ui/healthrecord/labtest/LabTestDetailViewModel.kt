@@ -165,7 +165,7 @@ class LabTestDetailViewModel @Inject constructor(
     fun getLabTestPdf() = viewModelScope.launch {
         _uiState.update { it.copy(onLoading = true) }
         try {
-            val isHgServicesUp = mobileConfigRepository.getBaseUrl()
+            val isHgServicesUp = mobileConfigRepository.refreshMobileConfiguration()
             if (isHgServicesUp) {
                 labPdfId?.apply {
                     val pdfData = labOrderRepository.fetchLabTestPdf(this, false)

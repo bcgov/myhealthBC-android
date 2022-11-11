@@ -56,7 +56,7 @@ class BcscAuthViewModel @Inject constructor(
                     showLoading = true
                 )
             }
-            val canInitiateBcscLogin = mobileConfigRepository.getBaseUrl()
+            val canInitiateBcscLogin = mobileConfigRepository.refreshMobileConfiguration()
             _authStatus.update {
                 it.copy(
                     showLoading = true,
