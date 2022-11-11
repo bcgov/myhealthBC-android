@@ -30,6 +30,9 @@ class MobileConfigRepository @Inject constructor(
     private fun updatePreferenceStorage(response: MobileConfigurationResponse) {
         encryptedPreferenceStorage.apply {
             baseUrl = response.baseUrl
+            authenticationEndpoint = response.authentication.endpoint
+            clientId = response.authentication.clientId
+            identityProviderId = response.authentication.identityProviderId
             baseUrlIsOnline = response.online ?: false
         }
     }
