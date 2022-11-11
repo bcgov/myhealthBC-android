@@ -28,12 +28,21 @@ class MobileConfigRepository @Inject constructor(
     }
 
     private fun updatePreferenceStorage(response: MobileConfigurationResponse) {
+        clearAuthStateIfFirstFetch()
+
         encryptedPreferenceStorage.apply {
             baseUrl = response.baseUrl
             authenticationEndpoint = response.authentication.endpoint
             clientId = response.authentication.clientId
             identityProviderId = response.authentication.identityProviderId
             baseUrlIsOnline = response.online ?: false
+        }
+    }
+
+    private fun clearAuthStateIfFirstFetch() {
+        if (encryptedPreferenceStorage.authenticationEndpoint == null) {
+            encryptedPreferenceStorage.authState = null
+            encryptedPreferenceStorage.sessionTime = -1L
         }
     }
 }
