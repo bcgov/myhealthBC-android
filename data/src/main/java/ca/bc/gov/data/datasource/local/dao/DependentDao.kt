@@ -11,7 +11,7 @@ interface DependentDao : BaseDao<DependentEntity> {
     @Query(
         "SELECT *, " +
             "(SELECT id FROM patient WHERE authentication_status = 'AUTHENTICATED') AS patientId " +
-            "FROM dependent WHERE patient_id = patientId"
+            "FROM dependent WHERE guardian_id = patientId"
     )
     fun findDependents(): Flow<List<DependentEntity>>
 
