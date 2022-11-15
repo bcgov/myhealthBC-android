@@ -138,4 +138,8 @@ class PatientLocalDataSource @Inject constructor(
         patientDao.getPatientWithSpecialAuthority(patientId)?.toDto()
 
     suspend fun getAuthenticatedPatientId() = patientDao.getAuthenticatedPatientId() ?: -1
+
+    suspend fun deleteDependentPatients() {
+        patientDao.deleteDependentPatients()
+    }
 }

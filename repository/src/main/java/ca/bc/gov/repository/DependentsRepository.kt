@@ -6,6 +6,7 @@ import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.remote.DependentsRemoteDataSource
 import ca.bc.gov.data.model.mapper.toDto
 import ca.bc.gov.data.model.mapper.toEntity
+import ca.bc.gov.data.model.mapper.toPatientEntity
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.extensions.mapFlowContent
 import kotlinx.coroutines.flow.Flow
@@ -29,9 +30,13 @@ class DependentsRepository @Inject constructor(
         }
     }
 
-    suspend fun storeDependents(list: List<DependentDto>, patientId: Long) {
-        localDataSource.clearTable()
-        localDataSource.insertDependents(list.map { it.toEntity(patientId) })
+    suspend fun storeDependents(dependents: List<DependentDto>, guardianId: Long) {
+        localDataSource.clearTables()
+
+        dependents.forEach { dependentDto->
+            val patientId = localDataSource.insertPatient(dependentDto.toPatientEntity())
+            localDataSource.insertDependent(dependentDto.toEntity(patientId, guardianId))
+        }
     }
 
     suspend fun registerDependent(
@@ -42,18 +47,19 @@ class DependentsRepository @Inject constructor(
     ) {
         val authParameters = bcscAuthRepo.getAuthParametersDto()
 
-        val patientId = patientLocalDataSource.getAuthenticatedPatientId()
+        val guardianId = patientLocalDataSource.getAuthenticatedPatientId()
 
-        val response = remoteDataSource.addDependent(
+        val dependentDto = remoteDataSource.addDependent(
             authParameters.hdid,
             firstName,
             lastName,
             dateOfBirth,
             phn,
             authParameters.token,
-        )
+        ).toDto()
 
-        localDataSource.insertDependents(listOf(response.toDto().toEntity(patientId)))
+        val patientId = localDataSource.insertPatient(dependentDto.toPatientEntity())
+        localDataSource.insertDependent(dependentDto.toEntity(patientId, guardianId))
     }
 
     suspend fun checkDuplicateRecord(phn: String): Boolean {

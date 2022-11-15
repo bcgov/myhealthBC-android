@@ -138,6 +138,7 @@ class BcscAuthRepo(
     }
 
     suspend fun processLogoutResponse() {
+        patientLocalDataSource.deleteDependentPatients()
         patientLocalDataSource.deleteBcscAuthenticatedPatientData()
         setAuthState(null)
     }

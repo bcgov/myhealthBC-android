@@ -246,12 +246,20 @@ fun ImmunizationRecommendationsDto.toEntity() = ImmunizationRecommendationEntity
     recommendedVaccinations = recommendedVaccinations
 )
 
-fun DependentDto.toEntity(patientId: Long) = DependentEntity(
+fun DependentDto.toEntity(patientId: Long, guardianId : Long) = DependentEntity(
     hdid = hdid,
     firstname = firstname,
     lastname = lastname,
-    PHN = PHN,
+    PHN = phn,
     dateOfBirth = dateOfBirth,
     gender = gender,
-    patientId = patientId
+    patientId = patientId,
+    guardianId = guardianId,
+)
+
+fun DependentDto.toPatientEntity() = PatientEntity(
+    fullName = getFullName(),
+    dateOfBirth = dateOfBirth,
+    phn = phn,
+    patientOrder = Long.MAX_VALUE
 )

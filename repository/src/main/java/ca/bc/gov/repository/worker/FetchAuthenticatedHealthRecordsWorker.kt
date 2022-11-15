@@ -285,7 +285,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             commentsResponse?.let { commentsRepository.insert(it) }
 
             // Insert dependents
-            dependentsList?.let { dependentsRepository.storeDependents(it, patientId) }
+            dependentsList?.let { dependentsRepository.storeDependents(it, guardianId = patientId) }
 
             // Insert Health Visits
             healthVisitsRepository.deleteHealthVisits(patientId)
