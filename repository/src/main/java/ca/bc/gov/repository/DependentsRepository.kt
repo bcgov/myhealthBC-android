@@ -33,7 +33,7 @@ class DependentsRepository @Inject constructor(
     suspend fun storeDependents(dependents: List<DependentDto>, guardianId: Long) {
         localDataSource.clearTables()
 
-        dependents.forEach { dependentDto->
+        dependents.forEach { dependentDto ->
             val patientId = localDataSource.insertPatient(dependentDto.toPatientEntity())
             localDataSource.insertDependent(dependentDto.toEntity(patientId, guardianId))
         }

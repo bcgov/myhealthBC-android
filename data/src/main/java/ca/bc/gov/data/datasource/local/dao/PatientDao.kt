@@ -129,5 +129,4 @@ interface PatientDao {
             "(SELECT patient_id FROM dependent)"
     )
     suspend fun deleteDependentPatients(): Int
-
 }

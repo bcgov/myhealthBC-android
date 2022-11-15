@@ -46,7 +46,7 @@ data class DependentEntity(
     val lastname: String,
 
     @ColumnInfo(name = "PHN")
-    val PHN: String,
+    val phn: String,
 
     @ColumnInfo(name = "gender")
     val gender: String,
