@@ -40,8 +40,6 @@ class DependentRecordsViewModel @Inject constructor(
             val testResultWithRecords =
                 dependentsRepository.getPatientWithTestResultsAndRecords(patientId)
 
-            val patientWithLabOrdersAndLabTests =
-                dependentsRepository.getPatientWithLabOrdersAndLabTests(patientId)
 
             val patientWithCovidOrderAndTests =
                 dependentsRepository.getPatientWithCovidOrdersAndCovidTests(patientId)
@@ -53,9 +51,6 @@ class DependentRecordsViewModel @Inject constructor(
                 it.toUiModel()
             }
 
-            val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
-                it.toUiModel()
-            }
             val covidOrders =
                 patientWithCovidOrderAndTests.covidOrderAndTests.map { it.toUiModel() }
 
@@ -64,7 +59,7 @@ class DependentRecordsViewModel @Inject constructor(
                     it.toUiModel()
                 }
 
-            val result = covidTestRecords + covidOrders + labTestRecords + immunizationRecords
+            val result = covidTestRecords + covidOrders + immunizationRecords
 
             _uiState.update {
                 it.copy(records = result, onLoading = false)

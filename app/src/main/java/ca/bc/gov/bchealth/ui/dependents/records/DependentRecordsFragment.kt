@@ -36,33 +36,10 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
         viewModel.uiState.collect { uiState ->
             binding.apply {
                 progressBar.indicator.toggleVisibility(uiState.onLoading)
+                healthRecordsAdapter.setData(uiState.records)
             }
         }
     }
-
-    // if (::healthRecordsAdapter.isInitialized) {
-    //     healthRecordsAdapter.setData(
-    //         listOf(
-    //             HealthRecordItem(
-    //                 patientId = 1,
-    //                 testResultId = 1,
-    //                 medicationRecordId = 1,
-    //                 labOrderId = 1,
-    //                 immunizationRecordId = 1,
-    //                 covidOrderId = "1",
-    //                 healthVisitId = 1,
-    //                 specialAuthorityId = 1,
-    //                 icon = R.drawable.ic_banner_icon,
-    //                 title = "title",
-    //                 description = "description",
-    //                 testOutcome = "oytcome",
-    //                 date = Instant.now(),
-    //                 healthRecordType = HealthRecordType.HEALTH_VISIT_RECORD,
-    //                 dataSource = "source",
-    //             )
-    //         )
-    //     )
-    // }
 
     private fun setUpRecyclerView() {
         healthRecordsAdapter = HealthRecordsAdapter {

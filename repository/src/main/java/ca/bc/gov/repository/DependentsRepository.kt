@@ -8,7 +8,6 @@ import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
-import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.data.datasource.local.DependentsLocalDataSource
@@ -200,11 +199,6 @@ class DependentsRepository @Inject constructor(
                 DATABASE_ERROR, "No record found for patient id=  $patientId"
             )
 
-    suspend fun getPatientWithLabOrdersAndLabTests(patientId: Long): PatientWithLabOrderAndLatTestsDto =
-        patientLocalDataSource.getPatientWithLabOrdersAndLabTests(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
 
     suspend fun getPatientWithCovidOrdersAndCovidTests(patientId: Long): PatientWithCovidOrderAndTestDto =
         patientLocalDataSource.getPatientWithCovidOrderAndCovidTests(patientId)
