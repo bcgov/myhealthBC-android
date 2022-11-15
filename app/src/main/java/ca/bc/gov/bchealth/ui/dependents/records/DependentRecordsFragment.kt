@@ -29,7 +29,7 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
         setUpRecyclerView()
 
         launchOnStart { observeUiState() }
-        viewModel.loadRecords(args.id)
+        viewModel.loadRecords(patientId = args.patientId, hdid = args.hdid)
     }
 
     private suspend fun observeUiState() {

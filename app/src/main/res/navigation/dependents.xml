@@ -22,7 +22,11 @@
         tools:layout="@layout/fragment_dependent_records">
 
         <argument
-            android:name="id"
+            android:name="patientId"
+            app:argType="long" />
+
+        <argument
+            android:name="hdid"
             android:defaultValue=""
             app:argType="string" />
 

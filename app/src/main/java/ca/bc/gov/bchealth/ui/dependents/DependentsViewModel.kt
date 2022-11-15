@@ -66,6 +66,7 @@ data class DependentsUiState(
 )
 
 data class DependentDetailItem(
-    val id: String,
+    val patientId: Long,
+    val hdid: String,
     val fullName: String,
 )

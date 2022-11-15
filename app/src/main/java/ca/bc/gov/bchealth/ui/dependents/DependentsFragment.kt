@@ -77,9 +77,9 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
 
     private fun onClickDependent(dependent: DependentDetailItem) {
         navigate(
-            R.id.dependentRecordsFragment,
-            bundleOf(
-                "id" to dependent.id,
+            R.id.dependentRecordsFragment, bundleOf(
+                "patientId" to dependent.patientId,
+                "hdid" to dependent.hdid,
                 "fullName" to dependent.fullName
             )
         )

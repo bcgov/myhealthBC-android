@@ -4,14 +4,12 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.model.mapper.toUiModel
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.model.ErrorData
-import ca.bc.gov.common.model.immunization.ImmunizationDto
-import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
-import ca.bc.gov.repository.bcsc.BcscAuthRepo
-import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
-import ca.bc.gov.repository.testrecord.CovidOrderRepository
+import ca.bc.gov.repository.DependentsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,49 +20,58 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DependentRecordsViewModel @Inject constructor(
-    private val bcscAuthRepo: BcscAuthRepo,
-    private val immunizationRecordRepository: ImmunizationRecordRepository,
-    private val covidOrderRepository: CovidOrderRepository,
+    private val dependentsRepository: DependentsRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DependentRecordsUiState())
     val uiState: StateFlow<DependentRecordsUiState> = _uiState.asStateFlow()
 
-    fun loadRecords(hdid: String) {
+    fun loadRecords(patientId: Long, hdid: String) {
         viewModelScope.launch {
             emitLoading(true)
+            getRecords(patientId, hdid)
+        }
+    }
 
-            try {
-                val token = bcscAuthRepo.getAuthParametersDto().token
-                fetchCovidTestResults(token, hdid)
-                fetchImmunizations(token, hdid)
+    private suspend fun getRecords(patientId: Long, hdid: String) {
+        try {
+            dependentsRepository.requestRecordsIfNeeded(patientId, hdid)
 
-                emitLoading(false)
-            } catch (e: Exception) {
-                handleError(e)
+            val testResultWithRecords =
+                dependentsRepository.getPatientWithTestResultsAndRecords(patientId)
+
+            val patientWithLabOrdersAndLabTests =
+                dependentsRepository.getPatientWithLabOrdersAndLabTests(patientId)
+
+            val patientWithCovidOrderAndTests =
+                dependentsRepository.getPatientWithCovidOrdersAndCovidTests(patientId)
+
+            val patientWithImmunizationRecordAndForecast =
+                dependentsRepository.getPatientWithImmunizationRecordAndForecast(patientId)
+
+            val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
+                it.toUiModel()
             }
-        }
-    }
 
-    private suspend fun fetchCovidTestResults(
-        token: String,
-        hdid: String
-    ): List<CovidOrderWithCovidTestDto>? {
-        try {
-            return covidOrderRepository.fetchCovidOrders(token, hdid)
+            val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
+                it.toUiModel()
+            }
+            val covidOrders =
+                patientWithCovidOrderAndTests.covidOrderAndTests.map { it.toUiModel() }
+
+            val immunizationRecords =
+                patientWithImmunizationRecordAndForecast.immunizationRecords.map {
+                    it.toUiModel()
+                }
+
+            val result = covidTestRecords + covidOrders + labTestRecords + immunizationRecords
+
+            _uiState.update {
+                it.copy(records = result, onLoading = false)
+            }
         } catch (e: Exception) {
             handleError(e)
         }
-        return null
-    }
-
-    private suspend fun fetchImmunizations(token: String, hdid: String): ImmunizationDto? {
-        try {
-            return immunizationRecordRepository.fetchImmunization(token, hdid)
-        } catch (e: Exception) {
-            handleError(e)
-        }
-        return null
     }
 
     private fun handleError(e: Exception) {
@@ -102,6 +109,7 @@ class DependentRecordsViewModel @Inject constructor(
                 onLoading = false,
                 errorData = null,
                 isConnected = true,
+                records = emptyList()
             )
         )
     }
@@ -111,4 +119,5 @@ data class DependentRecordsUiState(
     val onLoading: Boolean = false,
     val errorData: ErrorData? = null,
     val isConnected: Boolean = true,
+    val records: List<HealthRecordItem> = emptyList(),
 )

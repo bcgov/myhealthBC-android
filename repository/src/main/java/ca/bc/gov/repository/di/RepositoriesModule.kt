@@ -38,6 +38,7 @@ import ca.bc.gov.repository.RecentPhnDobRepository
 import ca.bc.gov.repository.TermsOfServiceRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.immunization.ImmunizationForecastRepository
+import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.labtest.LabTestRepository
@@ -219,17 +220,38 @@ class RepositoriesModule {
     @Provides
     @Singleton
     fun provideDependentsRepository(
-        dependentsRemoteDataSource: DependentsRemoteDataSource,
-        dependentsLocalDataSource: DependentsLocalDataSource,
+        remoteDataSource: DependentsRemoteDataSource,
+        localDataSource: DependentsLocalDataSource,
         patientLocalDataSource: PatientLocalDataSource,
         bcscAuthRepo: BcscAuthRepo,
-    ): DependentsRepository =
-        DependentsRepository(
-            dependentsRemoteDataSource,
-            dependentsLocalDataSource,
-            patientLocalDataSource,
-            bcscAuthRepo
-        )
+        preferenceStorage: EncryptedPreferenceStorage,
+        patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
+        patientWithTestResultRepository: PatientWithTestResultRepository,
+        covidOrderRepository: CovidOrderRepository,
+        covidTestRepository: CovidTestRepository,
+        fetchVaccineRecordRepository: FetchVaccineRecordRepository,
+        labOrderRepository: LabOrderRepository,
+        labTestRepository: LabTestRepository,
+        immunizationRecordRepository: ImmunizationRecordRepository,
+        immunizationForecastRepository: ImmunizationForecastRepository,
+        immunizationRecommendationRepository: ImmunizationRecommendationRepository,
+    ): DependentsRepository = DependentsRepository(
+        remoteDataSource,
+        localDataSource,
+        patientLocalDataSource,
+        bcscAuthRepo,
+        preferenceStorage,
+        patientWithVaccineRecordRepository,
+        patientWithTestResultRepository,
+        covidOrderRepository,
+        covidTestRepository,
+        fetchVaccineRecordRepository,
+        labOrderRepository,
+        labTestRepository,
+        immunizationRecordRepository,
+        immunizationForecastRepository,
+        immunizationRecommendationRepository,
+    )
 
     @Provides
     @Singleton
