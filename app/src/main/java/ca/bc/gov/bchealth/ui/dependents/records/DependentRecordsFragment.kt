@@ -11,7 +11,6 @@ import ca.bc.gov.bchealth.databinding.FragmentDependentRecordsBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordsAdapter
-import ca.bc.gov.bchealth.ui.healthrecord.individual.IndividualHealthRecordFragmentDirections
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -45,8 +44,8 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
         healthRecordsAdapter = HealthRecordsAdapter {
             when (it.healthRecordType) {
                 HealthRecordType.VACCINE_RECORD -> {
-                    val action = IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(
+                    val action = DependentRecordsFragmentDirections
+                        .actionDependentRecordsFragmentToVaccineRecordDetailFragment(
                             it.patientId
                         )
                     findNavController().navigate(action)
@@ -54,12 +53,12 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
                 HealthRecordType.COVID_TEST_RECORD -> {
 
                     val action = if (it.covidOrderId != null) {
-                        IndividualHealthRecordFragmentDirections.actionIndividualHealthRecordFragmentToCovidTestResultDetailFragment(
+                        DependentRecordsFragmentDirections.actionDependentRecordsFragmentToCovidTestResultDetailFragment(
                             it.covidOrderId
                         )
                     } else {
-                        IndividualHealthRecordFragmentDirections
-                            .actionIndividualHealthRecordFragmentToTestResultDetailFragment(
+                        DependentRecordsFragmentDirections
+                            .actionDependentRecordsFragmentToTestResultDetailFragment(
                                 it.patientId,
                                 it.testResultId
                             )
@@ -67,38 +66,38 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
                     findNavController().navigate(action)
                 }
                 HealthRecordType.MEDICATION_RECORD -> {
-                    val action = IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToMedicationDetailFragment(
+                    val action = DependentRecordsFragmentDirections
+                        .actionDependentRecordsFragmentToMedicationDetailFragment(
                             it.medicationRecordId
                         )
                     findNavController().navigate(action)
                 }
                 HealthRecordType.LAB_TEST -> {
                     it.labOrderId.let { it1 ->
-                        val action = IndividualHealthRecordFragmentDirections
-                            .actionIndividualHealthRecordFragmentToLabTestDetailFragment(
+                        val action = DependentRecordsFragmentDirections
+                            .actionDependentRecordsFragmentToLabTestDetailFragment(
                                 it1
                             )
                         findNavController().navigate(action)
                     }
                 }
                 HealthRecordType.IMMUNIZATION_RECORD -> {
-                    val action = IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToImmunizationRecordDetailFragment(
+                    val action = DependentRecordsFragmentDirections
+                        .actionDependentRecordsFragmentToImmunizationRecordDetailFragment(
                             it.immunizationRecordId
                         )
                     findNavController().navigate(action)
                 }
                 HealthRecordType.HEALTH_VISIT_RECORD -> {
-                    val action = IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToHealthVisitDetailsFragment(
+                    val action = DependentRecordsFragmentDirections
+                        .actionDependentRecordsFragmentToHealthVisitDetailsFragment(
                             it.healthVisitId
                         )
                     findNavController().navigate(action)
                 }
                 HealthRecordType.SPECIAL_AUTHORITY_RECORD -> {
-                    val action = IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToSpecialAuthorityDetailsFragment(
+                    val action = DependentRecordsFragmentDirections
+                        .actionDependentRecordsFragmentToSpecialAuthorityDetailsFragment(
                             it.specialAuthorityId
                         )
                     findNavController().navigate(action)

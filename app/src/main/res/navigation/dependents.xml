@@ -35,6 +35,136 @@
             android:defaultValue=""
             app:argType="string" />
 
+        <action
+            android:id="@+id/action_dependentRecordsFragment_to_testResultDetailFragment"
+            app:destination="@id/dependentTestResultDetailFragment" />
+        <action
+            android:id="@+id/action_dependentRecordsFragment_to_vaccineRecordDetailFragment"
+            app:destination="@id/dependentVaccineRecordDetailFragment" />
+        <action
+            android:id="@+id/action_dependentRecordsFragment_to_medicationDetailFragment"
+            app:destination="@id/dependentMedicationDetailsFragment" />
+        <action
+            android:id="@+id/action_dependentRecordsFragment_to_labTestDetailFragment"
+            app:destination="@id/dependentLabTestDetailFragment" />
+        <action
+            android:id="@+id/action_dependentRecordsFragment_to_protectiveWordFragment"
+            app:destination="@+id/dependentProtectiveWordFragment" />
+        <action
+            android:id="@+id/action_dependentRecordsFragment_to_covidTestResultDetailFragment"
+            app:destination="@id/dependentCovidTestResultDetailFragment" />
+        <action
+            android:id="@+id/action_dependentRecordsFragment_to_immunizationRecordDetailFragment"
+            app:destination="@id/dependentImmunizationRecordDetailFragment" />
+        <action
+            android:id="@+id/action_dependentRecordsFragment_to_healthVisitDetailsFragment"
+            app:destination="@id/dependentHealthVisitDetailFragment" />
+        <action
+            android:id="@+id/action_dependentRecordsFragment_to_specialAuthorityDetailsFragment"
+            app:destination="@id/dependentSpecialAuthorityDetailFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/dependentTestResultDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.covidtests.TestResultDetailFragment"
+        android:label="TestResultDetailFragment">
+        <argument
+            android:name="patient_id"
+            app:argType="long" />
+        <argument
+            android:name="testResult_id"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dependentVaccineRecordDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.vaccine.VaccineRecordDetailFragment"
+        android:label="fragment_vaccine_record_detail"
+        tools:layout="@layout/fragment_vaccine_record_detail">
+        <argument
+            android:name="patientId"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dependentMedicationDetailsFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsFragment"
+        android:label="fragment_medication_details"
+        tools:layout="@layout/fragment_medication_details">
+        <argument
+            android:name="medicationId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_medicationDetailsFragment_to_commentsFragment"
+            app:destination="@id/dependentsCommentsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dependentsCommentsFragment"
+        android:name="ca.bc.gov.bchealth.ui.comment.CommentsFragment"
+        android:label="fragment_comments"
+        tools:layout="@layout/fragment_comments" >
+        <argument
+            android:name="parentEntryId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dependentLabTestDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.labtest.LabTestDetailFragment"
+        android:label="LabTestDetailFragment">
+        <argument
+            android:name="lab_order_id"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dependentProtectiveWordFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.protectiveword.ProtectiveWordFragment"
+        android:label="ProtectiveWordFragment">
+        <argument
+            android:name="patient_id"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dependentCovidTestResultDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.covidtests.CovidTestResultDetailFragment"
+        android:label="CovidTestResultDetailFragment">
+        <argument
+            android:name="covid_order_id"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dependentImmunizationRecordDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.immunization.ImmunizationRecordDetailFragment"
+        android:label="fragment_immunization_record_detail"
+        tools:layout="@layout/fragment_immunization_record_detail">
+        <argument
+            android:name="immunizationRecordId"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dependentHealthVisitDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.healthvisits.HealthVisitDetailFragment"
+        android:label="fragment_health_visit_detail"
+        tools:layout="@layout/fragment_health_visit_detail">
+        <argument
+            android:name="healthVisitRecordId"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dependentSpecialAuthorityDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.specialauthority.SpecialAuthorityDetailFragment"
+        android:label="fragment_special_authority_detail"
+        tools:layout="@layout/fragment_special_authority_detail">
+        <argument
+            android:name="specialAuthorityId"
+            app:argType="long" />
     </fragment>
 
 </navigation>
