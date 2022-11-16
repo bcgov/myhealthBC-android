@@ -6,8 +6,8 @@ versions.targetSdkVersion = 31
 versions.compileSdkVersion = 31
 
 //App
-versions.versionName = '1.2.19'
-versions.versionCode = 49
+versions.versionName = '1.3.0'
+versions.versionCode = 60
 versions.localApiVersion = 1
 
 //Tools & Libs
