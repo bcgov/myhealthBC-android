@@ -385,5 +385,6 @@ fun DependentEntity.toDto() = DependentDto(
     phn = phn,
     dateOfBirth = dateOfBirth,
     gender = gender,
-    patientId = patientId
+    patientId = patientId,
+    isCacheValid = isCacheValid
 )

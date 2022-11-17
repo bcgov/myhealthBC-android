@@ -22,6 +22,12 @@ interface DependentDao : BaseDao<DependentEntity> {
     )
     suspend fun findDependent(phn: String): List<DependentEntity>
 
+    @Query("SELECT * FROM dependent WHERE patient_id = :patientId")
+    suspend fun findDependent(patientId: Long): DependentEntity?
+
+    @Query("UPDATE dependent SET is_cache_valid = :isCacheValid WHERE patient_id = :patientId")
+    suspend fun updateDependentCacheFlag(patientId: Long, isCacheValid: Boolean)
+
     @Query("DELETE FROM dependent")
     suspend fun deleteAll(): Int
 }

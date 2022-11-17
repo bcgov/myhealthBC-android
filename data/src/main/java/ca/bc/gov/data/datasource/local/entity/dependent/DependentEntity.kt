@@ -53,4 +53,7 @@ data class DependentEntity(
 
     @ColumnInfo(name = "dateOfBirth")
     val dateOfBirth: Instant,
+
+    @ColumnInfo(name = "is_cache_valid")
+    val isCacheValid: Boolean,
 )

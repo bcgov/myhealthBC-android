@@ -98,6 +98,7 @@ class DependentsRepository @Inject constructor(
     }
 
     suspend fun requestRecordsIfNeeded(patientId: Long, hdid: String) {
+        if (localDataSource.isDependentCacheValid(patientId).not()) {
             var vaccineRecords: Pair<VaccineRecordState, PatientVaccineRecord?>? = null
             var covidOrders: List<CovidOrderWithCovidTestDto>? = null
             var labOrders: List<LabOrderWithLabTestDto>? = null
@@ -130,6 +131,7 @@ class DependentsRepository @Inject constructor(
             }
 
             storeRecords(patientId, vaccineRecords, covidOrders, labOrders, immunizationDto)
+        }
     }
 
     private fun handleException(exception: Exception) {
@@ -190,7 +192,7 @@ class DependentsRepository @Inject constructor(
             immunizationRecommendationRepository.insert(it)
         }
 
-        preferenceStorage.isDependentsRecordsCached = true
+        localDataSource.enableDependentCacheFlag(patientId)
     }
 
     suspend fun getPatientWithTestResultsAndRecords(patientId: Long): PatientWithTestResultsAndRecordsDto =
@@ -198,7 +200,6 @@ class DependentsRepository @Inject constructor(
             ?: throw MyHealthException(
                 DATABASE_ERROR, "No record found for patient id=  $patientId"
             )
-
 
     suspend fun getPatientWithCovidOrdersAndCovidTests(patientId: Long): PatientWithCovidOrderAndTestDto =
         patientLocalDataSource.getPatientWithCovidOrderAndCovidTests(patientId)

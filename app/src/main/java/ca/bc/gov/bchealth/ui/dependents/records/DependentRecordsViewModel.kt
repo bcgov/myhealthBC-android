@@ -40,7 +40,6 @@ class DependentRecordsViewModel @Inject constructor(
             val testResultWithRecords =
                 dependentsRepository.getPatientWithTestResultsAndRecords(patientId)
 
-
             val patientWithCovidOrderAndTests =
                 dependentsRepository.getPatientWithCovidOrdersAndCovidTests(patientId)
 
