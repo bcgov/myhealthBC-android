@@ -6,12 +6,15 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentDependentsBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,20 +41,34 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
             observeUiState()
         }
         viewModel.loadAuthenticationState()
+
+        observeHealthRecordsSyncCompletion()
+    }
+
+    private fun observeHealthRecordsSyncCompletion() {
+        observeWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME) { state ->
+            if (state == WorkInfo.State.RUNNING) {
+                viewModel.displayLoadingState()
+            } else {
+                viewModel.hideLoadingState()
+            }
+        }
     }
 
     private suspend fun observeUiState() {
         viewModel.uiState.collect { uiState ->
+
+            val isDataReadyToDisplay = uiState.isSessionActive == true && uiState.onLoading.not()
             binding.apply {
                 progressBar.indicator.toggleVisibility(uiState.onLoading)
                 groupLogIn.toggleVisibility(uiState.isBcscAuthenticated == false)
                 viewSessionExpired.content.toggleVisibility(uiState.isSessionActive == false)
                 tvBody.toggleVisibility(uiState.isSessionActive != false)
-                btnAddDependent.toggleVisibility(uiState.isSessionActive == true)
-                containerImageEmpty.toggleVisibility(uiState.isSessionActive == true)
-                btnManageDependent.toggleVisibility(uiState.isSessionActive == true)
-                dividerList.toggleVisibility(uiState.isSessionActive == true)
-                listDependents.toggleVisibility(uiState.isSessionActive == true)
+                btnAddDependent.toggleVisibility(isDataReadyToDisplay)
+                containerImageEmpty.toggleVisibility(isDataReadyToDisplay)
+                btnManageDependent.toggleVisibility(isDataReadyToDisplay)
+                dividerList.toggleVisibility(isDataReadyToDisplay)
+                listDependents.toggleVisibility(isDataReadyToDisplay)
             }
 
             if (uiState.isSessionActive == true) {
@@ -64,13 +81,15 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
 
     private suspend fun observeDependentList() {
         viewModel.dependentsList.collect { list ->
-            binding.apply {
-                containerImageEmpty.toggleVisibility(list.isEmpty())
-                btnManageDependent.toggleVisibility(list.isNotEmpty())
-                dividerList.toggleVisibility(list.isNotEmpty())
-                listDependents.toggleVisibility(list.isNotEmpty())
-                listDependents.adapter = dependentAdapter
-                dependentAdapter.submitList(list.toMutableList())
+            if (viewModel.uiState.value.onLoading.not()) {
+                binding.apply {
+                    containerImageEmpty.toggleVisibility(list.isEmpty())
+                    btnManageDependent.toggleVisibility(list.isNotEmpty())
+                    dividerList.toggleVisibility(list.isNotEmpty())
+                    listDependents.toggleVisibility(list.isNotEmpty())
+                    listDependents.adapter = dependentAdapter
+                    dependentAdapter.submitList(list.toMutableList())
+                }
             }
         }
     }

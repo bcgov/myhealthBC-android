@@ -48,6 +48,14 @@ class DependentsViewModel @Inject constructor(
         _uiState.update { it.copy(isBcscAuthenticated = true) }
     }
 
+    fun hideLoadingState() {
+        _uiState.update { it.copy(onLoading = false) }
+    }
+
+    fun displayLoadingState() {
+        _uiState.update { it.copy(onLoading = true) }
+    }
+
     fun resetUiState() {
         _uiState.tryEmit(
             DependentsUiState(
