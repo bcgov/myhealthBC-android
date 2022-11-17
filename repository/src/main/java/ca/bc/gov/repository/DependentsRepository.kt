@@ -12,7 +12,6 @@ import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.data.datasource.local.DependentsLocalDataSource
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
-import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.DependentsRemoteDataSource
 import ca.bc.gov.data.model.mapper.toDto
 import ca.bc.gov.data.model.mapper.toEntity
@@ -36,7 +35,6 @@ class DependentsRepository @Inject constructor(
     private val localDataSource: DependentsLocalDataSource,
     private val patientLocalDataSource: PatientLocalDataSource,
     private val bcscAuthRepo: BcscAuthRepo,
-    private val preferenceStorage: EncryptedPreferenceStorage,
     private val patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
     private val patientWithTestResultRepository: PatientWithTestResultRepository,
     private val covidOrderRepository: CovidOrderRepository,

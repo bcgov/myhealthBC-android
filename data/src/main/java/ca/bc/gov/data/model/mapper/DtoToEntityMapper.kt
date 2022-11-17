@@ -1,5 +1,6 @@
 package ca.bc.gov.data.model.mapper
 
+import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
@@ -262,5 +263,6 @@ fun DependentDto.toPatientEntity() = PatientEntity(
     fullName = getFullName(),
     dateOfBirth = dateOfBirth,
     phn = phn,
-    patientOrder = Long.MAX_VALUE
+    patientOrder = Long.MAX_VALUE,
+    authenticationStatus = AuthenticationStatus.DEPENDENT
 )

@@ -124,9 +124,6 @@ interface PatientDao {
     @Query("SELECT id FROM patient WHERE authentication_status = 'AUTHENTICATED'")
     suspend fun getAuthenticatedPatientId(): Long?
 
-    @Query(
-        "DELETE FROM patient WHERE id IN " +
-            "(SELECT patient_id FROM dependent)"
-    )
+    @Query("DELETE FROM patient WHERE authentication_status = 'DEPENDENT'")
     suspend fun deleteDependentPatients(): Int
 }
