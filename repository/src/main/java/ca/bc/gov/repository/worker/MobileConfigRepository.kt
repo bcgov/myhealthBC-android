@@ -12,8 +12,11 @@ class MobileConfigRepository @Inject constructor(
     private val encryptedPreferenceStorage: EncryptedPreferenceStorage
 ) {
 
+    suspend fun getRemoteApiVersion(): Int =
+        mobileConfigRemoteDataSource.getMobileConfiguration().version
+
     suspend fun getBaseUrl(): Boolean {
-        val response = mobileConfigRemoteDataSource.getBaseUrl()
+        val response = mobileConfigRemoteDataSource.getMobileConfiguration()
         encryptedPreferenceStorage.baseUrl = response.baseUrl
         encryptedPreferenceStorage.baseUrlIsOnline = response.online ?: false
         return response.online ?: false

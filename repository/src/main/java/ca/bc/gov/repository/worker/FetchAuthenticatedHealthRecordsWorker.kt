@@ -6,6 +6,7 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
+import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.ProtectiveWordException
@@ -82,6 +83,11 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     var isApiFailed = false
 
     override suspend fun doWork(): Result {
+        val remoteVersion = mobileConfigRepository.getRemoteApiVersion()
+        if (LOCAL_API_VERSION < remoteVersion) {
+            return respondToAppUpdateRequired()
+        }
+
         if (bcscAuthRepo.getPostLoginCheck() == PostLoginCheck.IN_PROGRESS.name ||
             !bcscAuthRepo.checkSession()
         ) {
@@ -453,7 +459,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private fun handleQueueItException(e: java.lang.Exception): Result {
         return Result.failure(
             Data.Builder()
-                .putString("queueItUrl", e.message.toString())
+                .putString(QUEUE_IT_URL, e.message.toString())
                 .build()
         )
     }
@@ -461,8 +467,22 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private fun respondToHgServicesDown(): Result {
         return Result.failure(
             Data.Builder()
-                .putBoolean("isHgServicesUp", false)
+                .putBoolean(IS_HG_SERVICES_UP, false)
                 .build()
         )
+    }
+
+    private fun respondToAppUpdateRequired(): Result {
+        return Result.failure(
+            Data.Builder()
+                .putBoolean(APP_UPDATE_REQUIRED, true)
+                .build()
+        )
+    }
+
+    companion object {
+        const val APP_UPDATE_REQUIRED = "appUpdateRequired"
+        const val IS_HG_SERVICES_UP = "isHgServicesUp"
+        const val QUEUE_IT_URL = "queueItUrl"
     }
 }

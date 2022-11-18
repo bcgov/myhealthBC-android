@@ -1,5 +1,6 @@
 package ca.bc.gov.bchealth
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -13,11 +14,15 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.databinding.ActivityMainBinding
+import ca.bc.gov.bchealth.ui.inappupdate.InAppUpdateActivity
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.common.model.settings.AnalyticsFeature
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
+import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker.Companion.APP_UPDATE_REQUIRED
+import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker.Companion.IS_HG_SERVICES_UP
+import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker.Companion.QUEUE_IT_URL
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
 import com.queue_it.androidsdk.QueueListener
@@ -40,6 +45,7 @@ class MainActivity : AppCompatActivity() {
     private val binding by viewBindings(ActivityMainBinding::bind)
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
     private val viewModel: MainViewModel by viewModels()
+
     // isWorkerStarted is required to avoid capturing "FAILED" state of worker at app launch
     private var isWorkerStarted: Boolean = false
 
@@ -77,7 +83,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        observeQueueItExceptionFromWorker()
+        observeExceptionFromWorker()
     }
 
     private fun toggleAnalyticsFeature() {
@@ -102,27 +108,36 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.visibility = View.GONE
     }
 
-    private fun observeQueueItExceptionFromWorker() {
+    private fun observeExceptionFromWorker() {
         val workRequest = WorkManager.getInstance(applicationContext)
             .getWorkInfosForUniqueWorkLiveData(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME)
         if (!workRequest.hasObservers()) {
             workRequest.observe(
                 this
             ) {
-                if (it.firstOrNull()?.state?.name == "RUNNING") {
+                val workInfo = it.firstOrNull() ?: return@observe
+
+                if (workInfo.state.name == "RUNNING") {
                     isWorkerStarted = true
                 }
 
-                if (it.firstOrNull()?.state?.name == "FAILED") {
+                if (workInfo.state.name == "FAILED") {
+                    val workData = workInfo.outputData
+
                     if (isWorkerStarted) {
-                        val isHgServicesUp =
-                            it.firstOrNull()!!.outputData.getBoolean("isHgServicesUp", true)
+                        val appUpdateRequired = workData.getBoolean(APP_UPDATE_REQUIRED, false)
+                        if (appUpdateRequired) {
+                            openInAppUpdateActivity()
+                            return@observe
+                        }
+
+                        val isHgServicesUp = workData.getBoolean(IS_HG_SERVICES_UP, true)
                         if (!isHgServicesUp) {
                             binding.navHostFragment.showServiceDownMessage(this)
                             return@observe
                         }
                     }
-                    val queueItUrl = it.firstOrNull()!!.outputData.getString("queueItUrl")
+                    val queueItUrl = workData.getString(QUEUE_IT_URL)
                     if (queueItUrl?.isNotBlank() == true) {
                         queUser(queueItUrl.toString())
                     }
@@ -143,6 +158,11 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.i(this::class.java.name, "Exception in queUser: ${e.message}")
         }
+    }
+
+    private fun openInAppUpdateActivity() {
+        startActivity(Intent(this, InAppUpdateActivity::class.java))
+        finish()
     }
 
     private val queueListener = object : QueueListener() {
