@@ -5,5 +5,6 @@ package ca.bc.gov.data.datasource.remote.model.response
  */
 data class MobileConfigurationResponse(
     val online: Boolean?,
-    val baseUrl: String?
+    val baseUrl: String?,
+    val version: Int,
 )
