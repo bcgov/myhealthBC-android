@@ -13,8 +13,8 @@ import javax.inject.Inject
  */
 class MobileConfigRemoteDataSource @Inject constructor(private val healthGatewayMobileConfigApi: HealthGatewayMobileConfigApi) {
 
-    suspend fun getBaseUrl(): MobileConfigurationResponse {
-        val response = safeCall { healthGatewayMobileConfigApi.getBaseUrl() }
+    suspend fun getMobileConfiguration(): MobileConfigurationResponse {
+        val response = safeCall { healthGatewayMobileConfigApi.getMobileConfiguration() }
             ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
         if (response.online == null) {

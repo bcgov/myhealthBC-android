@@ -15,7 +15,7 @@ interface HealthGatewayMobileConfigApi {
     }
 
     @GET("$MOBILE_CONFIGURATION")
-    suspend fun getBaseUrl(
+    suspend fun getMobileConfiguration(
         @Query("api-version") apiVersion: String? = null
     ): Response<MobileConfigurationResponse>
 }
