@@ -195,19 +195,16 @@ class DependentsRepository @Inject constructor(
 
     suspend fun getPatientWithTestResultsAndRecords(patientId: Long): PatientWithTestResultsAndRecordsDto =
         patientLocalDataSource.getPatientWithTestResultsAndRecords(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getDatabaseException(patientId)
 
     suspend fun getPatientWithCovidOrdersAndCovidTests(patientId: Long): PatientWithCovidOrderAndTestDto =
         patientLocalDataSource.getPatientWithCovidOrderAndCovidTests(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getDatabaseException(patientId)
 
     suspend fun getPatientWithImmunizationRecordAndForecast(patientId: Long): PatientWithImmunizationRecordAndForecastDto =
         patientLocalDataSource.getPatientWithImmunizationRecordAndForecast(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getDatabaseException(patientId)
+
+    private fun getDatabaseException(patientId: Long) =
+        MyHealthException(DATABASE_ERROR, "No record found for patient id=  $patientId")
 }
