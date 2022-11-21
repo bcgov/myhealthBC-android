@@ -66,6 +66,11 @@
     </fragment>
 
     <fragment
+        android:id="@+id/dependentFilterFragment"
+        tools:layout="@layout/fragment_filter"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.filter.FilterFragment" />
+
+    <fragment
         android:id="@+id/dependentTestResultDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.covidtests.TestResultDetailFragment"
         android:label="TestResultDetailFragment">

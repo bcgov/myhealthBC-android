@@ -144,7 +144,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
             updateHiddenMedicationRecordsView(viewModel.uiState.value)
 
-            healthRecordsAdapter.filter.filter(getFilterString())
+            healthRecordsAdapter.filter.filter(filterSharedViewModel.getFilterString())
         }
     }
 
@@ -244,7 +244,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         if (::healthRecordsAdapter.isInitialized) {
             healthRecordsAdapter.setData(uiState.onHealthRecords)
         }
-        healthRecordsAdapter.filter.filter(getFilterString())
+        healthRecordsAdapter.filter.filter(filterSharedViewModel.getFilterString())
     }
 
     private fun updateHiddenMedicationRecordsView(uiState: IndividualHealthRecordsUiState) {
@@ -431,20 +431,5 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 }
             }
         }
-    }
-
-    private fun getFilterString(): String {
-        var filterString =
-            filterSharedViewModel.filterState.value.timelineTypeFilter.joinToString(",")
-        if (filterSharedViewModel.filterState.value.filterFromDate != null) {
-            filterString = filterString.plus(",FROM:")
-                .plus(filterSharedViewModel.filterState.value.filterFromDate)
-        }
-        if (filterSharedViewModel.filterState.value.filterToDate != null) {
-            filterString =
-                filterString.plus(",TO:").plus(filterSharedViewModel.filterState.value.filterToDate)
-        }
-
-        return filterString
     }
 }

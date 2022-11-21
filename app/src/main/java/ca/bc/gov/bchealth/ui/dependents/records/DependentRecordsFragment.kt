@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.dependents.records
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -9,9 +10,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentDependentRecordsBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterUiState
+import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterViewModel
+import ca.bc.gov.bchealth.ui.healthrecord.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordsAdapter
+import ca.bc.gov.bchealth.utils.hide
 import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,6 +28,7 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
     private val args: DependentRecordsFragmentArgs by navArgs()
     private lateinit var healthRecordsAdapter: HealthRecordsAdapter
     private val viewModel: DependentRecordsViewModel by viewModels()
+    private val filterSharedViewModel: FilterViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -29,6 +36,100 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
 
         launchOnStart { observeUiState() }
         viewModel.loadRecords(patientId = args.patientId, hdid = args.hdid)
+
+        clearFilterClickListener()
+        observeFilterState()
+    }
+
+    private fun clearFilterClickListener() {
+        binding.chipGroup.imgClear.setOnClickListener {
+            filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL.name), null, null)
+            healthRecordsAdapter.filter.filter(filterSharedViewModel.getFilterString())
+        }
+    }
+
+    private fun observeFilterState() {
+        launchOnStart {
+            filterSharedViewModel.filterState.collect { filterState ->
+
+                // update filter date selection
+                if (isFilterDateSelected(filterState)) {
+                    binding.chipGroup.chipDate.apply {
+                        show()
+                        text = when {
+                            filterState.filterFromDate.isNullOrBlank() -> {
+                                filterState.filterToDate + " " + getString(R.string.before)
+                            }
+                            filterState.filterToDate.isNullOrBlank() -> {
+                                filterState.filterFromDate + " " + getString(R.string.after)
+                            }
+                            else -> {
+                                filterState.filterFromDate + " - " + filterState.filterToDate
+                            }
+                        }
+                    }
+                } else {
+                    binding.chipGroup.chipDate.hide()
+                }
+
+                updateTypeFilterSelection(filterState)
+
+                updateClearButton(filterState)
+            }
+        }
+    }
+
+    private fun updateClearButton(filterState: FilterUiState) {
+        if (!isFilterDateSelected(filterState) && filterState.timelineTypeFilter.contains(
+                TimelineTypeFilter.ALL.name
+            )
+        ) {
+            binding.chipGroup.imgClear.hide()
+        } else {
+            binding.chipGroup.imgClear.show()
+        }
+    }
+
+    private fun updateTypeFilterSelection(filterUiState: FilterUiState) {
+        resetFilters()
+        filterUiState.timelineTypeFilter.forEach {
+            when (it) {
+                TimelineTypeFilter.MEDICATION.name -> {
+                    binding.chipGroup.chipMedication.show()
+                }
+                TimelineTypeFilter.IMMUNIZATION.name -> {
+                    binding.chipGroup.chipImmunizations.show()
+                }
+                TimelineTypeFilter.COVID_19_TEST.name -> {
+                    binding.chipGroup.chipCovidTest.show()
+                }
+                TimelineTypeFilter.LAB_TEST.name -> {
+                    binding.chipGroup.chipLabTest.show()
+                }
+                TimelineTypeFilter.HEALTH_VISIT.name -> {
+                    binding.chipGroup.chipHealthVisits.show()
+                }
+                TimelineTypeFilter.SPECIAL_AUTHORITY.name -> {
+                    binding.chipGroup.chipSpecialAuthority.show()
+                }
+            }
+        }
+    }
+
+    private fun resetFilters() {
+        binding.chipGroup.chipMedication.hide()
+        binding.chipGroup.chipImmunizations.hide()
+        binding.chipGroup.chipCovidTest.hide()
+        binding.chipGroup.chipLabTest.hide()
+        binding.chipGroup.chipHealthVisits.hide()
+        binding.chipGroup.chipSpecialAuthority.hide()
+    }
+
+    private fun isFilterDateSelected(filterState: FilterUiState): Boolean {
+        if (filterState.filterFromDate.isNullOrBlank() && filterState.filterToDate.isNullOrBlank()) {
+            return false
+        }
+        return true
     }
 
     private suspend fun observeUiState() {
@@ -36,6 +137,7 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
             binding.apply {
                 progressBar.indicator.toggleVisibility(uiState.onLoading)
                 healthRecordsAdapter.setData(uiState.records)
+                healthRecordsAdapter.filter.filter(filterSharedViewModel.getFilterString())
             }
         }
     }
@@ -114,6 +216,10 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
 
             btnBack.setOnClickListener {
                 findNavController().popBackStack()
+            }
+
+            btnFilter.setOnClickListener {
+                findNavController().navigate(R.id.filterFragment)
             }
 
             tvTitle.text = args.fullName

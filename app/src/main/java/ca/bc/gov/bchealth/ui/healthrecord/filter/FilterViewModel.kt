@@ -33,6 +33,21 @@ class FilterViewModel @Inject constructor() : ViewModel() {
             )
         }
     }
+
+    fun getFilterString(): String {
+        var filterString =
+            filterState.value.timelineTypeFilter.joinToString(",")
+        if (filterState.value.filterFromDate != null) {
+            filterString = filterString.plus(",FROM:")
+                .plus(filterState.value.filterFromDate)
+        }
+        if (filterState.value.filterToDate != null) {
+            filterString =
+                filterString.plus(",TO:").plus(filterState.value.filterToDate)
+        }
+
+        return filterString
+    }
 }
 
 enum class TimelineTypeFilter {
