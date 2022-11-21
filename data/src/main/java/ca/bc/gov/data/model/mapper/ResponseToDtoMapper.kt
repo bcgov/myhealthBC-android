@@ -347,7 +347,7 @@ fun DependentInformation.toDto() = DependentDto(
     hdid = hdid,
     firstname = firstname,
     lastname = lastname,
-    PHN = PHN,
+    phn = phn,
     dateOfBirth = dateOfBirth.toDateTime(),
     gender = gender,
 )

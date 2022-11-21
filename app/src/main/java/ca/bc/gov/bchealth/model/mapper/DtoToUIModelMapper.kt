@@ -314,7 +314,8 @@ fun ImmunizationRecommendationsDto.toUiModel() = RecommendationDetailItem(
 )
 
 fun DependentDto.toUiModel() = DependentDetailItem(
-    id = hdid,
+    patientId = patientId,
+    hdid = hdid,
     fullName = firstname + " " + lastname
 )
 

@@ -36,6 +36,6 @@ class DependentDiffCallBacks : DiffUtil.ItemCallback<DependentDetailItem>() {
     }
 
     override fun areContentsTheSame(oldItem: DependentDetailItem, newItem: DependentDetailItem): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.patientId == newItem.patientId
     }
 }

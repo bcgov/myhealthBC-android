@@ -16,6 +16,13 @@ import java.time.Instant
             childColumns = ["patient_id"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = PatientEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["guardian_id"],
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
         )
     ]
 )
@@ -25,6 +32,9 @@ data class DependentEntity(
 
     @ColumnInfo(name = "patient_id")
     val patientId: Long,
+
+    @ColumnInfo(name = "guardian_id")
+    val guardianId: Long,
 
     @ColumnInfo(name = "hdid")
     val hdid: String,
@@ -36,11 +46,14 @@ data class DependentEntity(
     val lastname: String,
 
     @ColumnInfo(name = "PHN")
-    val PHN: String,
+    val phn: String,
 
     @ColumnInfo(name = "gender")
     val gender: String,
 
     @ColumnInfo(name = "dateOfBirth")
     val dateOfBirth: Instant,
+
+    @ColumnInfo(name = "is_cache_valid")
+    val isCacheValid: Boolean,
 )

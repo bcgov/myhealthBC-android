@@ -26,23 +26,18 @@ import ca.bc.gov.repository.DependentsRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
-import ca.bc.gov.repository.PatientWithTestResultRepository
-import ca.bc.gov.repository.PatientWithVaccineRecordRepository
+import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.healthvisits.HealthVisitsRepository
-import ca.bc.gov.repository.immunization.ImmunizationForecastRepository
-import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
-import ca.bc.gov.repository.labtest.LabTestRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.VaccineRecordState
 import ca.bc.gov.repository.specialauthority.SpecialAuthorityRepository
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
-import ca.bc.gov.repository.testrecord.CovidTestRepository
 import ca.bc.gov.repository.utils.NotificationHelper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -58,26 +53,21 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     @Assisted workerParams: WorkerParameters,
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
     private val bcscAuthRepo: BcscAuthRepo,
-    private val patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
-    private val patientWithTestResultRepository: PatientWithTestResultRepository,
     private val medicationRecordRepository: MedicationRecordRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
     private val patientRepository: PatientRepository,
     private val dependentsRepository: DependentsRepository,
     private val notificationHelper: NotificationHelper,
     private val labOrderRepository: LabOrderRepository,
-    private val labTestRepository: LabTestRepository,
     private val covidOrderRepository: CovidOrderRepository,
-    private val covidTestRepository: CovidTestRepository,
     private val encryptedPreferenceStorage: EncryptedPreferenceStorage,
     private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
     private val mobileConfigRepository: MobileConfigRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
-    private val immunizationForecastRepository: ImmunizationForecastRepository,
-    private val immunizationRecommendationRepository: ImmunizationRecommendationRepository,
     private val commentsRepository: CommentRepository,
     private val healthVisitsRepository: HealthVisitsRepository,
-    private val specialAuthorityRepository: SpecialAuthorityRepository
+    private val specialAuthorityRepository: SpecialAuthorityRepository,
+    private val recordsRepository: RecordsRepository
 ) : CoroutineWorker(context, workerParams) {
 
     var isApiFailed = false
@@ -230,19 +220,11 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 patientId = patientRepository.insertAuthenticatedPatient(it)
             }
             // Insert vaccine records
-            vaccineRecordsResponse?.second?.let {
-                patientWithVaccineRecordRepository.insertAuthenticatedPatientsVaccineRecord(
-                    patientId, it
-                )
-            }
+            recordsRepository.storeVaccineRecords(patientId, vaccineRecordsResponse)
+
             // Insert covid orders
-            patientWithTestResultRepository.deletePatientTestRecords(patientId)
-            covidOrderRepository.deleteByPatientId(patientId)
-            covidOrderResponse?.forEach {
-                it.covidOrder.patientId = patientId
-                covidOrderRepository.insert(it.covidOrder)
-                covidTestRepository.insert(it.covidTests)
-            }
+            recordsRepository.storeCovidOrders(patientId, covidOrderResponse)
+
             // Insert medication records
             medicationResponse?.let {
                 medicationRecordRepository.updateMedicationRecords(
@@ -251,41 +233,17 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 )
             }
             // Insert lab orders
-            labOrderRepository.delete(patientId)
-            labOrdersResponse?.forEach {
-                it.labOrder.patientId = patientId
-                val id = labOrderRepository.insert(it.labOrder)
-                it.labTests.forEach { test ->
-                    test.labOrderId = id
-                }
-                labTestRepository.insert(it.labTests)
-            }
+            recordsRepository.storeLabOrders(patientId, labOrdersResponse)
+
             // Insert immunization records
-            immunizationRecordRepository.delete(patientId)
-
-            immunizationDto?.records?.forEach {
-                it.immunizationRecord.patientId = patientId
-                val id = immunizationRecordRepository.insert(it.immunizationRecord)
-
-                it.immunizationForecast?.immunizationRecordId = id
-                it.immunizationForecast?.let { forecast ->
-                    immunizationForecastRepository.insert(
-                        forecast
-                    )
-                }
-            }
-
-            immunizationDto?.recommendations?.forEach {
-                it.patientId = patientId
-                immunizationRecommendationRepository.insert(it)
-            }
+            recordsRepository.storeImmunizationRecords(patientId, immunizationDto)
 
             // Insert comments
             commentsRepository.delete(true)
             commentsResponse?.let { commentsRepository.insert(it) }
 
             // Insert dependents
-            dependentsList?.let { dependentsRepository.storeDependents(it, patientId) }
+            dependentsList?.let { dependentsRepository.storeDependents(it, guardianId = patientId) }
 
             // Insert Health Visits
             healthVisitsRepository.deleteHealthVisits(patientId)

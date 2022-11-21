@@ -1,5 +1,6 @@
 package ca.bc.gov.data.model.mapper
 
+import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
@@ -246,12 +247,22 @@ fun ImmunizationRecommendationsDto.toEntity() = ImmunizationRecommendationEntity
     recommendedVaccinations = recommendedVaccinations
 )
 
-fun DependentDto.toEntity(patientId: Long) = DependentEntity(
+fun DependentDto.toEntity(patientId: Long, guardianId: Long) = DependentEntity(
     hdid = hdid,
     firstname = firstname,
     lastname = lastname,
-    PHN = PHN,
+    phn = phn,
     dateOfBirth = dateOfBirth,
     gender = gender,
-    patientId = patientId
+    patientId = patientId,
+    guardianId = guardianId,
+    isCacheValid = isCacheValid
+)
+
+fun DependentDto.toPatientEntity() = PatientEntity(
+    fullName = getFullName(),
+    dateOfBirth = dateOfBirth,
+    phn = phn,
+    patientOrder = Long.MAX_VALUE,
+    authenticationStatus = AuthenticationStatus.DEPENDENT
 )
