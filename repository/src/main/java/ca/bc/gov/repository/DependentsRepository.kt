@@ -18,15 +18,11 @@ import ca.bc.gov.data.model.mapper.toEntity
 import ca.bc.gov.data.model.mapper.toPatientEntity
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.extensions.mapFlowContent
-import ca.bc.gov.repository.immunization.ImmunizationForecastRepository
-import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
-import ca.bc.gov.repository.labtest.LabTestRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.qr.VaccineRecordState
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
-import ca.bc.gov.repository.testrecord.CovidTestRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -35,16 +31,11 @@ class DependentsRepository @Inject constructor(
     private val localDataSource: DependentsLocalDataSource,
     private val patientLocalDataSource: PatientLocalDataSource,
     private val bcscAuthRepo: BcscAuthRepo,
-    private val patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
-    private val patientWithTestResultRepository: PatientWithTestResultRepository,
     private val covidOrderRepository: CovidOrderRepository,
-    private val covidTestRepository: CovidTestRepository,
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
     private val labOrderRepository: LabOrderRepository,
-    private val labTestRepository: LabTestRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
-    private val immunizationForecastRepository: ImmunizationForecastRepository,
-    private val immunizationRecommendationRepository: ImmunizationRecommendationRepository,
+    private val recordsRepository: RecordsRepository
 ) {
 
     fun getAllDependents(): Flow<List<DependentDto>> =
@@ -146,49 +137,16 @@ class DependentsRepository @Inject constructor(
     ) {
 
         // Insert vaccine records
-        vaccineRecordsResponse?.second?.let {
-            patientWithVaccineRecordRepository.insertAuthenticatedPatientsVaccineRecord(
-                patientId, it
-            )
-        }
+        recordsRepository.storeVaccineRecords(patientId, vaccineRecordsResponse)
+
         // Insert covid orders
-        patientWithTestResultRepository.deletePatientTestRecords(patientId)
-        covidOrderRepository.deleteByPatientId(patientId)
-        covidOrderResponse?.forEach {
-            it.covidOrder.patientId = patientId
-            covidOrderRepository.insert(it.covidOrder)
-            covidTestRepository.insert(it.covidTests)
-        }
+        recordsRepository.storeCovidOrders(patientId, covidOrderResponse)
 
         // Insert lab orders
-        labOrderRepository.delete(patientId)
-        labOrdersResponse?.forEach {
-            it.labOrder.patientId = patientId
-            val id = labOrderRepository.insert(it.labOrder)
-            it.labTests.forEach { test ->
-                test.labOrderId = id
-            }
-            labTestRepository.insert(it.labTests)
-        }
+        recordsRepository.storeLabOrders(patientId, labOrdersResponse)
+
         // Insert immunization records
-        immunizationRecordRepository.delete(patientId)
-
-        immunizationDto?.records?.forEach {
-            it.immunizationRecord.patientId = patientId
-            val id = immunizationRecordRepository.insert(it.immunizationRecord)
-
-            it.immunizationForecast?.immunizationRecordId = id
-            it.immunizationForecast?.let { forecast ->
-                immunizationForecastRepository.insert(
-                    forecast
-                )
-            }
-        }
-
-        immunizationDto?.recommendations?.forEach {
-            it.patientId = patientId
-            immunizationRecommendationRepository.insert(it)
-        }
+        recordsRepository.storeImmunizationRecords(patientId, immunizationDto)
 
         localDataSource.enableDependentCacheFlag(patientId)
     }

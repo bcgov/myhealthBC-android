@@ -35,6 +35,7 @@ import ca.bc.gov.repository.PdfDecoderRepository
 import ca.bc.gov.repository.QrCodeGeneratorRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.RecentPhnDobRepository
+import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.TermsOfServiceRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.immunization.ImmunizationForecastRepository
@@ -219,36 +220,50 @@ class RepositoriesModule {
 
     @Provides
     @Singleton
-    fun provideDependentsRepository(
-        remoteDataSource: DependentsRemoteDataSource,
-        localDataSource: DependentsLocalDataSource,
-        patientLocalDataSource: PatientLocalDataSource,
-        bcscAuthRepo: BcscAuthRepo,
+    fun provideRecordsRepository(
         patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
         patientWithTestResultRepository: PatientWithTestResultRepository,
         covidOrderRepository: CovidOrderRepository,
         covidTestRepository: CovidTestRepository,
-        fetchVaccineRecordRepository: FetchVaccineRecordRepository,
         labOrderRepository: LabOrderRepository,
         labTestRepository: LabTestRepository,
         immunizationRecordRepository: ImmunizationRecordRepository,
         immunizationForecastRepository: ImmunizationForecastRepository,
         immunizationRecommendationRepository: ImmunizationRecommendationRepository,
-    ): DependentsRepository = DependentsRepository(
-        remoteDataSource,
-        localDataSource,
-        patientLocalDataSource,
-        bcscAuthRepo,
+    ): RecordsRepository = RecordsRepository(
         patientWithVaccineRecordRepository,
         patientWithTestResultRepository,
         covidOrderRepository,
         covidTestRepository,
-        fetchVaccineRecordRepository,
         labOrderRepository,
         labTestRepository,
         immunizationRecordRepository,
         immunizationForecastRepository,
         immunizationRecommendationRepository,
+    )
+
+    @Provides
+    @Singleton
+    fun provideDependentsRepository(
+        remoteDataSource: DependentsRemoteDataSource,
+        localDataSource: DependentsLocalDataSource,
+        patientLocalDataSource: PatientLocalDataSource,
+        bcscAuthRepo: BcscAuthRepo,
+        covidOrderRepository: CovidOrderRepository,
+        fetchVaccineRecordRepository: FetchVaccineRecordRepository,
+        labOrderRepository: LabOrderRepository,
+        immunizationRecordRepository: ImmunizationRecordRepository,
+        recordsRepository: RecordsRepository
+    ): DependentsRepository = DependentsRepository(
+        remoteDataSource,
+        localDataSource,
+        patientLocalDataSource,
+        bcscAuthRepo,
+        covidOrderRepository,
+        fetchVaccineRecordRepository,
+        labOrderRepository,
+        immunizationRecordRepository,
+        recordsRepository,
     )
 
     @Provides
