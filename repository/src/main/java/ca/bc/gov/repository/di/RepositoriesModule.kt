@@ -52,6 +52,7 @@ import ca.bc.gov.repository.testrecord.TestResultRepository
 import ca.bc.gov.repository.utils.Base64ToInputImageConverter
 import ca.bc.gov.repository.utils.UriToImage
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import ca.bc.gov.shcdecoder.SHCVerifier
 import dagger.Module
 import dagger.Provides
@@ -252,7 +253,8 @@ class RepositoriesModule {
         covidOrderRepository: CovidOrderRepository,
         fetchVaccineRecordRepository: FetchVaccineRecordRepository,
         immunizationRecordRepository: ImmunizationRecordRepository,
-        recordsRepository: RecordsRepository
+        recordsRepository: RecordsRepository,
+        mobileConfigRepository: MobileConfigRepository
     ): DependentsRepository = DependentsRepository(
         remoteDataSource,
         localDataSource,
@@ -262,6 +264,7 @@ class RepositoriesModule {
         fetchVaccineRecordRepository,
         immunizationRecordRepository,
         recordsRepository,
+        mobileConfigRepository
     )
 
     @Provides

@@ -2,6 +2,7 @@ package ca.bc.gov.repository
 
 import android.util.Log
 import ca.bc.gov.common.const.DATABASE_ERROR
+import ca.bc.gov.common.const.SERVICE_NOT_AVAILABLE
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.immunization.ImmunizationDto
@@ -21,6 +22,7 @@ import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.qr.VaccineRecordState
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -32,7 +34,8 @@ class DependentsRepository @Inject constructor(
     private val covidOrderRepository: CovidOrderRepository,
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
-    private val recordsRepository: RecordsRepository
+    private val recordsRepository: RecordsRepository,
+    private val mobileConfigRepository: MobileConfigRepository
 ) {
 
     fun getAllDependents(): Flow<List<DependentDto>> =
@@ -85,6 +88,12 @@ class DependentsRepository @Inject constructor(
 
     suspend fun requestRecordsIfNeeded(patientId: Long, hdid: String) {
         if (localDataSource.isDependentCacheValid(patientId).not()) {
+
+            val serviceAvailable = refreshMobileConfiguration()
+            if (serviceAvailable.not()) {
+                throw MyHealthException(SERVICE_NOT_AVAILABLE)
+            }
+
             var vaccineRecords: Pair<VaccineRecordState, PatientVaccineRecord?>? = null
             var covidOrders: List<CovidOrderWithCovidTestDto>? = null
             var immunizationDto: ImmunizationDto? = null
@@ -112,6 +121,9 @@ class DependentsRepository @Inject constructor(
             storeRecords(patientId, vaccineRecords, covidOrders, immunizationDto)
         }
     }
+
+    private suspend fun refreshMobileConfiguration() =
+        mobileConfigRepository.getBaseUrl()
 
     private fun handleException(exception: Exception) {
         Log.e("DependentsRepository", "Handling Exception:")
