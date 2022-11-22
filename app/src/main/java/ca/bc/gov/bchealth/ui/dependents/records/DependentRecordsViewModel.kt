@@ -74,6 +74,7 @@ class DependentRecordsViewModel @Inject constructor(
             is NetworkConnectionException -> {
                 _uiState.tryEmit(
                     DependentRecordsUiState(
+                        records = emptyList(),
                         onLoading = false,
                         isConnected = false
                     )

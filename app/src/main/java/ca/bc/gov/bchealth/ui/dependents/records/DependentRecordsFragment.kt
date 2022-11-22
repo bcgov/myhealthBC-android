@@ -38,7 +38,7 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
         viewModel.loadRecords(patientId = args.patientId, hdid = args.hdid)
 
         clearFilterClickListener()
-        observeFilterState()
+        launchOnStart { observeFilterState() }
     }
 
     private fun clearFilterClickListener() {
@@ -48,34 +48,32 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
         }
     }
 
-    private fun observeFilterState() {
-        launchOnStart {
-            filterSharedViewModel.filterState.collect { filterState ->
+    private suspend fun observeFilterState() {
+        filterSharedViewModel.filterState.collect { filterState ->
 
-                // update filter date selection
-                if (isFilterDateSelected(filterState)) {
-                    binding.chipGroup.chipDate.apply {
-                        show()
-                        text = when {
-                            filterState.filterFromDate.isNullOrBlank() -> {
-                                filterState.filterToDate + " " + getString(R.string.before)
-                            }
-                            filterState.filterToDate.isNullOrBlank() -> {
-                                filterState.filterFromDate + " " + getString(R.string.after)
-                            }
-                            else -> {
-                                filterState.filterFromDate + " - " + filterState.filterToDate
-                            }
+            // update filter date selection
+            if (isFilterDateSelected(filterState)) {
+                binding.chipGroup.chipDate.apply {
+                    show()
+                    text = when {
+                        filterState.filterFromDate.isNullOrBlank() -> {
+                            filterState.filterToDate + " " + getString(R.string.before)
+                        }
+                        filterState.filterToDate.isNullOrBlank() -> {
+                            filterState.filterFromDate + " " + getString(R.string.after)
+                        }
+                        else -> {
+                            filterState.filterFromDate + " - " + filterState.filterToDate
                         }
                     }
-                } else {
-                    binding.chipGroup.chipDate.hide()
                 }
-
-                updateTypeFilterSelection(filterState)
-
-                updateClearButton(filterState)
+            } else {
+                binding.chipGroup.chipDate.hide()
             }
+
+            updateTypeFilterSelection(filterState)
+
+            updateClearButton(filterState)
         }
     }
 
@@ -138,6 +136,7 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
                 progressBar.indicator.toggleVisibility(uiState.onLoading)
                 healthRecordsAdapter.setData(uiState.records)
                 healthRecordsAdapter.filter.filter(filterSharedViewModel.getFilterString())
+                binding.rvHealthRecords.setLoading(uiState.onLoading)
             }
         }
     }
@@ -207,6 +206,7 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
             }
         }
         binding.rvHealthRecords.adapter = healthRecordsAdapter
+        binding.rvHealthRecords.emptyView = binding.viewEmptyScreen
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {

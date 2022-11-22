@@ -12,14 +12,17 @@ class RecyclerView @JvmOverloads constructor(
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
     var emptyView: View? = null
+    private var isLoading = false
 
     private val observer = object : AdapterDataObserver() {
         override fun onChanged() {
             checkIfEmpty()
         }
+
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
             checkIfEmpty()
         }
+
         override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
             checkIfEmpty()
         }
@@ -32,10 +35,15 @@ class RecyclerView @JvmOverloads constructor(
         adapter?.registerAdapterDataObserver(observer)
     }
 
-    fun checkIfEmpty() {
+    private fun checkIfEmpty() {
         if (emptyView != null && adapter != null) {
-            val emptyViewVisible: Boolean = adapter?.itemCount == 0
+            val emptyViewVisible: Boolean = adapter?.itemCount == 0 && isLoading.not()
             emptyView?.visibility = if (emptyViewVisible) View.VISIBLE else View.INVISIBLE
         }
+    }
+
+    fun setLoading(isLoading: Boolean) {
+        this.isLoading = isLoading
+        checkIfEmpty()
     }
 }
