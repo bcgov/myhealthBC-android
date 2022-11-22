@@ -10,9 +10,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentDependentRecordsBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
-import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterUiState
-import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterViewModel
-import ca.bc.gov.bchealth.ui.healthrecord.filter.TimelineTypeFilter
+import ca.bc.gov.bchealth.ui.dependents.records.filter.DependentFilterViewModel
+import ca.bc.gov.bchealth.ui.filter.FilterUiState
+import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordsAdapter
 import ca.bc.gov.bchealth.utils.hide
@@ -28,7 +28,7 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
     private val args: DependentRecordsFragmentArgs by navArgs()
     private lateinit var healthRecordsAdapter: HealthRecordsAdapter
     private val viewModel: DependentRecordsViewModel by viewModels()
-    private val filterSharedViewModel: FilterViewModel by activityViewModels()
+    private val filterSharedViewModel: DependentFilterViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -219,7 +219,7 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
             }
 
             btnFilter.setOnClickListener {
-                findNavController().navigate(R.id.filterFragment)
+                findNavController().navigate(R.id.dependentFilterFragment)
             }
 
             tvTitle.text = args.fullName

@@ -68,7 +68,7 @@
     <fragment
         android:id="@+id/dependentFilterFragment"
         tools:layout="@layout/fragment_filter"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.filter.FilterFragment" />
+        android:name="ca.bc.gov.bchealth.ui.dependents.records.filter.DependentFilterFragment" />
 
     <fragment
         android:id="@+id/dependentTestResultDetailFragment"

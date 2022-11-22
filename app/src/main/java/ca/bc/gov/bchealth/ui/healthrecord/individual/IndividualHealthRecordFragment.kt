@@ -13,11 +13,11 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
+import ca.bc.gov.bchealth.ui.filter.FilterUiState
+import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
 import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
-import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterUiState
-import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterViewModel
-import ca.bc.gov.bchealth.ui.healthrecord.filter.TimelineTypeFilter
+import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
@@ -42,7 +42,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private lateinit var healthRecordsAdapter: HealthRecordsAdapter
     private lateinit var concatAdapter: ConcatAdapter
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private val filterSharedViewModel: FilterViewModel by activityViewModels()
+    private val filterSharedViewModel: PatientFilterViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
