@@ -2,10 +2,10 @@ package ca.bc.gov.repository
 
 import android.util.Log
 import ca.bc.gov.common.const.DATABASE_ERROR
+import ca.bc.gov.common.const.SERVICE_NOT_AVAILABLE
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.immunization.ImmunizationDto
-import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
@@ -19,10 +19,10 @@ import ca.bc.gov.data.model.mapper.toPatientEntity
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.extensions.mapFlowContent
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
-import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.qr.VaccineRecordState
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -33,9 +33,9 @@ class DependentsRepository @Inject constructor(
     private val bcscAuthRepo: BcscAuthRepo,
     private val covidOrderRepository: CovidOrderRepository,
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
-    private val labOrderRepository: LabOrderRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
-    private val recordsRepository: RecordsRepository
+    private val recordsRepository: RecordsRepository,
+    private val mobileConfigRepository: MobileConfigRepository
 ) {
 
     fun getAllDependents(): Flow<List<DependentDto>> =
@@ -88,9 +88,14 @@ class DependentsRepository @Inject constructor(
 
     suspend fun requestRecordsIfNeeded(patientId: Long, hdid: String) {
         if (localDataSource.isDependentCacheValid(patientId).not()) {
+
+            val serviceAvailable = refreshMobileConfiguration()
+            if (serviceAvailable.not()) {
+                throw MyHealthException(SERVICE_NOT_AVAILABLE)
+            }
+
             var vaccineRecords: Pair<VaccineRecordState, PatientVaccineRecord?>? = null
             var covidOrders: List<CovidOrderWithCovidTestDto>? = null
-            var labOrders: List<LabOrderWithLabTestDto>? = null
             var immunizationDto: ImmunizationDto? = null
 
             val token = bcscAuthRepo.getAuthParametersDto().token
@@ -108,20 +113,17 @@ class DependentsRepository @Inject constructor(
             }
 
             try {
-                labOrders = labOrderRepository.fetchLabOrders(token, hdid)
-            } catch (e: Exception) {
-                handleException(e)
-            }
-
-            try {
                 immunizationDto = immunizationRecordRepository.fetchImmunization(token, hdid)
             } catch (e: Exception) {
                 handleException(e)
             }
 
-            storeRecords(patientId, vaccineRecords, covidOrders, labOrders, immunizationDto)
+            storeRecords(patientId, vaccineRecords, covidOrders, immunizationDto)
         }
     }
+
+    private suspend fun refreshMobileConfiguration() =
+        mobileConfigRepository.getBaseUrl()
 
     private fun handleException(exception: Exception) {
         Log.e("DependentsRepository", "Handling Exception:")
@@ -132,7 +134,6 @@ class DependentsRepository @Inject constructor(
         patientId: Long,
         vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>?,
         covidOrderResponse: List<CovidOrderWithCovidTestDto>?,
-        labOrdersResponse: List<LabOrderWithLabTestDto>?,
         immunizationDto: ImmunizationDto?
     ) {
 
@@ -141,9 +142,6 @@ class DependentsRepository @Inject constructor(
 
         // Insert covid orders
         recordsRepository.storeCovidOrders(patientId, covidOrderResponse)
-
-        // Insert lab orders
-        recordsRepository.storeLabOrders(patientId, labOrdersResponse)
 
         // Insert immunization records
         recordsRepository.storeImmunizationRecords(patientId, immunizationDto)
