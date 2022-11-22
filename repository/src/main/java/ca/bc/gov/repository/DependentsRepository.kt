@@ -33,7 +33,6 @@ class DependentsRepository @Inject constructor(
     private val bcscAuthRepo: BcscAuthRepo,
     private val covidOrderRepository: CovidOrderRepository,
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
-    private val labOrderRepository: LabOrderRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
     private val recordsRepository: RecordsRepository
 ) {
@@ -90,7 +89,6 @@ class DependentsRepository @Inject constructor(
         if (localDataSource.isDependentCacheValid(patientId).not()) {
             var vaccineRecords: Pair<VaccineRecordState, PatientVaccineRecord?>? = null
             var covidOrders: List<CovidOrderWithCovidTestDto>? = null
-            var labOrders: List<LabOrderWithLabTestDto>? = null
             var immunizationDto: ImmunizationDto? = null
 
             val token = bcscAuthRepo.getAuthParametersDto().token
@@ -108,18 +106,12 @@ class DependentsRepository @Inject constructor(
             }
 
             try {
-                labOrders = labOrderRepository.fetchLabOrders(token, hdid)
-            } catch (e: Exception) {
-                handleException(e)
-            }
-
-            try {
                 immunizationDto = immunizationRecordRepository.fetchImmunization(token, hdid)
             } catch (e: Exception) {
                 handleException(e)
             }
 
-            storeRecords(patientId, vaccineRecords, covidOrders, labOrders, immunizationDto)
+            storeRecords(patientId, vaccineRecords, covidOrders, immunizationDto)
         }
     }
 
@@ -132,7 +124,6 @@ class DependentsRepository @Inject constructor(
         patientId: Long,
         vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>?,
         covidOrderResponse: List<CovidOrderWithCovidTestDto>?,
-        labOrdersResponse: List<LabOrderWithLabTestDto>?,
         immunizationDto: ImmunizationDto?
     ) {
 
@@ -141,9 +132,6 @@ class DependentsRepository @Inject constructor(
 
         // Insert covid orders
         recordsRepository.storeCovidOrders(patientId, covidOrderResponse)
-
-        // Insert lab orders
-        recordsRepository.storeLabOrders(patientId, labOrdersResponse)
 
         // Insert immunization records
         recordsRepository.storeImmunizationRecords(patientId, immunizationDto)

@@ -251,7 +251,6 @@ class RepositoriesModule {
         bcscAuthRepo: BcscAuthRepo,
         covidOrderRepository: CovidOrderRepository,
         fetchVaccineRecordRepository: FetchVaccineRecordRepository,
-        labOrderRepository: LabOrderRepository,
         immunizationRecordRepository: ImmunizationRecordRepository,
         recordsRepository: RecordsRepository
     ): DependentsRepository = DependentsRepository(
@@ -261,7 +260,6 @@ class RepositoriesModule {
         bcscAuthRepo,
         covidOrderRepository,
         fetchVaccineRecordRepository,
-        labOrderRepository,
         immunizationRecordRepository,
         recordsRepository,
     )
