@@ -5,7 +5,6 @@ import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.immunization.ImmunizationDto
-import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
@@ -19,7 +18,6 @@ import ca.bc.gov.data.model.mapper.toPatientEntity
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.extensions.mapFlowContent
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
-import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.qr.VaccineRecordState
 import ca.bc.gov.repository.testrecord.CovidOrderRepository

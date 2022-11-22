@@ -275,9 +275,15 @@ class RepositoriesModule {
     fun provideCovidOrderRepository(
         laboratoryRemoteDataSource: LaboratoryRemoteDataSource,
         covidOrderLocalDataSource: CovidOrderLocalDataSource,
+        dependentsLocalDataSource: DependentsLocalDataSource,
         bcscAuthRepo: BcscAuthRepo
     ): CovidOrderRepository =
-        CovidOrderRepository(laboratoryRemoteDataSource, covidOrderLocalDataSource, bcscAuthRepo)
+        CovidOrderRepository(
+            laboratoryRemoteDataSource,
+            covidOrderLocalDataSource,
+            dependentsLocalDataSource,
+            bcscAuthRepo
+        )
 
     @Provides
     @Singleton
