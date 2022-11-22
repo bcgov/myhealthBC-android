@@ -5,6 +5,7 @@ import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
 import ca.bc.gov.data.datasource.local.CovidOrderLocalDataSource
+import ca.bc.gov.data.datasource.local.DependentsLocalDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import javax.inject.Inject
@@ -15,6 +16,7 @@ import javax.inject.Inject
 class CovidOrderRepository @Inject constructor(
     private val laboratoryRemoteDataSource: LaboratoryRemoteDataSource,
     private val covidOrderLocalDataSource: CovidOrderLocalDataSource,
+    private val dependentsLocalDataSource: DependentsLocalDataSource,
     private val bcscAuthRepo: BcscAuthRepo
 ) {
 
@@ -30,7 +32,8 @@ class CovidOrderRepository @Inject constructor(
                 DATABASE_ERROR, "No record found for covidOrder id=  $covidOrderId"
             )
 
-    suspend fun deleteByPatientId(patientId: Long): Int = covidOrderLocalDataSource.deleteByPatientId(patientId)
+    suspend fun deleteByPatientId(patientId: Long): Int =
+        covidOrderLocalDataSource.deleteByPatientId(patientId)
 
     suspend fun delete(id: String): Int = covidOrderLocalDataSource.delete(id)
 
@@ -41,12 +44,22 @@ class CovidOrderRepository @Inject constructor(
         reportId: String,
         isCovid19: Boolean
     ): String? {
-        val authParameters = bcscAuthRepo.getAuthParameters()
+        val authParameters = bcscAuthRepo.getAuthParametersDto()
+        val hdid = getHdid(reportId, guardianHdid = authParameters.hdid)
+
         return laboratoryRemoteDataSource.getLabTestInPdf(
-            authParameters.first,
-            authParameters.second,
+            authParameters.token,
+            hdid,
             reportId,
             isCovid19 // true for Covid-19 tests
         ).resourcePayload?.data
+    }
+
+    private suspend fun getHdid(reportId: String, guardianHdid: String): String {
+        val patientId = covidOrderLocalDataSource.findCovidOrderById(reportId)?.patient?.id
+        patientId?.let {
+            return dependentsLocalDataSource.getDependentHdidOrNull(it) ?: guardianHdid
+        }
+        return guardianHdid
     }
 }

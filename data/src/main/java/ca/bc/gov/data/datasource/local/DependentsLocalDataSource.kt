@@ -34,4 +34,7 @@ class DependentsLocalDataSource @Inject constructor(
     suspend fun enableDependentCacheFlag(patientId: Long) {
         dependentsDao.updateDependentCacheFlag(patientId, true)
     }
+
+    suspend fun getDependentHdidOrNull(patientId: Long): String? =
+        dependentsDao.findDependent(patientId)?.hdid
 }

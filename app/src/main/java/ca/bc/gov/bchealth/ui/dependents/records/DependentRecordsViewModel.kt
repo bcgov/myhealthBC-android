@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
+import ca.bc.gov.common.const.SERVICE_NOT_AVAILABLE
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.model.ErrorData
@@ -58,7 +59,8 @@ class DependentRecordsViewModel @Inject constructor(
                     it.toUiModel()
                 }
 
-            val result = covidTestRecords + covidOrders + immunizationRecords
+            val result =
+                (covidTestRecords + covidOrders + immunizationRecords).sortedByDescending { it.date }
 
             _uiState.update {
                 it.copy(records = result, onLoading = false)
@@ -80,7 +82,13 @@ class DependentRecordsViewModel @Inject constructor(
                     )
                 )
             }
-            is MyHealthException -> emitError()
+            is MyHealthException -> {
+                if (e.errCode == SERVICE_NOT_AVAILABLE) {
+                    _uiState.update { it.copy(isHgServicesUp = false) }
+                } else {
+                    emitError()
+                }
+            }
             else -> emitError()
         }
     }
@@ -104,7 +112,8 @@ class DependentRecordsViewModel @Inject constructor(
                 onLoading = false,
                 errorData = null,
                 isConnected = true,
-                records = emptyList()
+                records = emptyList(),
+                isHgServicesUp = null
             )
         )
     }
@@ -115,4 +124,5 @@ data class DependentRecordsUiState(
     val errorData: ErrorData? = null,
     val isConnected: Boolean = true,
     val records: List<HealthRecordItem> = emptyList(),
+    val isHgServicesUp: Boolean? = null
 )

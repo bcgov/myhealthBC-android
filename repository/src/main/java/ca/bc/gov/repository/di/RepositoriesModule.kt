@@ -52,6 +52,7 @@ import ca.bc.gov.repository.testrecord.TestResultRepository
 import ca.bc.gov.repository.utils.Base64ToInputImageConverter
 import ca.bc.gov.repository.utils.UriToImage
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import ca.bc.gov.shcdecoder.SHCVerifier
 import dagger.Module
 import dagger.Provides
@@ -251,9 +252,9 @@ class RepositoriesModule {
         bcscAuthRepo: BcscAuthRepo,
         covidOrderRepository: CovidOrderRepository,
         fetchVaccineRecordRepository: FetchVaccineRecordRepository,
-        labOrderRepository: LabOrderRepository,
         immunizationRecordRepository: ImmunizationRecordRepository,
-        recordsRepository: RecordsRepository
+        recordsRepository: RecordsRepository,
+        mobileConfigRepository: MobileConfigRepository
     ): DependentsRepository = DependentsRepository(
         remoteDataSource,
         localDataSource,
@@ -261,9 +262,9 @@ class RepositoriesModule {
         bcscAuthRepo,
         covidOrderRepository,
         fetchVaccineRecordRepository,
-        labOrderRepository,
         immunizationRecordRepository,
         recordsRepository,
+        mobileConfigRepository
     )
 
     @Provides
@@ -277,9 +278,15 @@ class RepositoriesModule {
     fun provideCovidOrderRepository(
         laboratoryRemoteDataSource: LaboratoryRemoteDataSource,
         covidOrderLocalDataSource: CovidOrderLocalDataSource,
+        dependentsLocalDataSource: DependentsLocalDataSource,
         bcscAuthRepo: BcscAuthRepo
     ): CovidOrderRepository =
-        CovidOrderRepository(laboratoryRemoteDataSource, covidOrderLocalDataSource, bcscAuthRepo)
+        CovidOrderRepository(
+            laboratoryRemoteDataSource,
+            covidOrderLocalDataSource,
+            dependentsLocalDataSource,
+            bcscAuthRepo
+        )
 
     @Provides
     @Singleton

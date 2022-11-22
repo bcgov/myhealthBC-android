@@ -18,6 +18,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordsAdapter
 import ca.bc.gov.bchealth.utils.hide
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.show
+import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
@@ -133,10 +134,15 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
     private suspend fun observeUiState() {
         viewModel.uiState.collect { uiState ->
             binding.apply {
-                progressBar.indicator.toggleVisibility(uiState.onLoading)
-                healthRecordsAdapter.setData(uiState.records)
-                healthRecordsAdapter.filter.filter(filterSharedViewModel.getFilterString())
-                binding.rvHealthRecords.setLoading(uiState.onLoading)
+                if (uiState.isHgServicesUp == false) {
+                    root.showServiceDownMessage(requireContext())
+                    viewModel.resetUiState()
+                } else {
+                    progressBar.indicator.toggleVisibility(uiState.onLoading)
+                    healthRecordsAdapter.setData(uiState.records)
+                    healthRecordsAdapter.filter.filter(filterSharedViewModel.getFilterString())
+                    rvHealthRecords.setLoading(uiState.onLoading)
+                }
             }
         }
     }
