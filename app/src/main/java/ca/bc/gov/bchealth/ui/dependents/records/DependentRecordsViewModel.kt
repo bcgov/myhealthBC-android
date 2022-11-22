@@ -58,7 +58,7 @@ class DependentRecordsViewModel @Inject constructor(
                     it.toUiModel()
                 }
 
-            val result = covidTestRecords + covidOrders + immunizationRecords
+            val result = (covidTestRecords + covidOrders + immunizationRecords).sortedByDescending { it.date }
 
             _uiState.update {
                 it.copy(records = result, onLoading = false)
