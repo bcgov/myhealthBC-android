@@ -140,7 +140,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private fun clearFilterClickListener() {
         binding.content.chipGroup.imgClear.setOnClickListener {
-            filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL.name), null, null)
+            filterSharedViewModel.clearFilter()
 
             updateHiddenMedicationRecordsView(viewModel.uiState.value)
 
@@ -218,7 +218,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
             displayBcscRecords(uiState)
         } else {
             // clear filter when session is expired
-            filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL.name), null, null)
+            filterSharedViewModel.clearFilter()
             concatAdapter = ConcatAdapter(
                 hiddenHealthRecordAdapter
             )

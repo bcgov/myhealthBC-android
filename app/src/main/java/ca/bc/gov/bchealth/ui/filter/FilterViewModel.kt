@@ -10,6 +10,10 @@ abstract class FilterViewModel : ViewModel() {
     private val _filterState = MutableStateFlow(FilterUiState())
     val filterState: StateFlow<FilterUiState> = _filterState.asStateFlow()
 
+    fun clearFilter() {
+        updateFilter(listOf(TimelineTypeFilter.ALL.name), null, null)
+    }
+
     fun updateFilter(timelineTypeFilter: List<String>, fromDate: String?, toDate: String?) {
         val startDate: String? = if (fromDate.isNullOrBlank()) {
             null

@@ -118,7 +118,9 @@ class HealthRecordsAdapter(
                             }
                         }
                     }
-                    return FilterResults().apply { values = filteredList }
+                    return FilterResults().apply {
+                        values = filteredList.sortedByDescending { it.date }
+                    }
                 }
             }
 
