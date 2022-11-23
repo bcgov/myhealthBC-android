@@ -5,6 +5,7 @@ import ca.bc.gov.data.datasource.local.dao.PatientDao
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class DependentsLocalDataSource @Inject constructor(
@@ -12,7 +13,12 @@ class DependentsLocalDataSource @Inject constructor(
     private val patientDao: PatientDao,
 ) {
 
-    fun getAllDependents(): Flow<List<DependentEntity>> = dependentsDao.findDependents()
+    fun getAllDependents(): Flow<List<DependentEntity>> =
+        dependentsDao.findDependents().map { list ->
+            list.sortedBy {
+                it.listOrder?.order ?: Int.MAX_VALUE
+            }.map { it.dependent }
+        }
 
     suspend fun clearTables() {
         patientDao.deleteDependentPatients()

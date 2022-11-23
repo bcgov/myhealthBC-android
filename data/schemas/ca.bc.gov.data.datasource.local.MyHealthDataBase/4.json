@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "5c5b36e09f978d7d31fcd16c5ba5cd8c",
+    "identityHash": "b72512d26f3e1a0a18416a5f4009fdbb",
     "entities": [
       {
         "tableName": "patient",
@@ -1203,6 +1203,32 @@
         ]
       },
       {
+        "tableName": "dependent_list_order",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hdid` INTEGER NOT NULL, `list_order` INTEGER NOT NULL, PRIMARY KEY(`hdid`))",
+        "fields": [
+          {
+            "fieldPath": "hdid",
+            "columnName": "hdid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "order",
+            "columnName": "list_order",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "hdid"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
         "tableName": "immunization_record",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `immunization_id` TEXT, `date_of_immunization` INTEGER NOT NULL, `status` TEXT, `valid` INTEGER NOT NULL, `provider_clinic` TEXT, `targeted_disease` TEXT, `immunization_name` TEXT, `agent_code` TEXT, `agent_name` TEXT, `lotNumber` TEXT, `productName` TEXT, `data_source` TEXT NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
@@ -1624,7 +1650,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5c5b36e09f978d7d31fcd16c5ba5cd8c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b72512d26f3e1a0a18416a5f4009fdbb')"
     ]
   }
 }

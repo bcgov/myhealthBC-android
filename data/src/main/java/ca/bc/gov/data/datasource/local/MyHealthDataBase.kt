@@ -31,6 +31,7 @@ import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
 import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
+import ca.bc.gov.data.datasource.local.entity.dependent.DependentListOrder
 import ca.bc.gov.data.datasource.local.entity.healthvisits.HealthVisitEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationForecastEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecommendationEntity
@@ -62,6 +63,7 @@ import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityE
         CovidOrderEntity::class,
         CovidTestEntity::class,
         DependentEntity::class,
+        DependentListOrder::class,
         ImmunizationRecordEntity::class,
         ImmunizationRecommendationEntity::class,
         ImmunizationForecastEntity::class,
