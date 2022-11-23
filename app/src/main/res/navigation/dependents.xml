@@ -17,6 +17,11 @@
         tools:layout="@layout/fragment_add_dependent" />
 
     <fragment
+        android:id="@+id/manageDependentFragment"
+        android:name="ca.bc.gov.bchealth.ui.dependents.manage.DependentsManagementFragment"
+        tools:layout="@layout/fragment_dependents_management" />
+
+    <fragment
         android:id="@+id/dependentRecordsFragment"
         android:name="ca.bc.gov.bchealth.ui.dependents.records.DependentRecordsFragment"
         tools:layout="@layout/fragment_dependent_records">
