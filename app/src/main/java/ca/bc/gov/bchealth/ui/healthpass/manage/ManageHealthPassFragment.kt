@@ -71,7 +71,7 @@ class ManageHealthPassFragment : BaseFragment(R.layout.fragment_manage_health_pa
             setNavigationIcon(R.drawable.ic_toolbar_back)
             setNavigationOnClickListener { findNavController().popBackStack() }
             title = getString(R.string.bc_vaccine_passes)
-            inflateMenu(R.menu.menu_manage_health_pass)
+            inflateMenu(R.menu.menu_done)
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
                     R.id.menu_done -> {
