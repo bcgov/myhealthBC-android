@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class DependentListOrder(
     @PrimaryKey
     @ColumnInfo(name = "hdid")
-    val hdid: Long,
+    val hdid: String,
 
     @ColumnInfo(name = "list_order")
     val order: Int,

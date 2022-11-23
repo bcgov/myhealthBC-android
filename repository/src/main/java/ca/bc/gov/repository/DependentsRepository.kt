@@ -35,7 +35,7 @@ class DependentsRepository @Inject constructor(
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
     private val recordsRepository: RecordsRepository,
-    private val mobileConfigRepository: MobileConfigRepository
+    private val mobileConfigRepository: MobileConfigRepository,
 ) {
 
     fun getAllDependents(): Flow<List<DependentDto>> =
@@ -160,6 +160,14 @@ class DependentsRepository @Inject constructor(
     suspend fun getPatientWithImmunizationRecordAndForecast(patientId: Long): PatientWithImmunizationRecordAndForecastDto =
         patientLocalDataSource.getPatientWithImmunizationRecordAndForecast(patientId)
             ?: throw getDatabaseException(patientId)
+
+    suspend fun updateDependentListOrder(list: List<DependentDto>) {
+        localDataSource.deleteAllDependentListOrders()
+
+        list.forEachIndexed { index, dependentDto ->
+            localDataSource.insertDependentListOrder(dependentDto.hdid, index)
+        }
+    }
 
     private fun getDatabaseException(patientId: Long) =
         MyHealthException(DATABASE_ERROR, "No record found for patient id=  $patientId")

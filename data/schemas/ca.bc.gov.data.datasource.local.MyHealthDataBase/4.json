@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "b72512d26f3e1a0a18416a5f4009fdbb",
+    "identityHash": "db99e2e1f11d720b2cd2aa9d660dbbe5",
     "entities": [
       {
         "tableName": "patient",
@@ -1204,12 +1204,12 @@
       },
       {
         "tableName": "dependent_list_order",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hdid` INTEGER NOT NULL, `list_order` INTEGER NOT NULL, PRIMARY KEY(`hdid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hdid` TEXT NOT NULL, `list_order` INTEGER NOT NULL, PRIMARY KEY(`hdid`))",
         "fields": [
           {
             "fieldPath": "hdid",
             "columnName": "hdid",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -1650,7 +1650,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b72512d26f3e1a0a18416a5f4009fdbb')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'db99e2e1f11d720b2cd2aa9d660dbbe5')"
     ]
   }
 }

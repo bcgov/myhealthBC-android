@@ -1,9 +1,11 @@
 package ca.bc.gov.data.datasource.local
 
 import ca.bc.gov.data.datasource.local.dao.DependentDao
+import ca.bc.gov.data.datasource.local.dao.DependentListOrderDao
 import ca.bc.gov.data.datasource.local.dao.PatientDao
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
+import ca.bc.gov.data.datasource.local.entity.dependent.DependentListOrder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -11,6 +13,7 @@ import javax.inject.Inject
 class DependentsLocalDataSource @Inject constructor(
     private val dependentsDao: DependentDao,
     private val patientDao: PatientDao,
+    private val dependentListOrderDao: DependentListOrderDao,
 ) {
 
     fun getAllDependents(): Flow<List<DependentEntity>> =
@@ -28,8 +31,10 @@ class DependentsLocalDataSource @Inject constructor(
     suspend fun insertPatient(patientEntity: PatientEntity) =
         patientDao.insert(patientEntity)
 
-    suspend fun insertDependent(dependentEntity: DependentEntity) =
+    suspend fun insertDependent(dependentEntity: DependentEntity) {
         dependentsDao.insert(dependentEntity)
+        insertDependentListOrder(dependentEntity.hdid, Int.MAX_VALUE)
+    }
 
     suspend fun findDependent(phn: String) =
         dependentsDao.findDependent(phn)
@@ -43,4 +48,16 @@ class DependentsLocalDataSource @Inject constructor(
 
     suspend fun getDependentHdidOrNull(patientId: Long): String? =
         dependentsDao.findDependent(patientId)?.hdid
+
+    suspend fun deleteAllDependentListOrders() {
+        dependentListOrderDao.deleteAll()
+    }
+
+    suspend fun deleteDependentListOrdersExcept(dependentIds: List<String>) {
+        dependentListOrderDao.deleteExcept(dependentIds)
+    }
+
+    suspend fun insertDependentListOrder(hdid: String, order: Int) {
+        dependentListOrderDao.insert(DependentListOrder(hdid, order))
+    }
 }

@@ -66,8 +66,10 @@ class DependentsManagementFragment : BaseFragment(R.layout.fragment_dependents_m
             inflateMenu(R.menu.menu_done)
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
-                    R.id.menu_done -> {
-                    }
+                    R.id.menu_done -> viewModel.updateDependentOrder(adapter.dependents)
+                        .invokeOnCompletion {
+                            findNavController().popBackStack()
+                        }
                 }
                 return@setOnMenuItemClickListener true
             }

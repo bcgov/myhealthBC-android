@@ -90,7 +90,7 @@ class LocalDataSourceModule {
     @Singleton
     fun provideDependentsLocalDataSource(
         db: MyHealthDataBase
-    ): DependentsLocalDataSource = DependentsLocalDataSource(db.getDependentDao(), db.getPatientDao())
+    ): DependentsLocalDataSource = DependentsLocalDataSource(db.getDependentDao(), db.getPatientDao(), db.getDependentListOrderDao())
 
     @Provides
     @Singleton
