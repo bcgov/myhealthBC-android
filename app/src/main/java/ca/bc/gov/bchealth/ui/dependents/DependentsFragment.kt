@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.dependents
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -10,6 +11,7 @@ import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentDependentsBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.dependents.records.filter.DependentFilterViewModel
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.toggleVisibility
@@ -22,6 +24,7 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
     private val binding by viewBindings(FragmentDependentsBinding::bind)
     private val viewModel: DependentsViewModel by viewModels()
     private val dependentAdapter = DependentAdapter(::onClickDependent)
+    private val filterSharedViewModel: DependentFilterViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -43,6 +46,7 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
         viewModel.loadAuthenticationState()
 
         observeHealthRecordsSyncCompletion()
+        filterSharedViewModel.clearFilter()
     }
 
     private fun observeHealthRecordsSyncCompletion() {

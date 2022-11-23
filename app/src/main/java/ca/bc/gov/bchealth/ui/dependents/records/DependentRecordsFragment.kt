@@ -44,7 +44,7 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
 
     private fun clearFilterClickListener() {
         binding.chipGroup.imgClear.setOnClickListener {
-            filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL.name), null, null)
+            filterSharedViewModel.clearFilter()
             healthRecordsAdapter.filter.filter(filterSharedViewModel.getFilterString())
         }
     }
