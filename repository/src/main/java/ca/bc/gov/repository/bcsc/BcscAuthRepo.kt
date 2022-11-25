@@ -94,6 +94,37 @@ class BcscAuthRepo(
             .setAdditionalParameters(params)
             .build()
 
+        authorizationRequest.apply {
+            println("svn: ###################################################")
+            println("svn: ####### log started ############################################")
+            println("svn: ###################################################")
+
+            println("svn: additionalParameters: "+additionalParameters)
+            println("svn: claims: "+claims)
+            println("svn: claimsLocales: "+claimsLocales)
+            println("svn: clientId: "+clientId)
+            println("svn: codeVerifier: "+codeVerifier)
+            println("svn: codeVerifierChallenge: "+codeVerifierChallenge)
+            println("svn: codeVerifierChallengeMethod: "+codeVerifierChallengeMethod)
+            println("svn: authorizationEndpoint: "+configuration.authorizationEndpoint)
+            println("svn: discoveryDoc: "+configuration.discoveryDoc)
+            println("svn: endSessionEndpoint: "+configuration.endSessionEndpoint)
+            println("svn: registrationEndpoint: "+configuration.registrationEndpoint)
+            println("svn: tokenEndpoint: "+configuration.tokenEndpoint)
+            println("svn: display: "+display)
+            println("svn: loginHint: "+loginHint)
+            println("svn: nonce: "+nonce)
+            println("svn: prompt: "+prompt)
+            println("svn: redirectUri: "+redirectUri)
+            println("svn: responseMode: "+responseMode)
+            println("svn: responseType: "+responseType)
+            println("svn: scope: "+scope)
+            println("svn: state: "+state)
+            println("svn: uiLocales: "+uiLocales)
+
+
+        }
+
         authService = AuthorizationService(applicationContext)
         return authService.getAuthorizationRequestIntent(authorizationRequest)
     }
@@ -106,6 +137,11 @@ class BcscAuthRepo(
         data ?: throw MyHealthException(AUTH_ERROR, "Login failed!")
         val authorizationResponse = AuthorizationResponse.fromIntent(data)
         val ex = AuthorizationException.fromIntent(data)
+
+        println("svn: expiration? "+authorizationResponse?.accessTokenExpirationTime)
+        println("svn: "+ex)
+
+
         authorizationResponse ?: throw MyHealthException(AUTH_ERROR, "Login failed!")
         authState.update(authorizationResponse, ex)
         val tokenResponse = awaitPerformTokenRequest(applicationContext, authorizationResponse)

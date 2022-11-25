@@ -39,9 +39,19 @@ suspend fun awaitPerformTokenRequest(
     authorizationResponse: AuthorizationResponse
 ): Pair<TokenResponse, AuthorizationException?> = suspendCancellableCoroutine { continuation ->
 
+    val request = authorizationResponse.createTokenExchangeRequest()
+    println("svn: request json: " + request.jsonSerializeString())
+
     AuthorizationService(applicationContext).performTokenRequest(
-        authorizationResponse.createTokenExchangeRequest()
+        request
     ) { response, ex ->
+
+        println("svn: awaitPerformTokenRequest response: " + response)
+        println("svn: awaitPerformTokenRequest ex:" + ex)
+
+        println("svn: ###################################################")
+        println("svn: ####### log ended ############################################")
+        println("svn: ###################################################")
         if (ex != null || response == null) {
             continuation.resumeWithException(MyHealthException(AUTH_ERROR, "Login failed!"))
         } else {
