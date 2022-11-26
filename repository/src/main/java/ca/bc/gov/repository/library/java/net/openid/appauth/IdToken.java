@@ -277,7 +277,7 @@ public class IdToken {
         // Validates that the current time is before the expiry time.
         Long nowInSeconds = clock.getCurrentTimeMillis() / MILLIS_PER_SECOND;
         if (nowInSeconds > this.expiration) {
-            System.out.println("svn: IDTOKEN_exception>> "+"ID Token expired");
+            System.out.println("svn: IDTOKEN_exception>> "+"ID Token expired, now: "+nowInSeconds+" exp: "+this.expiration);
             throw AuthorizationException.fromTemplate(GeneralErrors.ID_TOKEN_VALIDATION_ERROR,
                 new IdTokenException("ID Token expired"));
         }
