@@ -219,6 +219,7 @@ public class IdToken {
         if (discoveryDoc != null) {
             String expectedIssuer = discoveryDoc.getIssuer();
             if (!this.issuer.equals(expectedIssuer)) {
+                System.out.println("svn: IDTOKEN_exception>> "+"Issuer mismatch");
                 throw AuthorizationException.fromTemplate(GeneralErrors.ID_TOKEN_VALIDATION_ERROR,
                     new IdTokenException("Issuer mismatch"));
             }
@@ -230,16 +231,19 @@ public class IdToken {
             Uri issuerUri = Uri.parse(this.issuer);
 
             if (!skipIssuerHttpsCheck && !issuerUri.getScheme().equals("https")) {
+                System.out.println("svn: IDTOKEN_exception>> "+"Issuer must be an https URL");
                 throw AuthorizationException.fromTemplate(GeneralErrors.ID_TOKEN_VALIDATION_ERROR,
                     new IdTokenException("Issuer must be an https URL"));
             }
 
             if (TextUtils.isEmpty(issuerUri.getHost())) {
+                System.out.println("svn: IDTOKEN_exception>> "+"Issuer host can not be empty");
                 throw AuthorizationException.fromTemplate(GeneralErrors.ID_TOKEN_VALIDATION_ERROR,
                     new IdTokenException("Issuer host can not be empty"));
             }
 
             if (issuerUri.getFragment() != null || issuerUri.getQueryParameterNames().size() > 0) {
+                System.out.println("svn: IDTOKEN_exception>> "+"Issuer URL should not containt query parameters or fragment components");
                 throw AuthorizationException.fromTemplate(GeneralErrors.ID_TOKEN_VALIDATION_ERROR,
                     new IdTokenException(
                         "Issuer URL should not containt query parameters or fragment components"));
@@ -252,6 +256,7 @@ public class IdToken {
         // (authorized party) Claim matches the client ID.
         String clientId = tokenRequest.clientId;
         if (!this.audience.contains(clientId) && !clientId.equals(this.authorizedParty)) {
+            System.out.println("svn: IDTOKEN_exception>> "+"Audience mismatch");
             throw AuthorizationException.fromTemplate(GeneralErrors.ID_TOKEN_VALIDATION_ERROR,
                 new IdTokenException("Audience mismatch"));
         }
@@ -272,6 +277,7 @@ public class IdToken {
         // Validates that the current time is before the expiry time.
         Long nowInSeconds = clock.getCurrentTimeMillis() / MILLIS_PER_SECOND;
         if (nowInSeconds > this.expiration) {
+            System.out.println("svn: IDTOKEN_exception>> "+"ID Token expired");
             throw AuthorizationException.fromTemplate(GeneralErrors.ID_TOKEN_VALIDATION_ERROR,
                 new IdTokenException("ID Token expired"));
         }
@@ -280,6 +286,7 @@ public class IdToken {
         // Validates that the issued at time is not more than +/- 10 minutes on the current
         // time.
         if (Math.abs(nowInSeconds - this.issuedAt) > TEN_MINUTES_IN_SECONDS) {
+            System.out.println("svn: IDTOKEN_exception>> "+"Issued at time is more than 10 minutes ");
             throw AuthorizationException.fromTemplate(GeneralErrors.ID_TOKEN_VALIDATION_ERROR,
                 new IdTokenException("Issued at time is more than 10 minutes "
                     + "before or after the current time"));
@@ -291,6 +298,7 @@ public class IdToken {
             // Validates the nonce.
             String expectedNonce = tokenRequest.nonce;
             if (!TextUtils.equals(this.nonce, expectedNonce)) {
+                System.out.println("svn: IDTOKEN_exception>> "+"Nonce");
                 throw AuthorizationException.fromTemplate(GeneralErrors.ID_TOKEN_VALIDATION_ERROR,
                     new IdTokenException("Nonce mismatch"));
             }

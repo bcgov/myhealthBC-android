@@ -40,7 +40,10 @@ suspend fun awaitPerformTokenRequest(
 ): Pair<TokenResponse, AuthorizationException?> = suspendCancellableCoroutine { continuation ->
 
     val request = authorizationResponse.createTokenExchangeRequest()
-    println("svn: request json: " + request.jsonSerializeString())
+    println("svn: request json: " + request.jsonSerializeString()
+        .replace("{", "\nsvn: request json: {")
+        .replace("[", "\nsvn: request json: [")
+    )
 
     AuthorizationService(applicationContext).performTokenRequest(
         request

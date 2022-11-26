@@ -698,6 +698,14 @@ public class AuthorizationService {
                 IdToken idToken;
                 try {
                     idToken = IdToken.from(response.idToken);
+                    System.out.println("svn: idToken: "+idToken.authorizedParty );
+                    System.out.println("svn: idToken: "+idToken.issuer );
+                    System.out.println("svn: idToken: "+idToken.nonce );
+                    System.out.println("svn: idToken: "+idToken.expiration );
+                    System.out.println("svn: idToken: "+idToken.subject );
+                    System.out.println("svn: idToken: "+idToken.additionalClaims );
+                    System.out.println("svn: idToken: "+idToken.audience );
+                    System.out.println("svn: idToken: "+idToken.issuedAt );
                 } catch (IdTokenException | JSONException ex) {
                     mCallback.onTokenRequestCompleted(null,
                             AuthorizationException.fromTemplate(
