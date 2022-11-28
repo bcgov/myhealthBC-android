@@ -53,6 +53,11 @@ class DependentsLocalDataSource @Inject constructor(
         dependentListOrderDao.deleteAll()
     }
 
+    suspend fun deleteDependent(patientId: Long) {
+        dependentsDao.deleteDependentById(patientId)
+        patientDao.deletePatientById(patientId)
+    }
+
     suspend fun deleteDependentListOrdersExcept(dependentIds: List<String>) {
         dependentListOrderDao.deleteExcept(dependentIds)
     }

@@ -15,7 +15,17 @@ class DependentsManagementViewModel @Inject constructor(
 
     val dependents = repository.getAllDependents()
 
-    // fun deleteDependent(patientId: Long) = viewModelScope.launch {
+    fun deleteDependent(dependent: DependentDto, uiList: List<DependentDto>) =
+        viewModelScope.launch {
+            try {
+                repository.deleteDependent(dependent)
+                updateDependentOrder(uiList)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+    fun updateDependentOrder(dependents: List<DependentDto>) = viewModelScope.launch {
         repository.updateDependentListOrder(dependents)
     }
 }

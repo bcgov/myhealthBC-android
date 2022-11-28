@@ -31,6 +31,9 @@ interface DependentDao : BaseDao<DependentEntity> {
     @Query("UPDATE dependent SET is_cache_valid = :isCacheValid WHERE patient_id = :patientId")
     suspend fun updateDependentCacheFlag(patientId: Long, isCacheValid: Boolean)
 
+    @Query("DELETE FROM dependent where patient_id = :patientId")
+    suspend fun deleteDependentById(patientId: Long): Int
+
     @Query("DELETE FROM dependent")
     suspend fun deleteAll(): Int
 }

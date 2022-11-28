@@ -1,5 +1,6 @@
 package ca.bc.gov.data.datasource.remote.api
 
+import ca.bc.gov.data.datasource.remote.model.base.dependent.DependentPayload
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsResponse
 import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityResponse
 import ca.bc.gov.data.datasource.remote.model.request.CommentRequest
@@ -23,6 +24,7 @@ import ca.bc.gov.data.datasource.remote.model.response.VaccineStatusResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -35,6 +37,7 @@ interface HealthGatewayPrivateApi {
 
     companion object {
         private const val HDID = "hdid"
+        private const val DEPENDENT_HDID = "dependent_hdid"
         private const val AUTHORIZATION = "Authorization"
         private const val REPORT_ID = "reportId"
         private const val IS_COVID_19 = "isCovid19"
@@ -156,5 +159,17 @@ interface HealthGatewayPrivateApi {
         @Path(HDID) hdid: String,
         @Header(AUTHORIZATION) accessToken: String,
         @Body dependentRegistrationRequest: DependentRegistrationRequest
+    ): Response<DependentResponse>
+
+    @HTTP(
+        method = "DELETE",
+        path = "$BASE_USER_PROFILE_SERVICE/{$HDID}/Dependent/{$DEPENDENT_HDID}",
+        hasBody = true
+    )
+    suspend fun deleteDependent(
+        @Header(AUTHORIZATION) accessToken: String,
+        @Path(HDID) guardianHdid: String,
+        @Path(DEPENDENT_HDID) dependentHdid: String,
+        @Body dependentPayload: DependentPayload
     ): Response<DependentResponse>
 }

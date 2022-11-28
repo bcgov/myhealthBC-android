@@ -166,6 +166,18 @@ class DependentsRepository @Inject constructor(
         }
     }
 
+    suspend fun deleteDependent(dependentDto: DependentDto) {
+        val authParams = bcscAuthRepo.getAuthParametersDto()
+
+        remoteDataSource.deleteDependent(
+            guardianHdid = authParams.hdid,
+            dependentHdid = dependentDto.hdid,
+            accessToken = authParams.token,
+            dependentDto = dependentDto
+        )
+        localDataSource.deleteDependent(dependentDto.patientId)
+    }
+
     private fun getDatabaseException(patientId: Long) =
         MyHealthException(DATABASE_ERROR, "No record found for patient id=  $patientId")
 }

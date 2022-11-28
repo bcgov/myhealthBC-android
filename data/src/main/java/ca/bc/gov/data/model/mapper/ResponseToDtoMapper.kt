@@ -34,7 +34,6 @@ import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
 import ca.bc.gov.data.datasource.remote.model.base.banner.BannerPayload
 import ca.bc.gov.data.datasource.remote.model.base.comment.CommentPayload
 import ca.bc.gov.data.datasource.remote.model.base.covidtest.CovidTestRecord
-import ca.bc.gov.data.datasource.remote.model.base.dependent.DependentInformation
 import ca.bc.gov.data.datasource.remote.model.base.dependent.DependentPayload
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.Clinic
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsPayload

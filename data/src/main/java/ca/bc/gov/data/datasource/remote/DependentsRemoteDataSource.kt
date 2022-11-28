@@ -5,6 +5,7 @@ import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
 import ca.bc.gov.data.datasource.remote.model.base.Action
 import ca.bc.gov.data.datasource.remote.model.base.dependent.DependentInformation
@@ -22,6 +23,35 @@ class DependentsRemoteDataSource @Inject constructor(
         safeCall {
             healthGatewayPrivateApi.fetchAllDependents(hdid, accessToken)
         }?.payload ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
+
+    suspend fun deleteDependent(
+        guardianHdid: String,
+        dependentHdid: String,
+        accessToken: String,
+        dependentDto: DependentDto
+    ) = safeCall {
+        val dependentPayload = DependentPayload(
+            DependentInformation(
+                hdid = dependentDto.hdid,
+                firstname = dependentDto.firstname,
+                lastname = dependentDto.lastname,
+                phn = dependentDto.phn,
+                dateOfBirth = dependentDto.dateOfBirth.toString(),
+                gender = dependentDto.gender,
+            ),
+            ownerId = dependentDto.ownerId,
+            delegateId = dependentDto.delegateId,
+            reasonCode = dependentDto.reasonCode,
+            version = dependentDto.version,
+        )
+
+        healthGatewayPrivateApi.deleteDependent(
+            guardianHdid = guardianHdid,
+            dependentHdid = dependentHdid,
+            accessToken = accessToken,
+            dependentPayload = dependentPayload
+        )
+    }
 
     suspend fun addDependent(
         hdid: String,

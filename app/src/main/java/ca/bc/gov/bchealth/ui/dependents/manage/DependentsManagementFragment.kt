@@ -40,7 +40,7 @@ class DependentsManagementFragment : BaseFragment(R.layout.fragment_dependents_m
     }
 
     private fun setUpRecyclerView() {
-        adapter = DependentsManagementAdapter(emptyList(), ::confirmUnlinking)
+        adapter = DependentsManagementAdapter(emptyList(), ::confirmDeletion)
 
         binding.recManageCards.adapter = adapter
         binding.recManageCards.layoutManager =
@@ -112,7 +112,7 @@ class DependentsManagementFragment : BaseFragment(R.layout.fragment_dependents_m
         }
     }
 
-    private fun confirmUnlinking(dependentDto: DependentDto) {
+    private fun confirmDeletion(dependentDto: DependentDto, position: Int) {
         AlertDialogHelper.showAlertDialog(
             context = requireContext(),
             title = getString(R.string.dependents_management_remove_title),
@@ -120,6 +120,7 @@ class DependentsManagementFragment : BaseFragment(R.layout.fragment_dependents_m
             positiveBtnMsg = getString(R.string.yes),
             negativeBtnMsg = getString(R.string.no),
             positiveBtnCallback = {
+                viewModel.deleteDependent(dependentDto, adapter.dependents)
             }
         )
     }
