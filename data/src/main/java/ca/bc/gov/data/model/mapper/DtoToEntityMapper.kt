@@ -256,6 +256,10 @@ fun DependentDto.toEntity(patientId: Long, guardianId: Long) = DependentEntity(
     gender = gender,
     patientId = patientId,
     guardianId = guardianId,
+    ownerId = ownerId,
+    delegateId = delegateId,
+    reasonCode = reasonCode,
+    version = version,
     isCacheValid = isCacheValid
 )
 

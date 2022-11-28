@@ -43,11 +43,8 @@ class DependentsRepository @Inject constructor(
             it.toDto()
         }
 
-    suspend fun fetchAllDependents(token: String, hdid: String): List<DependentDto> {
-        return remoteDataSource.fetchAllDependents(hdid, token).map {
-            it.dependentInformation.toDto()
-        }
-    }
+    suspend fun fetchAllDependents(token: String, hdid: String): List<DependentDto> =
+        remoteDataSource.fetchAllDependents(hdid, token).map { it.toDto() }
 
     suspend fun storeDependents(dependents: List<DependentDto>, guardianId: Long) {
         localDataSource.clearTables()

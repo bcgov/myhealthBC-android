@@ -35,6 +35,7 @@ import ca.bc.gov.data.datasource.remote.model.base.banner.BannerPayload
 import ca.bc.gov.data.datasource.remote.model.base.comment.CommentPayload
 import ca.bc.gov.data.datasource.remote.model.base.covidtest.CovidTestRecord
 import ca.bc.gov.data.datasource.remote.model.base.dependent.DependentInformation
+import ca.bc.gov.data.datasource.remote.model.base.dependent.DependentPayload
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.Clinic
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsPayload
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsResponse
@@ -343,11 +344,15 @@ fun BannerPayload.toDto() = BannerDto(
     endDate = this.endDate.toDateTimeZ()
 )
 
-fun DependentInformation.toDto() = DependentDto(
-    hdid = hdid,
-    firstname = firstname,
-    lastname = lastname,
-    phn = phn,
-    dateOfBirth = dateOfBirth.toDateTime(),
-    gender = gender,
+fun DependentPayload.toDto() = DependentDto(
+    hdid = dependentInformation.hdid,
+    firstname = dependentInformation.firstname,
+    lastname = dependentInformation.lastname,
+    phn = dependentInformation.phn,
+    dateOfBirth = dependentInformation.dateOfBirth.toDateTime(),
+    gender = dependentInformation.gender,
+    ownerId = ownerId,
+    delegateId = delegateId,
+    reasonCode = reasonCode,
+    version = version
 )

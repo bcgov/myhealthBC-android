@@ -8,6 +8,7 @@ import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
 import ca.bc.gov.data.datasource.remote.model.base.Action
 import ca.bc.gov.data.datasource.remote.model.base.dependent.DependentInformation
+import ca.bc.gov.data.datasource.remote.model.base.dependent.DependentPayload
 import ca.bc.gov.data.datasource.remote.model.request.DependentRegistrationRequest
 import ca.bc.gov.data.datasource.remote.model.response.DependentResponse
 import ca.bc.gov.data.utils.safeCall
@@ -29,7 +30,7 @@ class DependentsRemoteDataSource @Inject constructor(
         dateOfBirth: String,
         phn: String,
         accessToken: String,
-    ): DependentInformation {
+    ): DependentPayload {
         val request = DependentRegistrationRequest(
             firstName = firstName,
             lastName = lastName,
@@ -43,7 +44,7 @@ class DependentsRemoteDataSource @Inject constructor(
         return validate(response)
     }
 
-    private fun validate(response: DependentResponse): DependentInformation {
+    private fun validate(response: DependentResponse): DependentPayload {
         if (response.error != null && response.error.action != Action.REFRESH) {
             if (Action.MISMATCH.code == response.error.action?.code) {
                 throw MyHealthException(SERVER_ERROR_DATA_MISMATCH, response.error.message)
@@ -58,6 +59,6 @@ class DependentsRemoteDataSource @Inject constructor(
             throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
         }
 
-        return response.payload.dependentInformation
+        return response.payload
     }
 }
