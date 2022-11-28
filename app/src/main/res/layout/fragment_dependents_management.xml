@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rec_manage_cards"
+        android:id="@+id/rv_dependents"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/space_3_x"
@@ -25,5 +25,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layout_toolbar"
         tools:listitem="@layout/item_dependent" />
+
+    <include
+        android:id="@+id/view_loading"
+        layout="@layout/full_screen_progress_indicator" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
