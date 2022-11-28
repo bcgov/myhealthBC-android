@@ -24,6 +24,9 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
+        val t = System.currentTimeMillis();
+        println("svn: currentTimeInMillis: "+t)
+
         observeUpdateStatus()
         viewModel.checkAppVersion()
     }
