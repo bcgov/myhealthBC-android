@@ -4,6 +4,10 @@
     <string name="app_name_mock">MOCK - Health Gateway</string>
     <string name="app_name_stage">STG - Health Gateway</string>
 
+    <!-- General -->
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
     <!--Informational screen for camera permission-->
     <string name="privacy_policy">Privacy Policy</string>
     <string name="allow">Allow camera access</string>
@@ -19,6 +23,7 @@
     <string name="in_app_update_body">This version of Health Gateway mobile is expired. To continue using the application, please go the Play Store to download the latest version.</string>
     <string name="in_app_update_button">Update now</string>
     <string name="in_app_update_footer">Please contact Health Gateway team (healthgateway@gov.bc.ca) for more information</string>
+
     <!--Recommendations-->
     <string name="recommendations">Recommendations</string>
     <string name="recommendations_home_title">Recommended immunizations</string>
@@ -48,6 +53,9 @@
         If I either: (a) cease to be guardian of this child; (b) or lose the right to request or receive health information from third parties respecting this child, I will remove them as a dependent under my Health Gateway account immediately.\n
         I understand that I will no longer be able to access my child’s health records once they are 12 years of age.</string>
     <string name="dependents_registration_error_duplicate">This dependent is already added</string>
+    <string name="dependents_management_title">Manage dependents</string>
+    <string name="dependents_management_remove_title">Remove dependent</string>
+    <string name="dependents_management_remove_body">Are you sure you want to remove this dependent(%s) from your application?</string>
 
     <!--Resources-->
     <string name="resources">Resources</string>

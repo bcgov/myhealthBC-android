@@ -35,7 +35,7 @@ class DependentsRepository @Inject constructor(
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
     private val recordsRepository: RecordsRepository,
-    private val mobileConfigRepository: MobileConfigRepository
+    private val mobileConfigRepository: MobileConfigRepository,
 ) {
 
     fun getAllDependents(): Flow<List<DependentDto>> =
@@ -43,11 +43,8 @@ class DependentsRepository @Inject constructor(
             it.toDto()
         }
 
-    suspend fun fetchAllDependents(token: String, hdid: String): List<DependentDto> {
-        return remoteDataSource.fetchAllDependents(hdid, token).map {
-            it.dependentInformation.toDto()
-        }
-    }
+    suspend fun fetchAllDependents(token: String, hdid: String): List<DependentDto> =
+        remoteDataSource.fetchAllDependents(hdid, token).map { it.toDto() }
 
     suspend fun storeDependents(dependents: List<DependentDto>, guardianId: Long) {
         localDataSource.clearTables()
@@ -160,6 +157,26 @@ class DependentsRepository @Inject constructor(
     suspend fun getPatientWithImmunizationRecordAndForecast(patientId: Long): PatientWithImmunizationRecordAndForecastDto =
         patientLocalDataSource.getPatientWithImmunizationRecordAndForecast(patientId)
             ?: throw getDatabaseException(patientId)
+
+    suspend fun updateDependentListOrder(list: List<DependentDto>) {
+        localDataSource.deleteAllDependentListOrders()
+
+        list.forEachIndexed { index, dependentDto ->
+            localDataSource.insertDependentListOrder(dependentDto.hdid, index)
+        }
+    }
+
+    suspend fun deleteDependent(dependentDto: DependentDto) {
+        val authParams = bcscAuthRepo.getAuthParametersDto()
+
+        remoteDataSource.deleteDependent(
+            guardianHdid = authParams.hdid,
+            dependentHdid = dependentDto.hdid,
+            accessToken = authParams.token,
+            dependentDto = dependentDto
+        )
+        localDataSource.deleteDependent(dependentDto.patientId)
+    }
 
     private fun getDatabaseException(patientId: Long) =
         MyHealthException(DATABASE_ERROR, "No record found for patient id=  $patientId")

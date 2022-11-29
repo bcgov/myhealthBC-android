@@ -54,6 +54,18 @@ data class DependentEntity(
     @ColumnInfo(name = "dateOfBirth")
     val dateOfBirth: Instant,
 
+    @ColumnInfo(name = "ownerId")
+    val ownerId: String,
+
+    @ColumnInfo(name = "delegateId")
+    val delegateId: String,
+
+    @ColumnInfo(name = "reasonCode")
+    val reasonCode: Long,
+
+    @ColumnInfo(name = "version")
+    val version: Long,
+
     @ColumnInfo(name = "is_cache_valid")
     val isCacheValid: Boolean,
 )

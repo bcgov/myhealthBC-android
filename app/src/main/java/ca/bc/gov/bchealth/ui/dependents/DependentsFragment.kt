@@ -29,17 +29,12 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnAddDependent.setOnClickListener {
-            navigate(R.id.addDependentFragment)
+        binding.apply {
+            btnAddDependent.setOnClickListener { navigate(R.id.addDependentFragment) }
+            btnLogIn.setOnClickListener { navigate(R.id.bcscAuthInfoFragment) }
+            btnManageDependent.setOnClickListener { navigate(R.id.manageDependentFragment) }
+            viewSessionExpired.btnLogin.setOnClickListener { navigate(R.id.bcscAuthInfoFragment) }
         }
-        binding.btnLogIn.setOnClickListener {
-            navigate(R.id.bcscAuthInfoFragment)
-        }
-
-        binding.viewSessionExpired.btnLogin.setOnClickListener {
-            navigate(R.id.bcscAuthInfoFragment)
-        }
-
         launchOnStart {
             observeUiState()
         }
