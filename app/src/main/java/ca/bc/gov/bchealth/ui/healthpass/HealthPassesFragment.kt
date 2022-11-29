@@ -126,7 +126,7 @@ class HealthPassesFragment : BaseFragment(R.layout.fragment_helath_passes) {
                 var position = 0
                 val passes = healthPasses.toMutableList()
                 if (patientId == -1L) {
-                    passes.first().isExpanded = true
+                    passes.firstOrNull()?.isExpanded = true
                 } else {
                     passes.forEachIndexed { index, healthPass ->
                         if (healthPass.patientId == patientId) {
