@@ -16,7 +16,7 @@ class VerticalDragCallback(
             viewHolder.absoluteAdapterPosition,
             target.absoluteAdapterPosition
         )
-        viewHolder.bindingAdapter!!.notifyItemMoved(
+        viewHolder.bindingAdapter?.notifyItemMoved(
             viewHolder.absoluteAdapterPosition,
             target.absoluteAdapterPosition
         )
@@ -24,6 +24,6 @@ class VerticalDragCallback(
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        //do nothing
+        // do nothing
     }
 }

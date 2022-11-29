@@ -13,6 +13,7 @@ import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.recycler.VerticalDragCallback
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.dependents.DependentDto
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,9 +30,8 @@ class DependentsManagementFragment : BaseFragment(R.layout.fragment_dependents_m
 
         setUpRecyclerView()
 
-        launchOnStart {
-            collectDependents()
-        }
+        launchOnStart { collectDependents() }
+        launchOnStart { collectUiState() }
     }
 
     private fun setUpRecyclerView() {
@@ -55,9 +55,7 @@ class DependentsManagementFragment : BaseFragment(R.layout.fragment_dependents_m
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
                     R.id.menu_done -> viewModel.updateDependentOrder(adapter.dependents)
-                        .invokeOnCompletion {
-                            findNavController().popBackStack()
-                        }
+                        .invokeOnCompletion { findNavController().popBackStack() }
                 }
                 return@setOnMenuItemClickListener true
             }
@@ -73,12 +71,27 @@ class DependentsManagementFragment : BaseFragment(R.layout.fragment_dependents_m
         }
     }
 
+    private suspend fun collectUiState() {
+        viewModel.uiState.collect { uiState ->
+            binding.viewLoading.root.toggleVisibility(uiState.isLoading)
+            uiState.error?.let { showGenericError() }
+        }
+    }
+
+    private fun showGenericError() {
+        AlertDialogHelper.showAlertDialog(
+            context = requireContext(),
+            title = getString(R.string.error),
+            msg = getString(R.string.error_message),
+            positiveBtnMsg = getString(R.string.dialog_button_ok)
+        )
+    }
 
     private fun onItemMoved(elementIndex: Int, targetIndex: Int) {
         Collections.swap(adapter.dependents, elementIndex, targetIndex)
     }
 
-    private fun confirmDeletion(dependentDto: DependentDto, position: Int) {
+    private fun confirmDeletion(dependentDto: DependentDto) {
         AlertDialogHelper.showAlertDialog(
             context = requireContext(),
             title = getString(R.string.dependents_management_remove_title),
