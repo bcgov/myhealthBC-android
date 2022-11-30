@@ -16,16 +16,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_resource"
-        style="?textAppearanceHeadline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_4_x"
-        android:text="@string/health_resources"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_toolbar" />
-
-    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_resource_message"
         style="?textAppearanceBody1"
         android:layout_width="0dp"
@@ -36,7 +26,7 @@
         android:text="@string/resource_screen_message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_resource" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_toolbar" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_resources"
