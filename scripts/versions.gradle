@@ -8,7 +8,7 @@ versions.compileSdkVersion = 32
 //App
 versions.versionName = '1.4.0'
 versions.versionCode = 71
-versions.localApiVersion = 1
+versions.localApiVersion = 2
 
 //Tools & Libs
 versions.kotlin = "1.7.20"

@@ -6,6 +6,7 @@ on:
       - main
       - develop
       - feature/force-update
+      - feature/mobile-config-update
 
 jobs:
   build:
