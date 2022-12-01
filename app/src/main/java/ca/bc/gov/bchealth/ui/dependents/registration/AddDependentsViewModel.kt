@@ -42,7 +42,7 @@ class AddDependentsViewModel @Inject constructor(
             }
 
             try {
-                val isHgServicesUp = mobileConfigRepository.getBaseUrl()
+                val isHgServicesUp = mobileConfigRepository.refreshMobileConfiguration()
 
                 if (isHgServicesUp) {
                     dependentsRepository.registerDependent(firstName, lastName, dob, phn)
