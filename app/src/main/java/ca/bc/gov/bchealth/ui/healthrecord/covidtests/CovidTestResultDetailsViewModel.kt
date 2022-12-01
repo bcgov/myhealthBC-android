@@ -42,7 +42,7 @@ class CovidTestResultDetailsViewModel @Inject constructor(
             it.copy(onLoading = true)
         }
         try {
-            val isHgServicesUp = mobileConfigRepository.getBaseUrl()
+            val isHgServicesUp = mobileConfigRepository.refreshMobileConfiguration()
             if (isHgServicesUp) {
                 val pdfData = covidOrderRepository.fetchCovidTestPdf(reportId, true)
                 _uiState.update {

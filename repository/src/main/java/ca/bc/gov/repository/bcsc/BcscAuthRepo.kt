@@ -12,12 +12,12 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import ca.bc.gov.common.const.AUTH_ERROR
 import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
+import ca.bc.gov.common.const.MUST_CALL_MOBILE_CONFIG
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.utils.titleCase
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
-import ca.bc.gov.repository.R
 import ca.bc.gov.repository.library.java.net.openid.appauth.AuthState
 import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationException
 import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationRequest
@@ -68,21 +68,27 @@ class BcscAuthRepo(
     * returns Intent which is required to launch web chrome client for authentication
     * */
     suspend fun initiateLogin(): Intent {
+        val authenticationEndpoint = encryptedPreferenceStorage.authenticationEndpoint
+            ?: throw MyHealthException(MUST_CALL_MOBILE_CONFIG)
 
-        val serviceConfig = awaitFetchFromIssuer(
-            Uri.parse(applicationContext.getString(R.string.auth_issuer_end_point))
-        )
+        val clientId = encryptedPreferenceStorage.clientId
+            ?: throw MyHealthException(MUST_CALL_MOBILE_CONFIG)
+
+        val identityProviderId = encryptedPreferenceStorage.identityProviderId
+            ?: throw MyHealthException(MUST_CALL_MOBILE_CONFIG)
+
+        val serviceConfig = awaitFetchFromIssuer(Uri.parse(authenticationEndpoint))
         authServiceConfiguration = serviceConfig
         authState = AuthState(authServiceConfiguration)
         val authRequestBuilder =
             AuthorizationRequest.Builder(
                 authServiceConfiguration, // the authorization service configuration
-                applicationContext.getString(R.string.client_id), // the client ID, typically pre-registered and static
+                clientId, // the client ID, typically pre-registered
                 ResponseTypeValues.CODE, // the response_type value: we want a code
                 Uri.parse(REDIRECT_URI) // the redirect URI to which the auth response is sent
             )
 
-        val params = mapOf("kc_idp_hint" to applicationContext.getString(R.string.kc_idp_hint))
+        val params = mapOf("kc_idp_hint" to identityProviderId)
         val authorizationRequest = authRequestBuilder
             .setScope(SCOPE)
             .setPrompt(PROMPT)
@@ -153,6 +159,7 @@ class BcscAuthRepo(
 
     @Deprecated("Consider using getAuthParametersDto for better readability")
     suspend fun getAuthParameters(): Pair<String, String> {
+
         val authState =
             getAuthState() ?: throw MyHealthException(AUTH_ERROR_DO_LOGIN, "Login again!")
         val accessToken = awaitPerformActionWithFreshTokens(applicationContext, authState)

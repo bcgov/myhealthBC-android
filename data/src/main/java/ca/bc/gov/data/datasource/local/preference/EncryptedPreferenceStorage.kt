@@ -34,6 +34,10 @@ class EncryptedPreferenceStorage @Inject constructor(
         private const val SESSION_TIME = "SESSION_TIME"
         private const val BCSC_SHOWN_POST_BIOMETRIC = "BCSC_SHOWN_POST_BIOMETRIC"
         private const val BASE_URL = "BASE_URL"
+        private const val AUTHENTICATION_ENDPOINT = "AUTHENTICATION_ENDPOINT"
+        private const val CLIENT_ID = "CLIENT_ID"
+        private const val IDENTITY_PROVIDER_ID = "IDENTITY_PROVIDER_ID"
+
         private const val BASE_URL_IS_ONLINE = "BASE_URL_IS_ONLINE"
     }
 
@@ -148,6 +152,24 @@ class EncryptedPreferenceStorage @Inject constructor(
             ?: context.getString(R.string.base_url)
         set(value) {
             encryptedSharedPreferences.edit().putString(BASE_URL, value).apply()
+        }
+
+    var authenticationEndpoint: String?
+        get() = encryptedSharedPreferences.getString(AUTHENTICATION_ENDPOINT, null)
+        set(value) {
+            encryptedSharedPreferences.edit().putString(AUTHENTICATION_ENDPOINT, value).apply()
+        }
+
+    var clientId: String?
+        get() = encryptedSharedPreferences.getString(CLIENT_ID, null)
+        set(value) {
+            encryptedSharedPreferences.edit().putString(CLIENT_ID, value).apply()
+        }
+
+    var identityProviderId: String?
+        get() = encryptedSharedPreferences.getString(IDENTITY_PROVIDER_ID, null)
+        set(value) {
+            encryptedSharedPreferences.edit().putString(IDENTITY_PROVIDER_ID, value).apply()
         }
 
     var baseUrlIsOnline: Boolean

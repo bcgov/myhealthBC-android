@@ -73,7 +73,7 @@ class ProtectiveWordViewModel @Inject constructor(
         }
         try {
             val authParameters = bcscAuthRepo.getAuthParameters()
-            val isHgServicesUp = mobileConfigRepository.getBaseUrl()
+            val isHgServicesUp = mobileConfigRepository.refreshMobileConfiguration()
             if (isHgServicesUp) {
                 medicationRecordRepository.fetchMedicationStatement(
                     patientId,
