@@ -224,6 +224,10 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
                 findNavController().popBackStack()
             }
 
+            btnProfile.setOnClickListener {
+                findNavController().navigate(R.id.dependentProfileFragment)
+            }
+
             btnFilter.setOnClickListener {
                 findNavController().navigate(R.id.dependentFilterFragment)
             }

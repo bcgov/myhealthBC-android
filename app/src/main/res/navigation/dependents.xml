@@ -72,8 +72,14 @@
 
     <fragment
         android:id="@+id/dependentFilterFragment"
-        tools:layout="@layout/fragment_filter"
-        android:name="ca.bc.gov.bchealth.ui.dependents.records.filter.DependentFilterFragment" />
+        android:name="ca.bc.gov.bchealth.ui.dependents.records.filter.DependentFilterFragment"
+        tools:layout="@layout/fragment_filter" />
+
+    <fragment
+        android:id="@+id/dependentProfileFragment"
+        android:name="ca.bc.gov.bchealth.ui.dependents.profile.DependentProfileFragment"
+        tools:layout="@layout/fragment_dependent_profile" />
+
 
     <fragment
         android:id="@+id/dependentTestResultDetailFragment"
@@ -114,7 +120,7 @@
         android:id="@+id/dependentsCommentsFragment"
         android:name="ca.bc.gov.bchealth.ui.comment.CommentsFragment"
         android:label="fragment_comments"
-        tools:layout="@layout/fragment_comments" >
+        tools:layout="@layout/fragment_comments">
         <argument
             android:name="parentEntryId"
             app:argType="string" />

@@ -70,13 +70,14 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/btn_profile"
-                android:layout_width="52dp"
+                android:layout_width="48dp"
                 android:layout_height="match_parent"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:filterTouchesWhenObscured="true"
                 android:focusable="true"
-                android:padding="11dp"
+                android:padding="12dp"
+                android:adjustViewBounds="true"
                 android:src="@drawable/ic_profile_menu_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btn_filter"
@@ -84,6 +85,7 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/btn_filter"
+                android:adjustViewBounds="true"
                 android:layout_width="48dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/space_2_x"
@@ -91,7 +93,7 @@
                 android:clickable="true"
                 android:filterTouchesWhenObscured="true"
                 android:focusable="true"
-                android:padding="11dp"
+                android:padding="12dp"
                 android:src="@drawable/ic_filter"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

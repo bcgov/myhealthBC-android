@@ -56,6 +56,11 @@
     <string name="dependents_management_title">Manage dependents</string>
     <string name="dependents_management_remove_title">Remove dependent</string>
     <string name="dependents_management_remove_body">Are you sure you want to remove this dependent(%s) from your application?</string>
+    <string name="dependents_profile_first">First name</string>
+    <string name="dependents_profile_last">Last name</string>
+    <string name="dependents_profile_phn">Personal Health Number (PHN)</string>
+    <string name="dependents_profile_dob">Date of birth (DoB)</string>
+    <string name="dependents_profile_remove_dependent">Remove dependent</string>
 
     <!--Resources-->
     <string name="resources">Resources</string>
