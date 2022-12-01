@@ -128,7 +128,7 @@ In version name 1.2.3, 1 stands for major change and 2 stands for backend change
 
 How is the app deployed and where?
 
-Builds generated automatically, distributed through Firebase/Slack channel. CI/CD is implemented using Github actions
+Builds generated automatically, distributed on the Actions tab. CI/CD is implemented using Github actions
 
 ### External
 
