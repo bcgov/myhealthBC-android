@@ -17,6 +17,20 @@ jobs:
       - name: check out
         uses: actions/checkout@v2
 
+      - name: Teams notification
+        uses: toko-bifrost/ms-teams-deploy-card@master
+        with:
+          github-token: ${{ github.token }}
+          webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+          card-layout-exit: complete
+          show-on-start: false
+          show-on-exit: true
+          timezone: America/Vancouver
+          enable-review-diffs-action: false
+          enable-view-status-action: true
+          view-status-action-text: Download builds
+          include-files: false
+
       - name: setup JDK
         uses: actions/setup-java@v1
         with:
@@ -78,7 +92,7 @@ jobs:
           --form 'payload=@"app/build/outputs/apk/stage/debug/app-stage-debug.apk"' \
           --form 'name="app-stage-debug.apk"' \
           --form 'description="android stage app"'
-                  
+
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v2
         with:
