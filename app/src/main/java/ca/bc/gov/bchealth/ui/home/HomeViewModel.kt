@@ -198,7 +198,7 @@ class HomeViewModel @Inject constructor(
             viewModelScope.launch {
 
                 try {
-                    val isHgServicesUp = mobileConfigRepository.getBaseUrl()
+                    val isHgServicesUp = mobileConfigRepository.refreshMobileConfiguration()
 
                     if (isHgServicesUp) {
                         callBannerRepository()

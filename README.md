@@ -1,22 +1,22 @@
-# My Helath BC
+# My Health BC
 
 #### Health Gateway is used to retrieve and store your proof of vaccination, access your health records, view COVID-19 test results, access official resources to navigate your way around Covid-19 and stay up to date with important alerts and official announcements
 
 ## Table of Contents
 
-- [Project Resources](#markdown-header-project-resources)
-- [Architecture](#markdown-header-architecture)
-    - [Folder Structure](#markdown-header-folder-structure)
-    - [Libraries](#markdown-header-libraries)
-- [Configuration](#markdown-header-configuration)
-    - [Build Variants](#markdown-header-build-variants)
-    - [Environment Variables](#markdownpheader-environment-variables)
-    - [APIs](#markdown-header-apis)
-- [Deployment](#markdown-header-deployment)
-    - [Versioning](#markdown-header-versioning)
-    - [Internal](#markdown-header-internal)
-    - [External](#markdown-header-external)
-- [Contributors](#markdown-header-contributors)
+- [Project Resources](#project-resources)
+- [Architecture](#architecture)
+    - [Folder Structure](#folder-structure)
+    - [Libraries](#libraries)
+- [Configuration](#configuration)
+    - [Build Variants](#build-variants)
+    - [Environment Variables](#environment-variables)
+    - [APIs](#apis)
+- [Deployment](#deployment)
+    - [Versioning](#versioning)
+    - [Internal](#internal)
+    - [External](#external)
+- [Contributors](#contributors)
 
 ## Project Resources
 ---
@@ -128,7 +128,7 @@ In version name 1.2.3, 1 stands for major change and 2 stands for backend change
 
 How is the app deployed and where?
 
-Builds generated automatically, distributed through Firebase/Slack channel. CI/CD is implemented using Github actions
+Builds generated automatically, distributed on the Actions tab. CI/CD is implemented using Github actions
 
 ### External
 

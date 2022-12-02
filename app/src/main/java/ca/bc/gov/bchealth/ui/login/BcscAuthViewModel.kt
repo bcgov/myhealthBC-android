@@ -5,7 +5,9 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
+import ca.bc.gov.common.const.MUST_CALL_MOBILE_CONFIG
 import ca.bc.gov.common.exceptions.MustBeQueuedException
+import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
@@ -56,7 +58,7 @@ class BcscAuthViewModel @Inject constructor(
                     showLoading = true
                 )
             }
-            val canInitiateBcscLogin = mobileConfigRepository.getBaseUrl()
+            val canInitiateBcscLogin = mobileConfigRepository.refreshMobileConfiguration()
             _authStatus.update {
                 it.copy(
                     showLoading = true,
@@ -111,6 +113,16 @@ class BcscAuthViewModel @Inject constructor(
                     authRequestIntent = authRequestIntent
                 )
             }
+        } catch (e: MyHealthException) {
+            when (e.errCode) {
+                MUST_CALL_MOBILE_CONFIG -> callMobileConfig()
+                else -> _authStatus.update {
+                    it.copy(
+                        showLoading = false,
+                        isError = true
+                    )
+                }
+            }
         } catch (e: Exception) {
             _authStatus.update {
                 it.copy(
@@ -119,6 +131,21 @@ class BcscAuthViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private suspend fun callMobileConfig() {
+        try {
+            mobileConfigRepository.refreshMobileConfiguration()
+        } catch (e: Exception) {
+            _authStatus.update {
+                it.copy(
+                    showLoading = false,
+                    isError = true
+                )
+            }
+            return
+        }
+        initiateLogin()
     }
 
     fun processAuthResponse(data: Intent?, context: Context) = viewModelScope.launch {

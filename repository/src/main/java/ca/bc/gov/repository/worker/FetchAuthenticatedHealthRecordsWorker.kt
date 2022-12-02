@@ -112,7 +112,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             var patientId = 0L
 
             try {
-                val isHgServicesUp = mobileConfigRepository.getBaseUrl()
+                val isHgServicesUp = mobileConfigRepository.refreshMobileConfiguration()
                 if (!isHgServicesUp) {
                     return respondToHgServicesDown()
                 }
