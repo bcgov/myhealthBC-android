@@ -29,8 +29,8 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_profile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_marginTop="@dimen/space_3_x"
                 android:src="@drawable/ic_manage_dependent" />
 
@@ -43,14 +43,15 @@
                 android:layout_marginTop="@dimen/space_1_x"
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:padding="@dimen/space_1_x"
+                android:text="JEAN SMITH"
                 android:textAlignment="center"
-                android:textColor="@color/primary_blue"
-                tools:text="JEAN SMITH" />
+                android:textColor="@color/primary_blue" />
 
             <androidx.compose.ui.platform.ComposeView
                 android:id="@+id/compose_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_2_x"
                 tools:background="#ccc"
                 tools:layout_height="550dp" />
 
@@ -60,7 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
-                android:layout_marginTop="@dimen/space_9_x"
+                android:layout_marginTop="@dimen/space_10_x"
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:layout_marginBottom="@dimen/space_4_x"
                 android:filterTouchesWhenObscured="true"
@@ -76,6 +77,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
