@@ -163,6 +163,15 @@ class DependentsRepository @Inject constructor(
         }
     }
 
+    suspend fun getDependent(patientId: Long): DependentDto =
+        localDataSource.findDependent(patientId)?.toDto()
+            ?: throw getDatabaseException(patientId)
+
+    suspend fun deleteDependent(patientId: Long) {
+        val dependentDto = getDependent(patientId)
+        deleteDependent( dependentDto)
+    }
+
     suspend fun deleteDependent(dependentDto: DependentDto) {
         val authParams = bcscAuthRepo.getAuthParametersDto()
 

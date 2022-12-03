@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 
 @Composable
-fun DependentProfileUI(list: List<Pair<Int, String>>) {
+fun DependentProfileUI(dependentItems: List<DependentProfileViewModel.DependentProfileItem>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -23,8 +23,8 @@ fun DependentProfileUI(list: List<Pair<Int, String>>) {
 
         ListDivider()
 
-        list.forEach {
-            DependentProfileItem(stringResource(id = it.first), it.second)
+        dependentItems.forEach {
+            DependentProfileItem(stringResource(id = it.label), it.value)
             ListDivider()
         }
     }

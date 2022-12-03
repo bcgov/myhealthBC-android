@@ -78,7 +78,13 @@
     <fragment
         android:id="@+id/dependentProfileFragment"
         android:name="ca.bc.gov.bchealth.ui.dependents.profile.DependentProfileFragment"
-        tools:layout="@layout/fragment_dependent_profile" />
+        tools:layout="@layout/fragment_dependent_profile" >
+
+        <argument
+            android:name="patient_id"
+            app:argType="long" />
+
+    </fragment>
 
 
     <fragment

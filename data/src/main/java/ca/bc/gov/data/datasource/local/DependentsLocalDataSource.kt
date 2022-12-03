@@ -36,6 +36,9 @@ class DependentsLocalDataSource @Inject constructor(
         insertDependentListOrder(dependentEntity.hdid, Int.MAX_VALUE)
     }
 
+    suspend fun findDependent(patientId: Long) =
+        dependentsDao.findDependent(patientId)
+
     suspend fun findDependent(phn: String) =
         dependentsDao.findDependent(phn)
 

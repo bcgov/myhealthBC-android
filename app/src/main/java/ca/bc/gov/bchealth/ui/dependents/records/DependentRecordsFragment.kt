@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.dependents.records
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -225,7 +226,10 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
             }
 
             btnProfile.setOnClickListener {
-                findNavController().navigate(R.id.dependentProfileFragment)
+                navigate(
+                    R.id.dependentProfileFragment,
+                    bundleOf("patient_id" to args.patientId)
+                )
             }
 
             btnFilter.setOnClickListener {
