@@ -33,20 +33,25 @@ class DependentProfileFragment : BaseFragment(R.layout.fragment_dependent_profil
 
         binding.btnRemove.setOnClickListener { viewModel.removeDependent(patientId) }
 
-        launchOnStart {
-            viewModel.uiState.collect { uiState ->
-                binding.viewLoading.root.toggleVisibility(uiState.isLoading)
-                uiState.error?.let { showGenericError() }
+        launchOnStart { collectUiState() }
+    }
 
-                binding.tvFullName.text = uiState.dependentName
+    private suspend fun collectUiState() {
+        viewModel.uiState.collect { uiState ->
+            binding.viewLoading.root.toggleVisibility(uiState.isLoading)
+            binding.tvFullName.text = uiState.dependentName
 
-                if (uiState.dependentInfo.isNotEmpty()) {
-                    binding.composeBody.apply {
-                        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                        setContent {
-                            MaterialTheme {
-                                DependentProfileUI(uiState.dependentInfo)
-                            }
+            uiState.error?.let { showGenericError() }
+
+            if (uiState.onDependentRemoved) {
+
+                findNavController().popBackStack()
+            } else if (uiState.dependentInfo.isNotEmpty()) {
+                binding.composeBody.apply {
+                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                    setContent {
+                        MaterialTheme {
+                            DependentProfileUI(uiState.dependentInfo)
                         }
                     }
                 }

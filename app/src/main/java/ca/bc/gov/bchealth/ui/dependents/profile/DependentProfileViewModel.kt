@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.common.utils.toDate
-import ca.bc.gov.common.utils.toDateOfBirthText
 import ca.bc.gov.repository.DependentsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -65,7 +64,7 @@ class DependentProfileViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
             try {
                 repository.deleteDependent(patientId)
-                _uiState.update { it.copy(isLoading = false, navBack = true) }
+                _uiState.update { it.copy(isLoading = false, onDependentRemoved = true) }
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e, isLoading = false) }
             }
@@ -77,7 +76,7 @@ class DependentProfileViewModel @Inject constructor(
         val dependentName: String = "",
         val isLoading: Boolean = false,
         val error: Throwable? = null,
-        val navBack: Boolean = false
+        val onDependentRemoved: Boolean = false
     )
 
     data class DependentProfileItem(
