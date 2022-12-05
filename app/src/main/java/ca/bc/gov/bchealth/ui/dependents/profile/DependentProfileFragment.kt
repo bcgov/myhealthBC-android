@@ -50,7 +50,7 @@ class DependentProfileFragment : BaseFragment(R.layout.fragment_dependent_profil
 
             if (uiState.onDependentRemoved) {
 
-                findNavController().popBackStack()
+                findNavController().navigate(R.id.action_dependentProfile_to_dependentList)
             } else if (uiState.dependentInfo.isNotEmpty()) {
                 binding.composeBody.apply {
                     setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
