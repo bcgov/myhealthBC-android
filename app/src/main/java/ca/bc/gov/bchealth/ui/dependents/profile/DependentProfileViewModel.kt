@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.repository.DependentsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,7 +50,7 @@ class DependentProfileViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         dependentInfo = data,
-                        dependentName = dependentDto.getFullName(),
+                        dto = dependentDto,
                         isLoading = false
                     )
                 }
@@ -73,7 +74,7 @@ class DependentProfileViewModel @Inject constructor(
 
     data class DependentProfileUiState(
         val dependentInfo: List<DependentProfileItem> = emptyList(),
-        val dependentName: String = "",
+        val dto: DependentDto? = null,
         val isLoading: Boolean = false,
         val error: Throwable? = null,
         val onDependentRemoved: Boolean = false

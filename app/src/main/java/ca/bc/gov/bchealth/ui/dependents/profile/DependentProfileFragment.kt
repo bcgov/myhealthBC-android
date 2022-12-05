@@ -31,15 +31,20 @@ class DependentProfileFragment : BaseFragment(R.layout.fragment_dependent_profil
         val patientId = args.patientId
         viewModel.loadInformation(patientId)
 
-        binding.btnRemove.setOnClickListener { viewModel.removeDependent(patientId) }
-
         launchOnStart { collectUiState() }
     }
 
     private suspend fun collectUiState() {
         viewModel.uiState.collect { uiState ->
             binding.viewLoading.root.toggleVisibility(uiState.isLoading)
-            binding.tvFullName.text = uiState.dependentName
+            binding.btnRemove.isEnabled = uiState.dto != null
+
+            uiState.dto?.let { dto ->
+                binding.tvFullName.text = dto.getFullName()
+                binding.btnRemove.setOnClickListener {
+                    confirmDeletion(dto.patientId, dto.firstname)
+                }
+            }
 
             uiState.error?.let { showGenericError() }
 
@@ -57,6 +62,19 @@ class DependentProfileFragment : BaseFragment(R.layout.fragment_dependent_profil
                 }
             }
         }
+    }
+
+    private fun confirmDeletion(patientId: Long, firstName: String) {
+        AlertDialogHelper.showAlertDialog(
+            context = requireContext(),
+            title = getString(R.string.dependents_management_remove_title),
+            msg = getString(R.string.dependents_management_remove_body, firstName),
+            positiveBtnMsg = getString(R.string.yes),
+            negativeBtnMsg = getString(R.string.no),
+            positiveBtnCallback = {
+                viewModel.removeDependent(patientId)
+            }
+        )
     }
 
     private fun showGenericError() {
