@@ -169,7 +169,7 @@ class DependentsRepository @Inject constructor(
 
     suspend fun deleteDependent(patientId: Long) {
         val dependentDto = getDependent(patientId)
-        deleteDependent( dependentDto)
+        deleteDependent(dependentDto)
     }
 
     suspend fun deleteDependent(dependentDto: DependentDto) {

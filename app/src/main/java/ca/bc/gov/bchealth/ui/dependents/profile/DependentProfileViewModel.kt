@@ -72,11 +72,15 @@ class DependentProfileViewModel @Inject constructor(
         }
     }
 
+    fun resetErrorState() {
+        _uiState.update { it.copy(error = null) }
+    }
+
     data class DependentProfileUiState(
         val dependentInfo: List<DependentProfileItem> = emptyList(),
         val dto: DependentDto? = null,
         val isLoading: Boolean = false,
-        val error: Throwable? = null,
+        val error: Exception? = null,
         val onDependentRemoved: Boolean = false
     )
 

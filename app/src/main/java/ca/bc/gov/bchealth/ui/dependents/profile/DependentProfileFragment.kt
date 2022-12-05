@@ -14,8 +14,10 @@ import ca.bc.gov.bchealth.databinding.FragmentDependentProfileBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.common.exceptions.NetworkConnectionException
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,7 +48,7 @@ class DependentProfileFragment : BaseFragment(R.layout.fragment_dependent_profil
                 }
             }
 
-            uiState.error?.let { showGenericError() }
+            uiState.error?.let { handleError(it) }
 
             if (uiState.onDependentRemoved) {
 
@@ -75,6 +77,17 @@ class DependentProfileFragment : BaseFragment(R.layout.fragment_dependent_profil
                 viewModel.removeDependent(patientId)
             }
         )
+    }
+
+    private fun handleError(e: Exception) {
+        viewModel.resetErrorState()
+        if (e is NetworkConnectionException) {
+            context?.let {
+                binding.root.showNoInternetConnectionMessage(it)
+            }
+        } else {
+            showGenericError()
+        }
     }
 
     private fun showGenericError() {
