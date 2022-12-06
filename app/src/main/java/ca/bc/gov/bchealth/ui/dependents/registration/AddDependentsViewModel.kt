@@ -67,10 +67,7 @@ class AddDependentsViewModel @Inject constructor(
                     }
                     is MyHealthException -> {
                         when (e.errCode) {
-                            SERVER_ERROR_DATA_MISMATCH, SERVER_ERROR_INCORRECT_PHN -> emitError(
-                                R.string.error_data_mismatch_title,
-                                R.string.error_vaccine_data_mismatch_message
-                            )
+                            SERVER_ERROR_DATA_MISMATCH, SERVER_ERROR_INCORRECT_PHN -> emitErrorWithAction()
                             else -> emitError()
                         }
                     }
@@ -94,6 +91,16 @@ class AddDependentsViewModel @Inject constructor(
         )
     )
 
+    private fun emitErrorWithAction() = _uiState.tryEmit(
+        AddDependentsUiState(
+            errorData = ErrorDataWithActionButton(
+                R.string.dependents_registration_error_mismatch_title,
+                R.string.dependents_registration_error_mismatch_body,
+                R.string.dependents_registration_error_mismatch_send
+            )
+        )
+    )
+
     fun resetUiState() {
         _uiState.tryEmit(
             AddDependentsUiState(
@@ -106,6 +113,12 @@ class AddDependentsViewModel @Inject constructor(
         )
     }
 }
+
+data class ErrorDataWithActionButton(
+    override val title: Int,
+    override val message: Int,
+    @StringRes val buttonName: Int
+) : ErrorData()
 
 data class AddDependentsUiState(
     val isHgServicesUp: Boolean = true,

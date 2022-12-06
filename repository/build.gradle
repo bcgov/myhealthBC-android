@@ -37,7 +37,7 @@ android {
 
         dev {
             dimension "version"
-            resValue "string", "issuer_url", "https://bcvaxcardgen.freshworks.club"
+            resValue "string", "issuer_url", "https://phsasmarthealthcard-dev.azurewebsites.net/v1/issuer"
             resValue "string", "rules_url", "https://ds9mwekyyprcy.cloudfront.net/bc-rules.json"
             resValue "string", "default_issuer_json", "phsasmarthealthcard-dev.azurewebsites.net~v1~trusted~.well-known~issuers.json"
             resValue "string", "default_rules_json", "ds9mwekyyprcy.cloudfront.net~bc-rules.json"

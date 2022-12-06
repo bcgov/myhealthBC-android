@@ -5,8 +5,6 @@ on:
     branches:
       - main
       - develop
-      - feature/force-update
-      - feature/mobile-config-update
 
 jobs:
   build:
@@ -16,6 +14,20 @@ jobs:
     steps:
       - name: check out
         uses: actions/checkout@v2
+
+      - name: Teams notification
+        uses: toko-bifrost/ms-teams-deploy-card@master
+        with:
+          github-token: ${{ github.token }}
+          webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+          card-layout-exit: complete
+          show-on-start: false
+          show-on-exit: true
+          timezone: America/Vancouver
+          enable-review-diffs-action: false
+          enable-view-status-action: true
+          view-status-action-text: Download builds
+          include-files: false
 
       - name: setup JDK
         uses: actions/setup-java@v1
@@ -55,16 +67,6 @@ jobs:
           name: myhealth_prod.apk
           path: app/build/outputs/apk/prod/debug/app-prod-debug.apk
 
-      - name: slack notification
-        uses: rtCamp/action-slack-notify@v2.2.0
-        env:
-          SLACK_WEBHOOK: ${{secrets.SLACK_WEB_HOOK}}
-          SLACK_CHANNEL: bc-vaccine-card
-          SLACK_USERNAME: "My Health Android Bot"
-          SLACK_TITLE: "Firebase build uploaded"
-          SLACK_LINK_NAMES: true
-          SLACK_MESSAGE: "New build is available for testing on Firebase :-) :rocket: "
-
       - name: Saucelabs delete and upload
         env:
           SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
@@ -78,7 +80,7 @@ jobs:
           --form 'payload=@"app/build/outputs/apk/stage/debug/app-stage-debug.apk"' \
           --form 'name="app-stage-debug.apk"' \
           --form 'description="android stage app"'
-                  
+
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v2
         with:

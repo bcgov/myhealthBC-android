@@ -1,1 +1,12 @@
-{"participating_issuers":[{"iss":"https://bcvaxcardgen.freshworks.club","name":"Dev Freshworks"}]}
+{
+  "participating_issuers": [
+    {
+      "iss": "https://phsasmarthealthcard-dev.azurewebsites.net/v1/issuer",
+      "name": "Dev Provincial Health Service Authority on behalf of The Province of British Columbia"
+    },
+    {
+      "iss": "https://bcvaxcardgen.freshworks.club",
+      "name": "Dev Freshworks"
+    }
+  ]
+}
