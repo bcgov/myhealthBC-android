@@ -31,6 +31,7 @@ class DependentsManagementAdapter(
                 onDelete.invoke(dependent)
             }
             txtLabel.text = dependent.getFullName()
+            txtLabel.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
         }
     }
 
