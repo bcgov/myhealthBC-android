@@ -53,6 +53,9 @@
         If I either: (a) cease to be guardian of this child; (b) or lose the right to request or receive health information from third parties respecting this child, I will remove them as a dependent under my Health Gateway account immediately.\n\n
         I understand that I will no longer be able to access my child’s health records once they are 12 years of age.</string>
     <string name="dependents_registration_error_duplicate">This dependent is already added</string>
+    <string name="dependents_registration_error_mismatch_title">Error</string>
+    <string name="dependents_registration_error_mismatch_body">The information you entered does not match our records. Please try again.\n\nIf you continue to have issues, please contact HealthGateway@gov.bc.ca</string>
+    <string name="dependents_registration_error_mismatch_send">Send Email</string>
     <string name="dependents_management_title">Manage dependents</string>
     <string name="dependents_management_remove_title">Remove dependent</string>
     <string name="dependents_management_remove_body">Are you sure you want to remove this dependent(%s) from your application?</string>

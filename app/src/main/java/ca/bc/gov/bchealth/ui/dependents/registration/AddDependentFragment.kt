@@ -50,18 +50,33 @@ class AddDependentFragment : BaseFragment(R.layout.fragment_add_dependent) {
                     viewModel.resetUiState()
                 }
 
-                if (uiState.errorData != null) {
-                    AlertDialogHelper.showAlertDialog(
-                        context = requireContext(),
-                        title = getString(uiState.errorData.title),
-                        msg = getString(uiState.errorData.message),
-                        positiveBtnMsg = getString(R.string.btn_ok)
-                    )
+                uiState.errorData?.let {
+                    if (it is ErrorDataWithActionButton) {
+                        showErrorDialogWithAction(it)
+                    } else {
+                        AlertDialogHelper.showAlertDialog(
+                            context = requireContext(),
+                            title = getString(it.title),
+                            msg = getString(it.message),
+                            positiveBtnMsg = getString(R.string.btn_ok)
+                        )
+                    }
                 }
 
                 handleNoInternetConnection(uiState)
             }
         }
+    }
+
+    private fun showErrorDialogWithAction(errorData: ErrorDataWithActionButton) {
+        AlertDialogHelper.showAlertDialog(
+            context = requireContext(),
+            title = getString(errorData.title),
+            msg = getString(errorData.message),
+            positiveBtnMsg = getString(errorData.buttonName),
+            negativeBtnMsg = getString(R.string.cancel),
+            positiveBtnCallback = { composeEmail() },
+        )
     }
 
     private fun handleNoInternetConnection(uiState: AddDependentsUiState) {
@@ -118,15 +133,6 @@ class AddDependentFragment : BaseFragment(R.layout.fragment_add_dependent) {
             R.string.enter_dob,
             parentFragmentManager,
             "DATE_OF_BIRTH"
-        )
-    }
-
-    private fun showErrorDialog(title: Int, message: Int) {
-        AlertDialogHelper.showAlertDialog(
-            context = requireContext(),
-            title = getString(title),
-            msg = getString(message),
-            positiveBtnMsg = getString(R.string.btn_ok),
         )
     }
 
