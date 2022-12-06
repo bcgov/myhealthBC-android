@@ -10,6 +10,7 @@ import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.ProtectiveWordException
+import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
@@ -101,7 +102,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
 
         try {
 
-            val authParameters = bcscAuthRepo.getAuthParameters()
+            val authParameters = bcscAuthRepo.getAuthParametersDto()
             var patient: PatientDto? = null
             var patientId = 0L
 
@@ -120,8 +121,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
 
             try {
                 patient = patientWithBCSCLoginRepository.getPatient(
-                    authParameters.first,
-                    authParameters.second
+                    authParameters.token,
+                    authParameters.hdid
                 )
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
@@ -290,22 +291,22 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     /*
     * Fetch comments
     * */
-    private suspend fun fetchComments(authParameters: Pair<String, String>): List<CommentDto>? {
+    private suspend fun fetchComments(authParameters: AuthParametersDto): List<CommentDto>? {
         var commentsResponse: List<CommentDto>?
         withContext(dispatcher) {
             commentsResponse = commentsRepository.getComments(
-                authParameters.first,
-                authParameters.second
+                token = authParameters.token,
+                hdid = authParameters.hdid
             )
         }
         return commentsResponse
     }
 
-    private suspend fun fetchDependents(authParameters: Pair<String, String>): List<DependentDto>? {
+    private suspend fun fetchDependents(authParameters: AuthParametersDto): List<DependentDto>? {
         var dependents: List<DependentDto>?
         withContext(dispatcher) {
             dependents = dependentsRepository.fetchAllDependents(
-                token = authParameters.first, hdid = authParameters.second
+                token = authParameters.token, hdid = authParameters.hdid
             )
         }
         return dependents
@@ -314,13 +315,13 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     /*
      * Fetch immunizations
      * */
-    private suspend fun fetchImmunizations(authParameters: Pair<String, String>): ImmunizationDto? {
+    private suspend fun fetchImmunizations(authParameters: AuthParametersDto): ImmunizationDto? {
         var immunizationDto: ImmunizationDto?
         withContext(dispatcher) {
             immunizationDto =
                 immunizationRecordRepository.fetchImmunization(
-                    authParameters.first,
-                    authParameters.second
+                    token = authParameters.token,
+                    hdid = authParameters.hdid
                 )
         }
         return immunizationDto
@@ -329,13 +330,13 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     /*
      * Fetch lab test results
      * */
-    private suspend fun fetchLabTestResults(authParameters: Pair<String, String>): List<LabOrderWithLabTestDto>? {
+    private suspend fun fetchLabTestResults(authParameters: AuthParametersDto): List<LabOrderWithLabTestDto>? {
         var labOrdersResponse: List<LabOrderWithLabTestDto>?
         withContext(dispatcher) {
             labOrdersResponse =
                 labOrderRepository.fetchLabOrders(
-                    authParameters.first,
-                    authParameters.second
+                    token = authParameters.token,
+                    hdid = authParameters.hdid
                 )
         }
         return labOrdersResponse
@@ -344,12 +345,12 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     /*
     * Fetch medication records
     * */
-    private suspend fun fetchMedicationResponse(authParameters: Pair<String, String>): MedicationStatementResponse? {
+    private suspend fun fetchMedicationResponse(authParameters: AuthParametersDto): MedicationStatementResponse? {
         var medicationResponse: MedicationStatementResponse?
         withContext(dispatcher) {
             medicationResponse = medicationRecordRepository.fetchMedicationStatement(
-                authParameters.first,
-                authParameters.second,
+                token = authParameters.token,
+                hdid = authParameters.hdid,
                 encryptedPreferenceStorage.protectiveWord
             )
         }
@@ -359,12 +360,12 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     /*
     * Fetch vaccine records
     * */
-    private suspend fun fetchVaccineRecords(authParameters: Pair<String, String>): Pair<VaccineRecordState, PatientVaccineRecord?>? {
+    private suspend fun fetchVaccineRecords(authParameters: AuthParametersDto): Pair<VaccineRecordState, PatientVaccineRecord?>? {
         var vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>?
         withContext(dispatcher) {
             vaccineRecordsResponse = fetchVaccineRecordRepository.fetchVaccineRecord(
-                authParameters.first,
-                authParameters.second
+                token = authParameters.token,
+                hdid = authParameters.hdid
             )
         }
         return vaccineRecordsResponse
@@ -373,12 +374,12 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     /*
     * Fetch covid test results
     * */
-    private suspend fun fetchCovidTestResults(authParameters: Pair<String, String>): List<CovidOrderWithCovidTestDto>? {
+    private suspend fun fetchCovidTestResults(authParameters: AuthParametersDto): List<CovidOrderWithCovidTestDto>? {
         var covidOrderResponse: List<CovidOrderWithCovidTestDto>?
         withContext(dispatcher) {
             covidOrderResponse = covidOrderRepository.fetchCovidOrders(
-                authParameters.first,
-                authParameters.second
+                token = authParameters.token,
+                hdid = authParameters.hdid
             )
         }
         return covidOrderResponse
@@ -387,13 +388,13 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     /**
      * Fetch health visits
      */
-    private suspend fun fetchHealthVisits(authParameters: Pair<String, String>): List<HealthVisitsDto>? {
+    private suspend fun fetchHealthVisits(authParameters: AuthParametersDto): List<HealthVisitsDto>? {
         var healthVisitsResponse: List<HealthVisitsDto>?
         withContext(dispatcher) {
             healthVisitsResponse =
                 healthVisitsRepository.getHealthVisits(
-                    authParameters.first,
-                    authParameters.second
+                    token = authParameters.token,
+                    hdid = authParameters.hdid
                 )
         }
         return healthVisitsResponse
@@ -402,13 +403,13 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     /**
      * Fetch special authority
      */
-    private suspend fun fetchSpecialAuthority(authParameters: Pair<String, String>): List<SpecialAuthorityDto>? {
+    private suspend fun fetchSpecialAuthority(authParameters: AuthParametersDto): List<SpecialAuthorityDto>? {
         var specialAuthorityResponse: List<SpecialAuthorityDto>?
         withContext(dispatcher) {
             specialAuthorityResponse =
                 specialAuthorityRepository.getSpecialAuthority(
-                    authParameters.first,
-                    authParameters.second
+                    token = authParameters.token,
+                    hdid = authParameters.hdid
                 )
         }
         return specialAuthorityResponse

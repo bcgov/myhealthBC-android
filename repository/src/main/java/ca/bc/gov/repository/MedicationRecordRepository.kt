@@ -28,12 +28,12 @@ class MedicationRecordRepository @Inject constructor(
         medicationRecordLocalDataSource.insert(medicationRecords)
 
     suspend fun fetchMedicationStatement(
-        accessToken: String,
+        token: String,
         hdid: String,
         protectiveWord: String?
     ): MedicationStatementResponse {
         return medicationRemoteDataSource.getMedicationStatement(
-            accessToken, hdid, protectiveWord
+            token, hdid, protectiveWord
         )
     }
 
