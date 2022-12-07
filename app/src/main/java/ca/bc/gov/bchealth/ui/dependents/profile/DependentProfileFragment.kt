@@ -103,7 +103,7 @@ class DependentProfileFragment : BaseFragment(R.layout.fragment_dependent_profil
         with(binding.layoutToolbar.topAppBar) {
             setupWithNavController(findNavController(), appBarConfiguration)
             setNavigationIcon(R.drawable.ic_toolbar_back)
-            title = getString(R.string.profile_settings)
+            title = getString(R.string.settings)
         }
     }
 }

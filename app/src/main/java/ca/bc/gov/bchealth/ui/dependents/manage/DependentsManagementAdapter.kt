@@ -25,7 +25,6 @@ class DependentsManagementAdapter(
         val dependent = dependents[position]
 
         holder.binding.apply {
-            icReorder.show()
             imgUnlink.show()
             imgUnlink.setOnClickListener {
                 onDelete.invoke(dependent)

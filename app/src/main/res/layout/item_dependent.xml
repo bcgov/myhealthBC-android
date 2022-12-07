@@ -58,25 +58,9 @@
         android:focusable="true"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ic_reorder"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_un_link"
-        tools:visibility="visible" />
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/ic_reorder"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:contentDescription="@string/move"
-        android:filterTouchesWhenObscured="true"
-        android:focusable="true"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/img_unlink"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/img_unlink"
-        app:srcCompat="@drawable/ic_reorder"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

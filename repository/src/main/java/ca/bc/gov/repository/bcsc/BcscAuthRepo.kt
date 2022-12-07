@@ -15,7 +15,6 @@ import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
 import ca.bc.gov.common.const.MUST_CALL_MOBILE_CONFIG
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.AuthParametersDto
-import ca.bc.gov.common.utils.titleCase
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.repository.library.java.net.openid.appauth.AuthState
@@ -169,18 +168,6 @@ class BcscAuthRepo(
             throw MyHealthException(AUTH_ERROR_DO_LOGIN, "Invalid access token!")
         else
             return Pair(BEARER.plus(" ").plus(accessToken), hdId)
-    }
-
-    suspend fun getUserName(): String {
-        var userName = "Not available!"
-        try {
-            val authState = getAuthState() ?: throw MyHealthException(AUTH_ERROR, "Login again!")
-            val json = authState.accessToken?.let { decodeAccessToken(it) }
-            userName = json?.get(NAME).toString().titleCase()
-        } catch (e: java.lang.Exception) {
-            // NA
-        }
-        return userName
     }
 
     @Throws(Exception::class)

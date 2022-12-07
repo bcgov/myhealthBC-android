@@ -19,6 +19,8 @@ val fonts = FontFamily(
 
 private val darkText = Color(0xFF313132)
 
+val statusBlue30 = Color(0x4D38598A)
+
 val MyHealthTypography = Typography(
     body1 = TextStyle(
         fontFamily = fonts,
