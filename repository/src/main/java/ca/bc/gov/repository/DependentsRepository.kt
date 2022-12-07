@@ -77,6 +77,13 @@ class DependentsRepository @Inject constructor(
 
         val patientId = localDataSource.insertPatient(dependentDto.toPatientEntity())
         localDataSource.insertDependent(dependentDto.toEntity(patientId, guardianId))
+
+        try {
+            val vaccineRecords = fetchVaccineRecords(authParameters.token, dependentDto.hdid)
+            vaccineRecords?.let { insertVaccineRecords(patientId, it) }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     suspend fun checkDuplicateRecord(phn: String): Boolean {
@@ -97,11 +104,7 @@ class DependentsRepository @Inject constructor(
 
             val token = bcscAuthRepo.getAuthParametersDto().token
 
-            try {
-                vaccineRecords = fetchVaccineRecordRepository.fetchVaccineRecord(token, hdid)
-            } catch (e: Exception) {
-                handleException(e)
-            }
+            vaccineRecords = fetchVaccineRecords(token, hdid)
 
             try {
                 covidOrders = covidOrderRepository.fetchCovidOrders(token, hdid)
@@ -119,6 +122,20 @@ class DependentsRepository @Inject constructor(
         }
     }
 
+    private suspend fun fetchVaccineRecords(
+        token: String,
+        hdid: String
+    ): Pair<VaccineRecordState, PatientVaccineRecord?>? {
+        var vaccineRecords: Pair<VaccineRecordState, PatientVaccineRecord?>? = null
+        try {
+            vaccineRecords = fetchVaccineRecordRepository.fetchVaccineRecord(token, hdid)
+        } catch (e: Exception) {
+            handleException(e)
+        }
+
+        return vaccineRecords
+    }
+
     private fun handleException(exception: Exception) {
         Log.e("DependentsRepository", "Handling Exception:")
         exception.printStackTrace()
@@ -130,19 +147,8 @@ class DependentsRepository @Inject constructor(
         covidOrderResponse: List<CovidOrderWithCovidTestDto>?,
         immunizationDto: ImmunizationDto?
     ) {
-
         // Insert vaccine records
-        recordsRepository.storeVaccineRecords(
-            vaccineRecordsResponse?.let {
-                listOf(
-                    PatientVaccineRecordsState(
-                        patientId = patientId,
-                        vaccineRecordState = it.first,
-                        patientVaccineRecord = it.second,
-                    )
-                )
-            } ?: listOf()
-        )
+        vaccineRecordsResponse?.let { insertVaccineRecords(patientId, it) }
 
         // Insert covid orders
         recordsRepository.storeCovidOrders(patientId, covidOrderResponse)
@@ -151,6 +157,21 @@ class DependentsRepository @Inject constructor(
         recordsRepository.storeImmunizationRecords(patientId, immunizationDto)
 
         localDataSource.enableDependentCacheFlag(patientId)
+    }
+
+    private suspend fun insertVaccineRecords(
+        patientId: Long,
+        vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>,
+    ) {
+        recordsRepository.storeVaccineRecords(
+            listOf(
+                PatientVaccineRecordsState(
+                    patientId = patientId,
+                    vaccineRecordState = vaccineRecordsResponse.first,
+                    patientVaccineRecord = vaccineRecordsResponse.second,
+                )
+            )
+        )
     }
 
     suspend fun getPatientWithTestResultsAndRecords(patientId: Long): PatientWithTestResultsAndRecordsDto =
