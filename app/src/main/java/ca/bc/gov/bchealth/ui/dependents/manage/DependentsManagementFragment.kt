@@ -5,19 +5,16 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentDependentsManagementBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
-import ca.bc.gov.bchealth.ui.recycler.VerticalDragCallback
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.model.dependents.DependentDto
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Collections
 
 @AndroidEntryPoint
 class DependentsManagementFragment : BaseFragment(R.layout.fragment_dependents_management) {
@@ -41,8 +38,6 @@ class DependentsManagementFragment : BaseFragment(R.layout.fragment_dependents_m
         binding.rvDependents.layoutManager =
             LinearLayoutManager(requireContext())
 
-        val helper = ItemTouchHelper(VerticalDragCallback(::onItemMoved))
-        helper.attachToRecyclerView(binding.rvDependents)
         adapter.notifyItemRangeChanged(0, adapter.itemCount)
     }
 
@@ -85,10 +80,6 @@ class DependentsManagementFragment : BaseFragment(R.layout.fragment_dependents_m
             msg = getString(R.string.error_message),
             positiveBtnMsg = getString(R.string.dialog_button_ok)
         )
-    }
-
-    private fun onItemMoved(elementIndex: Int, targetIndex: Int) {
-        Collections.swap(adapter.dependents, elementIndex, targetIndex)
     }
 
     private fun confirmDeletion(dependentDto: DependentDto) {
