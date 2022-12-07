@@ -23,7 +23,7 @@ interface DependentDao : BaseDao<DependentEntity> {
             "(SELECT id FROM patient WHERE authentication_status = 'AUTHENTICATED') AS guardianId " +
             "FROM dependent WHERE guardianId = guardian_id AND phn = :phn"
     )
-    suspend fun findDependent(phn: String): List<DependentEntity>
+    suspend fun findDependentByPhn(phn: String): DependentEntity?
 
     @Query("SELECT * FROM dependent WHERE patient_id = :patientId")
     suspend fun findDependent(patientId: Long): DependentEntity?

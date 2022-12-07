@@ -35,6 +35,7 @@ import ca.bc.gov.repository.healthvisits.HealthVisitsRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
+import ca.bc.gov.repository.model.PatientVaccineRecordsState
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.VaccineRecordState
 import ca.bc.gov.repository.specialauthority.SpecialAuthorityRepository
@@ -90,7 +91,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private suspend fun fetchAuthRecords(): Result {
 
         isApiFailed = false
-        var vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>? = null
+        val vaccineRecords = mutableListOf<PatientVaccineRecordsState?>()
         var covidOrderResponse: List<CovidOrderWithCovidTestDto>? = null
         var medicationResponse: MedicationStatementResponse? = null
         var labOrdersResponse: List<LabOrderWithLabTestDto>? = null
@@ -121,8 +122,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
 
             try {
                 patient = patientWithBCSCLoginRepository.getPatient(
-                    authParameters.token,
-                    authParameters.hdid
+                    authParameters.token, authParameters.hdid
                 )
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
@@ -130,13 +130,39 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 }
             }
 
+            // Insert patient details
+            patient?.let {
+                patientId = patientRepository.insertAuthenticatedPatient(it)
+            }
+
             try {
-                vaccineRecordsResponse = fetchVaccineRecords(authParameters)
+                dependentsList = fetchDependents(authParameters)
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
                     return failureResult
                 }
             }
+
+            // Insert dependents
+            dependentsList?.let { dependentsRepository.storeDependents(it, guardianId = patientId) }
+
+            try {
+                val patientVaccineRecords = fetchVaccineRecords(
+                    authParameters.token,
+                    authParameters.hdid,
+                    patientId
+                )
+                vaccineRecords.add(patientVaccineRecords)
+            } catch (e: Exception) {
+                handleException(e)?.let { failureResult ->
+                    return failureResult
+                }
+            }
+
+            val dependentVaccineRecords = fetchDependentsVaccineRecords(
+                authParameters.token, dependentsList
+            )
+            vaccineRecords.addAll(dependentVaccineRecords)
 
             try {
                 covidOrderResponse = fetchCovidTestResults(authParameters)
@@ -190,14 +216,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             try {
-                dependentsList = fetchDependents(authParameters)
-            } catch (e: Exception) {
-                handleException(e)?.let { failureResult ->
-                    return failureResult
-                }
-            }
-
-            try {
                 healthVisitsResponse = fetchHealthVisits(authParameters)
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
@@ -216,22 +234,15 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             /**
              * DB Operations
              * */
-            // Insert patient details
-            patient?.let {
-                patientId = patientRepository.insertAuthenticatedPatient(it)
-            }
             // Insert vaccine records
-            recordsRepository.storeVaccineRecords(patientId, vaccineRecordsResponse)
+            recordsRepository.storeVaccineRecords(vaccineRecords)
 
             // Insert covid orders
             recordsRepository.storeCovidOrders(patientId, covidOrderResponse)
 
             // Insert medication records
             medicationResponse?.let {
-                medicationRecordRepository.updateMedicationRecords(
-                    it,
-                    patientId
-                )
+                medicationRecordRepository.updateMedicationRecords(it, patientId)
             }
             // Insert lab orders
             recordsRepository.storeLabOrders(patientId, labOrdersResponse)
@@ -242,9 +253,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             // Insert comments
             commentsRepository.delete(true)
             commentsResponse?.let { commentsRepository.insert(it) }
-
-            // Insert dependents
-            dependentsList?.let { dependentsRepository.storeDependents(it, guardianId = patientId) }
 
             // Insert Health Visits
             healthVisitsRepository.deleteHealthVisits(patientId)
@@ -262,16 +270,21 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 specialAuthorityRepository.insert(it)
             }
 
-            if (isApiFailed) {
-                notificationHelper.updateNotification(context.getString(R.string.notification_title_on_failed))
-            } else {
-                notificationHelper.updateNotification(context.getString(R.string.notification_title_on_success))
-            }
+            updateNotification(isApiFailed)
         } catch (e: Exception) {
             // no implementation required.
             e.printStackTrace()
         }
         return Result.success()
+    }
+
+    private fun updateNotification(isApiFailed: Boolean) {
+        val notificationText = if (isApiFailed) {
+            R.string.notification_title_on_failed
+        } else {
+            R.string.notification_title_on_success
+        }
+        notificationHelper.updateNotification(context.getString(notificationText))
     }
 
     private fun handleException(exception: Exception): Result? {
@@ -287,6 +300,30 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
 
     private fun isQueueException(exception: Exception) =
         exception is MustBeQueuedException && exception.message.toString().isNotBlank()
+
+    private suspend fun fetchDependentsVaccineRecords(
+        token: String,
+        dependents: List<DependentDto>?
+    ): List<PatientVaccineRecordsState> {
+        val resultList = mutableListOf<PatientVaccineRecordsState>()
+
+        dependents?.forEach { dependent ->
+            try {
+                val patientId = dependentsRepository.getDependentByPhn(dependent.phn).patientId
+
+                fetchVaccineRecords(
+                    token,
+                    dependent.hdid,
+                    patientId
+                )?.let { dependentVaccineRecord ->
+                    resultList.add(dependentVaccineRecord)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        return resultList
+    }
 
     /*
     * Fetch comments
@@ -360,15 +397,22 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     /*
     * Fetch vaccine records
     * */
-    private suspend fun fetchVaccineRecords(authParameters: AuthParametersDto): Pair<VaccineRecordState, PatientVaccineRecord?>? {
-        var vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>?
+    private suspend fun fetchVaccineRecords(
+        token: String,
+        hdid: String,
+        patientId: Long
+    ): PatientVaccineRecordsState? {
+        var response: Pair<VaccineRecordState, PatientVaccineRecord?>?
         withContext(dispatcher) {
-            vaccineRecordsResponse = fetchVaccineRecordRepository.fetchVaccineRecord(
-                token = authParameters.token,
-                hdid = authParameters.hdid
+            response = fetchVaccineRecordRepository.fetchVaccineRecord(token, hdid)
+        }
+        return response?.let {
+            PatientVaccineRecordsState(
+                patientId = patientId,
+                vaccineRecordState = it.first,
+                patientVaccineRecord = it.second
             )
         }
-        return vaccineRecordsResponse
     }
 
     /*

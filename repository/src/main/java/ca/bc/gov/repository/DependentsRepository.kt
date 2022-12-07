@@ -20,6 +20,7 @@ import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.extensions.mapFlowContent
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
+import ca.bc.gov.repository.model.PatientVaccineRecordsState
 import ca.bc.gov.repository.qr.VaccineRecordState
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.worker.MobileConfigRepository
@@ -79,8 +80,7 @@ class DependentsRepository @Inject constructor(
     }
 
     suspend fun checkDuplicateRecord(phn: String): Boolean {
-        val count = localDataSource.findDependent(phn).size
-        return count > 0
+        return localDataSource.findDependentByPhn(phn) != null
     }
 
     suspend fun requestRecordsIfNeeded(patientId: Long, hdid: String) {
@@ -132,7 +132,17 @@ class DependentsRepository @Inject constructor(
     ) {
 
         // Insert vaccine records
-        recordsRepository.storeVaccineRecords(patientId, vaccineRecordsResponse)
+        recordsRepository.storeVaccineRecords(
+            vaccineRecordsResponse?.let {
+                listOf(
+                    PatientVaccineRecordsState(
+                        patientId = patientId,
+                        vaccineRecordState = it.first,
+                        patientVaccineRecord = it.second,
+                    )
+                )
+            } ?: listOf()
+        )
 
         // Insert covid orders
         recordsRepository.storeCovidOrders(patientId, covidOrderResponse)
@@ -167,6 +177,10 @@ class DependentsRepository @Inject constructor(
         localDataSource.findDependent(patientId)?.toDto()
             ?: throw getDatabaseException(patientId)
 
+    suspend fun getDependentByPhn(phn: String): DependentDto =
+        localDataSource.findDependentByPhn(phn)?.toDto()
+            ?: throw getDatabaseException(phn)
+
     suspend fun deleteDependent(patientId: Long) {
         val dependentDto = getDependent(patientId)
         deleteDependent(dependentDto)
@@ -186,4 +200,7 @@ class DependentsRepository @Inject constructor(
 
     private fun getDatabaseException(patientId: Long) =
         MyHealthException(DATABASE_ERROR, "No record found for patient id=  $patientId")
+
+    private fun getDatabaseException(phn: String) =
+        MyHealthException(DATABASE_ERROR, "No record found for phn=  $phn")
 }

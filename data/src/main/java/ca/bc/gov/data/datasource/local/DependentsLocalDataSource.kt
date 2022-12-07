@@ -39,8 +39,8 @@ class DependentsLocalDataSource @Inject constructor(
     suspend fun findDependent(patientId: Long) =
         dependentsDao.findDependent(patientId)
 
-    suspend fun findDependent(phn: String) =
-        dependentsDao.findDependent(phn)
+    suspend fun findDependentByPhn(phn: String): DependentEntity? =
+        dependentsDao.findDependentByPhn(phn)
 
     suspend fun isDependentCacheValid(patientId: Long) =
         dependentsDao.findDependent(patientId)?.isCacheValid ?: false
