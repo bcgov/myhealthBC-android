@@ -317,6 +317,7 @@ fun ImmunizationRecommendationsDto.toUiModel() = RecommendationDetailItem(
 fun DependentDto.toUiModel(currentDate: LocalDate) = DependentDetailItem(
     patientId = patientId,
     hdid = hdid,
+    firstName = firstname,
     fullName = "$firstname $lastname",
     agedOut = isDependentAgedOut(currentDate)
 )
