@@ -22,6 +22,8 @@
     <color name="red">#D72E3D</color>
 
     <color name="home_banner_background">#D9EAF7</color>
+    <color name="warning_background">#F9F1C6</color>
+    <color name="warning_text">#6C4A00</color>
 
     <!--Covid Test Result colors-->
     <color name="covid_test_blue">#D2E2EF</color>

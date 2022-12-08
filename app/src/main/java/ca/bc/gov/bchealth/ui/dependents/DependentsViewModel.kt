@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,7 +27,9 @@ class DependentsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(DependentsUiState())
     val uiState: StateFlow<DependentsUiState> = _uiState.asStateFlow()
 
-    val dependentsList = dependentsRepository.getAllDependents().mapFlowContent { it.toUiModel() }
+    val dependentsList = dependentsRepository.getAllDependents().mapFlowContent {
+        it.toUiModel(LocalDate.now())
+    }
 
     fun loadAuthenticationState() = viewModelScope.launch {
         _uiState.update { DependentsUiState(onLoading = true) }
@@ -77,4 +80,5 @@ data class DependentDetailItem(
     val patientId: Long,
     val hdid: String,
     val fullName: String,
+    val agedOut: Boolean
 )

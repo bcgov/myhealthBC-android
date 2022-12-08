@@ -23,7 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
     private val binding by viewBindings(FragmentDependentsBinding::bind)
     private val viewModel: DependentsViewModel by viewModels()
-    private val dependentAdapter = DependentAdapter(::onClickDependent)
+    private val dependentAdapter = DependentAdapter(::onClickDependent, ::onClickRemove)
     private val filterSharedViewModel: DependentFilterViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -102,6 +102,9 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
                 "fullName" to dependent.fullName
             )
         )
+    }
+
+    private fun onClickRemove(dependent: DependentDetailItem) {
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {

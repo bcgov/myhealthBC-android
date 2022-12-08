@@ -32,6 +32,7 @@ import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
 import java.time.Instant
+import java.time.LocalDate
 
 fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
 
@@ -313,10 +314,11 @@ fun ImmunizationRecommendationsDto.toUiModel() = RecommendationDetailItem(
     date = this.agentDueDate?.toDate().orPlaceholder(),
 )
 
-fun DependentDto.toUiModel() = DependentDetailItem(
+fun DependentDto.toUiModel(currentDate: LocalDate) = DependentDetailItem(
     patientId = patientId,
     hdid = hdid,
-    fullName = firstname + " " + lastname
+    fullName = "$firstname $lastname",
+    agedOut = isDependentAgedOut(currentDate)
 )
 
 private fun ImmunizationForecastDto.toUiModel() = ForecastDetailItem(
