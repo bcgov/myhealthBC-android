@@ -11,8 +11,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentDependentProfileBinding
-import ca.bc.gov.bchealth.ui.BaseFragment
-import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.ui.dependents.BaseDependentFragment
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
@@ -21,7 +20,7 @@ import ca.bc.gov.common.exceptions.NetworkConnectionException
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DependentProfileFragment : BaseFragment(R.layout.fragment_dependent_profile) {
+class DependentProfileFragment : BaseDependentFragment(R.layout.fragment_dependent_profile) {
     private val args: DependentProfileFragmentArgs by navArgs()
     private val viewModel: DependentProfileViewModel by viewModels()
 
@@ -66,17 +65,8 @@ class DependentProfileFragment : BaseFragment(R.layout.fragment_dependent_profil
         }
     }
 
-    private fun confirmDeletion(patientId: Long, firstName: String) {
-        AlertDialogHelper.showAlertDialog(
-            context = requireContext(),
-            title = getString(R.string.dependents_management_remove_title),
-            msg = getString(R.string.dependents_management_remove_body, firstName),
-            positiveBtnMsg = getString(R.string.yes),
-            negativeBtnMsg = getString(R.string.no),
-            positiveBtnCallback = {
-                viewModel.removeDependent(patientId)
-            }
-        )
+    override fun deleteDependent(patientId: Long) {
+        viewModel.removeDependent(patientId)
     }
 
     private fun handleError(e: Exception) {
@@ -90,20 +80,11 @@ class DependentProfileFragment : BaseFragment(R.layout.fragment_dependent_profil
         }
     }
 
-    private fun showGenericError() {
-        AlertDialogHelper.showAlertDialog(
-            context = requireContext(),
-            title = getString(R.string.error),
-            msg = getString(R.string.error_message),
-            positiveBtnMsg = getString(R.string.dialog_button_ok)
-        )
-    }
-
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
         with(binding.layoutToolbar.topAppBar) {
             setupWithNavController(findNavController(), appBarConfiguration)
             setNavigationIcon(R.drawable.ic_toolbar_back)
-            title = getString(R.string.settings)
+            title = getString(R.string.dependents_profile)
         }
     }
 }

@@ -9,7 +9,7 @@ import ca.bc.gov.common.model.dependents.DependentDto
 
 class DependentsManagementAdapter(
     var dependents: List<DependentDto>,
-    private val onDelete: (DependentDto) -> Unit
+    private val onDelete: (patientId: Long, firstName: String) -> Unit
 ) : RecyclerView.Adapter<DependentsManagementAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemDependentBinding) :
@@ -27,7 +27,7 @@ class DependentsManagementAdapter(
         holder.binding.apply {
             imgUnlink.show()
             imgUnlink.setOnClickListener {
-                onDelete.invoke(dependent)
+                onDelete.invoke(dependent.patientId, dependent.firstname)
             }
             txtLabel.text = dependent.getFullName()
             txtLabel.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)

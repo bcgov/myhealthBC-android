@@ -10,20 +10,21 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentDependentsBinding
-import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.dependents.records.filter.DependentFilterViewModel
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.observeWork
+import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
+class DependentsFragment : BaseDependentFragment(R.layout.fragment_dependents) {
     private val binding by viewBindings(FragmentDependentsBinding::bind)
     private val viewModel: DependentsViewModel by viewModels()
-    private val dependentAdapter = DependentAdapter(::onClickDependent)
+    private val dependentAdapter = DependentAdapter(::onClickDependent, ::confirmDeletion)
     private val filterSharedViewModel: DependentFilterViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,10 +72,10 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
             }
 
             if (uiState.isSessionActive == true) {
-                launchOnStart {
-                    observeDependentList()
-                }
+                launchOnStart { observeDependentList() }
             }
+
+            uiState.error?.let { handleError(it) }
         }
     }
 
@@ -102,6 +103,21 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
                 "fullName" to dependent.fullName
             )
         )
+    }
+
+    override fun deleteDependent(patientId: Long) {
+        viewModel.removeDependent(patientId)
+    }
+
+    private fun handleError(e: Exception) {
+        viewModel.resetErrorState()
+        if (e is NetworkConnectionException) {
+            context?.let {
+                binding.root.showNoInternetConnectionMessage(it)
+            }
+        } else {
+            showGenericError()
+        }
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {

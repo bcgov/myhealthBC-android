@@ -5,37 +5,77 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ca.bc.gov.bchealth.databinding.ItemDependentAgedOutBinding
 import ca.bc.gov.bchealth.databinding.ItemDependentBinding
 
-class DependentAdapter(
-    private val action: (DependentDetailItem) -> Unit
-) : ListAdapter<DependentDetailItem, DependentAdapter.ViewHolder>(DependentDiffCallBacks()) {
+private const val VIEW_TYPE_REGULAR = 0
+private const val VIEW_TYPE_AGED_OUT = 1
 
-    class ViewHolder(val binding: ItemDependentBinding) :
+class DependentAdapter(
+    private val onTapItem: (DependentDetailItem) -> Unit,
+    private val onTapRemove: (patientId: Long, firstName: String) -> Unit
+) : ListAdapter<DependentDetailItem, RecyclerView.ViewHolder>(DependentDiffCallBacks()) {
+
+    class DependentViewHolder(val binding: ItemDependentBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemDependentBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
-        )
-        return ViewHolder(binding)
+    class DependentAgedOutViewHolder(val binding: ItemDependentAgedOutBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
+    override fun getItemViewType(position: Int): Int =
+        if (getItem(position).agedOut) VIEW_TYPE_AGED_OUT else VIEW_TYPE_REGULAR
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+        when (viewType) {
+            VIEW_TYPE_REGULAR -> DependentViewHolder(
+                ItemDependentBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false
+                )
+            )
+            VIEW_TYPE_AGED_OUT -> DependentAgedOutViewHolder(
+                ItemDependentAgedOutBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false
+                )
+            )
+            else -> throw RuntimeException("Invalid ViewType: $viewType")
+        }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val dependent = getItem(position)
+
+        when (holder) {
+            is DependentViewHolder -> onBindDependent(holder, dependent)
+            is DependentAgedOutViewHolder -> onBindDependentAgedOut(holder, dependent)
+        }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val dependent = getItem(position)
-        holder.itemView.setOnClickListener {
-            action(dependent)
+    private fun onBindDependent(holder: DependentViewHolder, dependent: DependentDetailItem) =
+        with(holder) {
+            itemView.setOnClickListener { onTapItem(dependent) }
+            binding.txtLabel.text = dependent.fullName
         }
-        holder.binding.txtLabel.text = dependent.fullName
+
+    private fun onBindDependentAgedOut(
+        holder: DependentAgedOutViewHolder,
+        dependent: DependentDetailItem
+    ) = with(holder.binding) {
+        btnRemove.setOnClickListener { onTapRemove(dependent.patientId, dependent.firstName) }
+        txtLabel.text = dependent.fullName
     }
 }
 
 class DependentDiffCallBacks : DiffUtil.ItemCallback<DependentDetailItem>() {
-    override fun areItemsTheSame(oldItem: DependentDetailItem, newItem: DependentDetailItem): Boolean {
+    override fun areItemsTheSame(
+        oldItem: DependentDetailItem,
+        newItem: DependentDetailItem
+    ): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: DependentDetailItem, newItem: DependentDetailItem): Boolean {
+    override fun areContentsTheSame(
+        oldItem: DependentDetailItem,
+        newItem: DependentDetailItem
+    ): Boolean {
         return oldItem.patientId == newItem.patientId
     }
 }

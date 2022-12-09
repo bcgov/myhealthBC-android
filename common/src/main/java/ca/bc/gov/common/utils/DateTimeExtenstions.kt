@@ -71,3 +71,6 @@ fun Instant.toLocalDateTimeInstant(): Instant? {
     return this.atZone(ZoneId.systemDefault())
         ?.toLocalDateTime()?.toInstant(ZoneOffset.UTC)
 }
+
+fun Instant.toLocalDate(): LocalDate =
+    this.atZone(ZoneOffset.UTC).toLocalDate()
