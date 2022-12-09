@@ -21,11 +21,11 @@ class DependentsManagementViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(DependentManagementUiState())
     val uiState: StateFlow<DependentManagementUiState> = _uiState.asStateFlow()
 
-    fun deleteDependent(dependent: DependentDto, uiList: List<DependentDto>) =
+    fun deleteDependent(patientId: Long, uiList: List<DependentDto>) =
         viewModelScope.launch {
             displayLoading(true)
             try {
-                repository.deleteDependent(dependent)
+                repository.deleteDependent(patientId)
                 updateDependentOrder(uiList)
                 displayLoading(false)
             } catch (e: Exception) {

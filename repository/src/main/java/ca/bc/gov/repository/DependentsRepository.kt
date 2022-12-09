@@ -207,7 +207,7 @@ class DependentsRepository @Inject constructor(
         deleteDependent(dependentDto)
     }
 
-    suspend fun deleteDependent(dependentDto: DependentDto) {
+    private suspend fun deleteDependent(dependentDto: DependentDto) {
         val authParams = bcscAuthRepo.getAuthParametersDto()
 
         remoteDataSource.deleteDependent(

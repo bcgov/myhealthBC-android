@@ -8,16 +8,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentDependentsManagementBinding
-import ca.bc.gov.bchealth.ui.BaseFragment
-import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.ui.dependents.BaseDependentFragment
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
-import ca.bc.gov.common.model.dependents.DependentDto
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DependentsManagementFragment : BaseFragment(R.layout.fragment_dependents_management) {
+class DependentsManagementFragment : BaseDependentFragment(R.layout.fragment_dependents_management) {
     private val viewModel: DependentsManagementViewModel by viewModels()
     private val binding by viewBindings(FragmentDependentsManagementBinding::bind)
     private lateinit var adapter: DependentsManagementAdapter
@@ -73,16 +71,7 @@ class DependentsManagementFragment : BaseFragment(R.layout.fragment_dependents_m
         }
     }
 
-    private fun confirmDeletion(dependentDto: DependentDto) {
-        AlertDialogHelper.showAlertDialog(
-            context = requireContext(),
-            title = getString(R.string.dependents_management_remove_title),
-            msg = getString(R.string.dependents_management_remove_body, dependentDto.firstname),
-            positiveBtnMsg = getString(R.string.yes),
-            negativeBtnMsg = getString(R.string.no),
-            positiveBtnCallback = {
-                viewModel.deleteDependent(dependentDto, adapter.dependents)
-            }
-        )
+    override fun deleteDependent(patientId: Long) {
+        viewModel.deleteDependent(patientId, adapter.dependents)
     }
 }

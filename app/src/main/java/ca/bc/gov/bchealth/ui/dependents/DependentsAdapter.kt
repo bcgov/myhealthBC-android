@@ -13,7 +13,7 @@ private const val VIEW_TYPE_AGED_OUT = 1
 
 class DependentAdapter(
     private val onTapItem: (DependentDetailItem) -> Unit,
-    private val onTapRemove: (DependentDetailItem) -> Unit
+    private val onTapRemove: (patientId: Long, firstName: String) -> Unit
 ) : ListAdapter<DependentDetailItem, RecyclerView.ViewHolder>(DependentDiffCallBacks()) {
 
     class DependentViewHolder(val binding: ItemDependentBinding) :
@@ -59,7 +59,7 @@ class DependentAdapter(
         holder: DependentAgedOutViewHolder,
         dependent: DependentDetailItem
     ) = with(holder.binding) {
-        btnRemove.setOnClickListener { onTapRemove(dependent) }
+        btnRemove.setOnClickListener { onTapRemove(dependent.patientId, dependent.firstName) }
         txtLabel.text = dependent.fullName
     }
 }
