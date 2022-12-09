@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.HEALTH_GATEWAY_EMAIL_ADDRESS
 
 abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentLayoutId) {
@@ -25,6 +26,15 @@ abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentL
 
     fun composeEmail(address: String = HEALTH_GATEWAY_EMAIL_ADDRESS, subject: String = "") {
         (activity as? BaseActivity)?.composeEmail(address, subject)
+    }
+
+    fun showGenericError() {
+        AlertDialogHelper.showAlertDialog(
+            context = requireContext(),
+            title = getString(R.string.error),
+            msg = getString(R.string.error_message),
+            positiveBtnMsg = getString(R.string.dialog_button_ok)
+        )
     }
 
     private fun getAppBarConfiguration() = AppBarConfiguration(

@@ -90,15 +90,6 @@ class DependentProfileFragment : BaseFragment(R.layout.fragment_dependent_profil
         }
     }
 
-    private fun showGenericError() {
-        AlertDialogHelper.showAlertDialog(
-            context = requireContext(),
-            title = getString(R.string.error),
-            msg = getString(R.string.error_message),
-            positiveBtnMsg = getString(R.string.dialog_button_ok)
-        )
-    }
-
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
         with(binding.layoutToolbar.topAppBar) {
             setupWithNavController(findNavController(), appBarConfiguration)

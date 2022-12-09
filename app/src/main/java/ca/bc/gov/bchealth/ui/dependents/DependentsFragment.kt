@@ -135,15 +135,6 @@ class DependentsFragment : BaseFragment(R.layout.fragment_dependents) {
         }
     }
 
-    private fun showGenericError() {
-        AlertDialogHelper.showAlertDialog(
-            context = requireContext(),
-            title = getString(R.string.error),
-            msg = getString(R.string.error_message),
-            positiveBtnMsg = getString(R.string.dialog_button_ok)
-        )
-    }
-
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
         with(binding.layoutToolbar.appbar) {
             stateListAnimator = null

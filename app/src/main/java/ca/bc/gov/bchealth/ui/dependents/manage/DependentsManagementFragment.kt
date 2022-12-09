@@ -73,15 +73,6 @@ class DependentsManagementFragment : BaseFragment(R.layout.fragment_dependents_m
         }
     }
 
-    private fun showGenericError() {
-        AlertDialogHelper.showAlertDialog(
-            context = requireContext(),
-            title = getString(R.string.error),
-            msg = getString(R.string.error_message),
-            positiveBtnMsg = getString(R.string.dialog_button_ok)
-        )
-    }
-
     private fun confirmDeletion(dependentDto: DependentDto) {
         AlertDialogHelper.showAlertDialog(
             context = requireContext(),
