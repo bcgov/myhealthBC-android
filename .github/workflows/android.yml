@@ -43,29 +43,73 @@ jobs:
           USER: ${{ secrets.USER }}
           TOKEN: ${{ secrets.TOKEN }}
 
+      #MOCK
+      - name: sign mock apk
+        id: sign_app_mock
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/apk/mock/debug
+          signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
+          alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
+          keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
+
       - name: upload mock apk
         uses: actions/upload-artifact@v1
         with:
           name: myhealth_mock.apk
-          path: app/build/outputs/apk/mock/debug/app-mock-debug.apk
+          path: ${{steps.sign_app_mock.outputs.signedReleaseFile}}
+
+      #DEV
+      - name: sign dev apk
+        id: sign_app_dev
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/apk/dev/debug
+          signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
+          alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
+          keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
 
       - name: upload dev apk
         uses: actions/upload-artifact@v1
         with:
           name: myhealth_dev.apk
-          path: app/build/outputs/apk/dev/debug/app-dev-debug.apk
+          path: ${{steps.sign_app_dev.outputs.signedReleaseFile}}
+
+      #STAGE
+      - name: sign stage apk
+        id: sign_app_stage
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/apk/stage/debug
+          signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
+          alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
+          keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
 
       - name: upload stage apk
         uses: actions/upload-artifact@v1
         with:
           name: myhealth_stage.apk
-          path: app/build/outputs/apk/stage/debug/app-stage-debug.apk
+          path: ${{steps.sign_app_stage.outputs.signedReleaseFile}}
+
+      #PROD
+      - name: sign prod apk
+        id: sign_app_prod
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/apk/prod/debug
+          signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
+          alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
+          keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
 
       - name: upload prod apk
         uses: actions/upload-artifact@v1
         with:
           name: myhealth_prod.apk
-          path: app/build/outputs/apk/prod/debug/app-prod-debug.apk
+          path: ${{steps.sign_app_prod.outputs.signedReleaseFile}}
 
       - name: Saucelabs delete and upload
         env:
