@@ -1,0 +1,46 @@
+name: Android CICD deployment
+
+on:
+  push:
+    branches:
+      - github_action_sandbox
+
+jobs:
+  build:
+    name: Clean build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check out
+        uses: actions/checkout@v2
+
+      - name: setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
+      - name: clean build
+        run: ./gradlew clean build
+        env:
+          USER: ${{ secrets.USER }}
+          TOKEN: ${{ secrets.TOKEN }}
+
+      #DEV
+      - name: sign dev apk
+        id: sign_app_dev
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/apk/dev/debug
+          signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
+          alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
+          keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
+
+      - name: upload dev apk
+        uses: actions/upload-artifact@v1
+        with:
+          name: myhealth_dev.apk
+          path: ${{steps.sign_app_dev.outputs.signedReleaseFile}}
