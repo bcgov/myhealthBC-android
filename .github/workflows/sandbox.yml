@@ -28,6 +28,15 @@ jobs:
           USER: ${{ secrets.USER }}
           TOKEN: ${{ secrets.TOKEN }}
 
+      - name: Retrieve Version
+        run: |
+          echo "::set-output name=APK_VERSION_NAME::$(${{github.workspace}}/gradlew -q printVersionName)"
+        id: android_version
+
+      - name: Get version
+        run: |
+          echo "version_name=${{steps.android_version.outputs.APK_VERSION_NAME}}" >> $GITHUB_ENV
+
       #DEV
       - name: sign dev apk
         id: sign_app_dev
@@ -39,8 +48,15 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
 
-      - name: upload dev apk
+      - name: upload dev no name
         uses: actions/upload-artifact@v1
         with:
-          name: myhealth_dev.apk
           path: ${{steps.sign_app_dev.outputs.signedReleaseFile}}
+
+      - name: upload dev apk custom name
+        uses: actions/upload-artifact@v1
+        with:
+          name: myhealth_${{env.version_name}}.apk
+          path: ${{steps.sign_app_dev.outputs.signedReleaseFile}}
+
+

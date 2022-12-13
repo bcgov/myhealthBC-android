@@ -92,6 +92,10 @@ android {
     hilt {
         enableAggregatingTask = true
     }
+
+    task printVersionName {
+        println versions.version_name
+    }
 }
 
 dependencies {
