@@ -93,10 +93,11 @@ android {
         enableAggregatingTask = true
     }
 
-    task printVersionName {
-        println versions.version_name
+    task getApkVersion {
+        println defaultConfig.versionName + "-" + defaultConfig.versionCode
     }
 }
+
 
 dependencies {
 

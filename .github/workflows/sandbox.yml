@@ -28,14 +28,14 @@ jobs:
           USER: ${{ secrets.USER }}
           TOKEN: ${{ secrets.TOKEN }}
 
-      - name: Retrieve Version
+      - name: retrieve apk version
         run: |
-          echo "::set-output name=APK_VERSION_NAME::$(${{github.workspace}}/gradlew -q printVersionName)"
-        id: android_version
+          echo "::set-output name=APK_VERSION::$(${{github.workspace}}/gradlew -q getApkVersion)"
+        id: retrieve_apk_version
 
-      - name: Get version
+      - name: export apk version
         run: |
-          echo "version_name=${{steps.android_version.outputs.APK_VERSION_NAME}}" >> $GITHUB_ENV
+          echo "apk_version=${{steps.retrieve_apk_version.outputs.APK_VERSION}}" >> $GITHUB_ENV
 
       #DEV
       - name: sign dev apk
@@ -51,7 +51,7 @@ jobs:
       - name: upload dev apk custom name
         uses: actions/upload-artifact@v1
         with:
-          name: myhealth_${{env.version_name}}.apk
+          name: myhealth_dev_${{env.apk_version}}.apk
           path: ${{steps.sign_app_dev.outputs.signedReleaseFile}}
 
 
