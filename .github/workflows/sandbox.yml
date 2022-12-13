@@ -48,11 +48,6 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
 
-      - name: upload dev no name
-        uses: actions/upload-artifact@v1
-        with:
-          path: ${{steps.sign_app_dev.outputs.signedReleaseFile}}
-
       - name: upload dev apk custom name
         uses: actions/upload-artifact@v1
         with:
