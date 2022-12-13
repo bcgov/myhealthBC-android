@@ -38,7 +38,7 @@ class ManageHealthPassAdapter(
         holder.binding.apply {
             layoutQrCode.visibility = View.GONE
             icReorder.visibility = View.VISIBLE
-            imgUnlink.isVisible = !healthPass.isAuthenticated
+            imgUnlink.isVisible = healthPass.isRemovable
             imgUnlink.setOnClickListener {
                 deleteClickListener.onDeleteClicked(healthPass.vaccineRecordId)
             }

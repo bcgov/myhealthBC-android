@@ -65,7 +65,9 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
         state = passState,
         isExpanded = false,
         federalTravelPassState = federalTravelPassState,
-        isAuthenticated = patient.authenticationStatus == AuthenticationStatus.AUTHENTICATED
+        isRemovable = with(patient.authenticationStatus) {
+            this != AuthenticationStatus.AUTHENTICATED && this != AuthenticationStatus.DEPENDENT
+        }
     )
 }
 

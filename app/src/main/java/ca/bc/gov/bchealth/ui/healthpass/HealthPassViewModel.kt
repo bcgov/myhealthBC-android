@@ -62,7 +62,7 @@ data class HealthPass(
     val qrCode: Bitmap?,
     val federalTravelPassState: FederalTravelPassState,
     val state: PassState,
-    val isAuthenticated: Boolean = false
+    val isRemovable: Boolean = false,
 )
 
 data class PassState(
