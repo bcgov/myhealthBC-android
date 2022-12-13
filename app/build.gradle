@@ -42,20 +42,28 @@ android {
 
         mock {
             dimension "version"
-            versionNameSuffix "-mock"
+            applicationIdSuffix ".mock"
+            manifestPlaceholders = [app_label:"@string/app_name_mock"]
+            versionNameSuffix "-${versions.versionCode}-mock"
         }
 
         dev {
             dimension "version"
-            versionNameSuffix "-dev"
+            applicationIdSuffix ".dev"
+            manifestPlaceholders = [app_label:"@string/app_name_development"]
+            versionNameSuffix "-${versions.versionCode}-dev"
         }
+
         stage {
             dimension "version"
-            versionNameSuffix "-stage"
+            applicationIdSuffix ".stage"
+            manifestPlaceholders = [app_label:"@string/app_name_stage"]
+            versionNameSuffix "-${versions.versionCode}-stage"
         }
 
         prod {
             dimension "version"
+            manifestPlaceholders = [app_label:"@string/app_name"]
         }
     }
 
