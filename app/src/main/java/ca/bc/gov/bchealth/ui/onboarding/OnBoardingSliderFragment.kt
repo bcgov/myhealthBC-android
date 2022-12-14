@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
-import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentOnboardingSliderBinding
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -72,7 +71,6 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
     }
 
     private fun navigateToHealthPasses() {
-        viewModel.setAppVersionCode(BuildConfig.VERSION_CODE)
         viewModel.setOnBoardingRequired(false).invokeOnCompletion {
             findNavController().popBackStack()
         }

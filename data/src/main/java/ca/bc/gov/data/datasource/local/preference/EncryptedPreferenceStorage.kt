@@ -22,7 +22,6 @@ class EncryptedPreferenceStorage @Inject constructor(
     companion object {
         private const val ANALYTICS_FEATURE = "ANALYTICS_FEATURE"
         private const val QUEUE_IT_TOKEN = "QUEUE_IT_TOKEN"
-        private const val APP_VERSION_CODE = "APP_VERSION_CODE"
         private const val ON_BOARDING_SHOWN = "ON_BOARDING_SHOWN"
         private const val RECENT_PHN_DOB = "RECENT_PHN_DOB"
         private const val COOKIE = "cookie"
@@ -37,7 +36,6 @@ class EncryptedPreferenceStorage @Inject constructor(
         private const val AUTHENTICATION_ENDPOINT = "AUTHENTICATION_ENDPOINT"
         private const val CLIENT_ID = "CLIENT_ID"
         private const val IDENTITY_PROVIDER_ID = "IDENTITY_PROVIDER_ID"
-
         private const val BASE_URL_IS_ONLINE = "BASE_URL_IS_ONLINE"
     }
 
@@ -72,8 +70,6 @@ class EncryptedPreferenceStorage @Inject constructor(
         emit(AnalyticsFeature.getByValue(value))
     }
 
-    val appVersion: Int = encryptedSharedPreferences.getInt(APP_VERSION_CODE, 0)
-
     val recentPhnDobData: Flow<String> = flow {
         val data = encryptedSharedPreferences.getString(RECENT_PHN_DOB, null)
         if (data != null) {
@@ -101,11 +97,6 @@ class EncryptedPreferenceStorage @Inject constructor(
         encryptedSharedPreferences.edit()
             .putInt(ANALYTICS_FEATURE, feature.value)
             .apply()
-
-    suspend fun setAppVersion(versionCode: Int) =
-        encryptedSharedPreferences.edit()
-            .putInt(APP_VERSION_CODE, versionCode)
-            .commit()
 
     fun setRecentPhnDob(data: String) =
         encryptedSharedPreferences.edit().putString(RECENT_PHN_DOB, data).apply()

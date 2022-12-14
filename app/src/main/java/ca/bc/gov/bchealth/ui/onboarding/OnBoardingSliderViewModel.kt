@@ -25,7 +25,6 @@ class OnBoardingSliderViewModel @Inject constructor(
 
     fun setAppVersionCode(appVersionCode: Int) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
-            onBoardingRepository.setAppVersionCode(appVersionCode)
         }
     }
 }
