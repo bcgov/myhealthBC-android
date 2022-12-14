@@ -23,7 +23,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: clean build
-        run: ./gradlew clean build
+        run: ./gradlew clean buildDevDebug -x test
         env:
           USER: ${{ secrets.USER }}
           TOKEN: ${{ secrets.TOKEN }}
@@ -32,10 +32,6 @@ jobs:
         run: |
           echo "::set-output name=APK_VERSION::$(${{github.workspace}}/gradlew -q getApkVersion)"
         id: retrieve_apk_version
-
-      - name: export apk version
-        run: |
-          echo "apk_version=${{steps.retrieve_apk_version.outputs.APK_VERSION}}" >> $GITHUB_ENV
 
       #DEV
       - name: sign dev apk
@@ -51,7 +47,7 @@ jobs:
       - name: upload dev apk custom name
         uses: actions/upload-artifact@v1
         with:
-          name: myhealth_dev_${{env.apk_version}}.apk
+          name: myhealth_dev_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
           path: ${{steps.sign_app_dev.outputs.signedReleaseFile}}
 
 
