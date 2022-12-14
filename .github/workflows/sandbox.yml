@@ -23,7 +23,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: clean build
-        run: ./gradlew clean buildDevDebug -x test
+        run: ./gradlew clean build
         env:
           USER: ${{ secrets.USER }}
           TOKEN: ${{ secrets.TOKEN }}
