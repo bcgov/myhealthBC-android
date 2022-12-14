@@ -8,29 +8,33 @@ import ca.bc.gov.bchealth.databinding.FragmentEducationalScreenBinding
 import ca.bc.gov.bchealth.utils.viewBindings
 
 // fragment initialization parameter
-private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM_POSITION = "param1"
+private const val ARG_PARAM_IS_DEPENDENT_ONLY = "ARG_PARAM_IS_DEPENDENT_ONLY"
 
 class EducationalScreenFragment : Fragment(R.layout.fragment_educational_screen) {
 
-    private var position: Int? = null
-
     private val binding by viewBindings(FragmentEducationalScreenBinding::bind)
+    private var position: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            position = it.getInt(ARG_PARAM1)
+            position = it.getInt(ARG_PARAM_POSITION)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        when (position) {
-            0 -> showHealthRecordsIntro()
-            1 -> showDependentRecordsIntro()
-            2 -> showHealthPassesIntro()
-            3 -> showResourcesIntro()
+        if (arguments?.getBoolean(ARG_PARAM_IS_DEPENDENT_ONLY) == true) {
+            showDependentRecordsIntro()
+        } else {
+            when (position) {
+                0 -> showHealthRecordsIntro()
+                1 -> showDependentRecordsIntro()
+                2 -> showHealthPassesIntro()
+                3 -> showResourcesIntro()
+            }
         }
     }
 
@@ -79,15 +83,12 @@ class EducationalScreenFragment : Fragment(R.layout.fragment_educational_screen)
     }
 
     companion object {
-        /**
-         *
-         * @param param1 position from view pager's adapter.
-         */
         @JvmStatic
-        fun newInstance(param1: Int) =
+        fun newInstance(position: Int, isDependentOnly: Boolean) =
             EducationalScreenFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(ARG_PARAM1, param1)
+                    putInt(ARG_PARAM_POSITION, position)
+                    putBoolean(ARG_PARAM_IS_DEPENDENT_ONLY, isDependentOnly)
                 }
             }
     }

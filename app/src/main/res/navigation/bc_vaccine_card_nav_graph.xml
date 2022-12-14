@@ -31,7 +31,11 @@
     <fragment
         android:id="@+id/onBoardingSliderFragment"
         android:name="ca.bc.gov.bchealth.ui.onboarding.OnBoardingSliderFragment"
-        android:label="OnBoardingSliderFragment" />
+        android:label="OnBoardingSliderFragment" >
+        <argument
+            android:name="dependentOnly"
+            app:argType="boolean" />
+    </fragment>
 
     <fragment
         android:id="@+id/fetchVaccineRecordFragment"

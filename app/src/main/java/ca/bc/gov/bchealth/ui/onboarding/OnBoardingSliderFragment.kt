@@ -6,6 +6,7 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentOnboardingSliderBinding
@@ -18,6 +19,7 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
 
     private val binding by viewBindings(FragmentOnboardingSliderBinding::bind)
     private val viewModel: OnBoardingSliderViewModel by viewModels()
+    private val args: OnBoardingSliderFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +31,7 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val educationalScreenAdapter = EducationalScreenAdapter(this)
+        val educationalScreenAdapter = EducationalScreenAdapter(this, args.dependentOnly)
 
         binding.viewpagerOnBoardingSlides.adapter = educationalScreenAdapter
 

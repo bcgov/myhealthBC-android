@@ -22,7 +22,8 @@ class EncryptedPreferenceStorage @Inject constructor(
     companion object {
         private const val ANALYTICS_FEATURE = "ANALYTICS_FEATURE"
         private const val QUEUE_IT_TOKEN = "QUEUE_IT_TOKEN"
-        private const val ON_BOARDING_SHOWN = "ON_BOARDING_SHOWN"
+        private const val ON_BOARDING_REQUIRED = "ON_BOARDING_SHOWN"
+        private const val DEPENDENT_ON_BOARDING_REQUIRED = "DEPENDENT_ON_BOARDING_REQUIRED"
         private const val RECENT_PHN_DOB = "RECENT_PHN_DOB"
         private const val COOKIE = "cookie"
         private const val PASS_PHRASE = "RECORD"
@@ -78,10 +79,18 @@ class EncryptedPreferenceStorage @Inject constructor(
     }
 
     var onBoardingRequired: Boolean
-        get() = encryptedSharedPreferences.getBoolean(ON_BOARDING_SHOWN, true)
+        get() = encryptedSharedPreferences.getBoolean(ON_BOARDING_REQUIRED, true)
         set(value) {
             encryptedSharedPreferences.edit()
-                .putBoolean(ON_BOARDING_SHOWN, value)
+                .putBoolean(ON_BOARDING_REQUIRED, value)
+                .apply()
+        }
+
+    var dependentOnBoardingRequired: Boolean
+        get() = encryptedSharedPreferences.getBoolean(DEPENDENT_ON_BOARDING_REQUIRED, true)
+        set(value) {
+            encryptedSharedPreferences.edit()
+                .putBoolean(DEPENDENT_ON_BOARDING_REQUIRED, value)
                 .apply()
         }
 
