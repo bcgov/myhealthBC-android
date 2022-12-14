@@ -35,28 +35,39 @@
                 app:layout_constraintVertical_bias="0.650" />
 
             <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_top_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4_x"
+                android:visibility="invisible"
+                app:layout_constraintStart_toStartOf="@+id/img_on_boarding_slider_icon_fixed"
+                app:layout_constraintTop_toTopOf="@+id/img_on_boarding_slider_icon_fixed"
+                tools:src="@drawable/ic_onboarding_dependent"
+                tools:visibility="visible" />
+
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_right_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
                 android:layout_marginTop="@dimen/space_6_x"
                 android:visibility="invisible"
-                tools:visibility="visible"
-                tools:src="@drawable/ic_onboarding_health_passes"
                 app:layout_constraintStart_toStartOf="@+id/img_on_boarding_slider_icon_fixed"
-                app:layout_constraintTop_toTopOf="@+id/img_on_boarding_slider_icon_fixed" />
+                app:layout_constraintTop_toTopOf="@+id/img_on_boarding_slider_icon_fixed"
+                tools:src="@drawable/ic_onboarding_health_passes"
+                tools:visibility="visible" />
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_top_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/space_4_x"
                 android:layout_marginEnd="@dimen/space_2_x"
+                android:layout_marginBottom="@dimen/space_4_x"
                 android:visibility="invisible"
-                tools:visibility="visible"
-                tools:src="@drawable/ic_onboarding_health_records"
                 app:layout_constraintBottom_toBottomOf="@+id/img_on_boarding_slider_icon_fixed"
-                app:layout_constraintEnd_toEndOf="@+id/img_on_boarding_slider_icon_fixed" />
+                app:layout_constraintEnd_toEndOf="@+id/img_on_boarding_slider_icon_fixed"
+                tools:src="@drawable/ic_onboarding_health_records"
+                tools:visibility="visible" />
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_left_icon"
@@ -65,10 +76,10 @@
                 android:layout_marginTop="@dimen/space_6_x"
                 android:layout_marginEnd="@dimen/space_3_x"
                 android:visibility="invisible"
-                tools:visibility="visible"
-                tools:src="@drawable/ic_onboarding_health_recources"
                 app:layout_constraintEnd_toEndOf="@+id/img_on_boarding_slider_icon_fixed"
-                app:layout_constraintTop_toTopOf="@+id/img_on_boarding_slider_icon_fixed" />
+                app:layout_constraintTop_toTopOf="@+id/img_on_boarding_slider_icon_fixed"
+                tools:src="@drawable/ic_onboarding_health_recources"
+                tools:visibility="visible" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_slider_title"
@@ -77,12 +88,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_2_x"
                 android:layout_marginEnd="@dimen/space_2_x"
-                tools:text="@string/onboarding_health_passes_title"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.650" />
+                app:layout_constraintVertical_bias="0.650"
+                tools:text="@string/onboarding_health_passes_title" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_slider_description"
@@ -92,12 +103,12 @@
                 android:layout_marginStart="@dimen/space_4_x"
                 android:layout_marginTop="@dimen/space_2_x"
                 android:layout_marginEnd="@dimen/space_4_x"
-                tools:text="@string/onboarding_health_passes_desc"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_slider_title" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_slider_title"
+                tools:text="@string/onboarding_health_passes_desc" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -28,8 +28,9 @@ class EducationalScreenFragment : Fragment(R.layout.fragment_educational_screen)
 
         when (position) {
             0 -> showHealthRecordsIntro()
-            1 -> showHealthPassesIntro()
-            2 -> showResourcesIntro()
+            1 -> showDependentRecordsIntro()
+            2 -> showHealthPassesIntro()
+            3 -> showResourcesIntro()
         }
     }
 
@@ -39,6 +40,17 @@ class EducationalScreenFragment : Fragment(R.layout.fragment_educational_screen)
             tvSliderDescription.text = getString(R.string.onboarding_health_resources_desc)
             ivLeftIcon.apply {
                 setImageResource(R.drawable.ic_onboarding_health_recources)
+                visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun showDependentRecordsIntro() {
+        binding.apply {
+            tvSliderTitle.text = getString(R.string.onboarding_dependents_title)
+            tvSliderDescription.text = getString(R.string.onboarding_dependents_desc)
+            ivTopRight.apply {
+                setImageResource(R.drawable.ic_onboarding_dependent)
                 visibility = View.VISIBLE
             }
         }

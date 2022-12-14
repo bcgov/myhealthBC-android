@@ -190,6 +190,9 @@
     <string name="onboarding_health_resources_desc">Connect with HealthLink BC for health advice and get the latest information about COVID-19.</string>
     <string name="onboarding_news_feed_title">News feed</string>
     <string name="onboarding_news_feed_desc">Get the latest COVID-19 news from  the Government of B.C.</string>
+    <string name="onboarding_dependents_title">Dependent record</string>
+    <string name="onboarding_dependents_desc">Access to your children’s (11 years old and younger) immunization and COVID-19 test records.</string>
+
     <string name="new_string">New</string>
     <string name="ok_camel_case">Ok</string>
     <string name="skip">Skip intro</string>
