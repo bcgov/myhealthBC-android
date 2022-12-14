@@ -45,7 +45,7 @@ jobs:
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
 
       - name: upload dev apk custom name
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: myhealth_dev_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
           path: ${{steps.sign_app_dev.outputs.signedReleaseFile}}
