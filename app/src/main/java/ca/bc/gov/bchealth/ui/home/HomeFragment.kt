@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -168,8 +169,13 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
     private suspend fun onBoardingFlow() {
         viewModel.uiState.collect { uiState ->
-            if (uiState.isOnBoardingRequired) {
-                findNavController().navigate(R.id.onBoardingSliderFragment)
+            if (uiState.isOnBoardingRequired || uiState.isDependentOnBoardingRequired) {
+                val isDependentOnly =
+                    uiState.isOnBoardingRequired.not() && uiState.isDependentOnBoardingRequired
+                navigate(
+                    R.id.onBoardingSliderFragment,
+                    bundleOf("dependentOnly" to isDependentOnly)
+                )
                 viewModel.onBoardingShown()
             }
 

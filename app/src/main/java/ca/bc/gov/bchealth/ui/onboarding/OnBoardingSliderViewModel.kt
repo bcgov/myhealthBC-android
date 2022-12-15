@@ -17,15 +17,12 @@ class OnBoardingSliderViewModel @Inject constructor(
     private val onBoardingRepository: OnBoardingRepository
 ) : ViewModel() {
 
-    fun setOnBoardingRequired(shown: Boolean) = viewModelScope.launch {
-        withContext(Dispatchers.IO) {
-            onBoardingRepository.onBoardingRequired = shown
-        }
-    }
+    var isDependentOnly: Boolean = false
 
-    fun setAppVersionCode(appVersionCode: Int) = viewModelScope.launch {
+    fun setOnBoardingRequired(isRequired: Boolean) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
-            onBoardingRepository.setAppVersionCode(appVersionCode)
+            onBoardingRepository.onBoardingRequired = isRequired
+            onBoardingRepository.dependentOnBoardingRequired = false
         }
     }
 }

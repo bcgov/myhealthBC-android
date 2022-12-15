@@ -43,6 +43,11 @@ jobs:
           USER: ${{ secrets.USER }}
           TOKEN: ${{ secrets.TOKEN }}
 
+      - name: retrieve apk version
+        run: |
+          echo "::set-output name=APK_VERSION::$(${{github.workspace}}/gradlew -q getApkVersion)"
+        id: retrieve_apk_version
+
       #MOCK
       - name: sign mock apk
         id: sign_app_mock
@@ -55,9 +60,9 @@ jobs:
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
 
       - name: upload mock apk
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
-          name: myhealth_mock.apk
+          name: myhealth_mock_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
           path: ${{steps.sign_app_mock.outputs.signedReleaseFile}}
 
       #DEV
@@ -72,9 +77,9 @@ jobs:
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
 
       - name: upload dev apk
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
-          name: myhealth_dev.apk
+          name: myhealth_dev_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
           path: ${{steps.sign_app_dev.outputs.signedReleaseFile}}
 
       #STAGE
@@ -89,9 +94,9 @@ jobs:
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
 
       - name: upload stage apk
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
-          name: myhealth_stage.apk
+          name: myhealth_stage_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
           path: ${{steps.sign_app_stage.outputs.signedReleaseFile}}
 
       #PROD
@@ -106,9 +111,9 @@ jobs:
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
 
       - name: upload prod apk
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
-          name: myhealth_prod.apk
+          name: myhealth_prod_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
           path: ${{steps.sign_app_prod.outputs.signedReleaseFile}}
 
       - name: Saucelabs delete and upload
