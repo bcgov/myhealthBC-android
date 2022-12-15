@@ -43,27 +43,27 @@ android {
         mock {
             dimension "version"
             applicationIdSuffix ".mock"
-            manifestPlaceholders = [app_label:"@string/app_name_mock"]
+            manifestPlaceholders = [app_label: "@string/app_name_mock"]
             versionNameSuffix "-${versions.versionCode}-mock"
         }
 
         dev {
             dimension "version"
             applicationIdSuffix ".dev"
-            manifestPlaceholders = [app_label:"@string/app_name_development"]
+            manifestPlaceholders = [app_label: "@string/app_name_development"]
             versionNameSuffix "-${versions.versionCode}-dev"
         }
 
         stage {
             dimension "version"
             applicationIdSuffix ".stage"
-            manifestPlaceholders = [app_label:"@string/app_name_stage"]
+            manifestPlaceholders = [app_label: "@string/app_name_stage"]
             versionNameSuffix "-${versions.versionCode}-stage"
         }
 
         prod {
             dimension "version"
-            manifestPlaceholders = [app_label:"@string/app_name"]
+            manifestPlaceholders = [app_label: "@string/app_name"]
         }
     }
 
@@ -91,6 +91,10 @@ android {
 
     hilt {
         enableAggregatingTask = true
+    }
+
+    task getApkVersion {
+        println defaultConfig.versionName + "-" + defaultConfig.versionCode
     }
 }
 
