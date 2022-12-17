@@ -8,5 +8,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/space_1_x"
     android:layout_marginBottom="@dimen/space_1_x"
+    android:layout_marginStart="@dimen/space_4_x"
+    android:layout_marginEnd="@dimen/space_4_x"
     android:filterTouchesWhenObscured="true"
     android:text="@string/view_pdf" />
