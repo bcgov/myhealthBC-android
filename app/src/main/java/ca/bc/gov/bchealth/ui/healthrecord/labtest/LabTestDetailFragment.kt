@@ -19,7 +19,7 @@ import ca.bc.gov.bchealth.databinding.FragmentLabTestDetailBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
-import ca.bc.gov.bchealth.ui.healthrecord.medication.CommentsAdapter
+import ca.bc.gov.bchealth.ui.healthrecord.comment.RecordCommentsAdapter
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.PdfHelper
 import ca.bc.gov.bchealth.utils.launchOnStart
@@ -42,7 +42,7 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
     private val binding by viewBindings(FragmentLabTestDetailBinding::bind)
     private val viewModel: LabTestDetailViewModel by viewModels()
     private val commentsViewModel: CommentsViewModel by viewModels()
-    private lateinit var commentsAdapter: CommentsAdapter
+    private lateinit var recordCommentsAdapter: RecordCommentsAdapter
     private lateinit var labTestDetailAdapter: LabTestDetailAdapter
     private lateinit var concatAdapter: ConcatAdapter
     private val args: LabTestDetailFragmentArgs by navArgs()
@@ -75,7 +75,7 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
                 binding.progressBar.isVisible = state.onLoading
 
                 if (state.latestComment.isNotEmpty()) {
-                    commentsAdapter.submitList(state.latestComment)
+                    recordCommentsAdapter.submitList(state.latestComment)
                     // clear comment
                     if (BuildConfig.FLAG_ADD_COMMENTS) {
                         binding.comment.clearComment()
@@ -116,13 +116,13 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
             viewPdfClickListener = { viewModel.getLabTestPdf() }
         )
         initCommentsAdapter()
-        concatAdapter = ConcatAdapter(labTestDetailAdapter, commentsAdapter)
+        concatAdapter = ConcatAdapter(labTestDetailAdapter, recordCommentsAdapter)
 
         binding.rvLabTestDetailList.adapter = concatAdapter
     }
 
     private fun initCommentsAdapter() {
-        commentsAdapter = CommentsAdapter { parentEntryId ->
+        recordCommentsAdapter = RecordCommentsAdapter { parentEntryId ->
             val action = LabTestDetailFragmentDirections
                 .actionLabTestDetailFragmentToCommentsFragment(
                     parentEntryId

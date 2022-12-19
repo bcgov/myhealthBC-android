@@ -15,6 +15,7 @@ import ca.bc.gov.bchealth.databinding.FragmentMedicationDetailsBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
+import ca.bc.gov.bchealth.ui.healthrecord.comment.RecordCommentsAdapter
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.observeWork
@@ -32,7 +33,7 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
     private val args: MedicationDetailsFragmentArgs by navArgs()
     private val viewModel: MedicationDetailsViewModel by viewModels()
     private lateinit var medicationDetailAdapter: MedicationDetailAdapter
-    private lateinit var commentsAdapter: CommentsAdapter
+    private lateinit var recordCommentsAdapter: RecordCommentsAdapter
     private lateinit var concatAdapter: ConcatAdapter
     private val commentsViewModel: CommentsViewModel by viewModels()
 
@@ -65,7 +66,7 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
     private fun setUpRecyclerView() {
         medicationDetailAdapter = MedicationDetailAdapter()
         initCommentsAdapter()
-        concatAdapter = ConcatAdapter(medicationDetailAdapter, commentsAdapter)
+        concatAdapter = ConcatAdapter(medicationDetailAdapter, recordCommentsAdapter)
 
         val recyclerView = binding.rvMedicationDetailList
         recyclerView.adapter = concatAdapter
@@ -73,7 +74,7 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
     }
 
     private fun initCommentsAdapter() {
-        commentsAdapter = CommentsAdapter { parentEntryId ->
+        recordCommentsAdapter = RecordCommentsAdapter { parentEntryId ->
             val action = MedicationDetailsFragmentDirections
                 .actionMedicationDetailsFragmentToCommentsFragment(
                     parentEntryId
@@ -109,7 +110,7 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
             binding.progressBar.isVisible = state.onLoading
 
             if (state.latestComment.isNullOrEmpty().not()) {
-                commentsAdapter.submitList(state.latestComment)
+                recordCommentsAdapter.submitList(state.latestComment)
                 // clear comment
                 if (FLAG_ADD_COMMENTS) {
                     binding.comment.clearComment()
