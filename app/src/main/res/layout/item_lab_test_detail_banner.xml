@@ -33,7 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/shapeableImageView"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/results_are_pending" />
+        tools:text="Results are Pending" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_info"

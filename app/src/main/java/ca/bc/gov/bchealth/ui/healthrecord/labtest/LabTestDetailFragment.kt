@@ -13,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentLabTestDetailBinding
@@ -119,10 +118,7 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
         initCommentsAdapter()
         concatAdapter = ConcatAdapter(labTestDetailAdapter, commentsAdapter)
 
-        binding.rvLabTestDetailList.apply {
-            adapter = concatAdapter
-            addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
-        }
+        binding.rvLabTestDetailList.adapter = concatAdapter
     }
 
     private fun initCommentsAdapter() {

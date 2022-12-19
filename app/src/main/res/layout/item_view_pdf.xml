@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/btn_view_pdf"
-    style="@style/HealthGateway.Widget.MaterialComponents.Button.OutlinedButton"
-    android:textSize="17sp"
-    android:letterSpacing="-0.01"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/space_1_x"
-    android:layout_marginBottom="@dimen/space_1_x"
     android:layout_marginStart="@dimen/space_4_x"
     android:layout_marginEnd="@dimen/space_4_x"
-    android:filterTouchesWhenObscured="true"
-    android:text="@string/view_pdf" />
+    android:orientation="vertical">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_view_pdf"
+        style="@style/HealthGateway.Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_1_x"
+        android:layout_marginBottom="@dimen/space_2_x"
+        android:filterTouchesWhenObscured="true"
+        android:letterSpacing="-0.01"
+        android:text="@string/view_pdf"
+        android:textSize="17sp" />
+
+    <include layout="@layout/include_divider" />
+
+</LinearLayout>

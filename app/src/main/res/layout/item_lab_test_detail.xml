@@ -14,20 +14,20 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_2_x"
+        app:layout_constraintBottom_toTopOf="@+id/tv_summary"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/tv_summary" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_summary"
         style="?textAppearanceCaption"
-        android:textSize="15sp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        tools:text="@string/date"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_title1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_header"
-        app:layout_constraintBottom_toTopOf="@+id/tv_title1" />
+        tools:text="@string/date" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_title1"
@@ -35,23 +35,22 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_2_x"
-        tools:text="@string/date"
+        app:layout_constraintBottom_toTopOf="@+id/tv_desc1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_summary"
-        app:layout_constraintBottom_toTopOf="@+id/tv_desc1" />
+        tools:text="@string/date" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_desc1"
         style="?textAppearanceBody1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/space_1_x"
+        app:layout_constraintBottom_toTopOf="@+id/tv_title2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title1"
-        tools:text="August 12, 2021"
-        app:layout_constraintBottom_toTopOf="@+id/tv_title2"
-        android:layout_marginBottom="@dimen/space_1_x" />
-
+        tools:text="August 12, 2021" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_title2"
@@ -59,22 +58,22 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_1_x"
-        tools:text="@string/date"
+        app:layout_constraintBottom_toTopOf="@+id/tv_desc2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_desc1"
-        app:layout_constraintBottom_toTopOf="@+id/tv_desc2" />
+        tools:text="@string/date" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_desc2"
         style="?textAppearanceBody1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/space_1_x"
+        app:layout_constraintBottom_toTopOf="@+id/tv_title3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title2"
-        tools:text="August 12, 2021"
-        app:layout_constraintBottom_toTopOf="@+id/tv_title3"
-        android:layout_marginBottom="@dimen/space_1_x" />
+        tools:text="August 12, 2021" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_title3"
@@ -82,21 +81,28 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_1_x"
-        tools:text="@string/date"
+        app:layout_constraintBottom_toTopOf="@+id/tv_desc3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_desc2"
-        app:layout_constraintBottom_toTopOf="@+id/tv_desc3" />
+        tools:text="@string/date" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_desc3"
         style="?textAppearanceBody1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/space_2_x"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title3"
-        tools:text="August 12, 2021"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="@dimen/space_2_x" />
+        tools:text="August 12, 2021" />
+
+    <View
+        android:layout_marginTop="@dimen/space_2_x"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/shadow_grey"
+        app:layout_constraintTop_toBottomOf="@+id/tv_desc3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
