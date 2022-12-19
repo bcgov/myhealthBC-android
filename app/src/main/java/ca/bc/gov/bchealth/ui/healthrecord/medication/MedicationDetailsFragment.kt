@@ -4,29 +4,26 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentMedicationDetailsBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.widget.AddCommentCallback
 import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
 import ca.bc.gov.repository.SYNC_COMMENTS
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_details) {
@@ -45,7 +42,8 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
         if (medicationDetailAdapter.currentList.isEmpty()) {
             viewModel.getMedicationDetails(args.medicationId)
         }
-        observeUiState()
+        launchOnStart { observeUiState() }
+        launchOnStart { observeComments() }
         observeCommentsSyncCompletion()
     }
 
@@ -84,26 +82,20 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
         }
     }
 
-    private fun observeUiState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
+    private suspend fun observeUiState() {
+        viewModel.uiState.collect { state ->
 
-                    binding.progressBar.isVisible = state.onLoading
+            binding.progressBar.isVisible = state.onLoading
 
-                    if (state.medicationDetails?.isNotEmpty() == true) {
-                        medicationDetailAdapter.submitList(state.medicationDetails)
-                        binding.layoutToolbar.topAppBar.title = state.toolbarTitle
-                    }
-
-                    handleError(state.onError)
-
-                    getComments()
-                }
+            if (state.medicationDetails?.isNotEmpty() == true) {
+                medicationDetailAdapter.submitList(state.medicationDetails)
+                binding.layoutToolbar.topAppBar.title = state.toolbarTitle
             }
-        }
 
-        observeComments()
+            handleError(state.onError)
+
+            getComments()
+        }
     }
 
     private fun getComments() {
@@ -112,23 +104,19 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
         }
     }
 
-    private fun observeComments() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                commentsViewModel.uiState.collect { state ->
-                    binding.progressBar.isVisible = state.onLoading
+    private suspend fun observeComments() {
+        commentsViewModel.uiState.collect { state ->
+            binding.progressBar.isVisible = state.onLoading
 
-                    if (state.latestComment.isNullOrEmpty().not()) {
-                        commentsAdapter.submitList(state.latestComment)
-                        // clear comment
-                        if (FLAG_ADD_COMMENTS) {
-                            binding.comment.clearComment()
-                        }
-                    }
-
-                    handleError(state.onError)
+            if (state.latestComment.isNullOrEmpty().not()) {
+                commentsAdapter.submitList(state.latestComment)
+                // clear comment
+                if (FLAG_ADD_COMMENTS) {
+                    binding.comment.clearComment()
                 }
             }
+
+            handleError(state.onError)
         }
     }
 
@@ -161,16 +149,12 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
     }
 
     private fun observeCommentsSyncCompletion() {
-        val workRequest = WorkManager.getInstance(requireContext())
-            .getWorkInfosForUniqueWorkLiveData(SYNC_COMMENTS)
-        if (!workRequest.hasObservers()) {
-            workRequest.observe(viewLifecycleOwner) {
-                if (it.firstOrNull()?.state == WorkInfo.State.SUCCEEDED) {
-                    viewModel.uiState.value.parentEntryId?.let { parentEntryId ->
-                        commentsViewModel.getComments(
-                            parentEntryId
-                        )
-                    }
+        observeWork(SYNC_COMMENTS) {
+            if (it == WorkInfo.State.SUCCEEDED) {
+                viewModel.uiState.value.parentEntryId?.let { parentEntryId ->
+                    commentsViewModel.getComments(
+                        parentEntryId
+                    )
                 }
             }
         }
