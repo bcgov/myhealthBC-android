@@ -36,7 +36,7 @@ class CommentsViewModel @Inject constructor(
 
         try {
             val commentsDtoList = commentRepository.getLocalComments(parentEntryId) as MutableList
-            commentsDtoList.sortBy { it.createdDateTime }
+            commentsDtoList.sortByDescending { it.createdDateTime }
 
             // latest comment
             val commentsTemp = getLatestComment(commentsDtoList, parentEntryId)
@@ -77,7 +77,7 @@ class CommentsViewModel @Inject constructor(
                     comment,
                     entryTypeCode
                 ) as MutableList
-                commentsDtoList.sortBy { it.createdDateTime }
+                commentsDtoList.sortByDescending { it.createdDateTime }
 
                 // latest comment
                 val commentsTemp = getLatestComment(commentsDtoList, parentEntryId)
@@ -122,7 +122,7 @@ class CommentsViewModel @Inject constructor(
             )
 
             if (FLAG_ADD_COMMENTS) {
-                val latestComment = commentsDtoList.lastOrNull()
+                val latestComment = commentsDtoList.firstOrNull()
                 commentsList.add(
                     Comment(
                         latestComment?.parentEntryId,
@@ -174,9 +174,5 @@ data class Comment(
 )
 
 enum class CommentEntryTypeCode(val value: String) {
-    MEDICATION("Med"),
-    LAB_RESULTS("ALO"),
-    COVID_TEST("Lab"),
-    HEALTH_VISITS("Enc"),
-    SPECIAL_AUTHORITY("SAR"),
+    MEDICATION("Med")
 }

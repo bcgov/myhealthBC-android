@@ -101,9 +101,6 @@
         <argument
             android:name="lab_order_id"
             app:argType="long" />
-        <action
-            android:id="@+id/action_labTestDetailFragment_to_commentsFragment"
-            app:destination="@id/commentsFragment" />
     </fragment>
     <fragment
         android:id="@+id/protectiveWordFragment"

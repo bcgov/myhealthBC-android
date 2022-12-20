@@ -28,16 +28,16 @@ android {
 
         mock {
             dimension "version"
-            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
+            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
         }
         dev {
             dimension "version"
-            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
+            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
         }
 
         stage {
             dimension "version"
-            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
+            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
         }
 
         prod {

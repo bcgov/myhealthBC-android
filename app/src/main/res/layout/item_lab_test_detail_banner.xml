@@ -6,8 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/space_2_x"
     android:layout_marginBottom="@dimen/space_2_x"
-    android:layout_marginStart="@dimen/space_4_x"
-    android:layout_marginEnd="@dimen/space_4_x"
     android:background="@color/covid_test_blue">
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -33,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/shapeableImageView"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Results are Pending" />
+        tools:text="@string/results_are_pending" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_info"

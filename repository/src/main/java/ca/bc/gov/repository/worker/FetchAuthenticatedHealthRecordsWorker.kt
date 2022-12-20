@@ -6,7 +6,6 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
-import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.MustBeQueuedException
@@ -209,9 +208,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             try {
-                if (FLAG_ADD_COMMENTS) {
-                    commentsResponse = fetchComments(authParameters)
-                }
+                commentsResponse = fetchComments(authParameters)
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
                     return failureResult
