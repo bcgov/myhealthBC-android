@@ -5,9 +5,6 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,12 +13,13 @@ import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentCommentsBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.scrollToBottom
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.widget.AddCommentCallback
 import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
 import ca.bc.gov.repository.SYNC_COMMENTS
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CommentsFragment : Fragment(R.layout.fragment_comments) {
@@ -82,23 +80,22 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
     }
 
     private fun observeComments() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
+        launchOnStart {
+            viewModel.uiState.collect { state ->
 
-                    binding.progressBar.isVisible = state.onLoading
+                binding.progressBar.isVisible = state.onLoading
 
-                    if (state.commentsList.isNotEmpty()) {
-                        commentsAdapter.submitList(state.commentsList)
-                        viewModel.resetUiState()
-                        // clear comment
-                        binding.comment.clearComment()
-                    }
+                if (state.commentsList.isNotEmpty()) {
+                    commentsAdapter.submitList(state.commentsList)
+                    viewModel.resetUiState()
+                    // clear comment
+                    binding.comment.clearComment()
+                    binding.rvCommentsList.scrollToBottom()
+                }
 
-                    if (state.onError) {
-                        showError()
-                        viewModel.resetUiState()
-                    }
+                if (state.onError) {
+                    showError()
+                    viewModel.resetUiState()
                 }
             }
         }
