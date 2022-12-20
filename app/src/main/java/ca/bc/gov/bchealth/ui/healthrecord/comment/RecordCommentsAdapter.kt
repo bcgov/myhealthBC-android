@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.healthrecord.medication
+package ca.bc.gov.bchealth.ui.healthrecord.comment
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,13 +9,14 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemCommentBinding
 import ca.bc.gov.bchealth.databinding.ItemCommentsCountBinding
 import ca.bc.gov.bchealth.ui.comment.Comment
+import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel
 import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
 import ca.bc.gov.common.utils.toDateTimeString
 
 /**
  * @author Pinakin Kansara
  */
-class CommentsAdapter(
+class RecordCommentsAdapter(
     private val itemClickListener: ItemClickListener
 ) :
     ListAdapter<Comment, RecyclerView.ViewHolder>(CommentsDiffCallBacks()) {
