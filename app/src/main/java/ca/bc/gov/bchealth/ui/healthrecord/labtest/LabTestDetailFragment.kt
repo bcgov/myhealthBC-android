@@ -51,7 +51,7 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
         viewModel.getLabTestDetails(args.labOrderId)
         launchOnStart { observeUiState() }
         observePdfData()
-        launchOnStart { observeComments() }
+        observeComments()
         observeCommentsSyncCompletion()
     }
 
@@ -62,7 +62,7 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
 
     override fun getCommentView(): AddCommentLayout = binding.comment
 
-    override fun getCommentEntryTypeCode() = CommentEntryTypeCode.MEDICATION
+    override fun getCommentEntryTypeCode() = CommentEntryTypeCode.LAB_RESULTS
 
     override fun getParentEntryId(): String? = viewModel.uiState.value.reportId
 
@@ -108,6 +108,7 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
             handlePdfDownload(state)
 
             handleNoInternetConnection(state)
+            getComments(state.reportId)
         }
     }
 

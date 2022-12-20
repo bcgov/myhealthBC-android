@@ -174,5 +174,9 @@ data class Comment(
 )
 
 enum class CommentEntryTypeCode(val value: String) {
-    MEDICATION("Med")
+    MEDICATION("Med"),
+    LAB_RESULTS("ALO"),
+    COVID_TEST("Lab"),
+    HEALTH_VISITS("Enc"),
+    SPECIAL_AUTHORITY("SAR"),
 }

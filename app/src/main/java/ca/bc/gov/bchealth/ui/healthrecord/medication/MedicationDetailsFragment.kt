@@ -9,33 +9,23 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentMedicationDetailsBinding
-import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
-import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
-import ca.bc.gov.bchealth.ui.healthrecord.comment.RecordCommentsAdapter
+import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordDetailFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.launchOnStart
-import ca.bc.gov.bchealth.utils.observeWork
-import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
-import ca.bc.gov.bchealth.widget.AddCommentCallback
-import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
-import ca.bc.gov.repository.SYNC_COMMENTS
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_details) {
+class MedicationDetailsFragment : BaseRecordDetailFragment(R.layout.fragment_medication_details) {
 
     private val binding by viewBindings(FragmentMedicationDetailsBinding::bind)
     private val args: MedicationDetailsFragmentArgs by navArgs()
     private val viewModel: MedicationDetailsViewModel by viewModels()
     private lateinit var medicationDetailAdapter: MedicationDetailAdapter
-    private lateinit var recordCommentsAdapter: RecordCommentsAdapter
     private lateinit var concatAdapter: ConcatAdapter
-    private val commentsViewModel: CommentsViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,15 +34,22 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
             viewModel.getMedicationDetails(args.medicationId)
         }
         launchOnStart { observeUiState() }
-        launchOnStart { observeComments() }
+        observeComments()
         observeCommentsSyncCompletion()
     }
 
     private fun initUI() {
         setUpRecyclerView()
-        binding.comment.toggleVisibility(FLAG_ADD_COMMENTS)
-        addCommentListener()
+        initCommentView()
     }
+
+    override fun getCommentEntryTypeCode() = CommentEntryTypeCode.MEDICATION
+
+    override fun getParentEntryId(): String? = viewModel.uiState.value.parentEntryId
+
+    override fun getCommentView() = binding.comment
+
+    override fun getProgressBar() = binding.progressBar
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
         with(binding.layoutToolbar.topAppBar) {
@@ -65,22 +62,11 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
 
     private fun setUpRecyclerView() {
         medicationDetailAdapter = MedicationDetailAdapter()
-        initCommentsAdapter()
-        concatAdapter = ConcatAdapter(medicationDetailAdapter, recordCommentsAdapter)
+        concatAdapter = ConcatAdapter(medicationDetailAdapter, getRecordCommentsAdapter())
 
         val recyclerView = binding.rvMedicationDetailList
         recyclerView.adapter = concatAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-    }
-
-    private fun initCommentsAdapter() {
-        recordCommentsAdapter = RecordCommentsAdapter { parentEntryId ->
-            val action = MedicationDetailsFragmentDirections
-                .actionMedicationDetailsFragmentToCommentsFragment(
-                    parentEntryId
-                )
-            findNavController().navigate(action)
-        }
     }
 
     private suspend fun observeUiState() {
@@ -94,34 +80,11 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
             }
 
             handleError(state.onError)
-
-            getComments()
+            getComments(state.parentEntryId)
         }
     }
 
-    private fun getComments() {
-        viewModel.uiState.value.parentEntryId?.let {
-            commentsViewModel.getComments(it)
-        }
-    }
-
-    private suspend fun observeComments() {
-        commentsViewModel.uiState.collect { state ->
-            binding.progressBar.isVisible = state.onLoading
-
-            if (state.latestComment.isNullOrEmpty().not()) {
-                recordCommentsAdapter.submitList(state.latestComment)
-                // clear comment
-                if (FLAG_ADD_COMMENTS) {
-                    binding.comment.clearComment()
-                }
-            }
-
-            handleError(state.onError)
-        }
-    }
-
-    private fun handleError(isFailed: Boolean) {
+    override fun handleError(isFailed: Boolean) {
         if (isFailed) {
             AlertDialogHelper.showAlertDialog(
                 context = requireContext(),
@@ -132,32 +95,6 @@ class MedicationDetailsFragment : BaseFragment(R.layout.fragment_medication_deta
                     findNavController().popBackStack()
                 }
             )
-        }
-    }
-
-    private fun addCommentListener() {
-        binding.comment.addCommentListener(object : AddCommentCallback {
-            override fun onSubmitComment(commentText: String) {
-                viewModel.uiState.value.parentEntryId?.let {
-                    commentsViewModel.addComment(
-                        it,
-                        commentText,
-                        CommentEntryTypeCode.MEDICATION.value,
-                    )
-                }
-            }
-        })
-    }
-
-    private fun observeCommentsSyncCompletion() {
-        observeWork(SYNC_COMMENTS) {
-            if (it == WorkInfo.State.SUCCEEDED) {
-                viewModel.uiState.value.parentEntryId?.let { parentEntryId ->
-                    commentsViewModel.getComments(
-                        parentEntryId
-                    )
-                }
-            }
         }
     }
 }
