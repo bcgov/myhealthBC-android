@@ -62,6 +62,8 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
 
     override fun getCommentView(): AddCommentLayout = binding.comment
 
+    override fun getRecyclerView() = binding.rvLabTestDetailList
+
     override fun getCommentEntryTypeCode() = CommentEntryTypeCode.LAB_RESULTS
 
     override fun getParentEntryId(): String? = viewModel.uiState.value.reportId

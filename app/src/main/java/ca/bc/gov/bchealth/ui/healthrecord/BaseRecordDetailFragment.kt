@@ -6,6 +6,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseFragment
@@ -14,6 +15,7 @@ import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.ui.healthrecord.comment.RecordCommentsAdapter
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.observeWork
+import ca.bc.gov.bchealth.utils.scrollToBottom
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.widget.AddCommentCallback
 import ca.bc.gov.bchealth.widget.AddCommentLayout
@@ -31,6 +33,9 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
 
     fun initCommentView() = with(getCommentView()) {
         toggleVisibility(BuildConfig.FLAG_ADD_COMMENTS)
+
+        if (BuildConfig.FLAG_ADD_COMMENTS.not()) return
+
         addCommentListener(object : AddCommentCallback {
             override fun onSubmitComment(commentText: String) {
                 getParentEntryId()?.let {
@@ -44,16 +49,20 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
         })
     }
 
+    abstract fun getRecyclerView(): RecyclerView
+
     fun observeComments() {
+        if (BuildConfig.FLAG_ADD_COMMENTS.not()) return
+
         launchOnStart {
             commentsViewModel.uiState.collect { state ->
                 getProgressBar().isVisible = state.onLoading
 
                 if (state.latestComment.isNotEmpty()) {
                     recordCommentsAdapter.submitList(state.latestComment)
-                    if (BuildConfig.FLAG_ADD_COMMENTS) {
-                        getCommentView().clearComment()
-                    }
+
+                    getCommentView().clearComment()
+                    getRecyclerView().scrollToBottom()
                 }
 
                 handleError(state.onError)
@@ -62,6 +71,8 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
     }
 
     fun observeCommentsSyncCompletion() {
+        if (BuildConfig.FLAG_ADD_COMMENTS.not()) return
+
         observeWork(SYNC_COMMENTS) {
             if (it == WorkInfo.State.SUCCEEDED) {
                 getComments(getParentEntryId())

@@ -43,6 +43,8 @@ class MedicationDetailsFragment : BaseRecordDetailFragment(R.layout.fragment_med
         initCommentView()
     }
 
+    override fun getRecyclerView() = binding.rvMedicationDetailList
+
     override fun getCommentEntryTypeCode() = CommentEntryTypeCode.MEDICATION
 
     override fun getParentEntryId(): String? = viewModel.uiState.value.parentEntryId
