@@ -1,9 +1,11 @@
 package ca.bc.gov.bchealth.ui.healthrecord
 
+import android.util.Log
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -28,10 +30,18 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
 
     abstract fun getCommentEntryTypeCode(): CommentEntryTypeCode
     abstract fun getParentEntryId(): String?
-    abstract fun getProgressBar(): View
     abstract fun getCommentView(): AddCommentLayout
 
-    fun initCommentView() = with(getCommentView()) {
+    open fun getProgressBar(): View? = null
+    open fun getScrollableView(): View? = null
+
+    fun initComments() {
+        initCommentView()
+        observeComments()
+        observeCommentsSyncCompletion()
+    }
+
+    private fun initCommentView() = with(getCommentView()) {
         toggleVisibility(BuildConfig.FLAG_ADD_COMMENTS)
 
         if (BuildConfig.FLAG_ADD_COMMENTS.not()) return
@@ -49,20 +59,20 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
         })
     }
 
-    abstract fun getRecyclerView(): RecyclerView
-
-    fun observeComments() {
+    private fun observeComments() {
         if (BuildConfig.FLAG_ADD_COMMENTS.not()) return
 
         launchOnStart {
             commentsViewModel.uiState.collect { state ->
-                getProgressBar().isVisible = state.onLoading
+                getProgressBar()?.isVisible = state.onLoading
 
                 if (state.latestComment.isNotEmpty()) {
-                    recordCommentsAdapter.submitList(state.latestComment)
-
+                    recordCommentsAdapter.submitList(state.latestComment) {
+                        if (state.onCommentsUpdated) {
+                            scrollToBottom()
+                        }
+                    }
                     getCommentView().clearComment()
-                    getRecyclerView().scrollToBottom()
                 }
 
                 handleError(state.onError)
@@ -70,7 +80,7 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
         }
     }
 
-    fun observeCommentsSyncCompletion() {
+    private fun observeCommentsSyncCompletion() {
         if (BuildConfig.FLAG_ADD_COMMENTS.not()) return
 
         observeWork(SYNC_COMMENTS) {
@@ -91,11 +101,24 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
         return recordCommentsAdapter
     }
 
+    private fun scrollToBottom() {
+        when (val scrollableView = getScrollableView()) {
+            is NestedScrollView -> scrollableView.scrollToBottom()
+            is RecyclerView -> scrollableView.scrollToBottom()
+            null -> logWarning("scrollableView is null, did you override getScrollableView ?")
+            else -> logWarning("Scroll action for View: $scrollableView is not implemented yet, skipping")
+        }
+    }
+
     private fun navigateToComments(commentEntryTypeCode: String) {
         findNavController().navigate(
             R.id.commentsFragment,
             bundleOf("parentEntryId" to commentEntryTypeCode)
         )
+    }
+
+    private fun logWarning(message: String) {
+        Log.w("BaseRecordDetailFragment", message)
     }
 
     open fun handleError(isFailed: Boolean) {

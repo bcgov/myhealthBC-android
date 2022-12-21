@@ -43,7 +43,7 @@ class LabTestDetailViewModel @Inject constructor(
                     labTestDetails = prepareLabTestDetailsData(labOrderWithLabTestsAndPatientDto.labOrderWithLabTest),
                     toolbarTitle = labOrderWithLabTestsAndPatientDto.labOrderWithLabTest.labOrder.commonName,
                     showDownloadOption = labOrderWithLabTestsAndPatientDto.labOrderWithLabTest.labOrder.reportingAvailable,
-                    reportId = labOrderWithLabTestsAndPatientDto.labOrderWithLabTest.labOrder.reportId
+                    parentEntryId = labOrderWithLabTestsAndPatientDto.labOrderWithLabTest.labOrder.labPdfId
                 )
             }
         } catch (e: Exception) {
@@ -233,7 +233,7 @@ data class LabTestDetailUiState(
     val pdfData: String? = null,
     val isHgServicesUp: Boolean = true,
     val isConnected: Boolean = true,
-    val reportId: String? = null
+    val parentEntryId: String? = null
 )
 
 data class LabTestDetail(
