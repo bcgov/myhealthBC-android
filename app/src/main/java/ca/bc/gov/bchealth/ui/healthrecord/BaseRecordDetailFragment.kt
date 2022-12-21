@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -49,7 +50,8 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
         })
     }
 
-    abstract fun getRecyclerView(): RecyclerView
+    open fun getRecyclerView(): RecyclerView? = null
+    open fun getScrollView(): NestedScrollView? = null
 
     fun observeComments() {
         if (BuildConfig.FLAG_ADD_COMMENTS.not()) return
@@ -59,10 +61,13 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
                 getProgressBar()?.isVisible = state.onLoading
 
                 if (state.latestComment.isNotEmpty()) {
-                    recordCommentsAdapter.submitList(state.latestComment)
-
+                    recordCommentsAdapter.submitList(state.latestComment) {
+                        if (state.onCommentsUpdated) {
+                            getRecyclerView()?.scrollToBottom()
+                            getScrollView()?.let { it.post { it.fullScroll(View.FOCUS_DOWN) } }
+                        }
+                    }
                     getCommentView().clearComment()
-                    getRecyclerView().scrollToBottom()
                 }
 
                 handleError(state.onError)
