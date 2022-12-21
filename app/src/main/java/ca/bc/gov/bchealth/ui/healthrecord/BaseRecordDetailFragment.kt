@@ -28,7 +28,7 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
 
     abstract fun getCommentEntryTypeCode(): CommentEntryTypeCode
     abstract fun getParentEntryId(): String?
-    abstract fun getProgressBar(): View
+    open fun getProgressBar(): View? = null
     abstract fun getCommentView(): AddCommentLayout
 
     fun initCommentView() = with(getCommentView()) {
@@ -56,7 +56,7 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
 
         launchOnStart {
             commentsViewModel.uiState.collect { state ->
-                getProgressBar().isVisible = state.onLoading
+                getProgressBar()?.isVisible = state.onLoading
 
                 if (state.latestComment.isNotEmpty()) {
                     recordCommentsAdapter.submitList(state.latestComment)
