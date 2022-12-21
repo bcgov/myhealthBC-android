@@ -40,7 +40,8 @@ class CovidTestResultViewModel @Inject constructor(
                     onLoading = false,
                     covidOrder = covidOrder.covidOrderWithCovidTest.covidOrder,
                     covidTest = covidTest,
-                    patient = covidOrder.patient
+                    patient = covidOrder.patient,
+                    parentEntryId = covidOrder.covidOrderWithCovidTest.covidOrder.id
                 )
             }
         } catch (e: Exception) {
@@ -53,5 +54,6 @@ data class CovidTestResultDetailUiModel(
     val onLoading: Boolean = false,
     val covidOrder: CovidOrderDto? = null,
     val covidTest: CovidTestDto? = null,
-    val patient: PatientDto? = null
+    val patient: PatientDto? = null,
+    val parentEntryId: String? = null
 )
