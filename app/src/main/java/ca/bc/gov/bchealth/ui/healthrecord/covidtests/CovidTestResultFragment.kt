@@ -75,7 +75,7 @@ class CovidTestResultFragment(private val itemClickListener: ItemClickListener) 
 
     override fun getCommentView(): AddCommentLayout = binding.viewComment
 
-    override fun getRecyclerView(): RecyclerView = binding.rvComments
+    override fun getScrollView() = binding.scrollView
 
     private fun observeTestRecordDetails() {
         viewModel.uiState.collectOnStart { state ->

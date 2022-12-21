@@ -93,7 +93,8 @@ class CommentsViewModel @Inject constructor(
                                 it.isUploaded
                             )
                         },
-                        latestComment = commentsTemp
+                        latestComment = commentsTemp,
+                        onCommentsUpdated = true
                     )
                 }
             } catch (e: Exception) {
@@ -163,7 +164,8 @@ data class CommentsUiState(
     val onLoading: Boolean = false,
     val onError: Boolean = false,
     val commentsList: List<Comment> = emptyList(),
-    val latestComment: List<Comment> = emptyList()
+    val latestComment: List<Comment> = emptyList(),
+    val onCommentsUpdated : Boolean = false
 )
 
 data class Comment(

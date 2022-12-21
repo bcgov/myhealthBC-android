@@ -86,11 +86,12 @@ class CommentsFragment : Fragment(R.layout.fragment_comments) {
                 binding.progressBar.isVisible = state.onLoading
 
                 if (state.commentsList.isNotEmpty()) {
-                    commentsAdapter.submitList(state.commentsList)
+                    commentsAdapter.submitList(state.commentsList){
+                        binding.rvCommentsList.scrollToBottom()
+                    }
                     viewModel.resetUiState()
                     // clear comment
                     binding.comment.clearComment()
-                    binding.rvCommentsList.scrollToBottom()
                 }
 
                 if (state.onError) {
