@@ -14,7 +14,6 @@ import ca.bc.gov.bchealth.databinding.FragmentMedicationDetailsBinding
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordDetailFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
-import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,21 +28,15 @@ class MedicationDetailsFragment : BaseRecordDetailFragment(R.layout.fragment_med
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initUI()
+        setUpRecyclerView()
         if (medicationDetailAdapter.currentList.isEmpty()) {
             viewModel.getMedicationDetails(args.medicationId)
         }
-        launchOnStart { observeUiState() }
-        observeComments()
-        observeCommentsSyncCompletion()
+        observeUiState()
+        initComments()
     }
 
-    private fun initUI() {
-        setUpRecyclerView()
-        initCommentView()
-    }
-
-    override fun getRecyclerView() = binding.rvMedicationDetailList
+    override fun getScrollableView() = binding.rvMedicationDetailList
 
     override fun getCommentEntryTypeCode() = CommentEntryTypeCode.MEDICATION
 
@@ -71,9 +64,8 @@ class MedicationDetailsFragment : BaseRecordDetailFragment(R.layout.fragment_med
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
-    private suspend fun observeUiState() {
-        viewModel.uiState.collect { state ->
-
+    private fun observeUiState() {
+        viewModel.uiState.collectOnStart { state ->
             binding.progressBar.isVisible = state.onLoading
 
             if (state.medicationDetails?.isNotEmpty() == true) {

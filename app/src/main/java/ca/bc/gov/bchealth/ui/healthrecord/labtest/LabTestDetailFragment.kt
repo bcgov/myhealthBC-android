@@ -19,7 +19,6 @@ import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordDetailFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.PdfHelper
-import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -46,23 +45,16 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        initUI()
-        viewModel.getLabTestDetails(args.labOrderId)
-        launchOnStart { observeUiState() }
-        observePdfData()
-        observeComments()
-        observeCommentsSyncCompletion()
-    }
-
-    private fun initUI() {
         setUpRecyclerView()
-        initCommentView()
+        viewModel.getLabTestDetails(args.labOrderId)
+        observeUiState()
+        observePdfData()
+        initComments()
     }
 
     override fun getCommentView(): AddCommentLayout = binding.comment
 
-    override fun getRecyclerView() = binding.rvLabTestDetailList
+    override fun getScrollableView() = binding.rvLabTestDetailList
 
     override fun getCommentEntryTypeCode() = CommentEntryTypeCode.LAB_RESULTS
 
@@ -90,9 +82,8 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
         binding.rvLabTestDetailList.adapter = concatAdapter
     }
 
-    private suspend fun observeUiState() {
-        viewModel.uiState.collect { state ->
-
+    private fun observeUiState() {
+        viewModel.uiState.collectOnStart { state ->
             binding.progressBar.isVisible = state.onLoading
 
             handledServiceDown(state)
