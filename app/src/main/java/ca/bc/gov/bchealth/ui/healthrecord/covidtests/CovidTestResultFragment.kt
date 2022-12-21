@@ -9,23 +9,22 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSingleTestResultBinding
 import ca.bc.gov.bchealth.model.mapper.CovidTestResultStatus
+import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
+import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordDetailFragment
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showIfNullOrBlank
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.widget.AddCommentLayout
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.utils.toDateTimeString
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 private const val COVID_ORDER_ID = "COVID_ORDER_ID"
 private const val COVID_TEST_ID = "COVID_TEST_ID"
@@ -35,7 +34,8 @@ private const val REPORT_AVAILABLE = "REPORT_AVAILABLE"
  * @author amit metri
  */
 @AndroidEntryPoint
-class CovidTestResultFragment(private val itemClickListener: ItemClickListener) : Fragment(R.layout.fragment_single_test_result) {
+class CovidTestResultFragment(private val itemClickListener: ItemClickListener) :
+    BaseRecordDetailFragment(R.layout.fragment_single_test_result) {
 
     private val binding by viewBindings(FragmentSingleTestResultBinding::bind)
     private lateinit var covidOrderId: String
@@ -58,20 +58,30 @@ class CovidTestResultFragment(private val itemClickListener: ItemClickListener) 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initCommentView()
+        initRecyclerView()
         observeTestRecordDetails()
         viewModel.getCovidTestDetail(covidOrderId, covidTestId)
+        observeComments()
+        observeCommentsSyncCompletion()
     }
 
+    private fun initRecyclerView() {
+        binding.rvComments.adapter = getRecordCommentsAdapter()
+    }
+    override fun getCommentEntryTypeCode() = CommentEntryTypeCode.COVID_TEST
+
+    override fun getParentEntryId(): String? = viewModel.uiState.value.parentEntryId
+
+    override fun getCommentView(): AddCommentLayout = binding.viewComment
+
+    override fun getRecyclerView(): RecyclerView = binding.rvComments
+
     private fun observeTestRecordDetails() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
-                    if (state.covidTest != null &&
-                        state.patient != null && state.covidOrder != null
-                    ) {
-                        initUi(state.covidOrder, state.covidTest, state.patient)
-                    }
-                }
+        viewModel.uiState.collectOnStart { state ->
+            if (state.covidTest != null && state.patient != null && state.covidOrder != null) {
+                initUi(state.covidOrder, state.covidTest, state.patient)
+                getComments(state.parentEntryId)
             }
         }
     }
@@ -289,7 +299,12 @@ class CovidTestResultFragment(private val itemClickListener: ItemClickListener) 
     companion object {
 
         @JvmStatic
-        fun newInstance(covidOrderId: String, covidTestId: String, reportAvailable: Boolean, itemClickListener: ItemClickListener) =
+        fun newInstance(
+            covidOrderId: String,
+            covidTestId: String,
+            reportAvailable: Boolean,
+            itemClickListener: ItemClickListener
+        ) =
             CovidTestResultFragment(itemClickListener).apply {
                 arguments = Bundle().apply {
                     putString(COVID_ORDER_ID, covidOrderId)
