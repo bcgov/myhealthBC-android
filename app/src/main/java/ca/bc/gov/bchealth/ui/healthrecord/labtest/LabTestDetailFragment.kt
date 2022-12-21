@@ -66,7 +66,7 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
 
     override fun getCommentEntryTypeCode() = CommentEntryTypeCode.LAB_RESULTS
 
-    override fun getParentEntryId(): String? = viewModel.uiState.value.reportId
+    override fun getParentEntryId(): String? = viewModel.uiState.value.parentEntryId
 
     override fun getProgressBar(): View = binding.progressBar
 
@@ -110,7 +110,7 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
             handlePdfDownload(state)
 
             handleNoInternetConnection(state)
-            getComments(state.reportId)
+            getComments(state.parentEntryId)
         }
     }
 
