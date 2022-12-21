@@ -165,7 +165,7 @@ data class CommentsUiState(
     val onError: Boolean = false,
     val commentsList: List<Comment> = emptyList(),
     val latestComment: List<Comment> = emptyList(),
-    val onCommentsUpdated : Boolean = false
+    val onCommentsUpdated: Boolean = false
 )
 
 data class Comment(
