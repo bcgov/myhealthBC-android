@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSingleTestResultBinding
 import ca.bc.gov.bchealth.model.mapper.CovidTestResultStatus
@@ -58,24 +57,23 @@ class CovidTestResultFragment(private val itemClickListener: ItemClickListener) 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initCommentView()
         initRecyclerView()
+        initComments()
         observeTestRecordDetails()
         viewModel.getCovidTestDetail(covidOrderId, covidTestId)
-        observeComments()
-        observeCommentsSyncCompletion()
     }
 
     private fun initRecyclerView() {
         binding.rvComments.adapter = getRecordCommentsAdapter()
     }
+
     override fun getCommentEntryTypeCode() = CommentEntryTypeCode.COVID_TEST
 
     override fun getParentEntryId(): String? = viewModel.uiState.value.parentEntryId
 
     override fun getCommentView(): AddCommentLayout = binding.viewComment
 
-    override fun getScrollView() = binding.scrollView
+    override fun getScrollableView() = binding.scrollView
 
     private fun observeTestRecordDetails() {
         viewModel.uiState.collectOnStart { state ->
