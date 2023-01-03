@@ -10,7 +10,7 @@ import ca.bc.gov.bchealth.databinding.ItemSpecialAuthorityBinding
 /*
 * Created by amit_metri on 29,June,2022
 */
-class SpecialAuthorityAdapter() : ListAdapter<SpecialAuthorityDetailItem, SpecialAuthorityAdapter.SpecialAuthorityViewHolder>(
+class SpecialAuthorityAdapter : ListAdapter<SpecialAuthorityDetailItem, SpecialAuthorityAdapter.SpecialAuthorityViewHolder>(
     DiffCallBacks()
 ) {
 
