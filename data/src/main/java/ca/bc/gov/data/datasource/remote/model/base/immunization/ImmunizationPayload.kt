@@ -6,9 +6,6 @@ import com.google.gson.annotations.SerializedName
  * @author Pinakin Kansara
  */
 data class ImmunizationPayload(
-    @SerializedName("loadState")
-    val loadState: LoadState,
-
     @SerializedName("immunizations")
     val immunizations: List<ImmunizationRecord> = emptyList(),
 
