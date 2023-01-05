@@ -23,13 +23,15 @@ class QueueItInterceptor @Inject constructor(
 ) : Interceptor {
 
     companion object {
-        private const val TAG = "QueueItInterceptor"
+        private const val STANDARD_RETRY_IN_MILLIS = 5000L
         private const val HEADER_QUEUE_IT_TOKEN = "queueittoken"
         private const val HEADER_QUEUE_IT_AJAX_URL = "x-queueit-ajaxpageurl"
         private const val HEADER_QUEUE_IT_REDIRECT_URL = "x-queueit-redirect"
         private const val RESOURCE_PAYLOAD = "resourcePayload"
         private const val LOADED = "loaded"
         private const val RETRY_IN = "retryin"
+        private const val LOAD_STATE = "loadState"
+        private const val REFRESH_IN_PROGRESS = "refreshInProgress"
         private const val RESULT_ERROR = "resultError"
         private const val ACTION_CODE = "actionCode"
         private const val PROTECTED = "PROTECTED"
@@ -37,6 +39,7 @@ class QueueItInterceptor @Inject constructor(
     }
 
     var queueItRequiredUrl: String = ""
+
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestUrlBuilder = chain.request().url.newBuilder()
@@ -101,13 +104,38 @@ class QueueItInterceptor @Inject constructor(
             val payload =
                 json.getAsJsonObject(RESOURCE_PAYLOAD)
                     ?: throw IOException(BAD_RESPONSE)
-            loaded = payload.get(LOADED).asBoolean
-            retryInMillis = payload.get(RETRY_IN).asLong
+
+            val loadedFlag: Boolean? = payload.get(LOADED)?.asBoolean
+
+            if (loadedFlag == false) {
+                loaded = false
+                retryInMillis = payload.get(RETRY_IN)?.asLong ?: 0L
+            } else { // true or null
+                val refreshInProgressResult = handleRefreshInProgress(payload)
+                loaded = refreshInProgressResult.loaded
+                retryInMillis = refreshInProgressResult.retryInMillis
+            }
         } catch (e: Exception) {
             loaded = true
         }
         sleepOnRetry(loaded, retryInMillis)
         return loaded
+    }
+
+    /**
+     * Check for REFRESH_IN_PROGRESS flag. Behaves like LOADED false state
+     */
+    private fun handleRefreshInProgress(payload: JsonObject): RefreshInProgress {
+        val loaded = try {
+            val loadState = payload.getAsJsonObject(LOAD_STATE)
+            val refreshInProgress = loadState.get(REFRESH_IN_PROGRESS)?.asBoolean ?: false
+            refreshInProgress.not()
+        } catch (e: Exception) {
+            true
+        }
+
+        val retryInMillis = if (loaded) 0L else STANDARD_RETRY_IN_MILLIS
+        return RefreshInProgress(loaded, retryInMillis)
     }
 
     private fun checkQueueItTokenInPref(requestUrlBuilder: HttpUrl.Builder) {
@@ -145,3 +173,8 @@ class QueueItInterceptor @Inject constructor(
         }
     }
 }
+
+private data class RefreshInProgress(
+    val loaded: Boolean,
+    val retryInMillis: Long
+)
