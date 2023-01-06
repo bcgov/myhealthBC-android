@@ -56,11 +56,9 @@ class IndividualHealthRecordViewModel @Inject constructor(
         viewModelScope.launch {
 
             try {
-                val patientWithVaccineRecords =
-                    patientRepository.getPatientWithVaccineAndDoses(patientId)
                 val testResultWithRecords =
                     patientRepository.getPatientWithTestResultsAndRecords(patientId)
-                val vaccineWithDoses = listOfNotNull(patientWithVaccineRecords.vaccineWithDoses)
+
                 var patientAndMedicationRecords: PatientWithMedicationRecordDto? = null
                 try {
                     patientAndMedicationRecords =
@@ -81,7 +79,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 val hospitalVisits = patientRepository.getPatientWithHospitalVisits(patientId).map {
                     it.toUiModel()
                 }
-                val vaccineRecords = vaccineWithDoses.map {
                 val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
                     it.toUiModel()
                 }
