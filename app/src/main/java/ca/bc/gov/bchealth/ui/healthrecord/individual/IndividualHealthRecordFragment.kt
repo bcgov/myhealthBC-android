@@ -232,8 +232,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 TimelineTypeFilter.ALL.name
             ) ||
             filterSharedViewModel.filterState.value.timelineTypeFilter.contains(
-                    TimelineTypeFilter.MEDICATION.name
-                )
+                TimelineTypeFilter.MEDICATION.name
+            )
         ) {
             updateHiddenMedicationRecordsView(uiState)
         } else {

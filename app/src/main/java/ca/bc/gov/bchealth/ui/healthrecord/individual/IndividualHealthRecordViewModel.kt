@@ -79,6 +79,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 val hospitalVisits = patientRepository.getPatientWithHospitalVisits(patientId).map {
                     it.toUiModel()
                 }
+
                 val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
                     it.toUiModel()
                 }
