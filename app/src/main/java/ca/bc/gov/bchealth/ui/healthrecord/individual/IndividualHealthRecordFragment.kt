@@ -329,6 +329,8 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         )
                     findNavController().navigate(action)
                 }
+                HealthRecordType.HOSPITAL_VISITS_RECORD -> {
+                }
             }
         }
 

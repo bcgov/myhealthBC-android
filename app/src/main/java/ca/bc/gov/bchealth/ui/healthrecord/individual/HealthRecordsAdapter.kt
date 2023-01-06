@@ -65,6 +65,9 @@ class HealthRecordsAdapter(
             HealthRecordType.SPECIAL_AUTHORITY_RECORD -> {
                 description = "${record.description} • ${record.date.toDate()}"
             }
+            HealthRecordType.HOSPITAL_VISITS_RECORD -> {
+                description = record.description
+            }
         }
 
         holder.binding.tvDesc.text = description
@@ -136,9 +139,11 @@ class HealthRecordsAdapter(
 
     private fun getFilterByDate(fromDate: String?, toDate: String?): MutableList<HealthRecordItem> {
         return if (!fromDate.isNullOrBlank() && !toDate.isNullOrBlank()) {
-            defaultList.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }.toMutableList()
+            defaultList.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
+                .toMutableList()
         } else if (!fromDate.isNullOrBlank()) {
-            defaultList.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }.toMutableList()
+            defaultList.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
+                .toMutableList()
         } else if (!toDate.isNullOrBlank()) {
             defaultList.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }.toMutableList()
         } else {

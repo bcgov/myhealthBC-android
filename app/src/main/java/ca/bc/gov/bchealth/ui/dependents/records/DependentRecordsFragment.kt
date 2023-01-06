@@ -210,6 +210,8 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
                         )
                     findNavController().navigate(action)
                 }
+                HealthRecordType.HOSPITAL_VISITS_RECORD -> {
+                }
             }
         }
         binding.rvHealthRecords.adapter = healthRecordsAdapter

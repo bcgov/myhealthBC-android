@@ -52,9 +52,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
         }
     }
 
-    private fun getIndividualsHealthRecord(
-        patientId: Long
-    ) =
+    private fun getIndividualsHealthRecord(patientId: Long) =
         viewModelScope.launch {
 
             try {
@@ -80,11 +78,11 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     patientRepository.getPatientWithHealthVisits(patientId)
                 val patientWithSpecialAuthorities =
                     patientRepository.getPatientWithSpecialAuthority(patientId)
-
-                val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
+                val hospitalVisits = patientRepository.getPatientWithHospitalVisits(patientId).map {
                     it.toUiModel()
                 }
                 val vaccineRecords = vaccineWithDoses.map {
+                val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
                     it.toUiModel()
                 }
                 val medicationRecords = patientAndMedicationRecords?.medicationRecord?.map {
@@ -95,10 +93,10 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 }
                 val covidOrders =
                     patientWithCovidOrderAndTests.covidOrderAndTests.map { it.toUiModel() }
+
                 val immunizationRecords =
-                    patientWithImmunizationRecordAndForecast.immunizationRecords.map {
-                        it.toUiModel()
-                    }
+                    patientWithImmunizationRecordAndForecast.immunizationRecords.map { it.toUiModel() }
+
                 val healthVisits = patientWithHealthVisits.healthVisits.map {
                     it.toUiModel()
                 }
@@ -106,31 +104,21 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     it.requestedDate != null
                 }.map { it.toUiModel() }
 
-                var bcscAuthenticatedPatientDto: PatientDto? = null
-                val isBcscAuthenticatedPatientAvailable: Boolean? = try {
-                    bcscAuthenticatedPatientDto =
-                        patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
-                    true
-                } catch (e: java.lang.Exception) {
-                    e.printStackTrace()
-                    false
-                }
-
-                val isBcscSessionActive: Boolean = bcscAuthRepo.checkSession()
+                val bcscInfo = getBcscInfo()
 
                 val filteredHealthRecords = if (isShowMedicationRecords()) {
                     (medicationRecords ?: emptyList()) + covidTestRecords + covidOrders +
-                        labTestRecords + immunizationRecords + healthVisits + specialAuthorities
+                        labTestRecords + immunizationRecords + healthVisits + specialAuthorities + hospitalVisits
                 } else {
                     covidTestRecords + covidOrders + labTestRecords + immunizationRecords + healthVisits +
-                        specialAuthorities
+                        specialAuthorities + hospitalVisits
                 }
 
                 _uiState.update { state ->
                     state.copy(
-                        isBcscAuthenticatedPatientAvailable = isBcscAuthenticatedPatientAvailable,
-                        isBcscSessionActive = isBcscSessionActive,
-                        bcscAuthenticatedPatientDto = bcscAuthenticatedPatientDto,
+                        isBcscAuthenticatedPatientAvailable = bcscInfo.authenticationAvailable,
+                        isBcscSessionActive = bcscInfo.sessionActive,
+                        bcscAuthenticatedPatientDto = bcscInfo.patientDto,
                         onHealthRecords = filteredHealthRecords.sortedByDescending { it.date },
                     )
                 }
@@ -144,7 +132,29 @@ class IndividualHealthRecordViewModel @Inject constructor(
         return medicationRecordRepository.getProtectiveWordState() == ProtectiveWordState.PROTECTIVE_WORD_NOT_REQUIRED.value ||
             cacheRepository.isProtectiveWordAdded()
     }
+
+    private suspend fun getBcscInfo(): BcscInfo {
+        var dto: PatientDto? = null
+
+        val isAuthenticatedPatientAvailable: Boolean = try {
+            dto = patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
+            true
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+            false
+        }
+
+        val isBcscSessionActive: Boolean = bcscAuthRepo.checkSession()
+
+        return BcscInfo(dto, isAuthenticatedPatientAvailable, isBcscSessionActive)
+    }
 }
+
+private class BcscInfo(
+    val patientDto: PatientDto?,
+    val authenticationAvailable: Boolean,
+    val sessionActive: Boolean
+)
 
 data class IndividualHealthRecordsUiState(
     val isBcscAuthenticatedPatientAvailable: Boolean? = null,
@@ -183,7 +193,8 @@ enum class HealthRecordType {
     LAB_TEST,
     IMMUNIZATION_RECORD,
     HEALTH_VISIT_RECORD,
-    SPECIAL_AUTHORITY_RECORD
+    SPECIAL_AUTHORITY_RECORD,
+    HOSPITAL_VISITS_RECORD,
 }
 
 data class HiddenMedicationRecordItem(
