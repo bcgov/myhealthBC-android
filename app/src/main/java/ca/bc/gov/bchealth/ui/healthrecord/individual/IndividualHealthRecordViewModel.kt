@@ -170,6 +170,7 @@ data class HealthRecordItem(
     val covidOrderId: String? = null,
     val healthVisitId: Long = -1L,
     val specialAuthorityId: Long = -1L,
+    val hospitalVisitId: Long = -1L,
     val icon: Int,
     val title: String,
     val description: String,

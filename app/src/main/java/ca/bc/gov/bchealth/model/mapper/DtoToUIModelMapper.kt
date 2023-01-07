@@ -314,6 +314,7 @@ fun SpecialAuthorityDto.toUiModel() =
 fun HospitalVisitsDto.toUiModel() =
     HealthRecordItem(
         patientId = patientId,
+        hospitalVisitId = id,
         title = facility,
         description = provider ?: "",
         icon = R.drawable.ic_record_hospital_visit,
