@@ -23,6 +23,7 @@ class QueueItInterceptor @Inject constructor(
 ) : Interceptor {
 
     companion object {
+        private const val MAX_RETRY_COUNT = 5
         private const val STANDARD_RETRY_IN_MILLIS = 5000L
         private const val HEADER_QUEUE_IT_TOKEN = "queueittoken"
         private const val HEADER_QUEUE_IT_AJAX_URL = "x-queueit-ajaxpageurl"
@@ -82,7 +83,7 @@ class QueueItInterceptor @Inject constructor(
             } else {
                 return response
             }
-        } while (!loaded && retryCount < 3)
+        } while (!loaded && retryCount < MAX_RETRY_COUNT)
 
         if (response == null) {
             throw IOException("No data from health gateway!")
