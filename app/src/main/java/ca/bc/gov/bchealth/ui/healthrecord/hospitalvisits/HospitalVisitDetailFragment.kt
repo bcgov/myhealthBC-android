@@ -1,5 +1,9 @@
 package ca.bc.gov.bchealth.ui.healthrecord.hospitalvisits
 
+import android.os.Bundle
+import android.view.View
+import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -13,6 +17,23 @@ class HospitalVisitDetailFragment : BaseFragment(R.layout.fragment_hospital_visi
     private val binding by viewBindings(FragmentHospitalVisitDetailBinding::bind)
     private val args: HospitalVisitDetailFragmentArgs by navArgs()
     private val viewModel: HospitalVisitDetailViewModel by viewModels()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.uiState.collectOnStart(::updateUi)
+        viewModel.getHospitalVisitDetails(args.hospitalVisitId)
+    }
+
+    private fun updateUi(uiState: HospitalVisitUiState) {
+        binding.composeBody.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme {
+                    HospitalVisitDetailUI(uiState.uiList)
+                }
+            }
+        }
+    }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
         with(binding.layoutToolbar.topAppBar) {
