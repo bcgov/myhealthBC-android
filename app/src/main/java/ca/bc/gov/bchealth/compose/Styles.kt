@@ -20,6 +20,7 @@ val fonts = FontFamily(
 private val darkText = Color(0xFF313132)
 
 val statusBlue30 = Color(0x4D38598A)
+val descriptionGrey = Color(0xFF6D757D)
 
 val MyHealthTypography = Typography(
     body1 = TextStyle(
@@ -36,3 +37,7 @@ val MyHealthTypography = Typography(
         color = darkText
     ),
 )
+
+fun TextStyle.bold() = this.copy(fontWeight = FontWeight.Bold)
+
+fun TextStyle.italic() = this.copy(fontStyle = FontStyle.Italic)

@@ -463,4 +463,13 @@
     <string name="immnz_forecast_due_date">Due date: %s</string>
     <string name="view_pdf">View PDF</string>
 
+    <!--Hospital Visits-->
+    <string name="hospital_visits_detail_location_title">Location:</string>
+    <string name="hospital_visits_detail_location_footer">Virtual visits show your provider\'s location</string>
+    <string name="hospital_visits_detail_provider_title">Provider:</string>
+    <string name="hospital_visits_detail_provider_footer">Inpatient visits only show the first attending physician.</string>
+    <string name="hospital_visits_detail_visit_type_title">Visit type:</string>
+    <string name="hospital_visits_detail_visit_date_title">Visit Date:</string>
+    <string name="hospital_visits_detail_discharge_date_title">Discharge Date:</string>
+
 </resources>

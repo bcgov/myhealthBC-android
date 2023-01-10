@@ -6,7 +6,7 @@ import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.const.SERVICE_NOT_AVAILABLE
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.dependents.DependentDto
-import ca.bc.gov.common.model.hospitalvisits.HospitalVisitsDto
+import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
@@ -189,13 +189,14 @@ class DependentsRepository @Inject constructor(
         patientLocalDataSource.getPatientWithImmunizationRecordAndForecast(patientId)
             ?: throw getDatabaseException(patientId)
 
-    suspend fun getPatientWithHospitalVisits(patientId: Long): List<HospitalVisitsDto> {
+    suspend fun getPatientWithHospitalVisits(patientId: Long): List<HospitalVisitDto> {
         if (FLAG_HOSPITAL_VISITS.not()) return emptyList()
 
         // todo: actual implementation will be done here: HAPP-1266
-        val sample = HospitalVisitsDto(
+        val sample = HospitalVisitDto(
             11,
             patientId,
+            "Service11",
             "facility11",
             "location11",
             "provider11",

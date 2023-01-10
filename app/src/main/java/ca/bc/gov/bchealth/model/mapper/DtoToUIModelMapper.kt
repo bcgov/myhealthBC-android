@@ -17,7 +17,7 @@ import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
-import ca.bc.gov.common.model.hospitalvisits.HospitalVisitsDto
+import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecommendationsDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPatientDto
@@ -311,12 +311,12 @@ fun SpecialAuthorityDto.toUiModel() =
         dataSource = dataSource.name
     )
 
-fun HospitalVisitsDto.toUiModel() =
+fun HospitalVisitDto.toUiModel() =
     HealthRecordItem(
         patientId = patientId,
         hospitalVisitId = id,
-        title = facility,
-        description = provider ?: "",
+        title = healthService,
+        description = facility,
         icon = R.drawable.ic_record_hospital_visit,
         date = visitDate,
         healthRecordType = HealthRecordType.HOSPITAL_VISITS_RECORD,
