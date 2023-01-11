@@ -1,10 +1,12 @@
 package ca.bc.gov.repository
 
 import android.util.Log
+import ca.bc.gov.common.BuildConfig.FLAG_HOSPITAL_VISITS
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.const.SERVICE_NOT_AVAILABLE
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.dependents.DependentDto
+import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
@@ -25,6 +27,7 @@ import ca.bc.gov.repository.qr.VaccineRecordState
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.worker.MobileConfigRepository
 import kotlinx.coroutines.flow.Flow
+import java.time.Instant
 import javax.inject.Inject
 
 class DependentsRepository @Inject constructor(
@@ -185,6 +188,31 @@ class DependentsRepository @Inject constructor(
     suspend fun getPatientWithImmunizationRecordAndForecast(patientId: Long): PatientWithImmunizationRecordAndForecastDto =
         patientLocalDataSource.getPatientWithImmunizationRecordAndForecast(patientId)
             ?: throw getDatabaseException(patientId)
+
+    suspend fun getPatientWithHospitalVisits(patientId: Long): List<HospitalVisitDto> {
+        if (FLAG_HOSPITAL_VISITS.not()) return emptyList()
+
+        // todo: actual implementation will be done here: HAPP-1266
+        val sample = HospitalVisitDto(
+            11,
+            patientId,
+            "Service11",
+            "facility11",
+            "location11",
+            "provider11",
+            "visitType11",
+            Instant.now().minusMillis(1000 * 60 * 60 * 24 * 5),
+            Instant.now(),
+        )
+
+        return listOf(
+            sample,
+            sample.copy(id = 12, facility = "facility12", location = "location12"),
+            sample.copy(id = 13, facility = "facility13", location = "location13"),
+            sample.copy(id = 14, facility = "facility14", location = "location14"),
+            sample.copy(id = 15, facility = "facility15", location = "location15"),
+        )
+    }
 
     suspend fun updateDependentListOrder(list: List<DependentDto>) {
         localDataSource.deleteAllDependentListOrders()

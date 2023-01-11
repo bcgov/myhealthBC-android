@@ -1,8 +1,10 @@
 package ca.bc.gov.repository.patient
 
+import ca.bc.gov.common.BuildConfig.FLAG_HOSPITAL_VISITS
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.AuthenticationStatus
+import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithHealthVisitsDto
@@ -18,6 +20,7 @@ import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.PatientOrderUpdate
 import ca.bc.gov.repository.QrCodeGeneratorRepository
 import kotlinx.coroutines.flow.map
+import java.time.Instant
 import javax.inject.Inject
 
 /**
@@ -125,4 +128,29 @@ class PatientRepository @Inject constructor(
             ?: throw MyHealthException(
                 DATABASE_ERROR, "No record found for patient id=  $patientId"
             )
+
+    suspend fun getPatientWithHospitalVisits(patientId: Long): List<HospitalVisitDto> {
+        if (FLAG_HOSPITAL_VISITS.not()) return emptyList()
+
+        // todo: actual implementation will be done here: HAPP-1266
+        val sample = HospitalVisitDto(
+            1,
+            patientId,
+            "Service1",
+            "facility1",
+            "location1",
+            "provider1",
+            "visitType1",
+            Instant.now().minusMillis(1000 * 60 * 60 * 24 * 5),
+            Instant.now(),
+        )
+
+        return listOf(
+            sample,
+            sample.copy(id = 2, facility = "facility2", location = "location2"),
+            sample.copy(id = 3, facility = "facility3", location = "location3"),
+            sample.copy(id = 4, facility = "facility4", location = "location4"),
+            sample.copy(id = 5, facility = "facility5", location = "location5"),
+        )
+    }
 }

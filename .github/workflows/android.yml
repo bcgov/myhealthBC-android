@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop
+      - feature/hospital-visits
 
 jobs:
   build:

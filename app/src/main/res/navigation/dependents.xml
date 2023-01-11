@@ -68,6 +68,10 @@
             android:id="@+id/action_dependentRecordsFragment_to_specialAuthorityDetailsFragment"
             app:destination="@id/dependentSpecialAuthorityDetailFragment" />
 
+        <action
+            android:id="@+id/action_dependentRecordsFragment_to_hospitalVisitDetailsFragment"
+            app:destination="@id/dependentHospitalVisitDetailFragment" />
+
     </fragment>
 
     <fragment
@@ -190,6 +194,16 @@
         tools:layout="@layout/fragment_special_authority_detail">
         <argument
             android:name="specialAuthorityId"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dependentHospitalVisitDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.hospitalvisits.HospitalVisitDetailFragment"
+        android:label="fragment_hospital_visits_detail"
+        tools:layout="@layout/fragment_hospital_visit_detail" >
+        <argument
+            android:name="hospitalVisitId"
             app:argType="long" />
     </fragment>
 

@@ -269,67 +269,48 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private fun setUpRecyclerView() {
         healthRecordsAdapter = HealthRecordsAdapter {
-            when (it.healthRecordType) {
-                HealthRecordType.VACCINE_RECORD -> {
-                    val action = IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(
-                            it.patientId
-                        )
-                    findNavController().navigate(action)
-                }
-                HealthRecordType.COVID_TEST_RECORD -> {
+            val navDirection = when (it.healthRecordType) {
+                HealthRecordType.VACCINE_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(it.patientId)
 
-                    val action = if (it.covidOrderId != null) {
-                        IndividualHealthRecordFragmentDirections.actionIndividualHealthRecordFragmentToCovidTestResultDetailFragment(
-                            it.covidOrderId
+                HealthRecordType.COVID_TEST_RECORD -> if (it.covidOrderId != null) {
+                    IndividualHealthRecordFragmentDirections.actionIndividualHealthRecordFragmentToCovidTestResultDetailFragment(
+                        it.covidOrderId
+                    )
+                } else {
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToTestResultDetailFragment(
+                            it.patientId, it.testResultId
                         )
-                    } else {
-                        IndividualHealthRecordFragmentDirections
-                            .actionIndividualHealthRecordFragmentToTestResultDetailFragment(
-                                it.patientId,
-                                it.testResultId
-                            )
-                    }
-                    findNavController().navigate(action)
                 }
-                HealthRecordType.MEDICATION_RECORD -> {
-                    val action = IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToMedicationDetailFragment(
-                            it.medicationRecordId
-                        )
-                    findNavController().navigate(action)
-                }
-                HealthRecordType.LAB_TEST -> {
-                    it.labOrderId.let { it1 ->
-                        val action = IndividualHealthRecordFragmentDirections
-                            .actionIndividualHealthRecordFragmentToLabTestDetailFragment(
-                                it1
-                            )
-                        findNavController().navigate(action)
-                    }
-                }
-                HealthRecordType.IMMUNIZATION_RECORD -> {
-                    val action = IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToImmunizationRecordDetailFragment(
-                            it.immunizationRecordId
-                        )
-                    findNavController().navigate(action)
-                }
-                HealthRecordType.HEALTH_VISIT_RECORD -> {
-                    val action = IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToHealthVisitDetailsFragment(
-                            it.healthVisitId
-                        )
-                    findNavController().navigate(action)
-                }
-                HealthRecordType.SPECIAL_AUTHORITY_RECORD -> {
-                    val action = IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToSpecialAuthorityDetailsFragment(
-                            it.specialAuthorityId
-                        )
-                    findNavController().navigate(action)
-                }
+
+                HealthRecordType.MEDICATION_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToMedicationDetailFragment(it.medicationRecordId)
+
+                HealthRecordType.LAB_TEST ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToLabTestDetailFragment(it.labOrderId)
+
+                HealthRecordType.IMMUNIZATION_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToImmunizationRecordDetailFragment(it.immunizationRecordId)
+
+                HealthRecordType.HEALTH_VISIT_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToHealthVisitDetailsFragment(it.healthVisitId)
+
+                HealthRecordType.SPECIAL_AUTHORITY_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToSpecialAuthorityDetailsFragment(it.specialAuthorityId)
+
+                HealthRecordType.HOSPITAL_VISITS_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordsFragmentToHospitalVisitDetailsFragment(it.hospitalVisitId)
             }
+
+            findNavController().navigate(navDirection)
         }
 
         hiddenHealthRecordAdapter = HiddenHealthRecordAdapter { onBCSCLoginClick() }
