@@ -120,7 +120,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     binding.content.chipGroup.chipLabTest.show()
                 }
                 TimelineTypeFilter.HEALTH_VISIT.name -> {
-                    binding.content.chipGroup.chipHealthVisits.show()
+                    binding.content.chipGroup.chipHealthVisit.show()
                 }
                 TimelineTypeFilter.SPECIAL_AUTHORITY.name -> {
                     binding.content.chipGroup.chipSpecialAuthority.show()
@@ -134,7 +134,7 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         binding.content.chipGroup.chipImmunizations.hide()
         binding.content.chipGroup.chipCovidTest.hide()
         binding.content.chipGroup.chipLabTest.hide()
-        binding.content.chipGroup.chipHealthVisits.hide()
+        binding.content.chipGroup.chipHealthVisit.hide()
         binding.content.chipGroup.chipSpecialAuthority.hide()
     }
 
