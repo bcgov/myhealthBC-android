@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
+import ca.bc.gov.common.utils.toDateTimeString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -52,12 +53,12 @@ class HospitalVisitDetailViewModel : ViewModel() {
 
                 HospitalVisitDetailItem(
                     R.string.hospital_visits_detail_visit_date_title,
-                    dto.visitDate.toString(),
+                    dto.visitDate.toDateTimeString()
                 ),
 
                 HospitalVisitDetailItem(
                     R.string.hospital_visits_detail_discharge_date_title,
-                    dto.dischargeDate.toString(),
+                    dto.dischargeDate.toDateTimeString(),
                 ),
             )
 
