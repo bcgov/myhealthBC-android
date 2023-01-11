@@ -107,7 +107,7 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
                     binding.chipGroup.chipLabTest.show()
                 }
                 TimelineTypeFilter.HEALTH_VISIT.name -> {
-                    binding.chipGroup.chipHealthVisits.show()
+                    binding.chipGroup.chipHealthVisit.show()
                 }
                 TimelineTypeFilter.SPECIAL_AUTHORITY.name -> {
                     binding.chipGroup.chipSpecialAuthority.show()
@@ -121,7 +121,7 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
         binding.chipGroup.chipImmunizations.hide()
         binding.chipGroup.chipCovidTest.hide()
         binding.chipGroup.chipLabTest.hide()
-        binding.chipGroup.chipHealthVisits.hide()
+        binding.chipGroup.chipHealthVisit.hide()
         binding.chipGroup.chipSpecialAuthority.hide()
     }
 
