@@ -21,7 +21,7 @@ class HospitalVisitDetailViewModel : ViewModel() {
         try {
 
             // todo: actual request will be done here: HAPP-1266
-            delay(1500)
+            delay(500)
             val dto = HospitalVisitDto(
                 patientId = 1,
                 healthService = "Service",
@@ -65,7 +65,7 @@ class HospitalVisitDetailViewModel : ViewModel() {
             _uiState.update { state ->
                 state.copy(
                     onLoading = false,
-                    toolbarTitle = "title",
+                    toolbarTitle = dto.healthService,
                     uiList = uiList
                 )
             }
