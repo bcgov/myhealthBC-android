@@ -25,6 +25,8 @@ class HospitalVisitDetailFragment : BaseFragment(R.layout.fragment_hospital_visi
     }
 
     private fun updateUi(uiState: HospitalVisitUiState) {
+        binding.layoutToolbar.topAppBar.title = uiState.toolbarTitle
+
         binding.composeBody.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
