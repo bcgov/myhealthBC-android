@@ -25,7 +25,6 @@ class HospitalVisitDetailViewModel : ViewModel() {
             val dto = HospitalVisitDto(
                 patientId = 1,
                 healthService = "Service",
-                facility = "Facility",
                 location = "Location",
                 provider = "Provider",
                 visitType = "Visit Type",
