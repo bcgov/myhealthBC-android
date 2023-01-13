@@ -9,8 +9,6 @@ class HospitalVisitRepository @Inject constructor(
     private val remoteDataSource: HospitalVisitRemoteDataSource
 ) {
 
-    fun getHospitalVisits(){
-
-    }
-
+    suspend fun getHospitalVisits(token: String, hdid: String) =
+        remoteDataSource.getHospitalVisit(token, hdid)
 }

@@ -197,7 +197,6 @@ class DependentsRepository @Inject constructor(
             11,
             patientId,
             "Service11",
-            "facility11",
             "location11",
             "provider11",
             "visitType11",
@@ -207,10 +206,10 @@ class DependentsRepository @Inject constructor(
 
         return listOf(
             sample,
-            sample.copy(id = 12, facility = "facility12", location = "location12"),
-            sample.copy(id = 13, facility = "facility13", location = "location13"),
-            sample.copy(id = 14, facility = "facility14", location = "location14"),
-            sample.copy(id = 15, facility = "facility15", location = "location15"),
+            sample.copy(id = 12, location = "location12"),
+            sample.copy(id = 13, location = "location13"),
+            sample.copy(id = 14, location = "location14"),
+            sample.copy(id = 15, location = "location15"),
         )
     }
 
