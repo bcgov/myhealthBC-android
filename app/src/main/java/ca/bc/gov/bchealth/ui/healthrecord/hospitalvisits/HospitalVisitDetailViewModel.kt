@@ -57,7 +57,7 @@ class HospitalVisitDetailViewModel : ViewModel() {
 
                 HospitalVisitDetailItem(
                     R.string.hospital_visits_detail_discharge_date_title,
-                    dto.dischargeDate.toDateTimeString(),
+                    dto.dischargeDate?.toDateTimeString().orEmpty(),
                 ),
             )
 

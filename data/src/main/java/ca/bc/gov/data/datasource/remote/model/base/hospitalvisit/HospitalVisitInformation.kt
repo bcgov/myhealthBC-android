@@ -1,7 +1,6 @@
 package ca.bc.gov.data.datasource.remote.model.base.hospitalvisit
 
 import com.google.gson.annotations.SerializedName
-import java.time.Instant
 
 data class HospitalVisitInformation(
     @SerializedName("encounterId")
@@ -11,16 +10,16 @@ data class HospitalVisitInformation(
     val facility: String,
 
     @SerializedName("healthService")
-    val healthService: String,
+    val healthService: String?,
 
     @SerializedName("visitType")
-    val visitType: String,
+    val visitType: String?,
 
     @SerializedName("admitDateTime")
-    val admitDateTime: Instant,
+    val admitDateTime: String,
 
     @SerializedName("endDateTime")
-    val endDateTime: Instant,
+    val endDateTime: String?,
 
     @SerializedName("provider")
     val provider: String?,
