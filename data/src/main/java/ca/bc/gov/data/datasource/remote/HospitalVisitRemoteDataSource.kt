@@ -21,8 +21,6 @@ class HospitalVisitRemoteDataSource @Inject constructor(
             throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
         }
 
-        return response.payload?.list?.map {
-            it.toDto()
-        } ?: emptyList()
+        return response.payload.toDto()
     }
 }

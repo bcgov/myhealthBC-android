@@ -10,5 +10,5 @@ data class HospitalVisitDto(
     val provider: String,
     val visitType: String,
     val visitDate: Instant,
-    val dischargeDate: Instant,
+    val dischargeDate: Instant?,
 )

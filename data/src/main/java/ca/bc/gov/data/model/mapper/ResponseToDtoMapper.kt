@@ -311,12 +311,12 @@ fun HospitalVisitPayload?.toDto(): List<HospitalVisitDto> {
 }
 
 fun HospitalVisitInformation.toDto() = HospitalVisitDto(
-    healthService = healthService,
+    healthService = healthService.orEmpty(),
     location = facility,
     provider = provider.orEmpty(),
-    visitType = visitType,
-    visitDate = admitDateTime,
-    dischargeDate = endDateTime,
+    visitType = visitType.orEmpty(),
+    visitDate = admitDateTime.toDateTime(),
+    dischargeDate = endDateTime?.toDateTime(),
 )
 
 fun Clinic.toDto() = ClinicDto(
