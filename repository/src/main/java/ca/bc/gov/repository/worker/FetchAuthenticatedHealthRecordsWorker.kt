@@ -272,7 +272,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     }
 
     private suspend fun insertSpecialAuthority(
-        patientId: Long, specialAuthorities: List<SpecialAuthorityDto>?
+        patientId: Long,
+        specialAuthorities: List<SpecialAuthorityDto>?
     ) {
         specialAuthorityRepository.deleteSpecialAuthorities(patientId)
         specialAuthorities?.let { list ->
@@ -284,7 +285,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     }
 
     private suspend fun insertHospitalVisits(
-        patientId: Long, hospitalVisits: List<HospitalVisitDto>?
+        patientId: Long,
+        hospitalVisits: List<HospitalVisitDto>?
     ) {
         hospitalVisitRepository.deleteHospitalVisits(patientId)
         hospitalVisits?.let { list ->
@@ -294,7 +296,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     }
 
     private suspend fun insertHealthVisits(
-        patientId: Long, healthVisits: List<HealthVisitsDto>?
+        patientId: Long,
+        healthVisits: List<HealthVisitsDto>?
     ) {
         healthVisitsRepository.deleteHealthVisits(patientId)
         healthVisits?.let { list ->
@@ -311,7 +314,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     }
 
     private suspend fun insertImmunizationRecords(
-        patientId: Long, immunizations: ImmunizationDto?
+        patientId: Long,
+        immunizations: ImmunizationDto?
     ) {
         recordsRepository.storeImmunizationRecords(patientId, immunizations)
     }
@@ -321,7 +325,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     }
 
     private suspend fun insertMedicationRecords(
-        patientId: Long, medications: MedicationStatementResponse?
+        patientId: Long,
+        medications: MedicationStatementResponse?
     ) {
         medications?.let {
             medicationRecordRepository.updateMedicationRecords(it, patientId)
@@ -329,7 +334,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     }
 
     private suspend fun insertCovidOrders(
-        patientId: Long, covidOrders: List<CovidOrderWithCovidTestDto>?
+        patientId: Long,
+        covidOrders: List<CovidOrderWithCovidTestDto>?
     ) {
         recordsRepository.storeCovidOrders(patientId, covidOrders)
     }

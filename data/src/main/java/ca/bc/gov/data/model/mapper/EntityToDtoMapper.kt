@@ -366,7 +366,7 @@ fun HealthVisitEntity.toDto() = HealthVisitsDto(
 )
 
 fun HospitalVisitEntity.toDto() = HospitalVisitDto(
-    id = healthVisitId,
+    id = hospitalVisitId,
     patientId = patientId,
     healthService = healthService,
     location = location,

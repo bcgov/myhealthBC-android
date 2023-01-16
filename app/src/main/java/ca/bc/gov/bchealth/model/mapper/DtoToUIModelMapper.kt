@@ -58,8 +58,8 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
         vaccineRecordId = vaccineWithDoses?.vaccine?.id!!,
         name = patient.fullName,
         qrIssuedDate = "Issued on ${
-            vaccineWithDoses?.vaccine?.qrIssueDate
-                ?.toDateTimeString()
+        vaccineWithDoses?.vaccine?.qrIssueDate
+            ?.toDateTimeString()
         }",
         shcUri = vaccineWithDoses?.vaccine?.shcUri!!,
         qrCode = vaccineWithDoses?.vaccine?.qrCodeImage,

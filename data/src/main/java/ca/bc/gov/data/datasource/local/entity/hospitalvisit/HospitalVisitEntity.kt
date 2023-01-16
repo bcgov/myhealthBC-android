@@ -8,7 +8,7 @@ import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import java.time.Instant
 
 @Entity(
-    tableName = "hospital_visit",
+    tableName = "hospital_visits",
     foreignKeys = [
         ForeignKey(
             entity = PatientEntity::class,
@@ -22,7 +22,7 @@ import java.time.Instant
 data class HospitalVisitEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "hospital_visit_id")
-    val healthVisitId: Long = 0,
+    val hospitalVisitId: Long = 0,
 
     @ColumnInfo(name = "patient_id")
     val patientId: Long,

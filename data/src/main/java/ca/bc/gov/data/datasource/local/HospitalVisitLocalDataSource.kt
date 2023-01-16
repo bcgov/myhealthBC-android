@@ -9,6 +9,9 @@ class HospitalVisitLocalDataSource @Inject constructor(
     private val hospitalVisitDao: HospitalVisitDao
 ) {
 
+    suspend fun getHospitalVisit(hospitalVisitId: Long) =
+        hospitalVisitDao.getHospitalVisitDetails(hospitalVisitId)
+
     suspend fun deleteHospitalVisits(patientId: Long) =
         hospitalVisitDao.delete(patientId)
 
