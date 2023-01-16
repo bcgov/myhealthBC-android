@@ -286,7 +286,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private suspend fun insertHospitalVisits(
         patientId: Long, hospitalVisits: List<HospitalVisitDto>?
     ) {
-        hospitalVisitRepository.deleteHospitalVisitsDto(patientId)
+        hospitalVisitRepository.deleteHospitalVisits(patientId)
         hospitalVisits?.let { list ->
             list.forEach { it.patientId = patientId }
             hospitalVisitRepository.insertHospitalVisits(list)
