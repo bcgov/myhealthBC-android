@@ -232,6 +232,16 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             try {
+                if (FLAG_HOSPITAL_VISITS) {
+                    hospitalVisitsDto = fetchRecord(authParameters, hospitalVisitRepository::getHospitalVisits)
+                }
+            } catch (e: Exception) {
+                handleException(e)?.let { failureResult ->
+                    return failureResult
+                }
+            }
+
+            try {
                 specialAuthorityResponse = fetchRecord(authParameters, specialAuthorityRepository::getSpecialAuthority)
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
@@ -250,6 +260,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             insertComments(commentsResponse)
             insertHealthVisits(patientId, healthVisitsResponse)
             insertSpecialAuthority(patientId, specialAuthorityResponse)
+            insertHospitalVisits(patientId, hospitalVisitsDto)
 
             updateNotification(isApiFailed)
         } catch (e: Exception) {
@@ -272,6 +283,16 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         }
     }
 
+    private suspend fun insertHospitalVisits(
+        patientId: Long,
+        hospitalVisitsDto: List<HospitalVisitDto>?
+    ) {
+        hospitalVisitRepository.deleteHospitalVisitsDto(patientId)
+        hospitalVisitsDto?.let { list ->
+            list.forEach { it.patientId = patientId }
+            hospitalVisitRepository.insertHospitalVisits(list)
+        }
+    }
 
     private suspend fun insertHealthVisits(
         patientId: Long,
