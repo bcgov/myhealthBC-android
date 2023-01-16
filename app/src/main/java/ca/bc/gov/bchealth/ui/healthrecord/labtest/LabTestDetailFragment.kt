@@ -12,47 +12,55 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ConcatAdapter
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentLabTestDetailBinding
-import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
+import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordDetailFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.PdfHelper
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
+import ca.bc.gov.bchealth.widget.AddCommentLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
 
 @AndroidEntryPoint
-class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
+class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_test_detail) {
 
     private val binding by viewBindings(FragmentLabTestDetailBinding::bind)
     private val viewModel: LabTestDetailViewModel by viewModels()
+
     private lateinit var labTestDetailAdapter: LabTestDetailAdapter
+    private lateinit var concatAdapter: ConcatAdapter
     private val args: LabTestDetailFragmentArgs by navArgs()
     private val pdfDecoderViewModel: PdfDecoderViewModel by viewModels()
     private var fileInMemory: File? = null
     private var resultListener = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) { _ ->
-        fileInMemory?.delete()
-    }
+    ) { fileInMemory?.delete() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        initUI()
+        setUpRecyclerView()
         viewModel.getLabTestDetails(args.labOrderId)
         observeUiState()
         observePdfData()
+        initComments()
     }
 
-    private fun initUI() {
-        setUpRecyclerView()
-    }
+    override fun getCommentView(): AddCommentLayout = binding.comment
+
+    override fun getScrollableView() = binding.rvLabTestDetailList
+
+    override fun getCommentEntryTypeCode() = CommentEntryTypeCode.LAB_RESULTS
+
+    override fun getParentEntryId(): String? = viewModel.uiState.value.parentEntryId
+
+    override fun getProgressBar(): View = binding.progressBar
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
         with(binding.layoutToolbar.topAppBar) {
@@ -68,36 +76,32 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
         labTestDetailAdapter = LabTestDetailAdapter(
             viewPdfClickListener = { viewModel.getLabTestPdf() }
         )
-        binding.rvLabTestDetailList.apply {
-            adapter = labTestDetailAdapter
-            addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
-        }
+
+        concatAdapter = ConcatAdapter(labTestDetailAdapter, getRecordCommentsAdapter())
+
+        binding.rvLabTestDetailList.adapter = concatAdapter
     }
 
     private fun observeUiState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
+        viewModel.uiState.collectOnStart { state ->
+            binding.progressBar.isVisible = state.onLoading
 
-                    binding.progressBar.isVisible = state.onLoading
+            handledServiceDown(state)
 
-                    handledServiceDown(state)
-
-                    if (state.labTestDetails?.isNotEmpty() == true) {
-                        labTestDetailAdapter.submitList(state.labTestDetails)
-                        binding.layoutToolbar.topAppBar.title = state.toolbarTitle
-                    }
-
-                    if (state.onError) {
-                        showError()
-                        viewModel.resetUiState()
-                    }
-
-                    handlePdfDownload(state)
-
-                    handleNoInternetConnection(state)
-                }
+            if (state.labTestDetails?.isNotEmpty() == true) {
+                labTestDetailAdapter.submitList(state.labTestDetails)
+                binding.layoutToolbar.topAppBar.title = state.toolbarTitle
             }
+
+            if (state.onError) {
+                showError()
+                viewModel.resetUiState()
+            }
+
+            handlePdfDownload(state)
+
+            handleNoInternetConnection(state)
+            getComments(state.parentEntryId)
         }
     }
 
@@ -116,7 +120,6 @@ class LabTestDetailFragment : BaseFragment(R.layout.fragment_lab_test_detail) {
     }
 
     private fun handlePdfDownload(state: LabTestDetailUiState) {
-
         if (state.pdfData?.isNotEmpty() == true) {
             pdfDecoderViewModel.base64ToPDFFile(state.pdfData)
             viewModel.resetUiState()

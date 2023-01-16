@@ -12,7 +12,6 @@
         android:id="@+id/layout_toolbar"
         layout="@layout/layout_top_appbar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,10 +20,21 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scrollbars="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/view_comment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layout_toolbar"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        tools:listitem="@layout/item_special_authority" />
+
+    <ca.bc.gov.bchealth.widget.AddCommentLayout
+        android:id="@+id/view_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -35,7 +45,6 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
