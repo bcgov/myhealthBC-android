@@ -1,8 +1,8 @@
 package ca.bc.gov.bchealth.utils
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.MotionEvent
+import androidx.annotation.StringRes
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.FragmentManager
 import ca.bc.gov.bchealth.R
@@ -24,7 +24,7 @@ class DatePickerHelper {
     @SuppressLint("ClickableViewAccessibility")
     fun initializeDatePicker(
         textInputLayout: TextInputLayout,
-        title: String,
+        @StringRes title: Int,
         parentFragmentManager: FragmentManager,
         tag: String
     ) {
@@ -34,7 +34,7 @@ class DatePickerHelper {
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                 .build()
         textInputLayout.editText?.setOnTouchListener { _, motionEvent ->
-            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
                 datePicker.show(parentFragmentManager, tag)
             }
             false
@@ -90,15 +90,16 @@ class DatePickerHelper {
 
     fun validateDatePickerData(
         textInputLayout: TextInputLayout,
-        context: Context,
-        errorMessage: String,
+        @StringRes errorMessage: Int? = null,
         isBlankAllowed: Boolean = false
     ): Boolean {
+        val errorStr = errorMessage?.let { textInputLayout.context.getString(it) } ?: ""
+
         if (isBlankAllowed) {
             return true
         } else {
             if (textInputLayout.editText?.text.isNullOrEmpty()) {
-                updateErrorMessage(textInputLayout, errorMessage)
+                updateErrorMessage(textInputLayout, errorStr)
                 return false
             }
 
@@ -109,7 +110,7 @@ class DatePickerHelper {
             ) {
                 updateErrorMessage(
                     textInputLayout,
-                    context.getString(R.string.enter_valid_date_format)
+                    textInputLayout.context.getString(R.string.enter_valid_date_format)
                 )
                 return false
             }

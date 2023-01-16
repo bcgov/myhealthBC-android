@@ -18,8 +18,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentBcscAuthBinding
-import ca.bc.gov.bchealth.ui.healthrecord.filter.FilterViewModel
-import ca.bc.gov.bchealth.ui.healthrecord.filter.TimelineTypeFilter
+import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceStatus
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceViewModel
@@ -47,7 +46,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
     private val binding by viewBindings(FragmentBcscAuthBinding::bind)
     private val viewModel: BcscAuthViewModel by viewModels()
-    private val filterSharedViewModel: FilterViewModel by activityViewModels()
+    private val filterSharedViewModel: PatientFilterViewModel by activityViewModels()
     private val termsOfServiceViewModel: TermsOfServiceViewModel by activityViewModels()
     private val authResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -120,7 +119,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                         viewModel.resetAuthStatus()
                         viewModel.checkAgeLimit()
                         // reset filter
-                        filterSharedViewModel.updateFilter(listOf(TimelineTypeFilter.ALL.name), null, null)
+                        filterSharedViewModel.clearFilter()
                     }
 
                     handleQueueIt(it)
@@ -168,6 +167,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                 showAgeLimitRestrictionDialog()
                 viewModel.resetAuthStatus()
             }
+            null -> return
         }
     }
 

@@ -1,17 +1,18 @@
-package ca.bc.gov.bchealth.ui.healthrecord.filter
+package ca.bc.gov.bchealth.ui.filter
 
 import androidx.lifecycle.ViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import javax.inject.Inject
 
-@HiltViewModel
-class FilterViewModel @Inject constructor() : ViewModel() {
+abstract class FilterViewModel : ViewModel() {
     private val _filterState = MutableStateFlow(FilterUiState())
     val filterState: StateFlow<FilterUiState> = _filterState.asStateFlow()
+
+    fun clearFilter() {
+        updateFilter(listOf(TimelineTypeFilter.ALL.name), null, null)
+    }
 
     fun updateFilter(timelineTypeFilter: List<String>, fromDate: String?, toDate: String?) {
         val startDate: String? = if (fromDate.isNullOrBlank()) {
@@ -32,6 +33,21 @@ class FilterViewModel @Inject constructor() : ViewModel() {
                 filterToDate = endDate
             )
         }
+    }
+
+    fun getFilterString(): String {
+        var filterString =
+            filterState.value.timelineTypeFilter.joinToString(",")
+        if (filterState.value.filterFromDate != null) {
+            filterString = filterString.plus(",FROM:")
+                .plus(filterState.value.filterFromDate)
+        }
+        if (filterState.value.filterToDate != null) {
+            filterString =
+                filterString.plus(",TO:").plus(filterState.value.filterToDate)
+        }
+
+        return filterString
     }
 }
 

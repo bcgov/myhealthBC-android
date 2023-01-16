@@ -6,6 +6,7 @@ import ca.bc.gov.data.BuildConfig
 import ca.bc.gov.data.datasource.local.MyHealthDataBase
 import ca.bc.gov.data.datasource.local.migration.MIGRATION_1_2
 import ca.bc.gov.data.datasource.local.migration.MIGRATION_2_3
+import ca.bc.gov.data.datasource.local.migration.MIGRATION_3_4
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.utils.RandomBytesGenerator
 import dagger.Module
@@ -43,7 +44,11 @@ class MyHealthDataBaseModule {
             context,
             MyHealthDataBase::class.java,
             "my_health_db"
-        ).addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+        ).addMigrations(
+            MIGRATION_1_2,
+            MIGRATION_2_3,
+            MIGRATION_3_4,
+        )
 
         if (BuildConfig.FLAVOR != "dev" &&
             BuildConfig.FLAVOR != "stage" &&

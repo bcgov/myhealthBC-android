@@ -44,20 +44,10 @@ class ResourcesFragment : BaseFragment(R.layout.fragment_resources) {
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
-        with(binding.layoutToolbar.appbar) {
-            stateListAnimator = null
-            elevation = 0f
-        }
         with(binding.layoutToolbar.topAppBar) {
-            inflateMenu(ca.bc.gov.bchealth.R.menu.settings_menu)
-            setOnMenuItemClickListener { menu ->
-                when (menu.itemId) {
-                    ca.bc.gov.bchealth.R.id.menu_settings -> {
-                        findNavController().navigate(ca.bc.gov.bchealth.R.id.profileFragment)
-                    }
-                }
-                return@setOnMenuItemClickListener true
-            }
+            setNavigationIcon(R.drawable.ic_toolbar_back)
+            setNavigationOnClickListener { findNavController().popBackStack() }
+            title = getString(R.string.health_resources)
         }
     }
 }

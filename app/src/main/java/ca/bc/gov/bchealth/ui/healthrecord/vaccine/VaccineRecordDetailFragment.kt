@@ -88,7 +88,7 @@ class VaccineRecordDetailFragment : BaseFragment(R.layout.fragment_vaccine_recor
         setUpRecyclerView()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 viewModel.uiState.collect { state ->
 

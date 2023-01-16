@@ -31,7 +31,11 @@
     <fragment
         android:id="@+id/onBoardingSliderFragment"
         android:name="ca.bc.gov.bchealth.ui.onboarding.OnBoardingSliderFragment"
-        android:label="OnBoardingSliderFragment" />
+        android:label="OnBoardingSliderFragment" >
+        <argument
+            android:name="dependentOnly"
+            app:argType="boolean" />
+    </fragment>
 
     <fragment
         android:id="@+id/fetchVaccineRecordFragment"
@@ -42,6 +46,7 @@
     <include app:graph="@navigation/health_pass" />
     <include app:graph="@navigation/health_records" />
     <include app:graph="@navigation/news_feed" />
+    <include app:graph="@navigation/dependents" />
     <include app:graph="@navigation/resources" />
 
     <fragment
@@ -77,7 +82,7 @@
     <fragment
         android:id="@+id/filterFragment"
         tools:layout="@layout/fragment_filter"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.filter.FilterFragment" />
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterFragment" />
 
     <fragment
         android:id="@+id/biometricSecurityTipFragment"

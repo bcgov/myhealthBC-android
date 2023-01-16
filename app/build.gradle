@@ -42,20 +42,28 @@ android {
 
         mock {
             dimension "version"
+            applicationIdSuffix ".mock"
+            manifestPlaceholders = [app_label: "@string/app_name_mock"]
             versionNameSuffix "-${versions.versionCode}-mock"
         }
 
         dev {
             dimension "version"
+            applicationIdSuffix ".dev"
+            manifestPlaceholders = [app_label: "@string/app_name_development"]
             versionNameSuffix "-${versions.versionCode}-dev"
         }
+
         stage {
             dimension "version"
+            applicationIdSuffix ".stage"
+            manifestPlaceholders = [app_label: "@string/app_name_stage"]
             versionNameSuffix "-${versions.versionCode}-stage"
         }
 
         prod {
             dimension "version"
+            manifestPlaceholders = [app_label: "@string/app_name"]
         }
     }
 
@@ -70,6 +78,11 @@ android {
 
     buildFeatures {
         viewBinding true
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = versions.compose_compiler
     }
 
     testOptions {
@@ -78,6 +91,10 @@ android {
 
     hilt {
         enableAggregatingTask = true
+    }
+
+    task getApkVersion {
+        println defaultConfig.versionName + "-" + defaultConfig.versionCode
     }
 }
 
@@ -91,6 +108,12 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swipe_refresh_layout"
     implementation "androidx.coordinatorlayout:coordinatorlayout:$versions.coordinator"
+
+    //Compose
+    implementation "androidx.compose.ui:ui-tooling-preview:$versions.compose_ui"
+    debugImplementation "androidx.compose.ui:ui-tooling:$versions.compose_ui"
+    implementation "androidx.compose.material:material:$versions.compose_ui"
+    implementation "com.google.android.material:compose-theme-adapter:$versions.compose_theme"
 
     //Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$versions.navigation"

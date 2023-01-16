@@ -4,6 +4,7 @@ import android.content.Context
 import ca.bc.gov.data.datasource.local.CommentLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidTestLocalDataSource
+import ca.bc.gov.data.datasource.local.DependentsLocalDataSource
 import ca.bc.gov.data.datasource.local.ImmunizationForecastLocalDataSource
 import ca.bc.gov.data.datasource.local.ImmunizationRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
@@ -16,6 +17,7 @@ import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.BannerRemoteDataSource
 import ca.bc.gov.data.datasource.remote.CommentRemoteDataSource
+import ca.bc.gov.data.datasource.remote.DependentsRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
@@ -23,6 +25,7 @@ import ca.bc.gov.data.datasource.remote.TermsOfServiceRemoteDataSource
 import ca.bc.gov.repository.BannerRepository
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.CommentRepository
+import ca.bc.gov.repository.DependentsRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.OnBoardingRepository
@@ -32,9 +35,11 @@ import ca.bc.gov.repository.PdfDecoderRepository
 import ca.bc.gov.repository.QrCodeGeneratorRepository
 import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.RecentPhnDobRepository
+import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.TermsOfServiceRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.immunization.ImmunizationForecastRepository
+import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.labtest.LabTestRepository
@@ -47,6 +52,7 @@ import ca.bc.gov.repository.testrecord.TestResultRepository
 import ca.bc.gov.repository.utils.Base64ToInputImageConverter
 import ca.bc.gov.repository.utils.UriToImage
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import ca.bc.gov.shcdecoder.SHCVerifier
 import dagger.Module
 import dagger.Provides
@@ -215,6 +221,54 @@ class RepositoriesModule {
 
     @Provides
     @Singleton
+    fun provideRecordsRepository(
+        patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
+        patientWithTestResultRepository: PatientWithTestResultRepository,
+        covidOrderRepository: CovidOrderRepository,
+        covidTestRepository: CovidTestRepository,
+        labOrderRepository: LabOrderRepository,
+        labTestRepository: LabTestRepository,
+        immunizationRecordRepository: ImmunizationRecordRepository,
+        immunizationForecastRepository: ImmunizationForecastRepository,
+        immunizationRecommendationRepository: ImmunizationRecommendationRepository,
+    ): RecordsRepository = RecordsRepository(
+        patientWithVaccineRecordRepository,
+        patientWithTestResultRepository,
+        covidOrderRepository,
+        covidTestRepository,
+        labOrderRepository,
+        labTestRepository,
+        immunizationRecordRepository,
+        immunizationForecastRepository,
+        immunizationRecommendationRepository,
+    )
+
+    @Provides
+    @Singleton
+    fun provideDependentsRepository(
+        remoteDataSource: DependentsRemoteDataSource,
+        localDataSource: DependentsLocalDataSource,
+        patientLocalDataSource: PatientLocalDataSource,
+        bcscAuthRepo: BcscAuthRepo,
+        covidOrderRepository: CovidOrderRepository,
+        fetchVaccineRecordRepository: FetchVaccineRecordRepository,
+        immunizationRecordRepository: ImmunizationRecordRepository,
+        recordsRepository: RecordsRepository,
+        mobileConfigRepository: MobileConfigRepository
+    ): DependentsRepository = DependentsRepository(
+        remoteDataSource,
+        localDataSource,
+        patientLocalDataSource,
+        bcscAuthRepo,
+        covidOrderRepository,
+        fetchVaccineRecordRepository,
+        immunizationRecordRepository,
+        recordsRepository,
+        mobileConfigRepository
+    )
+
+    @Provides
+    @Singleton
     fun provideTermsOfServiceRepository(
         termsOfServiceRemoteDataSource: TermsOfServiceRemoteDataSource
     ): TermsOfServiceRepository = TermsOfServiceRepository(termsOfServiceRemoteDataSource)
@@ -224,9 +278,15 @@ class RepositoriesModule {
     fun provideCovidOrderRepository(
         laboratoryRemoteDataSource: LaboratoryRemoteDataSource,
         covidOrderLocalDataSource: CovidOrderLocalDataSource,
+        dependentsLocalDataSource: DependentsLocalDataSource,
         bcscAuthRepo: BcscAuthRepo
     ): CovidOrderRepository =
-        CovidOrderRepository(laboratoryRemoteDataSource, covidOrderLocalDataSource, bcscAuthRepo)
+        CovidOrderRepository(
+            laboratoryRemoteDataSource,
+            covidOrderLocalDataSource,
+            dependentsLocalDataSource,
+            bcscAuthRepo
+        )
 
     @Provides
     @Singleton

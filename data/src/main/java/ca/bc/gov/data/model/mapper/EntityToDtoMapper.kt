@@ -6,6 +6,7 @@ import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.comment.CommentDto
+import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.ClinicDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.common.model.immunization.ForecastStatus
@@ -50,6 +51,7 @@ import ca.bc.gov.data.datasource.local.entity.covid.test.TestRecordEntity
 import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
+import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
 import ca.bc.gov.data.datasource.local.entity.healthvisits.HealthVisitEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationForecastEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecommendationEntity
@@ -374,4 +376,19 @@ fun ImmunizationRecommendationEntity.toDto() = ImmunizationRecommendationsDto(
     status = ForecastStatus.getByText(status),
     agentDueDate = this.agentDueDate,
     recommendedVaccinations = this.recommendedVaccinations
+)
+
+fun DependentEntity.toDto() = DependentDto(
+    hdid = hdid,
+    firstname = firstname,
+    lastname = lastname,
+    phn = phn,
+    dateOfBirth = dateOfBirth,
+    gender = gender,
+    ownerId = ownerId,
+    delegateId = delegateId,
+    reasonCode = reasonCode,
+    version = version,
+    patientId = patientId,
+    isCacheValid = isCacheValid,
 )

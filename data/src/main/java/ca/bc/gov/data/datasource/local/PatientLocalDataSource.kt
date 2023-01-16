@@ -2,7 +2,6 @@ package ca.bc.gov.data.datasource.local
 
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
-import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithHealthVisitsDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
@@ -36,10 +35,6 @@ class PatientLocalDataSource @Inject constructor(
             }
         }
 
-    suspend fun getBcscSourceHealthRecordCount(): Int {
-        return patientDao.getBcscSourceHealthRecordCount()
-    }
-
     /**
      * Inserts [patient] records to the database
      * @param patient
@@ -60,8 +55,6 @@ class PatientLocalDataSource @Inject constructor(
             return patientDao.insert(patient.toEntity())
         }
     }
-
-    fun getPatientList(): Flow<PatientListDto> = patientDao.getPatientList().map { it.toDto() }
 
     suspend fun insertAuthenticatedPatient(patientDto: PatientDto): Long {
         patientDao.deleteAuthenticatedPatient()
@@ -121,9 +114,6 @@ class PatientLocalDataSource @Inject constructor(
         patientDao.deleteAuthenticatedPatient()
     }
 
-    suspend fun isAuthenticatedPatient(patientId: Long): Boolean =
-        patientDao.isAuthenticatedPatient(patientId) > 0
-
     suspend fun findPatientByAuthStatus(authenticationStatus: AuthenticationStatus): PatientDto? =
         patientDao.findPatientByAuthStatus(authenticationStatus)?.toDto()
 
@@ -136,4 +126,10 @@ class PatientLocalDataSource @Inject constructor(
 
     suspend fun getPatientWithSpecialAuthority(patientId: Long): PatientWithSpecialAuthorityDto? =
         patientDao.getPatientWithSpecialAuthority(patientId)?.toDto()
+
+    suspend fun getAuthenticatedPatientId() = patientDao.getAuthenticatedPatientId() ?: -1
+
+    suspend fun deleteDependentPatients() {
+        patientDao.deleteDependentPatients()
+    }
 }

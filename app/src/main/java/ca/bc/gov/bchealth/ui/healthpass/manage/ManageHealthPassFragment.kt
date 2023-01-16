@@ -10,11 +10,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentManageHealthPassesBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.healthpass.HealthPassViewModel
+import ca.bc.gov.bchealth.ui.recycler.VerticalDragCallback
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
@@ -40,7 +40,7 @@ class ManageHealthPassFragment : BaseFragment(R.layout.fragment_manage_health_pa
         setUpRecyclerView()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 collectHealthPasses()
             }
         }
@@ -57,11 +57,7 @@ class ManageHealthPassFragment : BaseFragment(R.layout.fragment_manage_health_pa
         /*
         * Add cards movement functionality
         * */
-        val callback = RecyclerDragCallBack(
-            manageHealthPassAdapter,
-            ItemTouchHelper.UP.or(ItemTouchHelper.DOWN), 0
-        )
-        val helper = ItemTouchHelper(callback)
+        val helper = ItemTouchHelper(VerticalDragCallback(::onItemMoved))
         helper.attachToRecyclerView(binding.recManageCards)
         manageHealthPassAdapter.notifyItemRangeChanged(0, manageHealthPassAdapter.itemCount)
     }
@@ -71,7 +67,7 @@ class ManageHealthPassFragment : BaseFragment(R.layout.fragment_manage_health_pa
             setNavigationIcon(R.drawable.ic_toolbar_back)
             setNavigationOnClickListener { findNavController().popBackStack() }
             title = getString(R.string.bc_vaccine_passes)
-            inflateMenu(R.menu.menu_manage_health_pass)
+            inflateMenu(R.menu.menu_done)
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
                     R.id.menu_done -> {
@@ -95,31 +91,8 @@ class ManageHealthPassFragment : BaseFragment(R.layout.fragment_manage_health_pa
         }
     }
 
-    inner class RecyclerDragCallBack(
-        private val adapter: ManageHealthPassAdapter,
-        dragDirs: Int,
-        swipeDirs: Int
-    ) : ItemTouchHelper.SimpleCallback(dragDirs, swipeDirs) {
-
-        override fun onMove(
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
-        ): Boolean {
-            Collections.swap(
-                manageHealthPassAdapter.healthPasses,
-                viewHolder.absoluteAdapterPosition,
-                target.absoluteAdapterPosition
-            )
-            adapter.notifyItemMoved(
-                viewHolder.absoluteAdapterPosition,
-                target.absoluteAdapterPosition
-            )
-            return false
-        }
-
-        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        }
+    private fun onItemMoved(elementIndex: Int, targetIndex: Int) {
+        Collections.swap(manageHealthPassAdapter.healthPasses, elementIndex, targetIndex)
     }
 
     private fun confirmUnlinking(vaccineRecordId: Long) {

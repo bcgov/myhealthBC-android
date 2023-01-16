@@ -1,6 +1,7 @@
 package ca.bc.gov.bchealth.model.mapper
 
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.ui.dependents.DependentDetailItem
 import ca.bc.gov.bchealth.ui.healthpass.FederalTravelPassState
 import ca.bc.gov.bchealth.ui.healthpass.HealthPass
 import ca.bc.gov.bchealth.ui.healthpass.PassState
@@ -14,6 +15,7 @@ import ca.bc.gov.bchealth.ui.recommendations.RecommendationDetailItem
 import ca.bc.gov.bchealth.utils.orPlaceholder
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
+import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecommendationsDto
@@ -30,6 +32,7 @@ import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
 import java.time.Instant
+import java.time.LocalDate
 
 fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
 
@@ -62,7 +65,9 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
         state = passState,
         isExpanded = false,
         federalTravelPassState = federalTravelPassState,
-        isAuthenticated = patient.authenticationStatus == AuthenticationStatus.AUTHENTICATED
+        isRemovable = with(patient.authenticationStatus) {
+            this != AuthenticationStatus.AUTHENTICATED && this != AuthenticationStatus.DEPENDENT
+        }
     )
 }
 
@@ -309,6 +314,14 @@ fun ImmunizationRecommendationsDto.toUiModel() = RecommendationDetailItem(
     title = this.recommendedVaccinations.orPlaceholder(),
     status = this.status,
     date = this.agentDueDate?.toDate().orPlaceholder(),
+)
+
+fun DependentDto.toUiModel(currentDate: LocalDate) = DependentDetailItem(
+    patientId = patientId,
+    hdid = hdid,
+    firstName = firstname,
+    fullName = "$firstname $lastname",
+    agedOut = isDependentAgedOut(currentDate)
 )
 
 private fun ImmunizationForecastDto.toUiModel() = ForecastDetailItem(

@@ -7,9 +7,6 @@ import com.google.gson.annotations.SerializedName
  */
 data class VaccineResourcePayload(
     val id: String,
-    val loaded: Boolean,
-    @SerializedName("retryin")
-    val retryInMilli: Long,
     @SerializedName("personalhealthnumber")
     val phn: String?,
     @SerializedName("firstname")

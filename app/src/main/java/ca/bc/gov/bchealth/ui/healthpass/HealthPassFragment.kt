@@ -278,7 +278,7 @@ class HealthPassFragment : BaseFragment(R.layout.fragment_helath_pass) {
             passes.first().isExpanded = true
             healthPassAdapter.submitList(passes)
 
-            if (!passes.first().isAuthenticated) {
+            if (passes.first().isRemovable) {
                 val callback = SwipeToDeleteCallBack()
                 val itemTouchHelper = ItemTouchHelper(callback)
                 itemTouchHelper.attachToRecyclerView(recHealthPasses)

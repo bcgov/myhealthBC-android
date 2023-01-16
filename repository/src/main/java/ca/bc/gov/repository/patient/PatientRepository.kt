@@ -43,10 +43,6 @@ class PatientRepository @Inject constructor(
             }
         }
 
-    suspend fun getBcscDataRecordCount(): Int {
-        return patientLocalDataSource.getBcscSourceHealthRecordCount()
-    }
-
     suspend fun insert(patientDto: PatientDto): Long =
         patientLocalDataSource.insert(patientDto)
 

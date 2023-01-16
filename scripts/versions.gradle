@@ -2,17 +2,17 @@ def versions = [:]
 
 //Android
 versions.minSdkVersion = 27
-versions.targetSdkVersion = 31
-versions.compileSdkVersion = 31
+versions.targetSdkVersion = 32
+versions.compileSdkVersion = 32
 
 //App
-versions.versionName = '1.4.0'
-versions.versionCode = 64
+versions.versionName = '1.5.0'
+versions.versionCode = 83
 versions.localApiVersion = 2
 
 //Tools & Libs
-versions.kotlin = "1.6.10"
-versions.gradle = '7.0.4'
+versions.kotlin = "1.7.20"
+versions.gradle = '7.3.0'
 
 versions.appcompat = '1.4.0'
 versions.core_ktx = "1.7.0"
@@ -23,14 +23,19 @@ versions.material = "1.4.0"
 versions.recycler = "1.2.1"
 versions.coordinator = "1.2.0"
 
+//Caution: upgrading navigation to 2.4.1+ may lead to issues in findNavController().currentBackStackEntry?.savedStateHandle?
+//ie.: When you log in or out from a tab, the state does not propagate to the records screen. Check HAPP-1153 for more information
 versions.navigation = "2.3.5"
 
 versions.viewmodel = "2.4.0-beta01"
 versions.lifecycle = "2.4.0-beta01"
 versions.livedata = "2.4.0-beta01"
 
+versions.compose_compiler = "1.3.2"
+versions.compose_ui = "1.2.1"
+versions.compose_theme = "1.1.16"
 
-versions.hilt = "2.38.1"
+versions.hilt = "2.42"
 
 versions.barcode_scanning = "17.0.1"
 

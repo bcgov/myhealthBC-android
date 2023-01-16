@@ -8,9 +8,6 @@ import android.widget.AutoCompleteTextView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -26,6 +23,7 @@ import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.PhnHelper
 import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.inflateHelpButton
+import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
@@ -74,64 +72,13 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
             findNavController().popBackStack()
         }
 
-        setUpPhnUI()
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { uiState ->
-
-                    showLoader(uiState.onLoading)
-
-                    if (!uiState.isHgServicesUp) {
-                        binding.root.showServiceDownMessage(requireContext())
-                        viewModel.resetUiState()
-                    }
-
-                    if (uiState.errorData != null) {
-                        AlertDialogHelper.showAlertDialog(
-                            context = requireContext(),
-                            title = getString(uiState.errorData.title),
-                            msg = getString(uiState.errorData.message),
-                            positiveBtnMsg = getString(R.string.btn_ok)
-                        )
-                    }
-
-                    if (uiState.queItTokenUpdated) {
-                        fetchTravelPass()
-                    }
-
-                    if (uiState.onMustBeQueued && uiState.queItUrl != null) {
-                        queUser(uiState.queItUrl)
-                    }
-
-                    if (uiState.vaccineRecord != null) {
-                        addOrUpdateCardViewModel.processResult(uiState.vaccineRecord)
-                    }
-
-                    if (uiState.patientDataDto != null) {
-                        patientDataDto = uiState.patientDataDto
-                    }
-
-                    handleNoInternetConnection(uiState)
-                }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
-                addOrUpdateCardViewModel.uiState.collect { state ->
-
-                    showLoader(state.onLoading)
-                    if (state.state != null) {
-                        performActionBasedOnState(state.state, state.vaccineRecord)
-                    }
-                }
-            }
+        launchOnStart {
+            launch { collectPhnUi() }
+            launch { collectUiState() }
+            launch { collectCardUiState() }
         }
 
         viewModel.getPatientWithVaccineRecord(args.patientId)
-
         binding.scrollView.setOnTouchListener { view, _ ->
             requireContext().hideKeyboard(view)
             view?.clearFocus()
@@ -159,26 +106,69 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
         }
     }
 
-    private fun setUpPhnUI() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                recentPhnDobViewModel.recentPhnDob.collect { recentPhnDob ->
-                    val (phn, dob) = recentPhnDob
-                    val phnArray = arrayOf(phn)
+    private suspend fun collectPhnUi() {
+        recentPhnDobViewModel.recentPhnDob.collect { recentPhnDob ->
+            val (phn, dob) = recentPhnDob
+            val phnArray = arrayOf(phn)
 
-                    val adapter: ArrayAdapter<String> = ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_dropdown_item_1line,
-                        phnArray
-                    )
+            val adapter: ArrayAdapter<String> = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                phnArray
+            )
 
-                    val textView = binding.edPhnNumber.editText as AutoCompleteTextView
-                    textView.setAdapter(adapter)
-                    binding.edPhnNumber.setEndIconDrawable(R.drawable.ic_arrow_down)
-                    binding.edPhnNumber.setEndIconOnClickListener {
-                        textView.showDropDown()
-                    }
-                }
+            val textView = binding.edPhnNumber.editText as AutoCompleteTextView
+            textView.setAdapter(adapter)
+            binding.edPhnNumber.setEndIconDrawable(R.drawable.ic_arrow_down)
+            binding.edPhnNumber.setEndIconOnClickListener {
+                textView.showDropDown()
+            }
+        }
+    }
+
+    private suspend fun collectUiState() {
+        viewModel.uiState.collect { uiState ->
+            showLoader(uiState.onLoading)
+            if (!uiState.isHgServicesUp) {
+                binding.root.showServiceDownMessage(requireContext())
+                viewModel.resetUiState()
+            }
+
+            if (uiState.errorData != null) {
+                AlertDialogHelper.showAlertDialog(
+                    context = requireContext(),
+                    title = getString(uiState.errorData.title),
+                    msg = getString(uiState.errorData.message),
+                    positiveBtnMsg = getString(R.string.btn_ok)
+                )
+            }
+
+            if (uiState.queItTokenUpdated) {
+                fetchTravelPass()
+            }
+
+            if (uiState.onMustBeQueued && uiState.queItUrl != null) {
+                queUser(uiState.queItUrl)
+            }
+
+            if (uiState.vaccineRecord != null) {
+                addOrUpdateCardViewModel.processResult(uiState.vaccineRecord)
+            }
+
+            if (uiState.patientDataDto != null) {
+                patientDataDto = uiState.patientDataDto
+            }
+
+            handleNoInternetConnection(uiState)
+        }
+    }
+
+    private suspend fun collectCardUiState() {
+        addOrUpdateCardViewModel.uiState.collect { state ->
+
+            showLoader(state.onLoading)
+            if (state.state != null) {
+                performActionBasedOnState(state.state, state.vaccineRecord)
             }
         }
     }
@@ -190,12 +180,14 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
 
     private fun fetchTravelPass() {
         val phn = binding.edPhn.text.toString()
-        if (PhnHelper().validatePhnData(binding.edPhnNumber, requireContext())) {
-            viewModel.fetchVaccineRecord(
-                phn,
-                patientDataDto.patient.dateOfBirth.toDate(yyyy_MM_dd),
-                patientDataDto.vaccineWithDoses?.doses!!.last()?.date.toDate(yyyy_MM_dd)
-            )
+        if (PhnHelper().validatePhnData(binding.edPhnNumber)) {
+            patientDataDto.vaccineWithDoses?.doses?.let { doses ->
+                viewModel.fetchVaccineRecord(
+                    phn,
+                    patientDataDto.patient.dateOfBirth.toDate(yyyy_MM_dd),
+                    doses.last().date.toDate(yyyy_MM_dd)
+                )
+            }
         }
     }
 

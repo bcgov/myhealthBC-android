@@ -1,5 +1,12 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Health Gateway</string>
+    <string name="app_name_development">DEV - Health Gateway</string>
+    <string name="app_name_mock">MOCK - Health Gateway</string>
+    <string name="app_name_stage">STG - Health Gateway</string>
+
+    <!-- General -->
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <!--Informational screen for camera permission-->
     <string name="privacy_policy">Privacy Policy</string>
@@ -16,11 +23,50 @@
     <string name="in_app_update_body">This version of Health Gateway mobile is expired. To continue using the application, please go the Play Store to download the latest version.</string>
     <string name="in_app_update_button">Update now</string>
     <string name="in_app_update_footer">Please contact Health Gateway team (healthgateway@gov.bc.ca) for more information</string>
+
     <!--Recommendations-->
     <string name="recommendations">Recommendations</string>
     <string name="recommendations_home_title">Recommended immunizations</string>
     <string name="recommendations_description">For more information on vaccines recommendation and eligibility, please visit immunizeBC or speak to your health care provider.</string>
     <string name="recommendations_description_clickable">immunizeBC</string>
+
+    <!--Dependents-->
+    <string name="dependent">Dependent</string>
+    <string name="dependent_remove">Remove dependent</string>
+    <string name="dependents_title">Dependents</string>
+    <string name="dependents_session_expired">Log in again to access all dependents’ records.</string>
+    <string name="dependents_body">You can add your dependents under the age of 12 to view their health records. Make sure you include all given names exactly as shown on their BC Services Card.</string>
+    <string name="dependents_log_in">Log in with your BC Services Card to access all dependents’ records. The BC Services Card app is a secure way to prove who you are.</string>
+    <string name="dependents_add_dependent">Add dependent</string>
+    <string name="dependents_aged_out_message">You no longer have access to this dependent as they have turned 12</string>
+    <string name="dependents_manage_dependent">Manage dependents</string>
+    <string name="dependents_registration_title">Dependent Registration</string>
+    <string name="dependents_registration_first_name">Given Names</string>
+    <string name="dependents_registration_first_name_hint">Enter given name</string>
+    <string name="dependents_registration_first_name_error">Given Names is required</string>
+    <string name="dependents_registration_given_last_name">Last Name</string>
+    <string name="dependents_registration_given_last_name_hint">Enter last name</string>
+    <string name="dependents_registration_given_last_name_error">Last Name is required</string>
+    <string name="dependents_registration_date_of_birth">Date of birth (DoB)</string>
+    <string name="dependents_registration_phn">Personal Health Number (PHN)</string>
+    <string name="dependents_registration_phn_hint" tools:ignore="Typos">xxxx xxx xxx</string>
+    <string name="dependents_registration_phn_footer">PHN is located on the back of the BC Services Card</string>
+    <string name="dependents_registration_terms">By providing the child’s name, date of birth, and personal health number, I declare that I am the child’s guardian and that I have the authority to request and receive health information respecting the child from third parties.\n\n
+        If I either: (a) cease to be guardian of this child; (b) or lose the right to request or receive health information from third parties respecting this child, I will remove them as a dependent under my Health Gateway account immediately.\n\n
+        I understand that I will no longer be able to access my child’s health records once they are 12 years of age.</string>
+    <string name="dependents_registration_error_duplicate">This dependent is already added</string>
+    <string name="dependents_registration_error_mismatch_title">Error</string>
+    <string name="dependents_registration_error_mismatch_body">The information you entered does not match our records. Please try again.\n\nIf you continue to have issues, please contact HealthGateway@gov.bc.ca</string>
+    <string name="dependents_registration_error_mismatch_send">Send Email</string>
+    <string name="dependents_management_title">Manage dependents</string>
+    <string name="dependents_management_remove_title">Remove dependent</string>
+    <string name="dependents_management_remove_body">Are you sure you want to remove this dependent(%s) from your application?</string>
+    <string name="dependents_profile">Profile</string>
+    <string name="dependents_profile_first">First name</string>
+    <string name="dependents_profile_last">Last name</string>
+    <string name="dependents_profile_phn">Personal Health Number (PHN)</string>
+    <string name="dependents_profile_dob">Date of birth (DoB)</string>
+    <string name="dependents_profile_remove_dependent">Remove dependent</string>
 
     <!--Resources-->
     <string name="resources">Resources</string>
@@ -144,6 +190,9 @@
     <string name="onboarding_health_resources_desc">Connect with HealthLink BC for health advice and get the latest information about COVID-19.</string>
     <string name="onboarding_news_feed_title">News feed</string>
     <string name="onboarding_news_feed_desc">Get the latest COVID-19 news from  the Government of B.C.</string>
+    <string name="onboarding_dependents_title">Dependent record</string>
+    <string name="onboarding_dependents_desc">Access to your children’s (11 years old and younger) immunization and COVID-19 test records.</string>
+
     <string name="new_string">New</string>
     <string name="ok_camel_case">Ok</string>
     <string name="skip">Skip intro</string>
@@ -258,8 +307,8 @@
     <string name="back">Back</string>
     <string name="submit">Submit</string>
     <string name="cancel">Cancel</string>
+    <string name="register">Register</string>
     <string name="no_internet">No internet!</string>
-    <string name="check_connection">Please check network connection.</string>
     <string name="place_holder_text">Place holder text</string>
     <string name="lorem_ipsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</string>
     <string name="select_phn">select personal health number</string>

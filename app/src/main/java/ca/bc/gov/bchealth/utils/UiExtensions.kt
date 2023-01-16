@@ -11,8 +11,13 @@ import android.text.style.StyleSpan
 import android.text.style.URLSpan
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
+import androidx.core.widget.doOnTextChanged
 import ca.bc.gov.bchealth.R
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.checkbox.MaterialCheckBox
+import com.google.android.material.textfield.TextInputLayout
 
 fun TextView.underlineText() {
     this.paintFlags = this.paintFlags or Paint.UNDERLINE_TEXT_FLAG
@@ -25,6 +30,40 @@ fun MaterialToolbar.inflateHelpButton(action: () -> Unit) {
             R.id.menu_help -> action.invoke()
         }
         return@setOnMenuItemClickListener true
+    }
+}
+
+fun MaterialCheckBox.validateCheckbox(): Boolean {
+    if (isChecked.not()) {
+        val errorColour = ContextCompat.getColor(this.context, R.color.error)
+        val regularColour = ContextCompat.getColor(this.context, R.color.text_black)
+
+        this.setTextColor(errorColour)
+        this.setOnCheckedChangeListener { _, checked ->
+            val colour = if (checked) regularColour else errorColour
+            this.setTextColor(colour)
+        }
+    }
+
+    return isChecked
+}
+
+fun TextInputLayout.validateEmptyInputLayout(@StringRes message: Int): Boolean {
+    if (editText?.text.isNullOrEmpty()) {
+        error = context.getString(message)
+        showErrorState(this)
+        return false
+    }
+    return true
+}
+
+private fun showErrorState(textInputLayout: TextInputLayout) {
+    textInputLayout.isErrorEnabled = true
+    textInputLayout.editText?.doOnTextChanged { text, _, _, _ ->
+        if (text != null && text.isNotEmpty()) {
+            textInputLayout.isErrorEnabled = false
+            textInputLayout.error = null
+        }
     }
 }
 

@@ -1,8 +1,8 @@
-package ca.bc.gov.bchealth.ui.healthrecord.filter
+package ca.bc.gov.bchealth.ui.filter
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.activityViewModels
+import androidx.core.view.forEach
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -12,19 +12,24 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFilterBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.DatePickerHelper
+import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.utils.toDate
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-@AndroidEntryPoint
-class FilterFragment : BaseFragment(R.layout.fragment_filter) {
+abstract class FilterFragment : BaseFragment(R.layout.fragment_filter) {
 
     private val binding by viewBindings(FragmentFilterBinding::bind)
-    private val filterSharedViewModel: FilterViewModel by activityViewModels()
+    abstract val filterSharedViewModel: FilterViewModel
+
+    abstract val availableFilters: List<Int>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.cgFilterByType.forEach { chip ->
+            chip.toggleVisibility(availableFilters.contains(chip.id))
+        }
 
         applyClickListener()
 
@@ -99,7 +104,11 @@ class FilterFragment : BaseFragment(R.layout.fragment_filter) {
                     filterList.add(TimelineTypeFilter.ALL.name)
                 }
 
-                filterSharedViewModel.updateFilter(filterList, binding.etFrom.text.toString(), binding.etTo.text.toString())
+                filterSharedViewModel.updateFilter(
+                    filterList,
+                    binding.etFrom.text.toString(),
+                    binding.etTo.text.toString()
+                )
 
                 findNavController().popBackStack()
             } else {
@@ -114,19 +123,16 @@ class FilterFragment : BaseFragment(R.layout.fragment_filter) {
     private fun validateSelectedDate(): Boolean {
         if (DatePickerHelper().validateDatePickerData(
                 textInputLayout = binding.tipFrom,
-                context = requireContext(),
-                errorMessage = "",
                 isBlankAllowed = true
             ) && DatePickerHelper().validateDatePickerData(
                     textInputLayout = binding.tipTo,
-                    context = requireContext(),
-                    errorMessage = "",
                     isBlankAllowed = true
                 )
         ) {
             if (!binding.etFrom.text.toString().isNullOrBlank() &&
                 !binding.etTo.text.toString().isNullOrBlank() &&
-                binding.etFrom.text.toString().toDate().isAfter(binding.etTo.text.toString().toDate())
+                binding.etFrom.text.toString().toDate()
+                    .isAfter(binding.etTo.text.toString().toDate())
             ) {
                 return false
             }
@@ -137,7 +143,11 @@ class FilterFragment : BaseFragment(R.layout.fragment_filter) {
 
     private fun clearClickListener() {
         binding.btnClear.setOnClickListener {
-            filterSharedViewModel.updateFilter(mutableListOf(TimelineTypeFilter.ALL.name), null, null)
+            filterSharedViewModel.updateFilter(
+                mutableListOf(TimelineTypeFilter.ALL.name),
+                null,
+                null
+            )
 
             findNavController().popBackStack()
         }
@@ -145,7 +155,7 @@ class FilterFragment : BaseFragment(R.layout.fragment_filter) {
 
     private fun observeFilterState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 filterSharedViewModel.filterState.collect { filterState ->
 
                     binding.etFrom.setText(filterState.filterFromDate)
