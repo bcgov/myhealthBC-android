@@ -23,7 +23,7 @@ class HospitalVisitDetailViewModel @Inject constructor(
 
     fun getHospitalVisitDetails(hospitalVisitId: Long) = viewModelScope.launch {
         try {
-            val dto : HospitalVisitDto = repository.getHospitalVisit(hospitalVisitId)
+            val dto: HospitalVisitDto = repository.getHospitalVisit(hospitalVisitId)
 
             val uiList: List<HospitalVisitDetailItem> = listOf(
                 HospitalVisitDetailItem(
