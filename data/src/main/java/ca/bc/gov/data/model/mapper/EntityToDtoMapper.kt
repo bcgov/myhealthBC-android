@@ -9,6 +9,7 @@ import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.ClinicDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
+import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.immunization.ForecastStatus
 import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecommendationsDto
@@ -23,6 +24,7 @@ import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithHealthVisitsDto
+import ca.bc.gov.common.model.patient.PatientWithHospitalVisitsDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.patient.PatientWithSpecialAuthorityDto
@@ -53,6 +55,7 @@ import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
 import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
 import ca.bc.gov.data.datasource.local.entity.healthvisits.HealthVisitEntity
+import ca.bc.gov.data.datasource.local.entity.hospitalvisit.HospitalVisitEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationForecastEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecommendationEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecordEntity
@@ -68,6 +71,7 @@ import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
 import ca.bc.gov.data.datasource.local.entity.relations.MedicationWithSummaryAndPharmacy
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithCovidOrderAndCovidTest
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithHealthVisits
+import ca.bc.gov.data.datasource.local.entity.relations.PatientWithHospitalVisits
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithImmunizationRecordAndForecast
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithLabOrdersAndLabTests
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithMedicationRecords
@@ -214,6 +218,11 @@ fun PatientWithHealthVisits.toDto() = PatientWithHealthVisitsDto(
     healthVisits = healthVisits.map { it.toDto() }
 )
 
+fun PatientWithHospitalVisits.toDto() = PatientWithHospitalVisitsDto(
+    patient = patient.toDto(),
+    hospitalVisits = hospitalVisits.map { it.toDto() }
+)
+
 fun PatientWithSpecialAuthorities.toDto() = PatientWithSpecialAuthorityDto(
     patient = patient.toDto(),
     specialAuthorities = specialAuthorities.map { it.toDto() }
@@ -354,6 +363,17 @@ fun HealthVisitEntity.toDto() = HealthVisitsDto(
     practitionerName,
     ClinicDto(name = clinic?.name),
     dataSource = dataSource
+)
+
+fun HospitalVisitEntity.toDto() = HospitalVisitDto(
+    id = healthVisitId,
+    patientId = patientId,
+    healthService = healthService,
+    location = location,
+    provider = provider,
+    visitType = visitType,
+    visitDate = visitDate,
+    dischargeDate = dischargeDate,
 )
 
 fun SpecialAuthorityEntity.toDto() = SpecialAuthorityDto(
