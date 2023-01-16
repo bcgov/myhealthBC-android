@@ -12,7 +12,9 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHospitalVisitDetailBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.viewBindings
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HospitalVisitDetailFragment : BaseFragment(R.layout.fragment_hospital_visit_detail) {
     private val binding by viewBindings(FragmentHospitalVisitDetailBinding::bind)
     private val args: HospitalVisitDetailFragmentArgs by navArgs()

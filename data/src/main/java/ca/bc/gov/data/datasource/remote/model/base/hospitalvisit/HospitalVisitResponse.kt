@@ -15,4 +15,3 @@ data class HospitalVisitPayload(
     @SerializedName("hospitalVisits")
     val list: List<HospitalVisitInformation> = emptyList(),
 )
-
