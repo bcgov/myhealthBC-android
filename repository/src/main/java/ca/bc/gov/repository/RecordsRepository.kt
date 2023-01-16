@@ -95,7 +95,7 @@ class RecordsRepository @Inject constructor(
             immunizationRecommendationRepository.insert(it)
         }
     }
-    
+
     suspend fun storeHospitalVisits(patientId: Long, hospitalVisits: List<HospitalVisitDto>?) {
         hospitalVisitRepository.deleteHospitalVisits(patientId)
         hospitalVisits?.let { list ->
