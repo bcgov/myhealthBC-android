@@ -10,11 +10,11 @@ class HospitalVisitRepository @Inject constructor(
     private val remoteDataSource: HospitalVisitRemoteDataSource
 ) {
 
-    suspend fun deleteHospitalVisitsDto(patientId: Long) {
-    }
+    suspend fun deleteHospitalVisits(patientId: Long) =
+        localDataSource.deleteHospitalVisits(patientId)
 
-    suspend fun insertHospitalVisits(list: List<HospitalVisitDto>) {
-    }
+    suspend fun insertHospitalVisits(list: List<HospitalVisitDto>) =
+        localDataSource.insertHospitalVisits(list)
 
     suspend fun getHospitalVisits(token: String, hdid: String) =
         remoteDataSource.getHospitalVisit(token, hdid)
