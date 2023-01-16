@@ -253,15 +253,15 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             /**
              * DB Operations
              * */
-            insertVaccineRecords(vaccineRecords)
-            insertCovidOrders(patientId, covidOrders)
+            recordsRepository.storeVaccineRecords(vaccineRecords)
+            recordsRepository.storeCovidOrders(patientId, covidOrders)
             insertMedicationRecords(patientId, medications)
-            insertLabOrders(patientId, labOrders)
-            insertImmunizationRecords(patientId, immunizations)
+            recordsRepository.storeLabOrders(patientId, labOrders)
+            recordsRepository.storeImmunizationRecords(patientId, immunizations)
             insertComments(comments)
             insertHealthVisits(patientId, healthVisits)
             insertSpecialAuthority(patientId, specialAuthorities)
-            insertHospitalVisits(patientId, hospitalVisits)
+            recordsRepository.storeHospitalVisits(patientId, hospitalVisits)
 
             updateNotification(isApiFailed)
         } catch (e: Exception) {
@@ -284,17 +284,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         }
     }
 
-    private suspend fun insertHospitalVisits(
-        patientId: Long,
-        hospitalVisits: List<HospitalVisitDto>?
-    ) {
-        hospitalVisitRepository.deleteHospitalVisits(patientId)
-        hospitalVisits?.let { list ->
-            list.forEach { it.patientId = patientId }
-            hospitalVisitRepository.insertHospitalVisits(list)
-        }
-    }
-
     private suspend fun insertHealthVisits(
         patientId: Long,
         healthVisits: List<HealthVisitsDto>?
@@ -313,17 +302,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         comments?.let { commentsRepository.insert(it) }
     }
 
-    private suspend fun insertImmunizationRecords(
-        patientId: Long,
-        immunizations: ImmunizationDto?
-    ) {
-        recordsRepository.storeImmunizationRecords(patientId, immunizations)
-    }
-
-    private suspend fun insertLabOrders(patientId: Long, labOrders: List<LabOrderWithLabTestDto>?) {
-        recordsRepository.storeLabOrders(patientId, labOrders)
-    }
-
     private suspend fun insertMedicationRecords(
         patientId: Long,
         medications: MedicationStatementResponse?
@@ -331,17 +309,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         medications?.let {
             medicationRecordRepository.updateMedicationRecords(it, patientId)
         }
-    }
-
-    private suspend fun insertCovidOrders(
-        patientId: Long,
-        covidOrders: List<CovidOrderWithCovidTestDto>?
-    ) {
-        recordsRepository.storeCovidOrders(patientId, covidOrders)
-    }
-
-    private suspend fun insertVaccineRecords(vaccineRecords: MutableList<PatientVaccineRecordsState?>) {
-        recordsRepository.storeVaccineRecords(vaccineRecords)
     }
 
     private fun updateNotification(isApiFailed: Boolean) {
