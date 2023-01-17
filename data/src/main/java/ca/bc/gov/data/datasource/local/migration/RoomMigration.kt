@@ -30,6 +30,6 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
 val MIGRATION_4_5 = object : Migration(4, 5) {
     override fun migrate(database: SupportSQLiteDatabase) {
         val tableName = "hospital_visits"
-        database.execSQL("CREATE TABLE IF NOT EXISTS `${tableName}` (`hospital_visit_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `health_service` TEXT NOT NULL, `location` TEXT NOT NULL, `provider` TEXT NOT NULL, `visit_type` TEXT NOT NULL, `visit_date` INTEGER NOT NULL, `discharge_date` INTEGER, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )")
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$tableName` (`hospital_visit_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `health_service` TEXT NOT NULL, `location` TEXT NOT NULL, `provider` TEXT NOT NULL, `visit_type` TEXT NOT NULL, `visit_date` INTEGER NOT NULL, `discharge_date` INTEGER, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )")
     }
 }
