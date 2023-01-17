@@ -11,6 +11,7 @@ import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.PatientOrderUpdate
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithCovidOrderAndCovidTest
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithHealthVisits
+import ca.bc.gov.data.datasource.local.entity.relations.PatientWithHospitalVisits
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithImmunizationRecordAndForecast
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithLabOrdersAndLabTests
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithMedicationRecords
@@ -116,6 +117,10 @@ interface PatientDao {
     @Transaction
     @Query("SELECT * FROM patient WHERE id = :patientId")
     suspend fun getPatientWithHealthVisits(patientId: Long): PatientWithHealthVisits?
+
+    @Transaction
+    @Query("SELECT * FROM patient WHERE id = :patientId")
+    suspend fun getPatientWithHospitalVisits(patientId: Long): PatientWithHospitalVisits?
 
     @Transaction
     @Query("SELECT * FROM patient WHERE id = :patientId")

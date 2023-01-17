@@ -116,13 +116,14 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
         }
     }
 
-    private fun resetFilters() {
-        binding.chipGroup.chipMedication.hide()
-        binding.chipGroup.chipImmunizations.hide()
-        binding.chipGroup.chipCovidTest.hide()
-        binding.chipGroup.chipLabTest.hide()
-        binding.chipGroup.chipHealthVisit.hide()
-        binding.chipGroup.chipSpecialAuthority.hide()
+    private fun resetFilters() = with(binding.chipGroup) {
+        chipMedication.hide()
+        chipImmunizations.hide()
+        chipCovidTest.hide()
+        chipLabTest.hide()
+        chipHealthVisit.hide()
+        chipSpecialAuthority.hide()
+        chipHospitalVisits.hide()
     }
 
     private fun isFilterDateSelected(filterState: FilterUiState): Boolean {
@@ -150,67 +151,49 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
 
     private fun setUpRecyclerView() {
         healthRecordsAdapter = HealthRecordsAdapter {
-            when (it.healthRecordType) {
-                HealthRecordType.VACCINE_RECORD -> {
-                    val action = DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToVaccineRecordDetailFragment(
-                            it.patientId
-                        )
-                    findNavController().navigate(action)
-                }
-                HealthRecordType.COVID_TEST_RECORD -> {
 
-                    val action = if (it.covidOrderId != null) {
+            val navDirection = when (it.healthRecordType) {
+                HealthRecordType.VACCINE_RECORD ->
+                    DependentRecordsFragmentDirections
+                        .actionDependentRecordsFragmentToVaccineRecordDetailFragment(it.patientId)
+
+                HealthRecordType.COVID_TEST_RECORD ->
+                    if (it.covidOrderId != null) {
                         DependentRecordsFragmentDirections.actionDependentRecordsFragmentToCovidTestResultDetailFragment(
                             it.covidOrderId
                         )
                     } else {
-                        DependentRecordsFragmentDirections
-                            .actionDependentRecordsFragmentToTestResultDetailFragment(
-                                it.patientId,
-                                it.testResultId
-                            )
+                        DependentRecordsFragmentDirections.actionDependentRecordsFragmentToTestResultDetailFragment(
+                            it.patientId, it.testResultId
+                        )
                     }
-                    findNavController().navigate(action)
-                }
-                HealthRecordType.MEDICATION_RECORD -> {
-                    val action = DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToMedicationDetailFragment(
-                            it.medicationRecordId
-                        )
-                    findNavController().navigate(action)
-                }
-                HealthRecordType.LAB_TEST -> {
-                    it.labOrderId.let { it1 ->
-                        val action = DependentRecordsFragmentDirections
-                            .actionDependentRecordsFragmentToLabTestDetailFragment(
-                                it1
-                            )
-                        findNavController().navigate(action)
-                    }
-                }
-                HealthRecordType.IMMUNIZATION_RECORD -> {
-                    val action = DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToImmunizationRecordDetailFragment(
-                            it.immunizationRecordId
-                        )
-                    findNavController().navigate(action)
-                }
-                HealthRecordType.HEALTH_VISIT_RECORD -> {
-                    val action = DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToHealthVisitDetailsFragment(
-                            it.healthVisitId
-                        )
-                    findNavController().navigate(action)
-                }
-                HealthRecordType.SPECIAL_AUTHORITY_RECORD -> {
-                    val action = DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToSpecialAuthorityDetailsFragment(
-                            it.specialAuthorityId
-                        )
-                    findNavController().navigate(action)
-                }
+
+                HealthRecordType.MEDICATION_RECORD ->
+                    DependentRecordsFragmentDirections
+                        .actionDependentRecordsFragmentToMedicationDetailFragment(it.medicationRecordId)
+
+                HealthRecordType.LAB_TEST ->
+                    DependentRecordsFragmentDirections
+                        .actionDependentRecordsFragmentToLabTestDetailFragment(it.labOrderId)
+
+                HealthRecordType.IMMUNIZATION_RECORD ->
+                    DependentRecordsFragmentDirections
+                        .actionDependentRecordsFragmentToImmunizationRecordDetailFragment(it.immunizationRecordId)
+
+                HealthRecordType.HEALTH_VISIT_RECORD ->
+                    DependentRecordsFragmentDirections
+                        .actionDependentRecordsFragmentToHealthVisitDetailsFragment(it.healthVisitId)
+
+                HealthRecordType.SPECIAL_AUTHORITY_RECORD ->
+                    DependentRecordsFragmentDirections
+                        .actionDependentRecordsFragmentToSpecialAuthorityDetailsFragment(it.specialAuthorityId)
+
+                HealthRecordType.HOSPITAL_VISITS_RECORD ->
+                    DependentRecordsFragmentDirections
+                        .actionDependentRecordsFragmentToHospitalVisitDetailsFragment(it.hospitalVisitId)
             }
+
+            findNavController().navigate(navDirection)
         }
         binding.rvHealthRecords.adapter = healthRecordsAdapter
         binding.rvHealthRecords.emptyView = binding.viewEmptyScreen

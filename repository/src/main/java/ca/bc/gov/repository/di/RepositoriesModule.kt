@@ -38,6 +38,7 @@ import ca.bc.gov.repository.RecentPhnDobRepository
 import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.TermsOfServiceRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
+import ca.bc.gov.repository.hospitalvisit.HospitalVisitRepository
 import ca.bc.gov.repository.immunization.ImmunizationForecastRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
@@ -231,6 +232,7 @@ class RepositoriesModule {
         immunizationRecordRepository: ImmunizationRecordRepository,
         immunizationForecastRepository: ImmunizationForecastRepository,
         immunizationRecommendationRepository: ImmunizationRecommendationRepository,
+        hospitalVisitRepository: HospitalVisitRepository
     ): RecordsRepository = RecordsRepository(
         patientWithVaccineRecordRepository,
         patientWithTestResultRepository,
@@ -241,6 +243,7 @@ class RepositoriesModule {
         immunizationRecordRepository,
         immunizationForecastRepository,
         immunizationRecommendationRepository,
+        hospitalVisitRepository,
     )
 
     @Provides

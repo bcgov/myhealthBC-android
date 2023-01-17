@@ -1,8 +1,10 @@
 package ca.bc.gov.repository.patient
 
+import ca.bc.gov.common.BuildConfig.FLAG_HOSPITAL_VISITS
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.AuthenticationStatus
+import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithHealthVisitsDto
@@ -67,9 +69,7 @@ class PatientRepository @Inject constructor(
 
     suspend fun getPatientWithTestResultsAndRecords(patientId: Long): PatientWithTestResultsAndRecordsDto =
         patientLocalDataSource.getPatientWithTestResultsAndRecords(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getNoRecordFoundException(patientId)
 
     suspend fun getPatientWithTestResultAndRecords(testResultId: Long): TestResultWithRecordsAndPatientDto =
         patientLocalDataSource.getPatientWithTestResultAndRecords(testResultId)
@@ -79,27 +79,19 @@ class PatientRepository @Inject constructor(
 
     suspend fun getPatientWithMedicationRecords(patientId: Long): PatientWithMedicationRecordDto =
         patientLocalDataSource.getPatientWithMedicationRecords(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getNoRecordFoundException(patientId)
 
     suspend fun getPatientWithLabOrdersAndLabTests(patientId: Long): PatientWithLabOrderAndLatTestsDto =
         patientLocalDataSource.getPatientWithLabOrdersAndLabTests(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getNoRecordFoundException(patientId)
 
     suspend fun getPatientWithCovidOrdersAndCovidTests(patientId: Long): PatientWithCovidOrderAndTestDto =
         patientLocalDataSource.getPatientWithCovidOrderAndCovidTests(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getNoRecordFoundException(patientId)
 
     suspend fun getPatientWithImmunizationRecordAndForecast(patientId: Long): PatientWithImmunizationRecordAndForecastDto =
         patientLocalDataSource.getPatientWithImmunizationRecordAndForecast(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getNoRecordFoundException(patientId)
 
     suspend fun insertAuthenticatedPatient(patientDto: PatientDto): Long =
         patientLocalDataSource.insertAuthenticatedPatient(patientDto)
@@ -116,13 +108,20 @@ class PatientRepository @Inject constructor(
 
     suspend fun getPatientWithHealthVisits(patientId: Long): PatientWithHealthVisitsDto =
         patientLocalDataSource.getPatientWithHealthVisits(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getNoRecordFoundException(patientId)
 
     suspend fun getPatientWithSpecialAuthority(patientId: Long): PatientWithSpecialAuthorityDto =
         patientLocalDataSource.getPatientWithSpecialAuthority(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getNoRecordFoundException(patientId)
+
+    suspend fun getPatientWithHospitalVisits(patientId: Long): List<HospitalVisitDto> {
+        if (FLAG_HOSPITAL_VISITS.not()) return emptyList()
+
+        return patientLocalDataSource.getPatientWithHospitalVisits(patientId)?.hospitalVisits
+            ?: throw getNoRecordFoundException(patientId)
+    }
+
+    private fun getNoRecordFoundException(patientId: Long) = MyHealthException(
+        DATABASE_ERROR, "No record found for patient id=  $patientId"
+    )
 }

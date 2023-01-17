@@ -9,6 +9,7 @@ import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
+import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecommendationsDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordDto
@@ -31,6 +32,7 @@ import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
 import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
 import ca.bc.gov.data.datasource.local.entity.healthvisits.Clinic
 import ca.bc.gov.data.datasource.local.entity.healthvisits.HealthVisitEntity
+import ca.bc.gov.data.datasource.local.entity.hospitalvisit.HospitalVisitEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationForecastEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecommendationEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecordEntity
@@ -222,6 +224,17 @@ fun HealthVisitsDto.toEntity() = HealthVisitEntity(
     practitionerName,
     Clinic(clinicDto?.name),
     dataSource = dataSource
+)
+
+fun HospitalVisitDto.toEntity() = HospitalVisitEntity(
+    hospitalVisitId = id,
+    patientId = patientId,
+    healthService = healthService,
+    location = location,
+    provider = provider,
+    visitType = visitType,
+    visitDate = visitDate,
+    dischargeDate = dischargeDate,
 )
 
 fun SpecialAuthorityDto.toEntity() = SpecialAuthorityEntity(

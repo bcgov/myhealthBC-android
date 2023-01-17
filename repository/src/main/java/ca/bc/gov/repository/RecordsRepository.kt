@@ -1,8 +1,10 @@
 package ca.bc.gov.repository
 
+import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
+import ca.bc.gov.repository.hospitalvisit.HospitalVisitRepository
 import ca.bc.gov.repository.immunization.ImmunizationForecastRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
@@ -23,6 +25,7 @@ class RecordsRepository @Inject constructor(
     private val immunizationRecordRepository: ImmunizationRecordRepository,
     private val immunizationForecastRepository: ImmunizationForecastRepository,
     private val immunizationRecommendationRepository: ImmunizationRecommendationRepository,
+    private val hospitalVisitRepository: HospitalVisitRepository,
 ) {
 
     suspend fun storeVaccineRecords(
@@ -90,6 +93,14 @@ class RecordsRepository @Inject constructor(
         immunizationDto?.recommendations?.forEach {
             it.patientId = patientId
             immunizationRecommendationRepository.insert(it)
+        }
+    }
+
+    suspend fun storeHospitalVisits(patientId: Long, hospitalVisits: List<HospitalVisitDto>?) {
+        hospitalVisitRepository.deleteHospitalVisits(patientId)
+        hospitalVisits?.let { list ->
+            list.forEach { it.patientId = patientId }
+            hospitalVisitRepository.insertHospitalVisits(list)
         }
     }
 }
