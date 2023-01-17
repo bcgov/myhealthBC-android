@@ -27,7 +27,6 @@ import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
-import ca.bc.gov.common.model.relation.VaccineWithDosesDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.utils.toDate
@@ -58,8 +57,8 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
         vaccineRecordId = vaccineWithDoses?.vaccine?.id!!,
         name = patient.fullName,
         qrIssuedDate = "Issued on ${
-        vaccineWithDoses?.vaccine?.qrIssueDate
-            ?.toDateTimeString()
+            vaccineWithDoses?.vaccine?.qrIssueDate
+                ?.toDateTimeString()
         }",
         shcUri = vaccineWithDoses?.vaccine?.shcUri!!,
         qrCode = vaccineWithDoses?.vaccine?.qrCodeImage,
@@ -69,25 +68,6 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
         isRemovable = with(patient.authenticationStatus) {
             this != AuthenticationStatus.AUTHENTICATED && this != AuthenticationStatus.DEPENDENT
         }
-    )
-}
-
-fun VaccineWithDosesDto.toUiModel(): HealthRecordItem {
-
-    val passState = getHealthPassStateResources(vaccine.status)
-
-    val date = doses.maxOf { it.date }
-    return HealthRecordItem(
-        patientId = vaccine.patientId,
-        testResultId = -1L,
-        medicationRecordId = -1L,
-        icon = R.drawable.ic_health_record_vaccine,
-        title = "COVID-19 vaccination",
-        description = "${passState.status}",
-        testOutcome = null,
-        date = date,
-        healthRecordType = HealthRecordType.VACCINE_RECORD,
-        dataSource = vaccine.mode.name
     )
 }
 
@@ -317,7 +297,7 @@ fun HospitalVisitDto.toUiModel() =
         hospitalVisitId = id,
         title = healthService,
         description = location,
-        icon = R.drawable.ic_record_hospital_visit,
+        icon = R.drawable.ic_health_record_hospital_visit,
         date = visitDate,
         healthRecordType = HealthRecordType.HOSPITAL_VISITS_RECORD,
     )
