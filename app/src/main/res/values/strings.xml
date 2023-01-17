@@ -416,6 +416,7 @@
     <string name="immunizations">Immunizations</string>
     <string name="health_visits">Health Visits</string>
     <string name="special_authorities">Special Authorities</string>
+    <string name="hospital_visits">Hospital Visits</string>
     <string name="filter">Filter</string>
     <string name="apply">Apply</string>
     <string name="no_records_found">No records found</string>

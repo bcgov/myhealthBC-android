@@ -58,7 +58,8 @@ enum class TimelineTypeFilter {
     COVID_19_TEST,
     IMMUNIZATION,
     HEALTH_VISIT,
-    SPECIAL_AUTHORITY
+    SPECIAL_AUTHORITY,
+    HOSPITAL_VISITS
 }
 
 data class FilterUiState(

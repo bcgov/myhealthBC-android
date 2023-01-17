@@ -9,9 +9,16 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.COVID_TEST_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HEALTH_VISIT_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HOSPITAL_VISITS_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.IMMUNIZATION_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.LAB_TEST
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.MEDICATION_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.SPECIAL_AUTHORITY_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.VACCINE_RECORD
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toStartOfDayInstant
-
 /**
  * @author Pinakin Kansara
  */
@@ -44,28 +51,28 @@ class HealthRecordsAdapter(
         var description = ""
         holder.binding.imgIcon.setImageResource(record.icon)
         when (record.healthRecordType) {
-            HealthRecordType.VACCINE_RECORD -> {
+            VACCINE_RECORD -> {
                 description = record.date.toDate()
             }
-            HealthRecordType.COVID_TEST_RECORD -> {
+            COVID_TEST_RECORD -> {
                 description = "${record.testOutcome} • ${record.date.toDate()}"
             }
-            HealthRecordType.MEDICATION_RECORD -> {
+            MEDICATION_RECORD -> {
                 description = "${record.description} • ${record.date.toDate()}"
             }
-            HealthRecordType.LAB_TEST -> {
+            LAB_TEST -> {
                 description = record.description
             }
-            HealthRecordType.IMMUNIZATION_RECORD -> {
+            IMMUNIZATION_RECORD -> {
                 description = record.date.toDate()
             }
-            HealthRecordType.HEALTH_VISIT_RECORD -> {
+            HEALTH_VISIT_RECORD -> {
                 description = "${record.description} • ${record.date.toDate()}"
             }
-            HealthRecordType.SPECIAL_AUTHORITY_RECORD -> {
+            SPECIAL_AUTHORITY_RECORD -> {
                 description = "${record.description} • ${record.date.toDate()}"
             }
-            HealthRecordType.HOSPITAL_VISITS_RECORD -> {
+            HOSPITAL_VISITS_RECORD -> {
                 description = record.description
             }
         }
@@ -102,22 +109,25 @@ class HealthRecordsAdapter(
                                 filteredList.addAll(tempList)
                             }
                             TimelineTypeFilter.MEDICATION.name -> {
-                                filteredList.addAll(tempList.filter { it.healthRecordType == HealthRecordType.MEDICATION_RECORD })
+                                filteredList.addAll(tempList.filter { it.healthRecordType == MEDICATION_RECORD })
                             }
                             TimelineTypeFilter.LAB_TEST.name -> {
-                                filteredList.addAll(tempList.filter { it.healthRecordType == HealthRecordType.LAB_TEST })
+                                filteredList.addAll(tempList.filter { it.healthRecordType == LAB_TEST })
                             }
                             TimelineTypeFilter.COVID_19_TEST.name -> {
-                                filteredList.addAll(tempList.filter { it.healthRecordType == HealthRecordType.COVID_TEST_RECORD })
+                                filteredList.addAll(tempList.filter { it.healthRecordType == COVID_TEST_RECORD })
                             }
                             TimelineTypeFilter.IMMUNIZATION.name -> {
-                                filteredList.addAll(tempList.filter { it.healthRecordType == HealthRecordType.IMMUNIZATION_RECORD })
+                                filteredList.addAll(tempList.filter { it.healthRecordType == IMMUNIZATION_RECORD })
                             }
                             TimelineTypeFilter.HEALTH_VISIT.name -> {
-                                filteredList.addAll(tempList.filter { it.healthRecordType == HealthRecordType.HEALTH_VISIT_RECORD })
+                                filteredList.addAll(tempList.filter { it.healthRecordType == HEALTH_VISIT_RECORD })
                             }
                             TimelineTypeFilter.SPECIAL_AUTHORITY.name -> {
-                                filteredList.addAll(tempList.filter { it.healthRecordType == HealthRecordType.SPECIAL_AUTHORITY_RECORD })
+                                filteredList.addAll(tempList.filter { it.healthRecordType == SPECIAL_AUTHORITY_RECORD })
+                            }
+                            TimelineTypeFilter.HOSPITAL_VISITS.name -> {
+                                filteredList.addAll(tempList.filter { it.healthRecordType == HOSPITAL_VISITS_RECORD })
                             }
                         }
                     }

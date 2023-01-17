@@ -18,6 +18,14 @@ import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
 import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
 import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.COVID_TEST_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HEALTH_VISIT_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HOSPITAL_VISITS_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.IMMUNIZATION_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.LAB_TEST
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.MEDICATION_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.SPECIAL_AUTHORITY_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.VACCINE_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
@@ -103,39 +111,29 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
         }
     }
 
-    private fun updateTypeFilterSelection(filterUiState: FilterUiState) {
+    private fun updateTypeFilterSelection(state: FilterUiState) = with(binding.content.chipGroup) {
         resetFilters()
-        filterUiState.timelineTypeFilter.forEach {
+        state.timelineTypeFilter.forEach {
             when (it) {
-                TimelineTypeFilter.MEDICATION.name -> {
-                    binding.content.chipGroup.chipMedication.show()
-                }
-                TimelineTypeFilter.IMMUNIZATION.name -> {
-                    binding.content.chipGroup.chipImmunizations.show()
-                }
-                TimelineTypeFilter.COVID_19_TEST.name -> {
-                    binding.content.chipGroup.chipCovidTest.show()
-                }
-                TimelineTypeFilter.LAB_TEST.name -> {
-                    binding.content.chipGroup.chipLabTest.show()
-                }
-                TimelineTypeFilter.HEALTH_VISIT.name -> {
-                    binding.content.chipGroup.chipHealthVisit.show()
-                }
-                TimelineTypeFilter.SPECIAL_AUTHORITY.name -> {
-                    binding.content.chipGroup.chipSpecialAuthority.show()
-                }
+                TimelineTypeFilter.MEDICATION.name -> chipMedication.show()
+                TimelineTypeFilter.IMMUNIZATION.name -> chipImmunizations.show()
+                TimelineTypeFilter.COVID_19_TEST.name -> chipCovidTest.show()
+                TimelineTypeFilter.LAB_TEST.name -> chipLabTest.show()
+                TimelineTypeFilter.HEALTH_VISIT.name -> chipHealthVisit.show()
+                TimelineTypeFilter.SPECIAL_AUTHORITY.name -> chipSpecialAuthority.show()
+                TimelineTypeFilter.HOSPITAL_VISITS.name -> chipHospitalVisits.show()
             }
         }
     }
 
-    private fun resetFilters() {
-        binding.content.chipGroup.chipMedication.hide()
-        binding.content.chipGroup.chipImmunizations.hide()
-        binding.content.chipGroup.chipCovidTest.hide()
-        binding.content.chipGroup.chipLabTest.hide()
-        binding.content.chipGroup.chipHealthVisit.hide()
-        binding.content.chipGroup.chipSpecialAuthority.hide()
+    private fun resetFilters() = with(binding.content.chipGroup) {
+        chipMedication.hide()
+        chipImmunizations.hide()
+        chipCovidTest.hide()
+        chipLabTest.hide()
+        chipHealthVisit.hide()
+        chipSpecialAuthority.hide()
+        chipHospitalVisits.hide()
     }
 
     private fun clearFilterClickListener() {
@@ -267,11 +265,11 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun setUpRecyclerView() {
         healthRecordsAdapter = HealthRecordsAdapter {
             val navDirection = when (it.healthRecordType) {
-                HealthRecordType.VACCINE_RECORD ->
+                VACCINE_RECORD ->
                     IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(it.patientId)
 
-                HealthRecordType.COVID_TEST_RECORD -> if (it.covidOrderId != null) {
+                COVID_TEST_RECORD -> if (it.covidOrderId != null) {
                     IndividualHealthRecordFragmentDirections.actionIndividualHealthRecordFragmentToCovidTestResultDetailFragment(
                         it.covidOrderId
                     )
@@ -282,27 +280,27 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         )
                 }
 
-                HealthRecordType.MEDICATION_RECORD ->
+                MEDICATION_RECORD ->
                     IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordFragmentToMedicationDetailFragment(it.medicationRecordId)
 
-                HealthRecordType.LAB_TEST ->
+                LAB_TEST ->
                     IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordFragmentToLabTestDetailFragment(it.labOrderId)
 
-                HealthRecordType.IMMUNIZATION_RECORD ->
+                IMMUNIZATION_RECORD ->
                     IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordFragmentToImmunizationRecordDetailFragment(it.immunizationRecordId)
 
-                HealthRecordType.HEALTH_VISIT_RECORD ->
+                HEALTH_VISIT_RECORD ->
                     IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordFragmentToHealthVisitDetailsFragment(it.healthVisitId)
 
-                HealthRecordType.SPECIAL_AUTHORITY_RECORD ->
+                SPECIAL_AUTHORITY_RECORD ->
                     IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordFragmentToSpecialAuthorityDetailsFragment(it.specialAuthorityId)
 
-                HealthRecordType.HOSPITAL_VISITS_RECORD ->
+                HOSPITAL_VISITS_RECORD ->
                     IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordsFragmentToHospitalVisitDetailsFragment(it.hospitalVisitId)
             }

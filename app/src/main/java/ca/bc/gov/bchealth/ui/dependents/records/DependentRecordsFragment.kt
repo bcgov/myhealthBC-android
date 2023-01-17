@@ -116,13 +116,14 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
         }
     }
 
-    private fun resetFilters() {
-        binding.chipGroup.chipMedication.hide()
-        binding.chipGroup.chipImmunizations.hide()
-        binding.chipGroup.chipCovidTest.hide()
-        binding.chipGroup.chipLabTest.hide()
-        binding.chipGroup.chipHealthVisit.hide()
-        binding.chipGroup.chipSpecialAuthority.hide()
+    private fun resetFilters() = with(binding.chipGroup) {
+        chipMedication.hide()
+        chipImmunizations.hide()
+        chipCovidTest.hide()
+        chipLabTest.hide()
+        chipHealthVisit.hide()
+        chipSpecialAuthority.hide()
+        chipHospitalVisits.hide()
     }
 
     private fun isFilterDateSelected(filterState: FilterUiState): Boolean {

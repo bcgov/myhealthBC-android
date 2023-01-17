@@ -20,7 +20,6 @@ import ca.bc.gov.data.model.mapper.toEntity
 import ca.bc.gov.data.model.mapper.toPatientEntity
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.extensions.mapFlowContent
-import ca.bc.gov.repository.hospitalvisit.HospitalVisitRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.model.PatientVaccineRecordsState
@@ -38,7 +37,6 @@ class DependentsRepository @Inject constructor(
     private val covidOrderRepository: CovidOrderRepository,
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
-    private val hospitalVisitRepository: HospitalVisitRepository,
     private val recordsRepository: RecordsRepository,
     private val mobileConfigRepository: MobileConfigRepository,
 ) {
@@ -105,7 +103,6 @@ class DependentsRepository @Inject constructor(
             val vaccineRecords: Pair<VaccineRecordState, PatientVaccineRecord?>?
             var covidOrders: List<CovidOrderWithCovidTestDto>? = null
             var immunizationDto: ImmunizationDto? = null
-            var hospitalVisits: List<HospitalVisitDto>? = null
 
             val token = bcscAuthRepo.getAuthParametersDto().token
 
@@ -123,15 +120,7 @@ class DependentsRepository @Inject constructor(
                 handleException(e)
             }
 
-            try {
-                if (FLAG_HOSPITAL_VISITS) {
-                    hospitalVisits = hospitalVisitRepository.getHospitalVisits(token, hdid)
-                }
-            } catch (e: Exception) {
-                handleException(e)
-            }
-
-            storeRecords(patientId, vaccineRecords, covidOrders, immunizationDto, hospitalVisits)
+            storeRecords(patientId, vaccineRecords, covidOrders, immunizationDto)
         }
     }
 
@@ -159,13 +148,11 @@ class DependentsRepository @Inject constructor(
         vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>?,
         covidOrderResponse: List<CovidOrderWithCovidTestDto>?,
         immunizationDto: ImmunizationDto?,
-        hospitalVisits: List<HospitalVisitDto>?
     ) {
         vaccineRecordsResponse?.let { insertVaccineRecords(patientId, it) }
         recordsRepository.apply {
             storeCovidOrders(patientId, covidOrderResponse)
             storeImmunizationRecords(patientId, immunizationDto)
-            storeHospitalVisits(patientId, hospitalVisits)
         }
         localDataSource.enableDependentCacheFlag(patientId)
     }
