@@ -9,8 +9,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
-import ca.bc.gov.common.utils.toDate
-import ca.bc.gov.common.utils.toStartOfDayInstant
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.COVID_TEST_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HEALTH_VISIT_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HOSPITAL_VISITS_RECORD
@@ -19,6 +17,8 @@ import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.LAB_TEST
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.MEDICATION_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.SPECIAL_AUTHORITY_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.VACCINE_RECORD
+import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.toStartOfDayInstant
 /**
  * @author Pinakin Kansara
  */

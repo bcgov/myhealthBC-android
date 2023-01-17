@@ -265,8 +265,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun setUpRecyclerView() {
         healthRecordsAdapter = HealthRecordsAdapter {
             val navDirection = when (it.healthRecordType) {
-                VACCINE_RECORD -> IndividualHealthRecordFragmentDirections
-                    .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(it.patientId)
+                VACCINE_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(it.patientId)
 
                 COVID_TEST_RECORD -> if (it.covidOrderId != null) {
                     IndividualHealthRecordFragmentDirections.actionIndividualHealthRecordFragmentToCovidTestResultDetailFragment(
@@ -279,23 +280,29 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                         )
                 }
 
-                MEDICATION_RECORD -> IndividualHealthRecordFragmentDirections
-                    .actionIndividualHealthRecordFragmentToMedicationDetailFragment(it.medicationRecordId)
+                MEDICATION_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToMedicationDetailFragment(it.medicationRecordId)
 
-                LAB_TEST -> IndividualHealthRecordFragmentDirections
-                    .actionIndividualHealthRecordFragmentToLabTestDetailFragment(it.labOrderId)
+                LAB_TEST ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToLabTestDetailFragment(it.labOrderId)
 
-                IMMUNIZATION_RECORD -> IndividualHealthRecordFragmentDirections
-                    .actionIndividualHealthRecordFragmentToImmunizationRecordDetailFragment(it.immunizationRecordId)
+                IMMUNIZATION_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToImmunizationRecordDetailFragment(it.immunizationRecordId)
 
-                HEALTH_VISIT_RECORD -> IndividualHealthRecordFragmentDirections
-                    .actionIndividualHealthRecordFragmentToHealthVisitDetailsFragment(it.healthVisitId)
+                HEALTH_VISIT_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToHealthVisitDetailsFragment(it.healthVisitId)
 
-                SPECIAL_AUTHORITY_RECORD -> IndividualHealthRecordFragmentDirections
-                    .actionIndividualHealthRecordFragmentToSpecialAuthorityDetailsFragment(it.specialAuthorityId)
+                SPECIAL_AUTHORITY_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToSpecialAuthorityDetailsFragment(it.specialAuthorityId)
 
-                HOSPITAL_VISITS_RECORD -> IndividualHealthRecordFragmentDirections
-                    .actionIndividualHealthRecordsFragmentToHospitalVisitDetailsFragment(it.hospitalVisitId)
+                HOSPITAL_VISITS_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordsFragmentToHospitalVisitDetailsFragment(it.hospitalVisitId)
             }
 
             findNavController().navigate(navDirection)
