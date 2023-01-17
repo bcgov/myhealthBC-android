@@ -12,6 +12,7 @@ import ca.bc.gov.data.datasource.local.dao.DependentDao
 import ca.bc.gov.data.datasource.local.dao.DependentListOrderDao
 import ca.bc.gov.data.datasource.local.dao.DispensingPharmacyDao
 import ca.bc.gov.data.datasource.local.dao.HealthVisitsDao
+import ca.bc.gov.data.datasource.local.dao.HospitalVisitDao
 import ca.bc.gov.data.datasource.local.dao.ImmunizationForecastDao
 import ca.bc.gov.data.datasource.local.dao.ImmunizationRecommendationDao
 import ca.bc.gov.data.datasource.local.dao.ImmunizationRecordDao
@@ -34,6 +35,7 @@ import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
 import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
 import ca.bc.gov.data.datasource.local.entity.dependent.DependentListOrder
 import ca.bc.gov.data.datasource.local.entity.healthvisits.HealthVisitEntity
+import ca.bc.gov.data.datasource.local.entity.hospitalvisit.HospitalVisitEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationForecastEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecommendationEntity
 import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecordEntity
@@ -48,7 +50,7 @@ import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityE
  * @author Pinakin Kansara
  */
 @Database(
-    version = 4,
+    version = 5,
     entities = [
         PatientEntity::class,
         VaccineRecordEntity::class,
@@ -69,6 +71,7 @@ import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityE
         ImmunizationRecommendationEntity::class,
         ImmunizationForecastEntity::class,
         HealthVisitEntity::class,
+        HospitalVisitEntity::class,
         SpecialAuthorityEntity::class
     ],
     exportSchema = true
@@ -109,6 +112,8 @@ abstract class MyHealthDataBase : RoomDatabase() {
     abstract fun getImmunizationForecastDao(): ImmunizationForecastDao
 
     abstract fun getHealthVisitDao(): HealthVisitsDao
+
+    abstract fun getHospitalVisitDao(): HospitalVisitDao
 
     abstract fun getSpecialAuthorityDao(): SpecialAuthorityDao
 }

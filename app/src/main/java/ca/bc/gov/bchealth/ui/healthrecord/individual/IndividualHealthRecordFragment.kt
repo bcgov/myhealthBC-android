@@ -228,12 +228,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun displayBcscRecords(uiState: IndividualHealthRecordsUiState) {
-        if (filterSharedViewModel.filterState.value.timelineTypeFilter.contains(
-                TimelineTypeFilter.ALL.name
-            ) ||
-            filterSharedViewModel.filterState.value.timelineTypeFilter.contains(
-                    TimelineTypeFilter.MEDICATION.name
-                )
+        val timelineTypeFilter = filterSharedViewModel.filterState.value.timelineTypeFilter
+        if (timelineTypeFilter.contains(TimelineTypeFilter.ALL.name) ||
+            timelineTypeFilter.contains(TimelineTypeFilter.MEDICATION.name)
         ) {
             updateHiddenMedicationRecordsView(uiState)
         } else {

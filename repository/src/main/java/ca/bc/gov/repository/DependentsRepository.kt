@@ -20,6 +20,7 @@ import ca.bc.gov.data.model.mapper.toEntity
 import ca.bc.gov.data.model.mapper.toPatientEntity
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.extensions.mapFlowContent
+import ca.bc.gov.repository.hospitalvisit.HospitalVisitRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.model.PatientVaccineRecordsState
@@ -27,7 +28,6 @@ import ca.bc.gov.repository.qr.VaccineRecordState
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.worker.MobileConfigRepository
 import kotlinx.coroutines.flow.Flow
-import java.time.Instant
 import javax.inject.Inject
 
 class DependentsRepository @Inject constructor(
@@ -38,6 +38,7 @@ class DependentsRepository @Inject constructor(
     private val covidOrderRepository: CovidOrderRepository,
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
+    private val hospitalVisitRepository: HospitalVisitRepository,
     private val recordsRepository: RecordsRepository,
     private val mobileConfigRepository: MobileConfigRepository,
 ) {
@@ -101,9 +102,10 @@ class DependentsRepository @Inject constructor(
                 throw MyHealthException(SERVICE_NOT_AVAILABLE)
             }
 
-            var vaccineRecords: Pair<VaccineRecordState, PatientVaccineRecord?>? = null
+            val vaccineRecords: Pair<VaccineRecordState, PatientVaccineRecord?>?
             var covidOrders: List<CovidOrderWithCovidTestDto>? = null
             var immunizationDto: ImmunizationDto? = null
+            var hospitalVisits: List<HospitalVisitDto>? = null
 
             val token = bcscAuthRepo.getAuthParametersDto().token
 
@@ -121,7 +123,15 @@ class DependentsRepository @Inject constructor(
                 handleException(e)
             }
 
-            storeRecords(patientId, vaccineRecords, covidOrders, immunizationDto)
+            try {
+                if (FLAG_HOSPITAL_VISITS) {
+                    hospitalVisits = hospitalVisitRepository.getHospitalVisits(token, hdid)
+                }
+            } catch (e: Exception) {
+                handleException(e)
+            }
+
+            storeRecords(patientId, vaccineRecords, covidOrders, immunizationDto, hospitalVisits)
         }
     }
 
@@ -148,17 +158,15 @@ class DependentsRepository @Inject constructor(
         patientId: Long,
         vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>?,
         covidOrderResponse: List<CovidOrderWithCovidTestDto>?,
-        immunizationDto: ImmunizationDto?
+        immunizationDto: ImmunizationDto?,
+        hospitalVisits: List<HospitalVisitDto>?
     ) {
-        // Insert vaccine records
         vaccineRecordsResponse?.let { insertVaccineRecords(patientId, it) }
-
-        // Insert covid orders
-        recordsRepository.storeCovidOrders(patientId, covidOrderResponse)
-
-        // Insert immunization records
-        recordsRepository.storeImmunizationRecords(patientId, immunizationDto)
-
+        recordsRepository.apply {
+            storeCovidOrders(patientId, covidOrderResponse)
+            storeImmunizationRecords(patientId, immunizationDto)
+            storeHospitalVisits(patientId, hospitalVisits)
+        }
         localDataSource.enableDependentCacheFlag(patientId)
     }
 
@@ -192,26 +200,8 @@ class DependentsRepository @Inject constructor(
     suspend fun getPatientWithHospitalVisits(patientId: Long): List<HospitalVisitDto> {
         if (FLAG_HOSPITAL_VISITS.not()) return emptyList()
 
-        // todo: actual implementation will be done here: HAPP-1266
-        val sample = HospitalVisitDto(
-            11,
-            patientId,
-            "Service11",
-            "facility11",
-            "location11",
-            "provider11",
-            "visitType11",
-            Instant.now().minusMillis(1000 * 60 * 60 * 24 * 5),
-            Instant.now(),
-        )
-
-        return listOf(
-            sample,
-            sample.copy(id = 12, facility = "facility12", location = "location12"),
-            sample.copy(id = 13, facility = "facility13", location = "location13"),
-            sample.copy(id = 14, facility = "facility14", location = "location14"),
-            sample.copy(id = 15, facility = "facility15", location = "location15"),
-        )
+        return patientLocalDataSource.getPatientWithHospitalVisits(patientId)?.hospitalVisits
+            ?: throw getDatabaseException(patientId)
     }
 
     suspend fun updateDependentListOrder(list: List<DependentDto>) {

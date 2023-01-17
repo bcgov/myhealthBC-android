@@ -20,7 +20,6 @@ import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.PatientOrderUpdate
 import ca.bc.gov.repository.QrCodeGeneratorRepository
 import kotlinx.coroutines.flow.map
-import java.time.Instant
 import javax.inject.Inject
 
 /**
@@ -70,9 +69,7 @@ class PatientRepository @Inject constructor(
 
     suspend fun getPatientWithTestResultsAndRecords(patientId: Long): PatientWithTestResultsAndRecordsDto =
         patientLocalDataSource.getPatientWithTestResultsAndRecords(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getNoRecordFoundException(patientId)
 
     suspend fun getPatientWithTestResultAndRecords(testResultId: Long): TestResultWithRecordsAndPatientDto =
         patientLocalDataSource.getPatientWithTestResultAndRecords(testResultId)
@@ -82,27 +79,19 @@ class PatientRepository @Inject constructor(
 
     suspend fun getPatientWithMedicationRecords(patientId: Long): PatientWithMedicationRecordDto =
         patientLocalDataSource.getPatientWithMedicationRecords(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getNoRecordFoundException(patientId)
 
     suspend fun getPatientWithLabOrdersAndLabTests(patientId: Long): PatientWithLabOrderAndLatTestsDto =
         patientLocalDataSource.getPatientWithLabOrdersAndLabTests(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getNoRecordFoundException(patientId)
 
     suspend fun getPatientWithCovidOrdersAndCovidTests(patientId: Long): PatientWithCovidOrderAndTestDto =
         patientLocalDataSource.getPatientWithCovidOrderAndCovidTests(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getNoRecordFoundException(patientId)
 
     suspend fun getPatientWithImmunizationRecordAndForecast(patientId: Long): PatientWithImmunizationRecordAndForecastDto =
         patientLocalDataSource.getPatientWithImmunizationRecordAndForecast(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getNoRecordFoundException(patientId)
 
     suspend fun insertAuthenticatedPatient(patientDto: PatientDto): Long =
         patientLocalDataSource.insertAuthenticatedPatient(patientDto)
@@ -119,38 +108,20 @@ class PatientRepository @Inject constructor(
 
     suspend fun getPatientWithHealthVisits(patientId: Long): PatientWithHealthVisitsDto =
         patientLocalDataSource.getPatientWithHealthVisits(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getNoRecordFoundException(patientId)
 
     suspend fun getPatientWithSpecialAuthority(patientId: Long): PatientWithSpecialAuthorityDto =
         patientLocalDataSource.getPatientWithSpecialAuthority(patientId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for patient id=  $patientId"
-            )
+            ?: throw getNoRecordFoundException(patientId)
 
     suspend fun getPatientWithHospitalVisits(patientId: Long): List<HospitalVisitDto> {
         if (FLAG_HOSPITAL_VISITS.not()) return emptyList()
 
-        // todo: actual implementation will be done here: HAPP-1266
-        val sample = HospitalVisitDto(
-            1,
-            patientId,
-            "Service1",
-            "facility1",
-            "location1",
-            "provider1",
-            "visitType1",
-            Instant.now().minusMillis(1000 * 60 * 60 * 24 * 5),
-            Instant.now(),
-        )
-
-        return listOf(
-            sample,
-            sample.copy(id = 2, facility = "facility2", location = "location2"),
-            sample.copy(id = 3, facility = "facility3", location = "location3"),
-            sample.copy(id = 4, facility = "facility4", location = "location4"),
-            sample.copy(id = 5, facility = "facility5", location = "location5"),
-        )
+        return patientLocalDataSource.getPatientWithHospitalVisits(patientId)?.hospitalVisits
+            ?: throw getNoRecordFoundException(patientId)
     }
+
+    private fun getNoRecordFoundException(patientId: Long) = MyHealthException(
+        DATABASE_ERROR, "No record found for patient id=  $patientId"
+    )
 }

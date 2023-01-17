@@ -5,33 +5,25 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.utils.toDateTimeString
-import kotlinx.coroutines.delay
+import ca.bc.gov.repository.hospitalvisit.HospitalVisitRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Instant
+import javax.inject.Inject
 
-class HospitalVisitDetailViewModel : ViewModel() {
+@HiltViewModel
+class HospitalVisitDetailViewModel @Inject constructor(
+    private val repository: HospitalVisitRepository
+) : ViewModel() {
     private val _uiState = MutableStateFlow(HospitalVisitUiState())
     val uiState: StateFlow<HospitalVisitUiState> = _uiState.asStateFlow()
 
     fun getHospitalVisitDetails(hospitalVisitId: Long) = viewModelScope.launch {
         try {
-
-            // todo: actual request will be done here: HAPP-1266
-            delay(1500)
-            val dto = HospitalVisitDto(
-                patientId = 1,
-                healthService = "Service",
-                facility = "Facility",
-                location = "Location",
-                provider = "Provider",
-                visitType = "Visit Type",
-                visitDate = Instant.now().minusMillis(5 * 1000 * 60 * 60 * 24),
-                dischargeDate = Instant.now(),
-            )
+            val dto: HospitalVisitDto = repository.getHospitalVisit(hospitalVisitId)
 
             val uiList: List<HospitalVisitDetailItem> = listOf(
                 HospitalVisitDetailItem(
@@ -42,7 +34,7 @@ class HospitalVisitDetailViewModel : ViewModel() {
 
                 HospitalVisitDetailItem(
                     R.string.hospital_visits_detail_provider_title,
-                    dto.provider.orEmpty(),
+                    dto.provider,
                     R.string.hospital_visits_detail_provider_footer
                 ),
 
@@ -58,14 +50,14 @@ class HospitalVisitDetailViewModel : ViewModel() {
 
                 HospitalVisitDetailItem(
                     R.string.hospital_visits_detail_discharge_date_title,
-                    dto.dischargeDate.toDateTimeString(),
+                    dto.dischargeDate?.toDateTimeString().orEmpty(),
                 ),
             )
 
             _uiState.update { state ->
                 state.copy(
                     onLoading = false,
-                    toolbarTitle = "title",
+                    toolbarTitle = dto.healthService,
                     uiList = uiList
                 )
             }

@@ -44,11 +44,14 @@ fun HospitalVisitListItem(label: String, value: String, footer: String?) {
             .padding(top = 20.dp, bottom = 20.dp, start = 32.dp),
     ) {
         Text(text = label, style = MyHealthTypography.body2.bold())
-        Text(
-            text = value,
-            style = MyHealthTypography.body2,
-            modifier = Modifier.padding(top = 4.dp)
-        )
+
+        if (value.isNotEmpty()) {
+            Text(
+                text = value,
+                style = MyHealthTypography.body2,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
         footer?.let {
             Text(
                 text = it,

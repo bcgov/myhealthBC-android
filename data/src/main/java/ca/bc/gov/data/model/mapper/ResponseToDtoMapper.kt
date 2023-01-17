@@ -12,6 +12,7 @@ import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.ClinicDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
+import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.immunization.ForecastStatus
 import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
@@ -38,6 +39,8 @@ import ca.bc.gov.data.datasource.remote.model.base.dependent.DependentPayload
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.Clinic
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsPayload
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsResponse
+import ca.bc.gov.data.datasource.remote.model.base.hospitalvisit.HospitalVisitInformation
+import ca.bc.gov.data.datasource.remote.model.base.hospitalvisit.HospitalVisitPayload
 import ca.bc.gov.data.datasource.remote.model.base.immunization.Forecast
 import ca.bc.gov.data.datasource.remote.model.base.immunization.ImmunizationRecord
 import ca.bc.gov.data.datasource.remote.model.base.immunization.Recommendation
@@ -300,6 +303,20 @@ fun HealthVisitsPayload.toDto() = HealthVisitsDto(
     practitionerName,
     clinic.toDto(),
     dataSource = DataSource.BCSC
+)
+
+fun HospitalVisitPayload?.toDto(): List<HospitalVisitDto> {
+    if (this == null) return emptyList()
+    return this.list.map { it.toDto() }
+}
+
+fun HospitalVisitInformation.toDto() = HospitalVisitDto(
+    healthService = healthService.orEmpty(),
+    location = facility,
+    provider = provider.orEmpty(),
+    visitType = visitType.orEmpty(),
+    visitDate = admitDateTime.toDateTime(),
+    dischargeDate = endDateTime?.toDateTime(),
 )
 
 fun Clinic.toDto() = ClinicDto(
