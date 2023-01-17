@@ -30,23 +30,27 @@ android {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
             buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "false"
+            buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "true"
         }
         dev {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
             buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "false"
+            buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "true"
         }
 
         stage {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
             buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "false"
+            buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "true"
         }
 
         prod {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
             buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "false"
+            buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "false"
         }
     }
 
