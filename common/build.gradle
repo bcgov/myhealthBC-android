@@ -29,18 +29,18 @@ android {
         mock {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
-            buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "true"
+            buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "false"
         }
         dev {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
-            buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "true"
+            buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "false"
         }
 
         stage {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
-            buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "true"
+            buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "false"
         }
 
         prod {
