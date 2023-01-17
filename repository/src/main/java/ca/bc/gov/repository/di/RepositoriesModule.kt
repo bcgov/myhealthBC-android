@@ -256,7 +256,6 @@ class RepositoriesModule {
         covidOrderRepository: CovidOrderRepository,
         fetchVaccineRecordRepository: FetchVaccineRecordRepository,
         immunizationRecordRepository: ImmunizationRecordRepository,
-        hospitalVisitRepository: HospitalVisitRepository,
         recordsRepository: RecordsRepository,
         mobileConfigRepository: MobileConfigRepository
     ): DependentsRepository = DependentsRepository(
@@ -267,7 +266,6 @@ class RepositoriesModule {
         covidOrderRepository,
         fetchVaccineRecordRepository,
         immunizationRecordRepository,
-        hospitalVisitRepository,
         recordsRepository,
         mobileConfigRepository
     )
