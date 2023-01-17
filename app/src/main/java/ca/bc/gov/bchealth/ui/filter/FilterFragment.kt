@@ -48,27 +48,22 @@ abstract class FilterFragment : BaseFragment(R.layout.fragment_filter) {
         }
     }
 
-    private fun initTypeFilter(filterState: FilterUiState) {
+    private fun initTypeFilter(filterState: FilterUiState) = with(binding) {
         filterState.timelineTypeFilter.forEach {
             when (it) {
-                TimelineTypeFilter.MEDICATION.name -> {
-                    binding.chipMedication.isChecked = true
-                }
-                TimelineTypeFilter.IMMUNIZATION.name -> {
-                    binding.chipImmunizations.isChecked = true
-                }
-                TimelineTypeFilter.COVID_19_TEST.name -> {
-                    binding.chipCovidTest.isChecked = true
-                }
-                TimelineTypeFilter.LAB_TEST.name -> {
-                    binding.chipLabTest.isChecked = true
-                }
-                TimelineTypeFilter.HEALTH_VISIT.name -> {
-                    binding.chipHealthVisit.isChecked = true
-                }
-                TimelineTypeFilter.SPECIAL_AUTHORITY.name -> {
-                    binding.chipSpecialAuthority.isChecked = true
-                }
+                TimelineTypeFilter.MEDICATION.name -> chipMedication.isChecked = true
+
+                TimelineTypeFilter.IMMUNIZATION.name -> chipImmunizations.isChecked = true
+
+                TimelineTypeFilter.COVID_19_TEST.name -> chipCovidTest.isChecked = true
+
+                TimelineTypeFilter.LAB_TEST.name -> chipLabTest.isChecked = true
+
+                TimelineTypeFilter.HEALTH_VISIT.name -> chipHealthVisit.isChecked = true
+
+                TimelineTypeFilter.SPECIAL_AUTHORITY.name -> chipSpecialAuthority.isChecked = true
+
+                TimelineTypeFilter.HOSPITAL_VISITS.name -> chipHospitalVisits.isChecked = true
             }
         }
     }
@@ -97,6 +92,9 @@ abstract class FilterFragment : BaseFragment(R.layout.fragment_filter) {
                         }
                         R.id.chip_special_authority -> {
                             filterList.add(TimelineTypeFilter.SPECIAL_AUTHORITY.name)
+                        }
+                        R.id.chip_hospital_visits -> {
+                            filterList.add(TimelineTypeFilter.HOSPITAL_VISITS.name)
                         }
                     }
                 }

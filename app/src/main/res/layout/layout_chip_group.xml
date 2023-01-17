@@ -98,6 +98,15 @@
                 android:layout_height="wrap_content"
                 android:text="@string/special_authorities" />
 
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_hospital_visits"
+                style="@style/ChipFilterByType"
+                android:focusable="false"
+                android:clickable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hospital_visits" />
+
         </com.google.android.material.chip.ChipGroup>
 
     </HorizontalScrollView>
