@@ -15,6 +15,7 @@ import ca.bc.gov.bchealth.ui.recommendations.RecommendationDetailItem
 import ca.bc.gov.bchealth.utils.orPlaceholder
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
+import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
@@ -127,6 +128,17 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
         dataSource = testResult.dataSource.name
     )
 }
+
+fun ClinicalDocumentDto.toUiModel() =
+    HealthRecordItem(
+        patientId = patientId,
+        hospitalVisitId = id,
+        title = name,
+        description = facilityName,
+        icon = R.drawable.ic_health_record_clinical_document,
+        date = serviceDate,
+        healthRecordType = HealthRecordType.CLINICAL_DOCUMENT_RECORD,
+    )
 
 fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
     var description = ""

@@ -18,6 +18,7 @@ import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
 import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
 import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.CLINICAL_DOCUMENT_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.COVID_TEST_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HEALTH_VISIT_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HOSPITAL_VISITS_RECORD
@@ -303,6 +304,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                 HOSPITAL_VISITS_RECORD ->
                     IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordsFragmentToHospitalVisitDetailsFragment(it.hospitalVisitId)
+
+                CLINICAL_DOCUMENT_RECORD -> IndividualHealthRecordFragmentDirections
+                    .actionIndividualHealthRecordsFragmentToClinicalDocumentDetailsFragment(it.clinicalDocumentId)
             }
 
             findNavController().navigate(navDirection)
