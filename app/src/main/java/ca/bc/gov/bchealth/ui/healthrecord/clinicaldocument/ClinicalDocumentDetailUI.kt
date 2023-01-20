@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,12 +17,23 @@ import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.bold
 
 @Composable
-fun ClinicalDocumentDetailUI(uiList: List<ClinicalDocumentDetailItem>) {
+fun ClinicalDocumentDetailUI(
+    uiList: List<ClinicalDocumentDetailItem>,
+    onClickDownload: () -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
+        item {
+            OutlinedButton(onClick = onClickDownload) {
+                Text(
+                    stringResource(id = R.string.clinical_documents_detail_button_download),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
         uiList.forEach { listItem ->
             item {
                 ClinicalDocumentListItem(
@@ -55,20 +67,17 @@ fun ClinicalDocumentListItem(label: String, value: String) {
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun PreviewClinicalDocumentListItem() {
-    LazyColumn {
-        item {
+fun PreviewClinicalDocumentDetailUI() {
+    ClinicalDocumentDetailUI(
+        listOf(
             ClinicalDocumentDetailItem(
                 R.string.clinical_documents_detail_discipline,
-                "Inpatient",
-            )
-        }
-
-        item {
+                "Discipline value"
+            ),
             ClinicalDocumentDetailItem(
                 R.string.clinical_documents_detail_facility,
-                "BC Women's Hospital",
-            )
-        }
-    }
+                "Facility value"
+            ),
+        )
+    ) {}
 }

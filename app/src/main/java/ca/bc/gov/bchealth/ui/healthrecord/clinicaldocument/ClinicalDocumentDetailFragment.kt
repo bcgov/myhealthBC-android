@@ -27,11 +27,13 @@ class ClinicalDocumentDetailFragment : BaseFragment(R.layout.fragment_hospital_v
     private fun updateUi(uiState: ClinicalDocumentUiState) {
         binding.layoutToolbar.topAppBar.title = uiState.toolbarTitle
 
+        if (uiState.uiList.isEmpty()) return
+
         binding.composeBody.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialTheme {
-                    ClinicalDocumentDetailUI(uiState.uiList)
+                    ClinicalDocumentDetailUI(uiState.uiList, viewModel::onClickDownload)
                 }
             }
         }

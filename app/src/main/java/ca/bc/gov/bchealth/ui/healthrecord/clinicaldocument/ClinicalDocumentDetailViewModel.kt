@@ -18,10 +18,13 @@ class ClinicalDocumentDetailViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ClinicalDocumentUiState())
     val uiState: StateFlow<ClinicalDocumentUiState> = _uiState.asStateFlow()
+    private var fileId : String? = null
 
     fun getClinicalDocumentDetails(clinicalDocumentId: Long) = viewModelScope.launch {
         try {
             val dto: ClinicalDocumentDto = getSampleClinicalDocument(clinicalDocumentId)
+
+            fileId = dto.fileId
 
             val uiList: List<ClinicalDocumentDetailItem> = listOf(
                 ClinicalDocumentDetailItem(
@@ -47,6 +50,11 @@ class ClinicalDocumentDetailViewModel @Inject constructor(
                 state.copy(onLoading = false)
             }
         }
+    }
+
+    fun onClickDownload(){
+        //todo: next ticket
+        println("Download: $fileId")
     }
 }
 
