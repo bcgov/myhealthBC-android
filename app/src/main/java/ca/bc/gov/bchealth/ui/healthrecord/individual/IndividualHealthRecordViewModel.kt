@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ProtectiveWordState
@@ -80,6 +81,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     it.toUiModel()
                 }
 
+                val clinicalDocuments = getSampleClinicalDocuments()
+
                 val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
                     it.toUiModel()
                 }
@@ -104,13 +107,19 @@ class IndividualHealthRecordViewModel @Inject constructor(
 
                 val bcscInfo = getBcscInfo()
 
-                val filteredHealthRecords = if (isShowMedicationRecords()) {
-                    (medicationRecords ?: emptyList()) + covidTestRecords + covidOrders +
-                        labTestRecords + immunizationRecords + healthVisits + specialAuthorities + hospitalVisits
-                } else {
-                    covidTestRecords + covidOrders + labTestRecords + immunizationRecords + healthVisits +
-                        specialAuthorities + hospitalVisits
-                }
+                val filteredHealthRecords = covidTestRecords +
+                    covidOrders +
+                    labTestRecords +
+                    immunizationRecords +
+                    healthVisits +
+                    specialAuthorities +
+                    hospitalVisits +
+                    clinicalDocuments +
+                    if (isShowMedicationRecords() && medicationRecords != null) {
+                        medicationRecords
+                    } else {
+                        emptyList()
+                    }
 
                 _uiState.update { state ->
                     state.copy(
@@ -125,6 +134,22 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 // no implementation required.
             }
         }
+
+    private fun getSampleClinicalDocuments(): List<HealthRecordItem> {
+        val sample = HealthRecordItem(
+            patientId = -1,
+            icon = R.drawable.ic_health_record_clinical_document,
+            title = "Clinical 01",
+            description = "Desc 01",
+            date = Instant.now(),
+            healthRecordType = HealthRecordType.CLINICAL_DOCUMENT_RECORD,
+        )
+
+        return listOf(
+            sample,
+            sample.copy(title = "Clinical 02", description = "Desc 02")
+        )
+    }
 
     fun isShowMedicationRecords(): Boolean {
         return medicationRecordRepository.getProtectiveWordState() == ProtectiveWordState.PROTECTIVE_WORD_NOT_REQUIRED.value ||
@@ -172,6 +197,7 @@ data class HealthRecordItem(
     val healthVisitId: Long = -1L,
     val specialAuthorityId: Long = -1L,
     val hospitalVisitId: Long = -1L,
+    val clinicalDocumentId: Long = -1L,
     val icon: Int,
     val title: String,
     val description: String,
@@ -194,6 +220,7 @@ enum class HealthRecordType {
     HEALTH_VISIT_RECORD,
     SPECIAL_AUTHORITY_RECORD,
     HOSPITAL_VISITS_RECORD,
+    CLINICAL_DOCUMENT_RECORD
 }
 
 data class HiddenMedicationRecordItem(

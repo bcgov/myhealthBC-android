@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.ui.dependents.profile
 
 import android.os.Bundle
 import android.view.View
-import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -10,6 +9,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.databinding.FragmentDependentProfileBinding
 import ca.bc.gov.bchealth.ui.dependents.BaseDependentFragment
 import ca.bc.gov.bchealth.utils.launchOnStart
@@ -56,7 +56,7 @@ class DependentProfileFragment : BaseDependentFragment(R.layout.fragment_depende
                 binding.composeBody.apply {
                     setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                     setContent {
-                        MaterialTheme {
+                        MyHealthTheme {
                             DependentProfileUI(uiState.dependentInfo)
                         }
                     }

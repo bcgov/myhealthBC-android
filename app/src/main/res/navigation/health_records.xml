@@ -43,6 +43,9 @@
         <action
             android:id="@+id/action_individualHealthRecordsFragment_to_hospitalVisitDetailsFragment"
             app:destination="@id/hospitalVisitDetailFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordsFragment_to_clinicalDocumentDetailsFragment"
+            app:destination="@id/clinicalDocumentDetailFragment" />
     </fragment>
 
 
@@ -178,6 +181,16 @@
         tools:layout="@layout/fragment_hospital_visit_detail" >
         <argument
             android:name="hospitalVisitId"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/clinicalDocumentDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.clinicaldocument.ClinicalDocumentDetailFragment"
+        android:label="fragment_clinical_document_detail"
+        tools:layout="@layout/fragment_clinical_document_detail" >
+        <argument
+            android:name="clinicalDocumentId"
             app:argType="long" />
     </fragment>
 

@@ -191,9 +191,11 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
                 HealthRecordType.HOSPITAL_VISITS_RECORD ->
                     DependentRecordsFragmentDirections
                         .actionDependentRecordsFragmentToHospitalVisitDetailsFragment(it.hospitalVisitId)
+
+                HealthRecordType.CLINICAL_DOCUMENT_RECORD -> null
             }
 
-            findNavController().navigate(navDirection)
+            navDirection?.let { findNavController().navigate(navDirection) }
         }
         binding.rvHealthRecords.adapter = healthRecordsAdapter
         binding.rvHealthRecords.emptyView = binding.viewEmptyScreen

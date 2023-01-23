@@ -473,4 +473,9 @@
     <string name="hospital_visits_detail_visit_date_title">Visit Date:</string>
     <string name="hospital_visits_detail_discharge_date_title">Discharge Date:</string>
 
+    <!--Clinical Documents-->
+    <string name="clinical_documents_detail_button_download">Download Full Report</string>
+    <string name="clinical_documents_detail_discipline">Discipline:</string>
+    <string name="clinical_documents_detail_facility">Facility:</string>
+
 </resources>

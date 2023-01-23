@@ -48,33 +48,24 @@ class HealthRecordsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val record = getItem(position)
         holder.binding.tvTitle.text = record.title
-        var description = ""
         holder.binding.imgIcon.setImageResource(record.icon)
+
+        var description = ""
         when (record.healthRecordType) {
-            VACCINE_RECORD -> {
-                description = record.date.toDate()
-            }
-            COVID_TEST_RECORD -> {
-                description = "${record.testOutcome} • ${record.date.toDate()}"
-            }
-            MEDICATION_RECORD -> {
+            VACCINE_RECORD -> description = record.date.toDate()
+
+            COVID_TEST_RECORD -> description = "${record.testOutcome} • ${record.date.toDate()}"
+
+            MEDICATION_RECORD -> description = "${record.description} • ${record.date.toDate()}"
+
+            IMMUNIZATION_RECORD -> description = record.date.toDate()
+
+            HEALTH_VISIT_RECORD -> description = "${record.description} • ${record.date.toDate()}"
+
+            SPECIAL_AUTHORITY_RECORD ->
                 description = "${record.description} • ${record.date.toDate()}"
-            }
-            LAB_TEST -> {
-                description = record.description
-            }
-            IMMUNIZATION_RECORD -> {
-                description = record.date.toDate()
-            }
-            HEALTH_VISIT_RECORD -> {
-                description = "${record.description} • ${record.date.toDate()}"
-            }
-            SPECIAL_AUTHORITY_RECORD -> {
-                description = "${record.description} • ${record.date.toDate()}"
-            }
-            HOSPITAL_VISITS_RECORD -> {
-                description = record.description
-            }
+
+            else -> description = record.description
         }
 
         holder.binding.tvDesc.text = description
