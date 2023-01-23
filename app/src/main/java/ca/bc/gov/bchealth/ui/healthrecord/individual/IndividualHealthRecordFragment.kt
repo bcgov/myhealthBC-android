@@ -305,8 +305,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordsFragmentToHospitalVisitDetailsFragment(it.hospitalVisitId)
 
-                CLINICAL_DOCUMENT_RECORD -> IndividualHealthRecordFragmentDirections
-                    .actionIndividualHealthRecordsFragmentToClinicalDocumentDetailsFragment(it.clinicalDocumentId)
+                CLINICAL_DOCUMENT_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordsFragmentToClinicalDocumentDetailsFragment(it.clinicalDocumentId)
             }
 
             findNavController().navigate(navDirection)

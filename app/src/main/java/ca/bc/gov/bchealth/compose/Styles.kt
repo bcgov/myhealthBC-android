@@ -1,6 +1,8 @@
 package ca.bc.gov.bchealth.compose
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Typography
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -19,6 +21,8 @@ val fonts = FontFamily(
 
 private val darkText = Color(0xFF313132)
 
+val white = Color(0xFFFFFFFF)
+val primaryBlue = Color(0xFF003366)
 val statusBlue30 = Color(0x4D38598A)
 val descriptionGrey = Color(0xFF6D757D)
 
@@ -36,8 +40,25 @@ val MyHealthTypography = Typography(
         fontSize = 16.sp,
         color = darkText
     ),
+
+    button = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+        color = primaryBlue
+    ),
 )
 
 fun TextStyle.bold() = this.copy(fontWeight = FontWeight.Bold)
 
 fun TextStyle.italic() = this.copy(fontStyle = FontStyle.Italic)
+
+@Composable
+fun MyHealthTheme(content: @Composable () -> Unit) = MaterialTheme(
+    colors = MaterialTheme.colors.copy(
+        primary = primaryBlue
+    ),
+    typography = MyHealthTypography,
+    shapes = MaterialTheme.shapes,
+    content = content
+)

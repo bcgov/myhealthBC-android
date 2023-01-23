@@ -14,11 +14,10 @@ import java.time.Instant
 import javax.inject.Inject
 
 @HiltViewModel
-class ClinicalDocumentDetailViewModel @Inject constructor(
-) : ViewModel() {
+class ClinicalDocumentDetailViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(ClinicalDocumentUiState())
     val uiState: StateFlow<ClinicalDocumentUiState> = _uiState.asStateFlow()
-    private var fileId : String? = null
+    private var fileId: String? = null
 
     fun getClinicalDocumentDetails(clinicalDocumentId: Long) = viewModelScope.launch {
         try {
@@ -52,8 +51,8 @@ class ClinicalDocumentDetailViewModel @Inject constructor(
         }
     }
 
-    fun onClickDownload(){
-        //todo: next ticket
+    fun onClickDownload() {
+        // todo: next ticket
         println("Download: $fileId")
     }
 }

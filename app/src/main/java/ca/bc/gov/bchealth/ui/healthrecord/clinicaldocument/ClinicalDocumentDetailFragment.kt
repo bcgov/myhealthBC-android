@@ -2,13 +2,13 @@ package ca.bc.gov.bchealth.ui.healthrecord.clinicaldocument
 
 import android.os.Bundle
 import android.view.View
-import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.databinding.FragmentClinicalDocumentDetailBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -32,7 +32,7 @@ class ClinicalDocumentDetailFragment : BaseFragment(R.layout.fragment_hospital_v
         binding.composeBody.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                MaterialTheme {
+                MyHealthTheme {
                     ClinicalDocumentDetailUI(uiState.uiList, viewModel::onClickDownload)
                 }
             }
