@@ -307,9 +307,9 @@ fun HospitalVisitDto.toUiModel() =
     HealthRecordItem(
         patientId = patientId,
         hospitalVisitId = id,
-        title = healthService,
-        description = location,
         icon = R.drawable.ic_health_record_hospital_visit,
+        title = location,
+        description = visitType,
         date = visitDate,
         healthRecordType = HealthRecordType.HOSPITAL_VISITS_RECORD,
     )
