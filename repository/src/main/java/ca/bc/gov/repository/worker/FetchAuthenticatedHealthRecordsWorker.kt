@@ -7,6 +7,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
+import ca.bc.gov.common.BuildConfig.FLAG_CLINICAL_DOCUMENTS
 import ca.bc.gov.common.BuildConfig.FLAG_HOSPITAL_VISITS
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.common.R
@@ -14,6 +15,7 @@ import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.ProtectiveWordState
+import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
@@ -33,6 +35,7 @@ import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
+import ca.bc.gov.repository.clinicaldocument.ClinicalDocumentRepository
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.healthvisits.HealthVisitsRepository
 import ca.bc.gov.repository.hospitalvisit.HospitalVisitRepository
@@ -74,6 +77,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val healthVisitsRepository: HealthVisitsRepository,
     private val hospitalVisitRepository: HospitalVisitRepository,
     private val specialAuthorityRepository: SpecialAuthorityRepository,
+    private val clinicalDocumentRepository: ClinicalDocumentRepository,
     private val recordsRepository: RecordsRepository
 ) : CoroutineWorker(context, workerParams) {
 
@@ -104,6 +108,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         var dependents: List<DependentDto>? = null
         var healthVisits: List<HealthVisitsDto>? = null
         var hospitalVisits: List<HospitalVisitDto>? = null
+        var clinicalDocuments: List<ClinicalDocumentDto>? = null
         var specialAuthorities: List<SpecialAuthorityDto>? = null
 
         try {
@@ -242,6 +247,20 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             try {
+                if (FLAG_CLINICAL_DOCUMENTS) {
+                    clinicalDocuments =
+                        fetchRecord(
+                            authParameters,
+                            clinicalDocumentRepository::getClinicalDocuments
+                        )
+                }
+            } catch (e: Exception) {
+                handleException(e)?.let { failureResult ->
+                    return failureResult
+                }
+            }
+
+            try {
                 specialAuthorities =
                     fetchRecord(authParameters, specialAuthorityRepository::getSpecialAuthority)
             } catch (e: Exception) {
@@ -262,6 +281,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             insertHealthVisits(patientId, healthVisits)
             insertSpecialAuthority(patientId, specialAuthorities)
             recordsRepository.storeHospitalVisits(patientId, hospitalVisits)
+            recordsRepository.storeClinicalDocuments(patientId, clinicalDocuments)
 
             updateNotification(isApiFailed)
         } catch (e: Exception) {

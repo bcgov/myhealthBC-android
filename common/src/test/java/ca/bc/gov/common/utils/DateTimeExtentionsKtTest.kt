@@ -3,7 +3,7 @@ package ca.bc.gov.common.utils
 import org.junit.Assert.fail
 import org.junit.Test
 
-internal class DateTimeExtenstionsKtTest {
+internal class DateTimeExtentionsKtTest {
 
     @Test
     fun `GIVEN longest date String WHEN formatZ is called THEN no exception should be thrown`() {

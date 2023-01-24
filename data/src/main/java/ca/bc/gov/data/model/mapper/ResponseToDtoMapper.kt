@@ -8,6 +8,7 @@ import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.TermsOfServiceDto
 import ca.bc.gov.common.model.banner.BannerDto
+import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.ClinicDto
@@ -27,12 +28,14 @@ import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.model.test.TestRecordDto
+import ca.bc.gov.common.utils.full_date_time_plus_time
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.common.utils.toDateTimeZ
 import ca.bc.gov.data.datasource.remote.model.base.LabResult
 import ca.bc.gov.data.datasource.remote.model.base.Order
 import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
 import ca.bc.gov.data.datasource.remote.model.base.banner.BannerPayload
+import ca.bc.gov.data.datasource.remote.model.base.clinicaldocument.ClinicalDocumentResponse
 import ca.bc.gov.data.datasource.remote.model.base.comment.CommentPayload
 import ca.bc.gov.data.datasource.remote.model.base.covidtest.CovidTestRecord
 import ca.bc.gov.data.datasource.remote.model.base.dependent.DependentPayload
@@ -318,6 +321,18 @@ fun HospitalVisitInformation.toDto() = HospitalVisitDto(
     visitDate = admitDateTime.toDateTime(),
     dischargeDate = endDateTime?.toDateTime(),
 )
+
+fun ClinicalDocumentResponse.toDto(): List<ClinicalDocumentDto> =
+    this.payload.map {
+        ClinicalDocumentDto(
+            name = it.name,
+            type = it.type,
+            facilityName = it.facilityName,
+            discipline = it.discipline,
+            serviceDate = it.serviceDate.toDateTime(full_date_time_plus_time),
+            fileId = it.fileId,
+        )
+    }
 
 fun Clinic.toDto() = ClinicDto(
     name
