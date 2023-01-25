@@ -1,8 +1,11 @@
 package ca.bc.gov.repository.clinicaldocument
 
+import ca.bc.gov.common.const.DATABASE_ERROR
+import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.data.datasource.local.ClinicalDocumentLocalDataSource
 import ca.bc.gov.data.datasource.remote.ClinicalDocumentRemoteDataSource
+import ca.bc.gov.data.model.mapper.toDto
 import javax.inject.Inject
 
 class ClinicalDocumentRepository @Inject constructor(
@@ -18,4 +21,10 @@ class ClinicalDocumentRepository @Inject constructor(
 
     suspend fun getClinicalDocuments(token: String, hdid: String) =
         remoteDataSource.getClinicalDocument(token, hdid)
+
+    suspend fun getClinicalDocument(clinicalDocumentId: Long) =
+        localDataSource.getClinicalDocument(clinicalDocumentId)?.toDto()
+            ?: throw MyHealthException(
+                DATABASE_ERROR, "No record found for clinicalDocumentId = $clinicalDocumentId"
+            )
 }

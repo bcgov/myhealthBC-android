@@ -12,7 +12,9 @@ import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.databinding.FragmentClinicalDocumentDetailBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.viewBindings
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ClinicalDocumentDetailFragment : BaseFragment(R.layout.fragment_hospital_visit_detail) {
     private val binding by viewBindings(FragmentClinicalDocumentDetailBinding::bind)
     private val args: ClinicalDocumentDetailFragmentArgs by navArgs()

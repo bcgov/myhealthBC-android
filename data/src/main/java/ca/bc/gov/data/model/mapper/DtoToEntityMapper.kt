@@ -6,6 +6,7 @@ import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
+import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
@@ -22,6 +23,7 @@ import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.model.test.TestResultDto
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
+import ca.bc.gov.data.datasource.local.entity.clinicaldocument.ClinicalDocumentEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidTestEntity
@@ -282,4 +284,14 @@ fun DependentDto.toPatientEntity() = PatientEntity(
     phn = phn,
     patientOrder = Long.MAX_VALUE,
     authenticationStatus = AuthenticationStatus.DEPENDENT
+)
+
+fun ClinicalDocumentDto.toEntity() = ClinicalDocumentEntity(
+    patientId = patientId,
+    fileId = fileId,
+    name = name,
+    type = type,
+    facilityName = facilityName,
+    discipline = discipline,
+    serviceDate = serviceDate,
 )

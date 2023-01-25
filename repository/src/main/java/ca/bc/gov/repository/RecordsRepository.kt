@@ -111,7 +111,6 @@ class RecordsRepository @Inject constructor(
         patientId: Long,
         clinicalDocuments: List<ClinicalDocumentDto>?
     ) {
-        println("svn: "+clinicalDocuments)
         clinicalDocumentRepository.deleteClinicalDocuments(patientId)
         clinicalDocuments?.let { list ->
             list.forEach { it.patientId = patientId }

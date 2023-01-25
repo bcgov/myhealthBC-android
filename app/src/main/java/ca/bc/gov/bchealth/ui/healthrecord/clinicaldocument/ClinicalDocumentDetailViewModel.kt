@@ -4,24 +4,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
+import ca.bc.gov.repository.clinicaldocument.ClinicalDocumentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Instant
 import javax.inject.Inject
 
 @HiltViewModel
-class ClinicalDocumentDetailViewModel @Inject constructor() : ViewModel() {
+class ClinicalDocumentDetailViewModel @Inject constructor(
+    private val repository: ClinicalDocumentRepository,
+) : ViewModel() {
     private val _uiState = MutableStateFlow(ClinicalDocumentUiState())
     val uiState: StateFlow<ClinicalDocumentUiState> = _uiState.asStateFlow()
     private var fileId: String? = null
 
     fun getClinicalDocumentDetails(clinicalDocumentId: Long) = viewModelScope.launch {
         try {
-            val dto: ClinicalDocumentDto = getSampleClinicalDocument(clinicalDocumentId)
+            val dto: ClinicalDocumentDto = repository.getClinicalDocument(clinicalDocumentId)
 
             fileId = dto.fileId
 
@@ -56,15 +58,6 @@ class ClinicalDocumentDetailViewModel @Inject constructor() : ViewModel() {
         println("Download: $fileId")
     }
 }
-
-private fun getSampleClinicalDocument(id: Long) = ClinicalDocumentDto(
-    name = "Discharge Summary",
-    type = "type",
-    facilityName = "BC Women's Hospital",
-    discipline = "Inpatient",
-    serviceDate = Instant.now(),
-    fileId = "fileId",
-)
 
 data class ClinicalDocumentUiState(
     val onLoading: Boolean = false,

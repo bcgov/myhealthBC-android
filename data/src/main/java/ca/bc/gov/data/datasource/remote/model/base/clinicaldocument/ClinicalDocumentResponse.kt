@@ -12,9 +12,6 @@ class ClinicalDocumentResponse(
 )
 
 data class ClinicalDocumentPayload(
-    @SerializedName("id")
-    val payloadId: String,
-
     @SerializedName("fileId")
     val fileId: String,
 
