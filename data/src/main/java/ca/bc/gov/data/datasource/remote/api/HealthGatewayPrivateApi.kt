@@ -11,6 +11,7 @@ import ca.bc.gov.data.datasource.remote.model.request.UserProfileRequest
 import ca.bc.gov.data.datasource.remote.model.response.AddCommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.AllCommentsResponse
 import ca.bc.gov.data.datasource.remote.model.response.AuthenticatedCovidTestResponse
+import ca.bc.gov.data.datasource.remote.model.response.ClinicalDocumentPdfResponse
 import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.DependentListResponse
 import ca.bc.gov.data.datasource.remote.model.response.DependentResponse
@@ -42,6 +43,7 @@ interface HealthGatewayPrivateApi {
         private const val DEPENDENT_HDID = "dependent_hdid"
         private const val AUTHORIZATION = "Authorization"
         private const val REPORT_ID = "reportId"
+        private const val FILE_ID = "fileId"
         private const val IS_COVID_19 = "isCovid19"
         private const val BASE_IMMUNIZATION_SERVICE = "api/immunizationservice"
         private const val BASE_LABORATORY_SERVICE = "api/laboratoryservice"
@@ -150,6 +152,13 @@ interface HealthGatewayPrivateApi {
         @Header(AUTHORIZATION) accessToken: String,
         @Path(HDID) hdid: String,
     ): Response<ClinicalDocumentResponse>
+
+    @GET("$BASE_CLINICAL_SERVICE/ClinicalDocument/{hdid}/file/{fileId}")
+    suspend fun getClinicalDocumentPdf(
+        @Header(AUTHORIZATION) accessToken: String,
+        @Path(HDID) hdid: String,
+        @Path(FILE_ID) fileId: String,
+    ): Response<ClinicalDocumentPdfResponse>
 
     @GET("$BASE_USER_PROFILE_SERVICE/{$HDID}/Comment")
     suspend fun getAllComments(

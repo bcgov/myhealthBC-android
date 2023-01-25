@@ -35,7 +35,9 @@ class ClinicalDocumentDetailFragment : BaseFragment(R.layout.fragment_hospital_v
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MyHealthTheme {
-                    ClinicalDocumentDetailUI(uiState.uiList, viewModel::onClickDownload)
+                    ClinicalDocumentDetailUI(uiState.uiList) {
+                        viewModel.onClickDownload()
+                    }
                 }
             }
         }
