@@ -1,5 +1,6 @@
 package ca.bc.gov.data.datasource.remote.api
 
+import ca.bc.gov.data.datasource.remote.model.base.clinicaldocument.ClinicalDocumentResponse
 import ca.bc.gov.data.datasource.remote.model.base.dependent.DependentPayload
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsResponse
 import ca.bc.gov.data.datasource.remote.model.base.hospitalvisit.HospitalVisitResponse
@@ -48,6 +49,7 @@ interface HealthGatewayPrivateApi {
         private const val BASE_PATIENT_SERVICE = "api/patientservice"
         private const val BASE_USER_PROFILE_SERVICE = "api/gatewayapiservice/UserProfile"
         private const val BASE_HEALTH_VISIT_SERVICE = "api/encounterservice"
+        private const val BASE_CLINICAL_SERVICE = "api/clinicaldocumentservice"
     }
 
     @GET("$BASE_PATIENT_SERVICE/Patient/{hdid}")
@@ -142,6 +144,12 @@ interface HealthGatewayPrivateApi {
         @Header(AUTHORIZATION) accessToken: String,
         @Path(HDID) hdid: String,
     ): Response<HospitalVisitResponse>
+
+    @GET("$BASE_CLINICAL_SERVICE/ClinicalDocument/{hdid}")
+    suspend fun getClinicalDocument(
+        @Header(AUTHORIZATION) accessToken: String,
+        @Path(HDID) hdid: String,
+    ): Response<ClinicalDocumentResponse>
 
     @GET("$BASE_USER_PROFILE_SERVICE/{$HDID}/Comment")
     suspend fun getAllComments(

@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ca.bc.gov.data.datasource.local.converter.AuthenticationStatusTypeConverter
 import ca.bc.gov.data.datasource.local.converter.DateTimeConverter
+import ca.bc.gov.data.datasource.local.dao.ClinicalDocumentDao
 import ca.bc.gov.data.datasource.local.dao.CommentDao
 import ca.bc.gov.data.datasource.local.dao.CovidOrderDao
 import ca.bc.gov.data.datasource.local.dao.CovidTestDao
@@ -25,6 +26,7 @@ import ca.bc.gov.data.datasource.local.dao.SpecialAuthorityDao
 import ca.bc.gov.data.datasource.local.dao.TestResultDao
 import ca.bc.gov.data.datasource.local.dao.VaccineRecordDao
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
+import ca.bc.gov.data.datasource.local.entity.clinicaldocument.ClinicalDocumentEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidTestEntity
@@ -72,7 +74,8 @@ import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityE
         ImmunizationForecastEntity::class,
         HealthVisitEntity::class,
         HospitalVisitEntity::class,
-        SpecialAuthorityEntity::class
+        SpecialAuthorityEntity::class,
+        ClinicalDocumentEntity::class,
     ],
     exportSchema = true
 )
@@ -116,4 +119,6 @@ abstract class MyHealthDataBase : RoomDatabase() {
     abstract fun getHospitalVisitDao(): HospitalVisitDao
 
     abstract fun getSpecialAuthorityDao(): SpecialAuthorityDao
+
+    abstract fun getClinicalDocumentDao(): ClinicalDocumentDao
 }

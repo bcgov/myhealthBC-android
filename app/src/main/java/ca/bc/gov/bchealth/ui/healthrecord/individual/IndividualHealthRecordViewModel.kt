@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ProtectiveWordState
@@ -80,8 +79,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 val hospitalVisits = patientRepository.getPatientWithHospitalVisits(patientId).map {
                     it.toUiModel()
                 }
-
-                val clinicalDocuments = getSampleClinicalDocuments()
+                val clinicalDocuments = patientRepository.getPatientWithClinicalDocuments(patientId)
+                    .map { it.toUiModel() }
 
                 val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
                     it.toUiModel()
@@ -134,22 +133,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 // no implementation required.
             }
         }
-
-    private fun getSampleClinicalDocuments(): List<HealthRecordItem> {
-        val sample = HealthRecordItem(
-            patientId = -1,
-            icon = R.drawable.ic_health_record_clinical_document,
-            title = "Clinical 01",
-            description = "Desc 01",
-            date = Instant.now(),
-            healthRecordType = HealthRecordType.CLINICAL_DOCUMENT_RECORD,
-        )
-
-        return listOf(
-            sample,
-            sample.copy(title = "Clinical 02", description = "Desc 02")
-        )
-    }
 
     fun isShowMedicationRecords(): Boolean {
         return medicationRecordRepository.getProtectiveWordState() == ProtectiveWordState.PROTECTIVE_WORD_NOT_REQUIRED.value ||

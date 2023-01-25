@@ -132,7 +132,7 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
 fun ClinicalDocumentDto.toUiModel() =
     HealthRecordItem(
         patientId = patientId,
-        hospitalVisitId = id,
+        clinicalDocumentId = id,
         title = name,
         description = facilityName,
         icon = R.drawable.ic_health_record_clinical_document,
