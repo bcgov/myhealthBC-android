@@ -30,6 +30,8 @@ class ClinicalDocumentDetailFragment : BaseFragment(R.layout.fragment_hospital_v
         ActivityResultContracts.StartActivityForResult()
     ) { fileInMemory?.delete() }
 
+    override fun getBaseViewModel() = viewModel
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.uiState.collectOnStart(::updateUi)
