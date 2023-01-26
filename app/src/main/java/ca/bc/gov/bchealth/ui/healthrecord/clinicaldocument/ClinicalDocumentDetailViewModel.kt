@@ -73,6 +73,10 @@ class ClinicalDocumentDetailViewModel @Inject constructor(
             println("svn: error while fetching PDF: " + e)
         }
     }
+
+    fun resetPdfState() {
+        _uiState.update { it.copy(pdfData = null) }
+    }
 }
 
 data class ClinicalDocumentUiState(
