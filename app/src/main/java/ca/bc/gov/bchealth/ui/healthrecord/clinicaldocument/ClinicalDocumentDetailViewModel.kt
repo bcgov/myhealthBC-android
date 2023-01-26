@@ -1,8 +1,9 @@
 package ca.bc.gov.bchealth.ui.healthrecord.clinicaldocument
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.ui.BaseViewModel
+import ca.bc.gov.bchealth.usecases.RefreshMobileConfigUseCase
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.repository.clinicaldocument.ClinicalDocumentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ClinicalDocumentDetailViewModel @Inject constructor(
     private val repository: ClinicalDocumentRepository,
-) : ViewModel() {
+    private val refreshMobileConfigUseCase: RefreshMobileConfigUseCase,
+) : BaseViewModel() {
     private val _uiState = MutableStateFlow(ClinicalDocumentUiState())
     val uiState: StateFlow<ClinicalDocumentUiState> = _uiState.asStateFlow()
     private var fileId: String? = null
@@ -53,16 +55,31 @@ class ClinicalDocumentDetailViewModel @Inject constructor(
         }
     }
 
-    fun onClickDownload() {
-        // todo: next ticket
-        println("Download: $fileId")
+    fun onClickDownload() = viewModelScope.launch {
+        _uiState.update { it.copy(onLoading = true) }
+
+        try {
+            refreshMobileConfigUseCase.execute()
+
+            fileId?.apply {
+                val pdfData = repository.fetchPdf(this)
+                _uiState.update { it.copy(pdfData = pdfData) }
+            }
+        } catch (e: Exception) {
+            handleBaseException(e)
+        }
+    }
+
+    fun resetPdfState() {
+        _uiState.update { it.copy(pdfData = null) }
     }
 }
 
 data class ClinicalDocumentUiState(
     val onLoading: Boolean = false,
     val toolbarTitle: String? = "",
-    val uiList: List<ClinicalDocumentDetailItem> = emptyList()
+    val uiList: List<ClinicalDocumentDetailItem> = emptyList(),
+    val pdfData: String? = null
 )
 
 data class ClinicalDocumentDetailItem(

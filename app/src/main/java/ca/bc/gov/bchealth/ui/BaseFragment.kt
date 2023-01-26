@@ -11,13 +11,28 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.HEALTH_GATEWAY_EMAIL_ADDRESS
 import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
+import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import kotlinx.coroutines.flow.StateFlow
 
 abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentLayoutId) {
 
+    open fun getBaseViewModel(): BaseViewModel? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setToolBar(getAppBarConfiguration())
+        getBaseViewModel()?.baseUiState?.collectOnStart(::handleBaseUiState)
+    }
+
+    private fun handleBaseUiState(baseUiState: BaseUiState) = baseUiState.apply {
+        if (connected.not()) {
+            showNoInternetConnectionMessage()
+            resetBaseUiState()
+        } else if (serviceUp.not()) {
+            showServiceDownMessage()
+            resetBaseUiState()
+        }
     }
 
     open fun setToolBar(appBarConfiguration: AppBarConfiguration) {}
@@ -45,6 +60,20 @@ abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentL
             msg = getString(R.string.error_message),
             positiveBtnMsg = getString(R.string.dialog_button_ok)
         )
+    }
+
+    private fun resetBaseUiState() = getBaseViewModel()?.resetBaseUiState()
+
+    private fun showServiceDownMessage() {
+        view?.let {
+            it.showServiceDownMessage(it.context)
+        }
+    }
+
+    private fun showNoInternetConnectionMessage() {
+        view?.let {
+            it.showNoInternetConnectionMessage(it.context)
+        }
     }
 
     private fun getAppBarConfiguration() = AppBarConfiguration(
