@@ -73,32 +73,14 @@ abstract class FilterFragment : BaseFragment(R.layout.fragment_filter) {
             if (validateSelectedDate()) {
                 val filterList = mutableListOf<String>()
                 val checkedChipIds = binding.cgFilterByType.checkedChipIds
-                checkedChipIds.forEach {
-                    when (it) {
-                        R.id.chip_medication -> {
-                            filterList.add(TimelineTypeFilter.MEDICATION.name)
-                        }
-                        R.id.chip_lab_test -> {
-                            filterList.add(TimelineTypeFilter.LAB_TEST.name)
-                        }
-                        R.id.chip_covid_test -> {
-                            filterList.add(TimelineTypeFilter.COVID_19_TEST.name)
-                        }
-                        R.id.chip_immunizations -> {
-                            filterList.add(TimelineTypeFilter.IMMUNIZATION.name)
-                        }
-                        R.id.chip_health_visit -> {
-                            filterList.add(TimelineTypeFilter.HEALTH_VISIT.name)
-                        }
-                        R.id.chip_special_authority -> {
-                            filterList.add(TimelineTypeFilter.SPECIAL_AUTHORITY.name)
-                        }
-                        R.id.chip_hospital_visits -> {
-                            filterList.add(TimelineTypeFilter.HOSPITAL_VISITS.name)
-                        }
+
+                TimelineTypeFilter.values().forEach {
+                    if (checkedChipIds.contains(it.id)) {
+                        filterList.add(it.name)
                     }
                 }
-                if (filterList.isNullOrEmpty()) {
+
+                if (filterList.isEmpty()) {
                     filterList.add(TimelineTypeFilter.ALL.name)
                 }
 
