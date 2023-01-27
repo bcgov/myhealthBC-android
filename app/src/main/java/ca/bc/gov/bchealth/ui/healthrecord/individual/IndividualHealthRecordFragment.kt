@@ -3,8 +3,6 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.core.view.children
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -14,8 +12,8 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
-import ca.bc.gov.bchealth.ui.filter.FilterUiState
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
+import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordFilterFragment
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
 import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
 import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
@@ -31,20 +29,18 @@ import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.VACCINE_RE
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
-import ca.bc.gov.bchealth.utils.hide
 import ca.bc.gov.bchealth.utils.launchOnStart
-import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
-import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
-class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_health_record) {
+class IndividualHealthRecordFragment :
+    BaseRecordFilterFragment(R.layout.fragment_individual_health_record) {
 
     private val binding by viewBindings(FragmentIndividualHealthRecordBinding::bind)
     private val viewModel: IndividualHealthRecordViewModel by viewModels()
@@ -54,6 +50,10 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private lateinit var concatAdapter: ConcatAdapter
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val filterSharedViewModel: PatientFilterViewModel by activityViewModels()
+
+    override fun getFilterViewModel() = filterSharedViewModel
+    override fun getFilter() = healthRecordsAdapter.filter
+    override fun getLayoutChipGroup() = binding.content.chipGroup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,36 +111,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     return@setOnMenuItemClickListener true
                 }
             }
-        }
-    }
-
-    private fun updateTypeFilterSelection(state: FilterUiState) = with(binding.content.chipGroup) {
-        resetTypeFilters()
-        state.timelineTypeFilter.forEach { filterName ->
-            TimelineTypeFilter.findByName(filterName)?.let { typeFilter ->
-                typeFilter.id?.let {
-                    val chip = view?.findViewById<Chip>(it)
-                    chip?.show()
-                }
-            }
-        }
-    }
-
-    private fun resetTypeFilters() {
-        binding.content.chipGroup.cgFilter.children.forEach { chip ->
-            if (chip.id != R.id.chip_date) {
-                chip.hide()
-            }
-        }
-    }
-
-    private fun clearFilterClickListener() {
-        binding.content.chipGroup.imgClear.setOnClickListener {
-            filterSharedViewModel.clearFilter()
-
-            updateHiddenMedicationRecordsView(viewModel.uiState.value)
-
-            healthRecordsAdapter.filter.filter(filterSharedViewModel.getFilterString())
         }
     }
 
@@ -336,55 +306,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun onBCSCLoginClick() {
         sharedViewModel.destinationId = 0
         findNavController().navigate(R.id.bcscAuthInfoFragment)
-    }
-
-    private fun observeFilterState() {
-        launchOnStart {
-            filterSharedViewModel.filterState.collect { filterState ->
-
-                // update filter date selection
-                if (isFilterDateSelected(filterState)) {
-                    binding.content.chipGroup.chipDate.apply {
-                        show()
-                        text = when {
-                            filterState.filterFromDate.isNullOrBlank() -> {
-                                filterState.filterToDate + " " + getString(R.string.before)
-                            }
-                            filterState.filterToDate.isNullOrBlank() -> {
-                                filterState.filterFromDate + " " + getString(R.string.after)
-                            }
-                            else -> {
-                                filterState.filterFromDate + " - " + filterState.filterToDate
-                            }
-                        }
-                    }
-                } else {
-                    binding.content.chipGroup.chipDate.hide()
-                }
-
-                updateTypeFilterSelection(filterState)
-
-                updateClearButton(filterState)
-            }
-        }
-    }
-
-    private fun isFilterDateSelected(filterState: FilterUiState): Boolean {
-        if (filterState.filterFromDate.isNullOrBlank() && filterState.filterToDate.isNullOrBlank()) {
-            return false
-        }
-        return true
-    }
-
-    private fun updateClearButton(filterState: FilterUiState) {
-        if (!isFilterDateSelected(filterState) && filterState.timelineTypeFilter.contains(
-                TimelineTypeFilter.ALL.name
-            )
-        ) {
-            binding.content.chipGroup.imgClear.hide()
-        } else {
-            binding.content.chipGroup.imgClear.show()
-        }
     }
 
     private fun observeNavigationFlow() {

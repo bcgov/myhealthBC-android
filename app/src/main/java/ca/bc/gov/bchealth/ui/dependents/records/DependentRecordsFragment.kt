@@ -3,7 +3,6 @@ package ca.bc.gov.bchealth.ui.dependents.records
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
-import androidx.core.view.children
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -11,28 +10,27 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentDependentRecordsBinding
-import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.dependents.records.filter.DependentFilterViewModel
-import ca.bc.gov.bchealth.ui.filter.FilterUiState
-import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
+import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordFilterFragment
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordsAdapter
-import ca.bc.gov.bchealth.utils.hide
 import ca.bc.gov.bchealth.utils.launchOnStart
-import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
-import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_records) {
+class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_dependent_records) {
     private val binding by viewBindings(FragmentDependentRecordsBinding::bind)
     private val args: DependentRecordsFragmentArgs by navArgs()
     private lateinit var healthRecordsAdapter: HealthRecordsAdapter
     private val viewModel: DependentRecordsViewModel by viewModels()
     private val filterSharedViewModel: DependentFilterViewModel by activityViewModels()
+
+    override fun getFilterViewModel() = filterSharedViewModel
+    override fun getFilter() = healthRecordsAdapter.filter
+    override fun getLayoutChipGroup() = binding.chipGroup
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,81 +40,7 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
         viewModel.loadRecords(patientId = args.patientId, hdid = args.hdid)
 
         clearFilterClickListener()
-        launchOnStart { observeFilterState() }
-    }
-
-    private fun clearFilterClickListener() {
-        binding.chipGroup.imgClear.setOnClickListener {
-            filterSharedViewModel.clearFilter()
-            healthRecordsAdapter.filter.filter(filterSharedViewModel.getFilterString())
-        }
-    }
-
-    private suspend fun observeFilterState() {
-        filterSharedViewModel.filterState.collect { filterState ->
-
-            // update filter date selection
-            if (isFilterDateSelected(filterState)) {
-                binding.chipGroup.chipDate.apply {
-                    show()
-                    text = when {
-                        filterState.filterFromDate.isNullOrBlank() -> {
-                            filterState.filterToDate + " " + getString(R.string.before)
-                        }
-                        filterState.filterToDate.isNullOrBlank() -> {
-                            filterState.filterFromDate + " " + getString(R.string.after)
-                        }
-                        else -> {
-                            filterState.filterFromDate + " - " + filterState.filterToDate
-                        }
-                    }
-                }
-            } else {
-                binding.chipGroup.chipDate.hide()
-            }
-
-            updateTypeFilterSelection(filterState)
-
-            updateClearButton(filterState)
-        }
-    }
-
-    private fun updateClearButton(filterState: FilterUiState) {
-        if (!isFilterDateSelected(filterState) && filterState.timelineTypeFilter.contains(
-                TimelineTypeFilter.ALL.name
-            )
-        ) {
-            binding.chipGroup.imgClear.hide()
-        } else {
-            binding.chipGroup.imgClear.show()
-        }
-    }
-
-    private fun updateTypeFilterSelection(filterUiState: FilterUiState) {
-        resetFilters()
-        filterUiState.timelineTypeFilter.forEach { filterName ->
-            TimelineTypeFilter.findByName(filterName)?.let { typeFilter ->
-                typeFilter.id?.let {
-                    val chip = view?.findViewById<Chip>(it)
-                    chip?.show()
-                }
-            }
-        }
-    }
-
-    private fun resetFilters() {
-        binding.chipGroup.cgFilter.children.forEach { chip ->
-            if (chip.id != R.id.chip_date) {
-                chip.hide()
-            }
-        }
-    }
-
-    private fun isFilterDateSelected(filterState: FilterUiState): Boolean {
-        if (filterState.filterFromDate.isNullOrBlank() && filterState.filterToDate.isNullOrBlank()) {
-            return false
-        }
-        return true
+        observeFilterState()
     }
 
     private suspend fun observeUiState() {
