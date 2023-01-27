@@ -9,6 +9,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HOSPITAL_V
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.IMMUNIZATION_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.MEDICATION_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.SPECIAL_AUTHORITY_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.CLINICAL_DOCUMENT_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.LAB_TEST_RECORD
 
 enum class TimelineTypeFilter(@IdRes val id: Int?, val recordType: HealthRecordType?) {
@@ -19,7 +20,8 @@ enum class TimelineTypeFilter(@IdRes val id: Int?, val recordType: HealthRecordT
     IMMUNIZATION(R.id.chip_immunizations, IMMUNIZATION_RECORD),
     HEALTH_VISIT(R.id.chip_health_visit, HEALTH_VISIT_RECORD),
     SPECIAL_AUTHORITY(R.id.chip_special_authority, SPECIAL_AUTHORITY_RECORD),
-    HOSPITAL_VISITS(R.id.chip_hospital_visits, HOSPITAL_VISITS_RECORD);
+    HOSPITAL_VISITS(R.id.chip_hospital_visits, HOSPITAL_VISITS_RECORD),
+    CLINICAL_DOCUMENT(R.id.chip_clinical_document, CLINICAL_DOCUMENT_RECORD);
 
     companion object {
         fun findByName(name: String): TimelineTypeFilter? = values().find {
