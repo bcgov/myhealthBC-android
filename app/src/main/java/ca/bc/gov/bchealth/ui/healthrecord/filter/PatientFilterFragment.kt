@@ -23,5 +23,9 @@ class PatientFilterFragment : FilterFragment() {
         if (BuildConfig.FLAG_HOSPITAL_VISITS) {
             this.add(R.id.chip_hospital_visits)
         }
+
+        if (BuildConfig.FLAG_CLINICAL_DOCUMENTS) {
+            this.add(R.id.chip_clinical_document)
+        }
     }
 }
