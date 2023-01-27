@@ -82,7 +82,7 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
                     DependentRecordsFragmentDirections
                         .actionDependentRecordsFragmentToMedicationDetailFragment(it.medicationRecordId)
 
-                HealthRecordType.LAB_TEST ->
+                HealthRecordType.LAB_TEST_RECORD ->
                     DependentRecordsFragmentDirections
                         .actionDependentRecordsFragmentToLabTestDetailFragment(it.labOrderId)
 

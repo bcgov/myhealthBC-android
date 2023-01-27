@@ -9,11 +9,12 @@ import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HOSPITAL_V
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.IMMUNIZATION_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.MEDICATION_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.SPECIAL_AUTHORITY_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.LAB_TEST_RECORD
 
 enum class TimelineTypeFilter(@IdRes val id: Int?, val recordType: HealthRecordType?) {
     ALL(null, null),
     MEDICATION(R.id.chip_medication, MEDICATION_RECORD),
-    LAB_TEST(R.id.chip_lab_test, HealthRecordType.LAB_TEST),
+    LAB_TEST(R.id.chip_lab_test, LAB_TEST_RECORD),
     COVID_19_TEST(R.id.chip_covid_test, COVID_TEST_RECORD),
     IMMUNIZATION(R.id.chip_immunizations, IMMUNIZATION_RECORD),
     HEALTH_VISIT(R.id.chip_health_visit, HEALTH_VISIT_RECORD),

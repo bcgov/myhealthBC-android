@@ -22,7 +22,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.COVID_TEST
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HEALTH_VISIT_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HOSPITAL_VISITS_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.IMMUNIZATION_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.LAB_TEST
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.LAB_TEST_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.MEDICATION_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.SPECIAL_AUTHORITY_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.VACCINE_RECORD
@@ -252,7 +252,7 @@ class IndividualHealthRecordFragment :
                     IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordFragmentToMedicationDetailFragment(it.medicationRecordId)
 
-                LAB_TEST ->
+                LAB_TEST_RECORD ->
                     IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordFragmentToLabTestDetailFragment(it.labOrderId)
 

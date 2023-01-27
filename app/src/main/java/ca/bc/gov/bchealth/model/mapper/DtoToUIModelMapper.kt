@@ -152,7 +152,7 @@ fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
         date = labOrder.timelineDateTime,
         description = description,
         testOutcome = null,
-        healthRecordType = HealthRecordType.LAB_TEST,
+        healthRecordType = HealthRecordType.LAB_TEST_RECORD,
         dataSource = labOrder.dataSorce.name
     )
 }
