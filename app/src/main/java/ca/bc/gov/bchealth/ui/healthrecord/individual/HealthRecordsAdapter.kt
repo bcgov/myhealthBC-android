@@ -11,14 +11,13 @@ import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.COVID_TEST_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HEALTH_VISIT_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HOSPITAL_VISITS_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.IMMUNIZATION_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.LAB_TEST
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.MEDICATION_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.SPECIAL_AUTHORITY_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.VACCINE_RECORD
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toStartOfDayInstant
+
 /**
  * @author Pinakin Kansara
  */
@@ -96,29 +95,18 @@ class HealthRecordsAdapter(
 
                     list.forEach { type ->
                         when (type) {
-                            TimelineTypeFilter.ALL.name -> {
-                                filteredList.addAll(tempList)
-                            }
-                            TimelineTypeFilter.MEDICATION.name -> {
-                                filteredList.addAll(tempList.filter { it.healthRecordType == MEDICATION_RECORD })
-                            }
-                            TimelineTypeFilter.LAB_TEST.name -> {
-                                filteredList.addAll(tempList.filter { it.healthRecordType == LAB_TEST })
-                            }
-                            TimelineTypeFilter.COVID_19_TEST.name -> {
-                                filteredList.addAll(tempList.filter { it.healthRecordType == COVID_TEST_RECORD })
-                            }
-                            TimelineTypeFilter.IMMUNIZATION.name -> {
-                                filteredList.addAll(tempList.filter { it.healthRecordType == IMMUNIZATION_RECORD })
-                            }
-                            TimelineTypeFilter.HEALTH_VISIT.name -> {
-                                filteredList.addAll(tempList.filter { it.healthRecordType == HEALTH_VISIT_RECORD })
-                            }
-                            TimelineTypeFilter.SPECIAL_AUTHORITY.name -> {
-                                filteredList.addAll(tempList.filter { it.healthRecordType == SPECIAL_AUTHORITY_RECORD })
-                            }
-                            TimelineTypeFilter.HOSPITAL_VISITS.name -> {
-                                filteredList.addAll(tempList.filter { it.healthRecordType == HOSPITAL_VISITS_RECORD })
+                            TimelineTypeFilter.ALL.name -> filteredList.addAll(tempList)
+
+                            else -> {
+                                val filterType = TimelineTypeFilter.values().find {
+                                    it.name == type
+                                }
+                                if (filterType != null) {
+                                    val itemsToAdd = tempList.filter {
+                                        it.healthRecordType == filterType.recordType
+                                    }
+                                    filteredList.addAll(itemsToAdd)
+                                }
                             }
                         }
                     }
