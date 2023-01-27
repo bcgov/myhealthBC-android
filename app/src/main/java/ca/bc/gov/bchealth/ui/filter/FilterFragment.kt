@@ -15,6 +15,7 @@ import ca.bc.gov.bchealth.utils.DatePickerHelper
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.utils.toDate
+import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
 
 abstract class FilterFragment : BaseFragment(R.layout.fragment_filter) {
@@ -45,26 +46,6 @@ abstract class FilterFragment : BaseFragment(R.layout.fragment_filter) {
                 findNavController().popBackStack()
             }
             title = getString(R.string.filter)
-        }
-    }
-
-    private fun initTypeFilter(filterState: FilterUiState) = with(binding) {
-        filterState.timelineTypeFilter.forEach {
-            when (it) {
-                TimelineTypeFilter.MEDICATION.name -> chipMedication.isChecked = true
-
-                TimelineTypeFilter.IMMUNIZATION.name -> chipImmunizations.isChecked = true
-
-                TimelineTypeFilter.COVID_19_TEST.name -> chipCovidTest.isChecked = true
-
-                TimelineTypeFilter.LAB_TEST.name -> chipLabTest.isChecked = true
-
-                TimelineTypeFilter.HEALTH_VISIT.name -> chipHealthVisit.isChecked = true
-
-                TimelineTypeFilter.SPECIAL_AUTHORITY.name -> chipSpecialAuthority.isChecked = true
-
-                TimelineTypeFilter.HOSPITAL_VISITS.name -> chipHospitalVisits.isChecked = true
-            }
         }
     }
 
@@ -158,6 +139,17 @@ abstract class FilterFragment : BaseFragment(R.layout.fragment_filter) {
                     )
 
                     initTypeFilter(filterState)
+                }
+            }
+        }
+    }
+
+    private fun initTypeFilter(uiState: FilterUiState) {
+        uiState.timelineTypeFilter.forEach { filterName ->
+            TimelineTypeFilter.findByName(filterName)?.let { typeFilter ->
+                typeFilter.id?.let {
+                    val chip = view?.findViewById<Chip>(it)
+                    chip?.isChecked = true
                 }
             }
         }

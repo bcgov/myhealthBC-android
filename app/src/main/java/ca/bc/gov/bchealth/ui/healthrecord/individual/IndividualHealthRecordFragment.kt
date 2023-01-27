@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -36,6 +37,7 @@ import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -113,28 +115,23 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun updateTypeFilterSelection(state: FilterUiState) = with(binding.content.chipGroup) {
-        resetFilters()
-        state.timelineTypeFilter.forEach {
-            when (it) {
-                TimelineTypeFilter.MEDICATION.name -> chipMedication.show()
-                TimelineTypeFilter.IMMUNIZATION.name -> chipImmunizations.show()
-                TimelineTypeFilter.COVID_19_TEST.name -> chipCovidTest.show()
-                TimelineTypeFilter.LAB_TEST.name -> chipLabTest.show()
-                TimelineTypeFilter.HEALTH_VISIT.name -> chipHealthVisit.show()
-                TimelineTypeFilter.SPECIAL_AUTHORITY.name -> chipSpecialAuthority.show()
-                TimelineTypeFilter.HOSPITAL_VISITS.name -> chipHospitalVisits.show()
+        resetTypeFilters()
+        state.timelineTypeFilter.forEach { filterName ->
+            TimelineTypeFilter.findByName(filterName)?.let { typeFilter ->
+                typeFilter.id?.let {
+                    val chip = view?.findViewById<Chip>(it)
+                    chip?.show()
+                }
             }
         }
     }
 
-    private fun resetFilters() = with(binding.content.chipGroup) {
-        chipMedication.hide()
-        chipImmunizations.hide()
-        chipCovidTest.hide()
-        chipLabTest.hide()
-        chipHealthVisit.hide()
-        chipSpecialAuthority.hide()
-        chipHospitalVisits.hide()
+    private fun resetTypeFilters() {
+        binding.content.chipGroup.cgFilter.children.forEach { chip ->
+            if (chip.id != R.id.chip_date) {
+                chip.hide()
+            }
+        }
     }
 
     private fun clearFilterClickListener() {

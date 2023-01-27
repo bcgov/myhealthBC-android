@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.dependents.records
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.core.view.children
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -22,6 +23,7 @@ import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -92,38 +94,22 @@ class DependentRecordsFragment : BaseFragment(R.layout.fragment_dependent_record
 
     private fun updateTypeFilterSelection(filterUiState: FilterUiState) {
         resetFilters()
-        filterUiState.timelineTypeFilter.forEach {
-            when (it) {
-                TimelineTypeFilter.MEDICATION.name -> {
-                    binding.chipGroup.chipMedication.show()
-                }
-                TimelineTypeFilter.IMMUNIZATION.name -> {
-                    binding.chipGroup.chipImmunizations.show()
-                }
-                TimelineTypeFilter.COVID_19_TEST.name -> {
-                    binding.chipGroup.chipCovidTest.show()
-                }
-                TimelineTypeFilter.LAB_TEST.name -> {
-                    binding.chipGroup.chipLabTest.show()
-                }
-                TimelineTypeFilter.HEALTH_VISIT.name -> {
-                    binding.chipGroup.chipHealthVisit.show()
-                }
-                TimelineTypeFilter.SPECIAL_AUTHORITY.name -> {
-                    binding.chipGroup.chipSpecialAuthority.show()
+        filterUiState.timelineTypeFilter.forEach { filterName ->
+            TimelineTypeFilter.findByName(filterName)?.let { typeFilter ->
+                typeFilter.id?.let {
+                    val chip = view?.findViewById<Chip>(it)
+                    chip?.show()
                 }
             }
         }
     }
 
-    private fun resetFilters() = with(binding.chipGroup) {
-        chipMedication.hide()
-        chipImmunizations.hide()
-        chipCovidTest.hide()
-        chipLabTest.hide()
-        chipHealthVisit.hide()
-        chipSpecialAuthority.hide()
-        chipHospitalVisits.hide()
+    private fun resetFilters() {
+        binding.chipGroup.cgFilter.children.forEach { chip ->
+            if (chip.id != R.id.chip_date) {
+                chip.hide()
+            }
+        }
     }
 
     private fun isFilterDateSelected(filterState: FilterUiState): Boolean {

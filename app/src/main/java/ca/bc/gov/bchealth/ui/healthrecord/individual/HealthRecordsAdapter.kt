@@ -86,24 +86,22 @@ class HealthRecordsAdapter(
                 if (charSequence.isNullOrBlank()) {
                     return FilterResults()
                 } else {
-                    val list = charSequence.split(",")
+                    val queries = charSequence.split(",")
 
-                    val fromDate = list.find { it.contains("FROM:") }?.substringAfter(":")
-                    val toDate = list.find { it.contains("TO:") }?.substringAfter(":")
+                    val fromDate = queries.find { it.contains("FROM:") }?.substringAfter(":")
+                    val toDate = queries.find { it.contains("TO:") }?.substringAfter(":")
 
                     tempList.addAll(getFilterByDate(fromDate, toDate))
 
-                    list.forEach { type ->
-                        when (type) {
+                    queries.forEach { query ->
+                        when (query) {
                             TimelineTypeFilter.ALL.name -> filteredList.addAll(tempList)
 
                             else -> {
-                                val filterType = TimelineTypeFilter.values().find {
-                                    it.name == type
-                                }
-                                if (filterType != null) {
+                                val typeFilter = TimelineTypeFilter.findByName(query)
+                                typeFilter?.let {
                                     val itemsToAdd = tempList.filter {
-                                        it.healthRecordType == filterType.recordType
+                                        it.healthRecordType == typeFilter.recordType
                                     }
                                     filteredList.addAll(itemsToAdd)
                                 }
