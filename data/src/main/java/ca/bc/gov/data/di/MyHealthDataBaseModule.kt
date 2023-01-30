@@ -8,6 +8,7 @@ import ca.bc.gov.data.datasource.local.migration.MIGRATION_1_2
 import ca.bc.gov.data.datasource.local.migration.MIGRATION_2_3
 import ca.bc.gov.data.datasource.local.migration.MIGRATION_3_4
 import ca.bc.gov.data.datasource.local.migration.MIGRATION_4_5
+import ca.bc.gov.data.datasource.local.migration.MIGRATION_5_6
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.utils.RandomBytesGenerator
 import dagger.Module
@@ -50,6 +51,7 @@ class MyHealthDataBaseModule {
             MIGRATION_2_3,
             MIGRATION_3_4,
             MIGRATION_4_5,
+            MIGRATION_5_6
         )
 
         if (BuildConfig.FLAVOR != "dev" &&
