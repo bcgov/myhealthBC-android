@@ -8,8 +8,10 @@ import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.immunization.ImmunizationDto
+import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
+import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.data.datasource.local.DependentsLocalDataSource
@@ -21,6 +23,7 @@ import ca.bc.gov.data.model.mapper.toPatientEntity
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.extensions.mapFlowContent
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
+import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.model.PatientVaccineRecordsState
 import ca.bc.gov.repository.qr.VaccineRecordState
@@ -37,6 +40,7 @@ class DependentsRepository @Inject constructor(
     private val covidOrderRepository: CovidOrderRepository,
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
+    private val labOrderRepository: LabOrderRepository,
     private val recordsRepository: RecordsRepository,
     private val mobileConfigRepository: MobileConfigRepository,
 ) {
@@ -103,6 +107,7 @@ class DependentsRepository @Inject constructor(
             val vaccineRecords: Pair<VaccineRecordState, PatientVaccineRecord?>?
             var covidOrders: List<CovidOrderWithCovidTestDto>? = null
             var immunizationDto: ImmunizationDto? = null
+            var labOrders: List<LabOrderWithLabTestDto>? = null
 
             val token = bcscAuthRepo.getAuthParametersDto().token
 
@@ -120,7 +125,13 @@ class DependentsRepository @Inject constructor(
                 handleException(e)
             }
 
-            storeRecords(patientId, vaccineRecords, covidOrders, immunizationDto)
+            try {
+                labOrders = labOrderRepository.fetchLabOrders(token, hdid)
+            } catch (e: Exception) {
+                handleException(e)
+            }
+
+            storeRecords(patientId, vaccineRecords, covidOrders, immunizationDto, labOrders)
         }
     }
 
@@ -148,11 +159,13 @@ class DependentsRepository @Inject constructor(
         vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>?,
         covidOrderResponse: List<CovidOrderWithCovidTestDto>?,
         immunizationDto: ImmunizationDto?,
+        labOrdersResponse: List<LabOrderWithLabTestDto>?,
     ) {
         vaccineRecordsResponse?.let { insertVaccineRecords(patientId, it) }
         recordsRepository.apply {
             storeCovidOrders(patientId, covidOrderResponse)
             storeImmunizationRecords(patientId, immunizationDto)
+            storeLabOrders(patientId, labOrdersResponse)
         }
         localDataSource.enableDependentCacheFlag(patientId)
     }
@@ -182,6 +195,10 @@ class DependentsRepository @Inject constructor(
 
     suspend fun getPatientWithImmunizationRecordAndForecast(patientId: Long): PatientWithImmunizationRecordAndForecastDto =
         patientLocalDataSource.getPatientWithImmunizationRecordAndForecast(patientId)
+            ?: throw getDatabaseException(patientId)
+
+    suspend fun getPatientWithLabOrdersAndLabTests(patientId: Long): PatientWithLabOrderAndLatTestsDto =
+        patientLocalDataSource.getPatientWithLabOrdersAndLabTests(patientId)
             ?: throw getDatabaseException(patientId)
 
     suspend fun getPatientWithHospitalVisits(patientId: Long): List<HospitalVisitDto> {
