@@ -47,7 +47,14 @@ class DependentRecordsViewModel @Inject constructor(
             val patientWithImmunizationRecordAndForecast =
                 dependentsRepository.getPatientWithImmunizationRecordAndForecast(patientId)
 
+            val patientWithLabOrdersAndLabTests =
+                dependentsRepository.getPatientWithLabOrdersAndLabTests(patientId)
+
             val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
+                it.toUiModel()
+            }
+
+            val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
                 it.toUiModel()
             }
 
@@ -59,7 +66,7 @@ class DependentRecordsViewModel @Inject constructor(
                     it.toUiModel()
                 }
 
-            val result = (covidTestRecords + covidOrders + immunizationRecords).sortedByDescending {
+            val result = (covidTestRecords + covidOrders + immunizationRecords + labTestRecords).sortedByDescending {
                 it.date
             }
 
