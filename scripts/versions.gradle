@@ -6,8 +6,8 @@ versions.targetSdkVersion = 32
 versions.compileSdkVersion = 32
 
 //App
-versions.versionName = '1.6.0'
-versions.versionCode = 103
+versions.versionName = '1.7.0'
+versions.versionCode = 112
 versions.localApiVersion = 2
 
 //Tools & Libs
