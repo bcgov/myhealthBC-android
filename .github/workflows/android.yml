@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop
+      - HAPP-1340-Fix-clinical-documents-list-item
 
 jobs:
   build:
