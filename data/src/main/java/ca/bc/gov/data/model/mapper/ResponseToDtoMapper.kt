@@ -28,9 +28,9 @@ import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.model.test.TestRecordDto
-import ca.bc.gov.common.utils.full_date_time_plus_time
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.common.utils.toDateTimeZ
+import ca.bc.gov.common.utils.toOffsetDateTime
 import ca.bc.gov.data.datasource.remote.model.base.LabResult
 import ca.bc.gov.data.datasource.remote.model.base.Order
 import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
@@ -329,7 +329,7 @@ fun ClinicalDocumentResponse.toDto(): List<ClinicalDocumentDto> =
             type = it.type,
             facilityName = it.facilityName,
             discipline = it.discipline,
-            serviceDate = it.serviceDate.toDateTime(full_date_time_plus_time),
+            serviceDate = it.serviceDate.toOffsetDateTime(),
             fileId = it.fileId,
         )
     }
