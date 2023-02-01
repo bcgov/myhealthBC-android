@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - develop
-      - HAPP-1339-Fix-date-format
+      - HAPP-1316-Guardian-lab-results-and-pdf
 
 jobs:
   build:
