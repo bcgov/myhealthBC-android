@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - develop
-      - HAPP-1340-Fix-clinical-documents-list-item
+      - HAPP-1339-Fix-date-format
 
 jobs:
   build:
