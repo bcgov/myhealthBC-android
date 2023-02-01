@@ -78,7 +78,7 @@ fun Instant.toStartOfDayInstant(): Instant {
 * provides the date time in UTC+00:00
 *  */
 fun Instant.toLocalDateTimeInstant(): Instant? {
-    return this.atZone(ZoneId.systemDefault())
+    return this.atZone(ZoneId.of("America/Los_Angeles"))
         ?.toLocalDateTime()?.toInstant(ZoneOffset.UTC)
 }
 
