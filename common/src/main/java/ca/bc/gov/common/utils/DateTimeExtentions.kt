@@ -1,5 +1,6 @@
 package ca.bc.gov.common.utils
 
+import ca.bc.gov.common.exceptions.InvalidResponseException
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -12,8 +13,8 @@ const val yyyy_MMM_dd_HH_mm = "yyyy-MMM-dd, hh:mm a"
 const val yyyy_MMM_dd = "yyyy-MMM-dd"
 const val yyyy_MM_dd = "yyyy-MM-dd"
 const val eee_dd_mmm_yyyy_hh_mm_ss_z = "EEE, dd MMM yyyy HH:mm:ss XXXX"
-const val full_date_time_plus_time = "yyyy-MM-dd'T'HH:mm:ss'+'HH:mm"
 
+private const val full_date_time_plus_time = "yyyy-MM-dd'T'HH:mm:ss'+'HH:mm"
 private const val yyyy_MMM_dd_HH_mm_sss_long = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 private const val yyyy_MMM_dd_HH_mm_short = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 
@@ -30,6 +31,10 @@ fun Instant.toDate(dateFormat: String = yyyy_MMM_dd): String {
     val formattedString = formatter.format(dateTime)
     return formattedString.replace(".", "")
 }
+
+fun String.toOffsetDateTime(): Instant =
+    this.toDateTime(full_date_time_plus_time).toLocalDateTimeInstant()
+        ?: throw InvalidResponseException()
 
 fun String.toDate(): Instant = LocalDate.parse(this).atStartOfDay().toInstant(ZoneOffset.UTC)
 
