@@ -39,6 +39,11 @@ class HospitalVisitDetailViewModel @Inject constructor(
                 ),
 
                 HospitalVisitDetailItem(
+                    R.string.hospital_visits_detail_service_title,
+                    dto.healthService,
+                ),
+
+                HospitalVisitDetailItem(
                     R.string.hospital_visits_detail_visit_type_title,
                     dto.visitType,
                 ),
@@ -57,7 +62,7 @@ class HospitalVisitDetailViewModel @Inject constructor(
             _uiState.update { state ->
                 state.copy(
                     onLoading = false,
-                    toolbarTitle = dto.healthService,
+                    toolbarTitle = dto.location,
                     uiList = uiList
                 )
             }
