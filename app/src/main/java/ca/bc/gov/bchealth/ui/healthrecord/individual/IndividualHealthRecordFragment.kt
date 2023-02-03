@@ -9,7 +9,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
@@ -30,6 +29,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordA
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
@@ -142,18 +142,15 @@ class IndividualHealthRecordFragment :
     }
 
     private fun observeHealthRecordsSyncCompletion() {
-        val workRequest = WorkManager.getInstance(requireContext())
-            .getWorkInfosForUniqueWorkLiveData(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME)
-        if (!workRequest.hasObservers()) {
-            workRequest.observe(viewLifecycleOwner) {
-                if (it.firstOrNull()?.state == WorkInfo.State.RUNNING) {
-                    binding.emptyView.tvNoRecord.text = getString(R.string.fetching_records)
-                    binding.emptyView.tvClearFilterMsg.text = ""
-                } else {
-                    binding.emptyView.tvNoRecord.text = getString(R.string.no_records_found)
-                    binding.emptyView.tvClearFilterMsg.text =
-                        getString(R.string.clear_all_filters_and_start_over)
-                }
+        observeWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME) { state ->
+            if (state == WorkInfo.State.RUNNING) {
+                binding.emptyView.tvNoRecord.text = getString(R.string.fetching_records)
+                binding.emptyView.tvClearFilterMsg.text = ""
+            } else {
+                binding.emptyView.tvNoRecord.text = getString(R.string.no_records_found)
+                binding.emptyView.tvClearFilterMsg.text =
+                    getString(R.string.clear_all_filters_and_start_over)
+
                 viewModel.getIndividualsHealthRecord()
             }
         }
