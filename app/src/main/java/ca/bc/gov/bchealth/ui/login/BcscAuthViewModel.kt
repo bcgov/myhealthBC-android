@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
+import ca.bc.gov.bchealth.workers.WorkerInvoker
 import ca.bc.gov.common.const.MUST_CALL_MOBILE_CONFIG
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.MyHealthException
@@ -36,6 +37,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BcscAuthViewModel @Inject constructor(
     private val bcscAuthRepo: BcscAuthRepo,
+    private val workerInvoker: WorkerInvoker,
     private val queueItTokenRepository: QueueItTokenRepository,
     private val clearStorageRepository: ClearStorageRepository,
     private val profileRepository: ProfileRepository,
@@ -475,7 +477,7 @@ class BcscAuthViewModel @Inject constructor(
         bcscAuthRepo.setPostLoginCheck(postLoginCheck)
     }
 
-    fun executeOneTimeDataFetch() = bcscAuthRepo.executeOneTimeDatFetch()
+    fun executeOneTimeDataFetch() = workerInvoker.executeOneTimeDataFetch()
 }
 
 data class AuthStatus(
