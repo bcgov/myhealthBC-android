@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import ca.bc.gov.bchealth.MainActivity
+import ca.bc.gov.bchealth.workers.WorkerInvoker
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,4 +27,9 @@ class AppModule {
         }
         return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
     }
+
+    @Provides
+    @Singleton
+    fun provideWorkerInvoker(@ApplicationContext context: Context): WorkerInvoker =
+        WorkerInvoker(context)
 }
