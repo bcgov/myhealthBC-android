@@ -18,11 +18,11 @@ import ca.bc.gov.bchealth.ui.inappupdate.InAppUpdateActivity
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
+import ca.bc.gov.bchealth.workers.FetchAuthenticatedHealthRecordsWorker.Companion.APP_UPDATE_REQUIRED
+import ca.bc.gov.bchealth.workers.FetchAuthenticatedHealthRecordsWorker.Companion.IS_HG_SERVICES_UP
+import ca.bc.gov.bchealth.workers.FetchAuthenticatedHealthRecordsWorker.Companion.QUEUE_IT_URL
 import ca.bc.gov.common.model.settings.AnalyticsFeature
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
-import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker.Companion.APP_UPDATE_REQUIRED
-import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker.Companion.IS_HG_SERVICES_UP
-import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker.Companion.QUEUE_IT_URL
 import com.queue_it.androidsdk.Error
 import com.queue_it.androidsdk.QueueITEngine
 import com.queue_it.androidsdk.QueueListener

@@ -7,7 +7,7 @@ import java.time.Instant
  */
 data class MedicationRecordDto(
     val id: Long = 0,
-    val patientId: Long,
+    var patientId: Long = -1,
     val prescriptionIdentifier: String?,
     val prescriptionStatus: String?,
     val practitionerSurname: String?,

@@ -1,4 +1,4 @@
-package ca.bc.gov.repository.worker
+package ca.bc.gov.bchealth.workers
 
 import android.content.Context
 import android.util.Log
@@ -19,9 +19,8 @@ import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
+import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
-import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
-import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
 import ca.bc.gov.repository.CommentRepository
 import ca.bc.gov.repository.DependentsRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
@@ -43,6 +42,7 @@ import ca.bc.gov.repository.qr.VaccineRecordState
 import ca.bc.gov.repository.specialauthority.SpecialAuthorityRepository
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.utils.NotificationHelper
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -68,7 +68,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val notificationHelper: NotificationHelper,
     private val labOrderRepository: LabOrderRepository,
     private val covidOrderRepository: CovidOrderRepository,
-    private val encryptedPreferenceStorage: EncryptedPreferenceStorage,
     private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
     private val mobileConfigRepository: MobileConfigRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
@@ -201,9 +200,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         } catch (e: Exception) {
             when (e) {
                 is ProtectiveWordException -> {
-                    encryptedPreferenceStorage.protectiveWordState =
-                        ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value
-                    Result.failure()
+                    medicationRecordRepository.updateProtectiveWordState(ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value)
+                    Result.success()
                 }
                 else -> {
                     e.printStackTrace()
@@ -336,11 +334,9 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
 
     private suspend fun insertMedicationRecords(
         patientId: Long,
-        medications: MedicationStatementResponse?
+        medications: List<MedicationWithSummaryAndPharmacyDto>
     ) {
-        medications?.let {
-            medicationRecordRepository.updateMedicationRecords(it, patientId)
-        }
+        medicationRecordRepository.updateMedicationRecords(medications, patientId)
     }
 
     private fun updateNotification(isApiFailed: Boolean) {
@@ -390,16 +386,15 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     /*
     * Fetch medication records
     * */
-    private suspend fun fetchMedicationResponse(authParameters: AuthParametersDto): MedicationStatementResponse? {
-        var medicationResponse: MedicationStatementResponse?
+    private suspend fun fetchMedicationResponse(authParameters: AuthParametersDto): List<MedicationWithSummaryAndPharmacyDto> {
+        var medications: List<MedicationWithSummaryAndPharmacyDto>
         withContext(dispatcher) {
-            medicationResponse = medicationRecordRepository.fetchMedicationStatement(
+            medications = medicationRecordRepository.fetchMedicationStatement(
                 token = authParameters.token,
                 hdid = authParameters.hdid,
-                encryptedPreferenceStorage.protectiveWord
             )
         }
-        return medicationResponse
+        return medications
     }
 
     /*

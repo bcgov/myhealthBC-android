@@ -23,6 +23,7 @@ import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabTestDto
+import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
@@ -60,6 +61,7 @@ import ca.bc.gov.data.datasource.remote.model.response.AuthenticatedCovidTestRes
 import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
+import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
 import ca.bc.gov.data.model.MediaMetaData
 import ca.bc.gov.data.model.VaccineStatus
 import java.time.Instant
@@ -79,9 +81,23 @@ fun CovidTestRecord.toTestRecord() = TestRecordDto(
     resultLink = resultLink
 )
 
-fun MedicationStatementPayload.toMedicationRecordDto(patientId: Long) = MedicationRecordDto(
-    id = 0,
-    patientId = patientId,
+fun MedicationStatementResponse.toListOfMedicationDto(): List<MedicationWithSummaryAndPharmacyDto> =
+    this.payload?.mapNotNull {
+        val summaryDto = it.medicationSummary?.toMedicationSummaryDto()
+        val dispensingPharmacyDto = it.dispensingPharmacy?.toDispensingPharmacyDto()
+
+        if (summaryDto == null || dispensingPharmacyDto == null) {
+            null
+        } else {
+            MedicationWithSummaryAndPharmacyDto(
+                it.toMedicationRecordDto(),
+                summaryDto,
+                dispensingPharmacyDto
+            )
+        }
+    } ?: listOf()
+
+fun MedicationStatementPayload.toMedicationRecordDto() = MedicationRecordDto(
     prescriptionIdentifier = prescriptionIdentifier,
     prescriptionStatus = prescriptionStatus.toString(),
     practitionerSurname = practitionerSurname,
@@ -91,9 +107,7 @@ fun MedicationStatementPayload.toMedicationRecordDto(patientId: Long) = Medicati
     dataSource = DataSource.BCSC
 )
 
-fun MedicationSummary.toMedicationSummaryDto(medicationRecordId: Long) = MedicationSummaryDto(
-    id = 0,
-    medicationRecordId = medicationRecordId,
+fun MedicationSummary.toMedicationSummaryDto() = MedicationSummaryDto(
     din = din,
     brandName = brandName,
     genericName = genericName,
@@ -107,9 +121,7 @@ fun MedicationSummary.toMedicationSummaryDto(medicationRecordId: Long) = Medicat
     isPin = isPin ?: false
 )
 
-fun DispensingPharmacy.toDispensingPharmacyDto(medicationRecordId: Long) = DispensingPharmacyDto(
-    id = 0,
-    medicationRecordId = medicationRecordId,
+fun DispensingPharmacy.toDispensingPharmacyDto() = DispensingPharmacyDto(
     pharmacyId = pharmacyId,
     name = name,
     addressLine1 = addressLine1,
