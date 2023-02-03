@@ -7,7 +7,6 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
-import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker
 
 class WorkerInvoker(private val applicationContext: Context) {
 

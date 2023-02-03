@@ -9,10 +9,7 @@ import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
-import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
-import ca.bc.gov.data.model.mapper.toDispensingPharmacyDto
-import ca.bc.gov.data.model.mapper.toMedicationRecordDto
-import ca.bc.gov.data.model.mapper.toMedicationSummaryDto
+import ca.bc.gov.data.model.mapper.toListOfMedicationDto
 import javax.inject.Inject
 
 /**
@@ -30,11 +27,12 @@ class MedicationRecordRepository @Inject constructor(
     suspend fun fetchMedicationStatement(
         token: String,
         hdid: String,
-        protectiveWord: String?
-    ): MedicationStatementResponse {
+    ): List<MedicationWithSummaryAndPharmacyDto> {
+        val protectiveWord: String? = getProtectiveWord()
+
         return medicationRemoteDataSource.getMedicationStatement(
             token, hdid, protectiveWord
-        )
+        ).toListOfMedicationDto()
     }
 
     suspend fun fetchMedicationStatement(
@@ -43,29 +41,28 @@ class MedicationRecordRepository @Inject constructor(
         hdid: String,
         protectiveWord: String?
     ) {
-        val response = medicationRemoteDataSource.getMedicationStatement(
+        val medications = medicationRemoteDataSource.getMedicationStatement(
             accessToken, hdid, protectiveWord
-        )
-        updateMedicationRecords(response, patientId)
+        ).toListOfMedicationDto()
+
+        updateMedicationRecords(medications, patientId)
     }
 
-    suspend fun updateMedicationRecords(response: MedicationStatementResponse, patientId: Long) {
+    suspend fun updateMedicationRecords(
+        medications: List<MedicationWithSummaryAndPharmacyDto>,
+        patientId: Long
+    ) {
         medicationRecordLocalDataSource.deletePatientMedicationRecords(patientId)
-        response.payload?.forEach { medicationStatementPayload ->
-            val medicationRecordId = insert(
-                medicationStatementPayload.toMedicationRecordDto(patientId = patientId)
-            )
+        medications.forEach { medication ->
+            medication.medicationRecord.patientId = patientId
+
+            val medicationRecordId = insert(medication.medicationRecord)
             if (medicationRecordId != -1L) {
-                medicationStatementPayload.medicationSummary?.toMedicationSummaryDto(
-                    medicationRecordId
-                )
-                    ?.let { insert(it) }
-            }
-            if (medicationRecordId != -1L) {
-                medicationStatementPayload.dispensingPharmacy?.toDispensingPharmacyDto(
-                    medicationRecordId
-                )
-                    ?.let { insert(it) }
+                medication.medicationSummary.medicationRecordId = medicationRecordId
+                insert(medication.medicationSummary)
+
+                medication.dispensingPharmacy.medicationRecordId = medicationRecordId
+                insert(medication.dispensingPharmacy)
             }
         }
     }
@@ -91,6 +88,10 @@ class MedicationRecordRepository @Inject constructor(
 
     fun getProtectiveWordState(): Int {
         return encryptedPreferenceStorage.protectiveWordState
+    }
+
+    fun updateProtectiveWordState(value: Int) {
+        encryptedPreferenceStorage.protectiveWordState = value
     }
 
     fun saveProtectiveWord(word: String) {
