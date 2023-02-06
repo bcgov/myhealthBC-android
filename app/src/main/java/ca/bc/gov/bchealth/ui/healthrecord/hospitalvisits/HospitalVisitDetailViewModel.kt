@@ -25,37 +25,42 @@ class HospitalVisitDetailViewModel @Inject constructor(
         try {
             val dto: HospitalVisitDto = repository.getHospitalVisit(hospitalVisitId)
 
+            val dischargeDate = dto.dischargeDate?.toDateTimeString().orEmpty()
+
             val uiList: List<HospitalVisitDetailItem> = listOf(
                 HospitalVisitDetailItem(
-                    R.string.hospital_visits_detail_location_title,
-                    dto.location,
-                    R.string.hospital_visits_detail_location_footer
+                    title = R.string.hospital_visits_detail_location_title,
+                    description = dto.location,
+                    footer = R.string.hospital_visits_detail_location_footer
                 ),
 
                 HospitalVisitDetailItem(
-                    R.string.hospital_visits_detail_provider_title,
-                    dto.provider,
-                    R.string.hospital_visits_detail_provider_footer
+                    title = R.string.hospital_visits_detail_provider_title,
+                    description = dto.provider,
+                    placeholder = dto.provider.getPlaceholder(),
+                    footer = R.string.hospital_visits_detail_provider_footer
                 ),
 
                 HospitalVisitDetailItem(
-                    R.string.hospital_visits_detail_service_title,
-                    dto.healthService,
+                    title = R.string.hospital_visits_detail_service_title,
+                    placeholder = dto.healthService.getPlaceholder(),
+                    description = dto.healthService
                 ),
 
                 HospitalVisitDetailItem(
-                    R.string.hospital_visits_detail_visit_type_title,
-                    dto.visitType,
+                    title = R.string.hospital_visits_detail_visit_type_title,
+                    description = dto.visitType,
                 ),
 
                 HospitalVisitDetailItem(
-                    R.string.hospital_visits_detail_visit_date_title,
-                    dto.visitDate.toDateTimeString()
+                    title = R.string.hospital_visits_detail_visit_date_title,
+                    description = dto.visitDate.toDateTimeString()
                 ),
 
                 HospitalVisitDetailItem(
-                    R.string.hospital_visits_detail_discharge_date_title,
-                    dto.dischargeDate?.toDateTimeString().orEmpty(),
+                    title = R.string.hospital_visits_detail_discharge_date_title,
+                    description = dischargeDate,
+                    placeholder = dischargeDate.getPlaceholder()
                 ),
             )
 
@@ -72,6 +77,9 @@ class HospitalVisitDetailViewModel @Inject constructor(
             }
         }
     }
+
+    private fun String.getPlaceholder(): Int? =
+        if (this.isBlank()) R.string.not_available else null
 }
 
 data class HospitalVisitUiState(
@@ -83,5 +91,6 @@ data class HospitalVisitUiState(
 data class HospitalVisitDetailItem(
     val title: Int,
     val description: String,
+    val placeholder: Int? = null,
     val footer: Int? = null,
 )
