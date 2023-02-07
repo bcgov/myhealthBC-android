@@ -153,9 +153,6 @@ dependencies {
     implementation "com.google.android.play:app-update:$versions.app_update"
     implementation "com.google.android.play:app-update-ktx:$versions.app_update"
 
-    //Queue.it
-    implementation "com.queue-it.androidsdk:library-androidx:$versions.queue_it"
-
     //work manager
     api "androidx.work:work-runtime-ktx:$versions.work"
     api "androidx.hilt:hilt-work:$versions.hilt_work"
