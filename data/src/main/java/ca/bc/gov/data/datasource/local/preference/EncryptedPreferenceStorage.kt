@@ -21,7 +21,6 @@ class EncryptedPreferenceStorage @Inject constructor(
 
     companion object {
         private const val ANALYTICS_FEATURE = "ANALYTICS_FEATURE"
-        private const val QUEUE_IT_TOKEN = "QUEUE_IT_TOKEN"
         private const val ON_BOARDING_REQUIRED = "ON_BOARDING_SHOWN"
         private const val DEPENDENT_ON_BOARDING_REQUIRED = "DEPENDENT_ON_BOARDING_REQUIRED"
         private const val RECENT_PHN_DOB = "RECENT_PHN_DOB"
@@ -39,12 +38,6 @@ class EncryptedPreferenceStorage @Inject constructor(
         private const val IDENTITY_PROVIDER_ID = "IDENTITY_PROVIDER_ID"
         private const val BASE_URL_IS_ONLINE = "BASE_URL_IS_ONLINE"
     }
-
-    var queueItToken: String?
-        get() = encryptedSharedPreferences.getString(QUEUE_IT_TOKEN, null)
-        set(value) {
-            encryptedSharedPreferences.edit().putString(QUEUE_IT_TOKEN, value).apply()
-        }
 
     var cookies: MutableSet<String>?
         get() = encryptedSharedPreferences.getStringSet(COOKIE, emptySet())

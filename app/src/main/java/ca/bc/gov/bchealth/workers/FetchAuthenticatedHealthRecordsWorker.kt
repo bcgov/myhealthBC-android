@@ -449,7 +449,5 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     companion object {
         const val APP_UPDATE_REQUIRED = "appUpdateRequired"
         const val IS_HG_SERVICES_UP = "isHgServicesUp"
-
-        const val QUEUE_IT_URL = "queueItUrl"
     }
 }

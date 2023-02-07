@@ -42,9 +42,7 @@ class HealthGateWayApiModule {
         ReceivedCookieInterceptor(preferenceStorage)
 
     @Provides
-    fun providesQueueItInterceptor(
-        preferenceStorage: EncryptedPreferenceStorage
-    ) = QueueItInterceptor(preferenceStorage)
+    fun providesQueueItInterceptor() = QueueItInterceptor()
 
     @Provides
     fun providesUserAgentInterceptor(@ApplicationContext context: Context) = UserAgentInterceptor(
