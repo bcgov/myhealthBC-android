@@ -14,17 +14,14 @@ import ca.bc.gov.bchealth.usecases.records.FetchHealthVisitsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchHospitalVisitsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchImmunizationsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchLabOrdersUseCase
+import ca.bc.gov.bchealth.usecases.records.FetchMedicationsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchSpecialAuthoritiesUseCase
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.common.R
-import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.AuthParametersDto
-import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.dependents.DependentDto
-import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.repository.DependentsRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
-import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
@@ -54,13 +51,13 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     @Assisted workerParams: WorkerParameters,
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
     private val bcscAuthRepo: BcscAuthRepo,
-    private val medicationRecordRepository: MedicationRecordRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
     private val patientRepository: PatientRepository,
     private val dependentsRepository: DependentsRepository,
     private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
     private val notificationHelper: NotificationHelper,
     private val mobileConfigRepository: MobileConfigRepository,
+    private val fetchMedicationsUseCase: FetchMedicationsUseCase,
     private val fetchLabOrdersUseCase: FetchLabOrdersUseCase,
     private val fetchCovidOrdersUseCase: FetchCovidOrdersUseCase,
     private val fetchImmunizationsUseCase: FetchImmunizationsUseCase,
@@ -142,7 +139,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         withContext(dispatcher) {
             val taskResults = listOf(
                 loadVaccineRecordsAsync(patientId, authParameters, dependents),
-                loadMedicationsAsync(patientId, authParameters),
+                async { fetchMedicationsUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchLabOrdersUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchCovidOrdersUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchImmunizationsUseCase.execute(patientId, authParameters) },
@@ -178,35 +175,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
 
         vaccineRecords.addAll(dependentVaccineRecords)
         recordsRepository.storeVaccineRecords(vaccineRecords)
-    }
-
-    private fun CoroutineScope.loadMedicationsAsync(
-        patientId: Long,
-        authParameters: AuthParametersDto
-    ) = this.async {
-        try {
-            val medications = fetchMedicationResponse(authParameters)
-            insertMedicationRecords(patientId, medications)
-            Result.success()
-        } catch (e: Exception) {
-            when (e) {
-                is ProtectiveWordException -> {
-                    medicationRecordRepository.updateProtectiveWordState(ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value)
-                    Result.success()
-                }
-                else -> {
-                    e.printStackTrace()
-                    Result.failure()
-                }
-            }
-        }
-    }
-
-    private suspend fun insertMedicationRecords(
-        patientId: Long,
-        medications: List<MedicationWithSummaryAndPharmacyDto>
-    ) {
-        medicationRecordRepository.updateMedicationRecords(medications, patientId)
     }
 
     private fun updateNotification(isApiFailed: Boolean) {
@@ -251,20 +219,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             response = action.invoke(authParameters.token, authParameters.hdid)
         }
         return response
-    }
-
-    /*
-    * Fetch medication records
-    * */
-    private suspend fun fetchMedicationResponse(authParameters: AuthParametersDto): List<MedicationWithSummaryAndPharmacyDto> {
-        var medications: List<MedicationWithSummaryAndPharmacyDto>
-        withContext(dispatcher) {
-            medications = medicationRecordRepository.fetchMedicationStatement(
-                token = authParameters.token,
-                hdid = authParameters.hdid,
-            )
-        }
-        return medications
     }
 
     /*
