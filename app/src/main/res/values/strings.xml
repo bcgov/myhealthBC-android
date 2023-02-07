@@ -7,6 +7,7 @@
     <!-- General -->
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="not_available">Not available</string>
 
     <!--Informational screen for camera permission-->
     <string name="privacy_policy">Privacy Policy</string>

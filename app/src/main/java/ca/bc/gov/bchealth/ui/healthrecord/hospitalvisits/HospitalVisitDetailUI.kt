@@ -26,9 +26,11 @@ fun HospitalVisitDetailUI(uiList: List<HospitalVisitDetailItem>) {
         uiList.forEach { listItem ->
             item {
                 HospitalVisitListItem(
-                    stringResource(id = listItem.title),
-                    listItem.description,
-                    listItem.footer?.let { stringResource(it) }
+                    label = stringResource(id = listItem.title),
+                    body = listItem.placeholder?.let {
+                        stringResource(id = it)
+                    } ?: listItem.description,
+                    footer = listItem.footer?.let { stringResource(it) }
                 )
             }
         }
@@ -36,7 +38,7 @@ fun HospitalVisitDetailUI(uiList: List<HospitalVisitDetailItem>) {
 }
 
 @Composable
-fun HospitalVisitListItem(label: String, value: String, footer: String?) {
+fun HospitalVisitListItem(label: String, body: String, footer: String?) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -45,9 +47,9 @@ fun HospitalVisitListItem(label: String, value: String, footer: String?) {
     ) {
         Text(text = label, style = MyHealthTypography.body2.bold())
 
-        if (value.isNotEmpty()) {
+        if (body.isNotEmpty()) {
             Text(
-                text = value,
+                text = body,
                 style = MyHealthTypography.body2,
                 modifier = Modifier.padding(top = 4.dp)
             )
