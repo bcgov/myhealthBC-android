@@ -11,6 +11,7 @@ import ca.bc.gov.bchealth.usecases.RefreshMobileConfigUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchClinicalDocumentsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchHealthVisitsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchHospitalVisitsUseCase
+import ca.bc.gov.bchealth.usecases.records.FetchSpecialAuthoritiesUseCase
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.ProtectiveWordException
@@ -18,7 +19,6 @@ import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
-import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.repository.DependentsRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
@@ -33,7 +33,6 @@ import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.model.PatientVaccineRecordsState
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.VaccineRecordState
-import ca.bc.gov.repository.specialauthority.SpecialAuthorityRepository
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.utils.NotificationHelper
 import ca.bc.gov.repository.worker.MobileConfigRepository
@@ -68,7 +67,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val fetchCommentsUseCase: FetchCommentsUseCase,
     private val fetchHealthVisitsUseCase: FetchHealthVisitsUseCase,
     private val fetchHospitalVisitsUseCase: FetchHospitalVisitsUseCase,
-    private val specialAuthorityRepository: SpecialAuthorityRepository,
+    private val fetchSpecialAuthoritiesUseCase: FetchSpecialAuthoritiesUseCase,
     private val fetchClinicalDocumentsUseCase: FetchClinicalDocumentsUseCase,
     private val recordsRepository: RecordsRepository,
     private val refreshMobileConfigUseCase: RefreshMobileConfigUseCase
@@ -150,8 +149,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 runTaskAsync { fetchHealthVisitsUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchClinicalDocumentsUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchHospitalVisitsUseCase.execute(patientId, authParameters) },
-                loadSpecialAuthoritiesAsync(patientId, authParameters),
                 runTaskAsync { fetchCommentsUseCase.execute(authParameters) },
+                runTaskAsync { fetchSpecialAuthoritiesUseCase.execute(patientId, authParameters) },
             ).awaitAll()
 
             isApiFailed = taskResults.contains(Result.failure())
@@ -230,29 +229,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         recordsRepository.storeImmunizationRecords(patientId, immunizations)
     }
 
-    private fun CoroutineScope.loadSpecialAuthoritiesAsync(
-        patientId: Long,
-        authParameters: AuthParametersDto
-    ) = runTaskAsync {
-        val specialAuthorities = fetchRecord(
-            authParameters, specialAuthorityRepository::getSpecialAuthority
-        )
-
-        insertSpecialAuthority(patientId, specialAuthorities)
-    }
-
-    private suspend fun insertSpecialAuthority(
-        patientId: Long,
-        specialAuthorities: List<SpecialAuthorityDto>?
-    ) {
-        specialAuthorityRepository.deleteSpecialAuthorities(patientId)
-        specialAuthorities?.let { list ->
-            list.forEach {
-                it.patientId = patientId
-            }
-            specialAuthorityRepository.insert(list)
-        }
-    }
     private suspend fun insertMedicationRecords(
         patientId: Long,
         medications: List<MedicationWithSummaryAndPharmacyDto>
