@@ -6,7 +6,6 @@ import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.repository.MedicationRecordRepository
-import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
