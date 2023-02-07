@@ -6,6 +6,7 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
+import ca.bc.gov.bchealth.usecases.RefreshMobileConfigUseCase
 import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
 import ca.bc.gov.common.BuildConfig.FLAG_CLINICAL_DOCUMENTS
 import ca.bc.gov.common.BuildConfig.FLAG_HOSPITAL_VISITS
@@ -76,7 +77,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val hospitalVisitRepository: HospitalVisitRepository,
     private val specialAuthorityRepository: SpecialAuthorityRepository,
     private val clinicalDocumentRepository: ClinicalDocumentRepository,
-    private val recordsRepository: RecordsRepository
+    private val recordsRepository: RecordsRepository,
+    private val refreshMobileConfigUseCase : RefreshMobileConfigUseCase
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
@@ -99,10 +101,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         val patientId: Long
 
         try {
-            val isHgServicesUp = mobileConfigRepository.refreshMobileConfiguration()
-            if (!isHgServicesUp) {
-                return respondToHgServicesDown()
-            }
+            refreshMobileConfigUseCase.execute()
         } catch (e: Exception) {
             return respondToHgServicesDown()
         }
