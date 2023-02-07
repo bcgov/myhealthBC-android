@@ -11,6 +11,7 @@ import ca.bc.gov.bchealth.usecases.RefreshMobileConfigUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchClinicalDocumentsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchHealthVisitsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchHospitalVisitsUseCase
+import ca.bc.gov.bchealth.usecases.records.FetchImmunizationsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchSpecialAuthoritiesUseCase
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.common.R
@@ -27,7 +28,6 @@ import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.di.IoDispatcher
-import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.model.PatientVaccineRecordsState
@@ -63,7 +63,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val covidOrderRepository: CovidOrderRepository,
     private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
     private val mobileConfigRepository: MobileConfigRepository,
-    private val immunizationRecordRepository: ImmunizationRecordRepository,
+    private val fetchImmunizationsUseCase: FetchImmunizationsUseCase,
     private val fetchCommentsUseCase: FetchCommentsUseCase,
     private val fetchHealthVisitsUseCase: FetchHealthVisitsUseCase,
     private val fetchHospitalVisitsUseCase: FetchHospitalVisitsUseCase,
@@ -145,7 +145,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 loadMedicationsAsync(patientId, authParameters),
                 loadLabOrdersAsync(patientId, authParameters),
                 loadCovidOrdersAsync(patientId, authParameters),
-                loadImmunizationsAsync(patientId, authParameters),
+                runTaskAsync { fetchImmunizationsUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchHealthVisitsUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchClinicalDocumentsUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchHospitalVisitsUseCase.execute(patientId, authParameters) },
@@ -216,17 +216,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     ) = runTaskAsync {
         val covidOrders = fetchRecord(authParameters, covidOrderRepository::fetchCovidOrders)
         recordsRepository.storeCovidOrders(patientId, covidOrders)
-    }
-
-    private fun CoroutineScope.loadImmunizationsAsync(
-        patientId: Long,
-        authParameters: AuthParametersDto
-    ) = runTaskAsync {
-        val immunizations = fetchRecord(
-            authParameters, immunizationRecordRepository::fetchImmunization
-        )
-
-        recordsRepository.storeImmunizationRecords(patientId, immunizations)
     }
 
     private suspend fun insertMedicationRecords(
