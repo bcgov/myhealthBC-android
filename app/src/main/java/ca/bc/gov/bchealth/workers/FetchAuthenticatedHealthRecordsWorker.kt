@@ -7,15 +7,14 @@ import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import ca.bc.gov.bchealth.usecases.RefreshMobileConfigUseCase
+import ca.bc.gov.bchealth.usecases.records.FetchClinicalDocumentsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchHospitalVisitsUseCase
 import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
-import ca.bc.gov.common.BuildConfig.FLAG_CLINICAL_DOCUMENTS
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.ProtectiveWordState
-import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
@@ -29,7 +28,6 @@ import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
-import ca.bc.gov.repository.clinicaldocument.ClinicalDocumentRepository
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.healthvisits.HealthVisitsRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
@@ -74,7 +72,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val healthVisitsRepository: HealthVisitsRepository,
     private val fetchHospitalVisitsUseCase: FetchHospitalVisitsUseCase,
     private val specialAuthorityRepository: SpecialAuthorityRepository,
-    private val clinicalDocumentRepository: ClinicalDocumentRepository,
+    private val fetchClinicalDocumentsUseCase: FetchClinicalDocumentsUseCase,
     private val recordsRepository: RecordsRepository,
     private val refreshMobileConfigUseCase: RefreshMobileConfigUseCase
 ) : CoroutineWorker(context, workerParams) {
@@ -153,7 +151,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 loadCovidOrdersAsync(patientId, authParameters),
                 loadImmunizationsAsync(patientId, authParameters),
                 loadHealthVisitsAsync(patientId, authParameters),
-                loadClinicalDocumentsAsync(patientId, authParameters),
+                runTaskAsync { fetchClinicalDocumentsUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchHospitalVisitsUseCase.execute(patientId, authParameters) },
                 loadCommentsAsync(authParameters),
                 loadSpecialAuthoritiesAsync(patientId, authParameters),
@@ -222,21 +220,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     ) = runTaskAsync {
         val covidOrders = fetchRecord(authParameters, covidOrderRepository::fetchCovidOrders)
         recordsRepository.storeCovidOrders(patientId, covidOrders)
-    }
-
-    private fun CoroutineScope.loadClinicalDocumentsAsync(
-        patientId: Long,
-        authParameters: AuthParametersDto
-    ) = runTaskAsync {
-        if (FLAG_CLINICAL_DOCUMENTS) {
-            val clinicalDocuments: List<ClinicalDocumentDto>? = fetchRecord(
-                authParameters, clinicalDocumentRepository::getClinicalDocuments
-            )
-
-            clinicalDocuments?.let {
-                recordsRepository.storeClinicalDocuments(patientId, it)
-            }
-        }
     }
 
     private fun CoroutineScope.loadHealthVisitsAsync(
