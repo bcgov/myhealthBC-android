@@ -13,6 +13,7 @@ import ca.bc.gov.bchealth.usecases.records.FetchCovidOrdersUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchHealthVisitsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchHospitalVisitsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchImmunizationsUseCase
+import ca.bc.gov.bchealth.usecases.records.FetchLabOrdersUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchSpecialAuthoritiesUseCase
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.common.R
@@ -29,7 +30,6 @@ import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.di.IoDispatcher
-import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.repository.model.PatientVaccineRecordsState
 import ca.bc.gov.repository.patient.PatientRepository
@@ -58,11 +58,11 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
     private val patientRepository: PatientRepository,
     private val dependentsRepository: DependentsRepository,
-    private val notificationHelper: NotificationHelper,
-    private val labOrderRepository: LabOrderRepository,
-    private val fetchCovidOrdersUseCase: FetchCovidOrdersUseCase,
     private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
+    private val notificationHelper: NotificationHelper,
     private val mobileConfigRepository: MobileConfigRepository,
+    private val fetchLabOrdersUseCase: FetchLabOrdersUseCase,
+    private val fetchCovidOrdersUseCase: FetchCovidOrdersUseCase,
     private val fetchImmunizationsUseCase: FetchImmunizationsUseCase,
     private val fetchCommentsUseCase: FetchCommentsUseCase,
     private val fetchHealthVisitsUseCase: FetchHealthVisitsUseCase,
@@ -143,7 +143,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             val taskResults = listOf(
                 loadVaccineRecordsAsync(patientId, authParameters, dependents),
                 loadMedicationsAsync(patientId, authParameters),
-                loadLabOrdersAsync(patientId, authParameters),
+                runTaskAsync { fetchLabOrdersUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchCovidOrdersUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchImmunizationsUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchHealthVisitsUseCase.execute(patientId, authParameters) },
@@ -200,14 +200,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 }
             }
         }
-    }
-
-    private fun CoroutineScope.loadLabOrdersAsync(
-        patientId: Long,
-        authParameters: AuthParametersDto
-    ) = runTaskAsync {
-        val labOrders = fetchRecord(authParameters, labOrderRepository::fetchLabOrders)
-        recordsRepository.storeLabOrders(patientId, labOrders)
     }
 
     private suspend fun insertMedicationRecords(
