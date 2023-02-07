@@ -14,7 +14,7 @@ import javax.inject.Inject
 /**
  * @author Pinakin Kansara
  */
-class QueueItInterceptor @Inject constructor() : Interceptor {
+class RetryInterceptor @Inject constructor() : Interceptor {
 
     companion object {
         private const val MAX_RETRY_COUNT = 5
