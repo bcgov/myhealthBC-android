@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.usecases
+package ca.bc.gov.bchealth.usecases.records
 
 import ca.bc.gov.common.model.AuthParametersDto
 import kotlinx.coroutines.CoroutineDispatcher
