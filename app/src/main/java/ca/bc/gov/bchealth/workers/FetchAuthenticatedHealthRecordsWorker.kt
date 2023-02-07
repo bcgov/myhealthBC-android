@@ -6,21 +6,19 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
+import ca.bc.gov.bchealth.usecases.FetchCommentsUseCase
 import ca.bc.gov.bchealth.usecases.RefreshMobileConfigUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchClinicalDocumentsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchHealthVisitsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchHospitalVisitsUseCase
-import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.ProtectiveWordState
-import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
-import ca.bc.gov.repository.CommentRepository
 import ca.bc.gov.repository.DependentsRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
@@ -67,7 +65,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
     private val mobileConfigRepository: MobileConfigRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
-    private val commentsRepository: CommentRepository,
+    private val fetchCommentsUseCase: FetchCommentsUseCase,
     private val fetchHealthVisitsUseCase: FetchHealthVisitsUseCase,
     private val fetchHospitalVisitsUseCase: FetchHospitalVisitsUseCase,
     private val specialAuthorityRepository: SpecialAuthorityRepository,
@@ -152,8 +150,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 runTaskAsync { fetchHealthVisitsUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchClinicalDocumentsUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchHospitalVisitsUseCase.execute(patientId, authParameters) },
-                loadCommentsAsync(authParameters),
                 loadSpecialAuthoritiesAsync(patientId, authParameters),
+                runTaskAsync { fetchCommentsUseCase.execute(authParameters) },
             ).awaitAll()
 
             isApiFailed = taskResults.contains(Result.failure())
@@ -221,18 +219,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         recordsRepository.storeCovidOrders(patientId, covidOrders)
     }
 
-    private fun CoroutineScope.loadCommentsAsync(
-        authParameters: AuthParametersDto
-    ) = runTaskAsync {
-        if (FLAG_ADD_COMMENTS) {
-            val comments: List<CommentDto>? = fetchRecord(
-                authParameters, commentsRepository::getComments
-            )
-
-            insertComments(comments)
-        }
-    }
-
     private fun CoroutineScope.loadImmunizationsAsync(
         patientId: Long,
         authParameters: AuthParametersDto
@@ -267,12 +253,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             specialAuthorityRepository.insert(list)
         }
     }
-
-    private suspend fun insertComments(comments: List<CommentDto>?) {
-        commentsRepository.delete(true)
-        comments?.let { commentsRepository.insert(it) }
-    }
-
     private suspend fun insertMedicationRecords(
         patientId: Long,
         medications: List<MedicationWithSummaryAndPharmacyDto>
