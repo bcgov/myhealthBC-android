@@ -16,21 +16,17 @@ import ca.bc.gov.bchealth.usecases.records.FetchImmunizationsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchLabOrdersUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchMedicationsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchSpecialAuthoritiesUseCase
+import ca.bc.gov.bchealth.usecases.records.FetchVaccinesUseCase
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.common.R
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.repository.DependentsRepository
-import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
-import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.di.IoDispatcher
-import ca.bc.gov.repository.model.PatientVaccineRecord
-import ca.bc.gov.repository.model.PatientVaccineRecordsState
 import ca.bc.gov.repository.patient.PatientRepository
-import ca.bc.gov.repository.qr.VaccineRecordState
 import ca.bc.gov.repository.utils.NotificationHelper
 import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.assisted.Assisted
@@ -49,7 +45,6 @@ import kotlinx.coroutines.withContext
 class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted workerParams: WorkerParameters,
-    private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
     private val bcscAuthRepo: BcscAuthRepo,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
     private val patientRepository: PatientRepository,
@@ -66,7 +61,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val fetchHospitalVisitsUseCase: FetchHospitalVisitsUseCase,
     private val fetchSpecialAuthoritiesUseCase: FetchSpecialAuthoritiesUseCase,
     private val fetchClinicalDocumentsUseCase: FetchClinicalDocumentsUseCase,
-    private val recordsRepository: RecordsRepository,
+    private val fetchVaccinesUseCase: FetchVaccinesUseCase,
     private val refreshMobileConfigUseCase: RefreshMobileConfigUseCase
 ) : CoroutineWorker(context, workerParams) {
 
@@ -138,8 +133,10 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
 
         withContext(dispatcher) {
             val taskResults = listOf(
-                loadVaccineRecordsAsync(patientId, authParameters, dependents),
                 async { fetchMedicationsUseCase.execute(patientId, authParameters) },
+                runTaskAsync {
+                    fetchVaccinesUseCase.execute(patientId, authParameters, dependents)
+                },
                 runTaskAsync { fetchLabOrdersUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchCovidOrdersUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchImmunizationsUseCase.execute(patientId, authParameters) },
@@ -155,28 +152,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         return isApiFailed
     }
 
-    private fun CoroutineScope.loadVaccineRecordsAsync(
-        patientId: Long,
-        authParameters: AuthParametersDto,
-        dependents: List<DependentDto>?
-    ) = runTaskAsync {
-        val vaccineRecords = mutableListOf<PatientVaccineRecordsState?>()
-
-        val patientVaccineRecords = fetchVaccineRecords(
-            authParameters.token,
-            authParameters.hdid,
-            patientId
-        )
-        vaccineRecords.add(patientVaccineRecords)
-
-        val dependentVaccineRecords = fetchDependentsVaccineRecords(
-            authParameters.token, dependents
-        )
-
-        vaccineRecords.addAll(dependentVaccineRecords)
-        recordsRepository.storeVaccineRecords(vaccineRecords)
-    }
-
     private fun updateNotification(isApiFailed: Boolean) {
         val notificationText = if (isApiFailed) {
             R.string.notification_title_on_failed
@@ -184,30 +159,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             R.string.notification_title_on_success
         }
         notificationHelper.updateNotification(context.getString(notificationText))
-    }
-
-    private suspend fun fetchDependentsVaccineRecords(
-        token: String,
-        dependents: List<DependentDto>?
-    ): List<PatientVaccineRecordsState> {
-        val resultList = mutableListOf<PatientVaccineRecordsState>()
-
-        dependents?.forEach { dependent ->
-            try {
-                val patientId = dependentsRepository.getDependentByPhn(dependent.phn).patientId
-
-                fetchVaccineRecords(
-                    token,
-                    dependent.hdid,
-                    patientId
-                )?.let { dependentVaccineRecord ->
-                    resultList.add(dependentVaccineRecord)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-        return resultList
     }
 
     private suspend fun <T> fetchRecord(
@@ -219,27 +170,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             response = action.invoke(authParameters.token, authParameters.hdid)
         }
         return response
-    }
-
-    /*
-    * Fetch vaccine records
-    * */
-    private suspend fun fetchVaccineRecords(
-        token: String,
-        hdid: String,
-        patientId: Long
-    ): PatientVaccineRecordsState? {
-        var response: Pair<VaccineRecordState, PatientVaccineRecord?>?
-        withContext(dispatcher) {
-            response = fetchVaccineRecordRepository.fetchVaccineRecord(token, hdid)
-        }
-        return response?.let {
-            PatientVaccineRecordsState(
-                patientId = patientId,
-                vaccineRecordState = it.first,
-                patientVaccineRecord = it.second
-            )
-        }
     }
 
     private fun respondToHgServicesDown(): Result {
