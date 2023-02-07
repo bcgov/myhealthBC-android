@@ -8,6 +8,7 @@ import androidx.work.Data
 import androidx.work.WorkerParameters
 import ca.bc.gov.bchealth.usecases.RefreshMobileConfigUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchClinicalDocumentsUseCase
+import ca.bc.gov.bchealth.usecases.records.FetchHealthVisitsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchHospitalVisitsUseCase
 import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
@@ -17,7 +18,6 @@ import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
-import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.repository.CommentRepository
@@ -29,7 +29,6 @@ import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.di.IoDispatcher
-import ca.bc.gov.repository.healthvisits.HealthVisitsRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
@@ -69,7 +68,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val mobileConfigRepository: MobileConfigRepository,
     private val immunizationRecordRepository: ImmunizationRecordRepository,
     private val commentsRepository: CommentRepository,
-    private val healthVisitsRepository: HealthVisitsRepository,
+    private val fetchHealthVisitsUseCase: FetchHealthVisitsUseCase,
     private val fetchHospitalVisitsUseCase: FetchHospitalVisitsUseCase,
     private val specialAuthorityRepository: SpecialAuthorityRepository,
     private val fetchClinicalDocumentsUseCase: FetchClinicalDocumentsUseCase,
@@ -150,7 +149,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 loadLabOrdersAsync(patientId, authParameters),
                 loadCovidOrdersAsync(patientId, authParameters),
                 loadImmunizationsAsync(patientId, authParameters),
-                loadHealthVisitsAsync(patientId, authParameters),
+                runTaskAsync { fetchHealthVisitsUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchClinicalDocumentsUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchHospitalVisitsUseCase.execute(patientId, authParameters) },
                 loadCommentsAsync(authParameters),
@@ -222,16 +221,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         recordsRepository.storeCovidOrders(patientId, covidOrders)
     }
 
-    private fun CoroutineScope.loadHealthVisitsAsync(
-        patientId: Long,
-        authParameters: AuthParametersDto
-    ) = runTaskAsync {
-        val healthVisits: List<HealthVisitsDto>? = fetchRecord(
-            authParameters, healthVisitsRepository::getHealthVisits
-        )
-        insertHealthVisits(patientId, healthVisits)
-    }
-
     private fun CoroutineScope.loadCommentsAsync(
         authParameters: AuthParametersDto
     ) = runTaskAsync {
@@ -276,19 +265,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 it.patientId = patientId
             }
             specialAuthorityRepository.insert(list)
-        }
-    }
-
-    private suspend fun insertHealthVisits(
-        patientId: Long,
-        healthVisits: List<HealthVisitsDto>?
-    ) {
-        healthVisitsRepository.deleteHealthVisits(patientId)
-        healthVisits?.let { list ->
-            list.forEach {
-                it.patientId = patientId
-            }
-            healthVisitsRepository.insert(list)
         }
     }
 
