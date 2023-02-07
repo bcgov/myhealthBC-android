@@ -50,8 +50,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.HealthGateway" />
 
-        <activity android:name="com.queue_it.androidsdk.QueueActivity" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

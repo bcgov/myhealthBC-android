@@ -53,9 +53,8 @@ Concurrency: __Coroutines, Kotlin Flow__
 - [Hilt](https://developer.android.com/training/dependency-injection/hilt-android): For dependency injection
 - [Biometric](https://developer.android.com/jetpack/androidx/releases/biometric): For biometric authentication
 - [Google barcode scanner](https://developers.google.com/ml-kit/vision/barcode-scanning/android): For scanning QR
-- [CameraX](https://developer.android.com/jetpack/androidx/releases/camera): For camera funtionalities
+- [CameraX](https://developer.android.com/jetpack/androidx/releases/camera): For camera functionalities
 - [Custom Chrome Tabs](https://developer.android.com/jetpack/androidx/releases/browser): To support custom chrome tabs
-- [Queue.it](https://queue-it.com/developers/rest-api/): For connecting helath gateway endpoints
 - [Room](https://developer.android.com/jetpack/androidx/releases/room): For local storage
 - [Retrofit](https://square.github.io/retrofit/): For network calls
 - [GSON](https://github.com/google/gson): For serialization/deserialization, and converting Java Objects into JSON, and back
