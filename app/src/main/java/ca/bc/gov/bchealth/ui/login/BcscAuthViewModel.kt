@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.workers.WorkerInvoker
 import ca.bc.gov.common.const.MUST_CALL_MOBILE_CONFIG
-import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.model.AuthenticationStatus
@@ -17,7 +16,6 @@ import ca.bc.gov.repository.CacheRepository
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.ProfileRepository
-import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
@@ -38,7 +36,6 @@ import javax.inject.Inject
 class BcscAuthViewModel @Inject constructor(
     private val bcscAuthRepo: BcscAuthRepo,
     private val workerInvoker: WorkerInvoker,
-    private val queueItTokenRepository: QueueItTokenRepository,
     private val clearStorageRepository: ClearStorageRepository,
     private val profileRepository: ProfileRepository,
     private val patientRepository: PatientRepository,
@@ -74,15 +71,6 @@ class BcscAuthViewModel @Inject constructor(
                         it.copy(
                             showLoading = false,
                             isConnected = false
-                        )
-                    }
-                }
-                is MustBeQueuedException -> {
-                    _authStatus.update {
-                        it.copy(
-                            showLoading = true,
-                            onMustBeQueued = true,
-                            queItUrl = e.message,
                         )
                     }
                 }
@@ -265,21 +253,9 @@ class BcscAuthViewModel @Inject constructor(
                 loginStatus = null,
                 ageLimitCheck = null,
                 canInitiateBcscLogin = null,
-                onMustBeQueued = false,
                 tosAccepted = null,
                 queItUrl = null,
                 isConnected = true
-            )
-        }
-    }
-
-    fun setQueItToken(token: String?) = viewModelScope.launch {
-        queueItTokenRepository.setQueItToken(token)
-        _authStatus.update {
-            it.copy(
-                showLoading = true,
-                queItTokenUpdated = true,
-                onMustBeQueued = false
             )
         }
     }
@@ -310,15 +286,6 @@ class BcscAuthViewModel @Inject constructor(
                         it.copy(
                             showLoading = false,
                             isConnected = false
-                        )
-                    }
-                }
-                is MustBeQueuedException -> {
-                    _authStatus.update {
-                        it.copy(
-                            showLoading = true,
-                            onMustBeQueued = true,
-                            queItUrl = e.message,
                         )
                     }
                 }
@@ -362,15 +329,6 @@ class BcscAuthViewModel @Inject constructor(
                         it.copy(
                             showLoading = false,
                             isConnected = false
-                        )
-                    }
-                }
-                is MustBeQueuedException -> {
-                    _authStatus.update {
-                        it.copy(
-                            showLoading = true,
-                            onMustBeQueued = true,
-                            queItUrl = e.message,
                         )
                     }
                 }
@@ -452,15 +410,6 @@ class BcscAuthViewModel @Inject constructor(
                         )
                     }
                 }
-                is MustBeQueuedException -> {
-                    _authStatus.update {
-                        it.copy(
-                            showLoading = true,
-                            onMustBeQueued = true,
-                            queItUrl = e.message,
-                        )
-                    }
-                }
                 else -> {
                     _authStatus.update {
                         it.copy(
@@ -487,7 +436,6 @@ data class AuthStatus(
     val isError: Boolean = false,
     val userName: String? = null,
     val queItTokenUpdated: Boolean = false,
-    val onMustBeQueued: Boolean = false,
     val queItUrl: String? = null,
     val loginStatus: LoginStatus? = null,
     val ageLimitCheck: AgeLimitCheck? = null,

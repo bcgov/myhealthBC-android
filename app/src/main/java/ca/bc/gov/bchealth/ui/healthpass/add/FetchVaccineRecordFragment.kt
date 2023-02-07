@@ -1,8 +1,6 @@
 package ca.bc.gov.bchealth.ui.healthpass.add
 
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -31,15 +29,8 @@ import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
 import ca.bc.gov.common.model.analytics.AnalyticsAction
 import ca.bc.gov.common.model.analytics.AnalyticsActionData
 import ca.bc.gov.repository.model.PatientVaccineRecord
-import com.queue_it.androidsdk.Error
-import com.queue_it.androidsdk.QueueITEngine
-import com.queue_it.androidsdk.QueueListener
-import com.queue_it.androidsdk.QueuePassedInfo
-import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
 
 /**
  * @author Pinakin Kansara
@@ -215,8 +206,6 @@ class FetchVaccineRecordFragment : BaseFragment(R.layout.fragment_fetch_vaccine_
                         )
                     }
 
-                    handleQueueIt(uiState)
-
                     if (uiState.vaccineRecord != null) {
                         // savedStateHandle.set(VACCINE_RECORD_ADDED_SUCCESS, uiState.vaccineRecord)
                         addOrUpdateCardViewModel.processResult(uiState.vaccineRecord)
@@ -232,17 +221,6 @@ class FetchVaccineRecordFragment : BaseFragment(R.layout.fragment_fetch_vaccine_
         if (!uiState.isConnected) {
             binding.root.showNoInternetConnectionMessage(requireContext())
             viewModel.resetUiState()
-        }
-    }
-
-    private fun handleQueueIt(uiState: FetchVaccineRecordUiState) {
-        if (uiState.queItTokenUpdated) {
-            fetchVaccineRecord()
-        }
-
-        if (uiState.onMustBeQueued && uiState.queItUrl != null) {
-            Log.d(TAG, "Mut be queue, url = ${uiState.queItUrl}")
-            queUser(uiState.queItUrl)
         }
     }
 
@@ -327,42 +305,6 @@ class FetchVaccineRecordFragment : BaseFragment(R.layout.fragment_fetch_vaccine_
             inflateHelpButton {
                 requireActivity().redirect(getString(R.string.url_help))
             }
-        }
-    }
-
-    private fun queUser(value: String) {
-        try {
-            val uri = Uri.parse(URLDecoder.decode(value, StandardCharsets.UTF_8.name()))
-            val customerId = uri.getQueryParameter("c")
-            val waitingRoomId = uri.getQueryParameter("e")
-            QueueService.IsTest = false
-            val queueITEngine = QueueITEngine(
-                requireActivity(),
-                customerId,
-                waitingRoomId,
-                "",
-                "",
-                object : QueueListener() {
-                    override fun onQueuePassed(queuePassedInfo: QueuePassedInfo?) {
-                        viewModel.setQueItToken(queuePassedInfo?.queueItToken)
-                    }
-
-                    override fun onQueueViewWillOpen() {
-                    }
-
-                    override fun onQueueDisabled() {
-                    }
-
-                    override fun onQueueItUnavailable() {
-                    }
-
-                    override fun onError(error: Error?, errorMessage: String?) {
-                    }
-                }
-            )
-            queueITEngine.run(requireActivity())
-        } catch (e: Exception) {
-            // no implementation required
         }
     }
 }

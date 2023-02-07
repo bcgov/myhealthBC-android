@@ -1,6 +1,5 @@
 package ca.bc.gov.bchealth.ui.travelpass
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -36,15 +35,8 @@ import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.model.PatientVaccineRecord
-import com.queue_it.androidsdk.Error
-import com.queue_it.androidsdk.QueueITEngine
-import com.queue_it.androidsdk.QueueListener
-import com.queue_it.androidsdk.QueuePassedInfo
-import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
 
 /**
  * @author Pinakin Kansara
@@ -143,14 +135,6 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
                 )
             }
 
-            if (uiState.queItTokenUpdated) {
-                fetchTravelPass()
-            }
-
-            if (uiState.onMustBeQueued && uiState.queItUrl != null) {
-                queUser(uiState.queItUrl)
-            }
-
             if (uiState.vaccineRecord != null) {
                 addOrUpdateCardViewModel.processResult(uiState.vaccineRecord)
             }
@@ -226,40 +210,5 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
             ),
             navOptions
         )
-    }
-
-    private fun queUser(value: String) {
-        try {
-            val uri = Uri.parse(URLDecoder.decode(value, StandardCharsets.UTF_8.name()))
-            val customerId = uri.getQueryParameter("c")
-            val waitingRoomId = uri.getQueryParameter("e")
-            QueueService.IsTest = false
-            val queueITEngine = QueueITEngine(
-                requireActivity(),
-                customerId,
-                waitingRoomId,
-                "",
-                "",
-                object : QueueListener() {
-                    override fun onQueuePassed(queuePassedInfo: QueuePassedInfo?) {
-                        viewModel.setQueItToken(queuePassedInfo?.queueItToken)
-                    }
-
-                    override fun onQueueViewWillOpen() {
-                    }
-
-                    override fun onQueueDisabled() {
-                    }
-
-                    override fun onQueueItUnavailable() {
-                    }
-
-                    override fun onError(error: Error?, errorMessage: String?) {
-                    }
-                }
-            )
-            queueITEngine.run(requireActivity())
-        } catch (e: Exception) {
-        }
     }
 }

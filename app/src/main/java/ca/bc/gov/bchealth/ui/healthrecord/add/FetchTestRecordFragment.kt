@@ -1,6 +1,5 @@
 package ca.bc.gov.bchealth.ui.healthrecord.add
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -23,15 +22,8 @@ import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
-import com.queue_it.androidsdk.Error
-import com.queue_it.androidsdk.QueueITEngine
-import com.queue_it.androidsdk.QueueListener
-import com.queue_it.androidsdk.QueuePassedInfo
-import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
 
 /**
  * @author Pinakin Kansara
@@ -97,10 +89,6 @@ class FetchTestRecordFragment : BaseFragment(R.layout.fragment_fetch_covid_test_
                         )
                     }
 
-                    if (state.queItTokenUpdated) {
-                        fetchTestRecord()
-                    }
-
                     if (state.onTestResultFetched > 0) {
                         if (binding.checkboxRemember.isChecked) {
                             val phn = binding.edPhn.text.toString()
@@ -113,10 +101,6 @@ class FetchTestRecordFragment : BaseFragment(R.layout.fragment_fetch_covid_test_
                                 state.onTestResultFetched
                             )
                         findNavController().navigate(action)
-                    }
-
-                    if (state.onMustBeQueued && state.queItUrl != null) {
-                        queUser(state.queItUrl)
                     }
 
                     if (!state.isConnected) {
@@ -213,40 +197,5 @@ class FetchTestRecordFragment : BaseFragment(R.layout.fragment_fetch_covid_test_
             parentFragmentManager,
             "DATE_OF_TEST"
         )
-    }
-
-    private fun queUser(value: String) {
-        try {
-            val uri = Uri.parse(URLDecoder.decode(value, StandardCharsets.UTF_8.name()))
-            val customerId = uri.getQueryParameter("c")
-            val waitingRoomId = uri.getQueryParameter("e")
-            QueueService.IsTest = false
-            val queueITEngine = QueueITEngine(
-                requireActivity(),
-                customerId,
-                waitingRoomId,
-                "",
-                "",
-                object : QueueListener() {
-                    override fun onQueuePassed(queuePassedInfo: QueuePassedInfo?) {
-                        viewModel.setQueItToken(queuePassedInfo?.queueItToken)
-                    }
-
-                    override fun onQueueViewWillOpen() {
-                    }
-
-                    override fun onQueueDisabled() {
-                    }
-
-                    override fun onQueueItUnavailable() {
-                    }
-
-                    override fun onError(error: Error?, errorMessage: String?) {
-                    }
-                }
-            )
-            queueITEngine.run(requireActivity())
-        } catch (e: Exception) {
-        }
     }
 }

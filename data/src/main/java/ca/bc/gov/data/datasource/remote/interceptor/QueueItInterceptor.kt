@@ -1,13 +1,9 @@
 package ca.bc.gov.data.datasource.remote.interceptor
 
-import ca.bc.gov.common.const.MUST_QUEUED
 import ca.bc.gov.common.const.PROTECTIVE_WORD_ERROR_CODE
-import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.ProtectiveWordException
-import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.ResponseBody
@@ -18,16 +14,11 @@ import javax.inject.Inject
 /**
  * @author Pinakin Kansara
  */
-class QueueItInterceptor @Inject constructor(
-    private val preferenceStorage: EncryptedPreferenceStorage
-) : Interceptor {
+class QueueItInterceptor @Inject constructor() : Interceptor {
 
     companion object {
         private const val MAX_RETRY_COUNT = 5
         private const val STANDARD_RETRY_IN_MILLIS = 5000L
-        private const val HEADER_QUEUE_IT_TOKEN = "queueittoken"
-        private const val HEADER_QUEUE_IT_AJAX_URL = "x-queueit-ajaxpageurl"
-        private const val HEADER_QUEUE_IT_REDIRECT_URL = "x-queueit-redirect"
         private const val RESOURCE_PAYLOAD = "resourcePayload"
         private const val LOADED = "loaded"
         private const val RETRY_IN = "retryin"
@@ -39,16 +30,12 @@ class QueueItInterceptor @Inject constructor(
         private const val BAD_RESPONSE = "Bad response!"
     }
 
-    var queueItRequiredUrl: String = ""
-
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestUrlBuilder = chain.request().url.newBuilder()
-        checkQueueItTokenInPref(requestUrlBuilder)
 
         val originRequest = chain.request()
         val request = originRequest.newBuilder()
-            .addHeader(HEADER_QUEUE_IT_AJAX_URL, originRequest.url.toString())
             .url(requestUrlBuilder.build())
             .build()
 
@@ -59,15 +46,6 @@ class QueueItInterceptor @Inject constructor(
         var loaded: Boolean
         do {
             response = chain.proceed(request)
-            if (mustQueue(response)) {
-                preferenceStorage.queueItToken = null
-                val responseHeaders = response.headers
-                queueItRequiredUrl = response.request.url.toString()
-                throw MustBeQueuedException(
-                    MUST_QUEUED,
-                    responseHeaders[HEADER_QUEUE_IT_REDIRECT_URL]
-                )
-            }
 
             if (response.isSuccessful) {
                 body = response.body
@@ -139,27 +117,11 @@ class QueueItInterceptor @Inject constructor(
         return RefreshInProgress(loaded, retryInMillis)
     }
 
-    private fun checkQueueItTokenInPref(requestUrlBuilder: HttpUrl.Builder) {
-        if (preferenceStorage.queueItToken != null &&
-            requestUrlBuilder.toString() == queueItRequiredUrl
-        ) {
-            requestUrlBuilder.addQueryParameter(
-                HEADER_QUEUE_IT_TOKEN,
-                preferenceStorage.queueItToken
-            )
-            queueItRequiredUrl = ""
-        }
-    }
-
     private fun sleepOnRetry(loaded: Boolean, retryInMillis: Long) {
         if (!loaded && retryInMillis > 0) {
             Thread.sleep(retryInMillis)
         }
     }
-
-    private fun mustQueue(response: Response) = response.headers.names().contains(
-        HEADER_QUEUE_IT_REDIRECT_URL
-    )
 
     private fun checkException(json: JsonObject) {
         if (json.get(RESULT_ERROR).isJsonNull) return

@@ -33,7 +33,6 @@ import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.PdfDecoderRepository
 import ca.bc.gov.repository.QrCodeGeneratorRepository
-import ca.bc.gov.repository.QueueItTokenRepository
 import ca.bc.gov.repository.RecentPhnDobRepository
 import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.TermsOfServiceRepository
@@ -73,12 +72,6 @@ class RepositoriesModule {
 
     @Provides
     fun providesBase64ToImageConverter() = Base64ToInputImageConverter()
-
-    @Provides
-    @Singleton
-    fun providesQueueItTokenRepository(
-        preferenceStorage: EncryptedPreferenceStorage
-    ) = QueueItTokenRepository(preferenceStorage)
 
     @Provides
     @Singleton
