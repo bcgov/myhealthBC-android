@@ -11,8 +11,8 @@ import ca.bc.gov.data.datasource.remote.interceptor.CookiesInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.HostSelectionInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.MockInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.NetworkConnectionInterceptor
-import ca.bc.gov.data.datasource.remote.interceptor.RetryInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.ReceivedCookieInterceptor
+import ca.bc.gov.data.datasource.remote.interceptor.RetryInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.UserAgentInterceptor
 import com.google.gson.GsonBuilder
 import dagger.Module

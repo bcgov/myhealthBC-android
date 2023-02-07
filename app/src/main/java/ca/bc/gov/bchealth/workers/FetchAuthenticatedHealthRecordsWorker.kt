@@ -7,9 +7,9 @@ import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import ca.bc.gov.bchealth.usecases.RefreshMobileConfigUseCase
+import ca.bc.gov.bchealth.usecases.records.FetchHospitalVisitsUseCase
 import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
 import ca.bc.gov.common.BuildConfig.FLAG_CLINICAL_DOCUMENTS
-import ca.bc.gov.common.BuildConfig.FLAG_HOSPITAL_VISITS
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.ProtectiveWordException
@@ -19,7 +19,6 @@ import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
-import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.repository.CommentRepository
@@ -33,7 +32,6 @@ import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.clinicaldocument.ClinicalDocumentRepository
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.healthvisits.HealthVisitsRepository
-import ca.bc.gov.repository.hospitalvisit.HospitalVisitRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
@@ -74,11 +72,11 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val immunizationRecordRepository: ImmunizationRecordRepository,
     private val commentsRepository: CommentRepository,
     private val healthVisitsRepository: HealthVisitsRepository,
-    private val hospitalVisitRepository: HospitalVisitRepository,
+    private val fetchHospitalVisitsUseCase: FetchHospitalVisitsUseCase,
     private val specialAuthorityRepository: SpecialAuthorityRepository,
     private val clinicalDocumentRepository: ClinicalDocumentRepository,
     private val recordsRepository: RecordsRepository,
-    private val refreshMobileConfigUseCase : RefreshMobileConfigUseCase
+    private val refreshMobileConfigUseCase: RefreshMobileConfigUseCase
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
@@ -156,7 +154,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 loadImmunizationsAsync(patientId, authParameters),
                 loadHealthVisitsAsync(patientId, authParameters),
                 loadClinicalDocumentsAsync(patientId, authParameters),
-                loadHospitalVisitsAsync(patientId, authParameters),
+                runTaskAsync { fetchHospitalVisitsUseCase.execute(patientId, authParameters) },
                 loadCommentsAsync(authParameters),
                 loadSpecialAuthoritiesAsync(patientId, authParameters),
             ).awaitAll()
@@ -237,21 +235,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
 
             clinicalDocuments?.let {
                 recordsRepository.storeClinicalDocuments(patientId, it)
-            }
-        }
-    }
-
-    private fun CoroutineScope.loadHospitalVisitsAsync(
-        patientId: Long,
-        authParameters: AuthParametersDto
-    ) = runTaskAsync {
-        if (FLAG_HOSPITAL_VISITS) {
-            val hospitalVisits: List<HospitalVisitDto>? = fetchRecord(
-                authParameters, hospitalVisitRepository::getHospitalVisits
-            )
-
-            hospitalVisits?.let {
-                recordsRepository.storeHospitalVisits(patientId, it)
             }
         }
     }
