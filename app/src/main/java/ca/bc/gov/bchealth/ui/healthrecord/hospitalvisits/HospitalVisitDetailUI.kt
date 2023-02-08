@@ -18,11 +18,7 @@ import ca.bc.gov.bchealth.compose.italic
 
 @Composable
 fun HospitalVisitDetailUI(uiList: List<HospitalVisitDetailItem>) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-    ) {
+    LazyColumn {
         uiList.forEach { listItem ->
             item {
                 HospitalVisitListItem(
@@ -43,7 +39,7 @@ fun HospitalVisitListItem(label: String, body: String, footer: String?) {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(top = 20.dp, bottom = 20.dp, start = 32.dp),
+            .padding(top = 10.dp, bottom = 10.dp, start = 32.dp),
     ) {
         Text(text = label, style = MyHealthTypography.body2.bold())
 
