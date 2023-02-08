@@ -8,10 +8,12 @@ import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.TermsOfServiceDto
 import ca.bc.gov.common.model.banner.BannerDto
+import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.ClinicDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
+import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.immunization.ForecastStatus
 import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
@@ -26,18 +28,22 @@ import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.model.test.TestRecordDto
+import ca.bc.gov.common.utils.full_date_time_plus_time
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.common.utils.toDateTimeZ
 import ca.bc.gov.data.datasource.remote.model.base.LabResult
 import ca.bc.gov.data.datasource.remote.model.base.Order
 import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
 import ca.bc.gov.data.datasource.remote.model.base.banner.BannerPayload
+import ca.bc.gov.data.datasource.remote.model.base.clinicaldocument.ClinicalDocumentResponse
 import ca.bc.gov.data.datasource.remote.model.base.comment.CommentPayload
 import ca.bc.gov.data.datasource.remote.model.base.covidtest.CovidTestRecord
 import ca.bc.gov.data.datasource.remote.model.base.dependent.DependentPayload
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.Clinic
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsPayload
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsResponse
+import ca.bc.gov.data.datasource.remote.model.base.hospitalvisit.HospitalVisitInformation
+import ca.bc.gov.data.datasource.remote.model.base.hospitalvisit.HospitalVisitPayload
 import ca.bc.gov.data.datasource.remote.model.base.immunization.Forecast
 import ca.bc.gov.data.datasource.remote.model.base.immunization.ImmunizationRecord
 import ca.bc.gov.data.datasource.remote.model.base.immunization.Recommendation
@@ -301,6 +307,32 @@ fun HealthVisitsPayload.toDto() = HealthVisitsDto(
     clinic.toDto(),
     dataSource = DataSource.BCSC
 )
+
+fun HospitalVisitPayload?.toDto(): List<HospitalVisitDto> {
+    if (this == null) return emptyList()
+    return this.list.map { it.toDto() }
+}
+
+fun HospitalVisitInformation.toDto() = HospitalVisitDto(
+    healthService = healthService.orEmpty(),
+    location = facility,
+    provider = provider.orEmpty(),
+    visitType = visitType.orEmpty(),
+    visitDate = admitDateTime.toDateTime(),
+    dischargeDate = endDateTime?.toDateTime(),
+)
+
+fun ClinicalDocumentResponse.toDto(): List<ClinicalDocumentDto> =
+    this.payload.map {
+        ClinicalDocumentDto(
+            name = it.name,
+            type = it.type,
+            facilityName = it.facilityName,
+            discipline = it.discipline,
+            serviceDate = it.serviceDate.toDateTime(full_date_time_plus_time),
+            fileId = it.fileId,
+        )
+    }
 
 fun Clinic.toDto() = ClinicDto(
     name

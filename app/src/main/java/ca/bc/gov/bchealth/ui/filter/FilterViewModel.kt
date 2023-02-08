@@ -51,16 +51,6 @@ abstract class FilterViewModel : ViewModel() {
     }
 }
 
-enum class TimelineTypeFilter {
-    ALL,
-    MEDICATION,
-    LAB_TEST,
-    COVID_19_TEST,
-    IMMUNIZATION,
-    HEALTH_VISIT,
-    SPECIAL_AUTHORITY
-}
-
 data class FilterUiState(
     val timelineTypeFilter: List<String> = listOf(TimelineTypeFilter.ALL.name),
     val filterFromDate: String? = null,

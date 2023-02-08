@@ -6,15 +6,20 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
+import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
+import ca.bc.gov.common.BuildConfig.FLAG_CLINICAL_DOCUMENTS
+import ca.bc.gov.common.BuildConfig.FLAG_HOSPITAL_VISITS
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.common.R
 import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.ProtectiveWordState
+import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
+import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
@@ -30,8 +35,10 @@ import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
+import ca.bc.gov.repository.clinicaldocument.ClinicalDocumentRepository
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.healthvisits.HealthVisitsRepository
+import ca.bc.gov.repository.hospitalvisit.HospitalVisitRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
@@ -68,11 +75,13 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val immunizationRecordRepository: ImmunizationRecordRepository,
     private val commentsRepository: CommentRepository,
     private val healthVisitsRepository: HealthVisitsRepository,
+    private val hospitalVisitRepository: HospitalVisitRepository,
     private val specialAuthorityRepository: SpecialAuthorityRepository,
+    private val clinicalDocumentRepository: ClinicalDocumentRepository,
     private val recordsRepository: RecordsRepository
 ) : CoroutineWorker(context, workerParams) {
 
-    var isApiFailed = false
+    private var isApiFailed = false
 
     override suspend fun doWork(): Result {
         val remoteVersion = mobileConfigRepository.getRemoteApiVersion()
@@ -89,20 +98,20 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     }
 
     private suspend fun fetchAuthRecords(): Result {
-
         isApiFailed = false
         val vaccineRecords = mutableListOf<PatientVaccineRecordsState?>()
-        var covidOrderResponse: List<CovidOrderWithCovidTestDto>? = null
-        var medicationResponse: MedicationStatementResponse? = null
-        var labOrdersResponse: List<LabOrderWithLabTestDto>? = null
-        var immunizationDto: ImmunizationDto? = null
-        var commentsResponse: List<CommentDto>? = null
-        var dependentsList: List<DependentDto>? = null
-        var healthVisitsResponse: List<HealthVisitsDto>? = null
-        var specialAuthorityResponse: List<SpecialAuthorityDto>? = null
+        var covidOrders: List<CovidOrderWithCovidTestDto>? = null
+        var medications: MedicationStatementResponse? = null
+        var labOrders: List<LabOrderWithLabTestDto>? = null
+        var immunizations: ImmunizationDto? = null
+        var comments: List<CommentDto>? = null
+        var dependents: List<DependentDto>? = null
+        var healthVisits: List<HealthVisitsDto>? = null
+        var hospitalVisits: List<HospitalVisitDto>? = null
+        var clinicalDocuments: List<ClinicalDocumentDto>? = null
+        var specialAuthorities: List<SpecialAuthorityDto>? = null
 
         try {
-
             val authParameters = bcscAuthRepo.getAuthParametersDto()
             var patient: PatientDto? = null
             var patientId = 0L
@@ -136,7 +145,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             try {
-                dependentsList = fetchDependents(authParameters)
+                dependents = fetchRecord(authParameters, dependentsRepository::fetchAllDependents)
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
                     return failureResult
@@ -144,7 +153,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             // Insert dependents
-            dependentsList?.let { dependentsRepository.storeDependents(it, guardianId = patientId) }
+            dependents?.let { dependentsRepository.storeDependents(it, guardianId = patientId) }
 
             try {
                 val patientVaccineRecords = fetchVaccineRecords(
@@ -160,12 +169,12 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             val dependentVaccineRecords = fetchDependentsVaccineRecords(
-                authParameters.token, dependentsList
+                authParameters.token, dependents
             )
             vaccineRecords.addAll(dependentVaccineRecords)
 
             try {
-                covidOrderResponse = fetchCovidTestResults(authParameters)
+                covidOrders = fetchRecord(authParameters, covidOrderRepository::fetchCovidOrders)
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
                     return failureResult
@@ -173,7 +182,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             try {
-                medicationResponse = fetchMedicationResponse(authParameters)
+                medications = fetchMedicationResponse(authParameters)
             } catch (e: Exception) {
                 e.printStackTrace()
                 when (e) {
@@ -192,7 +201,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             try {
-                labOrdersResponse = fetchLabTestResults(authParameters)
+                labOrders = fetchRecord(authParameters, labOrderRepository::fetchLabOrders)
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
                     return failureResult
@@ -200,7 +209,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             try {
-                immunizationDto = fetchImmunizations(authParameters)
+                immunizations =
+                    fetchRecord(authParameters, immunizationRecordRepository::fetchImmunization)
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
                     return failureResult
@@ -208,7 +218,9 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             try {
-                commentsResponse = fetchComments(authParameters)
+                if (FLAG_ADD_COMMENTS) {
+                    comments = fetchRecord(authParameters, commentsRepository::getComments)
+                }
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
                     return failureResult
@@ -216,7 +228,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             try {
-                healthVisitsResponse = fetchHealthVisits(authParameters)
+                healthVisits = fetchRecord(authParameters, healthVisitsRepository::getHealthVisits)
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
                     return failureResult
@@ -224,7 +236,33 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             try {
-                specialAuthorityResponse = fetchSpecialAuthority(authParameters)
+                if (FLAG_HOSPITAL_VISITS) {
+                    hospitalVisits =
+                        fetchRecord(authParameters, hospitalVisitRepository::getHospitalVisits)
+                }
+            } catch (e: Exception) {
+                handleException(e)?.let { failureResult ->
+                    return failureResult
+                }
+            }
+
+            try {
+                if (FLAG_CLINICAL_DOCUMENTS) {
+                    clinicalDocuments =
+                        fetchRecord(
+                            authParameters,
+                            clinicalDocumentRepository::getClinicalDocuments
+                        )
+                }
+            } catch (e: Exception) {
+                handleException(e)?.let { failureResult ->
+                    return failureResult
+                }
+            }
+
+            try {
+                specialAuthorities =
+                    fetchRecord(authParameters, specialAuthorityRepository::getSpecialAuthority)
             } catch (e: Exception) {
                 handleException(e)?.let { failureResult ->
                     return failureResult
@@ -234,41 +272,16 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             /**
              * DB Operations
              * */
-            // Insert vaccine records
             recordsRepository.storeVaccineRecords(vaccineRecords)
-
-            // Insert covid orders
-            recordsRepository.storeCovidOrders(patientId, covidOrderResponse)
-
-            // Insert medication records
-            medicationResponse?.let {
-                medicationRecordRepository.updateMedicationRecords(it, patientId)
-            }
-            // Insert lab orders
-            recordsRepository.storeLabOrders(patientId, labOrdersResponse)
-
-            // Insert immunization records
-            recordsRepository.storeImmunizationRecords(patientId, immunizationDto)
-
-            // Insert comments
-            commentsRepository.delete(true)
-            commentsResponse?.let { commentsRepository.insert(it) }
-
-            // Insert Health Visits
-            healthVisitsRepository.deleteHealthVisits(patientId)
-            healthVisitsResponse?.forEach {
-                it.patientId = patientId
-            }
-            healthVisitsResponse?.let { healthVisitsRepository.insert(it) }
-
-            // Insert Special authority
-            specialAuthorityRepository.deleteSpecialAuthorities(patientId)
-            specialAuthorityResponse?.forEach {
-                it.patientId = patientId
-            }
-            specialAuthorityResponse?.let {
-                specialAuthorityRepository.insert(it)
-            }
+            recordsRepository.storeCovidOrders(patientId, covidOrders)
+            insertMedicationRecords(patientId, medications)
+            recordsRepository.storeLabOrders(patientId, labOrders)
+            recordsRepository.storeImmunizationRecords(patientId, immunizations)
+            insertComments(comments)
+            insertHealthVisits(patientId, healthVisits)
+            insertSpecialAuthority(patientId, specialAuthorities)
+            recordsRepository.storeHospitalVisits(patientId, hospitalVisits)
+            recordsRepository.storeClinicalDocuments(patientId, clinicalDocuments)
 
             updateNotification(isApiFailed)
         } catch (e: Exception) {
@@ -276,6 +289,46 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             e.printStackTrace()
         }
         return Result.success()
+    }
+
+    private suspend fun insertSpecialAuthority(
+        patientId: Long,
+        specialAuthorities: List<SpecialAuthorityDto>?
+    ) {
+        specialAuthorityRepository.deleteSpecialAuthorities(patientId)
+        specialAuthorities?.let { list ->
+            list.forEach {
+                it.patientId = patientId
+            }
+            specialAuthorityRepository.insert(list)
+        }
+    }
+
+    private suspend fun insertHealthVisits(
+        patientId: Long,
+        healthVisits: List<HealthVisitsDto>?
+    ) {
+        healthVisitsRepository.deleteHealthVisits(patientId)
+        healthVisits?.let { list ->
+            list.forEach {
+                it.patientId = patientId
+            }
+            healthVisitsRepository.insert(list)
+        }
+    }
+
+    private suspend fun insertComments(comments: List<CommentDto>?) {
+        commentsRepository.delete(true)
+        comments?.let { commentsRepository.insert(it) }
+    }
+
+    private suspend fun insertMedicationRecords(
+        patientId: Long,
+        medications: MedicationStatementResponse?
+    ) {
+        medications?.let {
+            medicationRecordRepository.updateMedicationRecords(it, patientId)
+        }
     }
 
     private fun updateNotification(isApiFailed: Boolean) {
@@ -325,58 +378,15 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         return resultList
     }
 
-    /*
-    * Fetch comments
-    * */
-    private suspend fun fetchComments(authParameters: AuthParametersDto): List<CommentDto>? {
-        var commentsResponse: List<CommentDto>?
+    private suspend fun <T> fetchRecord(
+        authParameters: AuthParametersDto,
+        action: suspend (String, String) -> T?
+    ): T? {
+        var response: T?
         withContext(dispatcher) {
-            commentsResponse = commentsRepository.getComments(
-                token = authParameters.token,
-                hdid = authParameters.hdid
-            )
+            response = action.invoke(authParameters.token, authParameters.hdid)
         }
-        return commentsResponse
-    }
-
-    private suspend fun fetchDependents(authParameters: AuthParametersDto): List<DependentDto>? {
-        var dependents: List<DependentDto>?
-        withContext(dispatcher) {
-            dependents = dependentsRepository.fetchAllDependents(
-                token = authParameters.token, hdid = authParameters.hdid
-            )
-        }
-        return dependents
-    }
-
-    /*
-     * Fetch immunizations
-     * */
-    private suspend fun fetchImmunizations(authParameters: AuthParametersDto): ImmunizationDto? {
-        var immunizationDto: ImmunizationDto?
-        withContext(dispatcher) {
-            immunizationDto =
-                immunizationRecordRepository.fetchImmunization(
-                    token = authParameters.token,
-                    hdid = authParameters.hdid
-                )
-        }
-        return immunizationDto
-    }
-
-    /*
-     * Fetch lab test results
-     * */
-    private suspend fun fetchLabTestResults(authParameters: AuthParametersDto): List<LabOrderWithLabTestDto>? {
-        var labOrdersResponse: List<LabOrderWithLabTestDto>?
-        withContext(dispatcher) {
-            labOrdersResponse =
-                labOrderRepository.fetchLabOrders(
-                    token = authParameters.token,
-                    hdid = authParameters.hdid
-                )
-        }
-        return labOrdersResponse
+        return response
     }
 
     /*
@@ -413,50 +423,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 patientVaccineRecord = it.second
             )
         }
-    }
-
-    /*
-    * Fetch covid test results
-    * */
-    private suspend fun fetchCovidTestResults(authParameters: AuthParametersDto): List<CovidOrderWithCovidTestDto>? {
-        var covidOrderResponse: List<CovidOrderWithCovidTestDto>?
-        withContext(dispatcher) {
-            covidOrderResponse = covidOrderRepository.fetchCovidOrders(
-                token = authParameters.token,
-                hdid = authParameters.hdid
-            )
-        }
-        return covidOrderResponse
-    }
-
-    /**
-     * Fetch health visits
-     */
-    private suspend fun fetchHealthVisits(authParameters: AuthParametersDto): List<HealthVisitsDto>? {
-        var healthVisitsResponse: List<HealthVisitsDto>?
-        withContext(dispatcher) {
-            healthVisitsResponse =
-                healthVisitsRepository.getHealthVisits(
-                    token = authParameters.token,
-                    hdid = authParameters.hdid
-                )
-        }
-        return healthVisitsResponse
-    }
-
-    /**
-     * Fetch special authority
-     */
-    private suspend fun fetchSpecialAuthority(authParameters: AuthParametersDto): List<SpecialAuthorityDto>? {
-        var specialAuthorityResponse: List<SpecialAuthorityDto>?
-        withContext(dispatcher) {
-            specialAuthorityResponse =
-                specialAuthorityRepository.getSpecialAuthority(
-                    token = authParameters.token,
-                    hdid = authParameters.hdid
-                )
-        }
-        return specialAuthorityResponse
     }
 
     private fun handleQueueItException(e: java.lang.Exception): Result {

@@ -3,7 +3,6 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -13,17 +12,24 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
-import ca.bc.gov.bchealth.ui.filter.FilterUiState
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
+import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordFilterFragment
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
 import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
 import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.CLINICAL_DOCUMENT_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.COVID_TEST_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HEALTH_VISIT_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HOSPITAL_VISITS_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.IMMUNIZATION_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.LAB_TEST_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.MEDICATION_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.SPECIAL_AUTHORITY_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.VACCINE_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
-import ca.bc.gov.bchealth.utils.hide
 import ca.bc.gov.bchealth.utils.launchOnStart
-import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
@@ -33,7 +39,8 @@ import dagger.hilt.android.AndroidEntryPoint
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
-class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_health_record) {
+class IndividualHealthRecordFragment :
+    BaseRecordFilterFragment(R.layout.fragment_individual_health_record) {
 
     private val binding by viewBindings(FragmentIndividualHealthRecordBinding::bind)
     private val viewModel: IndividualHealthRecordViewModel by viewModels()
@@ -43,6 +50,10 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private lateinit var concatAdapter: ConcatAdapter
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val filterSharedViewModel: PatientFilterViewModel by activityViewModels()
+
+    override fun getFilterViewModel() = filterSharedViewModel
+    override fun getFilter() = healthRecordsAdapter.filter
+    override fun getLayoutChipGroup() = binding.content.chipGroup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,51 +111,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
                     return@setOnMenuItemClickListener true
                 }
             }
-        }
-    }
-
-    private fun updateTypeFilterSelection(filterUiState: FilterUiState) {
-        resetFilters()
-        filterUiState.timelineTypeFilter.forEach {
-            when (it) {
-                TimelineTypeFilter.MEDICATION.name -> {
-                    binding.content.chipGroup.chipMedication.show()
-                }
-                TimelineTypeFilter.IMMUNIZATION.name -> {
-                    binding.content.chipGroup.chipImmunizations.show()
-                }
-                TimelineTypeFilter.COVID_19_TEST.name -> {
-                    binding.content.chipGroup.chipCovidTest.show()
-                }
-                TimelineTypeFilter.LAB_TEST.name -> {
-                    binding.content.chipGroup.chipLabTest.show()
-                }
-                TimelineTypeFilter.HEALTH_VISIT.name -> {
-                    binding.content.chipGroup.chipHealthVisit.show()
-                }
-                TimelineTypeFilter.SPECIAL_AUTHORITY.name -> {
-                    binding.content.chipGroup.chipSpecialAuthority.show()
-                }
-            }
-        }
-    }
-
-    private fun resetFilters() {
-        binding.content.chipGroup.chipMedication.hide()
-        binding.content.chipGroup.chipImmunizations.hide()
-        binding.content.chipGroup.chipCovidTest.hide()
-        binding.content.chipGroup.chipLabTest.hide()
-        binding.content.chipGroup.chipHealthVisit.hide()
-        binding.content.chipGroup.chipSpecialAuthority.hide()
-    }
-
-    private fun clearFilterClickListener() {
-        binding.content.chipGroup.imgClear.setOnClickListener {
-            filterSharedViewModel.clearFilter()
-
-            updateHiddenMedicationRecordsView(viewModel.uiState.value)
-
-            healthRecordsAdapter.filter.filter(filterSharedViewModel.getFilterString())
         }
     }
 
@@ -228,12 +194,9 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     }
 
     private fun displayBcscRecords(uiState: IndividualHealthRecordsUiState) {
-        if (filterSharedViewModel.filterState.value.timelineTypeFilter.contains(
-                TimelineTypeFilter.ALL.name
-            ) ||
-            filterSharedViewModel.filterState.value.timelineTypeFilter.contains(
-                    TimelineTypeFilter.MEDICATION.name
-                )
+        val timelineTypeFilter = filterSharedViewModel.filterState.value.timelineTypeFilter
+        if (timelineTypeFilter.contains(TimelineTypeFilter.ALL.name) ||
+            timelineTypeFilter.contains(TimelineTypeFilter.MEDICATION.name)
         ) {
             updateHiddenMedicationRecordsView(uiState)
         } else {
@@ -269,67 +232,52 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
 
     private fun setUpRecyclerView() {
         healthRecordsAdapter = HealthRecordsAdapter {
-            when (it.healthRecordType) {
-                HealthRecordType.VACCINE_RECORD -> {
-                    val action = IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(
-                            it.patientId
-                        )
-                    findNavController().navigate(action)
-                }
-                HealthRecordType.COVID_TEST_RECORD -> {
+            val navDirection = when (it.healthRecordType) {
+                VACCINE_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(it.patientId)
 
-                    val action = if (it.covidOrderId != null) {
-                        IndividualHealthRecordFragmentDirections.actionIndividualHealthRecordFragmentToCovidTestResultDetailFragment(
-                            it.covidOrderId
+                COVID_TEST_RECORD -> if (it.covidOrderId != null) {
+                    IndividualHealthRecordFragmentDirections.actionIndividualHealthRecordFragmentToCovidTestResultDetailFragment(
+                        it.covidOrderId
+                    )
+                } else {
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToTestResultDetailFragment(
+                            it.patientId, it.testResultId
                         )
-                    } else {
-                        IndividualHealthRecordFragmentDirections
-                            .actionIndividualHealthRecordFragmentToTestResultDetailFragment(
-                                it.patientId,
-                                it.testResultId
-                            )
-                    }
-                    findNavController().navigate(action)
                 }
-                HealthRecordType.MEDICATION_RECORD -> {
-                    val action = IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToMedicationDetailFragment(
-                            it.medicationRecordId
-                        )
-                    findNavController().navigate(action)
-                }
-                HealthRecordType.LAB_TEST -> {
-                    it.labOrderId.let { it1 ->
-                        val action = IndividualHealthRecordFragmentDirections
-                            .actionIndividualHealthRecordFragmentToLabTestDetailFragment(
-                                it1
-                            )
-                        findNavController().navigate(action)
-                    }
-                }
-                HealthRecordType.IMMUNIZATION_RECORD -> {
-                    val action = IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToImmunizationRecordDetailFragment(
-                            it.immunizationRecordId
-                        )
-                    findNavController().navigate(action)
-                }
-                HealthRecordType.HEALTH_VISIT_RECORD -> {
-                    val action = IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToHealthVisitDetailsFragment(
-                            it.healthVisitId
-                        )
-                    findNavController().navigate(action)
-                }
-                HealthRecordType.SPECIAL_AUTHORITY_RECORD -> {
-                    val action = IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToSpecialAuthorityDetailsFragment(
-                            it.specialAuthorityId
-                        )
-                    findNavController().navigate(action)
-                }
+
+                MEDICATION_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToMedicationDetailFragment(it.medicationRecordId)
+
+                LAB_TEST_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToLabTestDetailFragment(it.labOrderId)
+
+                IMMUNIZATION_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToImmunizationRecordDetailFragment(it.immunizationRecordId)
+
+                HEALTH_VISIT_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToHealthVisitDetailsFragment(it.healthVisitId)
+
+                SPECIAL_AUTHORITY_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToSpecialAuthorityDetailsFragment(it.specialAuthorityId)
+
+                HOSPITAL_VISITS_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordsFragmentToHospitalVisitDetailsFragment(it.hospitalVisitId)
+
+                CLINICAL_DOCUMENT_RECORD ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordsFragmentToClinicalDocumentDetailsFragment(it.clinicalDocumentId)
             }
+
+            findNavController().navigate(navDirection)
         }
 
         hiddenHealthRecordAdapter = HiddenHealthRecordAdapter { onBCSCLoginClick() }
@@ -358,55 +306,6 @@ class IndividualHealthRecordFragment : Fragment(R.layout.fragment_individual_hea
     private fun onBCSCLoginClick() {
         sharedViewModel.destinationId = 0
         findNavController().navigate(R.id.bcscAuthInfoFragment)
-    }
-
-    private fun observeFilterState() {
-        launchOnStart {
-            filterSharedViewModel.filterState.collect { filterState ->
-
-                // update filter date selection
-                if (isFilterDateSelected(filterState)) {
-                    binding.content.chipGroup.chipDate.apply {
-                        show()
-                        text = when {
-                            filterState.filterFromDate.isNullOrBlank() -> {
-                                filterState.filterToDate + " " + getString(R.string.before)
-                            }
-                            filterState.filterToDate.isNullOrBlank() -> {
-                                filterState.filterFromDate + " " + getString(R.string.after)
-                            }
-                            else -> {
-                                filterState.filterFromDate + " - " + filterState.filterToDate
-                            }
-                        }
-                    }
-                } else {
-                    binding.content.chipGroup.chipDate.hide()
-                }
-
-                updateTypeFilterSelection(filterState)
-
-                updateClearButton(filterState)
-            }
-        }
-    }
-
-    private fun isFilterDateSelected(filterState: FilterUiState): Boolean {
-        if (filterState.filterFromDate.isNullOrBlank() && filterState.filterToDate.isNullOrBlank()) {
-            return false
-        }
-        return true
-    }
-
-    private fun updateClearButton(filterState: FilterUiState) {
-        if (!isFilterDateSelected(filterState) && filterState.timelineTypeFilter.contains(
-                TimelineTypeFilter.ALL.name
-            )
-        ) {
-            binding.content.chipGroup.imgClear.hide()
-        } else {
-            binding.content.chipGroup.imgClear.show()
-        }
     }
 
     private fun observeNavigationFlow() {

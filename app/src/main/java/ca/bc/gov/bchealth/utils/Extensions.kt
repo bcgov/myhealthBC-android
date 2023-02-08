@@ -198,6 +198,7 @@ fun String?.showIfNullOrBlank(context: Context): String {
     }
 }
 
+@Deprecated("Switch to BaseFragment showServiceDownMessage()")
 fun View.showServiceDownMessage(context: Context) {
     val snackBar = Snackbar.make(
         this,
@@ -211,6 +212,7 @@ fun View.showServiceDownMessage(context: Context) {
     snackBar.show()
 }
 
+@Deprecated("Switch to BaseFragment showNoInternetConnectionMessage()")
 fun View.showNoInternetConnectionMessage(context: Context) {
     val snackBar = Snackbar.make(
         this,

@@ -12,6 +12,8 @@ const val yyyy_MMM_dd_HH_mm = "yyyy-MMM-dd, hh:mm a"
 const val yyyy_MMM_dd = "yyyy-MMM-dd"
 const val yyyy_MM_dd = "yyyy-MM-dd"
 const val eee_dd_mmm_yyyy_hh_mm_ss_z = "EEE, dd MMM yyyy HH:mm:ss XXXX"
+const val full_date_time_plus_time = "yyyy-MM-dd'T'HH:mm:ss'+'HH:mm"
+
 private const val yyyy_MMM_dd_HH_mm_sss_long = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 private const val yyyy_MMM_dd_HH_mm_short = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 
@@ -33,6 +35,9 @@ fun String.toDate(): Instant = LocalDate.parse(this).atStartOfDay().toInstant(Zo
 
 fun String.toDateTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): Instant =
     LocalDateTime.parse(this, formatter).toInstant(ZoneOffset.UTC)
+
+fun String.toDateTime(datePattern: String): Instant =
+    this.toDateTime(DateTimeFormatter.ofPattern(datePattern))
 
 /**
  * Parse dates in the following formats:

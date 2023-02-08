@@ -15,8 +15,10 @@ import ca.bc.gov.bchealth.ui.recommendations.RecommendationDetailItem
 import ca.bc.gov.bchealth.utils.orPlaceholder
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
+import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
+import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.immunization.ImmunizationForecastDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecommendationsDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPatientDto
@@ -26,7 +28,6 @@ import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
-import ca.bc.gov.common.model.relation.VaccineWithDosesDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.utils.toDate
@@ -68,25 +69,6 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
         isRemovable = with(patient.authenticationStatus) {
             this != AuthenticationStatus.AUTHENTICATED && this != AuthenticationStatus.DEPENDENT
         }
-    )
-}
-
-fun VaccineWithDosesDto.toUiModel(): HealthRecordItem {
-
-    val passState = getHealthPassStateResources(vaccine.status)
-
-    val date = doses.maxOf { it.date }
-    return HealthRecordItem(
-        patientId = vaccine.patientId,
-        testResultId = -1L,
-        medicationRecordId = -1L,
-        icon = R.drawable.ic_health_record_vaccine,
-        title = "COVID-19 vaccination",
-        description = "${passState.status}",
-        testOutcome = null,
-        date = date,
-        healthRecordType = HealthRecordType.VACCINE_RECORD,
-        dataSource = vaccine.mode.name
     )
 }
 
@@ -147,6 +129,17 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
     )
 }
 
+fun ClinicalDocumentDto.toUiModel() =
+    HealthRecordItem(
+        patientId = patientId,
+        clinicalDocumentId = id,
+        title = name,
+        description = facilityName,
+        icon = R.drawable.ic_health_record_clinical_document,
+        date = serviceDate,
+        healthRecordType = HealthRecordType.CLINICAL_DOCUMENT_RECORD,
+    )
+
 fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
     var description = ""
     description = mapOrderStatus(labOrder.orderStatus ?: "").plus(" • ")
@@ -159,7 +152,7 @@ fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
         date = labOrder.timelineDateTime,
         description = description,
         testOutcome = null,
-        healthRecordType = HealthRecordType.LAB_TEST,
+        healthRecordType = HealthRecordType.LAB_TEST_RECORD,
         dataSource = labOrder.dataSorce.name
     )
 }
@@ -308,6 +301,17 @@ fun SpecialAuthorityDto.toUiModel() =
         date = requestedDate!!,
         healthRecordType = HealthRecordType.SPECIAL_AUTHORITY_RECORD,
         dataSource = dataSource.name
+    )
+
+fun HospitalVisitDto.toUiModel() =
+    HealthRecordItem(
+        patientId = patientId,
+        hospitalVisitId = id,
+        icon = R.drawable.ic_health_record_hospital_visit,
+        title = location,
+        description = visitType,
+        date = visitDate,
+        healthRecordType = HealthRecordType.HOSPITAL_VISITS_RECORD,
     )
 
 fun ImmunizationRecommendationsDto.toUiModel() = RecommendationDetailItem(

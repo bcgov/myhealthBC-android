@@ -15,6 +15,7 @@ import ca.bc.gov.bchealth.utils.DatePickerHelper
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.utils.toDate
+import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
 
 abstract class FilterFragment : BaseFragment(R.layout.fragment_filter) {
@@ -48,59 +49,19 @@ abstract class FilterFragment : BaseFragment(R.layout.fragment_filter) {
         }
     }
 
-    private fun initTypeFilter(filterState: FilterUiState) {
-        filterState.timelineTypeFilter.forEach {
-            when (it) {
-                TimelineTypeFilter.MEDICATION.name -> {
-                    binding.chipMedication.isChecked = true
-                }
-                TimelineTypeFilter.IMMUNIZATION.name -> {
-                    binding.chipImmunizations.isChecked = true
-                }
-                TimelineTypeFilter.COVID_19_TEST.name -> {
-                    binding.chipCovidTest.isChecked = true
-                }
-                TimelineTypeFilter.LAB_TEST.name -> {
-                    binding.chipLabTest.isChecked = true
-                }
-                TimelineTypeFilter.HEALTH_VISIT.name -> {
-                    binding.chipHealthVisit.isChecked = true
-                }
-                TimelineTypeFilter.SPECIAL_AUTHORITY.name -> {
-                    binding.chipSpecialAuthority.isChecked = true
-                }
-            }
-        }
-    }
-
     private fun applyClickListener() {
         binding.btnApply.setOnClickListener {
             if (validateSelectedDate()) {
                 val filterList = mutableListOf<String>()
                 val checkedChipIds = binding.cgFilterByType.checkedChipIds
-                checkedChipIds.forEach {
-                    when (it) {
-                        R.id.chip_medication -> {
-                            filterList.add(TimelineTypeFilter.MEDICATION.name)
-                        }
-                        R.id.chip_lab_test -> {
-                            filterList.add(TimelineTypeFilter.LAB_TEST.name)
-                        }
-                        R.id.chip_covid_test -> {
-                            filterList.add(TimelineTypeFilter.COVID_19_TEST.name)
-                        }
-                        R.id.chip_immunizations -> {
-                            filterList.add(TimelineTypeFilter.IMMUNIZATION.name)
-                        }
-                        R.id.chip_health_visit -> {
-                            filterList.add(TimelineTypeFilter.HEALTH_VISIT.name)
-                        }
-                        R.id.chip_special_authority -> {
-                            filterList.add(TimelineTypeFilter.SPECIAL_AUTHORITY.name)
-                        }
+
+                TimelineTypeFilter.values().forEach {
+                    if (checkedChipIds.contains(it.id)) {
+                        filterList.add(it.name)
                     }
                 }
-                if (filterList.isNullOrEmpty()) {
+
+                if (filterList.isEmpty()) {
                     filterList.add(TimelineTypeFilter.ALL.name)
                 }
 
@@ -178,6 +139,17 @@ abstract class FilterFragment : BaseFragment(R.layout.fragment_filter) {
                     )
 
                     initTypeFilter(filterState)
+                }
+            }
+        }
+    }
+
+    private fun initTypeFilter(uiState: FilterUiState) {
+        uiState.timelineTypeFilter.forEach { filterName ->
+            TimelineTypeFilter.findByName(filterName)?.let { typeFilter ->
+                typeFilter.id?.let {
+                    val chip = view?.findViewById<Chip>(it)
+                    chip?.isChecked = true
                 }
             }
         }

@@ -34,13 +34,14 @@ class SpecialAuthorityDetailViewModel @Inject constructor(
                     specialAuthorityDto?.requestStatus ?: "--"
                 )
             )
-            val prescriberName = if (specialAuthorityDto?.prescriberFirstName.isNullOrBlank().not() &&
-                specialAuthorityDto?.prescriberLastName.isNullOrBlank().not()
-            ) {
-                "${specialAuthorityDto?.prescriberFirstName} ${specialAuthorityDto?.prescriberLastName}"
-            } else {
-                "--"
-            }
+            val prescriberName =
+                if (specialAuthorityDto?.prescriberFirstName.isNullOrBlank().not() &&
+                    specialAuthorityDto?.prescriberLastName.isNullOrBlank().not()
+                ) {
+                    "${specialAuthorityDto?.prescriberFirstName} ${specialAuthorityDto?.prescriberLastName}"
+                } else {
+                    "--"
+                }
             specialAuthorityDetailItems.add(
                 SpecialAuthorityDetailItem(
                     R.string.prescriber_name, prescriberName
@@ -64,10 +65,12 @@ class SpecialAuthorityDetailViewModel @Inject constructor(
                     specialAuthorityDto?.referenceNumber ?: "--"
                 )
             )
+
             _uiState.update { state ->
                 state.copy(
                     onLoading = false,
                     toolbarTitle = specialAuthorityDto?.drugName,
+                    parentEntryId = specialAuthorityDto?.referenceNumber,
                     specialAuthorityDetailItems = specialAuthorityDetailItems
                 )
             }
@@ -84,6 +87,7 @@ class SpecialAuthorityDetailViewModel @Inject constructor(
 data class SpecialAuthorityDetailUiState(
     val onLoading: Boolean = false,
     val toolbarTitle: String? = "",
+    val parentEntryId: String? = null,
     val specialAuthorityDetailItems: List<SpecialAuthorityDetailItem> = emptyList()
 )
 

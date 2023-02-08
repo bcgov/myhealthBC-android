@@ -1,10 +1,12 @@
 package ca.bc.gov.repository
 
 import android.util.Log
+import ca.bc.gov.common.BuildConfig.FLAG_HOSPITAL_VISITS
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.const.SERVICE_NOT_AVAILABLE
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.dependents.DependentDto
+import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
@@ -98,7 +100,7 @@ class DependentsRepository @Inject constructor(
                 throw MyHealthException(SERVICE_NOT_AVAILABLE)
             }
 
-            var vaccineRecords: Pair<VaccineRecordState, PatientVaccineRecord?>? = null
+            val vaccineRecords: Pair<VaccineRecordState, PatientVaccineRecord?>?
             var covidOrders: List<CovidOrderWithCovidTestDto>? = null
             var immunizationDto: ImmunizationDto? = null
 
@@ -145,17 +147,13 @@ class DependentsRepository @Inject constructor(
         patientId: Long,
         vaccineRecordsResponse: Pair<VaccineRecordState, PatientVaccineRecord?>?,
         covidOrderResponse: List<CovidOrderWithCovidTestDto>?,
-        immunizationDto: ImmunizationDto?
+        immunizationDto: ImmunizationDto?,
     ) {
-        // Insert vaccine records
         vaccineRecordsResponse?.let { insertVaccineRecords(patientId, it) }
-
-        // Insert covid orders
-        recordsRepository.storeCovidOrders(patientId, covidOrderResponse)
-
-        // Insert immunization records
-        recordsRepository.storeImmunizationRecords(patientId, immunizationDto)
-
+        recordsRepository.apply {
+            storeCovidOrders(patientId, covidOrderResponse)
+            storeImmunizationRecords(patientId, immunizationDto)
+        }
         localDataSource.enableDependentCacheFlag(patientId)
     }
 
@@ -185,6 +183,13 @@ class DependentsRepository @Inject constructor(
     suspend fun getPatientWithImmunizationRecordAndForecast(patientId: Long): PatientWithImmunizationRecordAndForecastDto =
         patientLocalDataSource.getPatientWithImmunizationRecordAndForecast(patientId)
             ?: throw getDatabaseException(patientId)
+
+    suspend fun getPatientWithHospitalVisits(patientId: Long): List<HospitalVisitDto> {
+        if (FLAG_HOSPITAL_VISITS.not()) return emptyList()
+
+        return patientLocalDataSource.getPatientWithHospitalVisits(patientId)?.hospitalVisits
+            ?: throw getDatabaseException(patientId)
+    }
 
     suspend fun updateDependentListOrder(list: List<DependentDto>) {
         localDataSource.deleteAllDependentListOrders()

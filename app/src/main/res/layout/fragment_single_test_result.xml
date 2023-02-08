@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:filterTouchesWhenObscured="true"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:filterTouchesWhenObscured="true">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/view_comment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,13 +89,14 @@
                         android:layout_marginStart="@dimen/space_2_x"
                         android:layout_marginTop="@dimen/space_2_x"
                         android:layout_marginEnd="@dimen/space_2_x"
+                        android:paddingBottom="@dimen/space_2_x"
                         android:textSize="15sp"
                         android:visibility="gone"
-                        android:paddingBottom="@dimen/space_2_x"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:text="Your test is being processed and can take up to 48 hours to complete." />
+                        tools:text="Your test is being processed and can take up to 48 hours to complete."
+                        tools:visibility="visible" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -104,19 +105,19 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_view_pdf"
                 style="@style/HealthGateway.Widget.MaterialComponents.Button.OutlinedButton"
-                android:textSize="17sp"
-                android:letterSpacing="-0.01"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4_x"
+                android:layout_marginTop="@dimen/space_1_x"
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:layout_marginBottom="@dimen/space_1_x"
-                android:layout_marginTop="@dimen/space_1_x"
-                android:text="@string/view_pdf"
                 android:filterTouchesWhenObscured="true"
-                app:layout_constraintTop_toBottomOf="@+id/cardView"
+                android:letterSpacing="-0.01"
+                android:text="@string/view_pdf"
+                android:textSize="17sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_instructions"
@@ -128,7 +129,8 @@
                 android:text=""
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btn_view_pdf" />
+                app:layout_constraintTop_toBottomOf="@id/btn_view_pdf"
+                tools:visibility="visible" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_instructions_detail"
@@ -144,7 +146,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_instructions"
-                tools:text="@string/instructions_details" />
+                tools:text="@string/instructions_details"
+                tools:visibility="visible" />
 
             <View
                 android:id="@+id/view_line"
@@ -261,7 +264,8 @@
                 android:text="@string/result_description"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_provider_clinic" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_provider_clinic"
+                tools:visibility="visible" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_result_desc"
@@ -271,18 +275,34 @@
                 android:layout_marginStart="@dimen/space_4_x"
                 android:layout_marginEnd="@dimen/space_4_x"
                 android:layout_marginBottom="@dimen/space_2_x"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:visibility="invisible"
                 android:autoLink="web|phone"
                 android:linksClickable="true"
                 android:textIsSelectable="true"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_result_desc_title"
-                tools:text="Description" />
+                tools:text="Your test result for COVID-19 is Negative. If you develop new or worsening symptoms that are related to COVID-19, please get re-tested or call 811 for further information. If you have been identified by Public Health as a close contact, please follow their guidance. For more details refer to here."
+                tools:visibility="visible" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_comments"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_3_x"
+                tools:itemCount="1"
+                app:layout_constraintTop_toBottomOf="@+id/tv_result_desc"
+                tools:listitem="@layout/item_comment" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
+
+    <ca.bc.gov.bchealth.widget.AddCommentLayout
+        android:id="@+id/view_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

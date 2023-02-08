@@ -36,7 +36,7 @@ class CommentsViewModel @Inject constructor(
 
         try {
             val commentsDtoList = commentRepository.getLocalComments(parentEntryId) as MutableList
-            commentsDtoList.sortByDescending { it.createdDateTime }
+            commentsDtoList.sortBy { it.createdDateTime }
 
             // latest comment
             val commentsTemp = getLatestComment(commentsDtoList, parentEntryId)
@@ -77,7 +77,7 @@ class CommentsViewModel @Inject constructor(
                     comment,
                     entryTypeCode
                 ) as MutableList
-                commentsDtoList.sortByDescending { it.createdDateTime }
+                commentsDtoList.sortBy { it.createdDateTime }
 
                 // latest comment
                 val commentsTemp = getLatestComment(commentsDtoList, parentEntryId)
@@ -93,7 +93,8 @@ class CommentsViewModel @Inject constructor(
                                 it.isUploaded
                             )
                         },
-                        latestComment = commentsTemp
+                        latestComment = commentsTemp,
+                        onCommentsUpdated = true
                     )
                 }
             } catch (e: Exception) {
@@ -122,7 +123,7 @@ class CommentsViewModel @Inject constructor(
             )
 
             if (FLAG_ADD_COMMENTS) {
-                val latestComment = commentsDtoList.firstOrNull()
+                val latestComment = commentsDtoList.lastOrNull()
                 commentsList.add(
                     Comment(
                         latestComment?.parentEntryId,
@@ -163,7 +164,8 @@ data class CommentsUiState(
     val onLoading: Boolean = false,
     val onError: Boolean = false,
     val commentsList: List<Comment> = emptyList(),
-    val latestComment: List<Comment> = emptyList()
+    val latestComment: List<Comment> = emptyList(),
+    val onCommentsUpdated: Boolean = false
 )
 
 data class Comment(
@@ -174,5 +176,9 @@ data class Comment(
 )
 
 enum class CommentEntryTypeCode(val value: String) {
-    MEDICATION("Med")
+    MEDICATION("Med"),
+    LAB_RESULTS("ALO"),
+    COVID_TEST("Lab"),
+    HEALTH_VISITS("Enc"),
+    SPECIAL_AUTHORITY("SAR"),
 }
