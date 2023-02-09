@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop
+      - fix/QR_CODE_ISSUE
 
 jobs:
   build:
