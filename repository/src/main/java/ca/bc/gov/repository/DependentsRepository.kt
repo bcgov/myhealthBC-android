@@ -3,7 +3,6 @@ package ca.bc.gov.repository
 import android.util.Log
 import ca.bc.gov.common.BuildConfig.FLAG_HOSPITAL_VISITS
 import ca.bc.gov.common.const.DATABASE_ERROR
-import ca.bc.gov.common.const.SERVICE_NOT_AVAILABLE
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
