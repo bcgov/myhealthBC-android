@@ -98,11 +98,7 @@ class DependentsRepository @Inject constructor(
 
     suspend fun requestRecordsIfNeeded(patientId: Long, hdid: String) {
         if (localDataSource.isDependentCacheValid(patientId).not()) {
-
-            val serviceAvailable = mobileConfigRepository.refreshMobileConfiguration()
-            if (serviceAvailable.not()) {
-                throw MyHealthException(SERVICE_NOT_AVAILABLE)
-            }
+            mobileConfigRepository.refreshMobileConfiguration()
 
             val vaccineRecords: Pair<VaccineRecordState, PatientVaccineRecord?>?
             var covidOrders: List<CovidOrderWithCovidTestDto>? = null

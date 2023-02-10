@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.covidtests
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.exceptions.NetworkConnectionException
+import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.worker.MobileConfigRepository
@@ -27,9 +28,7 @@ class CovidTestResultDetailsViewModel @Inject constructor(
     val uiState: StateFlow<CovidResultDetailUiState> = _uiState.asStateFlow()
 
     fun getCovidOrderWithCovidTests(covidOrderId: String) = viewModelScope.launch {
-        _uiState.update {
-            it.copy(onLoading = true)
-        }
+        _uiState.update { it.copy(onLoading = true) }
 
         val covidOrder = covidOrderRepository.findByCovidOrderId(covidOrderId)
         _uiState.update {
@@ -38,26 +37,17 @@ class CovidTestResultDetailsViewModel @Inject constructor(
     }
 
     fun getCovidTestInPdf(reportId: String) = viewModelScope.launch {
-        _uiState.update {
-            it.copy(onLoading = true)
-        }
+        _uiState.update { it.copy(onLoading = true) }
+
         try {
-            val isHgServicesUp = mobileConfigRepository.refreshMobileConfiguration()
-            if (isHgServicesUp) {
-                val pdfData = covidOrderRepository.fetchCovidTestPdf(reportId, true)
-                _uiState.update {
-                    it.copy(
-                        pdfData = pdfData,
-                        onLoading = false
-                    )
-                }
-            } else {
-                _uiState.update {
-                    it.copy(
-                        isHgServicesUp = false,
-                        onLoading = false
-                    )
-                }
+            mobileConfigRepository.refreshMobileConfiguration()
+
+            val pdfData = covidOrderRepository.fetchCovidTestPdf(reportId, true)
+            _uiState.update {
+                it.copy(
+                    pdfData = pdfData,
+                    onLoading = false
+                )
             }
         } catch (e: java.lang.Exception) {
             when (e) {
@@ -68,6 +58,9 @@ class CovidTestResultDetailsViewModel @Inject constructor(
                             isConnected = false
                         )
                     }
+                }
+                is ServiceDownException -> _uiState.update {
+                    it.copy(isHgServicesUp = false, onLoading = false)
                 }
                 else -> {
                     _uiState.update {

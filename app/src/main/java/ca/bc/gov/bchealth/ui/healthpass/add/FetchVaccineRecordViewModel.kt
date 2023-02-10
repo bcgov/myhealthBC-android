@@ -7,6 +7,7 @@ import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.exceptions.NetworkConnectionException
+import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.ErrorData
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.repository.FetchVaccineRecordRepository
@@ -42,35 +43,22 @@ class FetchVaccineRecordViewModel @Inject constructor(
     fun fetchVaccineRecord(phn: String, dateOfBirth: String, dateOfVaccine: String) =
         viewModelScope.launch {
 
-            _uiState.tryEmit(
-                FetchVaccineRecordUiState(
-                    onLoading = true
-                )
-            )
+            _uiState.tryEmit(FetchVaccineRecordUiState(onLoading = true))
 
             try {
-                val isHgServicesUp = mobileConfigRepository.refreshMobileConfiguration()
+                mobileConfigRepository.refreshMobileConfiguration()
 
-                if (isHgServicesUp) {
-                    val vaccineRecord = fetchVaccineRecordRepository.fetchVaccineRecord(
-                        phn,
-                        dateOfBirth,
-                        dateOfVaccine
+                val vaccineRecord = fetchVaccineRecordRepository.fetchVaccineRecord(
+                    phn,
+                    dateOfBirth,
+                    dateOfVaccine
+                )
+                _uiState.tryEmit(
+                    FetchVaccineRecordUiState(
+                        onLoading = false,
+                        vaccineRecord = vaccineRecord
                     )
-                    _uiState.tryEmit(
-                        FetchVaccineRecordUiState(
-                            onLoading = false,
-                            vaccineRecord = vaccineRecord
-                        )
-                    )
-                } else {
-                    _uiState.tryEmit(
-                        FetchVaccineRecordUiState(
-                            isHgServicesUp = isHgServicesUp,
-                            onLoading = false
-                        )
-                    )
-                }
+                )
             } catch (e: Exception) {
                 when (e) {
                     is NetworkConnectionException -> {
@@ -81,6 +69,9 @@ class FetchVaccineRecordViewModel @Inject constructor(
                             )
                         )
                     }
+                    is ServiceDownException -> _uiState.tryEmit(
+                        FetchVaccineRecordUiState(isHgServicesUp = false, onLoading = false)
+                    )
                     is MyHealthException -> {
                         when (e.errCode) {
                             SERVER_ERROR_DATA_MISMATCH, SERVER_ERROR_INCORRECT_PHN -> {

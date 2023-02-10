@@ -77,13 +77,13 @@ class CommentRepository @Inject constructor(
     }
 
     suspend fun syncComment(commentDto: CommentDto) {
-        val (token, hdid) = bcscAuthRepo.getAuthParameters()
+        val authParametersDto = bcscAuthRepo.getAuthParametersDto()
         val comment = commentRemoteDataSource.addComment(
             commentDto.parentEntryId,
             commentDto.text ?: "",
             commentDto.entryTypeCode,
-            hdid,
-            token
+            authParametersDto.hdid,
+            authParametersDto.token
         )
         deleteById(commentDto.id)
         comment.isUploaded = true

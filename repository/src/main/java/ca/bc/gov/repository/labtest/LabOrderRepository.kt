@@ -40,10 +40,10 @@ class LabOrderRepository @Inject constructor(
         reportId: String,
         isCovid19: Boolean
     ): String? {
-        val authParameters = bcscAuthRepo.getAuthParameters()
+        val authParameters = bcscAuthRepo.getAuthParametersDto()
         return laboratoryRemoteDataSource.getLabTestInPdf(
-            authParameters.first,
-            authParameters.second,
+            authParameters.token,
+            authParameters.hdid,
             reportId,
             isCovid19
         ).resourcePayload?.data
