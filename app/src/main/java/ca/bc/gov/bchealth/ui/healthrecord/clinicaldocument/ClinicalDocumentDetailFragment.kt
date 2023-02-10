@@ -20,7 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
 @AndroidEntryPoint
-class ClinicalDocumentDetailFragment : BaseFragment(R.layout.fragment_hospital_visit_detail) {
+class ClinicalDocumentDetailFragment : BaseFragment(R.layout.fragment_clinical_document_detail) {
     private val binding by viewBindings(FragmentClinicalDocumentDetailBinding::bind)
     private val args: ClinicalDocumentDetailFragmentArgs by navArgs()
     private val viewModel: ClinicalDocumentDetailViewModel by viewModels()
