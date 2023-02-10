@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - develop
-      - HAPP-1316-Guardian-lab-results-and-pdf
+      - HAPP-1332-Refactor-worker
 
 jobs:
   build:
