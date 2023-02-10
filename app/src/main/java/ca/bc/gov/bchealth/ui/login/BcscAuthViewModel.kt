@@ -363,7 +363,7 @@ class BcscAuthViewModel @Inject constructor(
             * exiting BCSC user is deleted and new BCSC user details inserted immediately.
             * */
             if (!patientFromLocalSource.fullName.toUniquePatientName()
-                    .equals(
+                .equals(
                         patientFromRemoteSource.fullName.toUniquePatientName(),
                         true
                     )
