@@ -150,9 +150,7 @@ class BcscAuthRepo(
         )
     }
 
-    @Deprecated("Consider using getAuthParametersDto for better readability")
-    suspend fun getAuthParameters(): Pair<String, String> {
-
+    private suspend fun getAuthParameters(): Pair<String, String> {
         val authState =
             getAuthState() ?: throw MyHealthException(AUTH_ERROR_DO_LOGIN, "Login again!")
         val accessToken = awaitPerformActionWithFreshTokens(applicationContext, authState)

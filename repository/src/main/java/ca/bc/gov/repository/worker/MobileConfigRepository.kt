@@ -1,5 +1,6 @@
 package ca.bc.gov.repository.worker
 
+import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.MobileConfigRemoteDataSource
 import ca.bc.gov.data.datasource.remote.model.response.MobileConfigurationResponse
@@ -13,12 +14,18 @@ class MobileConfigRepository @Inject constructor(
     private val encryptedPreferenceStorage: EncryptedPreferenceStorage
 ) {
 
+    @Throws(ServiceDownException::class)
     suspend fun getRemoteApiVersion(): Int {
         return fetchAndStoreMobileConfiguration().version
     }
 
-    suspend fun refreshMobileConfiguration(): Boolean {
-        return fetchAndStoreMobileConfiguration().online ?: false
+    @Throws(ServiceDownException::class)
+    suspend fun refreshMobileConfiguration() {
+        val isHgServicesUp = fetchAndStoreMobileConfiguration().online ?: false
+
+        if (isHgServicesUp.not()) {
+            throw ServiceDownException()
+        }
     }
 
     private suspend fun fetchAndStoreMobileConfiguration(): MobileConfigurationResponse {

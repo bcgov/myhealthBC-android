@@ -8,6 +8,7 @@ import ca.bc.gov.common.const.SERVER_ERROR_DATA_MISMATCH
 import ca.bc.gov.common.const.SERVER_ERROR_INCORRECT_PHN
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.exceptions.NetworkConnectionException
+import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.ErrorData
 import ca.bc.gov.repository.DependentsRepository
 import ca.bc.gov.repository.worker.MobileConfigRepository
@@ -42,18 +43,11 @@ class AddDependentsViewModel @Inject constructor(
             }
 
             try {
-                val isHgServicesUp = mobileConfigRepository.refreshMobileConfiguration()
-
-                if (isHgServicesUp) {
-                    dependentsRepository.registerDependent(firstName, lastName, dob, phn)
-                    _uiState.tryEmit(
-                        AddDependentsUiState(registrationFinished = true, onLoading = false)
-                    )
-                } else {
-                    _uiState.tryEmit(
-                        AddDependentsUiState(isHgServicesUp = false, onLoading = false)
-                    )
-                }
+                mobileConfigRepository.refreshMobileConfiguration()
+                dependentsRepository.registerDependent(firstName, lastName, dob, phn)
+                _uiState.tryEmit(
+                    AddDependentsUiState(registrationFinished = true, onLoading = false)
+                )
             } catch (e: Exception) {
                 e.printStackTrace()
                 when (e) {
@@ -63,6 +57,11 @@ class AddDependentsViewModel @Inject constructor(
                                 onLoading = false,
                                 isConnected = false
                             )
+                        )
+                    }
+                    is ServiceDownException -> {
+                        _uiState.tryEmit(
+                            AddDependentsUiState(isHgServicesUp = false, onLoading = false)
                         )
                     }
                     is MyHealthException -> {

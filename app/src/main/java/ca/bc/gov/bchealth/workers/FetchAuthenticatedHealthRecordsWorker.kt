@@ -7,7 +7,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import ca.bc.gov.bchealth.usecases.FetchCommentsUseCase
-import ca.bc.gov.bchealth.usecases.RefreshMobileConfigUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchClinicalDocumentsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchCovidOrdersUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchHealthVisitsUseCase
@@ -62,11 +61,16 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val fetchSpecialAuthoritiesUseCase: FetchSpecialAuthoritiesUseCase,
     private val fetchClinicalDocumentsUseCase: FetchClinicalDocumentsUseCase,
     private val fetchVaccinesUseCase: FetchVaccinesUseCase,
-    private val refreshMobileConfigUseCase: RefreshMobileConfigUseCase
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        val remoteVersion = mobileConfigRepository.getRemoteApiVersion()
+        val remoteVersion: Int
+        try {
+            remoteVersion = mobileConfigRepository.getRemoteApiVersion()
+        } catch (e: Exception) {
+            return respondToHgServicesDown()
+        }
+
         if (LOCAL_API_VERSION < remoteVersion) {
             return respondToAppUpdateRequired()
         }
@@ -83,12 +87,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         val dependents: List<DependentDto>?
         val authParameters = bcscAuthRepo.getAuthParametersDto()
         val patientId: Long
-
-        try {
-            refreshMobileConfigUseCase.execute()
-        } catch (e: Exception) {
-            return respondToHgServicesDown()
-        }
 
         notificationHelper.showNotification(context.getString(R.string.notification_title_while_fetching_data))
 

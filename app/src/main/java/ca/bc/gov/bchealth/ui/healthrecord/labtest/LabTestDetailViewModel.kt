@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.common.exceptions.NetworkConnectionException
+import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestsAndPatientDto
 import ca.bc.gov.common.utils.toDate
@@ -166,19 +167,11 @@ class LabTestDetailViewModel @Inject constructor(
     fun getLabTestPdf() = viewModelScope.launch {
         _uiState.update { it.copy(onLoading = true) }
         try {
-            val isHgServicesUp = mobileConfigRepository.refreshMobileConfiguration()
-            if (isHgServicesUp) {
-                labPdfId?.apply {
-                    val pdfData = labOrderRepository.fetchLabTestPdf(this, false)
-                    _uiState.update { it.copy(pdfData = pdfData) }
-                }
-            } else {
-                _uiState.update {
-                    it.copy(
-                        onLoading = false,
-                        isHgServicesUp = false
-                    )
-                }
+            mobileConfigRepository.refreshMobileConfiguration()
+
+            labPdfId?.apply {
+                val pdfData = labOrderRepository.fetchLabTestPdf(this, false)
+                _uiState.update { it.copy(pdfData = pdfData) }
             }
         } catch (e: java.lang.Exception) {
             when (e) {
@@ -190,13 +183,11 @@ class LabTestDetailViewModel @Inject constructor(
                         )
                     }
                 }
-                else -> {
-                    _uiState.update {
-                        it.copy(
-                            onLoading = false,
-                            onError = true
-                        )
-                    }
+                is ServiceDownException -> _uiState.update {
+                    it.copy(onLoading = false, isHgServicesUp = false)
+                }
+                else -> _uiState.update {
+                    it.copy(onLoading = false, onError = true)
                 }
             }
         }

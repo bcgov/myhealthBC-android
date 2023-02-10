@@ -9,6 +9,8 @@ import ca.bc.gov.bchealth.workers.WorkerInvoker
 import ca.bc.gov.common.const.MUST_CALL_MOBILE_CONFIG
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.exceptions.NetworkConnectionException
+import ca.bc.gov.common.exceptions.ServiceDownException
+import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.utils.toUniquePatientName
@@ -52,16 +54,13 @@ class BcscAuthViewModel @Inject constructor(
     * */
     fun verifyLoad() = viewModelScope.launch {
         try {
-            _authStatus.update {
-                it.copy(
-                    showLoading = true
-                )
-            }
-            val canInitiateBcscLogin = mobileConfigRepository.refreshMobileConfiguration()
+            _authStatus.update { it.copy(showLoading = true) }
+
+            mobileConfigRepository.refreshMobileConfiguration()
             _authStatus.update {
                 it.copy(
                     showLoading = true,
-                    canInitiateBcscLogin = canInitiateBcscLogin
+                    canInitiateBcscLogin = true
                 )
             }
         } catch (e: Exception) {
@@ -73,6 +72,12 @@ class BcscAuthViewModel @Inject constructor(
                             isConnected = false
                         )
                     }
+                }
+                is ServiceDownException -> _authStatus.update {
+                    it.copy(
+                        showLoading = true,
+                        canInitiateBcscLogin = false
+                    )
                 }
                 else -> {
                     _authStatus.update {
@@ -267,10 +272,10 @@ class BcscAuthViewModel @Inject constructor(
             )
         }
         try {
-            val authParameters = bcscAuthRepo.getAuthParameters()
+            val authParameters = bcscAuthRepo.getAuthParametersDto()
             val isWithinAgeLimit = profileRepository.checkAgeLimit(
-                authParameters.first,
-                authParameters.second
+                authParameters.token,
+                authParameters.hdid
             )
 
             _authStatus.update {
@@ -308,10 +313,10 @@ class BcscAuthViewModel @Inject constructor(
             )
         }
         try {
-            val authParameters = bcscAuthRepo.getAuthParameters()
+            val authParameters = bcscAuthRepo.getAuthParametersDto()
             val isTosAccepted = profileRepository.isTermsOfServiceAccepted(
-                authParameters.first,
-                authParameters.second
+                authParameters.token,
+                authParameters.hdid
             )
 
             performPatientDetailCheck(authParameters)
@@ -344,12 +349,12 @@ class BcscAuthViewModel @Inject constructor(
         }
     }
 
-    private suspend fun performPatientDetailCheck(authParameters: Pair<String, String>) {
+    private suspend fun performPatientDetailCheck(authParameters: AuthParametersDto) {
         var patientFromRemoteSource: PatientDto? = null
         try {
             patientFromRemoteSource = patientWithBCSCLoginRepository.getPatient(
-                authParameters.first,
-                authParameters.second
+                authParameters.token,
+                authParameters.hdid
             )
             val patientFromLocalSource = patientRepository
                 .findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
@@ -358,7 +363,7 @@ class BcscAuthViewModel @Inject constructor(
             * exiting BCSC user is deleted and new BCSC user details inserted immediately.
             * */
             if (!patientFromLocalSource.fullName.toUniquePatientName()
-                .equals(
+                    .equals(
                         patientFromRemoteSource.fullName.toUniquePatientName(),
                         true
                     )
@@ -383,10 +388,10 @@ class BcscAuthViewModel @Inject constructor(
         }
 
         try {
-            val authParameters = bcscAuthRepo.getAuthParameters()
+            val authParameters = bcscAuthRepo.getAuthParametersDto()
             val isTosAccepted = profileRepository.acceptTermsOfService(
-                authParameters.first,
-                authParameters.second,
+                authParameters.token,
+                authParameters.hdid,
                 termsOfServiceId
             )
 
