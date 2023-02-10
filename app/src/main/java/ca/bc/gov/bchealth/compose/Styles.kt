@@ -47,6 +47,13 @@ val MyHealthTypography = Typography(
         fontSize = 16.sp,
         color = primaryBlue
     ),
+
+    h3 = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.Bold,
+        fontSize = 17.sp,
+        color = darkText
+    ),
 )
 
 fun TextStyle.bold() = this.copy(fontWeight = FontWeight.Bold)
