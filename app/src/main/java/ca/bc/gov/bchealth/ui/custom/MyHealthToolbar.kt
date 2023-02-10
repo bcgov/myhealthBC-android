@@ -14,7 +14,7 @@ import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.compose.white
 
 @Composable
-fun HappToolbar(title: String, navigationAction: (() -> Unit)? = null) = TopAppBar(
+fun MyHealthToolbar(title: String, navigationAction: (() -> Unit)? = null) = TopAppBar(
     title = {
         Text(
             text = title,

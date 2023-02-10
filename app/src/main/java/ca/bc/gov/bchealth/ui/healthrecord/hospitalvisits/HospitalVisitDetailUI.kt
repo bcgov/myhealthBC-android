@@ -17,7 +17,9 @@ import ca.bc.gov.bchealth.compose.descriptionGrey
 import ca.bc.gov.bchealth.compose.italic
 
 @Composable
-fun HospitalVisitDetailUI(uiList: List<HospitalVisitDetailItem>) {
+fun HospitalVisitDetailUI(
+    uiList: List<HospitalVisitDetailItem>,
+) {
     LazyColumn {
         uiList.forEach { listItem ->
             item {
