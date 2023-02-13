@@ -70,7 +70,7 @@ abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentL
         findNavController().popBackStack()
     }
 
-    fun setupComposeToolbar(composeView : ComposeView, title : String?){
+    fun setupComposeToolbar(composeView : ComposeView, title : String? = null){
         composeView.apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
