@@ -63,9 +63,10 @@ class ClinicalDocumentDetailViewModel @Inject constructor(
 
             fileId?.apply {
                 val pdfData = repository.fetchPdf(this)
-                _uiState.update { it.copy(pdfData = pdfData) }
+                _uiState.update { it.copy(pdfData = pdfData, onLoading = false) }
             }
         } catch (e: Exception) {
+            _uiState.update { it.copy(onLoading = false) }
             handleBaseException(e)
         }
     }
