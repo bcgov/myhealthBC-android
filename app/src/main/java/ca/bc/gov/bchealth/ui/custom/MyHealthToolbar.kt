@@ -19,11 +19,16 @@ import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.compose.white
 
 @Composable
-fun MyHealthToolbar(title: String, navigationAction: (() -> Unit)? = null) = CustomTopAppBar(
+fun MyHealthToolbar(
+    title: String?,
+    modifier: Modifier = Modifier,
+    navigationAction: (() -> Unit)? = null
+) = CustomTopAppBar(
+    modifier = modifier,
     title = {
         val paddingEnd = navigationAction?.let { 48.dp } ?: 0.dp
         Text(
-            text = title,
+            text = title.orEmpty(),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = paddingEnd),
@@ -34,7 +39,6 @@ fun MyHealthToolbar(title: String, navigationAction: (() -> Unit)? = null) = Cus
             overflow = TextOverflow.Ellipsis
         )
     },
-
     backgroundColor = white,
     contentColor = primaryBlue,
     navigationIcon = {

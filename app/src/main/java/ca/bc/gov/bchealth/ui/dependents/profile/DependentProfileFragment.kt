@@ -6,8 +6,6 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.databinding.FragmentDependentProfileBinding
@@ -28,7 +26,7 @@ class DependentProfileFragment : BaseDependentFragment(R.layout.fragment_depende
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        setupComposeToolbar(binding.composeToolbar.root, getString(R.string.dependents_profile))
         val patientId = args.patientId
         viewModel.loadInformation(patientId)
 
@@ -77,14 +75,6 @@ class DependentProfileFragment : BaseDependentFragment(R.layout.fragment_depende
             }
         } else {
             showGenericError()
-        }
-    }
-
-    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
-        with(binding.layoutToolbar.topAppBar) {
-            setupWithNavController(findNavController(), appBarConfiguration)
-            setNavigationIcon(R.drawable.ic_toolbar_back)
-            title = getString(R.string.dependents_profile)
         }
     }
 }

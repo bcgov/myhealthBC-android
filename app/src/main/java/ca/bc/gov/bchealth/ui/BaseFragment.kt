@@ -4,10 +4,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.compose.MyHealthTheme
+import ca.bc.gov.bchealth.ui.custom.MyHealthToolbar
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.HEALTH_GATEWAY_EMAIL_ADDRESS
 import ca.bc.gov.bchealth.utils.launchOnStart
@@ -64,6 +68,19 @@ abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentL
 
     fun popNavigation() {
         findNavController().popBackStack()
+    }
+
+    fun setupComposeToolbar(composeView : ComposeView, title : String?){
+        composeView.apply {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                setContent {
+                    MyHealthTheme {
+                        MyHealthToolbar(title) {
+                            popNavigation()
+                        }
+                    }
+                }
+            }
     }
 
     private fun resetBaseUiState() = getBaseViewModel()?.resetBaseUiState()

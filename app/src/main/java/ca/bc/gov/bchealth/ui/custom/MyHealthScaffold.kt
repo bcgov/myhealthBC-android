@@ -17,7 +17,7 @@ fun MyHealthScaffold(
     content: @Composable ColumnScope.() -> Unit
 ) = MyHealthTheme {
     Scaffold(topBar = {
-        MyHealthToolbar(title = title.orEmpty(), navigationAction)
+        MyHealthToolbar(title = title, Modifier, navigationAction)
     }) { innerPadding ->
         Column(
             modifier = Modifier
