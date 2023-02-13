@@ -8,12 +8,8 @@
     tools:context=".ui.healthrecord.healthvisits.HealthVisitDetailFragment">
 
     <include
-        android:id="@+id/layout_toolbar"
-        layout="@layout/layout_top_appbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/compose_toolbar"
+        layout="@layout/layout_compose_toolbar" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_subtitle"
@@ -27,7 +23,7 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/compose_toolbar" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_clinic_title"
