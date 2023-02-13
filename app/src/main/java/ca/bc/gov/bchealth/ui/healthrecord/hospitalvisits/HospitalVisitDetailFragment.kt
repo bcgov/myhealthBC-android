@@ -2,21 +2,13 @@ package ca.bc.gov.bchealth.ui.healthrecord.hospitalvisits
 
 import android.os.Bundle
 import android.view.View
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material.Scaffold
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.databinding.FragmentHospitalVisitDetailBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
-import ca.bc.gov.bchealth.ui.custom.MyHealthToolbar
+import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -36,21 +28,11 @@ class HospitalVisitDetailFragment : BaseFragment(R.layout.fragment_hospital_visi
         binding.composeBody.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                MyHealthTheme {
-                    Scaffold(topBar = {
-                        MyHealthToolbar(title = uiState.toolbarTitle.orEmpty()) {
-                            findNavController().popBackStack()
-                        }
-                    }) { innerPadding ->
-                        Column(
-                            modifier = Modifier
-                                .statusBarsPadding()
-                                .navigationBarsPadding()
-                                .padding(innerPadding)
-                        ) {
-                            HospitalVisitDetailUI(uiState.uiList)
-                        }
-                    }
+                MyHealthScaffold(
+                    title = uiState.toolbarTitle,
+                    navigationAction = ::popNavigation
+                ) {
+                    HospitalVisitDetailUI(uiState.uiList)
                 }
             }
         }

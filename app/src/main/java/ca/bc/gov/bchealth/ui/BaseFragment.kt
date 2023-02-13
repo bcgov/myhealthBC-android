@@ -62,6 +62,10 @@ abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentL
         )
     }
 
+    fun popNavigation() {
+        findNavController().popBackStack()
+    }
+
     private fun resetBaseUiState() = getBaseViewModel()?.resetBaseUiState()
 
     private fun showServiceDownMessage() {

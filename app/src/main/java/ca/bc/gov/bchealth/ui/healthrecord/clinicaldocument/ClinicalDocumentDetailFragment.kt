@@ -3,23 +3,17 @@ package ca.bc.gov.bchealth.ui.healthrecord.clinicaldocument
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material.Scaffold
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.databinding.FragmentClinicalDocumentDetailBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
-import ca.bc.gov.bchealth.ui.custom.MyHealthToolbar
+import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 import ca.bc.gov.bchealth.utils.PdfHelper
+import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,24 +42,15 @@ class ClinicalDocumentDetailFragment : BaseFragment(R.layout.fragment_clinical_d
     private fun updateUi(uiState: ClinicalDocumentUiState) {
         if (uiState.uiList.isEmpty()) return
         handlePdfDownload(uiState)
+        binding.progressBar.toggleVisibility(uiState.onLoading)
         binding.composeBody.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                MyHealthTheme {
-                    Scaffold(topBar = {
-                        MyHealthToolbar(title = uiState.toolbarTitle.orEmpty()) {
-                            findNavController().popBackStack()
-                        }
-                    }) { innerPadding ->
-                        Column(
-                            modifier = Modifier
-                                .statusBarsPadding()
-                                .navigationBarsPadding()
-                                .padding(innerPadding)
-                        ) {
-                            ClinicalDocumentDetailUI(uiState.uiList) { viewModel.onClickDownload() }
-                        }
-                    }
+                MyHealthScaffold(
+                    title = uiState.toolbarTitle,
+                    navigationAction = ::popNavigation
+                ) {
+                    ClinicalDocumentDetailUI(uiState.uiList) { viewModel.onClickDownload() }
                 }
             }
         }
