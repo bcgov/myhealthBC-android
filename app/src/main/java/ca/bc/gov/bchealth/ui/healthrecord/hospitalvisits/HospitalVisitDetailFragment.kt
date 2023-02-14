@@ -1,40 +1,39 @@
 package ca.bc.gov.bchealth.ui.healthrecord.hospitalvisits
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.databinding.FragmentHospitalVisitDetailBinding
-import ca.bc.gov.bchealth.ui.BaseFragment
-import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
-import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HospitalVisitDetailFragment : BaseFragment(R.layout.fragment_hospital_visit_detail) {
-    private val binding by viewBindings(FragmentHospitalVisitDetailBinding::bind)
+class HospitalVisitDetailFragment : Fragment() {
     private val args: HospitalVisitDetailFragmentArgs by navArgs()
     private val viewModel: HospitalVisitDetailViewModel by viewModels()
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        setContent {
+            HospitalVisitDetailUI(viewModel, ::popNavigation)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.uiState.collectOnStart(::updateUi)
         viewModel.getHospitalVisitDetails(args.hospitalVisitId)
     }
 
-    private fun updateUi(uiState: HospitalVisitUiState) {
-        binding.composeBody.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                MyHealthScaffold(
-                    title = uiState.toolbarTitle,
-                    navigationAction = ::popNavigation
-                ) {
-                    HospitalVisitDetailUI(uiState.uiList)
-                }
-            }
-        }
+    private fun popNavigation() {
+        findNavController().popBackStack()
     }
 }

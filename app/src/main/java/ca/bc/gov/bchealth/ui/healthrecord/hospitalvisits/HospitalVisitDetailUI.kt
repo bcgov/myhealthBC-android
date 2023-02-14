@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -15,9 +16,24 @@ import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.bold
 import ca.bc.gov.bchealth.compose.descriptionGrey
 import ca.bc.gov.bchealth.compose.italic
+import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 
 @Composable
 fun HospitalVisitDetailUI(
+    viewModel: HospitalVisitDetailViewModel,
+    navigationAction: () -> Unit
+) {
+    val uiState = viewModel.uiState.collectAsState().value
+    MyHealthScaffold(
+        title = uiState.toolbarTitle,
+        navigationAction = navigationAction
+    ) {
+        HospitalVisitDetailContent(uiState.uiList)
+    }
+}
+
+@Composable
+private fun HospitalVisitDetailContent(
     uiList: List<HospitalVisitDetailItem>,
 ) {
     LazyColumn {
