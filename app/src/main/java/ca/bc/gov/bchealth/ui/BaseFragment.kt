@@ -1,9 +1,12 @@
 package ca.bc.gov.bchealth.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
@@ -19,7 +22,26 @@ import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import kotlinx.coroutines.flow.StateFlow
 
-abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentLayoutId) {
+// todo: Create open fun to get contentLayoutId.
+// Hilt doesn't support default value for constructor
+abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Fragment() {
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? = contentLayoutId?.let {
+        inflater.inflate(it, container, false)
+    } ?: getComposeView()
+
+    private fun getComposeView() = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        setContent { GetComposableLayout() }
+    }
+
+    @Composable
+    open fun GetComposableLayout() {
+    }
 
     open fun getBaseViewModel(): BaseViewModel? = null
 
@@ -70,17 +92,17 @@ abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentL
         findNavController().popBackStack()
     }
 
-    fun setupComposeToolbar(composeView : ComposeView, title : String? = null){
+    fun setupComposeToolbar(composeView: ComposeView, title: String? = null) {
         composeView.apply {
-                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                setContent {
-                    MyHealthTheme {
-                        MyHealthToolbar(title) {
-                            popNavigation()
-                        }
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MyHealthTheme {
+                    MyHealthToolbar(title) {
+                        popNavigation()
                     }
                 }
             }
+        }
     }
 
     private fun resetBaseUiState() = getBaseViewModel()?.resetBaseUiState()
