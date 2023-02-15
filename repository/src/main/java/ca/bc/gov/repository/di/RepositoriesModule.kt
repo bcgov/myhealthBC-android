@@ -12,7 +12,6 @@ import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
 import ca.bc.gov.data.datasource.local.LocalDataSource
 import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
-import ca.bc.gov.data.datasource.local.TestResultLocalDataSource
 import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.BannerRemoteDataSource
@@ -29,7 +28,6 @@ import ca.bc.gov.repository.DependentsRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.OnBoardingRepository
-import ca.bc.gov.repository.PatientWithTestResultRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.PdfDecoderRepository
 import ca.bc.gov.repository.QrCodeGeneratorRepository
@@ -49,7 +47,6 @@ import ca.bc.gov.repository.qr.ProcessQrRepository
 import ca.bc.gov.repository.scanner.QrScanner
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.testrecord.CovidTestRepository
-import ca.bc.gov.repository.testrecord.TestResultRepository
 import ca.bc.gov.repository.utils.Base64ToInputImageConverter
 import ca.bc.gov.repository.utils.UriToImage
 import ca.bc.gov.repository.vaccine.VaccineRecordRepository
@@ -109,11 +106,6 @@ class RepositoriesModule {
 
     @Provides
     @Singleton
-    fun providesTestResultRepository(localDataSource: TestResultLocalDataSource) =
-        TestResultRepository(localDataSource)
-
-    @Provides
-    @Singleton
     fun providesQrCodeGeneratorRepository() = QrCodeGeneratorRepository()
 
     @Provides
@@ -124,14 +116,6 @@ class RepositoriesModule {
     ) = PatientWithVaccineRecordRepository(
         patientRepository,
         vaccineRecordRepository
-    )
-
-    @Provides
-    @Singleton
-    fun providesPatientWithTestResultRepository(
-        testResultRepository: TestResultRepository
-    ) = PatientWithTestResultRepository(
-        testResultRepository
     )
 
     @Provides
@@ -216,7 +200,6 @@ class RepositoriesModule {
     @Singleton
     fun provideRecordsRepository(
         patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
-        patientWithTestResultRepository: PatientWithTestResultRepository,
         covidOrderRepository: CovidOrderRepository,
         covidTestRepository: CovidTestRepository,
         labOrderRepository: LabOrderRepository,
@@ -228,7 +211,6 @@ class RepositoriesModule {
         clinicalDocumentRepository: ClinicalDocumentRepository
     ): RecordsRepository = RecordsRepository(
         patientWithVaccineRecordRepository,
-        patientWithTestResultRepository,
         covidOrderRepository,
         covidTestRepository,
         labOrderRepository,

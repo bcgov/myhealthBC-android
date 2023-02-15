@@ -23,7 +23,6 @@ import ca.bc.gov.data.datasource.local.dao.MedicationRecordDao
 import ca.bc.gov.data.datasource.local.dao.MedicationSummaryDao
 import ca.bc.gov.data.datasource.local.dao.PatientDao
 import ca.bc.gov.data.datasource.local.dao.SpecialAuthorityDao
-import ca.bc.gov.data.datasource.local.dao.TestResultDao
 import ca.bc.gov.data.datasource.local.dao.VaccineRecordDao
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.clinicaldocument.ClinicalDocumentEntity
@@ -85,8 +84,6 @@ abstract class MyHealthDataBase : RoomDatabase() {
     abstract fun getPatientDao(): PatientDao
 
     abstract fun getVaccineRecordDao(): VaccineRecordDao
-
-    abstract fun getTestResultDao(): TestResultDao
 
     abstract fun getMedicationRecordDao(): MedicationRecordDao
 

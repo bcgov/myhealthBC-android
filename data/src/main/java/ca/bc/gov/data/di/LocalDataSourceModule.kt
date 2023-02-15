@@ -17,7 +17,6 @@ import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.MyHealthDataBase
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.SpecialAuthorityLocalDataSource
-import ca.bc.gov.data.datasource.local.TestResultLocalDataSource
 import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import dagger.Module
 import dagger.Provides
@@ -41,12 +40,6 @@ class LocalDataSourceModule {
     @Singleton
     fun providesVaccineRecordLocalDataSource(db: MyHealthDataBase) =
         VaccineRecordLocalDataSource(db.getVaccineRecordDao())
-
-    @Provides
-    @Singleton
-    fun providesTestResultLocalDataSource(
-        db: MyHealthDataBase
-    ) = TestResultLocalDataSource(db.getTestResultDao())
 
     @Provides
     @Singleton

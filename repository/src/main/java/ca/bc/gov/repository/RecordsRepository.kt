@@ -19,7 +19,6 @@ import javax.inject.Inject
 
 class RecordsRepository @Inject constructor(
     private val patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
-    private val patientWithTestResultRepository: PatientWithTestResultRepository,
     private val covidOrderRepository: CovidOrderRepository,
     private val covidTestRepository: CovidTestRepository,
     private val labOrderRepository: LabOrderRepository,
@@ -51,7 +50,6 @@ class RecordsRepository @Inject constructor(
         patientId: Long,
         covidOrderResponse: List<CovidOrderWithCovidTestDto>?,
     ) {
-        patientWithTestResultRepository.deletePatientTestRecords(patientId)
         covidOrderRepository.deleteByPatientId(patientId)
         covidOrderResponse?.forEach {
             it.covidOrder.patientId = patientId
