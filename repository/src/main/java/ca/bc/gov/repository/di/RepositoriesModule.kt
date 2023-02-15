@@ -129,10 +129,8 @@ class RepositoriesModule {
     @Provides
     @Singleton
     fun providesPatientWithTestResultRepository(
-        patientRepository: PatientRepository,
         testResultRepository: TestResultRepository
     ) = PatientWithTestResultRepository(
-        patientRepository,
         testResultRepository
     )
 

@@ -67,16 +67,10 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
                     DependentRecordsFragmentDirections
                         .actionDependentRecordsFragmentToVaccineRecordDetailFragment(it.patientId)
 
-                HealthRecordType.COVID_TEST_RECORD ->
-                    if (it.covidOrderId != null) {
-                        DependentRecordsFragmentDirections.actionDependentRecordsFragmentToCovidTestResultDetailFragment(
-                            it.covidOrderId
+                HealthRecordType.COVID_TEST_RECORD -> DependentRecordsFragmentDirections.actionDependentRecordsFragmentToCovidTestResultDetailFragment(
+                            it.covidOrderId!! //todo: update it
                         )
-                    } else {
-                        DependentRecordsFragmentDirections.actionDependentRecordsFragmentToTestResultDetailFragment(
-                            it.patientId, it.testResultId
-                        )
-                    }
+
 
                 HealthRecordType.MEDICATION_RECORD ->
                     DependentRecordsFragmentDirections

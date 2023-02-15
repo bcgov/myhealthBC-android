@@ -41,9 +41,6 @@
             app:argType="string" />
 
         <action
-            android:id="@+id/action_dependentRecordsFragment_to_testResultDetailFragment"
-            app:destination="@id/dependentTestResultDetailFragment" />
-        <action
             android:id="@+id/action_dependentRecordsFragment_to_vaccineRecordDetailFragment"
             app:destination="@id/dependentVaccineRecordDetailFragment" />
         <action
@@ -92,19 +89,6 @@
             android:id="@+id/action_dependentProfile_to_dependentList"
             app:popUpTo="@+id/dependentsFragment" />
 
-    </fragment>
-
-
-    <fragment
-        android:id="@+id/dependentTestResultDetailFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.covidtests.TestResultDetailFragment"
-        android:label="TestResultDetailFragment">
-        <argument
-            android:name="patient_id"
-            app:argType="long" />
-        <argument
-            android:name="testResult_id"
-            app:argType="long" />
     </fragment>
 
     <fragment

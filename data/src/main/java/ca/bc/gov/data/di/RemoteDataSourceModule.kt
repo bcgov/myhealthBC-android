@@ -35,9 +35,7 @@ class RemoteDataSourceModule {
     @Singleton
     fun providesLaboratoryRemoteDataSource(
         healthGatewayPrivateApi: HealthGatewayPrivateApi,
-        healthGatewayPublicApi: HealthGatewayPublicApi
-    ) =
-        LaboratoryRemoteDataSource(healthGatewayPublicApi, healthGatewayPrivateApi)
+    ) = LaboratoryRemoteDataSource(healthGatewayPrivateApi)
 
     @Provides
     @Singleton

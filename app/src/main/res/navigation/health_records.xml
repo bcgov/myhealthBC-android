@@ -14,9 +14,6 @@
         android:id="@+id/individualHealthRecordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.IndividualHealthRecordFragment">
         <action
-            android:id="@+id/action_individualHealthRecordFragment_to_testResultDetailFragment"
-            app:destination="@id/testResultDetailFragment" />
-        <action
             android:id="@+id/action_individualHealthRecordFragment_to_vaccineRecordDetailFragment"
             app:destination="@id/vaccineRecordDetailFragment" />
         <action
@@ -46,28 +43,6 @@
         <action
             android:id="@+id/action_individualHealthRecordsFragment_to_clinicalDocumentDetailsFragment"
             app:destination="@id/clinicalDocumentDetailFragment" />
-    </fragment>
-
-
-    <fragment
-        android:id="@+id/fetchTestRecordFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.add.FetchTestRecordFragment"
-        android:label="FetchTestRecordFragment"
-        tools:layout="@layout/fragment_fetch_covid_test_result">
-        <action
-            android:id="@+id/action_fetchTestRecordFragment_to_testResultDetailFragment"
-            app:destination="@id/testResultDetailFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/testResultDetailFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.covidtests.TestResultDetailFragment"
-        android:label="TestResultDetailFragment">
-        <argument
-            android:name="patient_id"
-            app:argType="long" />
-        <argument
-            android:name="testResult_id"
-            app:argType="long" />
     </fragment>
 
     <fragment

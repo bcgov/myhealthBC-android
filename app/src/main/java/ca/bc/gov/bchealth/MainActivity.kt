@@ -62,7 +62,6 @@ class MainActivity : BaseActivity() {
                 R.id.resourcesFragment,
                 R.id.individualHealthRecordFragment,
                 R.id.vaccineRecordDetailFragment,
-                R.id.testResultDetailFragment,
                 R.id.addHealthRecordsFragment,
                 R.id.homeFragment,
                 R.id.bannerDetailFragment,

@@ -234,16 +234,10 @@ class IndividualHealthRecordFragment :
                     IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(it.patientId)
 
-                COVID_TEST_RECORD -> if (it.covidOrderId != null) {
+                COVID_TEST_RECORD ->
                     IndividualHealthRecordFragmentDirections.actionIndividualHealthRecordFragmentToCovidTestResultDetailFragment(
-                        it.covidOrderId
+                        it.covidOrderId!!
                     )
-                } else {
-                    IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToTestResultDetailFragment(
-                            it.patientId, it.testResultId
-                        )
-                }
 
                 MEDICATION_RECORD ->
                     IndividualHealthRecordFragmentDirections
