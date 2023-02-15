@@ -58,8 +58,8 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
         vaccineRecordId = vaccineWithDoses?.vaccine?.id!!,
         name = patient.fullName,
         qrIssuedDate = "Issued on ${
-        vaccineWithDoses?.vaccine?.qrIssueDate
-            ?.toDateTimeString()
+            vaccineWithDoses?.vaccine?.qrIssueDate
+                ?.toDateTimeString()
         }",
         shcUri = vaccineWithDoses?.vaccine?.shcUri!!,
         qrCode = vaccineWithDoses?.vaccine?.qrCodeImage,
@@ -72,21 +72,16 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
     )
 }
 
-fun MedicationWithSummaryAndPharmacyDto.toUiModel(): HealthRecordItem {
-
-    return HealthRecordItem(
-        patientId = medicationRecord.patientId,
-        testResultId = -1L,
-        medicationRecordId = medicationRecord.id,
-        title = medicationSummary.brandName ?: "",
-        icon = R.drawable.ic_health_record_medication,
-        description = medicationSummary.genericName ?: "",
-        testOutcome = null,
-        date = medicationRecord.dispenseDate,
-        healthRecordType = HealthRecordType.MEDICATION_RECORD,
-        dataSource = medicationRecord.dataSource.name
-    )
-}
+fun MedicationWithSummaryAndPharmacyDto.toUiModel() = HealthRecordItem(
+    patientId = medicationRecord.patientId,
+    recordId = medicationRecord.id,
+    title = medicationSummary.brandName ?: "",
+    icon = R.drawable.ic_health_record_medication,
+    description = medicationSummary.genericName.orEmpty() + " • " + medicationRecord.dispenseDate.toDate(),
+    date = medicationRecord.dispenseDate,
+    healthRecordType = HealthRecordType.MEDICATION_RECORD,
+    dataSource = medicationRecord.dataSource.name
+)
 
 fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
 
@@ -117,12 +112,10 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
 
     return HealthRecordItem(
         patientId = testResult.patientId,
-        testResultId = testResult.id,
-        medicationRecordId = -1L,
+        recordId = testResult.id,
         icon = R.drawable.ic_health_record_covid_test,
         title = "COVID-19 test result",
-        description = "",
-        testOutcome = testOutcome,
+        description = "$testOutcome • ${date.toDate()}",
         date = date,
         healthRecordType = HealthRecordType.COVID_TEST_RECORD,
         dataSource = testResult.dataSource.name
@@ -132,12 +125,13 @@ fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
 fun ClinicalDocumentDto.toUiModel() =
     HealthRecordItem(
         patientId = patientId,
-        clinicalDocumentId = id,
+        recordId = id,
         title = name,
         description = type,
         icon = R.drawable.ic_health_record_clinical_document,
         date = serviceDate,
         healthRecordType = HealthRecordType.CLINICAL_DOCUMENT_RECORD,
+        dataSource = null
     )
 
 fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
@@ -147,11 +141,10 @@ fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
     return HealthRecordItem(
         patientId = labOrder.patientId,
         title = labOrder.commonName ?: "",
-        labOrderId = labOrder.id,
+        recordId = labOrder.id,
         icon = R.drawable.ic_lab_test,
         date = labOrder.timelineDateTime,
         description = description,
-        testOutcome = null,
         healthRecordType = HealthRecordType.LAB_TEST_RECORD,
         dataSource = labOrder.dataSorce.name
     )
@@ -205,15 +198,15 @@ fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem {
             }
         }
     }
+    val date = covidTestResult?.collectedDateTime ?: Instant.now()
 
     return HealthRecordItem(
         patientId = covidOrder.patientId,
-        covidOrderId = covidOrder.id,
+        recordId = -1, //todo: fix
         title = "COVID-19 test result",
-        description = "",
-        testOutcome = testOutcome,
+        description = "$testOutcome • ${date.toDate()}",
         icon = R.drawable.ic_health_record_covid_test,
-        date = covidTestResult?.collectedDateTime ?: Instant.now(),
+        date = date,
         healthRecordType = HealthRecordType.COVID_TEST_RECORD,
         dataSource = covidOrder.dataSource.name
     )
@@ -223,10 +216,9 @@ fun ImmunizationRecordWithForecastDto.toUiModel(): HealthRecordItem {
 
     return HealthRecordItem(
         patientId = immunizationRecord.patientId,
-        immunizationRecordId = immunizationRecord.id,
+        recordId = immunizationRecord.id,
         title = immunizationRecord.immunizationName ?: "",
-        description = "",
-        testOutcome = "",
+        description = immunizationRecord.dateOfImmunization.toDate(),
         icon = R.drawable.ic_health_record_vaccine,
         date = immunizationRecord.dateOfImmunization,
         healthRecordType = HealthRecordType.IMMUNIZATION_RECORD,
@@ -280,38 +272,36 @@ fun ImmunizationRecordWithForecastAndPatientDto.toUiModel(): ImmunizationRecordD
 fun HealthVisitsDto.toUiModel() =
     HealthRecordItem(
         patientId = patientId,
-        healthVisitId = healthVisitId,
-        title = specialtyDescription ?: "",
-        description = practitionerName ?: "",
-        testOutcome = "",
+        recordId = healthVisitId,
+        title = specialtyDescription.orEmpty(),
+        description = practitionerName.orEmpty() + " • " + encounterDate.toDate(),
         icon = R.drawable.ic_health_record_health_visit,
         date = encounterDate,
         healthRecordType = HealthRecordType.HEALTH_VISIT_RECORD,
         dataSource = dataSource.name
     )
 
-fun SpecialAuthorityDto.toUiModel() =
-    HealthRecordItem(
-        patientId = patientId,
-        specialAuthorityId = specialAuthorityId,
-        title = drugName ?: "",
-        description = requestStatus ?: "",
-        testOutcome = "",
-        icon = R.drawable.ic_health_record_special_authority,
-        date = requestedDate!!,
-        healthRecordType = HealthRecordType.SPECIAL_AUTHORITY_RECORD,
-        dataSource = dataSource.name
-    )
+fun SpecialAuthorityDto.toUiModel() = HealthRecordItem(
+    patientId = patientId,
+    recordId = specialAuthorityId,
+    title = drugName.orEmpty(),
+    description = requestStatus.orEmpty() + " • " + requestedDate?.toDate(),
+    icon = R.drawable.ic_health_record_special_authority,
+    date = requestedDate!!,
+    healthRecordType = HealthRecordType.SPECIAL_AUTHORITY_RECORD,
+    dataSource = dataSource.name
+)
 
 fun HospitalVisitDto.toUiModel() =
     HealthRecordItem(
         patientId = patientId,
-        hospitalVisitId = id,
+        recordId = id,
         icon = R.drawable.ic_health_record_hospital_visit,
         title = location,
         description = visitType,
         date = visitDate,
         healthRecordType = HealthRecordType.HOSPITAL_VISITS_RECORD,
+        dataSource = null
     )
 
 fun ImmunizationRecommendationsDto.toUiModel() = RecommendationDetailItem(

@@ -9,12 +9,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
-import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.COVID_TEST_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HEALTH_VISIT_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.IMMUNIZATION_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.MEDICATION_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.SPECIAL_AUTHORITY_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.VACCINE_RECORD
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toStartOfDayInstant
 
@@ -48,26 +42,7 @@ class HealthRecordsAdapter(
         val record = getItem(position)
         holder.binding.tvTitle.text = record.title
         holder.binding.imgIcon.setImageResource(record.icon)
-
-        var description = ""
-        when (record.healthRecordType) {
-            VACCINE_RECORD -> description = record.date.toDate()
-
-            COVID_TEST_RECORD -> description = "${record.testOutcome} • ${record.date.toDate()}"
-
-            MEDICATION_RECORD -> description = "${record.description} • ${record.date.toDate()}"
-
-            IMMUNIZATION_RECORD -> description = record.date.toDate()
-
-            HEALTH_VISIT_RECORD -> description = "${record.description} • ${record.date.toDate()}"
-
-            SPECIAL_AUTHORITY_RECORD ->
-                description = "${record.description} • ${record.date.toDate()}"
-
-            else -> description = record.description
-        }
-
-        holder.binding.tvDesc.text = description
+        holder.binding.tvDesc.text = record.description
         holder.itemView.setOnClickListener {
             itemClickListener.onItemClick(record)
         }

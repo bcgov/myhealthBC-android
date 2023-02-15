@@ -171,23 +171,14 @@ data class IndividualHealthRecordsUiState(
 )
 
 data class HealthRecordItem(
+    val recordId: Long,
     val patientId: Long,
-    val testResultId: Long = -1L,
-    val medicationRecordId: Long = -1L,
-    val labOrderId: Long = -1L,
-    val immunizationRecordId: Long = -1L,
-    val covidOrderId: String? = null,
-    val healthVisitId: Long = -1L,
-    val specialAuthorityId: Long = -1L,
-    val hospitalVisitId: Long = -1L,
-    val clinicalDocumentId: Long = -1L,
     val icon: Int,
     val title: String,
     val description: String,
-    val testOutcome: String? = null,
     val date: Instant,
+    val dataSource: String?,
     val healthRecordType: HealthRecordType,
-    val dataSource: String? = null
 )
 
 data class HiddenRecordItem(
@@ -195,7 +186,6 @@ data class HiddenRecordItem(
 )
 
 enum class HealthRecordType {
-    VACCINE_RECORD,
     COVID_TEST_RECORD,
     MEDICATION_RECORD,
     LAB_TEST_RECORD,
