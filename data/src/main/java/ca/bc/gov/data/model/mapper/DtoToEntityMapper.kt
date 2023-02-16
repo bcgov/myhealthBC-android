@@ -20,15 +20,11 @@ import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidTestDto
-import ca.bc.gov.common.model.test.TestRecordDto
-import ca.bc.gov.common.model.test.TestResultDto
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.clinicaldocument.ClinicalDocumentEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidTestEntity
-import ca.bc.gov.data.datasource.local.entity.covid.test.TestRecordEntity
-import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
 import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
@@ -62,13 +58,6 @@ fun VaccineDoseDto.toEntity() = VaccineDoseEntity(
     date = date
 )
 
-fun TestResultDto.toEntity() = TestResultEntity(
-    id,
-    patientId,
-    collectionDate,
-    dataSource
-)
-
 fun VaccineRecordDto.toEntity() = VaccineRecordEntity(
     id,
     patientId,
@@ -77,21 +66,6 @@ fun VaccineRecordDto.toEntity() = VaccineRecordEntity(
     shcUri,
     federalPass,
     mode
-)
-
-fun TestRecordDto.toEntity() = TestRecordEntity(
-    id = id,
-    testResultId = testResultId,
-    labName = labName,
-    collectionDateTime = collectionDateTime,
-    resultDateTime = resultDateTime,
-    testName = testName,
-    testType = testType,
-    testOutcome = testOutcome,
-    testStatus = testStatus,
-    resultTitle = resultTitle,
-    resultLink = resultLink,
-    resultDescription = resultDescription.joinToString("|")
 )
 
 fun MedicationRecordDto.toEntity() = MedicationRecordEntity(
@@ -171,21 +145,21 @@ fun CommentDto.toEntity() = CommentEntity(
 )
 
 fun CovidOrderDto.toEntity() = CovidOrderEntity(
-   covidOrderId = covidOrderId,
-   patientId = patientId,
-   phn = phn,
-   orderingProviderIds = orderingProviderIds,
-   orderingProviders = orderingProviders,
-   reportingLab = reportingLab,
-   location = location,
-   ormOrOru = ormOrOru,
-   messageDateTime = messageDateTime,
-   messageId = messageId,
-   additionalData = additionalData,
-   reportAvailable = reportAvailable
+    covidOrderId = covidOrderId,
+    patientId = patientId,
+    phn = phn,
+    orderingProviderIds = orderingProviderIds,
+    orderingProviders = orderingProviders,
+    reportingLab = reportingLab,
+    location = location,
+    ormOrOru = ormOrOru,
+    messageDateTime = messageDateTime,
+    messageId = messageId,
+    additionalData = additionalData,
+    reportAvailable = reportAvailable
 )
 
-fun CovidTestDto.toEntity(orderId : Long) = CovidTestEntity(
+fun CovidTestDto.toEntity(orderId: Long) = CovidTestEntity(
     id,
     orderId,
     testType,

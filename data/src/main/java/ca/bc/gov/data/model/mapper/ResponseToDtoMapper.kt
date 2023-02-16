@@ -28,7 +28,6 @@ import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
-import ca.bc.gov.common.model.test.TestRecordDto
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.common.utils.toDateTimeZ
 import ca.bc.gov.common.utils.toOffsetDateTime
@@ -38,7 +37,6 @@ import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
 import ca.bc.gov.data.datasource.remote.model.base.banner.BannerPayload
 import ca.bc.gov.data.datasource.remote.model.base.clinicaldocument.ClinicalDocumentResponse
 import ca.bc.gov.data.datasource.remote.model.base.comment.CommentPayload
-import ca.bc.gov.data.datasource.remote.model.base.covidtest.CovidTestRecord
 import ca.bc.gov.data.datasource.remote.model.base.dependent.DependentPayload
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.Clinic
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsPayload
@@ -66,20 +64,6 @@ import ca.bc.gov.data.model.MediaMetaData
 import ca.bc.gov.data.model.VaccineStatus
 import java.time.Instant
 import java.time.format.DateTimeFormatter
-
-fun CovidTestRecord.toTestRecord() = TestRecordDto(
-    id = reportId,
-    labName = labName,
-    collectionDateTime = collectionDateTime.toDateTime(),
-    resultDateTime = resultDateTime.toDateTime(),
-    testName = testName,
-    testOutcome = testOutcome,
-    testType = testType,
-    testStatus = testStatus,
-    resultTitle = resultTitle,
-    resultDescription = resultDescription,
-    resultLink = resultLink
-)
 
 fun MedicationStatementResponse.toListOfMedicationDto(): List<MedicationWithSummaryAndPharmacyDto> =
     this.payload?.mapNotNull {

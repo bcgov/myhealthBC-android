@@ -7,7 +7,6 @@ import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.data.datasource.local.MyHealthDataBase
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
-import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
 import ca.bc.gov.data.datasource.local.entity.labtest.LabOrderEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity

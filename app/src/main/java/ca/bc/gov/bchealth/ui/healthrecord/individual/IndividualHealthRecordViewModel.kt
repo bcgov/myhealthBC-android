@@ -56,9 +56,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
         viewModelScope.launch {
 
             try {
-                val testResultWithRecords =
-                    patientRepository.getPatientWithTestResultsAndRecords(patientId)
-
                 var patientAndMedicationRecords: PatientWithMedicationRecordDto? = null
                 try {
                     patientAndMedicationRecords =
@@ -82,9 +79,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 val clinicalDocuments = patientRepository.getPatientWithClinicalDocuments(patientId)
                     .map { it.toUiModel() }
 
-                val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
-                    it.toUiModel()
-                }
                 val medicationRecords = patientAndMedicationRecords?.medicationRecord?.map {
                     it.toUiModel()
                 }
@@ -106,8 +100,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
 
                 val bcscInfo = getBcscInfo()
 
-                val filteredHealthRecords = covidTestRecords +
-                    covidOrders +
+                val filteredHealthRecords = covidOrders +
                     labTestRecords +
                     immunizationRecords +
                     healthVisits +
@@ -130,7 +123,6 @@ class IndividualHealthRecordViewModel @Inject constructor(
                 }
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
-                // no implementation required.
             }
         }
 

@@ -10,9 +10,7 @@ import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDt
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.patient.PatientWithSpecialAuthorityDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
-import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
-import ca.bc.gov.common.model.relation.TestResultWithRecordsAndPatientDto
 import ca.bc.gov.common.utils.toUniquePatientName
 import ca.bc.gov.data.datasource.local.dao.PatientDao
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
@@ -49,7 +47,7 @@ class PatientLocalDataSource @Inject constructor(
         } else {
             for (i in patientList.indices) {
                 if (patientList[i].fullName.toUniquePatientName()
-                    .equals(patient.fullName.toUniquePatientName(), true)
+                        .equals(patient.fullName.toUniquePatientName(), true)
                 ) {
                     return patientList[i].id
                 }
@@ -66,7 +64,7 @@ class PatientLocalDataSource @Inject constructor(
         } else {
             for (i in patientList.indices) {
                 if (patientList[i].fullName.toUniquePatientName()
-                    .equals(patientDto.fullName.toUniquePatientName(), true)
+                        .equals(patientDto.fullName.toUniquePatientName(), true)
                 ) {
                     patientDao.deletePatientById(patientList[i].id)
                 }
@@ -93,12 +91,6 @@ class PatientLocalDataSource @Inject constructor(
     suspend fun getPatientWithVaccineAndDoses(patient: PatientEntity): List<PatientWithVaccineAndDosesDto> =
         patientDao.getPatientWithVaccineAndDoses(patient.fullName, patient.dateOfBirth)
             .map { it.toDto() }
-
-    suspend fun getPatientWithTestResultsAndRecords(patientId: Long): PatientWithTestResultsAndRecordsDto? =
-        patientDao.getPatientWithTestResultsAndRecords(patientId)?.toDto()
-
-    suspend fun getPatientWithTestResultAndRecords(testResultId: Long): TestResultWithRecordsAndPatientDto? =
-        patientDao.getPatientWithTestResultAndRecords(testResultId)?.toDto()
 
     suspend fun getPatientWithMedicationRecords(patientId: Long): PatientWithMedicationRecordDto? =
         patientDao.getPatientWithMedicationRecords(patientId)?.toDto()

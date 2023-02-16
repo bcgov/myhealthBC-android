@@ -27,7 +27,6 @@ import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
-import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.utils.toDate
@@ -82,45 +81,6 @@ fun MedicationWithSummaryAndPharmacyDto.toUiModel() = HealthRecordItem(
     healthRecordType = HealthRecordType.MEDICATION_RECORD,
     dataSource = medicationRecord.dataSource.name
 )
-
-fun TestResultWithRecordsDto.toUiModel(): HealthRecordItem {
-
-    val testRecordDto = testRecords.maxByOrNull { it.resultDateTime }
-    val testOutcome = if (testRecordDto?.testStatus.equals("Pending", true)) {
-        testRecordDto?.testStatus
-    } else {
-        when (testRecordDto?.testOutcome) {
-            CovidTestResultStatus.Indeterminate.name,
-            CovidTestResultStatus.IndeterminateResult.name -> {
-                CovidTestResultStatus.Indeterminate.name
-            }
-            CovidTestResultStatus.Cancelled.name -> {
-                CovidTestResultStatus.Cancelled.name
-            }
-            CovidTestResultStatus.Negative.name -> {
-                CovidTestResultStatus.Negative.name
-            }
-            CovidTestResultStatus.Positive.name -> {
-                CovidTestResultStatus.Positive.name
-            }
-            else -> {
-                CovidTestResultStatus.Indeterminate.name
-            }
-        }
-    }
-    val date = testResult.collectionDate
-
-    return HealthRecordItem(
-        patientId = testResult.patientId,
-        recordId = testResult.id,
-        icon = R.drawable.ic_health_record_covid_test,
-        title = "COVID-19 test result",
-        description = "$testOutcome • ${date.toDate()}",
-        date = date,
-        healthRecordType = HealthRecordType.COVID_TEST_RECORD,
-        dataSource = testResult.dataSource.name
-    )
-}
 
 fun ClinicalDocumentDto.toUiModel() =
     HealthRecordItem(

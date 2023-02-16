@@ -19,13 +19,11 @@ class PatientDaoTest : BaseDataBaseTest() {
 
     private lateinit var patientDao: PatientDao
     private lateinit var vaccineRecordDao: VaccineRecordDao
-    private lateinit var testResultDao: TestResultDao
     private lateinit var medicationRecordDao: MedicationRecordDao
 
     override fun onCreate() {
         patientDao = db.getPatientDao()
         vaccineRecordDao = db.getVaccineRecordDao()
-        testResultDao = db.getTestResultDao()
         medicationRecordDao = db.getMedicationRecordDao()
     }
 
@@ -52,20 +50,6 @@ class PatientDaoTest : BaseDataBaseTest() {
 
         // Then
         Assert.assertEquals(-1, result)
-    }
-
-    @Test
-    fun checkPatientId() = runBlocking {
-        // Given
-        val patient = getPatient1()
-
-        // When
-        patientDao.insert(patient)
-
-        // Then
-        val insertedPatientId =
-            patientDao.getPatientId(patient.fullName, patient.dateOfBirth)
-        Assert.assertEquals(patient.id, insertedPatientId)
     }
 
     @Test
@@ -100,9 +84,6 @@ class PatientDaoTest : BaseDataBaseTest() {
         patientDao.insert(patient2)
         vaccineRecordDao.insert(vaccineRecord1)
         vaccineRecordDao.insert(vaccineRecord2)
-        testResultDao.insert(testResult1)
-        testResultDao.insert(testResult2)
-        testResultDao.insert(testResult3)
         medicationRecordDao.insert(medicationRecord)
 
         // Then
