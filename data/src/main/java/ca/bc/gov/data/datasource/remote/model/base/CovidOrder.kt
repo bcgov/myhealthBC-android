@@ -1,6 +1,6 @@
 package ca.bc.gov.data.datasource.remote.model.base
 
-data class Order(
+data class CovidOrder(
     val id: String,
     val phn: String?,
     val orderingProviderIds: String?,
@@ -12,5 +12,5 @@ data class Order(
     val messageId: String?,
     val additionalData: String?,
     val reportAvailable: Boolean,
-    val labResults: List<LabResult> = emptyList()
+    val labResults: List<CovidLabResult> = emptyList()
 )

@@ -2,7 +2,7 @@ package ca.bc.gov.data.datasource.remote.model.base
 
 import com.google.gson.annotations.SerializedName
 
-data class LabResult(
+data class CovidLabResult(
     val id: String,
     val testType: String?,
     val outOfRange: Boolean,

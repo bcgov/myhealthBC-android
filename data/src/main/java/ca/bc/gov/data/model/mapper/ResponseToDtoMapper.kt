@@ -31,8 +31,8 @@ import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.common.utils.toDateTimeZ
 import ca.bc.gov.common.utils.toOffsetDateTime
-import ca.bc.gov.data.datasource.remote.model.base.LabResult
-import ca.bc.gov.data.datasource.remote.model.base.Order
+import ca.bc.gov.data.datasource.remote.model.base.CovidLabResult
+import ca.bc.gov.data.datasource.remote.model.base.CovidOrder
 import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
 import ca.bc.gov.data.datasource.remote.model.base.banner.BannerPayload
 import ca.bc.gov.data.datasource.remote.model.base.clinicaldocument.ClinicalDocumentResponse
@@ -202,7 +202,7 @@ fun AllCommentsResponse.toDto(): List<CommentDto> {
     return listCommentDto
 }
 
-fun Order.toDto() = CovidOrderDto(
+fun CovidOrder.toDto() = CovidOrderDto(
     covidOrderId = id,
     phn = phn,
     orderingProviderIds = orderingProviderIds,
@@ -216,7 +216,7 @@ fun Order.toDto() = CovidOrderDto(
     reportAvailable = reportAvailable
 )
 
-fun LabResult.toDto() = CovidTestDto(
+fun CovidLabResult.toDto() = CovidTestDto(
     id,
     testType,
     outOfRange,
