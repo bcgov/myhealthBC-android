@@ -286,6 +286,7 @@ fun CommentEntity.toDto() = CommentDto(
 
 fun CovidOrderEntity.toDto() = CovidOrderDto(
     id,
+    covidOrderId,
     phn,
     orderingProviderIds,
     orderingProviders,
@@ -297,7 +298,7 @@ fun CovidOrderEntity.toDto() = CovidOrderDto(
     additionalData,
     reportAvailable,
     patientId,
-    dataSource = dataSource
+    dataSource
 )
 
 fun CovidTestEntity.toDto() = CovidTestDto(
@@ -313,7 +314,6 @@ fun CovidTestEntity.toDto() = CovidTestDto(
     resultDateTime,
     loinc,
     loincName,
-    covidOrderId
 )
 
 fun CovidOrderWithCovidTests.toDto() = CovidOrderWithCovidTestDto(

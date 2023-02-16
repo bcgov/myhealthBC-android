@@ -229,11 +229,8 @@ class IndividualHealthRecordFragment :
     private fun setUpRecyclerView() {
         healthRecordsAdapter = HealthRecordsAdapter {
             val navDirection = when (it.healthRecordType) {
-
-                COVID_TEST_RECORD ->
-                    IndividualHealthRecordFragmentDirections.actionIndividualHealthRecordFragmentToCovidTestResultDetailFragment(
-                        it.recordId.toString()
-                    )
+                COVID_TEST_RECORD -> IndividualHealthRecordFragmentDirections
+                    .actionIndividualHealthRecordFragmentToCovidTestResultDetailFragment(it.recordId)
 
                 MEDICATION_RECORD ->
                     IndividualHealthRecordFragmentDirections

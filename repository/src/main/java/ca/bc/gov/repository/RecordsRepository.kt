@@ -53,8 +53,8 @@ class RecordsRepository @Inject constructor(
         covidOrderRepository.deleteByPatientId(patientId)
         covidOrderResponse?.forEach {
             it.covidOrder.patientId = patientId
-            covidOrderRepository.insert(it.covidOrder)
-            covidTestRepository.insert(it.covidTests)
+            val orderId = covidOrderRepository.insert(it.covidOrder)
+            covidTestRepository.insert(it.covidTests, orderId)
         }
     }
 

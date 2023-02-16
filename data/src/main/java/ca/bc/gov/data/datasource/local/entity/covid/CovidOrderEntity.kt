@@ -24,8 +24,10 @@ import java.time.Instant
     ]
 )
 data class CovidOrderEntity(
-    @PrimaryKey
-    val id: String,
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    @ColumnInfo(name = "covid_order_id")
+    val covidOrderId: String,
     @ColumnInfo(name = "patient_id")
     val patientId: Long,
     val phn: String?,

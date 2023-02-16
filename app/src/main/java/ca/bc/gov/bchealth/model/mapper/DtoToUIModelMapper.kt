@@ -202,7 +202,7 @@ fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem {
 
     return HealthRecordItem(
         patientId = covidOrder.patientId,
-        recordId = -1, //todo: fix
+        recordId = covidOrder.id,
         title = "COVID-19 test result",
         description = "$testOutcome • ${date.toDate()}",
         icon = R.drawable.ic_health_record_covid_test,

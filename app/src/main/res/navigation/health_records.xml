@@ -109,8 +109,8 @@
         android:name="ca.bc.gov.bchealth.ui.healthrecord.covidtests.CovidTestResultDetailFragment"
         android:label="CovidTestResultDetailFragment">
         <argument
-            android:name="covid_order_id"
-            app:argType="string" />
+            android:name="order_id"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/commentsFragment"

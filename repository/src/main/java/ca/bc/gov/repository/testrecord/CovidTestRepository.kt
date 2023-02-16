@@ -10,9 +10,6 @@ import javax.inject.Inject
 class CovidTestRepository @Inject constructor(
     private val covidTestLocalDataSource: CovidTestLocalDataSource
 ) {
-
-    suspend fun insert(covidTest: CovidTestDto): Long = covidTestLocalDataSource.insert(covidTest)
-
-    suspend fun insert(covidTests: List<CovidTestDto>): List<Long> =
-        covidTestLocalDataSource.insert(covidTests)
+    suspend fun insert(covidTests: List<CovidTestDto>, orderId : Long): List<Long> =
+        covidTestLocalDataSource.insert(covidTests, orderId)
 }

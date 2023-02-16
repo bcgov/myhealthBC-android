@@ -219,16 +219,17 @@ fun AllCommentsResponse.toDto(): List<CommentDto> {
 }
 
 fun Order.toDto() = CovidOrderDto(
-    id,
-    phn,
-    orderingProviderIds,
-    orderingProviders,
-    reportingLab,
-    location,
-    ormOrOru,
-    messageDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-    messageId,
-    additionalData, reportAvailable
+    covidOrderId = id,
+    phn = phn,
+    orderingProviderIds = orderingProviderIds,
+    orderingProviders = orderingProviders,
+    reportingLab = reportingLab,
+    location = location,
+    ormOrOru = ormOrOru,
+    messageDateTime = messageDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+    messageId = messageId,
+    additionalData = additionalData,
+    reportAvailable = reportAvailable
 )
 
 fun LabResult.toDto() = CovidTestDto(
@@ -250,7 +251,6 @@ fun AuthenticatedCovidTestResponse.toDto(): List<CovidOrderWithCovidTestDto> {
     return payload.orders.map { order ->
         val covidOrder = order.toDto()
         val covidTest = order.labResults.map { it.toDto() }
-        covidTest.forEach { it.covidOrderId = covidOrder.id }
         CovidOrderWithCovidTestDto(covidOrder, covidTest)
     }
 }

@@ -37,7 +37,7 @@ class CovidTestResultFragment(private val itemClickListener: ItemClickListener) 
     BaseRecordDetailFragment(R.layout.fragment_single_test_result) {
 
     private val binding by viewBindings(FragmentSingleTestResultBinding::bind)
-    private lateinit var covidOrderId: String
+    private var covidOrderId: Long = -1
     private lateinit var covidTestId: String
     private var reportAvailable: Boolean = false
     private val viewModel: CovidTestResultViewModel by viewModels()
@@ -49,7 +49,7 @@ class CovidTestResultFragment(private val itemClickListener: ItemClickListener) 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            covidOrderId = it.getString(COVID_ORDER_ID).toString()
+            covidOrderId = it.getLong(COVID_ORDER_ID)
             covidTestId = it.getString(COVID_TEST_ID).toString()
             reportAvailable = it.getBoolean(REPORT_AVAILABLE)
         }
@@ -298,14 +298,14 @@ class CovidTestResultFragment(private val itemClickListener: ItemClickListener) 
 
         @JvmStatic
         fun newInstance(
-            covidOrderId: String,
+            orderId: Long,
             covidTestId: String,
             reportAvailable: Boolean,
             itemClickListener: ItemClickListener
         ) =
             CovidTestResultFragment(itemClickListener).apply {
                 arguments = Bundle().apply {
-                    putString(COVID_ORDER_ID, covidOrderId)
+                    putLong(COVID_ORDER_ID, orderId)
                     putString(COVID_TEST_ID, covidTestId)
                     putBoolean(REPORT_AVAILABLE, reportAvailable)
                 }

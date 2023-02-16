@@ -171,23 +171,23 @@ fun CommentDto.toEntity() = CommentEntity(
 )
 
 fun CovidOrderDto.toEntity() = CovidOrderEntity(
-    id,
-    patientId,
-    phn,
-    orderingProviderIds,
-    orderingProviders,
-    reportingLab,
-    location,
-    ormOrOru,
-    messageDateTime,
-    messageId,
-    additionalData,
-    reportAvailable
+   covidOrderId = covidOrderId,
+   patientId = patientId,
+   phn = phn,
+   orderingProviderIds = orderingProviderIds,
+   orderingProviders = orderingProviders,
+   reportingLab = reportingLab,
+   location = location,
+   ormOrOru = ormOrOru,
+   messageDateTime = messageDateTime,
+   messageId = messageId,
+   additionalData = additionalData,
+   reportAvailable = reportAvailable
 )
 
-fun CovidTestDto.toEntity() = CovidTestEntity(
+fun CovidTestDto.toEntity(orderId : Long) = CovidTestEntity(
     id,
-    covidOrderId,
+    orderId,
     testType,
     outOfRange,
     collectedDateTime,
