@@ -5,7 +5,6 @@ import androidx.room.Query
 import androidx.room.Transaction
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.relations.MedicationWithSummaryAndPharmacy
-import java.time.Instant
 
 /**
  * @author Pinakin Kansara

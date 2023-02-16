@@ -63,8 +63,9 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
         healthRecordsAdapter = HealthRecordsAdapter {
 
             val navDirection = when (it.healthRecordType) {
-                HealthRecordType.COVID_TEST_RECORD -> DependentRecordsFragmentDirections
-                    .actionDependentRecordsFragmentToCovidTestResultDetailFragment(it.recordId)
+                HealthRecordType.COVID_TEST_RECORD ->
+                    DependentRecordsFragmentDirections
+                        .actionDependentRecordsFragmentToCovidTestResultDetailFragment(it.recordId)
 
                 HealthRecordType.MEDICATION_RECORD ->
                     DependentRecordsFragmentDirections

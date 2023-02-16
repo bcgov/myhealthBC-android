@@ -3,7 +3,6 @@ package ca.bc.gov.data.datasource.local.dao
 import androidx.room.Dao
 import androidx.room.Query
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
-import kotlinx.coroutines.flow.Flow
 
 /**
  * @author Pinakin Kansara

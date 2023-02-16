@@ -8,6 +8,6 @@ import javax.inject.Inject
 class CovidTestLocalDataSource @Inject constructor(
     private val covidTestDao: CovidTestDao
 ) {
-    suspend fun insert(covidTests: List<CovidTestDto>, orderId : Long): List<Long> =
+    suspend fun insert(covidTests: List<CovidTestDto>, orderId: Long): List<Long> =
         covidTestDao.insert(covidTests.map { it.toEntity(orderId) })
 }

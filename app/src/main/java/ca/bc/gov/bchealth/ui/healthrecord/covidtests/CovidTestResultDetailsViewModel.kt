@@ -27,7 +27,7 @@ class CovidTestResultDetailsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CovidResultDetailUiState())
     val uiState: StateFlow<CovidResultDetailUiState> = _uiState.asStateFlow()
 
-    fun getCovidOrderWithCovidTests(orderId : Long) = viewModelScope.launch {
+    fun getCovidOrderWithCovidTests(orderId: Long) = viewModelScope.launch {
         _uiState.update { it.copy(onLoading = true) }
 
         val covidOrder = covidOrderRepository.findByCovidOrderId(orderId)
@@ -36,7 +36,7 @@ class CovidTestResultDetailsViewModel @Inject constructor(
         }
     }
 
-    fun getCovidTestInPdf(orderId : Long, reportId: String) = viewModelScope.launch {
+    fun getCovidTestInPdf(orderId: Long, reportId: String) = viewModelScope.launch {
         _uiState.update { it.copy(onLoading = true) }
 
         try {
