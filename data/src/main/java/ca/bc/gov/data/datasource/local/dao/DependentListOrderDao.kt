@@ -14,7 +14,4 @@ interface DependentListOrderDao {
 
     @Query("DELETE FROM dependent_list_order ")
     suspend fun deleteAll(): Int
-
-    @Query("DELETE FROM dependent_list_order where hdid not in (:list)")
-    suspend fun deleteExcept(list: List<String>): Int
 }

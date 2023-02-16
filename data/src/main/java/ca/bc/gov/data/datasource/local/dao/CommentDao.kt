@@ -11,18 +11,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CommentDao : BaseDao<CommentEntity> {
 
-    @Query("SELECT * FROM comments")
-    fun getCommentsFlow(): Flow<List<CommentEntity>>
-
-    @Query("SELECT * FROM comments WHERE id = :id")
-    suspend fun findById(id: String): CommentEntity?
-
-    @Query("SELECT * FROM comments WHERE user_profile_id = :hdid AND parent_entry_id = :parentEntryId")
-    suspend fun findByPatientIdAndParentEntryId(
-        hdid: String,
-        parentEntryId: String
-    ): List<CommentEntity>
-
     @Query("SELECT * FROM comments WHERE parent_entry_id = :parentEntryId")
     suspend fun findCommentByParentEntryId(parentEntryId: String?): List<CommentEntity>
 

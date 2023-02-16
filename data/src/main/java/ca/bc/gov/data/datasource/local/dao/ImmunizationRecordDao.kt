@@ -10,10 +10,6 @@ import ca.bc.gov.data.datasource.local.entity.immunization.ImmunizationRecordWit
  */
 @Dao
 interface ImmunizationRecordDao : BaseDao<ImmunizationRecordEntity> {
-
-    @Query("SELECT * FROM immunization_record WHERE id = :id")
-    suspend fun findById(id: Long): ImmunizationRecordEntity
-
     @Query("SELECT * FROM immunization_record WHERE id = :id")
     suspend fun findByImmunizationId(id: Long): ImmunizationRecordWithForecastAndPatient?
 
