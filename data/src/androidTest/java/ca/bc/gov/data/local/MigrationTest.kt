@@ -11,6 +11,7 @@ import ca.bc.gov.data.datasource.local.migration.MIGRATION_2_3
 import ca.bc.gov.data.datasource.local.migration.MIGRATION_3_4
 import ca.bc.gov.data.datasource.local.migration.MIGRATION_4_5
 import ca.bc.gov.data.datasource.local.migration.MIGRATION_5_6
+import ca.bc.gov.data.datasource.local.migration.MIGRATION_6_7
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,7 +25,8 @@ class MigrationTest {
         MIGRATION_2_3,
         MIGRATION_3_4,
         MIGRATION_4_5,
-        MIGRATION_5_6
+        MIGRATION_5_6,
+        MIGRATION_6_7,
     )
 
     @get:Rule

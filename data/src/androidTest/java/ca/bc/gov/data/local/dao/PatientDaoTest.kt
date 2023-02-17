@@ -74,9 +74,6 @@ class PatientDaoTest : BaseDataBaseTest() {
         val patient2 = getPatient2()
         val vaccineRecord1 = getVaccineRecord1()
         val vaccineRecord2 = getVaccineRecord2()
-        val testResult1 = getTestResult1()
-        val testResult2 = getTestResult2()
-        val testResult3 = getTestResult3()
         val medicationRecord = getMedicationRecord()
 
         // When

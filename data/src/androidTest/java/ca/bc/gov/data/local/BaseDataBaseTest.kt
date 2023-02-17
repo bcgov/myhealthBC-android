@@ -167,24 +167,6 @@ abstract class BaseDataBaseTest {
         dataSource = DataSource.QR_CODE
     )
 
-    protected fun getTestResult1() = TestResultEntity(
-        id = 1,
-        patientId = 1,
-        collectionDate = Instant.now().minus(20, ChronoUnit.DAYS)
-    )
-
-    protected fun getTestResult2() = TestResultEntity(
-        id = 2,
-        patientId = 1,
-        collectionDate = Instant.now()
-    )
-
-    protected fun getTestResult3() = TestResultEntity(
-        id = 3,
-        patientId = 2,
-        collectionDate = Instant.now()
-    )
-
     protected fun getMedicationRecord() = MedicationRecordEntity(
         id = 0,
         patientId = 1,

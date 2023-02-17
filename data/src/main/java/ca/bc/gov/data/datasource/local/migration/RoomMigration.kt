@@ -40,3 +40,13 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
         database.execSQL("CREATE TABLE IF NOT EXISTS `$tableName` (`clinical_document_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `fileId` TEXT NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `facilityName` TEXT NOT NULL, `discipline` TEXT NOT NULL, `serviceDate` INTEGER NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )")
     }
 }
+
+val MIGRATION_6_7 = object : Migration(6, 7) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("DROP TABLE covid_order")
+        database.execSQL("DROP TABLE covid_test")
+
+        database.execSQL("CREATE TABLE `covid_order` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `covid_order_id` TEXT NOT NULL, `patient_id` INTEGER NOT NULL, `phn` TEXT, `ordering_provider_id` TEXT, `ordering_providers` TEXT, `reporting_lab` TEXT, `location` TEXT, `orm_or_oru` TEXT, `message_date_time` INTEGER NOT NULL, `message_id` TEXT, `additional_data` TEXT, `report_available` INTEGER NOT NULL, `data_source` TEXT NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )")
+        database.execSQL("CREATE TABLE `covid_test` (`id` TEXT NOT NULL, `order_id` INTEGER NOT NULL, `test_type` TEXT, `out_of_range` INTEGER NOT NULL, `collected_date_time` INTEGER NOT NULL, `test_status` TEXT, `lab_result_outcome` TEXT, `result_description` TEXT, `result_link` TEXT, `received_date_time` INTEGER NOT NULL, `result_date_time` INTEGER NOT NULL, `loinc` TEXT, `loinc_name` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`order_id`) REFERENCES `covid_order`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )")
+    }
+}
