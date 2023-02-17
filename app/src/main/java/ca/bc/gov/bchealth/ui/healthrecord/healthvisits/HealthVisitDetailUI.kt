@@ -20,12 +20,14 @@ import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.bold
+import ca.bc.gov.bchealth.ui.custom.MyHealthClickableText
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 
 @Composable
 fun HealthVisitDetailUI(
     viewModel: HealthVisitViewModel,
-    navigationAction: () -> Unit
+    navigationAction: () -> Unit,
+    onClickFaq: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState().value
 
@@ -33,12 +35,12 @@ fun HealthVisitDetailUI(
         title = uiState.title,
         navigationAction = navigationAction
     ) {
-        HealthVisitDetailContent(uiState)
+        HealthVisitDetailContent(uiState, onClickFaq)
     }
 }
 
 @Composable
-private fun HealthVisitDetailContent(uiState: HealthVisitDetailUiState) {
+private fun HealthVisitDetailContent(uiState: HealthVisitDetailUiState, onClickFaq: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -50,13 +52,14 @@ private fun HealthVisitDetailContent(uiState: HealthVisitDetailUiState) {
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
             item {
-                Text(
+                MyHealthClickableText(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp, start = 32.dp, end = 32.dp),
-
                     style = MyHealthTypography.caption,
-                    text = stringResource(id = R.string.information_is_from_the_billing_claim)
+                    fullText = stringResource(id = R.string.information_is_from_the_billing_claim),
+                    clickableText = stringResource(id = R.string.faq),
+                    action = onClickFaq
                 )
             }
             uiState.uiList.forEach { listItem ->
@@ -112,5 +115,5 @@ private fun PreviewHealthVisitDetailContent() {
                 )
             )
         )
-    )
+    ) {}
 }

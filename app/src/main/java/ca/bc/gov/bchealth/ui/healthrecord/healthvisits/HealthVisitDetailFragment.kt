@@ -5,7 +5,9 @@ import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.utils.redirect
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -16,7 +18,9 @@ class HealthVisitDetailFragment : BaseFragment(null) {
 
     @Composable
     override fun GetComposableLayout() {
-        HealthVisitDetailUI(viewModel, ::popNavigation)
+        HealthVisitDetailUI(viewModel, ::popNavigation) {
+            requireContext().redirect(getString(R.string.faq_link))
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
