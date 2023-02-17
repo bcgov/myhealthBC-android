@@ -7,6 +7,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordListItem
 
 @Composable
@@ -25,7 +26,7 @@ fun HospitalVisitDetailUI(
 
 @Composable
 private fun HospitalVisitDetailContent(
-    uiList: List<HospitalVisitDetailItem>,
+    uiList: List<HealthRecordDetailItem>,
 ) {
     LazyColumn {
         uiList.forEach { listItem ->
@@ -34,7 +35,7 @@ private fun HospitalVisitDetailContent(
                     label = stringResource(id = listItem.title),
                     value = listItem.placeholder?.let {
                         stringResource(id = it)
-                    } ?: listItem.description,
+                    } ?: listItem.description.orEmpty(),
                     footer = listItem.footer?.let { stringResource(it) }
                 )
             }
@@ -48,16 +49,16 @@ fun PreviewHospitalVisitListItem() {
 
     HospitalVisitDetailContent(
         listOf(
-            HospitalVisitDetailItem(
+            HealthRecordDetailItem(
                 R.string.hospital_visits_detail_location_title,
                 "Vancouver General Hospital",
                 footer = R.string.hospital_visits_detail_location_title,
             ),
-            HospitalVisitDetailItem(
+            HealthRecordDetailItem(
                 R.string.hospital_visits_detail_location_title,
                 "Vancouver General Hospital",
             ),
-            HospitalVisitDetailItem(
+            HealthRecordDetailItem(
                 R.string.hospital_visits_detail_location_title,
                 "Vancouver General Hospital",
                 placeholder = R.string.place_holder_text,

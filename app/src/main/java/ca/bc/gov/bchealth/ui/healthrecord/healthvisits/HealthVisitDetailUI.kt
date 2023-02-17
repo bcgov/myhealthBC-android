@@ -19,6 +19,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.ui.custom.MyHealthClickableText
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordListItem
 
 @Composable
@@ -83,11 +84,11 @@ private fun PreviewHealthVisitDetailContent() {
     HealthVisitDetailContent(
         HealthVisitDetailUiState(
             uiList = listOf(
-                HealthVisitDetailItem(
+                HealthRecordDetailItem(
                     R.string.clinic_name,
                     "FRANCIS N WER"
                 ),
-                HealthVisitDetailItem(
+                HealthRecordDetailItem(
                     R.string.practitioner_name,
                     "Daniel Something"
                 )

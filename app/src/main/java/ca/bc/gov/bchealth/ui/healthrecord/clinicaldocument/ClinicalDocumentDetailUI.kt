@@ -24,6 +24,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordListItem
 
 @Composable
@@ -76,7 +77,7 @@ private fun ClinicalDocumentDetailContent(
                 item {
                     HealthRecordListItem(
                         stringResource(id = listItem.title),
-                        listItem.description,
+                        listItem.description.orEmpty(),
                     )
                 }
             }
@@ -95,11 +96,11 @@ private fun PreviewClinicalDocumentDetailContent() {
     ClinicalDocumentDetailContent(
         ClinicalDocumentUiState(
             uiList = listOf(
-                ClinicalDocumentDetailItem(
+                HealthRecordDetailItem(
                     R.string.clinical_documents_detail_discipline,
                     "Discipline value"
                 ),
-                ClinicalDocumentDetailItem(
+                HealthRecordDetailItem(
                     R.string.clinical_documents_detail_facility,
                     "Facility value"
                 ),

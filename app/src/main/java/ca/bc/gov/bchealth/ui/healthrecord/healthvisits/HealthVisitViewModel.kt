@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.healthvisits
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
 import ca.bc.gov.repository.healthvisits.HealthVisitsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,12 +32,12 @@ class HealthVisitViewModel @Inject constructor(
             val healthVisitDto = healthVisitsRepository.getHealthVisitDetails(id)
 
             val uiList = listOf(
-                HealthVisitDetailItem(
+                HealthRecordDetailItem(
                     title = R.string.clinic_name,
                     description = healthVisitDto?.clinicDto?.name,
 
                 ),
-                HealthVisitDetailItem(
+                HealthRecordDetailItem(
                     title = R.string.practitioner_name,
                     description = healthVisitDto?.practitionerName
                 )
@@ -68,10 +69,5 @@ data class HealthVisitDetailUiState(
     val onLoading: Boolean = false,
     val onError: Boolean = false,
     val title: String? = null,
-    val uiList: List<HealthVisitDetailItem> = listOf(),
-)
-
-data class HealthVisitDetailItem(
-    val title: Int,
-    val description: String?,
+    val uiList: List<HealthRecordDetailItem> = listOf(),
 )

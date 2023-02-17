@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.clinicaldocument
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseViewModel
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.repository.clinicaldocument.ClinicalDocumentRepository
 import ca.bc.gov.repository.worker.MobileConfigRepository
@@ -29,13 +30,13 @@ class ClinicalDocumentDetailViewModel @Inject constructor(
 
             fileId = dto.fileId
 
-            val uiList: List<ClinicalDocumentDetailItem> = listOf(
-                ClinicalDocumentDetailItem(
+            val uiList: List<HealthRecordDetailItem> = listOf(
+                HealthRecordDetailItem(
                     R.string.clinical_documents_detail_discipline,
                     dto.discipline,
                 ),
 
-                ClinicalDocumentDetailItem(
+                HealthRecordDetailItem(
                     R.string.clinical_documents_detail_facility,
                     dto.facilityName,
                 ),
@@ -79,11 +80,6 @@ class ClinicalDocumentDetailViewModel @Inject constructor(
 data class ClinicalDocumentUiState(
     val onLoading: Boolean = false,
     val toolbarTitle: String? = "",
-    val uiList: List<ClinicalDocumentDetailItem> = emptyList(),
+    val uiList: List<HealthRecordDetailItem> = emptyList(),
     val pdfData: String? = null
-)
-
-data class ClinicalDocumentDetailItem(
-    val title: Int,
-    val description: String,
 )
