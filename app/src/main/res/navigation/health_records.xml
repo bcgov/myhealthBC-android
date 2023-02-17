@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/addHealthRecordsFragment"
-        tools:layout="@layout/scene_health_records_add"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.add.AddHealthRecordsFragment"
-        android:label="AddHealthRecordsFragment" />
+        android:label="AddHealthRecordsFragment"
+        tools:layout="@layout/scene_health_records_add" />
     <fragment
         android:id="@+id/individualHealthRecordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.IndividualHealthRecordFragment">
@@ -63,7 +63,7 @@
             android:name="patientId"
             app:argType="long" />
     </fragment>
-   <fragment
+    <fragment
         android:id="@+id/medicationDetailsFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsFragment"
         android:label="fragment_medication_details"
@@ -98,7 +98,7 @@
         android:id="@+id/healthRecordPlaceholderFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment"
         android:label="health_record_placeholder_fragment"
-        tools:layout="@layout/health_record_placeholder_fragment" >
+        tools:layout="@layout/health_record_placeholder_fragment">
         <action
             android:id="@+id/action_healthRecordsPlaceHolderFragment_to_individualHealthRecordFragment"
             app:destination="@id/individualHealthRecordFragment" />
@@ -116,7 +116,7 @@
         android:id="@+id/commentsFragment"
         android:name="ca.bc.gov.bchealth.ui.comment.CommentsFragment"
         android:label="fragment_comments"
-        tools:layout="@layout/fragment_comments" >
+        tools:layout="@layout/fragment_comments">
         <argument
             android:name="parentEntryId"
             app:argType="string" />
@@ -133,8 +133,7 @@
     <fragment
         android:id="@+id/healthVisitDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.healthvisits.HealthVisitDetailFragment"
-        android:label="fragment_health_visit_detail"
-        tools:layout="@layout/fragment_health_visit_detail" >
+        android:label="fragment_health_visit_detail">
         <argument
             android:name="healthVisitRecordId"
             app:argType="long" />
@@ -143,7 +142,7 @@
         android:id="@+id/specialAuthorityDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.specialauthority.SpecialAuthorityDetailFragment"
         android:label="fragment_special_authority_detail"
-        tools:layout="@layout/fragment_special_authority_detail" >
+        tools:layout="@layout/fragment_special_authority_detail">
         <argument
             android:name="specialAuthorityId"
             app:argType="long" />
@@ -152,8 +151,7 @@
     <fragment
         android:id="@+id/hospitalVisitDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.hospitalvisits.HospitalVisitDetailFragment"
-        android:label="fragment_hospital_visits_detail"
-        tools:layout="@layout/fragment_hospital_visit_detail" >
+        android:label="fragment_hospital_visits_detail">
         <argument
             android:name="hospitalVisitId"
             app:argType="long" />
@@ -162,8 +160,7 @@
     <fragment
         android:id="@+id/clinicalDocumentDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.clinicaldocument.ClinicalDocumentDetailFragment"
-        android:label="fragment_clinical_document_detail"
-        tools:layout="@layout/fragment_clinical_document_detail" >
+        android:label="fragment_clinical_document_detail">
         <argument
             android:name="clinicalDocumentId"
             app:argType="long" />

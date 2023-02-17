@@ -79,7 +79,7 @@
     <fragment
         android:id="@+id/dependentProfileFragment"
         android:name="ca.bc.gov.bchealth.ui.dependents.profile.DependentProfileFragment"
-        tools:layout="@layout/fragment_dependent_profile" >
+        tools:layout="@layout/fragment_dependent_profile">
 
         <argument
             android:name="patient_id"
@@ -164,8 +164,7 @@
     <fragment
         android:id="@+id/dependentHealthVisitDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.healthvisits.HealthVisitDetailFragment"
-        android:label="fragment_health_visit_detail"
-        tools:layout="@layout/fragment_health_visit_detail">
+        android:label="fragment_health_visit_detail">
         <argument
             android:name="healthVisitRecordId"
             app:argType="long" />
@@ -184,8 +183,7 @@
     <fragment
         android:id="@+id/dependentHospitalVisitDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.hospitalvisits.HospitalVisitDetailFragment"
-        android:label="fragment_hospital_visits_detail"
-        tools:layout="@layout/fragment_hospital_visit_detail" >
+        android:label="fragment_hospital_visits_detail">
         <argument
             android:name="hospitalVisitId"
             app:argType="long" />
