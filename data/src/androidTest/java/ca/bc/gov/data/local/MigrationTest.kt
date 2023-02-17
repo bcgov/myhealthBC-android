@@ -6,12 +6,7 @@ import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import ca.bc.gov.data.datasource.local.MyHealthDataBase
-import ca.bc.gov.data.datasource.local.migration.MIGRATION_1_2
-import ca.bc.gov.data.datasource.local.migration.MIGRATION_2_3
-import ca.bc.gov.data.datasource.local.migration.MIGRATION_3_4
-import ca.bc.gov.data.datasource.local.migration.MIGRATION_4_5
-import ca.bc.gov.data.datasource.local.migration.MIGRATION_5_6
-import ca.bc.gov.data.datasource.local.migration.MIGRATION_6_7
+import ca.bc.gov.data.datasource.local.migration.ALL_MIGRATIONS
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,14 +15,6 @@ import java.io.IOException
 @RunWith(AndroidJUnit4::class)
 class MigrationTest {
     private val migrationTestDb = "migration-test"
-    private val migrations = arrayOf(
-        MIGRATION_1_2,
-        MIGRATION_2_3,
-        MIGRATION_3_4,
-        MIGRATION_4_5,
-        MIGRATION_5_6,
-        MIGRATION_6_7,
-    )
 
     @get:Rule
     val helper: MigrationTestHelper = MigrationTestHelper(
@@ -46,7 +33,7 @@ class MigrationTest {
             InstrumentationRegistry.getInstrumentation().targetContext,
             MyHealthDataBase::class.java,
             migrationTestDb
-        ).addMigrations(*migrations).build().apply {
+        ).addMigrations(*ALL_MIGRATIONS).build().apply {
             openHelper.writableDatabase.close()
         }
     }

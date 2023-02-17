@@ -4,12 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import ca.bc.gov.data.BuildConfig
 import ca.bc.gov.data.datasource.local.MyHealthDataBase
-import ca.bc.gov.data.datasource.local.migration.MIGRATION_1_2
-import ca.bc.gov.data.datasource.local.migration.MIGRATION_2_3
-import ca.bc.gov.data.datasource.local.migration.MIGRATION_3_4
-import ca.bc.gov.data.datasource.local.migration.MIGRATION_4_5
-import ca.bc.gov.data.datasource.local.migration.MIGRATION_5_6
-import ca.bc.gov.data.datasource.local.migration.MIGRATION_6_7
+import ca.bc.gov.data.datasource.local.migration.ALL_MIGRATIONS
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.utils.RandomBytesGenerator
 import dagger.Module
@@ -47,14 +42,7 @@ class MyHealthDataBaseModule {
             context,
             MyHealthDataBase::class.java,
             "my_health_db"
-        ).addMigrations(
-            MIGRATION_1_2,
-            MIGRATION_2_3,
-            MIGRATION_3_4,
-            MIGRATION_4_5,
-            MIGRATION_5_6,
-            MIGRATION_6_7
-        )
+        ).addMigrations(*ALL_MIGRATIONS)
 
         if (BuildConfig.FLAVOR != "dev" &&
             BuildConfig.FLAVOR != "stage" &&
