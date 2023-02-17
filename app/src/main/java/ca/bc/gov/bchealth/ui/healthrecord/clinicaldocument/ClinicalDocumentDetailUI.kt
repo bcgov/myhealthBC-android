@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.ui.healthrecord.clinicaldocument
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,9 +22,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTypography
-import ca.bc.gov.bchealth.compose.bold
 import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordListItem
 
 @Composable
 fun ClinicalDocumentDetailUI(
@@ -75,7 +74,7 @@ private fun ClinicalDocumentDetailContent(
             }
             uiState.uiList.forEach { listItem ->
                 item {
-                    ClinicalDocumentListItem(
+                    HealthRecordListItem(
                         stringResource(id = listItem.title),
                         listItem.description,
                     )
@@ -85,26 +84,6 @@ private fun ClinicalDocumentDetailContent(
         if (uiState.onLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
-            )
-        }
-    }
-}
-
-@Composable
-private fun ClinicalDocumentListItem(label: String, value: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(top = 20.dp, bottom = 20.dp, start = 32.dp),
-    ) {
-        Text(text = label, style = MyHealthTypography.body2.bold())
-
-        if (value.isNotEmpty()) {
-            Text(
-                text = value,
-                style = MyHealthTypography.body2,
-                modifier = Modifier.padding(top = 4.dp)
             )
         }
     }
