@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - develop
-      - HAPP-1330-Refactor-toolbars
+      - HAPP-1331-Refactor-health-record-item
 
 jobs:
   build:
