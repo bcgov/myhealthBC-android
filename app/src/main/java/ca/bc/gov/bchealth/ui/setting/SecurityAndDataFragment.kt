@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.databinding.FragmentSettingBinding
+import ca.bc.gov.bchealth.databinding.FragmentSecurityAndDataBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
@@ -25,14 +25,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 /**
- * [SettingFragment]
+ * [SecurityAndDataFragment]
  *
  * @author amit metri
  */
 @AndroidEntryPoint
-class SettingFragment : BaseFragment(R.layout.fragment_setting) {
+class SecurityAndDataFragment : BaseFragment(R.layout.fragment_security_and_data) {
 
-    private val binding by viewBindings(FragmentSettingBinding::bind)
+    private val binding by viewBindings(FragmentSecurityAndDataBinding::bind)
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
     private val viewModel: SettingsViewModel by viewModels()
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()

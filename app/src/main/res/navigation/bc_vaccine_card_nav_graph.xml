@@ -16,9 +16,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/settingFragment"
-        android:name="ca.bc.gov.bchealth.ui.setting.SettingFragment"
-        tools:layout="@layout/fragment_setting"/>
+        android:id="@+id/securityAndDataFragment"
+        android:name="ca.bc.gov.bchealth.ui.setting.SecurityAndDataFragment"
+        tools:layout="@layout/fragment_security_and_data"/>
     <fragment
         android:id="@+id/barcodeScannerFragment"
         android:name="ca.bc.gov.bchealth.ui.scanner.BarcodeScannerFragment"
@@ -51,8 +51,8 @@
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="ca.bc.gov.bchealth.ui.setting.ProfileFragment"
-        tools:layout="@layout/fragment_profile"/>
+        android:name="ca.bc.gov.bchealth.ui.setting.SettingsFragment"
+        tools:layout="@layout/fragment_settings"/>
     <fragment
         android:id="@+id/biometricsAuthenticationFragment"
         tools:layout="@layout/fragment_biometric_authentication"

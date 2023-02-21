@@ -14,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.databinding.FragmentProfileBinding
+import ca.bc.gov.bchealth.databinding.FragmentSettingsBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
 import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
@@ -33,9 +33,9 @@ import kotlinx.coroutines.launch
 * @auther amit_metri on 07,January,2022
 */
 @AndroidEntryPoint
-class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
+class SettingsFragment : BaseFragment(R.layout.fragment_settings) {
 
-    private val binding by viewBindings(FragmentProfileBinding::bind)
+    private val binding by viewBindings(FragmentSettingsBinding::bind)
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
@@ -84,7 +84,7 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
         binding.apply {
 
             tvDataSecurity.setOnClickListener {
-                findNavController().navigate(R.id.settingFragment)
+                findNavController().navigate(R.id.securityAndDataFragment)
             }
 
             tvPrivacyStatement.setOnClickListener {
