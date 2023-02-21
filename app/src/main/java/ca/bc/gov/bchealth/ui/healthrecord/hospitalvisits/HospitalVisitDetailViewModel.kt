@@ -88,4 +88,3 @@ data class HospitalVisitUiState(
     val toolbarTitle: String? = "",
     val uiList: List<HealthRecordDetailItem> = emptyList()
 )
-
