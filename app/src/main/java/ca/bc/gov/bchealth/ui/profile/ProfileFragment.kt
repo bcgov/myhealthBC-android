@@ -21,6 +21,9 @@ class ProfileFragment : BaseFragment(null) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.uiState.collectOnStart {
+            if (it.error != null) popNavigation()
+        }
         viewModel.load()
     }
 

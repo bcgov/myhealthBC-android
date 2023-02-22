@@ -26,30 +26,37 @@ class ProfileViewModel @Inject constructor(
     fun load() = viewModelScope.launch {
         _uiState.update { it.copy(loading = true) }
 
-        val patient = patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
+        try {
+            val patient =
+                patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
 
-        _uiState.update {
-            it.copy(
-                fullName = patient.fullName,
-                loading = false,
-                uiList = listOf(
-                    ProfileItem.Info(
-                        R.string.profile_first_name, patient.firstName
-                    ),
-                    ProfileItem.Info(
-                        R.string.profile_last_name, patient.lastName
-                    ),
-                    ProfileItem.Info(
-                        R.string.profile_phn, patient.phn.orEmpty()
-                    ),
-                    getProfileAddress(
-                        patient.physicalAddress, R.string.profile_physical_address
-                    ),
-                    getProfileAddress(
-                        patient.mailingAddress, R.string.profile_mailing_address
-                    ),
+            _uiState.update {
+                it.copy(
+                    fullName = patient.fullName,
+                    loading = false,
+                    uiList = listOf(
+                        ProfileItem.Info(
+                            R.string.profile_first_name, patient.firstName
+                        ),
+                        ProfileItem.Info(
+                            R.string.profile_last_name, patient.lastName
+                        ),
+                        ProfileItem.Info(
+                            R.string.profile_phn, patient.phn.orEmpty()
+                        ),
+                        getProfileAddress(
+                            patient.physicalAddress, R.string.profile_physical_address
+                        ),
+                        getProfileAddress(
+                            patient.mailingAddress, R.string.profile_mailing_address
+                        ),
+                    )
                 )
-            )
+            }
+        } catch (e: Exception) {
+            _uiState.update {
+                it.copy(loading = false, error = e)
+            }
         }
     }
 }
@@ -87,6 +94,7 @@ data class ProfileUiState(
     val loading: Boolean = false,
     val fullName: String = "",
     val uiList: List<ProfileItem> = listOf(),
+    val error: Exception? = null
 )
 
 sealed class ProfileItem {
