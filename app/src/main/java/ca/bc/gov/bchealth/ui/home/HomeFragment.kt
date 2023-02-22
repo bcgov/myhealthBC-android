@@ -223,7 +223,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
                     R.id.menu_settings -> {
-                        findNavController().navigate(R.id.profileFragment)
+                        findNavController().navigate(R.id.settingsFragment)
                     }
                 }
                 return@setOnMenuItemClickListener true

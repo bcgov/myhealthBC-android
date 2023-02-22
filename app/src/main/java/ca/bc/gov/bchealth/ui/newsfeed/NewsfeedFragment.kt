@@ -82,7 +82,7 @@ class NewsfeedFragment : Fragment(R.layout.fragment_newsfeed) {
         binding.toolbar.ivRightOption.apply {
             visibility = View.VISIBLE
             setOnClickListener {
-                findNavController().navigate(R.id.profileFragment)
+                findNavController().navigate(R.id.settingsFragment)
             }
         }
     }

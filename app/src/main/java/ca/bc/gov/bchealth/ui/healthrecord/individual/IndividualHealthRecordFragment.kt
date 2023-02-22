@@ -104,7 +104,7 @@ class IndividualHealthRecordFragment :
                             findNavController().navigate(R.id.filterFragment)
                         }
                         R.id.menu_settings -> {
-                            findNavController().navigate(R.id.profileFragment)
+                            findNavController().navigate(R.id.settingsFragment)
                         }
                     }
                     return@setOnMenuItemClickListener true
