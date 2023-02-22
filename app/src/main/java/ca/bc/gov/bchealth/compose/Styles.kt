@@ -19,7 +19,7 @@ val fonts = FontFamily(
     Font(R.font.bc_sans_bold_italic, weight = FontWeight.Bold, style = FontStyle.Italic),
 )
 
-private val darkText = Color(0xFF313132)
+val darkText = Color(0xFF313132)
 
 val white = Color(0xFFFFFFFF)
 val primaryBlue = Color(0xFF003366)
