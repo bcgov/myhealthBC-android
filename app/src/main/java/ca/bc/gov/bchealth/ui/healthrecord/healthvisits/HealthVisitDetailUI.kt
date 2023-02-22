@@ -1,13 +1,12 @@
 package ca.bc.gov.bchealth.ui.healthrecord.healthvisits
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -32,6 +31,7 @@ fun HealthVisitDetailUI(
 
     MyHealthScaffold(
         title = uiState.title,
+        isLoading = uiState.onLoading,
         navigationAction = navigationAction
     ) {
         HealthVisitDetailContent(uiState, onClickFaq)
@@ -39,41 +39,35 @@ fun HealthVisitDetailUI(
 }
 
 @Composable
-private fun HealthVisitDetailContent(uiState: HealthVisitDetailUiState, onClickFaq: () -> Unit) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
+private fun BoxScope.HealthVisitDetailContent(
+    uiState: HealthVisitDetailUiState,
+    onClickFaq: () -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .align(Alignment.TopCenter),
+        contentPadding = PaddingValues(bottom = 16.dp)
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .align(Alignment.TopCenter),
-            contentPadding = PaddingValues(bottom = 16.dp)
-        ) {
+        item {
+            MyHealthClickableText(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, start = 32.dp, end = 32.dp),
+                style = MyHealthTypography.caption,
+                fullText = stringResource(id = R.string.information_is_from_the_billing_claim),
+                clickableText = stringResource(id = R.string.faq),
+                action = onClickFaq
+            )
+        }
+        uiState.uiList.forEach { listItem ->
             item {
-                MyHealthClickableText(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, start = 32.dp, end = 32.dp),
-                    style = MyHealthTypography.caption,
-                    fullText = stringResource(id = R.string.information_is_from_the_billing_claim),
-                    clickableText = stringResource(id = R.string.faq),
-                    action = onClickFaq
+                HealthRecordListItem(
+                    stringResource(id = listItem.title),
+                    listItem.description.orEmpty(),
                 )
             }
-            uiState.uiList.forEach { listItem ->
-                item {
-                    HealthRecordListItem(
-                        stringResource(id = listItem.title),
-                        listItem.description.orEmpty(),
-                    )
-                }
-            }
-        }
-        if (uiState.onLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-            )
         }
     }
 }
@@ -81,18 +75,20 @@ private fun HealthVisitDetailContent(uiState: HealthVisitDetailUiState, onClickF
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 private fun PreviewHealthVisitDetailContent() {
-    HealthVisitDetailContent(
-        HealthVisitDetailUiState(
-            uiList = listOf(
-                HealthRecordDetailItem(
-                    R.string.clinic_name,
-                    "FRANCIS N WER"
-                ),
-                HealthRecordDetailItem(
-                    R.string.practitioner_name,
-                    "Daniel Something"
+    Box {
+        HealthVisitDetailContent(
+            HealthVisitDetailUiState(
+                uiList = listOf(
+                    HealthRecordDetailItem(
+                        R.string.clinic_name,
+                        "FRANCIS N WER"
+                    ),
+                    HealthRecordDetailItem(
+                        R.string.practitioner_name,
+                        "Daniel Something"
+                    )
                 )
             )
-        )
-    ) {}
+        ) {}
+    }
 }
