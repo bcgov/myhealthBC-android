@@ -25,7 +25,11 @@ fun SHCData.toPatient(): PatientDto {
     }
     return PatientDto(
         fullName = fullNameBuilder.toString(),
-        dateOfBirth = patient.dateOfBirth?.toDate()!!
+        dateOfBirth = patient.dateOfBirth?.toDate()!!,
+        firstName = patient.firstName.orEmpty(),
+        lastName = patient.lastName.orEmpty(),
+        physicalAddress = null,
+        mailingAddress = null,
     )
 }
 

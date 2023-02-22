@@ -3,6 +3,7 @@ package ca.bc.gov.data.datasource.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import ca.bc.gov.data.datasource.local.converter.AddressConverter
 import ca.bc.gov.data.datasource.local.converter.AuthenticationStatusTypeConverter
 import ca.bc.gov.data.datasource.local.converter.DateTimeConverter
 import ca.bc.gov.data.datasource.local.dao.ClinicalDocumentDao
@@ -74,7 +75,7 @@ import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityE
     ],
     exportSchema = true
 )
-@TypeConverters(DateTimeConverter::class, AuthenticationStatusTypeConverter::class)
+@TypeConverters(DateTimeConverter::class, AuthenticationStatusTypeConverter::class, AddressConverter::class)
 abstract class MyHealthDataBase : RoomDatabase() {
 
     abstract fun getPatientDao(): PatientDao

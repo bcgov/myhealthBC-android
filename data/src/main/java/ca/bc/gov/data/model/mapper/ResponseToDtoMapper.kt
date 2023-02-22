@@ -6,6 +6,7 @@ import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
+import ca.bc.gov.common.model.PatientAddressDto
 import ca.bc.gov.common.model.TermsOfServiceDto
 import ca.bc.gov.common.model.banner.BannerDto
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
@@ -33,6 +34,7 @@ import ca.bc.gov.common.utils.toDateTimeZ
 import ca.bc.gov.common.utils.toOffsetDateTime
 import ca.bc.gov.data.datasource.remote.model.base.CovidLabResult
 import ca.bc.gov.data.datasource.remote.model.base.CovidOrder
+import ca.bc.gov.data.datasource.remote.model.base.PatientAddress
 import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
 import ca.bc.gov.data.datasource.remote.model.base.banner.BannerPayload
 import ca.bc.gov.data.datasource.remote.model.base.clinicaldocument.ClinicalDocumentResponse
@@ -64,6 +66,13 @@ import ca.bc.gov.data.model.MediaMetaData
 import ca.bc.gov.data.model.VaccineStatus
 import java.time.Instant
 import java.time.format.DateTimeFormatter
+
+fun PatientAddress.toDto() = PatientAddressDto(
+    streetLines = streetLines,
+    city = city,
+    state = state,
+    postalCode = postalCode,
+)
 
 fun MedicationStatementResponse.toListOfMedicationDto(): List<MedicationWithSummaryAndPharmacyDto> =
     this.payload?.mapNotNull {

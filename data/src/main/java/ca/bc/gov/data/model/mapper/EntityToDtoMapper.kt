@@ -3,6 +3,7 @@ package ca.bc.gov.data.model.mapper
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
+import ca.bc.gov.common.model.PatientAddressDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
@@ -40,6 +41,7 @@ import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.utils.titleCase
+import ca.bc.gov.data.datasource.local.entity.PatientAddressEntity
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.clinicaldocument.ClinicalDocumentEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
@@ -79,7 +81,22 @@ import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityE
 import java.time.Instant
 
 fun PatientEntity.toDto() = PatientDto(
-    id, fullName.titleCase(), dateOfBirth, phn, authenticationStatus = authenticationStatus
+    id = id,
+    fullName = fullName.titleCase(),
+    dateOfBirth = dateOfBirth,
+    phn = phn,
+    authenticationStatus = authenticationStatus,
+    firstName = firstName,
+    lastName = lastName,
+    mailingAddress = mailingAddress?.toDto(),
+    physicalAddress = physicalAddress?.toDto(),
+)
+
+fun PatientAddressEntity.toDto() = PatientAddressDto(
+    streetLines = streetLines,
+    city = city,
+    state = state,
+    postalCode = postalCode,
 )
 
 fun VaccineDoseEntity.toDto() = VaccineDoseDto(

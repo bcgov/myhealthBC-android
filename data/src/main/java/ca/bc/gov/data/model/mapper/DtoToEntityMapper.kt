@@ -4,6 +4,7 @@ import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
+import ca.bc.gov.common.model.PatientAddressDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
@@ -20,6 +21,7 @@ import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidTestDto
+import ca.bc.gov.data.datasource.local.entity.PatientAddressEntity
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.clinicaldocument.ClinicalDocumentEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
@@ -42,12 +44,23 @@ import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 
 fun PatientDto.toEntity() = PatientEntity(
-    id,
-    fullName,
+    id = id,
+    fullName = fullName,
+    firstName = firstName,
+    lastName = lastName,
     dateOfBirth = dateOfBirth,
     phn = phn,
     patientOrder = Long.MAX_VALUE,
-    authenticationStatus = authenticationStatus
+    authenticationStatus = authenticationStatus,
+    mailingAddress = mailingAddress?.toEntity(),
+    physicalAddress = physicalAddress?.toEntity(),
+)
+
+fun PatientAddressDto.toEntity() = PatientAddressEntity(
+    streetLines = streetLines,
+    city = city,
+    state = state,
+    postalCode = postalCode,
 )
 
 fun VaccineDoseDto.toEntity() = VaccineDoseEntity(
@@ -257,7 +270,11 @@ fun DependentDto.toPatientEntity() = PatientEntity(
     dateOfBirth = dateOfBirth,
     phn = phn,
     patientOrder = Long.MAX_VALUE,
-    authenticationStatus = AuthenticationStatus.DEPENDENT
+    authenticationStatus = AuthenticationStatus.DEPENDENT,
+    physicalAddress = null,
+    mailingAddress = null,
+    firstName = firstname,
+    lastName = lastname
 )
 
 fun ClinicalDocumentDto.toEntity() = ClinicalDocumentEntity(
