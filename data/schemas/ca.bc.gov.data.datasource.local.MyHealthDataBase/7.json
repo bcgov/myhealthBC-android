@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 7,
-    "identityHash": "9d7a819f7c228777c117f2a2a0733384",
+    "identityHash": "ca0140f570b2e2b32e335ed9dcf4ff8e",
     "entities": [
       {
         "tableName": "patient",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `full_name` TEXT NOT NULL, `dob` INTEGER NOT NULL, `phn` TEXT, `time_stamp` INTEGER NOT NULL, `patient_order` INTEGER NOT NULL DEFAULT 9223372036854775807, `authentication_status` TEXT NOT NULL DEFAULT 'NON_AUTHENTICATED')",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `full_name` TEXT NOT NULL, `first_name` TEXT NOT NULL, `last_name` TEXT NOT NULL, `dob` INTEGER NOT NULL, `physical_address` TEXT, `mailing_address` TEXT, `phn` TEXT, `time_stamp` INTEGER NOT NULL, `patient_order` INTEGER NOT NULL DEFAULT 9223372036854775807, `authentication_status` TEXT NOT NULL DEFAULT 'NON_AUTHENTICATED')",
         "fields": [
           {
             "fieldPath": "id",
@@ -21,10 +21,34 @@
             "notNull": true
           },
           {
+            "fieldPath": "firstName",
+            "columnName": "first_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastName",
+            "columnName": "last_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
             "fieldPath": "dateOfBirth",
             "columnName": "dob",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "physicalAddress",
+            "columnName": "physical_address",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mailingAddress",
+            "columnName": "mailing_address",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "phn",
@@ -1668,7 +1692,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9d7a819f7c228777c117f2a2a0733384')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ca0140f570b2e2b32e335ed9dcf4ff8e')"
     ]
   }
 }

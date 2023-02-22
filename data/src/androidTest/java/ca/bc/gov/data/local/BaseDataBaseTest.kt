@@ -134,7 +134,11 @@ abstract class BaseDataBaseTest {
             dateOfBirth = Instant.now(),
             phn = "12333456",
             timeStamp = Instant.now(),
-            patientOrder = Long.MAX_VALUE
+            patientOrder = Long.MAX_VALUE,
+            firstName = "",
+            lastName = "",
+            physicalAddress = null,
+            mailingAddress = null
         )
 
     protected fun getPatient2() =
@@ -144,7 +148,11 @@ abstract class BaseDataBaseTest {
             dateOfBirth = Instant.now(),
             phn = "12333456",
             timeStamp = Instant.now(),
-            patientOrder = Long.MAX_VALUE
+            patientOrder = Long.MAX_VALUE,
+            firstName = "",
+            lastName = "",
+            physicalAddress = null,
+            mailingAddress = null
         )
 
     protected fun getVaccineRecord1() = VaccineRecordEntity(

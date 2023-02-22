@@ -43,6 +43,11 @@ val ALL_MIGRATIONS = arrayOf(
 
     object : Migration(6, 7) {
         override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("ALTER TABLE Patient ADD COLUMN first_name TEXT NOT NULL DEFAULT \"\"")
+            database.execSQL("ALTER TABLE Patient ADD COLUMN last_name TEXT NOT NULL  DEFAULT \"\"")
+            database.execSQL("ALTER TABLE Patient ADD COLUMN physical_address TEXT")
+            database.execSQL("ALTER TABLE Patient ADD COLUMN mailing_address TEXT")
+
             database.execSQL("DROP TABLE covid_order")
             database.execSQL("DROP TABLE covid_test")
 
