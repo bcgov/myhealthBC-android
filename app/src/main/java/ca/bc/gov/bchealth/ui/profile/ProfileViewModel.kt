@@ -1,9 +1,13 @@
 package ca.bc.gov.bchealth.ui.profile
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.bchealth.utils.URL_ADDRESS_CHANGE
+import ca.bc.gov.common.model.AuthenticationStatus
+import ca.bc.gov.common.model.PatientAddressDto
+import ca.bc.gov.repository.patient.PatientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,48 +17,69 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor() : BaseViewModel() {
+class ProfileViewModel @Inject constructor(
+    private val patientRepository: PatientRepository
+) : BaseViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
     fun load() = viewModelScope.launch {
         _uiState.update { it.copy(loading = true) }
 
+        val patient = patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
+
         _uiState.update {
             it.copy(
-                fullName = "Jean Smith",
+                fullName = patient.fullName,
                 loading = false,
                 uiList = listOf(
                     ProfileItem.Info(
-                        R.string.profile_first_name,
-                        "Jean"
+                        R.string.profile_first_name, patient.firstName
                     ),
                     ProfileItem.Info(
-                        R.string.profile_last_name,
-                        "Smith"
+                        R.string.profile_last_name, patient.lastName
                     ),
                     ProfileItem.Info(
-                        R.string.profile_phn,
-                        "4444 555 999"
+                        R.string.profile_phn, patient.phn.orEmpty()
                     ),
-                    ProfileItem.Address(
-                        R.string.profile_physical_address,
-                        "Vancouver, BC V8V 2T2",
-                        R.string.profile_address_footer,
-                        R.string.profile_address_footer_click,
-                        URL_ADDRESS_CHANGE
+                    getProfileAddress(
+                        patient.physicalAddress, R.string.profile_physical_address
                     ),
-                    ProfileItem.EmptyAddress(
-                        R.string.profile_mailing_address,
-                        R.string.profile_address_empty,
-                        R.string.profile_address_empty_footer,
-                        R.string.profile_address_empty_footer_click,
-                        URL_ADDRESS_CHANGE
+                    getProfileAddress(
+                        patient.mailingAddress, R.string.profile_mailing_address
                     ),
                 )
             )
         }
     }
+}
+
+private fun getProfileAddress(addressDto: PatientAddressDto?, @StringRes addressLabel: Int) =
+    if (addressDto == null) {
+        ProfileItem.EmptyAddress(
+            addressLabel,
+            R.string.profile_address_empty,
+            R.string.profile_address_empty_footer,
+            R.string.profile_address_empty_footer_click,
+            URL_ADDRESS_CHANGE
+        )
+    } else {
+        ProfileItem.Address(
+            addressLabel,
+            addressDto.toUiItem(),
+            R.string.profile_address_footer,
+            R.string.profile_address_footer_click,
+            URL_ADDRESS_CHANGE
+        )
+    }
+
+private fun PatientAddressDto.toUiItem(): String {
+    val builder = StringBuilder()
+    streetLines.forEach {
+        builder.append(it + "\n")
+    }
+    builder.append("$city, $province $postalCode")
+    return builder.toString()
 }
 
 data class ProfileUiState(
@@ -66,23 +91,23 @@ data class ProfileUiState(
 
 sealed class ProfileItem {
     data class Info(
-        val label: Int,
+        @StringRes val label: Int,
         val content: String
     ) : ProfileItem()
 
     data class EmptyAddress(
-        val label: Int,
-        val placeholder: Int,
-        val footer: Int,
-        val clickableText: Int,
+        @StringRes val label: Int,
+        @StringRes val placeholder: Int,
+        @StringRes val footer: Int,
+        @StringRes val clickableText: Int,
         val url: String,
     ) : ProfileItem()
 
     data class Address(
-        val label: Int,
+        @StringRes val label: Int,
         val content: String,
-        val footer: Int,
-        val clickableText: Int,
+        @StringRes val footer: Int,
+        @StringRes val clickableText: Int,
         val url: String,
     ) : ProfileItem()
 }

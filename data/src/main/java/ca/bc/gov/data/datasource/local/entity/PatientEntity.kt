@@ -56,8 +56,8 @@ data class PatientAddressEntity(
     @ColumnInfo(name = "city")
     val city: String,
 
-    @ColumnInfo(name = "state")
-    val state: String,
+    @ColumnInfo(name = "province")
+    val province: String,
 
     @ColumnInfo(name = "postal_code")
     val postalCode: String,

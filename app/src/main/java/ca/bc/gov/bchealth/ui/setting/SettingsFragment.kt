@@ -110,7 +110,7 @@ class SettingsFragment : BaseFragment(R.layout.fragment_settings) {
         with(binding.layoutToolbar.topAppBar) {
             setupWithNavController(findNavController(), appBarConfiguration)
             setNavigationIcon(R.drawable.ic_toolbar_back)
-            title = getString(R.string.profile_settings)
+            title = getString(R.string.settings)
         }
     }
 

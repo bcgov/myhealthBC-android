@@ -36,7 +36,7 @@ data class PatientAddress(
     val city: String,
 
     @SerializedName("state")
-    val state: String,
+    val province: String,
 
     @SerializedName("postalCode")
     val postalCode: String,

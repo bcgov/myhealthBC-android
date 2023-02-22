@@ -5,6 +5,8 @@ import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.fragment.app.viewModels
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.utils.URL_ADDRESS_CHANGE
+import ca.bc.gov.bchealth.utils.redirect
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,5 +25,6 @@ class ProfileFragment : BaseFragment(null) {
     }
 
     private fun onClickAddressChange() {
+        requireContext().redirect(URL_ADDRESS_CHANGE)
     }
 }

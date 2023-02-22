@@ -109,7 +109,7 @@ fun ProfileHeaderUi(fullName: String) {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(top = 20.dp, bottom = 20.dp),
+            .padding(top = 16.dp, bottom = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         DecorativeImage(resourceId = R.drawable.ic_profile_image)

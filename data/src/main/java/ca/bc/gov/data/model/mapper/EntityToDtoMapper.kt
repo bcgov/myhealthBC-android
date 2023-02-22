@@ -95,7 +95,7 @@ fun PatientEntity.toDto() = PatientDto(
 fun PatientAddressEntity.toDto() = PatientAddressDto(
     streetLines = streetLines,
     city = city,
-    state = state,
+    province = province,
     postalCode = postalCode,
 )
 

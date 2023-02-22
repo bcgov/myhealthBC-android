@@ -70,7 +70,7 @@ import java.time.format.DateTimeFormatter
 fun PatientAddress.toDto() = PatientAddressDto(
     streetLines = streetLines,
     city = city,
-    state = state,
+    province = province,
     postalCode = postalCode,
 )
 

@@ -59,7 +59,7 @@ fun PatientDto.toEntity() = PatientEntity(
 fun PatientAddressDto.toEntity() = PatientAddressEntity(
     streetLines = streetLines,
     city = city,
-    state = state,
+    province = province,
     postalCode = postalCode,
 )
 
