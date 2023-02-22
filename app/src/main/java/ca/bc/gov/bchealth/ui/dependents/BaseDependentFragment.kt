@@ -4,7 +4,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 
-abstract class BaseDependentFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
+abstract class BaseDependentFragment(contentLayoutId: Int?) : BaseFragment(contentLayoutId) {
 
     fun confirmDeletion(patientId: Long, firstName: String) {
         AlertDialogHelper.showAlertDialog(
