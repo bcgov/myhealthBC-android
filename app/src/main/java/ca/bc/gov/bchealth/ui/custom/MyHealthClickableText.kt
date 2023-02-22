@@ -19,6 +19,10 @@ fun MyHealthClickableText(
     style: TextStyle = TextStyle.Default,
     fullText: String,
     clickableText: String,
+    clickableStyle: SpanStyle = SpanStyle(
+        color = primaryBlue,
+        textDecoration = TextDecoration.Underline
+    ),
     action: () -> Unit
 ) {
     val nonClickableText = getNonClickableText(fullText, clickableText)
@@ -29,12 +33,7 @@ fun MyHealthClickableText(
         } else {
             append(nonClickableText.first)
             pushStringAnnotation(tag = TEXT_TAG, annotation = "")
-            withStyle(
-                style = SpanStyle(
-                    color = primaryBlue,
-                    textDecoration = TextDecoration.Underline
-                )
-            ) {
+            withStyle(style = clickableStyle) {
                 append(clickableText)
             }
 
@@ -76,5 +75,5 @@ private fun getNonClickableText(
 private fun PreviewMyHealthClickableText() {
     val fullText = "This is a FAQ page."
     val clickableText = "FAQ"
-    MyHealthClickableText(fullText = fullText, clickableText = clickableText) {}
+    MyHealthClickableText(fullText = fullText, clickableText = clickableText, action = {})
 }

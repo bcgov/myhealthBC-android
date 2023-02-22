@@ -14,11 +14,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.darkText
+import ca.bc.gov.bchealth.compose.primaryBlue
+import ca.bc.gov.bchealth.ui.custom.DecorativeImage
+import ca.bc.gov.bchealth.ui.custom.MyHealthClickableText
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 import ca.bc.gov.bchealth.ui.dependents.profile.DependentProfileItem
 import ca.bc.gov.bchealth.ui.dependents.profile.ListDivider
@@ -27,7 +34,8 @@ import ca.bc.gov.bchealth.utils.URL_ADDRESS_CHANGE
 @Composable
 fun ProfileUI(
     viewModel: ProfileViewModel,
-    navigationAction: () -> Unit
+    navigationAction: () -> Unit,
+    onClickAction: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState().value
 
@@ -35,14 +43,14 @@ fun ProfileUI(
         title = stringResource(id = uiState.title),
         navigationAction = navigationAction
     ) {
-        ProfileContent(uiState)
+        ProfileContent(uiState, onClickAction)
     }
 }
 
 @Composable
 private fun ProfileContent(
     uiState: ProfileUiState,
-    //  onClickDownload: () -> Unit
+    onClickAction: () -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -53,6 +61,8 @@ private fun ProfileContent(
                 .wrapContentHeight()
                 .align(Alignment.TopCenter)
         ) {
+
+            item { ProfileHeaderUi(uiState.fullName) }
 
             item { ListDivider() }
 
@@ -68,11 +78,16 @@ private fun ProfileContent(
                             stringResource(id = listItem.label),
                             listItem.content,
                             stringResource(id = listItem.footer),
+                            stringResource(id = listItem.clickableText),
+                            onClickAction
                         )
+
                         is ProfileItem.EmptyAddress -> ProfileEmptyAddressUi(
                             stringResource(id = listItem.label),
                             stringResource(id = listItem.placeholder),
                             stringResource(id = listItem.footer),
+                            stringResource(id = listItem.clickableText),
+                            onClickAction
                         )
                     }
                 }
@@ -89,7 +104,36 @@ private fun ProfileContent(
 }
 
 @Composable
-fun ProfileAddressUi(label: String, value: String, footer: String) {
+fun ProfileHeaderUi(fullName: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(top = 20.dp, bottom = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        DecorativeImage(resourceId = R.drawable.ic_profile_image)
+
+        Text(
+            text = fullName,
+            style = MyHealthTypography.h3,
+            color = primaryBlue,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+fun ProfileAddressUi(
+    label: String,
+    value: String,
+    footer: String,
+    clickableText: String,
+    onClickAction: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -102,16 +146,29 @@ fun ProfileAddressUi(label: String, value: String, footer: String) {
             style = MyHealthTypography.body2,
             modifier = Modifier.padding(top = 4.dp)
         )
-        Text(
-            text = footer,
+        MyHealthClickableText(
+            modifier = Modifier.padding(top = 4.dp),
             style = MyHealthTypography.caption,
-            modifier = Modifier.padding(top = 4.dp)
+            fullText = footer,
+            clickableText = clickableText,
+            action = onClickAction,
+            clickableStyle = SpanStyle(
+                color = primaryBlue,
+                textDecoration = TextDecoration.Underline,
+                fontWeight = FontWeight.Bold
+            )
         )
     }
 }
 
 @Composable
-fun ProfileEmptyAddressUi(label: String, value: String, footer: String) {
+fun ProfileEmptyAddressUi(
+    label: String,
+    value: String,
+    footer: String,
+    clickableText: String,
+    onClickAction: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -124,11 +181,12 @@ fun ProfileEmptyAddressUi(label: String, value: String, footer: String) {
             style = MyHealthTypography.caption,
             modifier = Modifier.padding(top = 4.dp)
         )
-        Text(
-            text = footer,
-            style = MyHealthTypography.caption,
-            color = darkText,
-            modifier = Modifier.padding(top = 4.dp)
+        MyHealthClickableText(
+            modifier = Modifier.padding(top = 4.dp),
+            style = MyHealthTypography.caption.copy(color = darkText),
+            fullText = footer,
+            clickableText = clickableText,
+            action = onClickAction
         )
     }
 }
@@ -138,6 +196,7 @@ fun ProfileEmptyAddressUi(label: String, value: String, footer: String) {
 private fun PreviewClinicalDocumentDetailContent() {
     ProfileContent(
         ProfileUiState(
+            fullName = "Jean Smith",
             uiList = listOf(
                 ProfileItem.Info(
                     R.string.profile_first_name,
@@ -168,5 +227,5 @@ private fun PreviewClinicalDocumentDetailContent() {
                 ),
             )
         )
-    )
+    ) {}
 }
