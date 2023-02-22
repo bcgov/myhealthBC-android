@@ -77,6 +77,10 @@ class SettingsFragment : BaseFragment(R.layout.fragment_settings) {
                 )
             }
         }
+
+        binding.layoutProfile.setOnClickListener {
+            navigate(R.id.profileFragment)
+        }
     }
 
     private fun initClickListeners() {

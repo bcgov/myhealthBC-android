@@ -89,7 +89,7 @@
     <string name="delete_data_message">Are you sure you want to delete all records and saved data?</string>
     <string name="profile_settings">Profile &amp; settings</string>
     <string name="security_and_data"><![CDATA[Security & data]]></string>
-    <string name="view_profile"><![CDATA[View profile >]]></string>
+    <string name="view_profile">View profile</string>
     <string name="data">Data</string>
     <string name="delete_all_records_desc">Log out of the app and delete all records and saved information.</string>
     <string name="logins">Logins</string>
