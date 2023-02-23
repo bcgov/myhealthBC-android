@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - develop
-      - HAPP-1331-Refactor-health-record-item
+      - HAPP-1043-Create-user-profile-screen
 
 jobs:
   build:
