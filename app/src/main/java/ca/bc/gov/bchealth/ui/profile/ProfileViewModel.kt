@@ -93,6 +93,9 @@ data class ProfileUiState(
     val title: Int = R.string.profile,
     val loading: Boolean = false,
     val fullName: String = "",
+    val email: String? = null,
+    val isEmailVerified: Boolean = false,
+    val phone: String? = null,
     val uiList: List<ProfileItem> = listOf(),
     val error: Exception? = null
 )

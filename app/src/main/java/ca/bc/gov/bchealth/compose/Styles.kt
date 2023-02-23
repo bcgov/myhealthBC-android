@@ -25,6 +25,8 @@ val white = Color(0xFFFFFFFF)
 val primaryBlue = Color(0xFF003366)
 val statusBlue30 = Color(0x4D38598A)
 val descriptionGrey = Color(0xFF6D757D)
+val green = Color(0xFF2E8540)
+val red = Color(0xFFD8292F)
 
 val MyHealthTypography = Typography(
     body1 = TextStyle(
@@ -59,6 +61,13 @@ val MyHealthTypography = Typography(
         fontFamily = fonts,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
+        color = descriptionGrey
+    ),
+
+    overline = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
         color = descriptionGrey
     ),
 )

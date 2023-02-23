@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.fragment.app.viewModels
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.URL_ADDRESS_CHANGE
+import ca.bc.gov.bchealth.utils.URL_COMMUNICATION_PREFS
 import ca.bc.gov.bchealth.utils.redirect
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -16,7 +17,12 @@ class ProfileFragment : BaseFragment(null) {
 
     @Composable
     override fun GetComposableLayout() {
-        ProfileUI(viewModel = viewModel, navigationAction = ::popNavigation, ::onClickAddressChange)
+        ProfileUI(
+            viewModel = viewModel,
+            navigationAction = ::popNavigation,
+            onClickAddress = ::onClickAddressChange,
+            onClickPrefs = ::onClickCommunicationPrefs,
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -29,5 +35,9 @@ class ProfileFragment : BaseFragment(null) {
 
     private fun onClickAddressChange() {
         requireContext().redirect(URL_ADDRESS_CHANGE)
+    }
+
+    private fun onClickCommunicationPrefs() {
+        requireContext().redirect(URL_COMMUNICATION_PREFS)
     }
 }

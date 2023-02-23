@@ -17,9 +17,9 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.darkText
 import ca.bc.gov.bchealth.compose.primaryBlue
@@ -34,7 +34,8 @@ import ca.bc.gov.bchealth.utils.URL_ADDRESS_CHANGE
 fun ProfileUI(
     viewModel: ProfileViewModel,
     navigationAction: () -> Unit,
-    onClickAction: () -> Unit
+    onClickAddress: () -> Unit,
+    onClickPrefs: () -> Unit,
 ) {
     val uiState = viewModel.uiState.collectAsState().value
 
@@ -43,14 +44,15 @@ fun ProfileUI(
         isLoading = uiState.loading,
         navigationAction = navigationAction
     ) {
-        ProfileContent(uiState, onClickAction)
+        ProfileContent(uiState, onClickAddress, onClickPrefs)
     }
 }
 
 @Composable
 private fun BoxScope.ProfileContent(
     uiState: ProfileUiState,
-    onClickAction: () -> Unit
+    onClickAddress: () -> Unit,
+    onClickPrefs: () -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -76,7 +78,7 @@ private fun BoxScope.ProfileContent(
                         listItem.content,
                         stringResource(id = listItem.footer),
                         stringResource(id = listItem.clickableText),
-                        onClickAction
+                        onClickAddress
                     )
 
                     is ProfileItem.EmptyAddress -> ProfileEmptyAddressUi(
@@ -84,12 +86,21 @@ private fun BoxScope.ProfileContent(
                         stringResource(id = listItem.placeholder),
                         stringResource(id = listItem.footer),
                         stringResource(id = listItem.clickableText),
-                        onClickAction
+                        onClickAddress
                     )
                 }
             }
 
             item { ListDivider() }
+        }
+
+        item {
+            CommunicationPreferences(
+                email = uiState.email,
+                verified = uiState.isEmailVerified,
+                phone = uiState.phone,
+                onClick = onClickPrefs,
+            )
         }
     }
 }
@@ -182,7 +193,7 @@ fun ProfileEmptyAddressUi(
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
+@BasePreview
 @Composable
 private fun PreviewClinicalDocumentDetailContent() {
     Box {
@@ -217,8 +228,10 @@ private fun PreviewClinicalDocumentDetailContent() {
                         R.string.profile_address_empty_footer_click,
                         URL_ADDRESS_CHANGE
                     ),
-                )
-            )
-        ) {}
+                ),
+            ),
+            onClickAddress = {},
+            onClickPrefs = {}
+        )
     }
 }
