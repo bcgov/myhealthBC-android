@@ -40,6 +40,7 @@ import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
+import ca.bc.gov.common.model.userprofile.UserProfileDto
 import ca.bc.gov.common.utils.titleCase
 import ca.bc.gov.data.datasource.local.entity.PatientAddressEntity
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
@@ -78,6 +79,7 @@ import ca.bc.gov.data.datasource.local.entity.relations.PatientWithSpecialAuthor
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithVaccineAndDoses
 import ca.bc.gov.data.datasource.local.entity.relations.VaccineRecordWithDose
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
+import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 import java.time.Instant
 
 fun PatientEntity.toDto() = PatientDto(
@@ -97,6 +99,14 @@ fun PatientAddressEntity.toDto() = PatientAddressDto(
     city = city,
     province = province,
     postalCode = postalCode,
+)
+
+fun UserProfileEntity.toDto() = UserProfileDto(
+    patientId = patientId,
+    acceptedTermsOfService = acceptedTermsOfService,
+    email = email,
+    isEmailVerified = isEmailVerified,
+    smsNumber = smsNumber,
 )
 
 fun VaccineDoseEntity.toDto() = VaccineDoseDto(

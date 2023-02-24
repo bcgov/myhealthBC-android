@@ -29,6 +29,7 @@ import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
+import ca.bc.gov.common.model.userprofile.UserProfileDto
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.common.utils.toDateTimeZ
 import ca.bc.gov.common.utils.toOffsetDateTime
@@ -51,6 +52,7 @@ import ca.bc.gov.data.datasource.remote.model.base.immunization.Recommendation
 import ca.bc.gov.data.datasource.remote.model.base.medication.DispensingPharmacy
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationStatementPayload
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationSummary
+import ca.bc.gov.data.datasource.remote.model.base.profile.UserProfilePayload
 import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityPayload
 import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityResponse
 import ca.bc.gov.data.datasource.remote.model.base.vaccine.Media
@@ -72,6 +74,14 @@ fun PatientAddress.toDto() = PatientAddressDto(
     city = city,
     province = province,
     postalCode = postalCode,
+)
+
+fun UserProfilePayload.toDto(patientId: Long) = UserProfileDto(
+    patientId = patientId,
+    acceptedTermsOfService = acceptedTermsOfService,
+    email = email,
+    isEmailVerified = isEmailVerified,
+    smsNumber = smsNumber,
 )
 
 fun MedicationStatementResponse.toListOfMedicationDto(): List<MedicationWithSummaryAndPharmacyDto> =

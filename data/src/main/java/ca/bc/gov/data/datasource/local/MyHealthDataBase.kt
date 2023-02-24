@@ -24,6 +24,7 @@ import ca.bc.gov.data.datasource.local.dao.MedicationRecordDao
 import ca.bc.gov.data.datasource.local.dao.MedicationSummaryDao
 import ca.bc.gov.data.datasource.local.dao.PatientDao
 import ca.bc.gov.data.datasource.local.dao.SpecialAuthorityDao
+import ca.bc.gov.data.datasource.local.dao.UserProfileDao
 import ca.bc.gov.data.datasource.local.dao.VaccineRecordDao
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.clinicaldocument.ClinicalDocumentEntity
@@ -45,6 +46,7 @@ import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntit
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
+import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 
 /**
  * @author Pinakin Kansara
@@ -72,10 +74,15 @@ import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityE
         HospitalVisitEntity::class,
         SpecialAuthorityEntity::class,
         ClinicalDocumentEntity::class,
+        UserProfileEntity::class,
     ],
     exportSchema = true
 )
-@TypeConverters(DateTimeConverter::class, AuthenticationStatusTypeConverter::class, AddressConverter::class)
+@TypeConverters(
+    DateTimeConverter::class,
+    AuthenticationStatusTypeConverter::class,
+    AddressConverter::class
+)
 abstract class MyHealthDataBase : RoomDatabase() {
 
     abstract fun getPatientDao(): PatientDao
@@ -115,4 +122,6 @@ abstract class MyHealthDataBase : RoomDatabase() {
     abstract fun getSpecialAuthorityDao(): SpecialAuthorityDao
 
     abstract fun getClinicalDocumentDao(): ClinicalDocumentDao
+
+    abstract fun getUserProfileDao(): UserProfileDao
 }

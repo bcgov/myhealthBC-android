@@ -17,6 +17,7 @@ import ca.bc.gov.bchealth.compose.MyHealthTheme
 fun MyHealthScaffold(
     title: String?,
     isLoading: Boolean = false,
+    hideContentWhileLoading: Boolean = false,
     navigationAction: (() -> Unit),
     content: @Composable BoxScope.() -> Unit
 ) = MyHealthTheme {
@@ -30,7 +31,9 @@ fun MyHealthScaffold(
                 .padding(innerPadding)
                 .fillMaxSize(),
             content = {
-                content()
+                if (hideContentWhileLoading.not() || isLoading.not()) {
+                    content()
+                }
                 if (isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),

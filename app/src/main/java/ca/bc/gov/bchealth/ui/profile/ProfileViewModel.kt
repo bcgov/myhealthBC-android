@@ -7,6 +7,8 @@ import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.bchealth.utils.URL_ADDRESS_CHANGE
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.PatientAddressDto
+import ca.bc.gov.repository.ProfileRepository
+import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.patient.PatientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +20,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val patientRepository: PatientRepository
+    private val patientRepository: PatientRepository,
+    private val userProfileRepository: ProfileRepository,
+    private val bcscAuthRepo: BcscAuthRepo
 ) : BaseViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
@@ -29,6 +33,14 @@ class ProfileViewModel @Inject constructor(
         try {
             val patient =
                 patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
+
+            val authParameters = bcscAuthRepo.getAuthParametersDto()
+
+            val userProfile = userProfileRepository.getUserProfile(
+                token = authParameters.token,
+                hdid = authParameters.hdid,
+                patientId = patient.id
+            )
 
             _uiState.update {
                 it.copy(
@@ -50,7 +62,10 @@ class ProfileViewModel @Inject constructor(
                         getProfileAddress(
                             patient.mailingAddress, R.string.profile_mailing_address
                         ),
-                    )
+                    ),
+                    email = userProfile.email,
+                    isEmailVerified = userProfile.isEmailVerified,
+                    phone = userProfile.smsNumber,
                 )
             }
         } catch (e: Exception) {

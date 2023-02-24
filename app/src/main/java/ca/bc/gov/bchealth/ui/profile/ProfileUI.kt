@@ -42,6 +42,7 @@ fun ProfileUI(
     MyHealthScaffold(
         title = stringResource(id = uiState.title),
         isLoading = uiState.loading,
+        hideContentWhileLoading = true,
         navigationAction = navigationAction
     ) {
         ProfileContent(uiState, onClickAddress, onClickPrefs)

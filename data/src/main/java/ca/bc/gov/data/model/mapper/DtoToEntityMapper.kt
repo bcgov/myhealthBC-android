@@ -21,6 +21,7 @@ import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidTestDto
+import ca.bc.gov.common.model.userprofile.UserProfileDto
 import ca.bc.gov.data.datasource.local.entity.PatientAddressEntity
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.clinicaldocument.ClinicalDocumentEntity
@@ -42,6 +43,7 @@ import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntit
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
+import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 
 fun PatientDto.toEntity() = PatientEntity(
     id = id,
@@ -61,6 +63,14 @@ fun PatientAddressDto.toEntity() = PatientAddressEntity(
     city = city,
     province = province,
     postalCode = postalCode,
+)
+
+fun UserProfileDto.toEntity() = UserProfileEntity(
+    patientId = patientId,
+    acceptedTermsOfService = acceptedTermsOfService,
+    email = email,
+    isEmailVerified = isEmailVerified,
+    smsNumber = smsNumber,
 )
 
 fun VaccineDoseDto.toEntity() = VaccineDoseEntity(
