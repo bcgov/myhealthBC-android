@@ -14,7 +14,7 @@ import javax.inject.Inject
 /*
 * Created by amit_metri on 18,March,2022
 */
-class ProfileRemoteDataSource @Inject constructor(
+class UserProfileRemoteDataSource @Inject constructor(
     private val healthGatewayPrivateApi: HealthGatewayPrivateApi
 ) {
 

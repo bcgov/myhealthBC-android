@@ -22,7 +22,7 @@ import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.repository.DependentsRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
-import ca.bc.gov.repository.ProfileRepository
+import ca.bc.gov.repository.UserProfileRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.di.IoDispatcher
@@ -50,7 +50,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val patientRepository: PatientRepository,
     private val dependentsRepository: DependentsRepository,
     private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
-    private val userProfileRepository: ProfileRepository,
+    private val userProfileRepository: UserProfileRepository,
     private val notificationHelper: NotificationHelper,
     private val mobileConfigRepository: MobileConfigRepository,
     private val fetchMedicationsUseCase: FetchMedicationsUseCase,

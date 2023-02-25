@@ -7,7 +7,7 @@ import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.bchealth.utils.URL_ADDRESS_CHANGE
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.PatientAddressDto
-import ca.bc.gov.repository.ProfileRepository
+import ca.bc.gov.repository.UserProfileRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.patient.PatientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val patientRepository: PatientRepository,
-    private val userProfileRepository: ProfileRepository,
+    private val userProfileRepository: UserProfileRepository,
     private val bcscAuthRepo: BcscAuthRepo
 ) : BaseViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())

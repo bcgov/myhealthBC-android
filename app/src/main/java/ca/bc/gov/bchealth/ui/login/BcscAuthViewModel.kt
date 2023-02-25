@@ -17,7 +17,7 @@ import ca.bc.gov.common.utils.toUniquePatientName
 import ca.bc.gov.repository.CacheRepository
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
-import ca.bc.gov.repository.ProfileRepository
+import ca.bc.gov.repository.UserProfileRepository
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
@@ -39,7 +39,7 @@ class BcscAuthViewModel @Inject constructor(
     private val bcscAuthRepo: BcscAuthRepo,
     private val workerInvoker: WorkerInvoker,
     private val clearStorageRepository: ClearStorageRepository,
-    private val profileRepository: ProfileRepository,
+    private val userProfileRepository: UserProfileRepository,
     private val patientRepository: PatientRepository,
     private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
     private val mobileConfigRepository: MobileConfigRepository,
@@ -273,7 +273,7 @@ class BcscAuthViewModel @Inject constructor(
         }
         try {
             val authParameters = bcscAuthRepo.getAuthParametersDto()
-            val isWithinAgeLimit = profileRepository.checkAgeLimit(
+            val isWithinAgeLimit = userProfileRepository.checkAgeLimit(
                 authParameters.token,
                 authParameters.hdid
             )
@@ -314,7 +314,7 @@ class BcscAuthViewModel @Inject constructor(
         }
         try {
             val authParameters = bcscAuthRepo.getAuthParametersDto()
-            val isTosAccepted = profileRepository.isTermsOfServiceAccepted(
+            val isTosAccepted = userProfileRepository.isTermsOfServiceAccepted(
                 authParameters.token,
                 authParameters.hdid
             )
@@ -389,7 +389,7 @@ class BcscAuthViewModel @Inject constructor(
 
         try {
             val authParameters = bcscAuthRepo.getAuthParametersDto()
-            val isTosAccepted = profileRepository.acceptTermsOfService(
+            val isTosAccepted = userProfileRepository.acceptTermsOfService(
                 authParameters.token,
                 authParameters.hdid,
                 termsOfServiceId
