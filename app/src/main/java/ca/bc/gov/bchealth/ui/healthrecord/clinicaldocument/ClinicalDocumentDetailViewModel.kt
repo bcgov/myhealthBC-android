@@ -3,9 +3,10 @@ package ca.bc.gov.bchealth.ui.healthrecord.clinicaldocument
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseViewModel
-import ca.bc.gov.bchealth.usecases.RefreshMobileConfigUseCase
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.repository.clinicaldocument.ClinicalDocumentRepository
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ClinicalDocumentDetailViewModel @Inject constructor(
     private val repository: ClinicalDocumentRepository,
-    private val refreshMobileConfigUseCase: RefreshMobileConfigUseCase,
+    private val mobileConfigRepository: MobileConfigRepository,
 ) : BaseViewModel() {
     private val _uiState = MutableStateFlow(ClinicalDocumentUiState())
     val uiState: StateFlow<ClinicalDocumentUiState> = _uiState.asStateFlow()
@@ -29,13 +30,13 @@ class ClinicalDocumentDetailViewModel @Inject constructor(
 
             fileId = dto.fileId
 
-            val uiList: List<ClinicalDocumentDetailItem> = listOf(
-                ClinicalDocumentDetailItem(
+            val uiList: List<HealthRecordDetailItem> = listOf(
+                HealthRecordDetailItem(
                     R.string.clinical_documents_detail_discipline,
                     dto.discipline,
                 ),
 
-                ClinicalDocumentDetailItem(
+                HealthRecordDetailItem(
                     R.string.clinical_documents_detail_facility,
                     dto.facilityName,
                 ),
@@ -59,13 +60,14 @@ class ClinicalDocumentDetailViewModel @Inject constructor(
         _uiState.update { it.copy(onLoading = true) }
 
         try {
-            refreshMobileConfigUseCase.execute()
+            mobileConfigRepository.refreshMobileConfiguration()
 
             fileId?.apply {
                 val pdfData = repository.fetchPdf(this)
-                _uiState.update { it.copy(pdfData = pdfData) }
+                _uiState.update { it.copy(pdfData = pdfData, onLoading = false) }
             }
         } catch (e: Exception) {
+            _uiState.update { it.copy(onLoading = false) }
             handleBaseException(e)
         }
     }
@@ -78,11 +80,6 @@ class ClinicalDocumentDetailViewModel @Inject constructor(
 data class ClinicalDocumentUiState(
     val onLoading: Boolean = false,
     val toolbarTitle: String? = "",
-    val uiList: List<ClinicalDocumentDetailItem> = emptyList(),
+    val uiList: List<HealthRecordDetailItem> = emptyList(),
     val pdfData: String? = null
-)
-
-data class ClinicalDocumentDetailItem(
-    val title: Int,
-    val description: String,
 )

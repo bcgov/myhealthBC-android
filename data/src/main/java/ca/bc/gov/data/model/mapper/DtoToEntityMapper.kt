@@ -4,6 +4,7 @@ import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
+import ca.bc.gov.common.model.PatientAddressDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
@@ -20,15 +21,13 @@ import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidTestDto
-import ca.bc.gov.common.model.test.TestRecordDto
-import ca.bc.gov.common.model.test.TestResultDto
+import ca.bc.gov.common.model.userprofile.UserProfileDto
+import ca.bc.gov.data.datasource.local.entity.PatientAddressEntity
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.clinicaldocument.ClinicalDocumentEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidTestEntity
-import ca.bc.gov.data.datasource.local.entity.covid.test.TestRecordEntity
-import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
 import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
@@ -44,14 +43,34 @@ import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntit
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
+import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 
 fun PatientDto.toEntity() = PatientEntity(
-    id,
-    fullName,
+    id = id,
+    fullName = fullName,
+    firstName = firstName,
+    lastName = lastName,
     dateOfBirth = dateOfBirth,
     phn = phn,
     patientOrder = Long.MAX_VALUE,
-    authenticationStatus = authenticationStatus
+    authenticationStatus = authenticationStatus,
+    mailingAddress = mailingAddress?.toEntity(),
+    physicalAddress = physicalAddress?.toEntity(),
+)
+
+fun PatientAddressDto.toEntity() = PatientAddressEntity(
+    streetLines = streetLines,
+    city = city,
+    province = province,
+    postalCode = postalCode,
+)
+
+fun UserProfileDto.toEntity() = UserProfileEntity(
+    patientId = patientId,
+    acceptedTermsOfService = acceptedTermsOfService,
+    email = email,
+    isEmailVerified = isEmailVerified,
+    smsNumber = smsNumber,
 )
 
 fun VaccineDoseDto.toEntity() = VaccineDoseEntity(
@@ -62,13 +81,6 @@ fun VaccineDoseDto.toEntity() = VaccineDoseEntity(
     date = date
 )
 
-fun TestResultDto.toEntity() = TestResultEntity(
-    id,
-    patientId,
-    collectionDate,
-    dataSource
-)
-
 fun VaccineRecordDto.toEntity() = VaccineRecordEntity(
     id,
     patientId,
@@ -77,21 +89,6 @@ fun VaccineRecordDto.toEntity() = VaccineRecordEntity(
     shcUri,
     federalPass,
     mode
-)
-
-fun TestRecordDto.toEntity() = TestRecordEntity(
-    id = id,
-    testResultId = testResultId,
-    labName = labName,
-    collectionDateTime = collectionDateTime,
-    resultDateTime = resultDateTime,
-    testName = testName,
-    testType = testType,
-    testOutcome = testOutcome,
-    testStatus = testStatus,
-    resultTitle = resultTitle,
-    resultLink = resultLink,
-    resultDescription = resultDescription.joinToString("|")
 )
 
 fun MedicationRecordDto.toEntity() = MedicationRecordEntity(
@@ -171,23 +168,23 @@ fun CommentDto.toEntity() = CommentEntity(
 )
 
 fun CovidOrderDto.toEntity() = CovidOrderEntity(
-    id,
-    patientId,
-    phn,
-    orderingProviderIds,
-    orderingProviders,
-    reportingLab,
-    location,
-    ormOrOru,
-    messageDateTime,
-    messageId,
-    additionalData,
-    reportAvailable
+    covidOrderId = covidOrderId,
+    patientId = patientId,
+    phn = phn,
+    orderingProviderIds = orderingProviderIds,
+    orderingProviders = orderingProviders,
+    reportingLab = reportingLab,
+    location = location,
+    ormOrOru = ormOrOru,
+    messageDateTime = messageDateTime,
+    messageId = messageId,
+    additionalData = additionalData,
+    reportAvailable = reportAvailable
 )
 
-fun CovidTestDto.toEntity() = CovidTestEntity(
+fun CovidTestDto.toEntity(orderId: Long) = CovidTestEntity(
     id,
-    covidOrderId,
+    orderId,
     testType,
     outOfRange,
     collectedDateTime,
@@ -283,7 +280,11 @@ fun DependentDto.toPatientEntity() = PatientEntity(
     dateOfBirth = dateOfBirth,
     phn = phn,
     patientOrder = Long.MAX_VALUE,
-    authenticationStatus = AuthenticationStatus.DEPENDENT
+    authenticationStatus = AuthenticationStatus.DEPENDENT,
+    physicalAddress = null,
+    mailingAddress = null,
+    firstName = firstname,
+    lastName = lastname
 )
 
 fun ClinicalDocumentDto.toEntity() = ClinicalDocumentEntity(

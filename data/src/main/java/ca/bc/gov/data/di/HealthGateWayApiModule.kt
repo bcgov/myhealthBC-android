@@ -11,8 +11,8 @@ import ca.bc.gov.data.datasource.remote.interceptor.CookiesInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.HostSelectionInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.MockInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.NetworkConnectionInterceptor
-import ca.bc.gov.data.datasource.remote.interceptor.QueueItInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.ReceivedCookieInterceptor
+import ca.bc.gov.data.datasource.remote.interceptor.RetryInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.UserAgentInterceptor
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -42,9 +42,7 @@ class HealthGateWayApiModule {
         ReceivedCookieInterceptor(preferenceStorage)
 
     @Provides
-    fun providesQueueItInterceptor(
-        preferenceStorage: EncryptedPreferenceStorage
-    ) = QueueItInterceptor(preferenceStorage)
+    fun providesQueueItInterceptor() = RetryInterceptor()
 
     @Provides
     fun providesUserAgentInterceptor(@ApplicationContext context: Context) = UserAgentInterceptor(
@@ -67,7 +65,7 @@ class HealthGateWayApiModule {
     @Provides
     fun providesOkHttpClient(
         cookiesInterceptor: CookiesInterceptor,
-        queueItInterceptor: QueueItInterceptor,
+        retryInterceptor: RetryInterceptor,
         receivedCookieInterceptor: ReceivedCookieInterceptor,
         mockInterceptor: MockInterceptor,
         hostSelectionInterceptor: HostSelectionInterceptor,
@@ -86,7 +84,7 @@ class HealthGateWayApiModule {
             okHttpClient
                 .addInterceptor(networkConnectionInterceptor)
                 .addInterceptor(hostSelectionInterceptor)
-                .addInterceptor(queueItInterceptor)
+                .addInterceptor(retryInterceptor)
                 .addInterceptor(cookiesInterceptor)
                 .addInterceptor(receivedCookieInterceptor)
         }

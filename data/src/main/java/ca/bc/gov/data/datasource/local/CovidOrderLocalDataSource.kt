@@ -22,8 +22,8 @@ class CovidOrderLocalDataSource @Inject constructor(
         return covidOrderDao.insert(covidOrders.map { it.toEntity() })
     }
 
-    suspend fun findCovidOrderById(covidOrderId: String): CovidOrderWithCovidTestAndPatientDto? =
-        covidOrderDao.findByCovidOrderId(covidOrderId)?.toDto()
+    suspend fun findCovidOrderById(orderId: Long): CovidOrderWithCovidTestAndPatientDto? =
+        covidOrderDao.findByCovidOrderId(orderId)?.toDto()
 
     suspend fun deleteByPatientId(patientId: Long): Int = covidOrderDao.deleteByPatientId(patientId)
 

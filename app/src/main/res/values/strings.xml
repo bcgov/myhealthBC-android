@@ -89,7 +89,7 @@
     <string name="delete_data_message">Are you sure you want to delete all records and saved data?</string>
     <string name="profile_settings">Profile &amp; settings</string>
     <string name="security_and_data"><![CDATA[Security & data]]></string>
-    <string name="view_profile"><![CDATA[View profile >]]></string>
+    <string name="view_profile">View profile</string>
     <string name="data">Data</string>
     <string name="delete_all_records_desc">Log out of the app and delete all records and saved information.</string>
     <string name="logins">Logins</string>
@@ -97,6 +97,29 @@
     <string name="logout_dialog_title">Log out of Health Gateway</string>
     <string name="logout_dialog_message">You won\'t be able to access your health records until you log in again.</string>
     <string name="log_out">Log out</string>
+
+    <!--    Profile-->
+    <string name="profile">Profile</string>
+    <string name="profile_first_name">First name</string>
+    <string name="profile_last_name">Last name</string>
+    <string name="profile_phn">Personal Health Number (PHN)</string>
+    <string name="profile_physical_address">Physical Address</string>
+    <string name="profile_mailing_address">Mailing Address</string>
+    <string name="profile_address_footer">If this address is incorrect, please update it here</string>
+    <string name="profile_address_footer_click">here</string>
+    <string name="profile_address_empty">No address on record</string>
+    <string name="profile_address_empty_footer">To add an address, visit this page.</string>
+    <string name="profile_address_empty_footer_click">this page</string>
+    <string name="profile_communication_prefs_title">Communication Preferences</string>
+    <string name="profile_communication_prefs_body_1">Keep you updated on health record updates (vaccine availability, lab results and more).</string>
+    <string name="profile_communication_prefs_body_2">To make changes to email address and phone number, please go to www.healthgateway.gov.bc.ca</string>
+    <string name="profile_communication_prefs_click">www.healthgateway.gov.bc.ca</string>
+    <string name="profile_communication_prefs_email">Email address</string>
+    <string name="profile_communication_prefs_email_empty">No email address provided</string>
+    <string name="profile_communication_prefs_email_verified">Verified</string>
+    <string name="profile_communication_prefs_email_not_verified">Not Verified</string>
+    <string name="profile_communication_prefs_phone">Phone number</string>
+    <string name="profile_communication_prefs_phone_empty">No phone number provided</string>
 
     <!--News feed-->
     <string name="news_feed">News feed</string>

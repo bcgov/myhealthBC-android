@@ -6,7 +6,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
@@ -28,6 +27,7 @@ class MedicationDetailsFragment : BaseRecordDetailFragment(R.layout.fragment_med
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupComposeToolbar(binding.composeToolbar.root)
         setUpRecyclerView()
         if (medicationDetailAdapter.currentList.isEmpty()) {
             viewModel.getMedicationDetails(args.medicationId)
@@ -46,15 +46,6 @@ class MedicationDetailsFragment : BaseRecordDetailFragment(R.layout.fragment_med
 
     override fun getProgressBar() = binding.progressBar
 
-    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
-        with(binding.layoutToolbar.topAppBar) {
-            setNavigationIcon(R.drawable.ic_toolbar_back)
-            setNavigationOnClickListener {
-                findNavController().popBackStack()
-            }
-        }
-    }
-
     private fun setUpRecyclerView() {
         medicationDetailAdapter = MedicationDetailAdapter()
         concatAdapter = ConcatAdapter(medicationDetailAdapter, getRecordCommentsAdapter())
@@ -70,7 +61,7 @@ class MedicationDetailsFragment : BaseRecordDetailFragment(R.layout.fragment_med
 
             if (state.medicationDetails?.isNotEmpty() == true) {
                 medicationDetailAdapter.submitList(state.medicationDetails)
-                binding.layoutToolbar.topAppBar.title = state.toolbarTitle
+                setupComposeToolbar(binding.composeToolbar.root, state.toolbarTitle)
             }
 
             handleError(state.onError)

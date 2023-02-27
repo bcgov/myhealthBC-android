@@ -7,7 +7,8 @@ import java.time.Instant
  * @author Pinakin Kansara
  */
 data class CovidOrderDto(
-    val id: String,
+    val id: Long = 0,
+    val covidOrderId: String,
     val phn: String?,
     val orderingProviderIds: String?,
     val orderingProviders: String?,

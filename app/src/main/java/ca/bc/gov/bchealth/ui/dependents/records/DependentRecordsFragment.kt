@@ -63,44 +63,33 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
         healthRecordsAdapter = HealthRecordsAdapter {
 
             val navDirection = when (it.healthRecordType) {
-                HealthRecordType.VACCINE_RECORD ->
-                    DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToVaccineRecordDetailFragment(it.patientId)
-
                 HealthRecordType.COVID_TEST_RECORD ->
-                    if (it.covidOrderId != null) {
-                        DependentRecordsFragmentDirections.actionDependentRecordsFragmentToCovidTestResultDetailFragment(
-                            it.covidOrderId
-                        )
-                    } else {
-                        DependentRecordsFragmentDirections.actionDependentRecordsFragmentToTestResultDetailFragment(
-                            it.patientId, it.testResultId
-                        )
-                    }
+                    DependentRecordsFragmentDirections
+                        .actionDependentRecordsFragmentToCovidTestResultDetailFragment(it.recordId)
 
                 HealthRecordType.MEDICATION_RECORD ->
                     DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToMedicationDetailFragment(it.medicationRecordId)
+                        .actionDependentRecordsFragmentToMedicationDetailFragment(it.recordId)
 
                 HealthRecordType.LAB_TEST_RECORD ->
                     DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToLabTestDetailFragment(it.labOrderId)
+                        .actionDependentRecordsFragmentToLabTestDetailFragment(it.recordId)
 
                 HealthRecordType.IMMUNIZATION_RECORD ->
                     DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToImmunizationRecordDetailFragment(it.immunizationRecordId)
+                        .actionDependentRecordsFragmentToImmunizationRecordDetailFragment(it.recordId)
 
                 HealthRecordType.HEALTH_VISIT_RECORD ->
                     DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToHealthVisitDetailsFragment(it.healthVisitId)
+                        .actionDependentRecordsFragmentToHealthVisitDetailsFragment(it.recordId)
 
                 HealthRecordType.SPECIAL_AUTHORITY_RECORD ->
                     DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToSpecialAuthorityDetailsFragment(it.specialAuthorityId)
+                        .actionDependentRecordsFragmentToSpecialAuthorityDetailsFragment(it.recordId)
 
                 HealthRecordType.HOSPITAL_VISITS_RECORD ->
                     DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToHospitalVisitDetailsFragment(it.hospitalVisitId)
+                        .actionDependentRecordsFragmentToHospitalVisitDetailsFragment(it.recordId)
 
                 HealthRecordType.CLINICAL_DOCUMENT_RECORD -> null
             }

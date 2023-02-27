@@ -4,6 +4,7 @@ import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.data.datasource.remote.PatientRemoteDataSource
+import ca.bc.gov.data.model.mapper.toDto
 import javax.inject.Inject
 
 class PatientWithBCSCLoginRepository @Inject constructor(
@@ -11,21 +12,25 @@ class PatientWithBCSCLoginRepository @Inject constructor(
 ) {
 
     suspend fun getPatient(token: String, hdid: String): PatientDto {
-        val patient = patientRemoteDataSource.getPatient(token, hdid)
+        val patientResponse = patientRemoteDataSource.getPatient(token, hdid)
 
         val fullNameBuilder = StringBuilder()
-        if (patient.firstName != null) {
-            fullNameBuilder.append(patient.firstName)
+        if (patientResponse.firstName != null) {
+            fullNameBuilder.append(patientResponse.firstName)
             fullNameBuilder.append(" ")
         }
-        if (patient.lastName != null) {
-            fullNameBuilder.append(patient.lastName)
+        if (patientResponse.lastName != null) {
+            fullNameBuilder.append(patientResponse.lastName)
         }
         return PatientDto(
             fullName = fullNameBuilder.toString(),
-            dateOfBirth = patient.birthDate!!.toDateTime(),
-            phn = patient.personalHealthNumber,
-            authenticationStatus = AuthenticationStatus.AUTHENTICATED
+            dateOfBirth = patientResponse.birthDate!!.toDateTime(),
+            phn = patientResponse.personalHealthNumber,
+            authenticationStatus = AuthenticationStatus.AUTHENTICATED,
+            firstName = patientResponse.firstName.orEmpty(),
+            lastName = patientResponse.lastName.orEmpty(),
+            physicalAddress = patientResponse.physicalAddress?.toDto(),
+            mailingAddress = patientResponse.mailingAddress?.toDto(),
         )
     }
 }

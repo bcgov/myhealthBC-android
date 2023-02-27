@@ -16,9 +16,6 @@ class CommentLocalDataSource @Inject constructor(
     suspend fun findCommentByParentEntryId(parentEntryId: String?): List<CommentDto> =
         commentDao.findCommentByParentEntryId(parentEntryId).map { it.toDto() }
 
-    suspend fun findCommentByPatientIdAndParentEntryId(hdid: String, parentEntryId: String) =
-        commentDao.findByPatientIdAndParentEntryId(hdid, parentEntryId)
-
     suspend fun insert(comment: CommentDto): Long {
         return commentDao.insert(comment.toEntity())
     }

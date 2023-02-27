@@ -14,9 +14,7 @@ import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDt
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.patient.PatientWithSpecialAuthorityDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
-import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
-import ca.bc.gov.common.model.relation.TestResultWithRecordsAndPatientDto
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.PatientOrderUpdate
@@ -68,16 +66,6 @@ class PatientRepository @Inject constructor(
 
     suspend fun getPatientWithVaccineAndDoses(patient: PatientEntity): List<PatientWithVaccineAndDosesDto> =
         patientLocalDataSource.getPatientWithVaccineAndDoses(patient)
-
-    suspend fun getPatientWithTestResultsAndRecords(patientId: Long): PatientWithTestResultsAndRecordsDto =
-        patientLocalDataSource.getPatientWithTestResultsAndRecords(patientId)
-            ?: throw getNoRecordFoundException(patientId)
-
-    suspend fun getPatientWithTestResultAndRecords(testResultId: Long): TestResultWithRecordsAndPatientDto =
-        patientLocalDataSource.getPatientWithTestResultAndRecords(testResultId)
-            ?: throw MyHealthException(
-                DATABASE_ERROR, "No record found for testResult id=  $testResultId"
-            )
 
     suspend fun getPatientWithMedicationRecords(patientId: Long): PatientWithMedicationRecordDto =
         patientLocalDataSource.getPatientWithMedicationRecords(patientId)

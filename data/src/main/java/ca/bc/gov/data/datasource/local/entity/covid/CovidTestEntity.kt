@@ -15,17 +15,18 @@ import java.time.Instant
         ForeignKey(
             entity = CovidOrderEntity::class,
             parentColumns = ["id"],
-            childColumns = ["covid_order_id"],
+            childColumns = ["order_id"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         )
     ]
 )
+
 data class CovidTestEntity(
     @PrimaryKey
     val id: String,
-    @ColumnInfo(name = "covid_order_id")
-    val covidOrderId: String,
+    @ColumnInfo(name = "order_id")
+    val orderId: Long,
     @ColumnInfo(name = "test_type")
     val testType: String?,
     @ColumnInfo(name = "out_of_range")
@@ -47,5 +48,4 @@ data class CovidTestEntity(
     val loinc: String?,
     @ColumnInfo(name = "loinc_name")
     val loincName: String?
-
 )

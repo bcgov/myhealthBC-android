@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.ConcatAdapter
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentLabTestDetailBinding
@@ -45,6 +44,7 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupComposeToolbar(binding.composeToolbar.root)
         setUpRecyclerView()
         viewModel.getLabTestDetails(args.labOrderId)
         observeUiState()
@@ -61,16 +61,6 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
     override fun getParentEntryId(): String? = viewModel.uiState.value.parentEntryId
 
     override fun getProgressBar(): View = binding.progressBar
-
-    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
-        with(binding.layoutToolbar.topAppBar) {
-            setNavigationIcon(R.drawable.ic_toolbar_back)
-            setNavigationOnClickListener {
-                findNavController().popBackStack()
-            }
-            title = getString(R.string.filter)
-        }
-    }
 
     private fun setUpRecyclerView() {
         labTestDetailAdapter = LabTestDetailAdapter(
@@ -90,7 +80,7 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
 
             if (state.labTestDetails?.isNotEmpty() == true) {
                 labTestDetailAdapter.submitList(state.labTestDetails)
-                binding.layoutToolbar.topAppBar.title = state.toolbarTitle
+                setupComposeToolbar(binding.composeToolbar.root, state.toolbarTitle)
             }
 
             if (state.onError) {

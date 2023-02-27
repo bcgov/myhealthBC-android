@@ -26,7 +26,7 @@ class CovidOrderRepository @Inject constructor(
     suspend fun insert(covidOrders: List<CovidOrderDto>): List<Long> =
         covidOrderLocalDataSource.insert(covidOrders)
 
-    suspend fun findByCovidOrderId(covidOrderId: String): CovidOrderWithCovidTestAndPatientDto =
+    suspend fun findByCovidOrderId(covidOrderId: Long): CovidOrderWithCovidTestAndPatientDto =
         covidOrderLocalDataSource.findCovidOrderById(covidOrderId)
             ?: throw MyHealthException(
                 DATABASE_ERROR, "No record found for covidOrder id=  $covidOrderId"
@@ -41,11 +41,12 @@ class CovidOrderRepository @Inject constructor(
         laboratoryRemoteDataSource.getCovidTests(token, hdid)
 
     suspend fun fetchCovidTestPdf(
+        orderId: Long,
         reportId: String,
         isCovid19: Boolean
     ): String? {
         val authParameters = bcscAuthRepo.getAuthParametersDto()
-        val hdid = getHdid(reportId, guardianHdid = authParameters.hdid)
+        val hdid = getHdid(orderId, guardianHdid = authParameters.hdid)
 
         return laboratoryRemoteDataSource.getLabTestInPdf(
             authParameters.token,
@@ -55,8 +56,8 @@ class CovidOrderRepository @Inject constructor(
         ).resourcePayload?.data
     }
 
-    private suspend fun getHdid(reportId: String, guardianHdid: String): String {
-        val patientId = covidOrderLocalDataSource.findCovidOrderById(reportId)?.patient?.id
+    private suspend fun getHdid(orderId: Long, guardianHdid: String): String {
+        val patientId = covidOrderLocalDataSource.findCovidOrderById(orderId)?.patient?.id
         patientId?.let {
             return dependentsLocalDataSource.getDependentHdidOrNull(it) ?: guardianHdid
         }

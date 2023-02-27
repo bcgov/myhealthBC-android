@@ -3,7 +3,6 @@ package ca.bc.gov.repository
 import android.util.Log
 import ca.bc.gov.common.BuildConfig.FLAG_HOSPITAL_VISITS
 import ca.bc.gov.common.const.DATABASE_ERROR
-import ca.bc.gov.common.const.SERVICE_NOT_AVAILABLE
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
@@ -12,7 +11,6 @@ import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
-import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.data.datasource.local.DependentsLocalDataSource
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
@@ -98,11 +96,7 @@ class DependentsRepository @Inject constructor(
 
     suspend fun requestRecordsIfNeeded(patientId: Long, hdid: String) {
         if (localDataSource.isDependentCacheValid(patientId).not()) {
-
-            val serviceAvailable = mobileConfigRepository.refreshMobileConfiguration()
-            if (serviceAvailable.not()) {
-                throw MyHealthException(SERVICE_NOT_AVAILABLE)
-            }
+            mobileConfigRepository.refreshMobileConfiguration()
 
             val vaccineRecords: Pair<VaccineRecordState, PatientVaccineRecord?>?
             var covidOrders: List<CovidOrderWithCovidTestDto>? = null
@@ -184,10 +178,6 @@ class DependentsRepository @Inject constructor(
             )
         )
     }
-
-    suspend fun getPatientWithTestResultsAndRecords(patientId: Long): PatientWithTestResultsAndRecordsDto =
-        patientLocalDataSource.getPatientWithTestResultsAndRecords(patientId)
-            ?: throw getDatabaseException(patientId)
 
     suspend fun getPatientWithCovidOrdersAndCovidTests(patientId: Long): PatientWithCovidOrderAndTestDto =
         patientLocalDataSource.getPatientWithCovidOrderAndCovidTests(patientId)

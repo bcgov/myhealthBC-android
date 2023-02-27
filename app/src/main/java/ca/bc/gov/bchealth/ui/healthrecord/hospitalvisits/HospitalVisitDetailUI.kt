@@ -1,31 +1,41 @@
 package ca.bc.gov.bchealth.ui.healthrecord.hospitalvisits
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import ca.bc.gov.bchealth.compose.MyHealthTypography
-import ca.bc.gov.bchealth.compose.bold
-import ca.bc.gov.bchealth.compose.descriptionGrey
-import ca.bc.gov.bchealth.compose.italic
+import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordListItem
 
 @Composable
-fun HospitalVisitDetailUI(uiList: List<HospitalVisitDetailItem>) {
+fun HospitalVisitDetailUI(
+    viewModel: HospitalVisitDetailViewModel,
+    navigationAction: () -> Unit
+) {
+    val uiState = viewModel.uiState.collectAsState().value
+    MyHealthScaffold(
+        title = uiState.toolbarTitle,
+        navigationAction = navigationAction
+    ) {
+        HospitalVisitDetailContent(uiState.uiList)
+    }
+}
+
+@Composable
+private fun HospitalVisitDetailContent(
+    uiList: List<HealthRecordDetailItem>,
+) {
     LazyColumn {
         uiList.forEach { listItem ->
             item {
-                HospitalVisitListItem(
+                HealthRecordListItem(
                     label = stringResource(id = listItem.title),
-                    body = listItem.placeholder?.let {
+                    value = listItem.placeholder?.let {
                         stringResource(id = it)
-                    } ?: listItem.description,
+                    } ?: listItem.description.orEmpty(),
                     footer = listItem.footer?.let { stringResource(it) }
                 )
             }
@@ -33,51 +43,26 @@ fun HospitalVisitDetailUI(uiList: List<HospitalVisitDetailItem>) {
     }
 }
 
-@Composable
-fun HospitalVisitListItem(label: String, body: String, footer: String?) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(top = 10.dp, bottom = 10.dp, start = 32.dp),
-    ) {
-        Text(text = label, style = MyHealthTypography.body2.bold())
-
-        if (body.isNotEmpty()) {
-            Text(
-                text = body,
-                style = MyHealthTypography.body2,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-        }
-        footer?.let {
-            Text(
-                text = it,
-                style = MyHealthTypography.body2.italic().copy(color = descriptionGrey),
-                modifier = Modifier.padding(top = 4.dp)
-            )
-        }
-    }
-}
-
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun PreviewHospitalVisitListItem() {
-    LazyColumn {
-        item {
-            HospitalVisitListItem(
-                "Location",
-                "Vancouver General Hospital",
-                "Virtual visits show your provider's location"
-            )
-        }
 
-        item {
-            HospitalVisitListItem(
-                "Visit type",
-                "Patient",
-                null
+    HospitalVisitDetailContent(
+        listOf(
+            HealthRecordDetailItem(
+                R.string.hospital_visits_detail_location_title,
+                "Vancouver General Hospital",
+                footer = R.string.hospital_visits_detail_location_title,
+            ),
+            HealthRecordDetailItem(
+                R.string.hospital_visits_detail_location_title,
+                "Vancouver General Hospital",
+            ),
+            HealthRecordDetailItem(
+                R.string.hospital_visits_detail_location_title,
+                "Vancouver General Hospital",
+                placeholder = R.string.place_holder_text,
             )
-        }
-    }
+        )
+    )
 }

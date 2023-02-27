@@ -220,7 +220,7 @@ class HealthPassFragment : BaseFragment(R.layout.fragment_helath_pass) {
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
                     R.id.menu_settings -> {
-                        findNavController().navigate(R.id.profileFragment)
+                        findNavController().navigate(R.id.settingsFragment)
                     }
                 }
                 return@setOnMenuItemClickListener true

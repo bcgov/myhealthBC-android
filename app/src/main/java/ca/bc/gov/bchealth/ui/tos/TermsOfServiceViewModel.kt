@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.ui.tos
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.common.exceptions.MustBeQueuedException
 import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.repository.TermsOfServiceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,15 +43,6 @@ class TermsOfServiceViewModel @Inject constructor(
                         )
                     }
                 }
-                is MustBeQueuedException -> {
-                    _tosUiState.update {
-                        it.copy(
-                            showLoading = true,
-                            onMustBeQueued = true,
-                            queItUrl = e.message,
-                        )
-                    }
-                }
                 else -> {
                     _tosUiState.update {
                         it.copy(
@@ -69,8 +59,6 @@ class TermsOfServiceViewModel @Inject constructor(
 data class TermsOfServiceUiModel(
     val showLoading: Boolean = false,
     val isError: Boolean = false,
-    val onMustBeQueued: Boolean = false,
-    val queItUrl: String? = null,
     val tos: String? = null,
     val termsOfServiceId: String? = null,
     val isConnected: Boolean = true

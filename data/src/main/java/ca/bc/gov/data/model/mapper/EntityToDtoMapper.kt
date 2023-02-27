@@ -3,6 +3,7 @@ package ca.bc.gov.data.model.mapper
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
+import ca.bc.gov.common.model.PatientAddressDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
@@ -32,19 +33,16 @@ import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.patient.PatientWithSpecialAuthorityDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
-import ca.bc.gov.common.model.relation.PatientWithTestResultsAndRecordsDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
-import ca.bc.gov.common.model.relation.TestResultWithRecordsAndPatientDto
-import ca.bc.gov.common.model.relation.TestResultWithRecordsDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
-import ca.bc.gov.common.model.test.TestRecordDto
-import ca.bc.gov.common.model.test.TestResultDto
+import ca.bc.gov.common.model.userprofile.UserProfileDto
 import ca.bc.gov.common.utils.titleCase
+import ca.bc.gov.data.datasource.local.entity.PatientAddressEntity
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.clinicaldocument.ClinicalDocumentEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
@@ -52,8 +50,6 @@ import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderWithCovidTests
 import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderWithCovidTestsAndPatient
 import ca.bc.gov.data.datasource.local.entity.covid.CovidTestEntity
-import ca.bc.gov.data.datasource.local.entity.covid.test.TestRecordEntity
-import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
 import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
@@ -80,35 +76,37 @@ import ca.bc.gov.data.datasource.local.entity.relations.PatientWithImmunizationR
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithLabOrdersAndLabTests
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithMedicationRecords
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithSpecialAuthorities
-import ca.bc.gov.data.datasource.local.entity.relations.PatientWithTestResultsAndRecords
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithVaccineAndDoses
-import ca.bc.gov.data.datasource.local.entity.relations.TestResultWithRecord
-import ca.bc.gov.data.datasource.local.entity.relations.TestResultWithRecordsAndPatient
 import ca.bc.gov.data.datasource.local.entity.relations.VaccineRecordWithDose
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
+import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 import java.time.Instant
 
 fun PatientEntity.toDto() = PatientDto(
-    id, fullName.titleCase(), dateOfBirth, phn, authenticationStatus = authenticationStatus
+    id = id,
+    fullName = fullName.titleCase(),
+    dateOfBirth = dateOfBirth,
+    phn = phn,
+    authenticationStatus = authenticationStatus,
+    firstName = firstName,
+    lastName = lastName,
+    mailingAddress = mailingAddress?.toDto(),
+    physicalAddress = physicalAddress?.toDto(),
 )
 
-fun TestResultEntity.toDto() = TestResultDto(
-    id, patientId, collectionDate, dataSource
+fun PatientAddressEntity.toDto() = PatientAddressDto(
+    streetLines = streetLines,
+    city = city,
+    province = province,
+    postalCode = postalCode,
 )
 
-fun TestRecordEntity.toDto() = TestRecordDto(
-    id,
-    testResultId,
-    labName,
-    collectionDateTime,
-    resultDateTime,
-    testName,
-    testType,
-    testOutcome,
-    testStatus,
-    resultTitle,
-    resultDescription.split("|"),
-    resultLink
+fun UserProfileEntity.toDto() = UserProfileDto(
+    patientId = patientId,
+    acceptedTermsOfService = acceptedTermsOfService,
+    email = email,
+    isEmailVerified = isEmailVerified,
+    smsNumber = smsNumber,
 )
 
 fun VaccineDoseEntity.toDto() = VaccineDoseDto(
@@ -128,11 +126,6 @@ fun VaccineRecordEntity.toDto() = VaccineRecordDto(
     dataSource
 )
 
-fun TestResultWithRecord.toDto() = TestResultWithRecordsDto(
-    testResult = testResult.toDto(),
-    testRecords = testRecords.map { it.toDto() }
-)
-
 fun VaccineRecordWithDose.toDto() = VaccineWithDosesDto(
     vaccineRecordEntity.toDto(),
     doses = vaccineDoses.map { it.toDto() }
@@ -141,16 +134,6 @@ fun VaccineRecordWithDose.toDto() = VaccineWithDosesDto(
 fun PatientWithVaccineAndDoses.toDto() = PatientWithVaccineAndDosesDto(
     patient = patient.toDto(),
     vaccineWithDoses = vaccineRecordWithDose?.toDto()
-)
-
-fun PatientWithTestResultsAndRecords.toDto() = PatientWithTestResultsAndRecordsDto(
-    patient = patient.toDto(),
-    testResultWithRecords = testResultsWithRecords.map { it.toDto() }
-)
-
-fun TestResultWithRecordsAndPatient.toDto() = TestResultWithRecordsAndPatientDto(
-    testResultWithRecords = testResultWithRecord.toDto(),
-    patient = patient.toDto()
 )
 
 fun MedicationRecordEntity.toDto() = MedicationRecordDto(
@@ -286,6 +269,7 @@ fun CommentEntity.toDto() = CommentDto(
 
 fun CovidOrderEntity.toDto() = CovidOrderDto(
     id,
+    covidOrderId,
     phn,
     orderingProviderIds,
     orderingProviders,
@@ -297,7 +281,7 @@ fun CovidOrderEntity.toDto() = CovidOrderDto(
     additionalData,
     reportAvailable,
     patientId,
-    dataSource = dataSource
+    dataSource
 )
 
 fun CovidTestEntity.toDto() = CovidTestDto(
@@ -313,7 +297,6 @@ fun CovidTestEntity.toDto() = CovidTestDto(
     resultDateTime,
     loinc,
     loincName,
-    covidOrderId
 )
 
 fun CovidOrderWithCovidTests.toDto() = CovidOrderWithCovidTestDto(

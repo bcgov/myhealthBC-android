@@ -18,5 +18,4 @@ data class CovidTestDto(
     val resultDateTime: Instant,
     val loInc: String?,
     val loIncName: String?,
-    var covidOrderId: String = ""
 )

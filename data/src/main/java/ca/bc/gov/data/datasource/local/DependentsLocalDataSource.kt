@@ -61,10 +61,6 @@ class DependentsLocalDataSource @Inject constructor(
         patientDao.deletePatientById(patientId)
     }
 
-    suspend fun deleteDependentListOrdersExcept(dependentIds: List<String>) {
-        dependentListOrderDao.deleteExcept(dependentIds)
-    }
-
     suspend fun insertDependentListOrder(hdid: String, order: Int) {
         dependentListOrderDao.insert(DependentListOrder(hdid, order))
     }

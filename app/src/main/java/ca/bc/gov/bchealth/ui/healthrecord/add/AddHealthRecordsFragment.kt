@@ -88,7 +88,7 @@ class AddHealthRecordsFragment : BaseFragment(R.layout.fragment_add_health_recor
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
                     R.id.menu_settings -> {
-                        findNavController().navigate(R.id.profileFragment)
+                        findNavController().navigate(R.id.settingsFragment)
                     }
                 }
                 return@setOnMenuItemClickListener true

@@ -5,11 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Base64
 import androidx.core.net.toUri
-import androidx.work.Constraints
-import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import ca.bc.gov.common.const.AUTH_ERROR
 import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
 import ca.bc.gov.common.const.MUST_CALL_MOBILE_CONFIG
@@ -25,7 +20,6 @@ import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationService
 import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationServiceConfiguration
 import ca.bc.gov.repository.library.java.net.openid.appauth.EndSessionRequest
 import ca.bc.gov.repository.library.java.net.openid.appauth.ResponseTypeValues
-import ca.bc.gov.repository.worker.FetchAuthenticatedHealthRecordsWorker
 import org.json.JSONObject
 import java.io.UnsupportedEncodingException
 import java.nio.charset.Charset
@@ -156,9 +150,7 @@ class BcscAuthRepo(
         )
     }
 
-    @Deprecated("Consider using getAuthParametersDto for better readability")
-    suspend fun getAuthParameters(): Pair<String, String> {
-
+    private suspend fun getAuthParameters(): Pair<String, String> {
         val authState =
             getAuthState() ?: throw MyHealthException(AUTH_ERROR_DO_LOGIN, "Login again!")
         val accessToken = awaitPerformActionWithFreshTokens(applicationContext, authState)
@@ -191,22 +183,6 @@ class BcscAuthRepo(
 
     fun getPostLoginCheck(): String? {
         return encryptedPreferenceStorage.postLoginCheck
-    }
-
-    fun executeOneTimeDatFetch() {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-        val oneTimeWorkRequest =
-            OneTimeWorkRequest.Builder(FetchAuthenticatedHealthRecordsWorker::class.java)
-                .setConstraints(constraints)
-                .build()
-        val workManager = WorkManager.getInstance(applicationContext)
-        workManager.enqueueUniqueWork(
-            BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME,
-            ExistingWorkPolicy.REPLACE,
-            oneTimeWorkRequest
-        )
     }
 
     companion object {

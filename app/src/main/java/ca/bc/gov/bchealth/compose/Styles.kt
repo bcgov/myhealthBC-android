@@ -19,12 +19,14 @@ val fonts = FontFamily(
     Font(R.font.bc_sans_bold_italic, weight = FontWeight.Bold, style = FontStyle.Italic),
 )
 
-private val darkText = Color(0xFF313132)
+val darkText = Color(0xFF313132)
 
 val white = Color(0xFFFFFFFF)
 val primaryBlue = Color(0xFF003366)
 val statusBlue30 = Color(0x4D38598A)
 val descriptionGrey = Color(0xFF6D757D)
+val green = Color(0xFF2E8540)
+val red = Color(0xFFD8292F)
 
 val MyHealthTypography = Typography(
     body1 = TextStyle(
@@ -46,6 +48,27 @@ val MyHealthTypography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         color = primaryBlue
+    ),
+
+    h3 = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.Bold,
+        fontSize = 17.sp,
+        color = darkText
+    ),
+
+    caption = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        color = descriptionGrey
+    ),
+
+    overline = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        color = descriptionGrey
     ),
 )
 

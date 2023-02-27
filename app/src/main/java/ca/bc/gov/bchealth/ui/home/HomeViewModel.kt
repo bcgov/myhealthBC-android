@@ -10,6 +10,8 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.utils.COMMUNICATION_BANNER_MAX_LENGTH
 import ca.bc.gov.bchealth.utils.INDEX_NOT_FOUND
 import ca.bc.gov.bchealth.utils.fromHtml
+import ca.bc.gov.bchealth.workers.WorkerInvoker
+import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.banner.BannerDto
 import ca.bc.gov.common.utils.toDate
@@ -35,6 +37,7 @@ class HomeViewModel @Inject constructor(
     private val onBoardingRepository: OnBoardingRepository,
     private val patientRepository: PatientRepository,
     private val bcscAuthRepo: BcscAuthRepo,
+    private val workerInvoker: WorkerInvoker,
     recommendationRepository: ImmunizationRecommendationRepository,
     private val bannerRepository: BannerRepository,
     private val mobileConfigRepository: MobileConfigRepository,
@@ -195,7 +198,7 @@ class HomeViewModel @Inject constructor(
 
     fun executeOneTimeDataFetch() {
         fetchBanner()
-        bcscAuthRepo.executeOneTimeDatFetch()
+        workerInvoker.executeOneTimeDataFetch()
     }
 
     private fun fetchBanner() {
@@ -203,15 +206,13 @@ class HomeViewModel @Inject constructor(
             viewModelScope.launch {
 
                 try {
-                    val isHgServicesUp = mobileConfigRepository.refreshMobileConfiguration()
-
-                    if (isHgServicesUp) {
-                        callBannerRepository()
-                    } else {
-                        displayServiceDownMessage()
-                    }
+                    mobileConfigRepository.refreshMobileConfiguration()
+                    callBannerRepository()
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    when (e) {
+                        is ServiceDownException -> displayServiceDownMessage()
+                        else -> e.printStackTrace()
+                    }
                 }
             }
 

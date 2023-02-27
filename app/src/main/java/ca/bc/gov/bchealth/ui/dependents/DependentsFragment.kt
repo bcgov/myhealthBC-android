@@ -130,7 +130,7 @@ class DependentsFragment : BaseDependentFragment(R.layout.fragment_dependents) {
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
                     R.id.menu_settings -> {
-                        findNavController().navigate(R.id.profileFragment)
+                        findNavController().navigate(R.id.settingsFragment)
                     }
                 }
                 return@setOnMenuItemClickListener true

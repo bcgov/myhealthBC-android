@@ -9,7 +9,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
@@ -25,11 +24,11 @@ import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.IMMUNIZATI
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.LAB_TEST_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.MEDICATION_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.SPECIAL_AUTHORITY_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.VACCINE_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
@@ -105,7 +104,7 @@ class IndividualHealthRecordFragment :
                             findNavController().navigate(R.id.filterFragment)
                         }
                         R.id.menu_settings -> {
-                            findNavController().navigate(R.id.profileFragment)
+                            findNavController().navigate(R.id.settingsFragment)
                         }
                     }
                     return@setOnMenuItemClickListener true
@@ -142,18 +141,15 @@ class IndividualHealthRecordFragment :
     }
 
     private fun observeHealthRecordsSyncCompletion() {
-        val workRequest = WorkManager.getInstance(requireContext())
-            .getWorkInfosForUniqueWorkLiveData(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME)
-        if (!workRequest.hasObservers()) {
-            workRequest.observe(viewLifecycleOwner) {
-                if (it.firstOrNull()?.state == WorkInfo.State.RUNNING) {
-                    binding.emptyView.tvNoRecord.text = getString(R.string.fetching_records)
-                    binding.emptyView.tvClearFilterMsg.text = ""
-                } else {
-                    binding.emptyView.tvNoRecord.text = getString(R.string.no_records_found)
-                    binding.emptyView.tvClearFilterMsg.text =
-                        getString(R.string.clear_all_filters_and_start_over)
-                }
+        observeWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME) { state ->
+            if (state == WorkInfo.State.RUNNING) {
+                binding.emptyView.tvNoRecord.text = getString(R.string.fetching_records)
+                binding.emptyView.tvClearFilterMsg.text = ""
+            } else {
+                binding.emptyView.tvNoRecord.text = getString(R.string.no_records_found)
+                binding.emptyView.tvClearFilterMsg.text =
+                    getString(R.string.clear_all_filters_and_start_over)
+
                 viewModel.getIndividualsHealthRecord()
             }
         }
@@ -233,48 +229,37 @@ class IndividualHealthRecordFragment :
     private fun setUpRecyclerView() {
         healthRecordsAdapter = HealthRecordsAdapter {
             val navDirection = when (it.healthRecordType) {
-                VACCINE_RECORD ->
+                COVID_TEST_RECORD ->
                     IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToVaccineRecordDetailFragment(it.patientId)
-
-                COVID_TEST_RECORD -> if (it.covidOrderId != null) {
-                    IndividualHealthRecordFragmentDirections.actionIndividualHealthRecordFragmentToCovidTestResultDetailFragment(
-                        it.covidOrderId
-                    )
-                } else {
-                    IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToTestResultDetailFragment(
-                            it.patientId, it.testResultId
-                        )
-                }
+                        .actionIndividualHealthRecordFragmentToCovidTestResultDetailFragment(it.recordId)
 
                 MEDICATION_RECORD ->
                     IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToMedicationDetailFragment(it.medicationRecordId)
+                        .actionIndividualHealthRecordFragmentToMedicationDetailFragment(it.recordId)
 
                 LAB_TEST_RECORD ->
                     IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToLabTestDetailFragment(it.labOrderId)
+                        .actionIndividualHealthRecordFragmentToLabTestDetailFragment(it.recordId)
 
                 IMMUNIZATION_RECORD ->
                     IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToImmunizationRecordDetailFragment(it.immunizationRecordId)
+                        .actionIndividualHealthRecordFragmentToImmunizationRecordDetailFragment(it.recordId)
 
                 HEALTH_VISIT_RECORD ->
                     IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToHealthVisitDetailsFragment(it.healthVisitId)
+                        .actionIndividualHealthRecordFragmentToHealthVisitDetailsFragment(it.recordId)
 
                 SPECIAL_AUTHORITY_RECORD ->
                     IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToSpecialAuthorityDetailsFragment(it.specialAuthorityId)
+                        .actionIndividualHealthRecordFragmentToSpecialAuthorityDetailsFragment(it.recordId)
 
                 HOSPITAL_VISITS_RECORD ->
                     IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordsFragmentToHospitalVisitDetailsFragment(it.hospitalVisitId)
+                        .actionIndividualHealthRecordsFragmentToHospitalVisitDetailsFragment(it.recordId)
 
                 CLINICAL_DOCUMENT_RECORD ->
                     IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordsFragmentToClinicalDocumentDetailsFragment(it.clinicalDocumentId)
+                        .actionIndividualHealthRecordsFragmentToClinicalDocumentDetailsFragment(it.recordId)
             }
 
             findNavController().navigate(navDirection)

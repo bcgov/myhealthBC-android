@@ -1,7 +1,8 @@
 package ca.bc.gov.bchealth.ui.healthrecord.clinicaldocument
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,8 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -18,18 +21,37 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTypography
-import ca.bc.gov.bchealth.compose.bold
 import ca.bc.gov.bchealth.compose.primaryBlue
+import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordListItem
 
 @Composable
 fun ClinicalDocumentDetailUI(
-    uiList: List<ClinicalDocumentDetailItem>,
+    viewModel: ClinicalDocumentDetailViewModel,
+    navigationAction: () -> Unit
+) {
+    val uiState = viewModel.uiState.collectAsState().value
+
+    MyHealthScaffold(
+        title = uiState.toolbarTitle,
+        navigationAction = navigationAction,
+        isLoading = uiState.onLoading
+    ) {
+        ClinicalDocumentDetailContent(uiState) { viewModel.onClickDownload() }
+    }
+}
+
+@Composable
+private fun BoxScope.ClinicalDocumentDetailContent(
+    uiState: ClinicalDocumentUiState,
     onClickDownload: () -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .align(Alignment.TopCenter)
     ) {
         item {
             OutlinedButton(
@@ -48,50 +70,34 @@ fun ClinicalDocumentDetailUI(
                 )
             }
         }
-        uiList.forEach { listItem ->
+        uiState.uiList.forEach { listItem ->
             item {
-                ClinicalDocumentListItem(
+                HealthRecordListItem(
                     stringResource(id = listItem.title),
-                    listItem.description,
+                    listItem.description.orEmpty(),
                 )
             }
         }
     }
 }
 
-@Composable
-fun ClinicalDocumentListItem(label: String, value: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(top = 20.dp, bottom = 20.dp, start = 32.dp),
-    ) {
-        Text(text = label, style = MyHealthTypography.body2.bold())
-
-        if (value.isNotEmpty()) {
-            Text(
-                text = value,
-                style = MyHealthTypography.body2,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-        }
-    }
-}
-
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun PreviewClinicalDocumentDetailUI() {
-    ClinicalDocumentDetailUI(
-        listOf(
-            ClinicalDocumentDetailItem(
-                R.string.clinical_documents_detail_discipline,
-                "Discipline value"
-            ),
-            ClinicalDocumentDetailItem(
-                R.string.clinical_documents_detail_facility,
-                "Facility value"
-            ),
-        )
-    ) {}
+private fun PreviewClinicalDocumentDetailContent() {
+    Box {
+        ClinicalDocumentDetailContent(
+            ClinicalDocumentUiState(
+                uiList = listOf(
+                    HealthRecordDetailItem(
+                        R.string.clinical_documents_detail_discipline,
+                        "Discipline value"
+                    ),
+                    HealthRecordDetailItem(
+                        R.string.clinical_documents_detail_facility,
+                        "Facility value"
+                    ),
+                )
+            )
+        ) {}
+    }
 }

@@ -2,9 +2,7 @@ package ca.bc.gov.bchealth.ui.login
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,15 +26,8 @@ import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.queue_it.androidsdk.Error
-import com.queue_it.androidsdk.QueueITEngine
-import com.queue_it.androidsdk.QueueListener
-import com.queue_it.androidsdk.QueuePassedInfo
-import com.queue_it.androidsdk.QueueService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
 
 /*
 * @auther amit_metri on 04,January,2022
@@ -122,8 +113,6 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                         filterSharedViewModel.clearFilter()
                     }
 
-                    handleQueueIt(it)
-
                     handleAgeLimitCheck(it)
 
                     handleTosCheck(it)
@@ -187,18 +176,6 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
         }
     }
 
-    private fun handleQueueIt(authStatus: AuthStatus) {
-        if (authStatus.onMustBeQueued && authStatus.queItUrl != null) {
-            viewModel.resetAuthStatus()
-            queUser(authStatus.queItUrl)
-        }
-
-        if (authStatus.queItTokenUpdated) {
-            viewModel.resetAuthStatus()
-            viewModel.checkAgeLimit() // Queueit exception is thrown for age limit check API
-        }
-    }
-
     private fun setupToolBar() {
         binding.toolbar.apply {
             ivLeftOption.visibility = View.VISIBLE
@@ -234,42 +211,6 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
         if (isError) {
             respondToError()
             viewModel.resetAuthStatus()
-        }
-    }
-
-    private fun queUser(value: String) {
-        try {
-            val uri = Uri.parse(URLDecoder.decode(value, StandardCharsets.UTF_8.name()))
-            val customerId = uri.getQueryParameter("c")
-            val waitingRoomId = uri.getQueryParameter("e")
-            QueueService.IsTest = false
-            val queueITEngine =
-                QueueITEngine(requireActivity(), customerId, waitingRoomId, "", "", queueListener)
-            queueITEngine.run(requireActivity())
-        } catch (e: Exception) {
-            Log.i(this::class.java.name, "Exception in queUser: ${e.message}")
-        }
-    }
-
-    private val queueListener = object : QueueListener() {
-        override fun onQueuePassed(queuePassedInfo: QueuePassedInfo?) {
-            viewModel.setQueItToken(queuePassedInfo?.queueItToken)
-        }
-
-        override fun onQueueDisabled() {
-            // Do nothing
-        }
-
-        override fun onQueueViewWillOpen() {
-            // Do nothing
-        }
-
-        override fun onError(error: Error?, errorMessage: String?) {
-            // Do nothing
-        }
-
-        override fun onQueueItUnavailable() {
-            // Do nothing
         }
     }
 

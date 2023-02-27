@@ -10,12 +10,8 @@ import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderWithCovidTestsAndP
  */
 @Dao
 interface CovidOrderDao : BaseDao<CovidOrderEntity> {
-
     @Query("SELECT * FROM covid_order WHERE id = :id")
-    suspend fun findById(id: String): CovidOrderEntity?
-
-    @Query("SELECT * FROM covid_order WHERE id = :id")
-    suspend fun findByCovidOrderId(id: String): CovidOrderWithCovidTestsAndPatient?
+    suspend fun findByCovidOrderId(id: Long): CovidOrderWithCovidTestsAndPatient?
 
     @Query("DELETE FROM covid_order WHERE patient_id = :patientId")
     suspend fun deleteByPatientId(patientId: Long): Int

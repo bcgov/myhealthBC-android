@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
@@ -28,6 +26,7 @@ class SpecialAuthorityDetailFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupComposeToolbar(binding.composeToolbar.root)
         setUpRecyclerView()
         observeUiState()
         viewModel.getSpecialAuthorityDetails(args.specialAuthorityId)
@@ -44,7 +43,7 @@ class SpecialAuthorityDetailFragment :
         viewModel.uiState.collectOnStart { state ->
 
             binding.progressBar.isVisible = state.onLoading
-            binding.layoutToolbar.topAppBar.title = state.toolbarTitle
+            setupComposeToolbar(binding.composeToolbar.root, state.toolbarTitle)
 
             if (state.specialAuthorityDetailItems.isNotEmpty()) {
                 specialAuthorityAdapter.submitList(state.specialAuthorityDetailItems)
@@ -57,15 +56,6 @@ class SpecialAuthorityDetailFragment :
     override fun getProgressBar() = binding.progressBar
 
     override fun getScrollableView() = binding.rvSpecialAuthorityDetails
-
-    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
-        with(binding.layoutToolbar.topAppBar) {
-            setNavigationIcon(R.drawable.ic_toolbar_back)
-            setNavigationOnClickListener {
-                findNavController().popBackStack()
-            }
-        }
-    }
 
     private fun setUpRecyclerView() {
         specialAuthorityAdapter = SpecialAuthorityAdapter()

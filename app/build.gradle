@@ -153,8 +153,10 @@ dependencies {
     implementation "com.google.android.play:app-update:$versions.app_update"
     implementation "com.google.android.play:app-update-ktx:$versions.app_update"
 
-    //Queue.it
-    implementation "com.queue-it.androidsdk:library-androidx:$versions.queue_it"
+    //work manager
+    api "androidx.work:work-runtime-ktx:$versions.work"
+    api "androidx.hilt:hilt-work:$versions.hilt_work"
+    kapt "androidx.hilt:hilt-compiler:$versions.hilt_work"
 
     // https://stackoverflow.com/questions/29402155/android-unit-test-not-mocked
     testImplementation 'org.json:json:20210307'
