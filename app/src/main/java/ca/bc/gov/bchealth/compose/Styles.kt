@@ -22,9 +22,11 @@ val fonts = FontFamily(
 val darkText = Color(0xFF313132)
 
 val white = Color(0xFFFFFFFF)
+val blue = Color(0xFF1A5A96)
 val primaryBlue = Color(0xFF003366)
 val statusBlue30 = Color(0x4D38598A)
 val descriptionGrey = Color(0xFF6D757D)
+val greyBg = Color(0xFFF2F2F2)
 val green = Color(0xFF2E8540)
 val red = Color(0xFFD8292F)
 
