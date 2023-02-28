@@ -12,6 +12,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SharedViewModel @Inject constructor() : ViewModel() {
 
+    var displayImmunizationBanner = true
+
     private val _modifiedRecordId: MutableLiveData<Long> = MutableLiveData()
     val modifiedRecordId: LiveData<Long>
         get() = _modifiedRecordId

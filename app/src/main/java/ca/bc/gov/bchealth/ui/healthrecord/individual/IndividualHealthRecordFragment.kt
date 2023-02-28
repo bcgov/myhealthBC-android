@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
@@ -174,11 +175,15 @@ class IndividualHealthRecordFragment :
             setToolBar(it.fullName)
         }
         if (uiState.isBcscSessionActive != null && uiState.isBcscSessionActive) {
-            concatAdapter = ConcatAdapter(
-                immunizationBannerAdapter,
-                hiddenMedicationRecordsAdapter,
-                healthRecordsAdapter
-            )
+            val adapters = arrayListOf<RecyclerView.Adapter<out RecyclerView.ViewHolder?>>()
+
+            if (sharedViewModel.displayImmunizationBanner) {
+                adapters.add(immunizationBannerAdapter)
+            }
+            adapters.add(hiddenMedicationRecordsAdapter)
+            adapters.add(healthRecordsAdapter)
+
+            concatAdapter = ConcatAdapter(adapters)
             binding.content.rvHealthRecords.adapter = concatAdapter
             displayBcscRecords(uiState)
         } else {
@@ -293,7 +298,8 @@ class IndividualHealthRecordFragment :
     }
 
     private fun closeBanner() {
-        // todo
+        concatAdapter.removeAdapter(immunizationBannerAdapter)
+        sharedViewModel.displayImmunizationBanner = false
     }
 
     private fun onMedicationAccessClick(patientId: Long) {
