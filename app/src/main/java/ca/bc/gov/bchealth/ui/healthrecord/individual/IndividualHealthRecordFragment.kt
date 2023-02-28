@@ -29,6 +29,7 @@ import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.observeWork
+import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
@@ -46,6 +47,7 @@ class IndividualHealthRecordFragment :
     private lateinit var hiddenMedicationRecordsAdapter: HiddenMedicationRecordAdapter
     private lateinit var hiddenHealthRecordAdapter: HiddenHealthRecordAdapter
     private lateinit var healthRecordsAdapter: HealthRecordsAdapter
+    private lateinit var immunizationBannerAdapter: ImmunizationBannerAdapter
     private lateinit var concatAdapter: ConcatAdapter
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val filterSharedViewModel: PatientFilterViewModel by activityViewModels()
@@ -173,6 +175,7 @@ class IndividualHealthRecordFragment :
         }
         if (uiState.isBcscSessionActive != null && uiState.isBcscSessionActive) {
             concatAdapter = ConcatAdapter(
+                immunizationBannerAdapter,
                 hiddenMedicationRecordsAdapter,
                 healthRecordsAdapter
             )
@@ -270,6 +273,11 @@ class IndividualHealthRecordFragment :
             onMedicationAccessClick(it)
         }
 
+        immunizationBannerAdapter = ImmunizationBannerAdapter(
+            onClickLink = ::openImmunizationPage,
+            onClickClose = ::closeBanner
+        )
+
         concatAdapter = ConcatAdapter(
             hiddenHealthRecordAdapter,
             hiddenMedicationRecordsAdapter,
@@ -278,6 +286,14 @@ class IndividualHealthRecordFragment :
         binding.content.rvHealthRecords.adapter = concatAdapter
         binding.content.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
         binding.content.rvHealthRecords.emptyView = binding.emptyView.root
+    }
+
+    private fun openImmunizationPage() {
+        requireActivity().redirect(getString(R.string.url_update_your_immnz))
+    }
+
+    private fun closeBanner() {
+        // todo
     }
 
     private fun onMedicationAccessClick(patientId: Long) {

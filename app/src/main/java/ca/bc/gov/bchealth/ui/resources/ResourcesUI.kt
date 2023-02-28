@@ -28,7 +28,7 @@ import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 fun ResourcesUI(
     uiList: List<ResourceItem>,
     navigationAction: () -> Unit,
-    onClickResource: (String) -> Unit
+    onClickResource: (Int) -> Unit
 ) {
     MyHealthScaffold(
         title = stringResource(R.string.health_resources),
@@ -41,7 +41,7 @@ fun ResourcesUI(
 @Composable
 private fun ResourcesContent(
     uiList: List<ResourceItem>,
-    onClickResource: (String) -> Unit
+    onClickResource: (Int) -> Unit
 ) {
     LazyColumn {
         item {
@@ -65,7 +65,7 @@ private fun ResourcesContent(
 }
 
 @Composable
-private fun ResourceItemUI(resourceItem: ResourceItem, onClickResource: (String) -> Unit) {
+private fun ResourceItemUI(resourceItem: ResourceItem, onClickResource: (Int) -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -99,22 +99,22 @@ private fun PreviewResourcesUI() {
             ResourceItem(
                 R.drawable.ic_resources_advice,
                 R.string.label_resource_advice,
-                ""
+                -1
             ),
             ResourceItem(
                 R.drawable.ic_resources_advice,
                 R.string.label_resource_advice,
-                ""
+                -1
             ),
             ResourceItem(
                 R.drawable.ic_resources_advice,
                 R.string.label_resource_advice,
-                ""
+                -1
             ),
             ResourceItem(
                 R.drawable.ic_resources_advice,
                 R.string.label_resource_advice,
-                ""
+                -1
             ),
         ),
         {}, {}

@@ -23,7 +23,8 @@ class ResourcesFragment : BaseFragment(null) {
         )
     }
 
-    private fun onClickResource(url: String) {
+    private fun onClickResource(urlRes: Int) {
+        val url = getString(urlRes)
         requireActivity().redirect(url)
         seedAnalyticsData(url = url)
     }
