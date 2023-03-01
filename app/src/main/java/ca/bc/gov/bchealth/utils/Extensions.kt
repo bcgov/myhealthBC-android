@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
@@ -155,7 +156,18 @@ fun View.toggleVisibility(display: Boolean) {
     }
 }
 
+fun TextView.makeLinks(isBold: Boolean, vararg links: Pair<String, View.OnClickListener>) {
+    this.applyClickSpan(isBold, links)
+}
+
 fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {
+    this.applyClickSpan(false, links)
+}
+
+private fun TextView.applyClickSpan(
+    isBold: Boolean,
+    links: Array<out Pair<String, View.OnClickListener>>
+) {
     val spannableString = SpannableString(this.text)
     var startIndexOfLink = -1
     for (link in links) {
@@ -166,6 +178,9 @@ fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {
                 // toggle below value to enable/disable
                 // the underline shown below the clickable text
                 textPaint.isUnderlineText = true
+                if (isBold) {
+                    textPaint.typeface = Typeface.DEFAULT_BOLD
+                }
             }
 
             override fun onClick(view: View) {
