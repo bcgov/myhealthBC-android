@@ -98,8 +98,9 @@ private fun BoxScope.ProfileContent(
         item {
             CommunicationPreferences(
                 email = uiState.email,
-                verified = uiState.isEmailVerified,
+                isEmailVerified = uiState.isEmailVerified,
                 phone = uiState.phone,
+                isPhoneVerified = uiState.isPhoneVerified,
                 onClick = onClickPrefs,
             )
         }

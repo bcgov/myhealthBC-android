@@ -66,6 +66,7 @@ class ProfileViewModel @Inject constructor(
                     email = userProfile.email,
                     isEmailVerified = userProfile.isEmailVerified,
                     phone = userProfile.smsNumber,
+                    isPhoneVerified = userProfile.isPhoneVerified,
                 )
             }
         } catch (e: Exception) {
@@ -111,6 +112,7 @@ data class ProfileUiState(
     val email: String? = null,
     val isEmailVerified: Boolean = false,
     val phone: String? = null,
+    val isPhoneVerified: Boolean = false,
     val uiList: List<ProfileItem> = listOf(),
     val error: Exception? = null
 )

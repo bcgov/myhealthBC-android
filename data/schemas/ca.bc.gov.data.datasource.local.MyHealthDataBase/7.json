@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 7,
-    "identityHash": "fa4d7f5f10a84a9743188dfccc313588",
+    "identityHash": "403f496d15fa7424ae9a8eca081a0b55",
     "entities": [
       {
         "tableName": "patient",
@@ -1690,7 +1690,7 @@
       },
       {
         "tableName": "user_profile",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_profile_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `accepted_terms_of_service` INTEGER NOT NULL, `email` TEXT, `is_email_verified` INTEGER NOT NULL, `sms_number` TEXT, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_profile_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `accepted_terms_of_service` INTEGER NOT NULL, `email` TEXT, `is_email_verified` INTEGER NOT NULL, `sms_number` TEXT, `is_phone_verified` INTEGER NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "userProfileId",
@@ -1727,6 +1727,12 @@
             "columnName": "sms_number",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "isPhoneVerified",
+            "columnName": "is_phone_verified",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -1754,7 +1760,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fa4d7f5f10a84a9743188dfccc313588')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '403f496d15fa7424ae9a8eca081a0b55')"
     ]
   }
 }
