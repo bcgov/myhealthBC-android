@@ -5,7 +5,6 @@ on:
     branches:
       - main
       - develop
-      - HAPP-1365-Update-communication-address-UI
 
 jobs:
   build:
