@@ -100,7 +100,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
 
                 val bcscInfo = getBcscInfo()
 
-                val filteredHealthRecords = covidOrders +
+                val records = covidOrders +
                     labTestRecords +
                     immunizationRecords +
                     healthVisits +
@@ -118,7 +118,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                         isBcscAuthenticatedPatientAvailable = bcscInfo.authenticationAvailable,
                         isBcscSessionActive = bcscInfo.sessionActive,
                         bcscAuthenticatedPatientDto = bcscInfo.patientDto,
-                        onHealthRecords = filteredHealthRecords.sortedByDescending { it.date },
+                        onHealthRecords = records.sortedByDescending { it.date },
                     )
                 }
             } catch (e: java.lang.Exception) {
@@ -159,7 +159,7 @@ data class IndividualHealthRecordsUiState(
     val isBcscSessionActive: Boolean? = null,
     val bcscAuthenticatedPatientDto: PatientDto? = null,
     val onHealthRecords: List<HealthRecordItem> = emptyList(),
-    val medicationRecordsUpdated: Boolean = false
+    val medicationRecordsUpdated: Boolean = false,
 )
 
 data class HealthRecordItem(

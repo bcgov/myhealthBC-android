@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
@@ -29,6 +30,7 @@ import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.observeWork
+import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
@@ -46,6 +48,7 @@ class IndividualHealthRecordFragment :
     private lateinit var hiddenMedicationRecordsAdapter: HiddenMedicationRecordAdapter
     private lateinit var hiddenHealthRecordAdapter: HiddenHealthRecordAdapter
     private lateinit var healthRecordsAdapter: HealthRecordsAdapter
+    private lateinit var immunizationBannerAdapter: ImmunizationBannerAdapter
     private lateinit var concatAdapter: ConcatAdapter
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val filterSharedViewModel: PatientFilterViewModel by activityViewModels()
@@ -172,10 +175,15 @@ class IndividualHealthRecordFragment :
             setToolBar(it.fullName)
         }
         if (uiState.isBcscSessionActive != null && uiState.isBcscSessionActive) {
-            concatAdapter = ConcatAdapter(
-                hiddenMedicationRecordsAdapter,
-                healthRecordsAdapter
-            )
+            val adapters = arrayListOf<RecyclerView.Adapter<out RecyclerView.ViewHolder?>>()
+
+            if (sharedViewModel.displayImmunizationBanner) {
+                adapters.add(immunizationBannerAdapter)
+            }
+            adapters.add(hiddenMedicationRecordsAdapter)
+            adapters.add(healthRecordsAdapter)
+
+            concatAdapter = ConcatAdapter(adapters)
             binding.content.rvHealthRecords.adapter = concatAdapter
             displayBcscRecords(uiState)
         } else {
@@ -270,6 +278,11 @@ class IndividualHealthRecordFragment :
             onMedicationAccessClick(it)
         }
 
+        immunizationBannerAdapter = ImmunizationBannerAdapter(
+            onClickLink = ::openImmunizationPage,
+            onClickClose = ::closeBanner
+        )
+
         concatAdapter = ConcatAdapter(
             hiddenHealthRecordAdapter,
             hiddenMedicationRecordsAdapter,
@@ -278,6 +291,15 @@ class IndividualHealthRecordFragment :
         binding.content.rvHealthRecords.adapter = concatAdapter
         binding.content.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
         binding.content.rvHealthRecords.emptyView = binding.emptyView.root
+    }
+
+    private fun openImmunizationPage() {
+        requireActivity().redirect(getString(R.string.url_update_your_immnz))
+    }
+
+    private fun closeBanner() {
+        concatAdapter.removeAdapter(immunizationBannerAdapter)
+        sharedViewModel.displayImmunizationBanner = false
     }
 
     private fun onMedicationAccessClick(patientId: Long) {

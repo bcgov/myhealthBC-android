@@ -29,7 +29,7 @@
             android:layout_marginStart="@dimen/space_2_x"
             android:layout_marginTop="@dimen/space_2_x"
             android:layout_marginBottom="@dimen/space_2_x"
-            android:src="@drawable/ic_resources_icon_2"
+            tools:src="@drawable/ic_resources_how_to_get_vax"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
