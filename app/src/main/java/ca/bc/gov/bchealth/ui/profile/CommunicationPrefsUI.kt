@@ -78,11 +78,8 @@ private fun EmailField(email: String?, verified: Boolean) {
             style = MyHealthTypography.caption.copy(fontSize = 13.sp)
         )
     } else {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Column {
             Text(
-                modifier = Modifier.weight(weight = 1f, fill = false),
                 text = email,
                 style = MyHealthTypography.body2
             )
