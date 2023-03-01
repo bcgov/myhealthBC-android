@@ -28,6 +28,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.SPECIAL_AU
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.redirect
@@ -280,7 +281,7 @@ class IndividualHealthRecordFragment :
 
         immunizationBannerAdapter = ImmunizationBannerAdapter(
             onClickLink = ::openImmunizationPage,
-            onClickClose = ::closeBanner
+            onClickClose = ::showResourcesDialog
         )
 
         concatAdapter = ConcatAdapter(
@@ -295,6 +296,17 @@ class IndividualHealthRecordFragment :
 
     private fun openImmunizationPage() {
         requireActivity().redirect(getString(R.string.url_update_your_immnz))
+    }
+
+    private fun showResourcesDialog() {
+        AlertDialogHelper.showAlertDialog(
+            context = requireContext(),
+            title = "",
+            msg = getString(R.string.records_dialog_resources_content),
+            positiveBtnMsg = getString(R.string.records_dialog_resources_button),
+            positiveBtnCallback = ::closeBanner,
+            cancelable = true
+        )
     }
 
     private fun closeBanner() {

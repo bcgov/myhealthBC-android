@@ -82,6 +82,7 @@ fun UserProfilePayload.toDto(patientId: Long) = UserProfileDto(
     email = email,
     isEmailVerified = isEmailVerified,
     smsNumber = smsNumber,
+    isPhoneVerified = isSMSNumberVerified,
 )
 
 fun MedicationStatementResponse.toListOfMedicationDto(): List<MedicationWithSummaryAndPharmacyDto> =

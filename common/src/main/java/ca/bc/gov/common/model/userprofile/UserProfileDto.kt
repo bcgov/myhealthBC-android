@@ -6,4 +6,5 @@ data class UserProfileDto(
     val email: String? = null,
     val isEmailVerified: Boolean,
     val smsNumber: String? = null,
+    val isPhoneVerified: Boolean
 )

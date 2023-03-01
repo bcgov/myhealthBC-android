@@ -24,8 +24,9 @@ import ca.bc.gov.bchealth.ui.custom.MyHealthClickableText
 @Composable
 fun CommunicationPreferences(
     email: String?,
-    verified: Boolean,
+    isEmailVerified: Boolean,
     phone: String?,
+    isPhoneVerified: Boolean,
     onClick: () -> Unit
 ) {
     Column(Modifier.padding(top = 20.dp, start = 32.dp, end = 32.dp, bottom = 55.dp)) {
@@ -56,7 +57,7 @@ fun CommunicationPreferences(
 
         Spacer(modifier = Modifier.size(4.dp))
 
-        EmailField(email, verified)
+        ContactField(email, R.string.profile_communication_prefs_email_empty, isEmailVerified)
 
         Text(
             modifier = Modifier.padding(top = 20.dp),
@@ -66,24 +67,21 @@ fun CommunicationPreferences(
 
         Spacer(modifier = Modifier.size(4.dp))
 
-        PhoneField(phone = phone)
+        ContactField(phone, R.string.profile_communication_prefs_phone_empty, isPhoneVerified)
     }
 }
 
 @Composable
-private fun EmailField(email: String?, verified: Boolean) {
-    if (email.isNullOrBlank()) {
+private fun ContactField(contact: String?, placeholder: Int, verified: Boolean) {
+    if (contact.isNullOrBlank()) {
         Text(
-            text = stringResource(id = R.string.profile_communication_prefs_email_empty),
+            text = stringResource(id = placeholder),
             style = MyHealthTypography.caption.copy(fontSize = 13.sp)
         )
     } else {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Column {
             Text(
-                modifier = Modifier.weight(weight = 1f, fill = false),
-                text = email,
+                text = contact,
                 style = MyHealthTypography.body2
             )
 
@@ -117,22 +115,6 @@ private fun VerifiedBadge(verified: Boolean, modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-private fun PhoneField(phone: String?) {
-    val text: String
-    val style: TextStyle
-
-    if (phone.isNullOrBlank()) {
-        text = stringResource(id = R.string.profile_communication_prefs_phone_empty)
-        style = MyHealthTypography.caption.copy(fontSize = 13.sp)
-    } else {
-        text = phone
-        style = MyHealthTypography.body2
-    }
-
-    Text(text = text, style = style)
-}
-
 @BasePreview
 @Composable
 private fun PreviewVerifiedBadge() {
@@ -144,24 +126,20 @@ private fun PreviewVerifiedBadge() {
 
 @BasePreview
 @Composable
-private fun PreviewEmailField() {
+private fun PreviewContactField() {
+    val placeholder = R.string.profile_communication_prefs_email_empty
     Column {
-        EmailField("email@ca.ey.com", true)
-        EmailField("email@ca.ey.com", false)
-        EmailField("really-long-email-address-relly-long-email-address@ca.ey.com", true)
-        EmailField("really-long-email-address-relly-long-email-address@ca.ey.com", false)
-        EmailField(null, false)
-    }
-}
-
-@BasePreview
-@Composable
-private fun PreviewPhoneField() {
-    Column {
-        PhoneField(null)
-        PhoneField("")
-        PhoneField(" ")
-        PhoneField("(123) 456 7890")
+        ContactField("email@ca.ey.com", placeholder, true)
+        ContactField("email@ca.ey.com", placeholder, false)
+        ContactField(
+            "really-long-email-address-relly-long-email-address@ca.ey.com",
+            placeholder, true
+        )
+        ContactField(
+            "really-long-email-address-relly-long-email-address@ca.ey.com",
+            placeholder, false
+        )
+        ContactField(null, placeholder, false)
     }
 }
 
@@ -172,7 +150,8 @@ private fun PreviewCommunicationPreferences() {
         CommunicationPreferences(
             "email-address@ca.ey.com",
             true,
-            ""
+            "(123) 456 7890",
+            false
         ) {}
     }
 }

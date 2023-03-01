@@ -227,6 +227,8 @@
     <string name="records_immunization_banner_top">You can add or update immunizations by visiting immunizationrecord.gov.bc.ca.</string>
     <string name="records_immunization_banner_click">immunizationrecord.gov.bc.ca.</string>
     <string name="records_immunization_banner_bottom">You can always access this information by going to the Resources page.</string>
+    <string name="records_dialog_resources_content">Add or update your immunization records by visiting the Resources page</string>
+    <string name="records_dialog_resources_button">Done</string>
     <string name="view_the_details_of_all_your_covid_19_health_records">View the details of all your COVID-19 Health Records</string>
     <string name="records">Records</string>
     <string name="get_vaccination_records">Vaccination records</string>

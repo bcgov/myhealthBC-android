@@ -37,4 +37,7 @@ data class UserProfileEntity(
 
     @ColumnInfo(name = "sms_number")
     val smsNumber: String?,
+
+    @ColumnInfo(name = "is_phone_verified")
+    val isPhoneVerified: Boolean,
 )

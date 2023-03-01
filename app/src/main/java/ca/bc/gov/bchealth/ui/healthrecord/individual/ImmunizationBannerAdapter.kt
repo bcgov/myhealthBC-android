@@ -30,7 +30,7 @@ class ImmunizationBannerAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.apply {
             val clickableText = root.resources.getString(R.string.records_immunization_banner_click)
-            tvBody.makeLinks(clickableText to View.OnClickListener { onClickLink.invoke() })
+            tvBody.makeLinks(isBold = true, clickableText to View.OnClickListener { onClickLink.invoke() })
             btnClose.setOnClickListener { onClickClose() }
         }
     }
