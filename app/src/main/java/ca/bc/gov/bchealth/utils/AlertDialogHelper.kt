@@ -17,7 +17,8 @@ object AlertDialogHelper {
         positiveBtnMsg: String,
         negativeBtnMsg: String? = null,
         positiveBtnCallback: (() -> Unit)? = null,
-        negativeBtnCallback: (() -> Unit)? = null
+        negativeBtnCallback: (() -> Unit)? = null,
+        cancelable :Boolean = false
     ) {
         if (isDialogShowing()) {
             return
@@ -34,7 +35,7 @@ object AlertDialogHelper {
                 negativeBtnCallback?.invoke()
                 dialog.dismiss()
             }
-            .setCancelable(false)
+            .setCancelable(cancelable)
             .show()
     }
 }
