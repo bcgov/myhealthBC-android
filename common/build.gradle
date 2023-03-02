@@ -50,7 +50,7 @@ android {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
             buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "true"
-            buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "false"
+            buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "true"
         }
     }
 
