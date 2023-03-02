@@ -28,7 +28,7 @@ android {
 
         mock {
             dimension "version"
-            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
+            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
             buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "true"
             buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "true"
             buildConfigField "boolean", "FLAG_VIEW_PROFILE", "true"
@@ -37,7 +37,7 @@ android {
         }
         dev {
             dimension "version"
-            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
+            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
             buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "true"
             buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "true"
             buildConfigField "boolean", "FLAG_VIEW_PROFILE", "true"
@@ -47,7 +47,7 @@ android {
 
         stage {
             dimension "version"
-            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
+            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
             buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "true"
             buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "true"
             buildConfigField "boolean", "FLAG_VIEW_PROFILE", "false"
