@@ -19,11 +19,8 @@ class PatientFilterFragment : FilterFragment() {
         R.id.chip_immunizations,
         R.id.chip_health_visit,
         R.id.chip_special_authority,
+        R.id.chip_hospital_visits,
     ).apply {
-        if (BuildConfig.FLAG_HOSPITAL_VISITS) {
-            this.add(R.id.chip_hospital_visits)
-        }
-
         if (BuildConfig.FLAG_CLINICAL_DOCUMENTS) {
             this.add(R.id.chip_clinical_document)
         }

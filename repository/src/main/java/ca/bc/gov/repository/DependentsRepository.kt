@@ -2,12 +2,10 @@ package ca.bc.gov.repository
 
 import android.util.Log
 import ca.bc.gov.common.BuildConfig.FLAG_GUARDIAN_CLINICAL_DOCS
-import ca.bc.gov.common.BuildConfig.FLAG_HOSPITAL_VISITS
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.common.model.dependents.DependentDto
-import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientWithClinicalDocumentsDto
@@ -217,13 +215,6 @@ class DependentsRepository @Inject constructor(
     suspend fun getPatientWithClinicalDocuments(patientId: Long): PatientWithClinicalDocumentsDto =
         patientLocalDataSource.getPatientWithClinicalDocuments(patientId)
             ?: throw getDatabaseException(patientId)
-
-    suspend fun getPatientWithHospitalVisits(patientId: Long): List<HospitalVisitDto> {
-        if (FLAG_HOSPITAL_VISITS.not()) return emptyList()
-
-        return patientLocalDataSource.getPatientWithHospitalVisits(patientId)?.hospitalVisits
-            ?: throw getDatabaseException(patientId)
-    }
 
     suspend fun updateDependentListOrder(list: List<DependentDto>) {
         localDataSource.deleteAllDependentListOrders()

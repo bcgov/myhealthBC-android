@@ -1,7 +1,6 @@
 package ca.bc.gov.repository.patient
 
 import ca.bc.gov.common.BuildConfig.FLAG_CLINICAL_DOCUMENTS
-import ca.bc.gov.common.BuildConfig.FLAG_HOSPITAL_VISITS
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.AuthenticationStatus
@@ -105,8 +104,6 @@ class PatientRepository @Inject constructor(
             ?: throw getNoRecordFoundException(patientId)
 
     suspend fun getPatientWithHospitalVisits(patientId: Long): List<HospitalVisitDto> {
-        if (FLAG_HOSPITAL_VISITS.not()) return emptyList()
-
         return patientLocalDataSource.getPatientWithHospitalVisits(patientId)?.hospitalVisits
             ?: throw getNoRecordFoundException(patientId)
     }
