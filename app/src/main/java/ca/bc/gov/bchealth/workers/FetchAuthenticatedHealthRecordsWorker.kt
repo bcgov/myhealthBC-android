@@ -145,7 +145,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 runTaskAsync { fetchHospitalVisitsUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchCommentsUseCase.execute(authParameters) },
                 runTaskAsync { fetchSpecialAuthoritiesUseCase.execute(patientId, authParameters) },
-                runTaskAsync { userProfileRepository.deleteUseProfileCache(patientId) }
+                runTaskAsync { userProfileRepository.deleteUserProfileCache(patientId) }
             ).awaitAll()
 
             isApiFailed = taskResults.contains(Result.failure())

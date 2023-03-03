@@ -46,7 +46,7 @@ class UserProfileRepository @Inject constructor(
         return response.resourcePayload.acceptedTermsOfService
     }
 
-    suspend fun deleteUseProfileCache(patientId: Long) {
+    suspend fun deleteUserProfileCache(patientId: Long) {
         userProfileLocalDataSource.deleteUserProfile(patientId)
     }
 }
