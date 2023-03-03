@@ -34,6 +34,7 @@ import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
+import ca.bc.gov.common.BuildConfig.FLAG_IMMZ_BANNER
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -178,7 +179,7 @@ class IndividualHealthRecordFragment :
         if (uiState.isBcscSessionActive != null && uiState.isBcscSessionActive) {
             val adapters = arrayListOf<RecyclerView.Adapter<out RecyclerView.ViewHolder?>>()
 
-            if (sharedViewModel.displayImmunizationBanner) {
+            if (FLAG_IMMZ_BANNER && sharedViewModel.displayImmunizationBanner) {
                 adapters.add(immunizationBannerAdapter)
             }
             adapters.add(hiddenMedicationRecordsAdapter)
