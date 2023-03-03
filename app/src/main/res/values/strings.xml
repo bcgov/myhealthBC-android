@@ -71,7 +71,7 @@
 
     <!--Resources-->
     <string name="resources">Resources</string>
-    <string name="resource_screen_message">Find useful information and learn how to get vaccinated or tested for COVID-19.\nThe following websites are official B.C. government resources.</string>
+    <string name="resource_screen_message">Connect with HealthLink BC for health advice and get the latest information about COVID-19.</string>
     <string name="label_resource_update_your_immnz">Update or add your immunizations</string>
     <string name="label_resource_advice">Get health advice</string>
     <string name="label_resource_how_to_get_vax">Get vaccinated for COVID-19</string>
