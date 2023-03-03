@@ -24,8 +24,10 @@ import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
+import ca.bc.gov.common.BuildConfig.FLAG_VIEW_PROFILE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -78,8 +80,11 @@ class SettingsFragment : BaseFragment(R.layout.fragment_settings) {
             }
         }
 
-        binding.layoutProfile.setOnClickListener {
-            navigate(R.id.profileFragment)
+        binding.tvViewProfile.toggleVisibility(FLAG_VIEW_PROFILE)
+        if (FLAG_VIEW_PROFILE) {
+            binding.layoutProfile.setOnClickListener {
+                navigate(R.id.profileFragment)
+            }
         }
     }
 
