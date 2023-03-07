@@ -38,7 +38,6 @@ import ca.bc.gov.bchealth.compose.white
 
 @Composable
 fun CommentInputUI(
-    commentValidation: (String) -> Boolean,
     onSubmitComment: (String) -> Unit
 ) {
     var comment by rememberSaveable { mutableStateOf("") }
@@ -92,6 +91,8 @@ fun CommentInputUI(
         Spacer(modifier = Modifier.size(28.dp))
     }
 }
+
+private fun commentValidation(content: String) = content.length <= 10
 
 @Composable
 private fun getComponentColors() = TextFieldDefaults.outlinedTextFieldColors(
@@ -165,5 +166,5 @@ private fun ShadowSpacer() {
 @Composable
 @BasePreview
 private fun PreviewCommentInputUI() {
-    CommentInputUI({ true }, {})
+    CommentInputUI {}
 }
