@@ -64,11 +64,11 @@
                     android:text="@string/medications" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_lab_test"
+                    android:id="@+id/chip_lab_results"
                     style="@style/ChipFilterByType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/lab_tests" />
+                    android:text="@string/lab_results" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip_covid_test"

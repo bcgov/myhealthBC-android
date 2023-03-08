@@ -22,7 +22,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.COVID_TEST
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HEALTH_VISIT_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HOSPITAL_VISITS_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.IMMUNIZATION_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.LAB_TEST_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.LAB_RESULT_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.MEDICATION_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.SPECIAL_AUTHORITY_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
@@ -247,7 +247,7 @@ class IndividualHealthRecordFragment :
                     IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordFragmentToMedicationDetailFragment(it.recordId)
 
-                LAB_TEST_RECORD ->
+                LAB_RESULT_RECORD ->
                     IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordFragmentToLabTestDetailFragment(it.recordId)
 
