@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,7 +44,6 @@ fun CommentsUI(
 
     MyHealthScaffold(
         title = stringResource(id = R.string.comments),
-        hideContentWhileLoading = true,
         isLoading = uiState.onLoading,
         navigationAction = navigationAction
     ) {
@@ -57,7 +57,7 @@ fun CommentsContent(
     editAction: (Comment) -> Unit,
     submitAction: (String) -> Unit,
 ) {
-    Column {
+    Column(Modifier.imePadding()) {
         Text(
             modifier = Modifier.padding(top = 16.dp, start = 32.dp, end = 32.dp),
             text = stringResource(id = R.string.comments_medication_subtitle)

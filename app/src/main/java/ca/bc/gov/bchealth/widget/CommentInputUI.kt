@@ -4,11 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
@@ -43,7 +41,18 @@ fun CommentInputUI(
     var comment by rememberSaveable { mutableStateOf("") }
     var isCommentValid by rememberSaveable { mutableStateOf(true) }
 
-    Column(modifier = Modifier.background(white)) {
+    val submitAction: (String) -> Unit = {
+        if (isCommentValid) {
+            onSubmitComment.invoke(it)
+            comment = ""
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .background(white)
+            .padding(bottom = 12.dp)
+    ) {
 
         ShadowSpacer()
 
@@ -61,7 +70,7 @@ fun CommentInputUI(
             },
             isError = isCommentValid.not(),
             modifier = Modifier
-                .padding(top = 12.dp, bottom = 8.dp, end = 32.dp, start = 32.dp)
+                .padding(top = 8.dp, bottom = 8.dp, end = 32.dp, start = 32.dp)
                 .fillMaxWidth(),
             singleLine = true,
             leadingIcon = {
@@ -71,7 +80,7 @@ fun CommentInputUI(
                     tint = if (isCommentValid) grey else red
                 )
             },
-            trailingIcon = { TrailingIcon(comment, isCommentValid, onSubmitComment) },
+            trailingIcon = { TrailingIcon(comment, isCommentValid, submitAction) },
             colors = getComponentColors(),
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Send,
@@ -79,7 +88,7 @@ fun CommentInputUI(
             ),
             keyboardActions = KeyboardActions(
                 onSend = {
-                    onSubmitComment(comment)
+                    submitAction(comment)
                 }
             ),
         )
@@ -87,12 +96,10 @@ fun CommentInputUI(
         if (isCommentValid.not()) {
             ErrorMessage()
         }
-
-        Spacer(modifier = Modifier.size(28.dp))
     }
 }
 
-private fun commentValidation(content: String) = content.length <= 10
+private fun commentValidation(content: String) = content.length <= 1000
 
 @Composable
 private fun getComponentColors() = TextFieldDefaults.outlinedTextFieldColors(
@@ -150,8 +157,8 @@ private fun ShadowSpacer() {
     val brush = Brush.verticalGradient(
         listOf(
             Color(0x00000000),
-            Color(0x13000000),
-            Color(0x40000000),
+            Color(0x09000000),
+            Color(0x26000000),
         )
     )
 

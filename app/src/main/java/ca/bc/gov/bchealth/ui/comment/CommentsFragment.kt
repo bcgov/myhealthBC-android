@@ -23,43 +23,29 @@ class CommentsFragment : BaseFragment(null) {
 
     @Composable
     override fun GetComposableLayout() {
-        CommentsUI(::popNavigation, viewModel, {}, {})
+        CommentsUI(::popNavigation, viewModel, {}, ::onSubmitComment)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (FLAG_ADD_COMMENTS) {
-            addCommentListener()
             observeComments()
             viewModel.getComments(args.parentEntryId)
             observeCommentsSyncCompletion()
         }
     }
 
-    private fun addCommentListener() {
-        binding.comment.addCommentListener(object : AddCommentCallback {
-            override fun onSubmitComment(commentText: String) {
-                viewModel.addComment(
-                    args.parentEntryId,
-                    commentText,
-                    CommentEntryTypeCode.MEDICATION.value
-                )
-            }
-        })
+    private fun onSubmitComment(commentText: String) {
+        viewModel.addComment(
+            args.parentEntryId,
+            commentText,
+            CommentEntryTypeCode.MEDICATION.value
+        )
     }
 
     private fun observeComments() {
         launchOnStart {
             viewModel.uiState.collect { state ->
-                if (state.commentsList.isNotEmpty()) {
-                    commentsAdapter.submitList(state.commentsList) {
-                        binding.rvCommentsList.scrollToBottom()
-                    }
-                    viewModel.resetUiState()
-                    // clear comment
-                    binding.comment.clearComment()
-                }
-
                 if (state.onError) {
                     showError()
                     viewModel.resetUiState()
