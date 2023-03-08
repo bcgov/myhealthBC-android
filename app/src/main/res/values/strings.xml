@@ -145,7 +145,7 @@
     <string name="enter_dob">Enter date of birth</string>
     <string name="enter_dot">Enter date of test</string>
     <string name="enter_dov">Enter date of vaccination</string>
-    <string name="privacy_statement_info_vaccine">Your information is being collected to provide you with your COVID-19 vaccination status under s. 26(c) of the Freedom of Information and Protection of Privacy Act. If you have any questions, contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849.</string>
+    <string name="privacy_statement_info_vaccine">Your information is being collected to provide you with your COVID–19 vaccination status under s. 26(c) of the Freedom of Information and Protection of Privacy Act. If you have any questions, contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849.</string>
     <string name="privacy_statement_info_test_result">Your information is being collected to provide you with your COVID-19 test results under s. 26(c) of the Freedom of Information and Protection of Privacy Act. Contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849 if you have any questions about this collection.</string>
     <string name="phn_number_required">Personal Health Number is required</string>
     <string name="dob_required">Date of Birth is required</string>
@@ -442,8 +442,8 @@
     <!-- Filter screen -->
     <string name="clear_all">Clear all</string>
     <string name="record_type">Record type</string>
-    <string name="lab_tests">Lab tests</string>
-    <string name="covid_19_tests">COVID-19 tests</string>
+    <string name="lab_results">Lab Results</string>
+    <string name="covid_19_tests">COVID-19 Tests</string>
     <string name="immunizations">Immunizations</string>
     <string name="health_visits">Health Visits</string>
     <string name="special_authorities">Special Authorities</string>

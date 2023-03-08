@@ -13,6 +13,6 @@ class DependentFilterFragment : FilterFragment() {
     override val availableFilters = listOf(
         R.id.chip_covid_test,
         R.id.chip_immunizations,
-        R.id.chip_lab_test
+        R.id.chip_lab_results
     )
 }

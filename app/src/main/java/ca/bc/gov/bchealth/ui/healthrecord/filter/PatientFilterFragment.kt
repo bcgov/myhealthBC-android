@@ -14,7 +14,7 @@ class PatientFilterFragment : FilterFragment() {
     override val availableFilters = mutableListOf(
         R.id.chip_date,
         R.id.chip_medication,
-        R.id.chip_lab_test,
+        R.id.chip_lab_results,
         R.id.chip_covid_test,
         R.id.chip_immunizations,
         R.id.chip_health_visit,

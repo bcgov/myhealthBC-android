@@ -105,7 +105,7 @@ fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
         icon = R.drawable.ic_lab_test,
         date = labOrder.timelineDateTime,
         description = description,
-        healthRecordType = HealthRecordType.LAB_TEST_RECORD,
+        healthRecordType = HealthRecordType.LAB_RESULT_RECORD,
         dataSource = labOrder.dataSorce.name
     )
 }
