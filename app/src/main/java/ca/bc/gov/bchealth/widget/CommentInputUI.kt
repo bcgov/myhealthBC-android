@@ -160,7 +160,7 @@ fun CommentInputUI(
             }
 
             Button(
-                onClick = { onUpdate.invoke(comment) },
+                onClick = { onUpdate.invoke(comment.copy(text = content)) },
                 enabled = isCommentValid,
                 modifier = Modifier
                     .padding(start = 12.dp)
@@ -264,7 +264,7 @@ private fun PreviewCommentInputUI() {
 @Composable
 @BasePreview
 private fun PreviewCommentInputEditUI() {
-    val comment = Comment(text = "comment", date = null)
+    val comment = Comment(text = "comment", version = 0L, date = null)
     MyHealthTheme {
         CommentInputUI(comment, {}) {}
     }

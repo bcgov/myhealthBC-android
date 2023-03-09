@@ -90,6 +90,15 @@ class CommentRepository @Inject constructor(
         insert(comment)
     }
 
+    suspend fun updateComment(commentDto: CommentDto) {
+        val authParametersDto = bcscAuthRepo.getAuthParametersDto()
+        val comment = commentRemoteDataSource.updateComment(
+            commentDto,
+            authParametersDto.hdid,
+            authParametersDto.token
+        )
+    }
+
     suspend fun findCommentsByUploadFlag(isUploaded: Boolean) =
         commentLocalDataSource.findCommentsByUploadFlag(isUploaded)
 

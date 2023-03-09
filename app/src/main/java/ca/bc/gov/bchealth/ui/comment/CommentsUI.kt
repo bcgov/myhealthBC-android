@@ -228,8 +228,8 @@ private fun OptionsMenu(
 fun PreviewCommentsContent() {
     val date = Instant.now()
     val comments = listOf(
-        Comment(text = "comment01", date = date, isUploaded = true),
-        Comment(text = "comment02", date = date, isUploaded = false),
+        Comment(text = "comment01", date = date, version = 0L, isUploaded = true),
+        Comment(text = "comment02", date = date, version = 0L, isUploaded = false),
     )
     val uiState = CommentsUiState(
         commentsList = comments

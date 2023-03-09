@@ -2,9 +2,9 @@ package ca.bc.gov.bchealth.ui.comment
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
 import ca.bc.gov.common.model.comment.CommentDto
-import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.repository.CommentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,14 +43,7 @@ class CommentsViewModel @Inject constructor(
             _uiState.update { it ->
                 it.copy(
                     onLoading = false,
-                    commentsList = commentsDtoList.map {
-                        Comment(
-                            it.id,
-                            it.text,
-                            it.createdDateTime.toLocalDateTimeInstant(),
-                            it.isUploaded
-                        )
-                    },
+                    commentsList = commentsDtoList.map { it.toUiModel() },
                     latestComment = commentsTemp
                 )
             }
@@ -84,14 +77,7 @@ class CommentsViewModel @Inject constructor(
                 _uiState.update { it ->
                     it.copy(
                         onLoading = false,
-                        commentsList = commentsDtoList.map {
-                            Comment(
-                                it.id,
-                                it.text,
-                                it.createdDateTime.toLocalDateTimeInstant(),
-                                it.isUploaded
-                            )
-                        },
+                        commentsList = commentsDtoList.map { it.toUiModel() },
                         latestComment = commentsTemp,
                         onCommentsUpdated = true
                     )
@@ -113,6 +99,31 @@ class CommentsViewModel @Inject constructor(
         }
     }
 
+    fun updateComment(parentEntryId: String, comment: Comment, entryTypeCode: String) =
+        viewModelScope.launch {
+            comment.id ?: return@launch
+
+            val commentDto = CommentDto(
+                id = comment.id,
+                userProfileId = null,
+                text = comment.text,
+                entryTypeCode = entryTypeCode,
+                parentEntryId = parentEntryId,
+                version = comment.version,
+                createdDateTime = Instant.now(),
+                createdBy = null,
+                updatedDateTime = Instant.now(),
+                updatedBy = null,
+                isUploaded = false
+            )
+
+            try {
+                commentRepository.updateComment(commentDto)
+            } catch (e: Exception) {
+                println(e.printStackTrace())
+            }
+        }
+
     private fun getLatestComment(
         commentsDtoList: MutableList<CommentDto>,
         parentEntryId: String
@@ -120,32 +131,23 @@ class CommentsViewModel @Inject constructor(
         val commentsList = mutableListOf<Comment>()
         if (commentsDtoList.isNotEmpty()) {
             commentsList.add(
+                // Item that displays the number of comments instead of the content. Todo: refactor it
                 Comment(
                     parentEntryId,
                     "${commentsDtoList.size}",
-                    Instant.now()
+                    Instant.now(),
+                    0L
                 )
             )
 
             if (FLAG_ADD_COMMENTS) {
-                val latestComment = commentsDtoList.lastOrNull()
-                commentsList.add(
-                    Comment(
-                        latestComment?.parentEntryId,
-                        latestComment?.text,
-                        latestComment?.createdDateTime?.toLocalDateTimeInstant(),
-                        latestComment?.isUploaded ?: true
-                    )
-                )
+                commentsDtoList.lastOrNull()?.let {
+                    commentsList.add(it.toUiModel())
+                }
             } else {
                 commentsList.addAll(
                     commentsDtoList.map {
-                        Comment(
-                            it.parentEntryId,
-                            it.text,
-                            it.createdDateTime?.toLocalDateTimeInstant(),
-                            it.isUploaded ?: true
-                        )
+                        it.toUiModel()
                     }
                 )
             }
@@ -178,6 +180,7 @@ data class Comment(
     val id: String? = null,
     val text: String?,
     val date: Instant?,
+    val version: Long,
     val isUploaded: Boolean = true,
     var editable: Boolean = false
 )

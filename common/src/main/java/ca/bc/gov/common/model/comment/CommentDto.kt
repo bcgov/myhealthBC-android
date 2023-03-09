@@ -11,7 +11,7 @@ data class CommentDto(
     val text: String?,
     val entryTypeCode: String?,
     val parentEntryId: String?,
-    val version: Int,
+    val version: Long,
     val createdDateTime: Instant,
     val createdBy: String?,
     val updatedDateTime: Instant,

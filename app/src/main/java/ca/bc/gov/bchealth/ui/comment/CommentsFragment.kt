@@ -61,7 +61,11 @@ class CommentsFragment : BaseFragment(null) {
     }
 
     private fun onTapUpdate(comment: Comment) {
-        // todo
+        viewModel.updateComment(
+            args.parentEntryId,
+            comment,
+            CommentEntryTypeCode.MEDICATION.value
+        )
     }
 
     private fun onTapCancelUpdate(comment: Comment) {

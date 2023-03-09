@@ -6,6 +6,7 @@ import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
 import ca.bc.gov.data.datasource.remote.model.request.CommentRequest
+import ca.bc.gov.data.datasource.remote.model.request.CommentUpdateRequest
 import ca.bc.gov.data.model.mapper.toDto
 import ca.bc.gov.data.utils.safeCall
 import javax.inject.Inject
@@ -53,6 +54,32 @@ class CommentRemoteDataSource @Inject constructor(
                     hdid,
                     accessToken,
                     commentRequest
+                )
+            }
+                ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
+
+        return response.toDto()
+    }
+
+    suspend fun updateComment(
+        commentDto: CommentDto,
+        hdid: String,
+        accessToken: String
+    ): CommentDto {
+        val commentUpdateRequest = CommentUpdateRequest(
+            id = commentDto.id,
+            text = commentDto.text.orEmpty(),
+            parentEntryId = commentDto.parentEntryId,
+            userProfileId = hdid,
+            entryTypeCode = commentDto.entryTypeCode,
+            version = commentDto.version,
+        )
+        val response =
+            safeCall {
+                healthGatewayPrivateApi.updateComment(
+                    hdid,
+                    accessToken,
+                    commentUpdateRequest
                 )
             }
                 ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)

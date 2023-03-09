@@ -21,7 +21,7 @@ data class CommentEntity(
     val entryTypeCode: String? = null,
     @ColumnInfo(name = "parent_entry_id")
     val parentEntryId: String? = null,
-    val version: Int,
+    val version: Long,
     @ColumnInfo(name = "created_date_time")
     val createdDateTime: Instant,
     @ColumnInfo(name = "created_by")
