@@ -17,6 +17,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,15 +36,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
+import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.blue
+import ca.bc.gov.bchealth.compose.darkText
 import ca.bc.gov.bchealth.compose.grey
+import ca.bc.gov.bchealth.compose.greyBg
 import ca.bc.gov.bchealth.compose.minButtonSize
 import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.compose.red
 import ca.bc.gov.bchealth.compose.white
 import ca.bc.gov.bchealth.ui.comment.Comment
-import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 
 @Composable
 fun CommentInputUI(
@@ -92,7 +95,7 @@ fun CommentInputUI(
                 )
             },
             trailingIcon = { TrailingIcon(comment, isCommentValid, submitAction) },
-            colors = getComponentColors(),
+            colors = getOutlineColors(),
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Send,
                 keyboardType = KeyboardType.Text
@@ -123,7 +126,7 @@ fun CommentInputUI(
         modifier = Modifier.padding(vertical = 8.dp),
         horizontalAlignment = Alignment.End
     ) {
-        OutlinedTextField(
+        TextField(
             value = content,
             onValueChange = {
                 content = it
@@ -133,7 +136,7 @@ fun CommentInputUI(
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp, end = 32.dp, start = 32.dp)
                 .fillMaxWidth(),
-            colors = getComponentColors(),
+            colors = getInputColors(),
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
         )
 
@@ -177,13 +180,20 @@ fun CommentInputUI(
 private fun commentValidation(content: String) = content.length <= 1000
 
 @Composable
-private fun getComponentColors() = TextFieldDefaults.outlinedTextFieldColors(
+private fun getOutlineColors() = TextFieldDefaults.outlinedTextFieldColors(
     focusedBorderColor = grey,
     unfocusedBorderColor = grey,
     errorBorderColor = red,
     errorLeadingIconColor = red,
     errorTrailingIconColor = red,
     errorLabelColor = red
+)
+
+@Composable
+private fun getInputColors() = TextFieldDefaults.outlinedTextFieldColors(
+    errorBorderColor = red,
+    backgroundColor = greyBg,
+    textColor = darkText,
 )
 
 @Composable
@@ -254,8 +264,8 @@ private fun PreviewCommentInputUI() {
 @Composable
 @BasePreview
 private fun PreviewCommentInputEditUI() {
-    val comment = Comment(text = "", date = null)
-    MyHealthScaffold(title = "", navigationAction = { /*TODO*/ }) {
+    val comment = Comment(text = "comment", date = null)
+    MyHealthTheme {
         CommentInputUI(comment, {}) {}
     }
 }
