@@ -24,11 +24,13 @@ class CommentsFragment : BaseFragment(null) {
     @Composable
     override fun GetComposableLayout() {
         CommentsUI(
+            viewModel.uiState,
             ::popNavigation,
-            viewModel,
-            ::onEditComment,
-            ::onDeleteComment,
-            ::onSubmitComment
+            ::onTapEdit,
+            ::onTapDelete,
+            ::onTapSubmit,
+            ::onTapUpdate,
+            ::onTapCancelUpdate,
         )
     }
 
@@ -41,21 +43,30 @@ class CommentsFragment : BaseFragment(null) {
         }
     }
 
-    private fun onEditComment(comment: Comment) {
+    private fun onTapEdit(comment: Comment) {
         viewModel.toggleEditMode(true)
         comment.editable = true
     }
 
-    private fun onDeleteComment(comment: Comment) {
-        //todo
+    private fun onTapDelete(comment: Comment) {
+        // todo
     }
 
-    private fun onSubmitComment(commentText: String) {
+    private fun onTapSubmit(commentText: String) {
         viewModel.addComment(
             args.parentEntryId,
             commentText,
             CommentEntryTypeCode.MEDICATION.value
         )
+    }
+
+    private fun onTapUpdate(comment: Comment) {
+        // todo
+    }
+
+    private fun onTapCancelUpdate(comment: Comment) {
+        comment.editable = false
+        viewModel.toggleEditMode(false)
     }
 
     private fun observeComments() {

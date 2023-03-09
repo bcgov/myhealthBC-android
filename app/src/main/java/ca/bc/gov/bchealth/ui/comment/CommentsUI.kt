@@ -44,17 +44,20 @@ import ca.bc.gov.bchealth.compose.red
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 import ca.bc.gov.bchealth.widget.CommentInputUI
 import ca.bc.gov.common.utils.toDateTimeString
+import kotlinx.coroutines.flow.StateFlow
 import java.time.Instant
 
 @Composable
 fun CommentsUI(
+    uiStateFlow: StateFlow<CommentsUiState>,
     navigationAction: () -> Unit,
-    viewModel: CommentsViewModel,
     editAction: (Comment) -> Unit,
     deleteAction: (Comment) -> Unit,
     submitAction: (String) -> Unit,
+    updateAction: (Comment) -> Unit,
+    cancelAction: (Comment) -> Unit,
 ) {
-    val uiState = viewModel.uiState.collectAsState().value
+    val uiState = uiStateFlow.collectAsState().value
 
     MyHealthScaffold(
         title = stringResource(id = R.string.comments),
@@ -65,8 +68,10 @@ fun CommentsUI(
             uiState,
             editAction,
             deleteAction,
-            submitAction
-        ) { viewModel.toggleEditMode(false) }
+            submitAction,
+            updateAction,
+            cancelAction,
+        )
     }
 }
 
@@ -76,7 +81,8 @@ fun CommentsContent(
     editAction: (Comment) -> Unit,
     deleteAction: (Comment) -> Unit,
     submitAction: (String) -> Unit,
-    onFinishEditing: () -> Unit
+    updateAction: (Comment) -> Unit,
+    cancelAction: (Comment) -> Unit,
 ) {
     val comments = uiState.commentsList
 
@@ -98,7 +104,8 @@ fun CommentsContent(
                     comment,
                     editAction,
                     deleteAction,
-                    onFinishEditing
+                    updateAction,
+                    cancelAction
                 )
             }
         }
@@ -115,7 +122,8 @@ private fun CommentItemUI(
     comment: Comment,
     editAction: (Comment) -> Unit,
     deleteAction: (Comment) -> Unit,
-    onFinishEditing: () -> Unit,
+    updateAction: (Comment) -> Unit,
+    cancelAction: (Comment) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -126,59 +134,63 @@ private fun CommentItemUI(
         stringResource(R.string.posting)
     }
 
-    val alpha = if (displayEditLayout) {
-        if (comment.editable) 1f else 0.3f
+    val alpha = if (displayEditLayout) 0.3f else 1f
+
+    if (comment.editable) {
+        CommentInputUI(comment, updateAction, cancelAction)
     } else {
-        1f
-    }
-
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 32.dp, vertical = 8.dp)
-            .clip(RoundedCornerShape(4.dp))
-            .background(greyBg)
-            .alpha(alpha)
-    ) {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(top = 8.dp, start = 8.dp),
-                text = commentMsg,
-                style = MyHealthTypography.body2
-            )
-
-            Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_comment_options),
-                    contentScale = ContentScale.Inside,
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 32.dp, vertical = 8.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(greyBg)
+                .alpha(alpha)
+        ) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text(
                     modifier = Modifier
-                        .width(minButtonSize)
-                        .height(minButtonSize)
-                        .clickable { expanded = true },
-                    contentDescription = stringResource(id = R.string.edit)
+                        .weight(1f)
+                        .padding(top = 8.dp, start = 8.dp),
+                    text = commentMsg,
+                    style = MyHealthTypography.body2
                 )
 
-                OptionsMenu(
-                    expanded = expanded,
-                    onDismissMenu = { expanded = false },
-                    onClickDelete = {
-                        deleteAction.invoke(comment)
-                        expanded = false
-                    },
-                    onClickEdit = {
-                        editAction.invoke(comment)
-                        expanded = false
-                    }
-                )
+                Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_comment_options),
+                        contentScale = ContentScale.Inside,
+                        modifier = Modifier
+                            .width(minButtonSize)
+                            .height(minButtonSize)
+                            .clickable {
+                                if (displayEditLayout.not()) {
+                                    expanded = true
+                                }
+                            },
+                        contentDescription = stringResource(id = R.string.edit)
+                    )
+
+                    OptionsMenu(
+                        expanded = expanded,
+                        onDismissMenu = { expanded = false },
+                        onClickDelete = {
+                            deleteAction.invoke(comment)
+                            expanded = false
+                        },
+                        onClickEdit = {
+                            editAction.invoke(comment)
+                            expanded = false
+                        }
+                    )
+                }
             }
-        }
 
-        Text(
-            text = footer,
-            style = MyHealthTypography.caption.copy(color = grey),
-            modifier = Modifier.padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
-        )
+            Text(
+                text = footer,
+                style = MyHealthTypography.caption.copy(color = grey),
+                modifier = Modifier.padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
+            )
+        }
     }
 }
 
@@ -222,5 +234,5 @@ fun PreviewCommentsContent() {
     val uiState = CommentsUiState(
         commentsList = comments
     )
-    CommentsContent(uiState, {}, {}, {}, {})
+    CommentsContent(uiState, {}, {}, {}, {}, {})
 }
