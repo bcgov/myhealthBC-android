@@ -22,7 +22,7 @@ class RecordCommentsAdapter(
     ListAdapter<Comment, RecyclerView.ViewHolder>(CommentsDiffCallBacks()) {
 
     fun interface ItemClickListener {
-        fun onItemClick(parentEntryId: String)
+        fun onItemClick(parentEntryId: String, recordType: String)
     }
 
     class CommentsCountViewHolder(val binding: ItemCommentsCountBinding) :
@@ -65,7 +65,9 @@ class RecordCommentsAdapter(
 
                 if (FLAG_ADD_COMMENTS) {
                     holder.itemView.setOnClickListener {
-                        comment.id?.let { it1 -> itemClickListener.onItemClick(it1) }
+                        comment.id?.let { id ->
+                            itemClickListener.onItemClick(id, comment.entryTypeCode)
+                        }
                     }
                 }
             }

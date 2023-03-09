@@ -56,7 +56,7 @@ class CommentsFragment : BaseFragment(null) {
         viewModel.addComment(
             args.parentEntryId,
             commentText,
-            CommentEntryTypeCode.MEDICATION.value
+            args.recordType
         )
     }
 
@@ -64,7 +64,6 @@ class CommentsFragment : BaseFragment(null) {
         viewModel.updateComment(
             args.parentEntryId,
             comment,
-            CommentEntryTypeCode.MEDICATION.value
         )
     }
 

@@ -99,7 +99,7 @@ class CommentsViewModel @Inject constructor(
         }
     }
 
-    fun updateComment(parentEntryId: String, comment: Comment, entryTypeCode: String) =
+    fun updateComment(parentEntryId: String, comment: Comment) =
         viewModelScope.launch {
             comment.id ?: return@launch
 
@@ -107,7 +107,7 @@ class CommentsViewModel @Inject constructor(
                 id = comment.id,
                 userProfileId = null,
                 text = comment.text,
-                entryTypeCode = entryTypeCode,
+                entryTypeCode = comment.entryTypeCode,
                 parentEntryId = parentEntryId,
                 version = comment.version,
                 createdDateTime = Instant.now(),
@@ -136,7 +136,8 @@ class CommentsViewModel @Inject constructor(
                     parentEntryId,
                     "${commentsDtoList.size}",
                     Instant.now(),
-                    0L
+                    0L,
+                    commentsDtoList.last().entryTypeCode.orEmpty()
                 )
             )
 
@@ -181,6 +182,7 @@ data class Comment(
     val text: String?,
     val date: Instant?,
     val version: Long,
+    val entryTypeCode: String,
     val isUploaded: Boolean = true,
     var editable: Boolean = false
 )

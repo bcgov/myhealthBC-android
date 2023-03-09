@@ -264,7 +264,7 @@ private fun PreviewCommentInputUI() {
 @Composable
 @BasePreview
 private fun PreviewCommentInputEditUI() {
-    val comment = Comment(text = "comment", version = 0L, date = null)
+    val comment = Comment(text = "comment", version = 0L, date = null, entryTypeCode = "")
     MyHealthTheme {
         CommentInputUI(comment, {}) {}
     }
