@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.time.Instant
 import javax.inject.Inject
 
@@ -108,6 +107,12 @@ class CommentsViewModel @Inject constructor(
             }
         }
 
+    fun toggleEditMode(isEditMode: Boolean) {
+        _uiState.update {
+            it.copy(displayEditLayout = isEditMode)
+        }
+    }
+
     private fun getLatestComment(
         commentsDtoList: MutableList<CommentDto>,
         parentEntryId: String
@@ -165,14 +170,16 @@ data class CommentsUiState(
     val onError: Boolean = false,
     val commentsList: List<Comment> = emptyList(),
     val latestComment: List<Comment> = emptyList(),
-    val onCommentsUpdated: Boolean = false
+    val onCommentsUpdated: Boolean = false,
+    val displayEditLayout: Boolean = false
 )
 
 data class Comment(
     val id: String? = null,
     val text: String?,
     val date: Instant?,
-    val isUploaded: Boolean = true
+    val isUploaded: Boolean = true,
+    var editable: Boolean = false
 )
 
 enum class CommentEntryTypeCode(val value: String) {

@@ -23,7 +23,13 @@ class CommentsFragment : BaseFragment(null) {
 
     @Composable
     override fun GetComposableLayout() {
-        CommentsUI(::popNavigation, viewModel, {}, ::onSubmitComment)
+        CommentsUI(
+            ::popNavigation,
+            viewModel,
+            ::onEditComment,
+            ::onDeleteComment,
+            ::onSubmitComment
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,6 +39,15 @@ class CommentsFragment : BaseFragment(null) {
             viewModel.getComments(args.parentEntryId)
             observeCommentsSyncCompletion()
         }
+    }
+
+    private fun onEditComment(comment: Comment) {
+        viewModel.toggleEditMode(true)
+        comment.editable = true
+    }
+
+    private fun onDeleteComment(comment: Comment) {
+        //todo
     }
 
     private fun onSubmitComment(commentText: String) {

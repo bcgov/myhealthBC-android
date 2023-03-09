@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.comment
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,13 +11,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -28,6 +39,8 @@ import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.grey
 import ca.bc.gov.bchealth.compose.greyBg
 import ca.bc.gov.bchealth.compose.minButtonSize
+import ca.bc.gov.bchealth.compose.primaryBlue
+import ca.bc.gov.bchealth.compose.red
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 import ca.bc.gov.bchealth.widget.CommentInputUI
 import ca.bc.gov.common.utils.toDateTimeString
@@ -38,6 +51,7 @@ fun CommentsUI(
     navigationAction: () -> Unit,
     viewModel: CommentsViewModel,
     editAction: (Comment) -> Unit,
+    deleteAction: (Comment) -> Unit,
     submitAction: (String) -> Unit,
 ) {
     val uiState = viewModel.uiState.collectAsState().value
@@ -47,16 +61,25 @@ fun CommentsUI(
         isLoading = uiState.onLoading,
         navigationAction = navigationAction
     ) {
-        CommentsContent(uiState.commentsList, editAction, submitAction)
+        CommentsContent(
+            uiState,
+            editAction,
+            deleteAction,
+            submitAction
+        ) { viewModel.toggleEditMode(false) }
     }
 }
 
 @Composable
 fun CommentsContent(
-    comments: List<Comment>,
+    uiState: CommentsUiState,
     editAction: (Comment) -> Unit,
+    deleteAction: (Comment) -> Unit,
     submitAction: (String) -> Unit,
+    onFinishEditing: () -> Unit
 ) {
+    val comments = uiState.commentsList
+
     Column(Modifier.imePadding()) {
         Text(
             modifier = Modifier.padding(top = 16.dp, start = 32.dp, end = 32.dp),
@@ -70,16 +93,32 @@ fun CommentsContent(
                 .padding(top = 8.dp)
         ) {
             items(comments) { comment ->
-                CommentItemUI(comment, editAction)
+                CommentItemUI(
+                    uiState.displayEditLayout,
+                    comment,
+                    editAction,
+                    deleteAction,
+                    onFinishEditing
+                )
             }
         }
 
-        CommentInputUI(onSubmitComment = submitAction)
+        if (uiState.displayEditLayout.not()) {
+            CommentInputUI(onSubmitComment = submitAction)
+        }
     }
 }
 
 @Composable
-fun CommentItemUI(comment: Comment, editAction: (Comment) -> Unit) {
+private fun CommentItemUI(
+    displayEditLayout: Boolean,
+    comment: Comment,
+    editAction: (Comment) -> Unit,
+    deleteAction: (Comment) -> Unit,
+    onFinishEditing: () -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+
     val commentMsg = comment.text.orEmpty()
     val footer = if (comment.isUploaded) {
         comment.date?.toDateTimeString().orEmpty()
@@ -87,11 +126,18 @@ fun CommentItemUI(comment: Comment, editAction: (Comment) -> Unit) {
         stringResource(R.string.posting)
     }
 
+    val alpha = if (displayEditLayout) {
+        if (comment.editable) 1f else 0.3f
+    } else {
+        1f
+    }
+
     Column(
         modifier = Modifier
             .padding(horizontal = 32.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(4.dp))
             .background(greyBg)
+            .alpha(alpha)
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
@@ -101,15 +147,31 @@ fun CommentItemUI(comment: Comment, editAction: (Comment) -> Unit) {
                 text = commentMsg,
                 style = MyHealthTypography.body2
             )
-            Image(
-                painter = painterResource(id = R.drawable.ic_comment_options),
-                contentScale = ContentScale.Inside,
-                modifier = Modifier
-                    .width(minButtonSize)
-                    .height(minButtonSize)
-                    .clickable { editAction.invoke(comment) },
-                contentDescription = stringResource(id = R.string.edit)
-            )
+
+            Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_comment_options),
+                    contentScale = ContentScale.Inside,
+                    modifier = Modifier
+                        .width(minButtonSize)
+                        .height(minButtonSize)
+                        .clickable { expanded = true },
+                    contentDescription = stringResource(id = R.string.edit)
+                )
+
+                OptionsMenu(
+                    expanded = expanded,
+                    onDismissMenu = { expanded = false },
+                    onClickDelete = {
+                        deleteAction.invoke(comment)
+                        expanded = false
+                    },
+                    onClickEdit = {
+                        editAction.invoke(comment)
+                        expanded = false
+                    }
+                )
+            }
         }
 
         Text(
@@ -117,6 +179,35 @@ fun CommentItemUI(comment: Comment, editAction: (Comment) -> Unit) {
             style = MyHealthTypography.caption.copy(color = grey),
             modifier = Modifier.padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
         )
+    }
+}
+
+@Composable
+private fun OptionsMenu(
+    expanded: Boolean,
+    onDismissMenu: () -> Unit,
+    onClickEdit: () -> Unit,
+    onClickDelete: () -> Unit,
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissMenu
+    ) {
+        DropdownMenuItem(onClick = onClickEdit) {
+            Text(
+                text = stringResource(id = R.string.comment_edit),
+                style = MyHealthTypography.body2.copy(color = primaryBlue)
+            )
+        }
+
+        Divider(modifier = Modifier.padding(vertical = 6.dp))
+
+        DropdownMenuItem(onClick = onClickDelete) {
+            Text(
+                text = stringResource(id = R.string.comment_delete),
+                style = MyHealthTypography.body2.copy(color = red)
+            )
+        }
     }
 }
 
@@ -128,5 +219,8 @@ fun PreviewCommentsContent() {
         Comment(text = "comment01", date = date, isUploaded = true),
         Comment(text = "comment02", date = date, isUploaded = false),
     )
-    CommentsContent(comments, {}) {}
+    val uiState = CommentsUiState(
+        commentsList = comments
+    )
+    CommentsContent(uiState, {}, {}, {}, {})
 }
