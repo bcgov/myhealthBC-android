@@ -34,9 +34,7 @@ class CommentsViewModel @Inject constructor(
         }
 
         try {
-            val commentsDtoList = commentRepository.getLocalComments(parentEntryId) as MutableList
-            commentsDtoList.sortBy { it.createdDateTime }
-
+            val commentsDtoList = commentRepository.getLocalComments(parentEntryId)
             val commentsSummary = getCommentsSummary(commentsDtoList, parentEntryId)
 
             _uiState.update { it ->
@@ -59,16 +57,13 @@ class CommentsViewModel @Inject constructor(
     fun addComment(parentEntryId: String, comment: String, entryTypeCode: String) =
         viewModelScope.launch {
             try {
-                _uiState.update {
-                    it.copy(onLoading = true)
-                }
+                _uiState.update { it.copy(onLoading = true) }
 
                 val commentsDtoList = commentRepository.addComment(
                     parentEntryId,
                     comment,
                     entryTypeCode
-                ) as MutableList
-                commentsDtoList.sortBy { it.createdDateTime }
+                )
 
                 val commentsSummary = getCommentsSummary(commentsDtoList, parentEntryId)
 
@@ -115,14 +110,33 @@ class CommentsViewModel @Inject constructor(
         )
 
         try {
-            commentRepository.updateComment(commentDto)
+            _uiState.update {
+                it.copy(onLoading = true)
+            }
+            val comments = commentRepository.updateComment(commentDto)
+
+            _uiState.update { it ->
+                it.copy(
+                    onLoading = false,
+                    displayEditLayout = false,
+                    commentsList = comments.map { it.toUiModel() },
+                    commentsSummary = getCommentsSummary(comments, parentEntryId),
+                    onCommentsUpdated = true
+                )
+            }
         } catch (e: Exception) {
-            println(e.printStackTrace())
+            e.printStackTrace()
+            _uiState.update {
+                it.copy(
+                    onError = true,
+                    onLoading = false
+                )
+            }
         }
     }
 
     private fun getCommentsSummary(
-        commentsDtoList: MutableList<CommentDto>,
+        commentsDtoList: List<CommentDto>,
         parentEntryId: String
     ): MutableList<Comment> {
         val commentsList = mutableListOf<Comment>()

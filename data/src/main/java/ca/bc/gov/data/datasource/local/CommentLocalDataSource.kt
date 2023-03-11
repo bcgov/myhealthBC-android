@@ -13,8 +13,13 @@ class CommentLocalDataSource @Inject constructor(
     private val commentDao: CommentDao
 ) {
 
-    suspend fun findCommentByParentEntryId(parentEntryId: String?): List<CommentDto> =
-        commentDao.findCommentByParentEntryId(parentEntryId).map { it.toDto() }
+    suspend fun findCommentByParentEntryId(parentEntryId: String?): List<CommentDto> {
+        val list = commentDao.findCommentByParentEntryId(parentEntryId)
+            .map { it.toDto() }
+            .toMutableList()
+        list.sortBy { it.createdDateTime }
+        return list
+    }
 
     suspend fun insert(comment: CommentDto): Long {
         return commentDao.insert(comment.toEntity())
@@ -24,7 +29,8 @@ class CommentLocalDataSource @Inject constructor(
         return commentDao.insert(comments.map { it.toEntity() })
     }
 
-    suspend fun delete(parentEntryId: String?, isUploaded: Boolean) = commentDao.delete(parentEntryId, isUploaded)
+    suspend fun delete(parentEntryId: String?, isUploaded: Boolean) =
+        commentDao.delete(parentEntryId, isUploaded)
 
     suspend fun deleteById(id: String) = commentDao.deleteById(id)
 

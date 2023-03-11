@@ -73,7 +73,8 @@ class CommentRepository @Inject constructor(
         )
         insert(commentDto)
         enqueueSyncCommentsWorker()
-        return commentLocalDataSource.findCommentByParentEntryId(parentEntryId)
+
+        return getLocalComments(parentEntryId)
     }
 
     suspend fun syncComment(commentDto: CommentDto) {
@@ -90,7 +91,7 @@ class CommentRepository @Inject constructor(
         insert(comment)
     }
 
-    suspend fun updateComment(commentDto: CommentDto) {
+    suspend fun updateComment(commentDto: CommentDto): List<CommentDto> {
         val authParametersDto = bcscAuthRepo.getAuthParametersDto()
         val updatedComment = commentRemoteDataSource.updateComment(
             commentDto,
@@ -100,6 +101,8 @@ class CommentRepository @Inject constructor(
         deleteById(commentDto.id)
         updatedComment.isUploaded = true
         insert(updatedComment)
+
+        return getLocalComments(commentDto.parentEntryId)
     }
 
     suspend fun findCommentsByUploadFlag(isUploaded: Boolean) =
