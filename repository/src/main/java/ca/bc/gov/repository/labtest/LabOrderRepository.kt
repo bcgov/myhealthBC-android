@@ -38,12 +38,13 @@ class LabOrderRepository @Inject constructor(
 
     suspend fun fetchLabTestPdf(
         reportId: String,
-        isCovid19: Boolean
+        isCovid19: Boolean,
+        hdid: String?
     ): String? {
         val authParameters = bcscAuthRepo.getAuthParametersDto()
         return laboratoryRemoteDataSource.getLabTestInPdf(
             authParameters.token,
-            authParameters.hdid,
+            hdid ?: authParameters.hdid,
             reportId,
             isCovid19
         ).resourcePayload?.data

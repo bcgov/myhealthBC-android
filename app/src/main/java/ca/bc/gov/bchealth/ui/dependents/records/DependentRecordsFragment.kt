@@ -74,7 +74,7 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
 
                 HealthRecordType.LAB_RESULT_RECORD ->
                     DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToLabTestDetailFragment(it.recordId)
+                        .actionDependentRecordsFragmentToLabTestDetailFragment(it.recordId, hdid)
 
                 HealthRecordType.IMMUNIZATION_RECORD ->
                     DependentRecordsFragmentDirections
