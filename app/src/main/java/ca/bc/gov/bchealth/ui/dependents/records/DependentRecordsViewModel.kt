@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
+import ca.bc.gov.common.BuildConfig.FLAG_GUARDIAN_CLINICAL_DOCS
 import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.ErrorData
@@ -46,6 +47,9 @@ class DependentRecordsViewModel @Inject constructor(
             val patientWithLabOrdersAndLabTests =
                 dependentsRepository.getPatientWithLabOrdersAndLabTests(patientId)
 
+            val patientWithClinicalDocuments =
+                dependentsRepository.getPatientWithClinicalDocuments(patientId)
+
             val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
                 it.toUiModel()
             }
@@ -54,10 +58,16 @@ class DependentRecordsViewModel @Inject constructor(
                 it.toUiModel()
             }
 
+            val clinicalDocs = if (FLAG_GUARDIAN_CLINICAL_DOCS) {
+                patientWithClinicalDocuments.clinicalDocuments.map {
+                    it.toUiModel()
+                }
+            } else emptyList()
+
             val immunizationRecords =
                 patientWithImmunizationRecordAndForecast.immunizationRecords.map { it.toUiModel() }
 
-            val result = (covidOrders + immunizationRecords + labTestRecords)
+            val result = (covidOrders + immunizationRecords + labTestRecords + clinicalDocs)
                 .sortedByDescending { it.date }
 
             _uiState.update {

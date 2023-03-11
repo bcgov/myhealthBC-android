@@ -164,6 +164,11 @@
         <argument
             android:name="clinicalDocumentId"
             app:argType="long" />
+        <argument
+            android:name="hdid"
+            app:argType="string"
+            android:defaultValue="@null"
+            app:nullable="true" />
     </fragment>
 
 </navigation>

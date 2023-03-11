@@ -35,7 +35,7 @@ class ClinicalDocumentDetailFragment : BaseFragment(null) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.uiState.collectOnStart(::handlePdfDownload)
-        viewModel.getClinicalDocumentDetails(args.clinicalDocumentId)
+        viewModel.getClinicalDocumentDetails(args.clinicalDocumentId, args.hdid)
         observePdfData()
     }
 

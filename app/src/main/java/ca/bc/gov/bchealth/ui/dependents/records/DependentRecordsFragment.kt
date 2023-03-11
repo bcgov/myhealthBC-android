@@ -34,10 +34,11 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpRecyclerView()
+        val hdid = args.hdid
+        setUpRecyclerView(hdid)
 
         launchOnStart { observeUiState() }
-        viewModel.loadRecords(patientId = args.patientId, hdid = args.hdid)
+        viewModel.loadRecords(patientId = args.patientId, hdid = hdid)
 
         clearFilterClickListener()
         observeFilterState()
@@ -59,7 +60,7 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
         }
     }
 
-    private fun setUpRecyclerView() {
+    private fun setUpRecyclerView(hdid: String) {
         healthRecordsAdapter = HealthRecordsAdapter {
 
             val navDirection = when (it.healthRecordType) {
@@ -91,7 +92,9 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
                     DependentRecordsFragmentDirections
                         .actionDependentRecordsFragmentToHospitalVisitDetailsFragment(it.recordId)
 
-                HealthRecordType.CLINICAL_DOCUMENT_RECORD -> null
+                HealthRecordType.CLINICAL_DOCUMENT_RECORD ->
+                    DependentRecordsFragmentDirections
+                        .actionDependentRecordsFragmentToClinicalDocsDetailsFragment(it.recordId, hdid)
             }
 
             navDirection?.let { findNavController().navigate(navDirection) }

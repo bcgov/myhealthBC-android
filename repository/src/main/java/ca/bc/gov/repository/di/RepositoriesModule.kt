@@ -234,6 +234,7 @@ class RepositoriesModule {
         immunizationRecordRepository: ImmunizationRecordRepository,
         labOrderRepository: LabOrderRepository,
         recordsRepository: RecordsRepository,
+        clinicalDocumentRepository: ClinicalDocumentRepository,
         mobileConfigRepository: MobileConfigRepository
     ): DependentsRepository = DependentsRepository(
         remoteDataSource,
@@ -245,6 +246,7 @@ class RepositoriesModule {
         immunizationRecordRepository,
         labOrderRepository,
         recordsRepository,
+        clinicalDocumentRepository,
         mobileConfigRepository
     )
 
