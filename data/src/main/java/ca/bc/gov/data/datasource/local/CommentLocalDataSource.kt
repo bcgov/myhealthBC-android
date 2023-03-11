@@ -1,5 +1,6 @@
 package ca.bc.gov.data.datasource.local
 
+import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.data.datasource.local.dao.CommentDao
 import ca.bc.gov.data.model.mapper.toDto
@@ -29,13 +30,13 @@ class CommentLocalDataSource @Inject constructor(
         return commentDao.insert(comments.map { it.toEntity() })
     }
 
-    suspend fun delete(parentEntryId: String?, isUploaded: Boolean) =
-        commentDao.delete(parentEntryId, isUploaded)
+    suspend fun delete(parentEntryId: String?, syncStatus: SyncStatus) =
+        commentDao.delete(parentEntryId, syncStatus)
 
     suspend fun deleteById(id: String) = commentDao.deleteById(id)
 
-    suspend fun findCommentsByUploadFlag(isUploaded: Boolean): List<CommentDto> =
-        commentDao.findCommentsByUploadFlag(isUploaded).map { it.toDto() }
+    suspend fun findCommentsBySyncStatus(syncStatus: SyncStatus): List<CommentDto> =
+        commentDao.findCommentsBySyncStatus(syncStatus).map { it.toDto() }
 
-    suspend fun delete(isUploaded: Boolean) = commentDao.delete(isUploaded)
+    suspend fun delete(syncStatus: SyncStatus) = commentDao.delete(syncStatus)
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.repository.CommentRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
@@ -25,7 +26,7 @@ class SyncCommentsWorker @AssistedInject constructor(
             return Result.retry()
         }
         try {
-            val commentDtoList = commentRepository.findCommentsByUploadFlag(false)
+            val commentDtoList = commentRepository.findCommentsBySyncStatus(SyncStatus.INSERT)
             commentDtoList.forEach { commentDto ->
                 commentRepository.syncComment(commentDto)
             }

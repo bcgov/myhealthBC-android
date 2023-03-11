@@ -6,6 +6,7 @@ import androidx.room.TypeConverters
 import ca.bc.gov.data.datasource.local.converter.AddressConverter
 import ca.bc.gov.data.datasource.local.converter.AuthenticationStatusTypeConverter
 import ca.bc.gov.data.datasource.local.converter.DateTimeConverter
+import ca.bc.gov.data.datasource.local.converter.SyncStatusConverter
 import ca.bc.gov.data.datasource.local.dao.ClinicalDocumentDao
 import ca.bc.gov.data.datasource.local.dao.CommentDao
 import ca.bc.gov.data.datasource.local.dao.CovidOrderDao
@@ -81,7 +82,8 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 @TypeConverters(
     DateTimeConverter::class,
     AuthenticationStatusTypeConverter::class,
-    AddressConverter::class
+    AddressConverter::class,
+    SyncStatusConverter::class,
 )
 abstract class MyHealthDataBase : RoomDatabase() {
 

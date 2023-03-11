@@ -6,6 +6,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.data.datasource.local.CommentLocalDataSource
 import ca.bc.gov.data.datasource.remote.CommentRemoteDataSource
@@ -44,11 +45,10 @@ class CommentRepository @Inject constructor(
         return commentLocalDataSource.insert(comments)
     }
 
-    suspend fun delete(parentEntryId: String?, isUploaded: Boolean) =
-        commentLocalDataSource.delete(parentEntryId, isUploaded)
+    suspend fun delete(parentEntryId: String?, syncStatus: SyncStatus) =
+        commentLocalDataSource.delete(parentEntryId, syncStatus)
 
-    suspend fun delete(isUploaded: Boolean) =
-        commentLocalDataSource.delete(isUploaded)
+    suspend fun delete(syncStatus: SyncStatus) = commentLocalDataSource.delete(syncStatus)
 
     suspend fun deleteById(id: String) = commentLocalDataSource.deleteById(id)
 
@@ -69,7 +69,7 @@ class CommentRepository @Inject constructor(
             null,
             Instant.now(),
             null,
-            false
+            SyncStatus.INSERT
         )
         insert(commentDto)
         enqueueSyncCommentsWorker()
@@ -87,7 +87,7 @@ class CommentRepository @Inject constructor(
             authParametersDto.token
         )
         deleteById(commentDto.id)
-        comment.isUploaded = true
+        comment.syncStatus = SyncStatus.UP_TO_DATE
         insert(comment)
     }
 
@@ -99,14 +99,14 @@ class CommentRepository @Inject constructor(
             authParametersDto.token
         )
         deleteById(commentDto.id)
-        updatedComment.isUploaded = true
+        updatedComment.syncStatus = SyncStatus.UP_TO_DATE
         insert(updatedComment)
 
         return getLocalComments(commentDto.parentEntryId)
     }
 
-    suspend fun findCommentsByUploadFlag(isUploaded: Boolean) =
-        commentLocalDataSource.findCommentsByUploadFlag(isUploaded)
+    suspend fun findCommentsBySyncStatus(syncStatus: SyncStatus) =
+        commentLocalDataSource.findCommentsBySyncStatus(syncStatus)
 
     private fun enqueueSyncCommentsWorker() {
         val constraints = Constraints.Builder()

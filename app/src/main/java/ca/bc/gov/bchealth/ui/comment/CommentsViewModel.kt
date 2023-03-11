@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
+import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.repository.CommentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -106,7 +107,7 @@ class CommentsViewModel @Inject constructor(
             createdBy = comment.createdBy,
             updatedDateTime = comment.updatedDateTime,
             updatedBy = comment.updatedBy,
-            isUploaded = false
+            syncStatus = SyncStatus.EDIT,
         )
 
         try {

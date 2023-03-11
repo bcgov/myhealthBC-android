@@ -1,5 +1,6 @@
 package ca.bc.gov.common.model.comment
 
+import ca.bc.gov.common.model.SyncStatus
 import java.time.Instant
 
 /**
@@ -16,5 +17,5 @@ data class CommentDto(
     val createdBy: String?,
     val updatedDateTime: Instant,
     val updatedBy: String?,
-    var isUploaded: Boolean = true
+    var syncStatus: SyncStatus = SyncStatus.UP_TO_DATE
 )

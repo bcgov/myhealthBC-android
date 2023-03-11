@@ -16,6 +16,7 @@ import ca.bc.gov.bchealth.ui.recommendations.RecommendationDetailItem
 import ca.bc.gov.bchealth.utils.orPlaceholder
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
+import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
@@ -291,7 +292,7 @@ fun CommentDto.toUiModel() = Comment(
     createdBy.orEmpty(),
     updatedDateTime,
     updatedBy.orEmpty(),
-    isUploaded
+    syncStatus == SyncStatus.UP_TO_DATE
 )
 
 private fun ImmunizationForecastDto.toUiModel() = ForecastDetailItem(

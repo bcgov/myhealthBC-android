@@ -278,7 +278,7 @@ private fun PreviewCommentInputEditUI() {
         updatedDateTime = date,
         updatedBy = ""
     )
-    
+
     MyHealthTheme {
         CommentInputUI(comment, {}) {}
     }
