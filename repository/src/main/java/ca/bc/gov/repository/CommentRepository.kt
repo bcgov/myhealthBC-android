@@ -6,6 +6,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.data.datasource.local.CommentLocalDataSource
@@ -52,6 +53,17 @@ class CommentRepository @Inject constructor(
 
     suspend fun deleteById(id: String) = commentLocalDataSource.deleteById(id)
 
+    suspend fun updateComment(commentDto: CommentDto): List<CommentDto> {
+        commentLocalDataSource.updateComment(
+            commentDto.id,
+            commentDto.text.orEmpty(),
+            commentDto.syncStatus
+        )
+        enqueueSyncCommentsWorker()
+
+        return getLocalComments(commentDto.parentEntryId)
+    }
+
     suspend fun addComment(
         parentEntryId: String?,
         comment: String,
@@ -77,36 +89,45 @@ class CommentRepository @Inject constructor(
         return getLocalComments(parentEntryId)
     }
 
-    suspend fun syncComment(commentDto: CommentDto) {
+    suspend fun syncComment(dto: CommentDto) {
         val authParametersDto = bcscAuthRepo.getAuthParametersDto()
-        val comment = commentRemoteDataSource.addComment(
-            commentDto.parentEntryId,
-            commentDto.text ?: "",
-            commentDto.entryTypeCode,
-            authParametersDto.hdid,
-            authParametersDto.token
-        )
-        deleteById(commentDto.id)
-        comment.syncStatus = SyncStatus.UP_TO_DATE
-        insert(comment)
+
+        val uploadedComment: CommentDto? = when (dto.syncStatus) {
+            SyncStatus.UP_TO_DATE -> null
+            SyncStatus.DELETE -> null
+            SyncStatus.EDIT -> updateComment(dto, authParametersDto)
+            SyncStatus.INSERT -> addComment(dto, authParametersDto)
+        }
+
+        uploadedComment ?: return
+
+        deleteById(dto.id)
+        uploadedComment.syncStatus = SyncStatus.UP_TO_DATE
+        insert(uploadedComment)
     }
 
-    suspend fun updateComment(commentDto: CommentDto): List<CommentDto> {
-        val authParametersDto = bcscAuthRepo.getAuthParametersDto()
-        val updatedComment = commentRemoteDataSource.updateComment(
-            commentDto,
-            authParametersDto.hdid,
-            authParametersDto.token
-        )
-        deleteById(commentDto.id)
-        updatedComment.syncStatus = SyncStatus.UP_TO_DATE
-        insert(updatedComment)
+    private suspend fun addComment(
+        commentDto: CommentDto,
+        authParametersDto: AuthParametersDto
+    ): CommentDto = commentRemoteDataSource.addComment(
+        commentDto.parentEntryId,
+        commentDto.text ?: "",
+        commentDto.entryTypeCode,
+        authParametersDto.hdid,
+        authParametersDto.token
+    )
 
-        return getLocalComments(commentDto.parentEntryId)
-    }
+    private suspend fun updateComment(
+        commentDto: CommentDto,
+        authParametersDto: AuthParametersDto
+    ): CommentDto = commentRemoteDataSource.updateComment(
+        commentDto,
+        authParametersDto.hdid,
+        authParametersDto.token
+    )
 
-    suspend fun findCommentsBySyncStatus(syncStatus: SyncStatus) =
-        commentLocalDataSource.findCommentsBySyncStatus(syncStatus)
+    suspend fun findNonSyncedComments() =
+        commentLocalDataSource.findNonSyncedComments()
 
     private fun enqueueSyncCommentsWorker() {
         val constraints = Constraints.Builder()

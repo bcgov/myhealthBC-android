@@ -30,13 +30,17 @@ class CommentLocalDataSource @Inject constructor(
         return commentDao.insert(comments.map { it.toEntity() })
     }
 
+    suspend fun updateComment(commentId: String, content: String, syncStatus: SyncStatus) {
+        return commentDao.updateComment(commentId, content, syncStatus)
+    }
+
     suspend fun delete(parentEntryId: String?, syncStatus: SyncStatus) =
         commentDao.delete(parentEntryId, syncStatus)
 
     suspend fun deleteById(id: String) = commentDao.deleteById(id)
 
-    suspend fun findCommentsBySyncStatus(syncStatus: SyncStatus): List<CommentDto> =
-        commentDao.findCommentsBySyncStatus(syncStatus).map { it.toDto() }
+    suspend fun findNonSyncedComments(): List<CommentDto> =
+        commentDao.findExcept(SyncStatus.UP_TO_DATE).map { it.toDto() }
 
     suspend fun delete(syncStatus: SyncStatus) = commentDao.delete(syncStatus)
 }
