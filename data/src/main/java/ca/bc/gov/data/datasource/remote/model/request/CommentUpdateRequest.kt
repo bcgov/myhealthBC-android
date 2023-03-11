@@ -6,5 +6,7 @@ data class CommentUpdateRequest(
     val parentEntryId: String?,
     val userProfileId: String?,
     val entryTypeCode: String?,
-    val version: Long
+    val version: Long,
+    val createdDateTime: String,
+    val createdBy: String,
 )

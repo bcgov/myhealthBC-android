@@ -37,14 +37,13 @@ class CommentsViewModel @Inject constructor(
             val commentsDtoList = commentRepository.getLocalComments(parentEntryId) as MutableList
             commentsDtoList.sortBy { it.createdDateTime }
 
-            // latest comment
-            val commentsTemp = getLatestComment(commentsDtoList, parentEntryId)
+            val commentsSummary = getCommentsSummary(commentsDtoList, parentEntryId)
 
             _uiState.update { it ->
                 it.copy(
                     onLoading = false,
                     commentsList = commentsDtoList.map { it.toUiModel() },
-                    latestComment = commentsTemp
+                    commentsSummary = commentsSummary
                 )
             }
         } catch (e: Exception) {
@@ -71,14 +70,13 @@ class CommentsViewModel @Inject constructor(
                 ) as MutableList
                 commentsDtoList.sortBy { it.createdDateTime }
 
-                // latest comment
-                val commentsTemp = getLatestComment(commentsDtoList, parentEntryId)
+                val commentsSummary = getCommentsSummary(commentsDtoList, parentEntryId)
 
                 _uiState.update { it ->
                     it.copy(
                         onLoading = false,
                         commentsList = commentsDtoList.map { it.toUiModel() },
-                        latestComment = commentsTemp,
+                        commentsSummary = commentsSummary,
                         onCommentsUpdated = true
                     )
                 }
@@ -99,45 +97,48 @@ class CommentsViewModel @Inject constructor(
         }
     }
 
-    fun updateComment(parentEntryId: String, comment: Comment) =
-        viewModelScope.launch {
-            comment.id ?: return@launch
+    fun updateComment(parentEntryId: String, comment: Comment) = viewModelScope.launch {
+        comment.id ?: return@launch
 
-            val commentDto = CommentDto(
-                id = comment.id,
-                userProfileId = null,
-                text = comment.text,
-                entryTypeCode = comment.entryTypeCode,
-                parentEntryId = parentEntryId,
-                version = comment.version,
-                createdDateTime = Instant.now(),
-                createdBy = null,
-                updatedDateTime = Instant.now(),
-                updatedBy = null,
-                isUploaded = false
-            )
+        val commentDto = CommentDto(
+            id = comment.id,
+            userProfileId = null,
+            text = comment.text,
+            entryTypeCode = comment.entryTypeCode,
+            parentEntryId = parentEntryId,
+            version = comment.version,
+            createdDateTime = comment.createdDateTime,
+            createdBy = comment.createdBy,
+            updatedDateTime = comment.updatedDateTime,
+            updatedBy = comment.updatedBy,
+            isUploaded = false
+        )
 
-            try {
-                commentRepository.updateComment(commentDto)
-            } catch (e: Exception) {
-                println(e.printStackTrace())
-            }
+        try {
+            commentRepository.updateComment(commentDto)
+        } catch (e: Exception) {
+            println(e.printStackTrace())
         }
+    }
 
-    private fun getLatestComment(
+    private fun getCommentsSummary(
         commentsDtoList: MutableList<CommentDto>,
         parentEntryId: String
     ): MutableList<Comment> {
         val commentsList = mutableListOf<Comment>()
         if (commentsDtoList.isNotEmpty()) {
+            val date = Instant.now()
             commentsList.add(
-                // Item that displays the number of comments instead of the content. Todo: refactor it
                 Comment(
                     parentEntryId,
                     "${commentsDtoList.size}",
                     Instant.now(),
                     0L,
-                    commentsDtoList.last().entryTypeCode.orEmpty()
+                    commentsDtoList.last().entryTypeCode.orEmpty(),
+                    date,
+                    "",
+                    date,
+                    ""
                 )
             )
 
@@ -162,7 +163,7 @@ class CommentsViewModel @Inject constructor(
                 onLoading = false,
                 onError = false,
                 commentsList = emptyList(),
-                latestComment = emptyList()
+                commentsSummary = emptyList()
             )
         }
     }
@@ -172,7 +173,7 @@ data class CommentsUiState(
     val onLoading: Boolean = false,
     val onError: Boolean = false,
     val commentsList: List<Comment> = emptyList(),
-    val latestComment: List<Comment> = emptyList(),
+    val commentsSummary: List<Comment> = emptyList(),
     val onCommentsUpdated: Boolean = false,
     val displayEditLayout: Boolean = false
 )
@@ -183,6 +184,10 @@ data class Comment(
     val date: Instant?,
     val version: Long,
     val entryTypeCode: String,
+    val createdDateTime: Instant,
+    val createdBy: String,
+    val updatedDateTime: Instant,
+    val updatedBy: String,
     val isUploaded: Boolean = true,
     var editable: Boolean = false
 )

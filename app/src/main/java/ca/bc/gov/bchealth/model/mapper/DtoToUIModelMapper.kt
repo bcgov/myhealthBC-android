@@ -287,6 +287,10 @@ fun CommentDto.toUiModel() = Comment(
     createdDateTime.toLocalDateTimeInstant(),
     version,
     entryTypeCode.orEmpty(),
+    createdDateTime,
+    createdBy.orEmpty(),
+    updatedDateTime,
+    updatedBy.orEmpty(),
     isUploaded
 )
 

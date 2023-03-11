@@ -47,6 +47,7 @@ import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.compose.red
 import ca.bc.gov.bchealth.compose.white
 import ca.bc.gov.bchealth.ui.comment.Comment
+import java.time.Instant
 
 @Composable
 fun CommentInputUI(
@@ -264,7 +265,20 @@ private fun PreviewCommentInputUI() {
 @Composable
 @BasePreview
 private fun PreviewCommentInputEditUI() {
-    val comment = Comment(text = "comment", version = 0L, date = null, entryTypeCode = "")
+    val date = Instant.now()
+
+    val comment = Comment(
+        text = "comment01",
+        date = null,
+        version = 0L,
+        isUploaded = true,
+        entryTypeCode = "",
+        createdBy = "",
+        createdDateTime = date,
+        updatedDateTime = date,
+        updatedBy = ""
+    )
+    
     MyHealthTheme {
         CommentInputUI(comment, {}) {}
     }

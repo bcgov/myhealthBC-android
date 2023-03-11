@@ -73,6 +73,8 @@ class CommentRemoteDataSource @Inject constructor(
             userProfileId = hdid,
             entryTypeCode = commentDto.entryTypeCode,
             version = commentDto.version,
+            createdDateTime = commentDto.createdDateTime.toString(),
+            createdBy = commentDto.createdBy.orEmpty()
         )
         val response =
             safeCall {

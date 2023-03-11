@@ -227,22 +227,23 @@ private fun OptionsMenu(
 @Composable
 fun PreviewCommentsContent() {
     val date = Instant.now()
-    val comments = listOf(
-        Comment(
-            text = "comment01",
-            date = date,
-            version = 0L,
-            isUploaded = true,
-            entryTypeCode = ""
-        ),
-        Comment(
-            text = "comment02",
-            date = date,
-            version = 0L,
-            isUploaded = false,
-            entryTypeCode = ""
-        ),
+    val comment = Comment(
+        text = "comment01",
+        date = date,
+        version = 0L,
+        isUploaded = true,
+        entryTypeCode = "",
+        createdBy = "",
+        createdDateTime = date,
+        updatedDateTime = date,
+        updatedBy = ""
     )
+
+    val comments = listOf(
+        comment,
+        comment.copy(text = "comment02", isUploaded = false),
+    )
+
     val uiState = CommentsUiState(
         commentsList = comments
     )
