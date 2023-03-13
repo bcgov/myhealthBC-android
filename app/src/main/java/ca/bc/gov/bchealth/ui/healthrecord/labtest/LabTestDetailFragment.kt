@@ -45,7 +45,7 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupComposeToolbar(binding.composeToolbar.root)
-        setUpRecyclerView()
+        setUpRecyclerView(args.hdid)
         viewModel.getLabTestDetails(args.labOrderId)
         observeUiState()
         observePdfData()
@@ -62,9 +62,9 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
 
     override fun getProgressBar(): View = binding.progressBar
 
-    private fun setUpRecyclerView() {
+    private fun setUpRecyclerView(hdid: String?) {
         labTestDetailAdapter = LabTestDetailAdapter(
-            viewPdfClickListener = { viewModel.getLabTestPdf() }
+            viewPdfClickListener = { viewModel.getLabTestPdf(hdid) }
         )
 
         concatAdapter = ConcatAdapter(labTestDetailAdapter, getRecordCommentsAdapter())

@@ -21,7 +21,7 @@
     <string name="bc_cdc_test_results">"http://www.bccdc.ca/health-info/diseases-conditions/covid-19/testing/test-results"</string>
 
     <!--FAQ link-->
-    <string name="faq_link">https://www.healthgateway.gov.bc.ca/faq</string>
+    <string name="faq_link">https://www2.gov.bc.ca/gov/content/health/managing-your-health/health-gateway/guide</string>
 
     <!--Play store link-->
     <string name="play_store">"https://play.google.com/store/apps/details?id=ca.bc.gov.id.servicescard"</string>

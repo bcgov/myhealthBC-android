@@ -15,9 +15,9 @@ class ClinicalDocumentRepository @Inject constructor(
     private val bcscAuthRepo: BcscAuthRepo
 ) {
 
-    suspend fun fetchPdf(fileId: String): String {
+    suspend fun fetchPdf(fileId: String, hdid: String?): String {
         val authParameters = bcscAuthRepo.getAuthParametersDto()
-        return remoteDataSource.fetchPdf(authParameters.token, authParameters.hdid, fileId)
+        return remoteDataSource.fetchPdf(authParameters.token, hdid ?: authParameters.hdid, fileId)
     }
 
     suspend fun deleteClinicalDocuments(patientId: Long) =

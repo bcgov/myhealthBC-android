@@ -82,6 +82,11 @@
         <argument
             android:name="lab_order_id"
             app:argType="long" />
+        <argument
+            android:name="hdid"
+            app:argType="string"
+            android:defaultValue="@null"
+            app:nullable="true" />
         <action
             android:id="@+id/action_labTestDetailFragment_to_commentsFragment"
             app:destination="@id/commentsFragment" />
@@ -164,6 +169,11 @@
         <argument
             android:name="clinicalDocumentId"
             app:argType="long" />
+        <argument
+            android:name="hdid"
+            app:argType="string"
+            android:defaultValue="@null"
+            app:nullable="true" />
     </fragment>
 
 </navigation>

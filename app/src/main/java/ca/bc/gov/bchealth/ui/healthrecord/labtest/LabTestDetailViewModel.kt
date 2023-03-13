@@ -164,13 +164,13 @@ class LabTestDetailViewModel @Inject constructor(
         }
     }
 
-    fun getLabTestPdf() = viewModelScope.launch {
+    fun getLabTestPdf(hdid: String?) = viewModelScope.launch {
         _uiState.update { it.copy(onLoading = true) }
         try {
             mobileConfigRepository.refreshMobileConfiguration()
 
             labPdfId?.apply {
-                val pdfData = labOrderRepository.fetchLabTestPdf(this, false)
+                val pdfData = labOrderRepository.fetchLabTestPdf(this, false, hdid)
                 _uiState.update { it.copy(pdfData = pdfData) }
             }
         } catch (e: java.lang.Exception) {
