@@ -373,6 +373,12 @@
     <string name="don_t_have_bc_service_card_app_please_download_here">Don\'t have BC Service Card app, please <b>download</b> here.</string>
     <string name="download_small_case">download</string>
 
+    <!-- Error -->
+    <string name="bcsc_auth_error_title">Problem with log in</string>
+    <string name="bcsc_auth_error_body">We are unable to retrive your health record at this moment because of problem with BC Service Card log in, please contact Health Gateway team: healthgateway@gov.bc.ca for more information</string>
+    <string name="bcsc_auth_error_click_email">healthgateway@gov.bc.ca</string>
+    <string name="bcsc_auth_error_button">Email us</string>
+
     <!--ERROR-->
     <string name="error">Error!</string>
     <string name="error_message">Something went wrong. Please retry.</string>
