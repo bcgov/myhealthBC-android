@@ -123,6 +123,9 @@
         android:label="fragment_comments"
         tools:layout="@layout/fragment_comments">
         <argument
+            android:name="recordType"
+            app:argType="string" />
+        <argument
             android:name="parentEntryId"
             app:argType="string" />
     </fragment>

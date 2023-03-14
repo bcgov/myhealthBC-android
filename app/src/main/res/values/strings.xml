@@ -298,13 +298,6 @@
     <string name="enter_to_date">Enter to date</string>
     <string name="after">and after</string>
     <string name="before">and before</string>
-    <plurals name="comments">
-        <item quantity="one">%1$s Comment</item>
-        <item quantity="other">%1$s Comments</item>
-    </plurals>
-    <string name="comment_here">Comment here</string>
-    <string name="comments">Comments</string>
-    <string name="comments_medication_subtitle">Only you can see comments added to your medical records.</string>
     <string name="download">Download</string>
     <string name="test_summary">Test summary</string>
     <string name="summary_desc">Find resources to learn about your lab test and what the results mean. Learn more</string>
@@ -320,6 +313,18 @@
     <string name="loading">Loading…</string>
     <string name="corrected">Corrected</string>
     <string name="posting">Posting…</string>
+
+    <!--COMMENTS-->
+    <string name="comment_edit">Edit comment</string>
+    <string name="comment_delete">Delete</string>
+    <string name="comment_update">Update</string>
+    <plurals name="comments">
+        <item quantity="one">%1$s Comment</item>
+        <item quantity="other">%1$s Comments</item>
+    </plurals>
+    <string name="comment_here">Comment here</string>
+    <string name="comments">Comments</string>
+    <string name="comments_medication_subtitle">Only you can see comments added to your medical records.</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>

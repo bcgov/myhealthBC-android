@@ -6,6 +6,7 @@ import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsResp
 import ca.bc.gov.data.datasource.remote.model.base.hospitalvisit.HospitalVisitResponse
 import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityResponse
 import ca.bc.gov.data.datasource.remote.model.request.CommentRequest
+import ca.bc.gov.data.datasource.remote.model.request.CommentUpdateRequest
 import ca.bc.gov.data.datasource.remote.model.request.DependentRegistrationRequest
 import ca.bc.gov.data.datasource.remote.model.request.UserProfileRequest
 import ca.bc.gov.data.datasource.remote.model.response.AddCommentResponse
@@ -30,6 +31,7 @@ import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -127,6 +129,13 @@ interface HealthGatewayPrivateApi {
         @Path(HDID) hdid: String,
         @Header(AUTHORIZATION) accessToken: String,
         @Body commentRequest: CommentRequest
+    ): Response<AddCommentResponse>
+
+    @PUT("$BASE_USER_PROFILE_SERVICE/{$HDID}/Comment")
+    suspend fun updateComment(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String,
+        @Body commentUpdateRequest: CommentUpdateRequest
     ): Response<AddCommentResponse>
 
     @GET("$BASE_IMMUNIZATION_SERVICE/Immunization")

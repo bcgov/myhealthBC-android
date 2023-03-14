@@ -25,7 +25,7 @@ class SyncCommentsWorker @AssistedInject constructor(
             return Result.retry()
         }
         try {
-            val commentDtoList = commentRepository.findCommentsByUploadFlag(false)
+            val commentDtoList = commentRepository.findNonSyncedComments()
             commentDtoList.forEach { commentDto ->
                 commentRepository.syncComment(commentDto)
             }

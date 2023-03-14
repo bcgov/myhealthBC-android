@@ -165,7 +165,7 @@ fun CommentDto.toEntity() = CommentEntity(
     createdBy,
     updatedDateTime,
     updatedBy,
-    isUploaded
+    syncStatus
 )
 
 fun CovidOrderDto.toEntity() = CovidOrderEntity(

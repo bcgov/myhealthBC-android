@@ -57,4 +57,11 @@ val ALL_MIGRATIONS = arrayOf(
             database.execSQL("CREATE TABLE IF NOT EXISTS `user_profile` (`user_profile_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `accepted_terms_of_service` INTEGER NOT NULL, `email` TEXT, `is_email_verified` INTEGER NOT NULL, `sms_number` TEXT, `is_phone_verified` INTEGER NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )")
         }
     },
+
+    object : Migration(7, 8) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("DROP TABLE comments")
+            database.execSQL("CREATE TABLE IF NOT EXISTS `comments` (`id` TEXT NOT NULL, `user_profile_id` TEXT, `text` TEXT, `entry_type_code` TEXT, `parent_entry_id` TEXT, `version` INTEGER NOT NULL, `created_date_time` INTEGER NOT NULL, `created_by` TEXT, `updated_date_time` INTEGER NOT NULL, `updated_by` TEXT, `sync_status` TEXT NOT NULL, PRIMARY KEY(`id`))")
+        }
+    },
 )

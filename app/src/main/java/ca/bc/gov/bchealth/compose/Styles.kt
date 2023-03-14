@@ -9,8 +9,12 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.bc.gov.bchealth.R
+
+// Consider making touch targets at least 48x48dp. https://support.google.com/accessibility/android/answer/7101858?hl=en
+val minButtonSize = 48.dp
 
 val fonts = FontFamily(
     Font(R.font.bc_sans_regular, weight = FontWeight.Normal, style = FontStyle.Normal),
@@ -26,6 +30,7 @@ val blue = Color(0xFF1A5A96)
 val primaryBlue = Color(0xFF003366)
 val statusBlue30 = Color(0x4D38598A)
 val descriptionGrey = Color(0xFF6D757D)
+val grey = Color(0xFF606060)
 val greyBg = Color(0xFFF2F2F2)
 val green = Color(0xFF2E8540)
 val red = Color(0xFFD8292F)

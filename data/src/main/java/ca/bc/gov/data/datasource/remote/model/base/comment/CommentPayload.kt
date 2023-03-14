@@ -9,7 +9,7 @@ data class CommentPayload(
     val text: String?,
     val entryTypeCode: String?,
     val parentEntryId: String?,
-    val version: Int,
+    val version: Long,
     val createdDateTime: String,
     val createdBy: String?,
     val updatedDateTime: String,
