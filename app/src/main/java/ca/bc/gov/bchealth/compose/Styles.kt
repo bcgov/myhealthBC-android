@@ -57,6 +57,13 @@ val MyHealthTypography = Typography(
         color = primaryBlue
     ),
 
+    h2 = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        color = darkText
+    ),
+
     h3 = TextStyle(
         fontFamily = fonts,
         fontWeight = FontWeight.Bold,
