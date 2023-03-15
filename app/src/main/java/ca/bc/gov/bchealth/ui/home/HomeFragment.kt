@@ -172,7 +172,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
             if (uiState.isOnBoardingRequired || uiState.isDependentOnBoardingRequired) {
                 val isDependentOnly =
                     uiState.isOnBoardingRequired.not() && uiState.isDependentOnBoardingRequired
-                navigate(
+                findNavController().navigate(
                     R.id.onBoardingSliderFragment,
                     bundleOf("dependentOnly" to isDependentOnly)
                 )

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
@@ -69,10 +68,6 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
                 action.invoke(state)
             }
         }
-    }
-
-    protected fun navigate(@IdRes screenId: Int, args: Bundle? = null) {
-        findNavController().navigate(screenId, args)
     }
 
     fun composeEmail(address: String = HEALTH_GATEWAY_EMAIL_ADDRESS, subject: String = "") {

@@ -182,7 +182,7 @@ class DependentsRepository @Inject constructor(
             storeLabOrders(patientId, labOrdersResponse)
             storeClinicalDocuments(patientId, clinicalDocs)
         }
-        localDataSource.enableDependentCacheFlag(patientId)
+        localDataSource.updateDependentCacheFlag(patientId, true)
     }
 
     private suspend fun insertVaccineRecords(
@@ -235,6 +235,10 @@ class DependentsRepository @Inject constructor(
     suspend fun deleteDependent(patientId: Long) {
         val dependentDto = getDependent(patientId)
         deleteDependent(dependentDto)
+    }
+
+    suspend fun invalidateDependentCache(patientId: Long){
+        localDataSource.updateDependentCacheFlag(patientId, false)
     }
 
     private suspend fun deleteDependent(dependentDto: DependentDto) {

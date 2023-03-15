@@ -80,6 +80,8 @@ class IndividualHealthRecordFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupSwipeToRefresh()
+
         setUpRecyclerView()
 
         handleBcscAuthResponse()
@@ -105,6 +107,14 @@ class IndividualHealthRecordFragment :
                 inflateMenu(R.menu.menu_individual_health_record)
                 setOnMenuItemClickListener { menu ->
                     when (menu.itemId) {
+                        R.id.menu_refresh -> {
+                            with(binding.content.srHealthRecords){
+                                if(isRefreshing.not()){
+                                    isRefreshing = true
+                                    viewModel.executeOneTimeDataFetch()
+                                }
+                            }
+                        }
                         R.id.menu_filter -> {
                             findNavController().navigate(R.id.filterFragment)
                         }
@@ -147,14 +157,17 @@ class IndividualHealthRecordFragment :
 
     private fun observeHealthRecordsSyncCompletion() {
         observeWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME) { state ->
-            if (state == WorkInfo.State.RUNNING) {
+            if (state == WorkInfo.State.RUNNING || state == WorkInfo.State.ENQUEUED) {
+                hiddenHealthRecordAdapter.submitList(emptyList())
+                healthRecordsAdapter.submitList(emptyList())
+                hiddenMedicationRecordsAdapter.submitList(emptyList())
                 binding.emptyView.tvNoRecord.text = getString(R.string.fetching_records)
                 binding.emptyView.tvClearFilterMsg.text = ""
             } else {
+                binding.content.srHealthRecords.isRefreshing = false
                 binding.emptyView.tvNoRecord.text = getString(R.string.no_records_found)
                 binding.emptyView.tvClearFilterMsg.text =
                     getString(R.string.clear_all_filters_and_start_over)
-
                 viewModel.getIndividualsHealthRecord()
             }
         }
@@ -176,6 +189,11 @@ class IndividualHealthRecordFragment :
         uiState.bcscAuthenticatedPatientDto?.let {
             setToolBar(it.fullName)
         }
+        with(binding.topAppBar1.menu){
+            findItem(R.id.menu_refresh).isVisible = uiState.isBcscSessionActive != null && uiState.isBcscSessionActive
+            findItem(R.id.menu_filter).isVisible = uiState.isBcscSessionActive != null && uiState.isBcscSessionActive
+        }
+        binding.content.srHealthRecords.isEnabled = uiState.isBcscSessionActive != null && uiState.isBcscSessionActive
         if (uiState.isBcscSessionActive != null && uiState.isBcscSessionActive) {
             val adapters = arrayListOf<RecyclerView.Adapter<out RecyclerView.ViewHolder?>>()
 
@@ -348,6 +366,14 @@ class IndividualHealthRecordFragment :
                         findNavController().popBackStack()
                     }
                 }
+            }
+        }
+    }
+
+    private fun setupSwipeToRefresh(){
+        with(binding.content.srHealthRecords){
+            setOnRefreshListener {
+                    viewModel.executeOneTimeDataFetch()
             }
         }
     }

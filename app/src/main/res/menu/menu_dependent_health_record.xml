@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/menu_filter"
+        android:title="@string/filter"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_filter"/>
+
+    <item android:id="@+id/empty"
+        android:title="Overflow"
+        android:icon="@drawable/ic_overflow_menu"
+        android:orderInCategory="101"
+        app:showAsAction="always">
+        <menu>
+        <item
+            android:id="@+id/menu_refresh"
+            android:title="@string/refresh"
+            app:showAsAction="always|withText"
+            android:icon="@drawable/ic_refresh"/>
+
+        <item
+            android:id="@+id/menu_profile"
+            android:title="@string/profile"
+            app:showAsAction="always|withText"
+            android:icon="@drawable/ic_profile"/>
+        </menu>
+    </item>
+
+
+</menu>

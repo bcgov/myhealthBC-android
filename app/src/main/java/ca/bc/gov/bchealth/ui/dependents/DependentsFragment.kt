@@ -31,10 +31,30 @@ class DependentsFragment : BaseDependentFragment(R.layout.fragment_dependents) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            btnAddDependent.setOnClickListener { navigate(R.id.addDependentFragment) }
-            btnLogIn.setOnClickListener { navigate(R.id.bcscAuthInfoFragment) }
-            btnManageDependent.setOnClickListener { navigate(R.id.manageDependentFragment) }
-            viewSessionExpired.btnLogin.setOnClickListener { navigate(R.id.bcscAuthInfoFragment) }
+            btnAddDependent.setOnClickListener {
+                findNavController().navigate(
+                    R.id.addDependentFragment,
+                    null
+                )
+            }
+            btnLogIn.setOnClickListener {
+                findNavController().navigate(
+                    R.id.bcscAuthInfoFragment,
+                    null
+                )
+            }
+            btnManageDependent.setOnClickListener {
+                findNavController().navigate(
+                    R.id.manageDependentFragment,
+                    null
+                )
+            }
+            viewSessionExpired.btnLogin.setOnClickListener {
+                findNavController().navigate(
+                    R.id.bcscAuthInfoFragment,
+                    null
+                )
+            }
         }
         launchOnStart {
             observeUiState()
@@ -95,7 +115,7 @@ class DependentsFragment : BaseDependentFragment(R.layout.fragment_dependents) {
     }
 
     private fun onClickDependent(dependent: DependentDetailItem) {
-        navigate(
+        findNavController().navigate(
             R.id.dependentRecordsFragment,
             bundleOf(
                 "patientId" to dependent.patientId,

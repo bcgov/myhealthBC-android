@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
+import ca.bc.gov.bchealth.workers.WorkerInvoker
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.patient.PatientDto
@@ -28,7 +29,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
     private val patientRepository: PatientRepository,
     private val medicationRecordRepository: MedicationRecordRepository,
     private val bcscAuthRepo: BcscAuthRepo,
-    private val cacheRepository: CacheRepository
+    private val cacheRepository: CacheRepository,
+    private val workerInvoker: WorkerInvoker,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(IndividualHealthRecordsUiState())
@@ -145,6 +147,10 @@ class IndividualHealthRecordViewModel @Inject constructor(
         val isBcscSessionActive: Boolean = bcscAuthRepo.checkSession()
 
         return BcscInfo(dto, isAuthenticatedPatientAvailable, isBcscSessionActive)
+    }
+
+    fun executeOneTimeDataFetch() {
+        workerInvoker.executeOneTimeDataFetch()
     }
 }
 
