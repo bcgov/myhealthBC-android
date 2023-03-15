@@ -108,8 +108,8 @@ class IndividualHealthRecordFragment :
                 setOnMenuItemClickListener { menu ->
                     when (menu.itemId) {
                         R.id.menu_refresh -> {
-                            with(binding.content.srHealthRecords){
-                                if(isRefreshing.not()){
+                            with(binding.content.srHealthRecords) {
+                                if (isRefreshing.not()) {
                                     isRefreshing = true
                                     viewModel.executeOneTimeDataFetch()
                                 }
@@ -189,7 +189,7 @@ class IndividualHealthRecordFragment :
         uiState.bcscAuthenticatedPatientDto?.let {
             setToolBar(it.fullName)
         }
-        with(binding.topAppBar1.menu){
+        with(binding.topAppBar1.menu) {
             findItem(R.id.menu_refresh).isVisible = uiState.isBcscSessionActive != null && uiState.isBcscSessionActive
             findItem(R.id.menu_filter).isVisible = uiState.isBcscSessionActive != null && uiState.isBcscSessionActive
         }
@@ -370,10 +370,10 @@ class IndividualHealthRecordFragment :
         }
     }
 
-    private fun setupSwipeToRefresh(){
-        with(binding.content.srHealthRecords){
+    private fun setupSwipeToRefresh() {
+        with(binding.content.srHealthRecords) {
             setOnRefreshListener {
-                    viewModel.executeOneTimeDataFetch()
+                viewModel.executeOneTimeDataFetch()
             }
         }
     }

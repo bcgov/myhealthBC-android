@@ -237,7 +237,7 @@ class DependentsRepository @Inject constructor(
         deleteDependent(dependentDto)
     }
 
-    suspend fun invalidateDependentCache(patientId: Long){
+    suspend fun invalidateDependentCache(patientId: Long) {
         localDataSource.updateDependentCacheFlag(patientId, false)
     }
 

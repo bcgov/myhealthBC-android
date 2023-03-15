@@ -121,7 +121,7 @@ class DependentRecordsViewModel @Inject constructor(
         )
     }
 
-    fun refresh(patientId: Long,hdid: String) = viewModelScope.launch{
+    fun refresh(patientId: Long, hdid: String) = viewModelScope.launch {
         _uiState.tryEmit(
             DependentRecordsUiState(
                 records = emptyList(),

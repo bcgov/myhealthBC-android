@@ -147,10 +147,10 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
         }
     }
 
-    private fun setupSwipeToRefresh(){
-        with(binding.content.srHealthRecords){
+    private fun setupSwipeToRefresh() {
+        with(binding.content.srHealthRecords) {
             setOnRefreshListener {
-                viewModel.refresh(args.patientId,args.hdid)
+                viewModel.refresh(args.patientId, args.hdid)
             }
         }
     }
