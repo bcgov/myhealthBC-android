@@ -83,7 +83,7 @@ class SettingsFragment : BaseFragment(R.layout.fragment_settings) {
         binding.tvViewProfile.toggleVisibility(FLAG_VIEW_PROFILE)
         if (FLAG_VIEW_PROFILE) {
             binding.layoutProfile.setOnClickListener {
-                navigate(R.id.profileFragment)
+                findNavController().navigate(R.id.profileFragment)
             }
         }
     }

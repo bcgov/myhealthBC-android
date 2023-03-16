@@ -45,8 +45,8 @@ class DependentsLocalDataSource @Inject constructor(
     suspend fun isDependentCacheValid(patientId: Long) =
         dependentsDao.findDependent(patientId)?.isCacheValid ?: false
 
-    suspend fun enableDependentCacheFlag(patientId: Long) {
-        dependentsDao.updateDependentCacheFlag(patientId, true)
+    suspend fun updateDependentCacheFlag(patientId: Long, isCacheValid: Boolean) {
+        dependentsDao.updateDependentCacheFlag(patientId, isCacheValid)
     }
 
     suspend fun getDependentHdidOrNull(patientId: Long): String? =

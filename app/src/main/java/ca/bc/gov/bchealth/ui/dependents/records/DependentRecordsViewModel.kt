@@ -120,6 +120,17 @@ class DependentRecordsViewModel @Inject constructor(
             )
         )
     }
+
+    fun refresh(patientId: Long, hdid: String) = viewModelScope.launch {
+        _uiState.tryEmit(
+            DependentRecordsUiState(
+                records = emptyList(),
+                onLoading = true
+            )
+        )
+        dependentsRepository.invalidateDependentCache(patientId)
+        getRecords(patientId, hdid)
+    }
 }
 
 data class DependentRecordsUiState(

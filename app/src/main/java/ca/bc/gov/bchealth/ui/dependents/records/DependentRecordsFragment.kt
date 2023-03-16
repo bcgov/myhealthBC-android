@@ -5,9 +5,11 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentDependentRecordsBinding
 import ca.bc.gov.bchealth.ui.dependents.records.filter.DependentFilterViewModel
@@ -30,15 +32,15 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
 
     override fun getFilterViewModel() = filterSharedViewModel
     override fun getFilter() = healthRecordsAdapter.filter
-    override fun getLayoutChipGroup() = binding.chipGroup
+    override fun getLayoutChipGroup() = binding.content.chipGroup
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val hdid = args.hdid
-        setUpRecyclerView(hdid)
+        setupSwipeToRefresh()
+        setUpRecyclerView()
 
         launchOnStart { observeUiState() }
-        viewModel.loadRecords(patientId = args.patientId, hdid = hdid)
+        viewModel.loadRecords(patientId = args.patientId, hdid = args.hdid)
 
         clearFilterClickListener()
         observeFilterState()
@@ -51,16 +53,21 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
                     root.showServiceDownMessage(requireContext())
                     viewModel.resetUiState()
                 } else {
-                    progressBar.indicator.toggleVisibility(uiState.onLoading)
+
+                    with(content.srHealthRecords) {
+                        progressBar.indicator.toggleVisibility(uiState.onLoading && isRefreshing.not())
+                        if (isRefreshing && uiState.records.isNotEmpty()) {
+                            isRefreshing = false
+                        }
+                    }
                     healthRecordsAdapter.setData(uiState.records)
                     healthRecordsAdapter.filter.filter(filterSharedViewModel.getFilterString())
-                    rvHealthRecords.setLoading(uiState.onLoading)
                 }
             }
         }
     }
 
-    private fun setUpRecyclerView(hdid: String) {
+    private fun setUpRecyclerView() {
         healthRecordsAdapter = HealthRecordsAdapter {
 
             val navDirection = when (it.healthRecordType) {
@@ -74,7 +81,7 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
 
                 HealthRecordType.LAB_RESULT_RECORD ->
                     DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToLabTestDetailFragment(it.recordId, hdid)
+                        .actionDependentRecordsFragmentToLabTestDetailFragment(it.recordId, args.hdid)
 
                 HealthRecordType.IMMUNIZATION_RECORD ->
                     DependentRecordsFragmentDirections
@@ -94,36 +101,57 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
 
                 HealthRecordType.CLINICAL_DOCUMENT_RECORD ->
                     DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToClinicalDocsDetailsFragment(it.recordId, hdid)
+                        .actionDependentRecordsFragmentToClinicalDocsDetailsFragment(it.recordId, args.hdid)
             }
 
             navDirection?.let { findNavController().navigate(navDirection) }
         }
-        binding.rvHealthRecords.adapter = healthRecordsAdapter
-        binding.rvHealthRecords.emptyView = binding.viewEmptyScreen
+        binding.content.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
+        binding.content.rvHealthRecords.adapter = healthRecordsAdapter
+        binding.content.rvHealthRecords.emptyView = binding.emptyView.root
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
-        binding.layoutToolbar.apply {
-            toolbar.stateListAnimator = null
-            toolbar.elevation = 0f
-
-            btnBack.setOnClickListener {
+        with(binding.layoutToolbar.topAppBar) {
+            title = args.fullName
+            isTitleCentered = false
+            setNavigationIcon(R.drawable.ic_toolbar_back)
+            setNavigationOnClickListener {
                 findNavController().popBackStack()
             }
+            inflateMenu(R.menu.menu_dependent_health_record)
+            setOnMenuItemClickListener { menu ->
+                when (menu.itemId) {
 
-            btnProfile.setOnClickListener {
-                navigate(
-                    R.id.dependentProfileFragment,
-                    bundleOf("patient_id" to args.patientId)
-                )
+                    R.id.menu_refresh -> {
+                        healthRecordsAdapter.setData(emptyList())
+                        with(binding.content.srHealthRecords) {
+                            if (isRefreshing.not()) {
+                                isRefreshing = true
+                                viewModel.refresh(args.patientId, args.hdid)
+                            }
+                        }
+                    }
+                    R.id.menu_profile -> {
+                        findNavController().navigate(
+                            R.id.dependentProfileFragment,
+                            bundleOf("patient_id" to args.patientId)
+                        )
+                    }
+                    R.id.menu_filter -> {
+                        findNavController().navigate(R.id.dependentFilterFragment)
+                    }
+                }
+                return@setOnMenuItemClickListener true
             }
+        }
+    }
 
-            btnFilter.setOnClickListener {
-                findNavController().navigate(R.id.dependentFilterFragment)
+    private fun setupSwipeToRefresh() {
+        with(binding.content.srHealthRecords) {
+            setOnRefreshListener {
+                viewModel.refresh(args.patientId, args.hdid)
             }
-
-            tvTitle.text = args.fullName
         }
     }
 }
