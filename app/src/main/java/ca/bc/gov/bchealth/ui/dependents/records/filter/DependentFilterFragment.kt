@@ -14,10 +14,12 @@ class DependentFilterFragment : FilterFragment() {
     override val availableFilters = mutableListOf(
         R.id.chip_covid_test,
         R.id.chip_immunizations,
-        R.id.chip_lab_results,
     ).apply {
         if (BuildConfig.FLAG_GUARDIAN_CLINICAL_DOCS) {
             this.add(R.id.chip_clinical_document)
+        }
+        if (BuildConfig.FLAG_GUARDIAN_LABS) {
+            this.add(R.id.chip_lab_results)
         }
     }
 }
