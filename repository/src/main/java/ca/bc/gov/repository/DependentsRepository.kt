@@ -1,6 +1,7 @@
 package ca.bc.gov.repository
 
 import android.util.Log
+import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.common.BuildConfig.FLAG_HOSPITAL_VISITS
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
@@ -119,10 +120,12 @@ class DependentsRepository @Inject constructor(
                 handleException(e)
             }
 
-            try {
-                labOrders = labOrderRepository.fetchLabOrders(token, hdid)
-            } catch (e: Exception) {
-                handleException(e)
+            if (BuildConfig.FLAG_GUARDIAN_LABS) {
+                try {
+                    labOrders = labOrderRepository.fetchLabOrders(token, hdid)
+                } catch (e: Exception) {
+                    handleException(e)
+                }
             }
 
             storeRecords(patientId, vaccineRecords, covidOrders, immunizationDto, labOrders)
