@@ -54,10 +54,10 @@ fun CommentInputUI(
     onSubmitComment: (String) -> Unit
 ) {
     var comment by rememberSaveable { mutableStateOf("") }
-    var isCommentValid by rememberSaveable { mutableStateOf(true) }
+    var validation by rememberSaveable { mutableStateOf(CommentValidation.VALID) }
 
     val submitAction: (String) -> Unit = {
-        if (isCommentValid) {
+        if (validation == CommentValidation.VALID) {
             onSubmitComment.invoke(it)
             comment = ""
         }
@@ -75,15 +75,15 @@ fun CommentInputUI(
             value = comment,
             onValueChange = {
                 comment = it
-                isCommentValid = commentValidation(comment)
+                validation = validateComment(comment)
             },
             label = {
                 Text(
                     text = stringResource(id = R.string.comment_here),
-                    color = if (isCommentValid) grey else red
+                    color = if (validation == CommentValidation.VALID) grey else red
                 )
             },
-            isError = isCommentValid.not(),
+            isError = validation != CommentValidation.VALID,
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp, end = 32.dp, start = 32.dp)
                 .fillMaxWidth(),
@@ -92,10 +92,16 @@ fun CommentInputUI(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_lock_solid_grey),
                     contentDescription = null,
-                    tint = if (isCommentValid) grey else red
+                    tint = if (validation == CommentValidation.VALID) grey else red
                 )
             },
-            trailingIcon = { TrailingIcon(comment, isCommentValid, submitAction) },
+            trailingIcon = {
+                TrailingIcon(
+                    comment,
+                    validation == CommentValidation.VALID,
+                    submitAction
+                )
+            },
             colors = getOutlineColors(),
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Send,
@@ -108,8 +114,8 @@ fun CommentInputUI(
             ),
         )
 
-        if (isCommentValid.not()) {
-            ErrorMessage()
+        if (validation == CommentValidation.EXCEEDS_LENGTH) {
+            ErrorMessage(R.string.comments_error_max_character)
         }
     }
 }
@@ -121,7 +127,7 @@ fun CommentInputUI(
     onCancel: (Comment) -> Unit,
 ) {
     var content by rememberSaveable { mutableStateOf(comment.text.orEmpty()) }
-    var isCommentValid by rememberSaveable { mutableStateOf(true) }
+    var validation by rememberSaveable { mutableStateOf(CommentValidation.VALID) }
 
     Column(
         modifier = Modifier.padding(vertical = 8.dp),
@@ -131,9 +137,9 @@ fun CommentInputUI(
             value = content,
             onValueChange = {
                 content = it
-                isCommentValid = commentValidation(content)
+                validation = validateComment(content)
             },
-            isError = isCommentValid.not(),
+            isError = validation != CommentValidation.VALID,
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp, end = 32.dp, start = 32.dp)
                 .fillMaxWidth(),
@@ -141,8 +147,8 @@ fun CommentInputUI(
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
         )
 
-        if (isCommentValid.not()) {
-            ErrorMessage()
+        if (validation == CommentValidation.EXCEEDS_LENGTH) {
+            ErrorMessage(R.string.comments_error_max_character)
         }
 
         Row(
@@ -162,7 +168,7 @@ fun CommentInputUI(
 
             Button(
                 onClick = { onUpdate.invoke(comment.copy(text = content)) },
-                enabled = isCommentValid,
+                enabled = validation == CommentValidation.VALID,
                 modifier = Modifier
                     .padding(start = 12.dp)
                     .defaultMinSize(minHeight = minButtonSize),
@@ -178,7 +184,14 @@ fun CommentInputUI(
     }
 }
 
-private fun commentValidation(content: String) = content.length <= 1000
+private fun validateComment(content: String): CommentValidation =
+    if (content.isBlank()) {
+        CommentValidation.BLANK
+    } else if (content.length > 1000) {
+        CommentValidation.EXCEEDS_LENGTH
+    } else {
+        CommentValidation.VALID
+    }
 
 @Composable
 private fun getOutlineColors() = TextFieldDefaults.outlinedTextFieldColors(
@@ -228,9 +241,9 @@ private fun TrailingIcon(
 }
 
 @Composable
-private fun ErrorMessage() {
+private fun ErrorMessage(messageId: Int) {
     Text(
-        text = stringResource(id = R.string.error_max_character),
+        text = stringResource(id = messageId),
         style = MyHealthTypography.overline.copy(color = red),
         modifier = Modifier
             .fillMaxWidth()
@@ -254,6 +267,12 @@ private fun ShadowSpacer() {
             .height(4.dp)
             .background(brush)
     )
+}
+
+private enum class CommentValidation {
+    VALID,
+    EXCEEDS_LENGTH,
+    BLANK,
 }
 
 @Composable

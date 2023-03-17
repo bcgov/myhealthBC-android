@@ -40,7 +40,7 @@ class AddCommentLayout @JvmOverloads constructor(
                     if (after > 1000) {
                         binding.tipComment.apply {
                             isErrorEnabled = true
-                            error = context.getString(R.string.error_max_character)
+                            error = context.getString(R.string.comments_error_max_character)
                         }
                     } else {
                         binding.tipComment.apply {
