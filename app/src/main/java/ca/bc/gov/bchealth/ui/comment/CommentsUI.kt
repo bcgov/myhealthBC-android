@@ -163,7 +163,7 @@ private fun CommentItemUI(
                             .width(minButtonSize)
                             .height(minButtonSize)
                             .clickable {
-                                if (displayEditLayout.not()) {
+                                if (displayEditLayout.not() && comment.isUploaded) {
                                     expanded = true
                                 }
                             },
