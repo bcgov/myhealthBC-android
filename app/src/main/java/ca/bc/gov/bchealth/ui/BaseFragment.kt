@@ -16,6 +16,7 @@ import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolbar
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.HEALTH_GATEWAY_EMAIL_ADDRESS
+import ca.bc.gov.bchealth.utils.composeEmail
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
@@ -71,7 +72,7 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
     }
 
     fun composeEmail(address: String = HEALTH_GATEWAY_EMAIL_ADDRESS, subject: String = "") {
-        (activity as? BaseActivity)?.composeEmail(address, subject)
+        activity?.composeEmail(address, subject)
     }
 
     fun showGenericError() {
