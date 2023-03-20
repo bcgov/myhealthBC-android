@@ -72,7 +72,7 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
     }
 
     fun composeEmail(address: String = HEALTH_GATEWAY_EMAIL_ADDRESS, subject: String = "") {
-        activity?.composeEmail(address, subject)
+        requireActivity().composeEmail(address, subject)
     }
 
     fun showGenericError() {

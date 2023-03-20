@@ -20,15 +20,15 @@ fun Activity.composeEmail(address: String, subject: String) {
         startActivity(intent)
     } else {
         copyToClipboard(address)
-        // Google strongly recommends removing any pop-up widget shown after an in-app copy for Android 13 and higher.
-        // https://developer.android.com/develop/ui/views/touch-and-input/copy-paste#duplicate-notifications
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-            toast(getString(R.string.email_copied_to_clipboard))
-        }
     }
 }
 
 private fun Activity.copyToClipboard(text: String) {
     val clipboardManager = getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager
     clipboardManager.setPrimaryClip(ClipData.newPlainText("", text))
+    // Google strongly recommends removing any pop-up widget shown after an in-app copy for Android 13 and higher.
+    // https://developer.android.com/develop/ui/views/touch-and-input/copy-paste#duplicate-notifications
+    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+        toast(getString(R.string.email_copied_to_clipboard))
+    }
 }
