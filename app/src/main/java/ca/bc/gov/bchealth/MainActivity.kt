@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -11,7 +12,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.databinding.ActivityMainBinding
-import ca.bc.gov.bchealth.ui.BaseActivity
 import ca.bc.gov.bchealth.ui.inappupdate.InAppUpdateActivity
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
-class MainActivity : BaseActivity() {
+class MainActivity : AppCompatActivity() {
 
     private val binding by viewBindings(ActivityMainBinding::bind)
     private val analyticsFeatureViewModel: AnalyticsFeatureViewModel by viewModels()
