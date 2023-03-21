@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.bchealth.workers.WorkerInvoker
+import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.patient.PatientDto
@@ -12,6 +13,7 @@ import ca.bc.gov.repository.CacheRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.patient.PatientRepository
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,6 +33,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
     private val bcscAuthRepo: BcscAuthRepo,
     private val cacheRepository: CacheRepository,
     private val workerInvoker: WorkerInvoker,
+    private val mobileConfigRepository: MobileConfigRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(IndividualHealthRecordsUiState())
@@ -149,8 +152,28 @@ class IndividualHealthRecordViewModel @Inject constructor(
         return BcscInfo(dto, isAuthenticatedPatientAvailable, isBcscSessionActive)
     }
 
-    fun executeOneTimeDataFetch() {
-        workerInvoker.executeOneTimeDataFetch()
+    fun executeOneTimeDataFetch() = viewModelScope.launch {
+        try {
+            mobileConfigRepository.refreshMobileConfiguration()
+            workerInvoker.executeOneTimeDataFetch()
+        } catch (e: Exception) {
+            when (e) {
+                is ServiceDownException -> {
+                    _uiState.update { state ->
+                        state.copy(isHgServicesUp = false)
+                    }
+                }
+                else -> {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    fun resetErrorState() {
+        _uiState.update { state ->
+            state.copy(isHgServicesUp = true)
+        }
     }
 }
 
@@ -166,6 +189,7 @@ data class IndividualHealthRecordsUiState(
     val bcscAuthenticatedPatientDto: PatientDto? = null,
     val onHealthRecords: List<HealthRecordItem> = emptyList(),
     val medicationRecordsUpdated: Boolean = false,
+    val isHgServicesUp: Boolean = true
 )
 
 data class HealthRecordItem(

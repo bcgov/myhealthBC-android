@@ -52,6 +52,7 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
                 if (uiState.isHgServicesUp == false) {
                     root.showServiceDownMessage(requireContext())
                     viewModel.resetUiState()
+                    content.srHealthRecords.isRefreshing = false
                 } else {
 
                     with(content.srHealthRecords) {
