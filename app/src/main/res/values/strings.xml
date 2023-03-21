@@ -101,6 +101,13 @@
     <string name="log_out">Log out</string>
     <string name="refresh">Refresh</string>
 
+    <!--    Feedback-->
+    <string name="feedback_title">Feedback</string>
+    <string name="feedback_body">Do you have a suggestion or idea? Let us know in the field below</string>
+    <string name="feedback_input_hint">Describe your suggestion or idea…</string>
+    <string name="feedback_input_error">Maximum %s characters</string>
+    <string name="feedback_button">Send Message</string>
+
     <!--    Profile-->
     <string name="profile">Profile</string>
     <string name="profile_first_name">First name</string>
