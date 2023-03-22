@@ -96,6 +96,10 @@ class SettingsFragment : BaseFragment(R.layout.fragment_settings) {
                 findNavController().navigate(R.id.securityAndDataFragment)
             }
 
+            tvFeedback.setOnClickListener {
+                findNavController().navigate(R.id.feedbackFragment)
+            }
+
             tvPrivacyStatement.setOnClickListener {
                 requireActivity().redirect(getString(R.string.url_privacy_policy))
             }
