@@ -82,13 +82,9 @@ class DependentRecordsViewModel @Inject constructor(
         e.printStackTrace()
         when (e) {
             is NetworkConnectionException -> {
-                _uiState.tryEmit(
-                    DependentRecordsUiState(
-                        records = emptyList(),
-                        onLoading = false,
-                        isConnected = false
-                    )
-                )
+                _uiState.update {
+                    it.copy(onLoading = false, isConnected = false)
+                }
             }
             is ServiceDownException -> _uiState.update { it.copy(isHgServicesUp = false) }
 
@@ -109,6 +105,12 @@ class DependentRecordsViewModel @Inject constructor(
         )
     )
 
+    fun onNetworkDialogDisplayed() {
+        _uiState.update {
+            it.copy(isConnected = true)
+        }
+    }
+
     fun resetUiState() {
         _uiState.tryEmit(
             DependentRecordsUiState(
@@ -122,12 +124,9 @@ class DependentRecordsViewModel @Inject constructor(
     }
 
     fun refresh(patientId: Long, hdid: String) = viewModelScope.launch {
-        _uiState.tryEmit(
-            DependentRecordsUiState(
-                records = emptyList(),
-                onLoading = true
-            )
-        )
+        _uiState.update {
+            it.copy(onLoading = true)
+        }
         dependentsRepository.invalidateDependentCache(patientId)
         getRecords(patientId, hdid)
     }
