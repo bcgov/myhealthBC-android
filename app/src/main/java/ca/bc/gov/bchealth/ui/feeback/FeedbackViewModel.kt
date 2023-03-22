@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,14 +20,21 @@ class FeedbackViewModel @Inject constructor(
 
     fun sendMessage(message: String) = viewModelScope.launch {
         try {
+            _uiState.update { it.copy(isLoading = true) }
             repository.addFeedback(message)
+            _uiState.update { it.copy(isLoading = false, requestSucceed = true) }
         } catch (e: Exception) {
             handleBaseException(e)
+            _uiState.update { it.copy(isLoading = false) }
         }
     }
 
-    data class FeedbackUiState(
-        val isLoading: Boolean = false,
-        val requestSucceed: Boolean? = null,
-    )
+    fun resetUiState() {
+        _uiState.update { FeedbackUiState() }
+    }
 }
+
+data class FeedbackUiState(
+    val isLoading: Boolean = false,
+    val requestSucceed: Boolean? = null,
+)

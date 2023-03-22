@@ -16,13 +16,13 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -42,27 +42,42 @@ import ca.bc.gov.bchealth.model.validation.BaseTextValidation.BLANK
 import ca.bc.gov.bchealth.model.validation.BaseTextValidation.EXCEEDS_LENGTH
 import ca.bc.gov.bchealth.model.validation.BaseTextValidation.VALID
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
+import kotlinx.coroutines.flow.StateFlow
 
 private const val MAX_LENGTH = 500
 
 @Composable
 fun FeedbackUI(
+    uiStateFlow: StateFlow<FeedbackUiState>,
     navigationAction: () -> Unit,
     sendAction: (String) -> Unit,
+    onMessageSent: () -> Unit,
 ) {
+    val uiState = uiStateFlow.collectAsState().value
+
     MyHealthScaffold(
         title = stringResource(id = R.string.feedback_title),
-        navigationAction = navigationAction
+        navigationAction = navigationAction,
+        isLoading = uiState.isLoading
     ) {
-        FeedbackContent(sendAction)
+        FeedbackContent(uiState, sendAction, onMessageSent)
     }
 }
 
 @Composable
-private fun FeedbackContent(sendAction: (String) -> Unit) {
+private fun FeedbackContent(
+    uiState: FeedbackUiState,
+    sendAction: (String) -> Unit,
+    onMessageSent: () -> Unit,
+) {
     var message by rememberSaveable { mutableStateOf("") }
     var validation by rememberSaveable { mutableStateOf(BLANK) }
-    var isInputFocused by rememberSaveable { mutableStateOf(false) }
+
+    if (uiState.requestSucceed == true) {
+        message = ""
+        validation = BLANK
+        onMessageSent.invoke()
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -89,16 +104,13 @@ private fun FeedbackContent(sendAction: (String) -> Unit) {
 
             Box {
 
-                HintLabel(message, isInputFocused)
+                HintLabel(message)
 
                 BasicTextField(
                     modifier = Modifier
                         .padding(top = 12.dp, start = 16.dp, end = 12.dp, bottom = 20.dp)
                         .fillMaxWidth()
-                        .defaultMinSize(minHeight = 160.dp)
-                        .onFocusChanged {
-                            isInputFocused = it.isFocused
-                        },
+                        .defaultMinSize(minHeight = 160.dp),
                     value = message,
                     onValueChange = {
                         message = it
@@ -120,11 +132,11 @@ private fun FeedbackContent(sendAction: (String) -> Unit) {
 }
 
 @Composable
-private fun HintLabel(message: String, isInputFocused: Boolean) {
-    if (message.isEmpty() && isInputFocused.not()) {
+private fun HintLabel(message: String) {
+    if (message.isEmpty()) {
         Text(
             style = MyHealthTypography.body2.copy(color = grey),
-            modifier = Modifier.padding(top = 12.dp, start = 16.dp, end = 12.dp),
+            modifier = Modifier.padding(top = 12.dp, start = 18.dp, end = 12.dp),
             text = stringResource(id = R.string.feedback_input_hint),
         )
     }
@@ -198,5 +210,5 @@ private fun validateMessage(message: String): BaseTextValidation =
 @BasePreview
 @Composable
 private fun PreviewFeedbackContent() {
-    FeedbackContent({})
+    FeedbackContent(FeedbackUiState(), {}, {})
 }
