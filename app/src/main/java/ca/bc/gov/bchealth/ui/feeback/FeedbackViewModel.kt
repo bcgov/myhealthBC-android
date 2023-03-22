@@ -11,7 +11,7 @@ class FeedbackViewModel : BaseViewModel() {
 
     fun sendMessage(message: String) {
         try {
-            //todo: next ticket
+            // todo: next ticket
         } catch (e: Exception) {
             handleBaseException(e)
         }
