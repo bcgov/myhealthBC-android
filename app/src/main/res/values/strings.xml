@@ -82,6 +82,7 @@
 
     <!--Settings-->
     <string name="settings">Settings</string>
+    <string name="settings_feedback">Feedback</string>
     <string name="privacy_statement">Privacy statement</string>
     <string name="no_app_found">No app found to open link!</string>
     <string name="turn_on_analytics">Turn on analytics</string>
