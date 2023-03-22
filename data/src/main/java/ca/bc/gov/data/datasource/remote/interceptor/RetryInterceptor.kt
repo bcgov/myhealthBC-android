@@ -50,13 +50,15 @@ class RetryInterceptor @Inject constructor() : Interceptor {
             if (response.isSuccessful) {
                 body = response.body
                 stringBody = body?.string()
-                val json = Gson().fromJson(stringBody, JsonObject::class.java)
+                val json: JsonObject? = Gson().fromJson(stringBody, JsonObject::class.java)
 
-                if (request.url.toString().contains("MobileConfiguration", true)) {
-                    loaded = true
-                } else {
-                    loaded = checkForLoadedFlag(json)
-                    retryCount++
+                when {
+                    json == null -> loaded = true
+                    request.url.toString().contains("MobileConfiguration", true) -> loaded = true
+                    else -> {
+                        loaded = checkForLoadedFlag(json)
+                        retryCount++
+                    }
                 }
             } else {
                 return response
