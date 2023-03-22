@@ -17,6 +17,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordFilterFragment
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordsAdapter
 import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -49,6 +50,12 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
     private suspend fun observeUiState() {
         viewModel.uiState.collect { uiState ->
             binding.apply {
+
+                if (!uiState.isConnected) {
+                    root.showNoInternetConnectionMessage(requireContext())
+                    viewModel.onNetworkDialogDisplayed()
+                    content.srHealthRecords.isRefreshing = false
+                }
                 if (uiState.isHgServicesUp == false) {
                     root.showServiceDownMessage(requireContext())
                     viewModel.resetUiState()

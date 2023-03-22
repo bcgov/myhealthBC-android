@@ -32,6 +32,7 @@ import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -191,6 +192,12 @@ class IndividualHealthRecordFragment :
         if (!uiState.isHgServicesUp) {
             binding.root.showServiceDownMessage(requireContext())
             binding.content.srHealthRecords.isRefreshing = false
+            viewModel.resetErrorState()
+        }
+
+        if (!uiState.isConnected) {
+            binding.content.srHealthRecords.isRefreshing = false
+            binding.root.showNoInternetConnectionMessage(requireContext())
             viewModel.resetErrorState()
         }
 
