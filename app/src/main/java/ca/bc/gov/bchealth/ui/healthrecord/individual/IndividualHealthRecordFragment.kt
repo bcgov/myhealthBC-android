@@ -32,6 +32,7 @@ import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.common.BuildConfig.FLAG_IMMZ_BANNER
@@ -186,6 +187,13 @@ class IndividualHealthRecordFragment :
     }
 
     private fun updateUi(uiState: IndividualHealthRecordsUiState) {
+
+        if (!uiState.isHgServicesUp) {
+            binding.root.showServiceDownMessage(requireContext())
+            binding.content.srHealthRecords.isRefreshing = false
+            viewModel.resetErrorState()
+        }
+
         uiState.bcscAuthenticatedPatientDto?.let {
             setToolBar(it.fullName)
         }
