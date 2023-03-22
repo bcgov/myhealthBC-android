@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.bchealth.workers.WorkerInvoker
+import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ProtectiveWordState
@@ -158,6 +159,13 @@ class IndividualHealthRecordViewModel @Inject constructor(
             workerInvoker.executeOneTimeDataFetch()
         } catch (e: Exception) {
             when (e) {
+                is NetworkConnectionException -> {
+                    _uiState.update {
+                        it.copy(
+                            isConnected = false
+                        )
+                    }
+                }
                 is ServiceDownException -> {
                     _uiState.update { state ->
                         state.copy(isHgServicesUp = false)
@@ -172,7 +180,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
 
     fun resetErrorState() {
         _uiState.update { state ->
-            state.copy(isHgServicesUp = true)
+            state.copy(isHgServicesUp = true, isConnected = true)
         }
     }
 }
@@ -189,7 +197,8 @@ data class IndividualHealthRecordsUiState(
     val bcscAuthenticatedPatientDto: PatientDto? = null,
     val onHealthRecords: List<HealthRecordItem> = emptyList(),
     val medicationRecordsUpdated: Boolean = false,
-    val isHgServicesUp: Boolean = true
+    val isHgServicesUp: Boolean = true,
+    val isConnected: Boolean = true,
 )
 
 data class HealthRecordItem(
