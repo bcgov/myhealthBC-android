@@ -8,6 +8,7 @@ import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAutho
 import ca.bc.gov.data.datasource.remote.model.request.CommentRequest
 import ca.bc.gov.data.datasource.remote.model.request.CommentUpdateRequest
 import ca.bc.gov.data.datasource.remote.model.request.DependentRegistrationRequest
+import ca.bc.gov.data.datasource.remote.model.request.FeedbackRequest
 import ca.bc.gov.data.datasource.remote.model.request.UserProfileRequest
 import ca.bc.gov.data.datasource.remote.model.response.AddCommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.AllCommentsResponse
@@ -52,6 +53,7 @@ interface HealthGatewayPrivateApi {
         private const val BASE_MEDICATION_SERVICE = "api/medicationservice"
         private const val BASE_PATIENT_SERVICE = "api/patientservice"
         private const val BASE_USER_PROFILE_SERVICE = "api/gatewayapiservice/UserProfile"
+        private const val BASE_USER_FEEDBACK_SERVICE = "api/gatewayapiservice/UserFeedback"
         private const val BASE_HEALTH_VISIT_SERVICE = "api/encounterservice"
         private const val BASE_CLINICAL_SERVICE = "api/clinicaldocumentservice"
     }
@@ -205,4 +207,11 @@ interface HealthGatewayPrivateApi {
         @Path(DEPENDENT_HDID) dependentHdid: String,
         @Body dependentPayload: DependentPayload
     ): Response<DependentResponse>
+
+    @POST("$BASE_USER_FEEDBACK_SERVICE/{$HDID}")
+    suspend fun addFeedback(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String,
+        @Body feedbackRequest: FeedbackRequest
+    ): Response<Unit>
 }

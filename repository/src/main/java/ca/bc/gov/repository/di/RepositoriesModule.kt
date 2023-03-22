@@ -17,6 +17,7 @@ import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.BannerRemoteDataSource
 import ca.bc.gov.data.datasource.remote.CommentRemoteDataSource
 import ca.bc.gov.data.datasource.remote.DependentsRemoteDataSource
+import ca.bc.gov.data.datasource.remote.FeedbackRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
@@ -25,6 +26,7 @@ import ca.bc.gov.repository.BannerRepository
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.CommentRepository
 import ca.bc.gov.repository.DependentsRepository
+import ca.bc.gov.repository.FeedbackRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.OnBoardingRepository
@@ -300,4 +302,11 @@ class RepositoriesModule {
         remoteDataSource: BannerRemoteDataSource
     ): BannerRepository =
         BannerRepository(remoteDataSource)
+
+    @Provides
+    @Singleton
+    fun providesFeedbackRepository(
+        remoteDataSource: FeedbackRemoteDataSource,
+        bcscAuthRepo: BcscAuthRepo,
+    ): FeedbackRepository = FeedbackRepository(remoteDataSource, bcscAuthRepo)
 }
