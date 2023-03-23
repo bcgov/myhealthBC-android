@@ -37,6 +37,7 @@ import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.common.BuildConfig.FLAG_IMMZ_BANNER
+import ca.bc.gov.common.BuildConfig.FLAG_MANUAL_REFRESH
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -205,10 +206,15 @@ class IndividualHealthRecordFragment :
             setToolBar(it.fullName)
         }
         with(binding.topAppBar1.menu) {
-            findItem(R.id.menu_refresh).isVisible = uiState.isBcscSessionActive != null && uiState.isBcscSessionActive
-            findItem(R.id.menu_filter).isVisible = uiState.isBcscSessionActive != null && uiState.isBcscSessionActive
+            findItem(R.id.menu_refresh).isVisible =
+                uiState.isBcscSessionActive != null && uiState.isBcscSessionActive && FLAG_MANUAL_REFRESH
+            findItem(R.id.menu_filter).isVisible =
+                uiState.isBcscSessionActive != null && uiState.isBcscSessionActive
         }
-        binding.content.srHealthRecords.isEnabled = uiState.isBcscSessionActive != null && uiState.isBcscSessionActive
+
+        binding.content.srHealthRecords.isEnabled =
+            uiState.isBcscSessionActive != null && uiState.isBcscSessionActive && FLAG_MANUAL_REFRESH
+
         if (uiState.isBcscSessionActive != null && uiState.isBcscSessionActive) {
             val adapters = arrayListOf<RecyclerView.Adapter<out RecyclerView.ViewHolder?>>()
 
@@ -388,7 +394,9 @@ class IndividualHealthRecordFragment :
     private fun setupSwipeToRefresh() {
         with(binding.content.srHealthRecords) {
             setOnRefreshListener {
-                viewModel.executeOneTimeDataFetch()
+                if (FLAG_MANUAL_REFRESH) {
+                    viewModel.executeOneTimeDataFetch()
+                }
             }
         }
     }
