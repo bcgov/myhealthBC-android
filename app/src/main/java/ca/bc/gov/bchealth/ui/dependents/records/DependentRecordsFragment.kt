@@ -21,6 +21,7 @@ import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.common.BuildConfig.FLAG_MANUAL_REFRESH
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -61,8 +62,8 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
                     viewModel.resetUiState()
                     content.srHealthRecords.isRefreshing = false
                 } else {
-
                     with(content.srHealthRecords) {
+                        isEnabled = FLAG_MANUAL_REFRESH
                         progressBar.indicator.toggleVisibility(uiState.onLoading && isRefreshing.not())
                         if (isRefreshing && uiState.records.isNotEmpty()) {
                             isRefreshing = false
@@ -128,6 +129,7 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
                 findNavController().popBackStack()
             }
             inflateMenu(R.menu.menu_dependent_health_record)
+            menu.findItem(R.id.menu_refresh).isVisible = FLAG_MANUAL_REFRESH
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
 
@@ -158,7 +160,9 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
     private fun setupSwipeToRefresh() {
         with(binding.content.srHealthRecords) {
             setOnRefreshListener {
-                viewModel.refresh(args.patientId, args.hdid)
+                if (FLAG_MANUAL_REFRESH) {
+                    viewModel.refresh(args.patientId, args.hdid)
+                }
             }
         }
     }
