@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.feeback
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.repository.FeedbackRepository
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FeedbackViewModel @Inject constructor(
-    private val repository: FeedbackRepository
+    private val repository: FeedbackRepository,
+    private val mobileConfigRepository: MobileConfigRepository,
 ) : BaseViewModel() {
     private val _uiState = MutableStateFlow(FeedbackUiState())
     val uiState: StateFlow<FeedbackUiState> = _uiState.asStateFlow()
@@ -21,6 +23,7 @@ class FeedbackViewModel @Inject constructor(
     fun sendMessage(message: String) = viewModelScope.launch {
         try {
             _uiState.update { it.copy(isLoading = true) }
+            mobileConfigRepository.refreshMobileConfiguration()
             repository.addFeedback(message)
             _uiState.update { it.copy(isLoading = false, requestSucceed = true) }
         } catch (e: Exception) {
