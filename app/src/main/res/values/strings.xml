@@ -108,6 +108,7 @@
     <string name="feedback_input_hint">Describe your suggestion or idea…</string>
     <string name="feedback_input_error">Maximum %s characters</string>
     <string name="feedback_button">Send Message</string>
+    <string name="feedback_success_message">Your message has been sent successfully!</string>
 
     <!--    Profile-->
     <string name="profile">Profile</string>

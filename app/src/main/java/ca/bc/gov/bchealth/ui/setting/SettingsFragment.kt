@@ -138,10 +138,15 @@ class SettingsFragment : BaseFragment(R.layout.fragment_settings) {
                     } else {
                         initClickListeners()
                         val isLoginStatusActive = it.loginStatus == LoginStatus.ACTIVE
-                        binding.layoutProfile.isVisible = isLoginStatusActive
-                        binding.layoutLogin.isVisible = !isLoginStatusActive
-                        binding.tvLogOut.isVisible = isLoginStatusActive
 
+                        binding.apply {
+                            layoutProfile.isVisible = isLoginStatusActive
+                            layoutLogin.isVisible = !isLoginStatusActive
+                            tvFeedback.isVisible = isLoginStatusActive
+                            line4.isVisible = isLoginStatusActive
+                            tvLogOut.isVisible = isLoginStatusActive
+                            line5.isVisible = isLoginStatusActive
+                        }
                         if (it.isError) {
                             bcscAuthViewModel.resetAuthStatus()
                         }
