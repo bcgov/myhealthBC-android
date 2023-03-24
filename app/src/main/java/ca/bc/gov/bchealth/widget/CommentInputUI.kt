@@ -121,7 +121,7 @@ fun CommentInputUI(
 }
 
 @Composable
-fun CommentInputUI(
+fun EditableCommentInputUI(
     comment: Comment,
     onUpdate: (Comment) -> Unit,
     onCancel: (Comment) -> Unit,
@@ -299,6 +299,6 @@ private fun PreviewCommentInputEditUI() {
     )
 
     MyHealthTheme {
-        CommentInputUI(comment, {}) {}
+        EditableCommentInputUI(comment, {}) {}
     }
 }

@@ -43,6 +43,7 @@ import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.compose.red
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 import ca.bc.gov.bchealth.widget.CommentInputUI
+import ca.bc.gov.bchealth.widget.EditableCommentInputUI
 import ca.bc.gov.common.utils.toDateTimeString
 import kotlinx.coroutines.flow.StateFlow
 import java.time.Instant
@@ -137,7 +138,7 @@ private fun CommentItemUI(
     val alpha = if (displayEditLayout) 0.3f else 1f
 
     if (comment.editable) {
-        CommentInputUI(comment, updateAction, cancelAction)
+        EditableCommentInputUI(comment, updateAction, cancelAction)
     } else {
         Column(
             modifier = Modifier
@@ -146,7 +147,11 @@ private fun CommentItemUI(
                 .background(greyBg)
                 .alpha(alpha)
         ) {
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(minButtonSize)
+            ) {
                 Text(
                     modifier = Modifier
                         .weight(1f)
@@ -156,20 +161,19 @@ private fun CommentItemUI(
                 )
 
                 Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_comment_options),
-                        contentScale = ContentScale.Inside,
-                        modifier = Modifier
-                            .width(minButtonSize)
-                            .height(minButtonSize)
-                            .clickable {
-                                if (displayEditLayout.not() && comment.isUploaded) {
+                    if (displayEditLayout.not() && comment.isUploaded) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_comment_options),
+                            contentScale = ContentScale.Inside,
+                            modifier = Modifier
+                                .width(minButtonSize)
+                                .height(minButtonSize)
+                                .clickable {
                                     expanded = true
-                                }
-                            },
-                        contentDescription = stringResource(id = R.string.edit)
-                    )
-
+                                },
+                            contentDescription = stringResource(id = R.string.edit)
+                        )
+                    }
                     OptionsMenu(
                         expanded = expanded,
                         onDismissMenu = { expanded = false },
