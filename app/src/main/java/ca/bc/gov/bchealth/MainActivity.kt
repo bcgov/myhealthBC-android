@@ -10,16 +10,20 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import androidx.work.Data
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.databinding.ActivityMainBinding
 import ca.bc.gov.bchealth.ui.inappupdate.InAppUpdateActivity
+import ca.bc.gov.bchealth.utils.InAppUpdateHelper
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
-import ca.bc.gov.bchealth.workers.FetchAuthenticatedHealthRecordsWorker.Companion.APP_UPDATE_REQUIRED
-import ca.bc.gov.bchealth.workers.FetchAuthenticatedHealthRecordsWorker.Companion.IS_HG_SERVICES_UP
+import ca.bc.gov.bchealth.workers.FetchAuthenticatedHealthRecordsWorker
 import ca.bc.gov.common.model.settings.AnalyticsFeature
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.install.model.AppUpdateType
 import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -38,10 +42,16 @@ class MainActivity : AppCompatActivity() {
     // isWorkerStarted is required to avoid capturing "FAILED" state of worker at app launch
     private var isWorkerStarted: Boolean = false
 
+    private lateinit var inAppUpdate: InAppUpdateHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
+
+        inAppUpdate = InAppUpdateHelper(this, lifecycle) {
+            showUpdateDownloaded()
+        }
 
         toggleAnalyticsFeature()
 
@@ -106,27 +116,36 @@ class MainActivity : AppCompatActivity() {
             ) {
                 val workInfo = it.firstOrNull() ?: return@observe
 
-                if (workInfo.state.name == "RUNNING") {
-                    isWorkerStarted = true
-                }
-
-                if (workInfo.state.name == "FAILED") {
-                    val workData = workInfo.outputData
-
-                    if (isWorkerStarted) {
-                        val appUpdateRequired = workData.getBoolean(APP_UPDATE_REQUIRED, false)
-                        if (appUpdateRequired) {
-                            openInAppUpdateActivity()
-                            return@observe
-                        }
-
-                        val isHgServicesUp = workData.getBoolean(IS_HG_SERVICES_UP, true)
-                        if (!isHgServicesUp) {
-                            binding.navHostFragment.showServiceDownMessage(this)
-                            return@observe
-                        }
+                when (workInfo.state) {
+                    WorkInfo.State.RUNNING -> {
+                        isWorkerStarted = true
                     }
+                    WorkInfo.State.FAILED -> {
+                        handleError(workInfo.outputData)
+                    }
+                    WorkInfo.State.SUCCEEDED -> { inAppUpdate.checkForUpdate(AppUpdateType.FLEXIBLE) }
+                    else -> {}
                 }
+            }
+        }
+    }
+
+    private fun handleError(workData: Data) {
+        if (isWorkerStarted) {
+            val appUpdateRequired = workData.getBoolean(
+                FetchAuthenticatedHealthRecordsWorker.APP_UPDATE_REQUIRED,
+                false
+            )
+            if (appUpdateRequired) {
+                openInAppUpdateActivity()
+                return
+            }
+
+            val isHgServicesUp =
+                workData.getBoolean(FetchAuthenticatedHealthRecordsWorker.IS_HG_SERVICES_UP, true)
+            if (!isHgServicesUp) {
+                binding.navHostFragment.showServiceDownMessage(this)
+                return
             }
         }
     }
@@ -134,5 +153,17 @@ class MainActivity : AppCompatActivity() {
     private fun openInAppUpdateActivity() {
         startActivity(Intent(this, InAppUpdateActivity::class.java))
         finish()
+    }
+
+    private fun showUpdateDownloaded() {
+        Snackbar.make(
+            findViewById(R.id.bottom_nav),
+            R.string.update_downloaded,
+            Snackbar.LENGTH_INDEFINITE
+        ).apply {
+            setAction(R.string.restart) { inAppUpdate.completeUpdate() }
+            setActionTextColor(resources.getColor(R.color.status_green, theme))
+            show()
+        }
     }
 }
