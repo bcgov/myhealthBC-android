@@ -55,11 +55,6 @@ internal class InAppUpdateHelper(
                         startUpdate(info, updateType)
                     }
                 }
-                AppUpdateType.FLEXIBLE -> {
-                    if (info.installStatus() == InstallStatus.DOWNLOADED) {
-                        onFlexUpdateDownloaded()
-                    }
-                }
             }
         }
     }
