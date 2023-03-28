@@ -27,7 +27,9 @@ class FeedbackViewModel @Inject constructor(
             repository.addFeedback(message)
             _uiState.update { it.copy(isLoading = false, requestSucceed = true) }
         } catch (e: Exception) {
-            handleBaseException(e)
+            handleBaseException(e) { exception ->
+                _uiState.update { it.copy(error = exception) }
+            }
             _uiState.update { it.copy(isLoading = false) }
         }
     }
@@ -40,4 +42,5 @@ class FeedbackViewModel @Inject constructor(
 data class FeedbackUiState(
     val isLoading: Boolean = false,
     val requestSucceed: Boolean? = null,
+    val error: Exception? = null,
 )
