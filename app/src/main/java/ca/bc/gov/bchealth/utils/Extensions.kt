@@ -215,23 +215,19 @@ fun String?.showIfNullOrBlank(context: Context): String {
 
 @Deprecated("Switch to BaseFragment showServiceDownMessage()")
 fun View.showServiceDownMessage(context: Context) {
-    val snackBar = Snackbar.make(
-        this,
-        context.getString(R.string.service_down), 10000
-    )
-    snackBar.setAction(context.getString(R.string.dismiss)) {
-        performClick()
-    }
-    snackBar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines =
-        10
-    snackBar.show()
+    showErrorSnackbar(context.getString(R.string.service_down))
 }
 
 @Deprecated("Switch to BaseFragment showNoInternetConnectionMessage()")
 fun View.showNoInternetConnectionMessage(context: Context) {
+    showErrorSnackbar(context.getString(R.string.no_internet_connection))
+}
+
+fun View?.showErrorSnackbar(message: String) {
+    this ?: return
+
     val snackBar = Snackbar.make(
-        this,
-        context.getString(R.string.no_internet_connection), 10000
+        this, message, 10000
     )
     snackBar.setAction(context.getString(R.string.dismiss)) {
         performClick()

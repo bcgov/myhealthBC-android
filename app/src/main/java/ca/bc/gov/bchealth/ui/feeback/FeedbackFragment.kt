@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.fragment.app.viewModels
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.utils.showErrorSnackbar
 import ca.bc.gov.bchealth.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,6 +21,7 @@ class FeedbackFragment : BaseFragment(null) {
             navigationAction = ::popNavigation,
             sendAction = ::onClickSend,
             onMessageSent = ::onMessageSent,
+            onError = ::displayError,
         )
     }
 
@@ -30,5 +32,10 @@ class FeedbackFragment : BaseFragment(null) {
 
     private fun onClickSend(message: String) {
         feedbackViewModel.sendMessage(message)
+    }
+
+    private fun displayError() {
+        view.showErrorSnackbar(getString(R.string.feedback_error_message))
+        feedbackViewModel.resetUiState()
     }
 }

@@ -52,6 +52,7 @@ fun FeedbackUI(
     navigationAction: () -> Unit,
     sendAction: (String) -> Unit,
     onMessageSent: () -> Unit,
+    onError: () -> Unit,
 ) {
     val uiState = uiStateFlow.collectAsState().value
 
@@ -62,6 +63,8 @@ fun FeedbackUI(
     ) {
         FeedbackContent(uiState, sendAction, onMessageSent)
     }
+
+    if (uiState.error != null) onError.invoke()
 }
 
 @Composable
