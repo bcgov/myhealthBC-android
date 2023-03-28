@@ -7,6 +7,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -162,7 +163,7 @@ private fun CommentItemUI(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(minButtonSize)
+                    .defaultMinSize(minHeight = minButtonSize)
             ) {
                 Text(
                     modifier = Modifier
