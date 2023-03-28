@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.comment
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,10 +27,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -76,6 +80,7 @@ fun CommentsUI(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CommentsContent(
     uiState: CommentsUiState,
@@ -86,8 +91,15 @@ fun CommentsContent(
     cancelAction: (Comment) -> Unit,
 ) {
     val comments = uiState.commentsList
+    val keyboardController = LocalSoftwareKeyboardController.current
 
-    Column(Modifier.imePadding()) {
+    Column(
+        modifier = Modifier
+            .imePadding()
+            .pointerInput(Unit) {
+                detectTapGestures(onPress = { keyboardController?.hide() })
+            }
+    ) {
         Text(
             modifier = Modifier.padding(top = 16.dp, start = 32.dp, end = 32.dp),
             text = stringResource(id = R.string.comments_medication_subtitle)
