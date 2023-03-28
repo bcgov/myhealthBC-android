@@ -123,7 +123,11 @@ class MainActivity : AppCompatActivity() {
                     WorkInfo.State.FAILED -> {
                         handleError(workInfo.outputData)
                     }
-                    WorkInfo.State.SUCCEEDED -> { inAppUpdate.checkForUpdate(AppUpdateType.FLEXIBLE) }
+                    WorkInfo.State.SUCCEEDED -> {
+                        if (isWorkerStarted) {
+                            inAppUpdate.checkForUpdate(AppUpdateType.FLEXIBLE)
+                        }
+                    }
                     else -> {}
                 }
             }
@@ -159,7 +163,7 @@ class MainActivity : AppCompatActivity() {
         Snackbar.make(
             findViewById(R.id.bottom_nav),
             R.string.update_downloaded,
-            Snackbar.LENGTH_INDEFINITE
+            5000
         ).apply {
             setAction(R.string.restart) { inAppUpdate.completeUpdate() }
             setActionTextColor(resources.getColor(R.color.status_green, theme))

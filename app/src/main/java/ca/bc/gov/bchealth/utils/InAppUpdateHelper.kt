@@ -24,7 +24,7 @@ internal class InAppUpdateHelper(
 ) : DefaultLifecycleObserver {
 
     private lateinit var appUpdateManager: AppUpdateManager
-    private var updateType = AppUpdateType.FLEXIBLE
+    private var inAppUpdateType = AppUpdateType.FLEXIBLE
 
     private val installStateUpdatedListener = InstallStateUpdatedListener { state ->
         if (state.installStatus() == InstallStatus.DOWNLOADED) {
@@ -49,10 +49,10 @@ internal class InAppUpdateHelper(
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
         appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
-            when (updateType) {
+            when (inAppUpdateType) {
                 AppUpdateType.IMMEDIATE -> {
                     if (info.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                        startUpdate(info, updateType)
+                        startUpdate(info, AppUpdateType.IMMEDIATE)
                     }
                 }
                 AppUpdateType.FLEXIBLE -> {
@@ -70,9 +70,10 @@ internal class InAppUpdateHelper(
     }
 
     fun checkForUpdate(@AppUpdateType updateType: Int) {
-        this.updateType = updateType
+        inAppUpdateType = updateType
         if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
             appUpdateManager.appUpdateInfo.addOnSuccessListener {
+
                 if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
                     it.isUpdateTypeAllowed(updateType)
                 ) {
