@@ -533,4 +533,7 @@
     <string name="clinical_documents_detail_button_download">Download Full Report</string>
     <string name="clinical_documents_detail_discipline">Discipline:</string>
     <string name="clinical_documents_detail_facility">Facility:</string>
+
+    <!--Services-->
+    <string name="services">Services</string>
 </resources>

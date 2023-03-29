@@ -35,6 +35,7 @@ android {
             buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "true"
             buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "true"
             buildConfigField "boolean", "FLAG_MANUAL_REFRESH", "true"
+            buildConfigField "boolean", "FLAG_SERVICE_TAB","true"
         }
         dev {
             dimension "version"
@@ -45,6 +46,7 @@ android {
             buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "true"
             buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "true"
             buildConfigField "boolean", "FLAG_MANUAL_REFRESH", "true"
+            buildConfigField "boolean", "FLAG_SERVICE_TAB","true"
         }
 
         stage {
@@ -56,6 +58,7 @@ android {
             buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
             buildConfigField "boolean", "FLAG_MANUAL_REFRESH", "false"
+            buildConfigField "boolean", "FLAG_SERVICE_TAB","false"
         }
 
         prod {
@@ -67,6 +70,7 @@ android {
             buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
             buildConfigField "boolean", "FLAG_MANUAL_REFRESH", "false"
+            buildConfigField "boolean", "FLAG_SERVICE_TAB","false"
         }
     }
 
