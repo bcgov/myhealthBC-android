@@ -25,6 +25,7 @@ internal class InAppUpdateHelper(
 
     private lateinit var appUpdateManager: AppUpdateManager
     private var inAppUpdateType = AppUpdateType.FLEXIBLE
+    private var isSoftUpdateShown: Boolean = false
 
     private val installStateUpdatedListener = InstallStateUpdatedListener { state ->
         if (state.installStatus() == InstallStatus.DOWNLOADED) {
@@ -67,6 +68,7 @@ internal class InAppUpdateHelper(
     override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
         appUpdateManager.unregisterListener(installStateUpdatedListener)
+        isSoftUpdateShown = false
     }
 
     fun checkForUpdate(@AppUpdateType updateType: Int) {
@@ -77,7 +79,14 @@ internal class InAppUpdateHelper(
                 if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
                     it.isUpdateTypeAllowed(updateType)
                 ) {
-                    startUpdate(it, updateType)
+                    if (inAppUpdateType == AppUpdateType.FLEXIBLE && !isSoftUpdateShown) {
+                        startUpdate(it, updateType)
+                        isSoftUpdateShown = (inAppUpdateType == AppUpdateType.FLEXIBLE)
+                    }
+
+                    if (inAppUpdateType == AppUpdateType.IMMEDIATE) {
+                        startUpdate(it, updateType)
+                    }
                 }
             }
         }
