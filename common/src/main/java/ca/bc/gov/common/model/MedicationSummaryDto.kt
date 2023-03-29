@@ -6,8 +6,8 @@ import java.time.Instant
  * @author Pinakin Kansara
  */
 data class MedicationSummaryDto(
-    val id: Long,
-    val medicationRecordId: Long,
+    val id: Long = 0,
+    var medicationRecordId: Long = -1,
     val din: String?,
     val brandName: String?,
     val genericName: String?,

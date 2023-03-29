@@ -2,6 +2,8 @@ package ca.bc.gov.bchealth.ui.healthrecord.healthvisits
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
 import ca.bc.gov.repository.healthvisits.HealthVisitsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,13 +31,23 @@ class HealthVisitViewModel @Inject constructor(
             }
             val healthVisitDto = healthVisitsRepository.getHealthVisitDetails(id)
 
+            val uiList = listOf(
+                HealthRecordDetailItem(
+                    title = R.string.clinic_name,
+                    description = healthVisitDto?.clinicDto?.name,
+
+                ),
+                HealthRecordDetailItem(
+                    title = R.string.practitioner_name,
+                    description = healthVisitDto?.practitionerName
+                )
+            )
             _uiState.update {
                 it.copy(
                     onLoading = false,
                     onError = false,
                     title = healthVisitDto?.specialtyDescription,
-                    clinic = healthVisitDto?.clinicDto?.name,
-                    practitioner = healthVisitDto?.practitionerName
+                    uiList = uiList
                 )
             }
         } catch (e: Exception) {
@@ -49,15 +61,7 @@ class HealthVisitViewModel @Inject constructor(
     }
 
     fun resetUiState() {
-        _uiState.update {
-            it.copy(
-                onLoading = false,
-                onError = false,
-                title = null,
-                clinic = null,
-                practitioner = null
-            )
-        }
+        _uiState.update { HealthVisitDetailUiState() }
     }
 }
 
@@ -65,6 +69,5 @@ data class HealthVisitDetailUiState(
     val onLoading: Boolean = false,
     val onError: Boolean = false,
     val title: String? = null,
-    val clinic: String? = null,
-    val practitioner: String? = null,
+    val uiList: List<HealthRecordDetailItem> = listOf(),
 )

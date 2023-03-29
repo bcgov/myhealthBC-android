@@ -26,9 +26,6 @@ interface VaccineRecordDao {
     @Update
     suspend fun update(vaccineRecordEntity: VaccineRecordEntity): Int
 
-    @Update
-    suspend fun update(vaccineDoseEntity: VaccineDoseEntity): Int
-
     @Query("DELETE FROM vaccine_record WHERE id = :vaccineRecordId")
     suspend fun delete(vaccineRecordId: Long): Int
 

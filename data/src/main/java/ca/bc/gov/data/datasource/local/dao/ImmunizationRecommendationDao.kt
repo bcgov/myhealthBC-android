@@ -15,9 +15,6 @@ interface ImmunizationRecommendationDao : BaseDao<ImmunizationRecommendationEnti
     )
     fun selectRecommendations(): Flow<List<ImmunizationRecommendationEntity>>
 
-    @Query("SELECT * FROM immunization_recommendation WHERE recommendation_set_id = :id")
-    suspend fun findByImmunizationRecommendationId(id: Long): ImmunizationRecommendationEntity
-
     @Query("DELETE FROM immunization_recommendation WHERE recommendation_set_id = :id")
     suspend fun delete(id: Long): Int
 }

@@ -30,27 +30,39 @@ android {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
             buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "true"
-            buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "false"
+            buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "true"
+            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "true"
+            buildConfigField "boolean", "FLAG_IMMZ_BANNER", "true"
+            buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "true"
         }
         dev {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
             buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "true"
-            buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "false"
+            buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "true"
+            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "false"
+            buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
+            buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "true"
         }
 
         stage {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
             buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "true"
-            buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "false"
+            buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "true"
+            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "false"
+            buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
+            buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
         }
 
         prod {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
             buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "true"
-            buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "false"
+            buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "true"
+            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "false"
+            buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
+            buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
         }
     }
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.exceptions.ProtectiveWordException
+import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.ErrorData
 import ca.bc.gov.repository.CacheRepository
 import ca.bc.gov.repository.MedicationRecordRepository
@@ -66,34 +67,23 @@ class ProtectiveWordViewModel @Inject constructor(
     }
 
     private suspend fun fetchMedicationRecordsFromServer(patientId: Long, protectiveWord: String) {
-        _uiState.update { state ->
-            state.copy(
-                onLoading = true,
-            )
-        }
+        _uiState.update { it.copy(onLoading = true) }
+
         try {
-            val authParameters = bcscAuthRepo.getAuthParameters()
-            val isHgServicesUp = mobileConfigRepository.refreshMobileConfiguration()
-            if (isHgServicesUp) {
-                medicationRecordRepository.fetchMedicationStatement(
-                    patientId,
-                    authParameters.first,
-                    authParameters.second,
-                    protectiveWord
-                )
-                saveProtectiveWord(protectiveWord)
-                _uiState.update { state ->
-                    state.copy(
-                        onLoading = false,
-                        isRecordsUpdated = true
-                    )
-                }
-            } else {
-                _uiState.tryEmit(
-                    FetchMedicationUiState(
-                        isHgServicesUp = isHgServicesUp,
-                        onLoading = false
-                    )
+            val authParameters = bcscAuthRepo.getAuthParametersDto()
+            mobileConfigRepository.refreshMobileConfiguration()
+
+            medicationRecordRepository.fetchMedicationStatement(
+                patientId,
+                authParameters.token,
+                authParameters.hdid,
+                protectiveWord
+            )
+            saveProtectiveWord(protectiveWord)
+            _uiState.update { state ->
+                state.copy(
+                    onLoading = false,
+                    isRecordsUpdated = true
                 )
             }
         } catch (e: Exception) {
@@ -114,6 +104,9 @@ class ProtectiveWordViewModel @Inject constructor(
                         )
                     }
                 }
+                is ServiceDownException -> _uiState.tryEmit(
+                    FetchMedicationUiState(isHgServicesUp = false, onLoading = false)
+                )
                 else -> {
                     _uiState.update { state ->
                         state.copy(

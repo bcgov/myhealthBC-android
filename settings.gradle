@@ -1,4 +1,4 @@
-rootProject.name = "BC-Vaccine-Card-Android"
+rootProject.name = "My-Health"
 include ':app'
 include ':data'
 include ':repository'

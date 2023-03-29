@@ -51,7 +51,7 @@ class CovidTestResultDetailFragment : BaseFragment(R.layout.fragment_test_result
         super.onViewCreated(view, savedInstanceState)
         observeDetails()
         observePdfData()
-        viewModel.getCovidOrderWithCovidTests(args.covidOrderId)
+        viewModel.getCovidOrderWithCovidTests(args.orderId)
     }
 
     private fun observeDetails() {
@@ -114,11 +114,14 @@ class CovidTestResultDetailFragment : BaseFragment(R.layout.fragment_test_result
     }
 
     private fun initUi(covidTestResult: CovidOrderWithCovidTestAndPatientDto) {
+        val covidOrder = covidTestResult.covidOrderWithCovidTest.covidOrder
 
         val covidTestResultsAdapter = CovidTestResultsAdapter(
             this,
             covidTestResult.covidOrderWithCovidTest.covidTests,
-            covidTestResult.covidOrderWithCovidTest.covidOrder.reportAvailable
+            covidOrder.id,
+            covidOrder.covidOrderId,
+            covidOrder.reportAvailable
         )
         binding.viewpagerCovidTestResults.adapter = covidTestResultsAdapter
         if (covidTestResult.covidOrderWithCovidTest.covidTests.size > 1) {
@@ -143,18 +146,19 @@ class CovidTestResultDetailFragment : BaseFragment(R.layout.fragment_test_result
     inner class CovidTestResultsAdapter(
         fragment: Fragment,
         private val covidTests: List<CovidTestDto>,
+        private val orderId: Long,
+        private val reportId: String,
         private val reportAvailable: Boolean
     ) : FragmentStateAdapter(fragment) {
 
         override fun getItemCount(): Int = covidTests.size
 
         override fun createFragment(position: Int): Fragment {
-
             return CovidTestResultFragment.newInstance(
-                args.covidOrderId,
+                orderId,
                 covidTests[position].id,
                 reportAvailable,
-                itemClickListener = { viewModel.getCovidTestInPdf(args.covidOrderId) }
+                itemClickListener = { viewModel.getCovidTestInPdf(orderId, reportId) }
             )
         }
     }

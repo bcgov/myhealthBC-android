@@ -6,9 +6,8 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
-import ca.bc.gov.common.const.SERVICE_NOT_AVAILABLE
-import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.exceptions.NetworkConnectionException
+import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.ErrorData
 import ca.bc.gov.repository.DependentsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,30 +37,28 @@ class DependentRecordsViewModel @Inject constructor(
         try {
             dependentsRepository.requestRecordsIfNeeded(patientId, hdid)
 
-            val testResultWithRecords =
-                dependentsRepository.getPatientWithTestResultsAndRecords(patientId)
-
             val patientWithCovidOrderAndTests =
                 dependentsRepository.getPatientWithCovidOrdersAndCovidTests(patientId)
 
             val patientWithImmunizationRecordAndForecast =
                 dependentsRepository.getPatientWithImmunizationRecordAndForecast(patientId)
 
-            val covidTestRecords = testResultWithRecords.testResultWithRecords.map {
+            val patientWithLabOrdersAndLabTests =
+                dependentsRepository.getPatientWithLabOrdersAndLabTests(patientId)
+
+            val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
                 it.toUiModel()
             }
 
-            val covidOrders =
-                patientWithCovidOrderAndTests.covidOrderAndTests.map { it.toUiModel() }
+            val covidOrders = patientWithCovidOrderAndTests.covidOrderAndTests.map {
+                it.toUiModel()
+            }
 
             val immunizationRecords =
-                patientWithImmunizationRecordAndForecast.immunizationRecords.map {
-                    it.toUiModel()
-                }
+                patientWithImmunizationRecordAndForecast.immunizationRecords.map { it.toUiModel() }
 
-            val result = (covidTestRecords + covidOrders + immunizationRecords).sortedByDescending {
-                it.date
-            }
+            val result = (covidOrders + immunizationRecords + labTestRecords)
+                .sortedByDescending { it.date }
 
             _uiState.update {
                 it.copy(records = result, onLoading = false)
@@ -83,13 +80,8 @@ class DependentRecordsViewModel @Inject constructor(
                     )
                 )
             }
-            is MyHealthException -> {
-                if (e.errCode == SERVICE_NOT_AVAILABLE) {
-                    _uiState.update { it.copy(isHgServicesUp = false) }
-                } else {
-                    emitError()
-                }
-            }
+            is ServiceDownException -> _uiState.update { it.copy(isHgServicesUp = false) }
+
             else -> emitError()
         }
     }

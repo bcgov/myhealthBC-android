@@ -38,7 +38,7 @@ class RecommendationsFragment : BaseFragment(R.layout.fragment_recommendations) 
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
                     R.id.menu_settings -> {
-                        findNavController().navigate(R.id.profileFragment)
+                        findNavController().navigate(R.id.settingsFragment)
                     }
                 }
                 return@setOnMenuItemClickListener true

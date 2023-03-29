@@ -25,14 +25,14 @@ class CovidTestResultViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CovidTestResultDetailUiModel())
     val uiState: StateFlow<CovidTestResultDetailUiModel> = _uiState.asStateFlow()
 
-    fun getCovidTestDetail(covidOrderId: String, covidTestId: String) = viewModelScope.launch {
+    fun getCovidTestDetail(orderId: Long, covidTestId: String) = viewModelScope.launch {
         _uiState.update {
             it.copy(onLoading = true)
         }
 
         try {
             val covidOrder =
-                covidOrderRepository.findByCovidOrderId(covidOrderId)
+                covidOrderRepository.findByCovidOrderId(orderId)
             val covidTest: CovidTestDto? =
                 covidOrder.covidOrderWithCovidTest.covidTests.find { it.id == covidTestId }
             _uiState.update {
@@ -41,7 +41,7 @@ class CovidTestResultViewModel @Inject constructor(
                     covidOrder = covidOrder.covidOrderWithCovidTest.covidOrder,
                     covidTest = covidTest,
                     patient = covidOrder.patient,
-                    parentEntryId = covidOrder.covidOrderWithCovidTest.covidOrder.id
+                    parentEntryId = covidOrder.covidOrderWithCovidTest.covidOrder.covidOrderId
                 )
             }
         } catch (e: Exception) {

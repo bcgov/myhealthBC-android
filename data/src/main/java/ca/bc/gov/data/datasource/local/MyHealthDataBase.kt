@@ -3,6 +3,7 @@ package ca.bc.gov.data.datasource.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import ca.bc.gov.data.datasource.local.converter.AddressConverter
 import ca.bc.gov.data.datasource.local.converter.AuthenticationStatusTypeConverter
 import ca.bc.gov.data.datasource.local.converter.DateTimeConverter
 import ca.bc.gov.data.datasource.local.dao.ClinicalDocumentDao
@@ -23,15 +24,13 @@ import ca.bc.gov.data.datasource.local.dao.MedicationRecordDao
 import ca.bc.gov.data.datasource.local.dao.MedicationSummaryDao
 import ca.bc.gov.data.datasource.local.dao.PatientDao
 import ca.bc.gov.data.datasource.local.dao.SpecialAuthorityDao
-import ca.bc.gov.data.datasource.local.dao.TestResultDao
+import ca.bc.gov.data.datasource.local.dao.UserProfileDao
 import ca.bc.gov.data.datasource.local.dao.VaccineRecordDao
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.clinicaldocument.ClinicalDocumentEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidTestEntity
-import ca.bc.gov.data.datasource.local.entity.covid.test.TestRecordEntity
-import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
 import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
@@ -47,17 +46,16 @@ import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntit
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
+import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 
 /**
  * @author Pinakin Kansara
  */
 @Database(
-    version = 6,
+    version = 7,
     entities = [
         PatientEntity::class,
         VaccineRecordEntity::class,
-        TestResultEntity::class,
-        TestRecordEntity::class,
         VaccineDoseEntity::class,
         MedicationRecordEntity::class,
         MedicationSummaryEntity::class,
@@ -76,17 +74,20 @@ import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityE
         HospitalVisitEntity::class,
         SpecialAuthorityEntity::class,
         ClinicalDocumentEntity::class,
+        UserProfileEntity::class,
     ],
     exportSchema = true
 )
-@TypeConverters(DateTimeConverter::class, AuthenticationStatusTypeConverter::class)
+@TypeConverters(
+    DateTimeConverter::class,
+    AuthenticationStatusTypeConverter::class,
+    AddressConverter::class
+)
 abstract class MyHealthDataBase : RoomDatabase() {
 
     abstract fun getPatientDao(): PatientDao
 
     abstract fun getVaccineRecordDao(): VaccineRecordDao
-
-    abstract fun getTestResultDao(): TestResultDao
 
     abstract fun getMedicationRecordDao(): MedicationRecordDao
 
@@ -121,4 +122,6 @@ abstract class MyHealthDataBase : RoomDatabase() {
     abstract fun getSpecialAuthorityDao(): SpecialAuthorityDao
 
     abstract fun getClinicalDocumentDao(): ClinicalDocumentDao
+
+    abstract fun getUserProfileDao(): UserProfileDao
 }

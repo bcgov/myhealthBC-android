@@ -6,6 +6,7 @@ import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
+import ca.bc.gov.common.model.PatientAddressDto
 import ca.bc.gov.common.model.TermsOfServiceDto
 import ca.bc.gov.common.model.banner.BannerDto
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
@@ -23,21 +24,22 @@ import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabTestDto
+import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
-import ca.bc.gov.common.model.test.TestRecordDto
-import ca.bc.gov.common.utils.full_date_time_plus_time
+import ca.bc.gov.common.model.userprofile.UserProfileDto
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.common.utils.toDateTimeZ
-import ca.bc.gov.data.datasource.remote.model.base.LabResult
-import ca.bc.gov.data.datasource.remote.model.base.Order
+import ca.bc.gov.common.utils.toOffsetDateTime
+import ca.bc.gov.data.datasource.remote.model.base.CovidLabResult
+import ca.bc.gov.data.datasource.remote.model.base.CovidOrder
+import ca.bc.gov.data.datasource.remote.model.base.PatientAddress
 import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
 import ca.bc.gov.data.datasource.remote.model.base.banner.BannerPayload
 import ca.bc.gov.data.datasource.remote.model.base.clinicaldocument.ClinicalDocumentResponse
 import ca.bc.gov.data.datasource.remote.model.base.comment.CommentPayload
-import ca.bc.gov.data.datasource.remote.model.base.covidtest.CovidTestRecord
 import ca.bc.gov.data.datasource.remote.model.base.dependent.DependentPayload
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.Clinic
 import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsPayload
@@ -50,6 +52,7 @@ import ca.bc.gov.data.datasource.remote.model.base.immunization.Recommendation
 import ca.bc.gov.data.datasource.remote.model.base.medication.DispensingPharmacy
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationStatementPayload
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationSummary
+import ca.bc.gov.data.datasource.remote.model.base.profile.UserProfilePayload
 import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityPayload
 import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityResponse
 import ca.bc.gov.data.datasource.remote.model.base.vaccine.Media
@@ -60,28 +63,45 @@ import ca.bc.gov.data.datasource.remote.model.response.AuthenticatedCovidTestRes
 import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
+import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
 import ca.bc.gov.data.model.MediaMetaData
 import ca.bc.gov.data.model.VaccineStatus
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
-fun CovidTestRecord.toTestRecord() = TestRecordDto(
-    id = reportId,
-    labName = labName,
-    collectionDateTime = collectionDateTime.toDateTime(),
-    resultDateTime = resultDateTime.toDateTime(),
-    testName = testName,
-    testOutcome = testOutcome,
-    testType = testType,
-    testStatus = testStatus,
-    resultTitle = resultTitle,
-    resultDescription = resultDescription,
-    resultLink = resultLink
+fun PatientAddress.toDto() = PatientAddressDto(
+    streetLines = streetLines,
+    city = city,
+    province = province,
+    postalCode = postalCode,
 )
 
-fun MedicationStatementPayload.toMedicationRecordDto(patientId: Long) = MedicationRecordDto(
-    id = 0,
+fun UserProfilePayload.toDto(patientId: Long) = UserProfileDto(
     patientId = patientId,
+    acceptedTermsOfService = acceptedTermsOfService,
+    email = email,
+    isEmailVerified = isEmailVerified,
+    smsNumber = smsNumber,
+    isPhoneVerified = isSMSNumberVerified,
+)
+
+fun MedicationStatementResponse.toListOfMedicationDto(): List<MedicationWithSummaryAndPharmacyDto> =
+    this.payload?.mapNotNull {
+        val summaryDto = it.medicationSummary?.toMedicationSummaryDto()
+        val dispensingPharmacyDto = it.dispensingPharmacy?.toDispensingPharmacyDto()
+
+        if (summaryDto == null || dispensingPharmacyDto == null) {
+            null
+        } else {
+            MedicationWithSummaryAndPharmacyDto(
+                it.toMedicationRecordDto(),
+                summaryDto,
+                dispensingPharmacyDto
+            )
+        }
+    } ?: listOf()
+
+fun MedicationStatementPayload.toMedicationRecordDto() = MedicationRecordDto(
     prescriptionIdentifier = prescriptionIdentifier,
     prescriptionStatus = prescriptionStatus.toString(),
     practitionerSurname = practitionerSurname,
@@ -91,9 +111,7 @@ fun MedicationStatementPayload.toMedicationRecordDto(patientId: Long) = Medicati
     dataSource = DataSource.BCSC
 )
 
-fun MedicationSummary.toMedicationSummaryDto(medicationRecordId: Long) = MedicationSummaryDto(
-    id = 0,
-    medicationRecordId = medicationRecordId,
+fun MedicationSummary.toMedicationSummaryDto() = MedicationSummaryDto(
     din = din,
     brandName = brandName,
     genericName = genericName,
@@ -107,9 +125,7 @@ fun MedicationSummary.toMedicationSummaryDto(medicationRecordId: Long) = Medicat
     isPin = isPin ?: false
 )
 
-fun DispensingPharmacy.toDispensingPharmacyDto(medicationRecordId: Long) = DispensingPharmacyDto(
-    id = 0,
-    medicationRecordId = medicationRecordId,
+fun DispensingPharmacy.toDispensingPharmacyDto() = DispensingPharmacyDto(
     pharmacyId = pharmacyId,
     name = name,
     addressLine1 = addressLine1,
@@ -206,20 +222,21 @@ fun AllCommentsResponse.toDto(): List<CommentDto> {
     return listCommentDto
 }
 
-fun Order.toDto() = CovidOrderDto(
-    id,
-    phn,
-    orderingProviderIds,
-    orderingProviders,
-    reportingLab,
-    location,
-    ormOrOru,
-    messageDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-    messageId,
-    additionalData, reportAvailable
+fun CovidOrder.toDto() = CovidOrderDto(
+    covidOrderId = id,
+    phn = phn,
+    orderingProviderIds = orderingProviderIds,
+    orderingProviders = orderingProviders,
+    reportingLab = reportingLab,
+    location = location,
+    ormOrOru = ormOrOru,
+    messageDateTime = messageDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+    messageId = messageId,
+    additionalData = additionalData,
+    reportAvailable = reportAvailable
 )
 
-fun LabResult.toDto() = CovidTestDto(
+fun CovidLabResult.toDto() = CovidTestDto(
     id,
     testType,
     outOfRange,
@@ -238,7 +255,6 @@ fun AuthenticatedCovidTestResponse.toDto(): List<CovidOrderWithCovidTestDto> {
     return payload.orders.map { order ->
         val covidOrder = order.toDto()
         val covidTest = order.labResults.map { it.toDto() }
-        covidTest.forEach { it.covidOrderId = covidOrder.id }
         CovidOrderWithCovidTestDto(covidOrder, covidTest)
     }
 }
@@ -329,7 +345,7 @@ fun ClinicalDocumentResponse.toDto(): List<ClinicalDocumentDto> =
             type = it.type,
             facilityName = it.facilityName,
             discipline = it.discipline,
-            serviceDate = it.serviceDate.toDateTime(full_date_time_plus_time),
+            serviceDate = it.serviceDate.toOffsetDateTime(),
             fileId = it.fileId,
         )
     }

@@ -41,9 +41,6 @@
             app:argType="string" />
 
         <action
-            android:id="@+id/action_dependentRecordsFragment_to_testResultDetailFragment"
-            app:destination="@id/dependentTestResultDetailFragment" />
-        <action
             android:id="@+id/action_dependentRecordsFragment_to_vaccineRecordDetailFragment"
             app:destination="@id/dependentVaccineRecordDetailFragment" />
         <action
@@ -81,8 +78,7 @@
 
     <fragment
         android:id="@+id/dependentProfileFragment"
-        android:name="ca.bc.gov.bchealth.ui.dependents.profile.DependentProfileFragment"
-        tools:layout="@layout/fragment_dependent_profile" >
+        android:name="ca.bc.gov.bchealth.ui.dependents.profile.DependentProfileFragment">
 
         <argument
             android:name="patient_id"
@@ -92,19 +88,6 @@
             android:id="@+id/action_dependentProfile_to_dependentList"
             app:popUpTo="@+id/dependentsFragment" />
 
-    </fragment>
-
-
-    <fragment
-        android:id="@+id/dependentTestResultDetailFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.covidtests.TestResultDetailFragment"
-        android:label="TestResultDetailFragment">
-        <argument
-            android:name="patient_id"
-            app:argType="long" />
-        <argument
-            android:name="testResult_id"
-            app:argType="long" />
     </fragment>
 
     <fragment
@@ -163,8 +146,8 @@
         android:name="ca.bc.gov.bchealth.ui.healthrecord.covidtests.CovidTestResultDetailFragment"
         android:label="CovidTestResultDetailFragment">
         <argument
-            android:name="covid_order_id"
-            app:argType="string" />
+            android:name="order_id"
+            app:argType="long" />
     </fragment>
 
     <fragment
@@ -180,8 +163,7 @@
     <fragment
         android:id="@+id/dependentHealthVisitDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.healthvisits.HealthVisitDetailFragment"
-        android:label="fragment_health_visit_detail"
-        tools:layout="@layout/fragment_health_visit_detail">
+        android:label="fragment_health_visit_detail">
         <argument
             android:name="healthVisitRecordId"
             app:argType="long" />
@@ -200,8 +182,7 @@
     <fragment
         android:id="@+id/dependentHospitalVisitDetailFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.hospitalvisits.HospitalVisitDetailFragment"
-        android:label="fragment_hospital_visits_detail"
-        tools:layout="@layout/fragment_hospital_visit_detail" >
+        android:label="fragment_hospital_visits_detail">
         <argument
             android:name="hospitalVisitId"
             app:argType="long" />

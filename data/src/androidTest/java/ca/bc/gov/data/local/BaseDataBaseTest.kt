@@ -7,7 +7,6 @@ import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.data.datasource.local.MyHealthDataBase
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
-import ca.bc.gov.data.datasource.local.entity.covid.test.TestResultEntity
 import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
 import ca.bc.gov.data.datasource.local.entity.labtest.LabOrderEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
@@ -135,7 +134,11 @@ abstract class BaseDataBaseTest {
             dateOfBirth = Instant.now(),
             phn = "12333456",
             timeStamp = Instant.now(),
-            patientOrder = Long.MAX_VALUE
+            patientOrder = Long.MAX_VALUE,
+            firstName = "",
+            lastName = "",
+            physicalAddress = null,
+            mailingAddress = null
         )
 
     protected fun getPatient2() =
@@ -145,7 +148,11 @@ abstract class BaseDataBaseTest {
             dateOfBirth = Instant.now(),
             phn = "12333456",
             timeStamp = Instant.now(),
-            patientOrder = Long.MAX_VALUE
+            patientOrder = Long.MAX_VALUE,
+            firstName = "",
+            lastName = "",
+            physicalAddress = null,
+            mailingAddress = null
         )
 
     protected fun getVaccineRecord1() = VaccineRecordEntity(
@@ -166,24 +173,6 @@ abstract class BaseDataBaseTest {
         shcUri = "shcUri2",
         federalPass = "federalPass2",
         dataSource = DataSource.QR_CODE
-    )
-
-    protected fun getTestResult1() = TestResultEntity(
-        id = 1,
-        patientId = 1,
-        collectionDate = Instant.now().minus(20, ChronoUnit.DAYS)
-    )
-
-    protected fun getTestResult2() = TestResultEntity(
-        id = 2,
-        patientId = 1,
-        collectionDate = Instant.now()
-    )
-
-    protected fun getTestResult3() = TestResultEntity(
-        id = 3,
-        patientId = 2,
-        collectionDate = Instant.now()
     )
 
     protected fun getMedicationRecord() = MedicationRecordEntity(

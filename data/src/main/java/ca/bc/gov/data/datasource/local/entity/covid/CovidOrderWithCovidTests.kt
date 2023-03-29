@@ -12,7 +12,7 @@ data class CovidOrderWithCovidTests(
     @Relation(
         entity = CovidTestEntity::class,
         parentColumn = "id",
-        entityColumn = "covid_order_id"
+        entityColumn = "order_id"
     )
     val covidTests: List<CovidTestEntity>
 )
