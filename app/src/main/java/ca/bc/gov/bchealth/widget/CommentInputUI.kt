@@ -25,9 +25,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -49,17 +51,20 @@ import ca.bc.gov.bchealth.compose.white
 import ca.bc.gov.bchealth.ui.comment.Comment
 import java.time.Instant
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CommentInputUI(
     onSubmitComment: (String) -> Unit
 ) {
     var comment by rememberSaveable { mutableStateOf("") }
     var validation by rememberSaveable { mutableStateOf(CommentValidation.VALID) }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     val submitAction: (String) -> Unit = {
         if (validation == CommentValidation.VALID) {
             onSubmitComment.invoke(it)
             comment = ""
+            keyboardController?.hide()
         }
     }
 
