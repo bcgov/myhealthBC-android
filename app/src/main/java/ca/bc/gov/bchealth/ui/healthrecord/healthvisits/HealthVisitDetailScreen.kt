@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -17,29 +16,11 @@ import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.ui.custom.MyHealthClickableText
-import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordListItem
 
 @Composable
-fun HealthVisitDetailUI(
-    viewModel: HealthVisitViewModel,
-    navigationAction: () -> Unit,
-    onClickFaq: () -> Unit
-) {
-    val uiState = viewModel.uiState.collectAsState().value
-
-    MyHealthScaffold(
-        title = uiState.title,
-        isLoading = uiState.onLoading,
-        navigationAction = navigationAction
-    ) {
-        HealthVisitDetailContent(uiState, onClickFaq)
-    }
-}
-
-@Composable
-private fun BoxScope.HealthVisitDetailContent(
+fun BoxScope.HealthVisitDetailScreen(
     uiState: HealthVisitDetailUiState,
     onClickFaq: () -> Unit
 ) {
@@ -76,7 +57,7 @@ private fun BoxScope.HealthVisitDetailContent(
 @Composable
 private fun PreviewHealthVisitDetailContent() {
     Box {
-        HealthVisitDetailContent(
+        HealthVisitDetailScreen(
             HealthVisitDetailUiState(
                 uiList = listOf(
                     HealthRecordDetailItem(
