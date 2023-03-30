@@ -100,6 +100,17 @@ android {
 
 dependencies {
 
+    //https://stackoverflow.com/questions/75263047/duplicate-class-in-kotlin-android
+    //check if this can be removed after upgrading kotlin-gradle-plugin to 1.8.0
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
+            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
+            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
+        }
+    }
+
     implementation "androidx.core:core-ktx:$versions.core_ktx"
 
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
