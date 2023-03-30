@@ -330,7 +330,7 @@
     <string name="comment_edit">Edit comment</string>
     <string name="comment_delete">Delete</string>
     <string name="comment_update">Update</string>
-    <plurals name="comments">
+    <plurals name="plurals_comments">
         <item quantity="one">%1$s Comment</item>
         <item quantity="other">%1$s Comments</item>
     </plurals>

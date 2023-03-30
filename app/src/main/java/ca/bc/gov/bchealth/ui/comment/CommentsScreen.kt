@@ -7,11 +7,13 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -155,6 +157,8 @@ private fun CommentItemUI(
                                 },
                             contentDescription = stringResource(id = R.string.edit)
                         )
+                    } else {
+                        Spacer(modifier = Modifier.size(width = 8.dp, height = 0.dp))
                     }
                     OptionsMenu(
                         expanded = expanded,
@@ -214,7 +218,7 @@ private fun OptionsMenu(
 fun PreviewCommentsContent() {
     val date = Instant.now()
     val comment = Comment(
-        text = "comment01",
+        text = "This is a long comment that should break the line",
         date = date,
         version = 0L,
         isUploaded = true,
@@ -227,7 +231,7 @@ fun PreviewCommentsContent() {
 
     val comments = listOf(
         comment,
-        comment.copy(text = "comment02", isUploaded = false),
+        comment.copy(isUploaded = false),
     )
 
     val uiState = CommentsUiState(

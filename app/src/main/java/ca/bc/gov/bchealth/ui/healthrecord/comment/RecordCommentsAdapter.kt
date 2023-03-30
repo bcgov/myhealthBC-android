@@ -59,7 +59,7 @@ class RecordCommentsAdapter(
                 holder.binding.tvCommentsCount.text =
                     comment.text?.let {
                         holder.itemView.context.resources.getQuantityString(
-                            R.plurals.comments, it.toInt(), it.toInt()
+                            R.plurals.plurals_comments, it.toInt(), it.toInt()
                         )
                     }
 
