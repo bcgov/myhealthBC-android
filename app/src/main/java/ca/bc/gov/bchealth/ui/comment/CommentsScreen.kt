@@ -22,7 +22,6 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,44 +45,14 @@ import ca.bc.gov.bchealth.compose.greyBg
 import ca.bc.gov.bchealth.compose.minButtonSize
 import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.compose.red
-import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 import ca.bc.gov.bchealth.widget.CommentInputUI
 import ca.bc.gov.bchealth.widget.EditableCommentInputUI
 import ca.bc.gov.common.utils.toDateTimeString
-import kotlinx.coroutines.flow.StateFlow
 import java.time.Instant
-
-@Composable
-fun CommentsUI(
-    uiStateFlow: StateFlow<CommentsUiState>,
-    navigationAction: () -> Unit,
-    editAction: (Comment) -> Unit,
-    deleteAction: (Comment) -> Unit,
-    submitAction: (String) -> Unit,
-    updateAction: (Comment) -> Unit,
-    cancelAction: (Comment) -> Unit,
-) {
-    val uiState = uiStateFlow.collectAsState().value
-
-    MyHealthScaffold(
-        title = stringResource(id = R.string.comments),
-        isLoading = uiState.onLoading,
-        navigationAction = navigationAction
-    ) {
-        CommentsContent(
-            uiState,
-            editAction,
-            deleteAction,
-            submitAction,
-            updateAction,
-            cancelAction,
-        )
-    }
-}
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CommentsContent(
+fun CommentsScreen(
     uiState: CommentsUiState,
     editAction: (Comment) -> Unit,
     deleteAction: (Comment) -> Unit,
@@ -264,5 +233,5 @@ fun PreviewCommentsContent() {
     val uiState = CommentsUiState(
         commentsList = comments
     )
-    CommentsContent(uiState, {}, {}, {}, {}, {})
+    CommentsScreen(uiState, {}, {}, {}, {}, {})
 }
