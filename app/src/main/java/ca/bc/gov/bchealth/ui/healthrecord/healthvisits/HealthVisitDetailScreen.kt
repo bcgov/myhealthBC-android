@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTypography
-import ca.bc.gov.bchealth.ui.comment.Comment
+import ca.bc.gov.bchealth.ui.comment.CommentsSummary
 import ca.bc.gov.bchealth.ui.comment.CommentsSummaryUI
 import ca.bc.gov.bchealth.ui.custom.MyHealthClickableText
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
@@ -29,7 +29,7 @@ import java.time.Instant
 fun BoxScope.HealthVisitDetailScreen(
     uiState: HealthVisitDetailUiState,
     onClickFaq: () -> Unit,
-    onClickComments: () -> Unit
+    onClickComments: (CommentsSummary) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -61,19 +61,15 @@ fun BoxScope.HealthVisitDetailScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             val date = Instant.now()
-            val comment = Comment(
+            val commentsSummary = CommentsSummary(
+                count = 5,
                 text = "This is a long comment that should break the line",
                 date = date,
-                version = 0L,
-                isUploaded = true,
-                entryTypeCode = "",
-                createdBy = "",
-                createdDateTime = date,
-                updatedDateTime = date,
-                updatedBy = ""
+                entryTypeCode = "Enc",
+                parentEntryId = "f57bcb39-64ca-0a17-5477-92ea7f084fbf",
             )
 
-            CommentsSummaryUI(count = 5, lastComment = comment, onClickComments)
+            CommentsSummaryUI(commentsSummary = commentsSummary, onClickComments)
         }
 
         CommentInputUI(onSubmitComment = {})

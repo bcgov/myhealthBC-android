@@ -25,27 +25,34 @@ import java.time.Instant
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CommentsSummaryUI(count: Int, lastComment: Comment, onClickComments: () -> Unit) {
+fun CommentsSummaryUI(
+    commentsSummary: CommentsSummary,
+    onClickComments: (CommentsSummary) -> Unit
+) {
     Column(
         Modifier
-            .clickable { onClickComments.invoke() }
+            .clickable { onClickComments.invoke(commentsSummary) }
             .padding(horizontal = 32.dp, vertical = 16.dp)
     ) {
         Text(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
-            text = pluralStringResource(id = R.plurals.plurals_comments, count = count, count),
+            text = pluralStringResource(
+                id = R.plurals.plurals_comments,
+                count = commentsSummary.count,
+                commentsSummary.count
+            ),
             style = MyHealthTypography.h3.copy(color = blue)
         )
-        CommentItem(lastComment)
+        CommentItem(commentsSummary)
     }
 }
 
 @Composable
-private fun CommentItem(comment: Comment) {
-    val commentMsg = comment.text.orEmpty()
-    val footer = comment.date?.toDateTimeString().orEmpty()
+private fun CommentItem(commentsSummary: CommentsSummary) {
+    val commentMsg = commentsSummary.text
+    val footer = commentsSummary.date.toDateTimeString()
 
     Column(
         modifier = Modifier
@@ -74,17 +81,14 @@ private fun CommentItem(comment: Comment) {
 fun PreviewCommentsSummaryUI() {
     val date = Instant.now()
     MyHealthTheme {
-        val comment = Comment(
+        val commentsSummary = CommentsSummary(
             text = "comment05",
             date = date,
-            version = 0L,
             entryTypeCode = "",
-            createdBy = "",
-            createdDateTime = date,
-            updatedDateTime = date,
-            updatedBy = ""
+            count = 5,
+            parentEntryId = ""
         )
 
-        CommentsSummaryUI(5, comment, {})
+        CommentsSummaryUI(commentsSummary, {})
     }
 }

@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.comment.CommentsSummary
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 import ca.bc.gov.bchealth.utils.redirect
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,25 +31,30 @@ class HealthVisitDetailFragment : BaseFragment(null) {
             navigationAction = ::popNavigation
         ) {
             HealthVisitDetailScreen(
-                uiState,
-                { requireContext().redirect(getString(R.string.faq_link)) },
-                {}
+                uiState = uiState,
+                onClickFaq = { requireContext().redirect(getString(R.string.faq_link)) },
+                onClickComments = ::navigateToComments,
             )
+        }
+
+        if (uiState.onError) {
+            showGenericError()
+            viewModel.resetUiState()
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeHealthVisitDetails()
         viewModel.fetchHealthVisitDetails(args.healthVisitRecordId)
     }
 
-    private fun observeHealthVisitDetails() {
-        viewModel.uiState.collectOnStart { state ->
-            if (state.onError) {
-                showGenericError()
-                viewModel.resetUiState()
-            }
-        }
+    private fun navigateToComments(commentsSummary: CommentsSummary) {
+        findNavController().navigate(
+            R.id.commentsFragment,
+            bundleOf(
+                "parentEntryId" to commentsSummary.parentEntryId,
+                "recordType" to commentsSummary.entryTypeCode,
+            )
+        )
     }
 }

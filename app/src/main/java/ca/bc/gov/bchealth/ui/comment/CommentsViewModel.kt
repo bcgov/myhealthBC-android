@@ -207,6 +207,14 @@ data class Comment(
     var editable: Boolean = false
 )
 
+data class CommentsSummary(
+    val text: String,
+    val date: Instant,
+    val entryTypeCode: String,
+    val parentEntryId: String,
+    val count: Int,
+)
+
 enum class CommentEntryTypeCode(val value: String) {
     MEDICATION("Med"),
     LAB_RESULTS("ALO"),
