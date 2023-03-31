@@ -27,9 +27,11 @@ class HealthVisitDetailFragment : BaseFragment(null) {
             isLoading = uiState.onLoading,
             navigationAction = ::popNavigation
         ) {
-            HealthVisitDetailScreen(uiState) {
-                requireContext().redirect(getString(R.string.faq_link))
-            }
+            HealthVisitDetailScreen(
+                uiState,
+                { requireContext().redirect(getString(R.string.faq_link)) },
+                {}
+            )
         }
     }
 

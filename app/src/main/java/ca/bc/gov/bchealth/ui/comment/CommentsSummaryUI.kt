@@ -1,6 +1,7 @@
 package ca.bc.gov.bchealth.ui.comment
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,9 +25,16 @@ import java.time.Instant
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CommentsSummaryUI(count: Int, lastComment: Comment) {
-    Column(Modifier.padding(horizontal = 32.dp, vertical = 4.dp)) {
+fun CommentsSummaryUI(count: Int, lastComment: Comment, onClickComments: () -> Unit) {
+    Column(
+        Modifier
+            .clickable { onClickComments.invoke() }
+            .padding(horizontal = 32.dp, vertical = 16.dp)
+    ) {
         Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
             text = pluralStringResource(id = R.plurals.plurals_comments, count = count, count),
             style = MyHealthTypography.h3.copy(color = blue)
         )
@@ -42,7 +50,7 @@ private fun CommentItem(comment: Comment) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp)
+            .padding(top = 4.dp)
             .clip(RoundedCornerShape(4.dp))
             .background(greyBg)
     ) {
@@ -77,6 +85,6 @@ fun PreviewCommentsSummaryUI() {
             updatedBy = ""
         )
 
-        CommentsSummaryUI(5, comment)
+        CommentsSummaryUI(5, comment, {})
     }
 }
