@@ -6,102 +6,56 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.databinding.ItemCommentBinding
 import ca.bc.gov.bchealth.databinding.ItemCommentsCountBinding
-import ca.bc.gov.bchealth.ui.comment.Comment
-import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel
-import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
+import ca.bc.gov.bchealth.ui.comment.CommentsSummary
 import ca.bc.gov.common.utils.toDateTimeString
 
 /**
  * @author Pinakin Kansara
  */
 class RecordCommentsAdapter(
-    private val itemClickListener: ItemClickListener
-) :
-    ListAdapter<Comment, RecyclerView.ViewHolder>(CommentsDiffCallBacks()) {
+    private val onItemClick: (CommentsSummary) -> Unit
+) : ListAdapter<CommentsSummary, RecordCommentsAdapter.CommentsCountViewHolder>(
+    CommentsDiffCallBacks()
+) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentsCountViewHolder {
+        val binding = ItemCommentsCountBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
+        return CommentsCountViewHolder(binding)
+    }
 
-    fun interface ItemClickListener {
-        fun onItemClick(parentEntryId: String, recordType: String)
+    override fun onBindViewHolder(holder: CommentsCountViewHolder, position: Int) {
+        val summary = getItem(position)
+
+        holder.itemView.setOnClickListener {
+            onItemClick(summary)
+        }
+
+        holder.binding.apply {
+            tvCommentsCount.text = holder.itemView.context.resources.getQuantityString(
+                R.plurals.plurals_comments, summary.count, summary.count
+            )
+
+            tvComment.text = summary.text
+            tvDateTime.text = if (summary.isUploaded) {
+                summary.date.toDateTimeString()
+            } else {
+                holder.itemView.context.getString(R.string.posting)
+            }
+        }
     }
 
     class CommentsCountViewHolder(val binding: ItemCommentsCountBinding) :
         RecyclerView.ViewHolder(binding.root)
-
-    class CommentsViewHolder(val binding: ItemCommentBinding) :
-        RecyclerView.ViewHolder(binding.root)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            MedicationDetailsViewModel.ITEM_VIEW_TYPE_COMMENTS_COUNT -> {
-                val binding = ItemCommentsCountBinding.inflate(
-                    LayoutInflater.from(parent.context), parent, false
-                )
-                CommentsCountViewHolder(binding)
-            }
-            MedicationDetailsViewModel.ITEM_VIEW_TYPE_COMMENTS -> {
-                val binding = ItemCommentBinding.inflate(
-                    LayoutInflater.from(parent.context), parent, false
-                )
-                CommentsViewHolder(binding)
-            }
-            else -> throw ClassCastException("Unknown viewType $viewType")
-        }
-    }
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val comment = getItem(position)
-        when (holder) {
-            is CommentsCountViewHolder -> {
-                holder.binding.tvCommentsCount.setTextColor(
-                    holder.itemView.resources.getColor(R.color.blue, null)
-                )
-                holder.binding.tvCommentsCount.text =
-                    comment.text?.let {
-                        holder.itemView.context.resources.getQuantityString(
-                            R.plurals.plurals_comments, it.toInt(), it.toInt()
-                        )
-                    }
-
-                if (FLAG_ADD_COMMENTS) {
-                    holder.itemView.setOnClickListener {
-                        comment.id?.let { id ->
-                            itemClickListener.onItemClick(id, comment.entryTypeCode)
-                        }
-                    }
-                }
-            }
-
-            is CommentsViewHolder -> {
-                holder.binding.tvComment.text = comment.text
-                if (comment.isUploaded) {
-                    holder.binding.tvDateTime.text = comment.date?.toDateTimeString()
-                } else {
-                    holder.binding.tvDateTime.text =
-                        holder.itemView.context.getString(R.string.posting)
-                }
-            }
-        }
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return when (position) {
-            0 -> {
-                MedicationDetailsViewModel.ITEM_VIEW_TYPE_COMMENTS_COUNT
-            }
-            else -> {
-                MedicationDetailsViewModel.ITEM_VIEW_TYPE_COMMENTS
-            }
-        }
-    }
 }
 
-class CommentsDiffCallBacks : DiffUtil.ItemCallback<Comment>() {
-    override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
+class CommentsDiffCallBacks : DiffUtil.ItemCallback<CommentsSummary>() {
+    override fun areItemsTheSame(oldItem: CommentsSummary, newItem: CommentsSummary): Boolean {
         return oldItem.text == newItem.text
     }
 
-    override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
+    override fun areContentsTheSame(oldItem: CommentsSummary, newItem: CommentsSummary): Boolean {
         return oldItem == newItem
     }
 }

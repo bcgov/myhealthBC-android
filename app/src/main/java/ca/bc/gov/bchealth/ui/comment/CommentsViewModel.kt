@@ -3,7 +3,6 @@ package ca.bc.gov.bchealth.ui.comment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
-import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
 import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.repository.CommentRepository
@@ -139,37 +138,19 @@ class CommentsViewModel @Inject constructor(
     private fun getCommentsSummary(
         commentsDtoList: List<CommentDto>,
         parentEntryId: String
-    ): MutableList<Comment> {
-        val commentsList = mutableListOf<Comment>()
-        if (commentsDtoList.isNotEmpty()) {
-            val date = Instant.now()
-            commentsList.add(
-                Comment(
-                    parentEntryId,
-                    "${commentsDtoList.size}",
-                    Instant.now(),
-                    0L,
-                    commentsDtoList.last().entryTypeCode.orEmpty(),
-                    date,
-                    "",
-                    date,
-                    ""
-                )
-            )
+    ): CommentsSummary? {
+        if (commentsDtoList.isEmpty()) return null
 
-            if (FLAG_ADD_COMMENTS) {
-                commentsDtoList.lastOrNull()?.let {
-                    commentsList.add(it.toUiModel())
-                }
-            } else {
-                commentsList.addAll(
-                    commentsDtoList.map {
-                        it.toUiModel()
-                    }
-                )
-            }
-        }
-        return commentsList
+        val lastComment = commentsDtoList.last()
+
+        return CommentsSummary(
+            text = lastComment.text.orEmpty(),
+            date = lastComment.createdDateTime,
+            entryTypeCode = lastComment.entryTypeCode.orEmpty(),
+            isUploaded = lastComment.syncStatus == SyncStatus.UP_TO_DATE,
+            parentEntryId = parentEntryId,
+            count = commentsDtoList.size,
+        )
     }
 
     fun resetUiState() {
@@ -178,7 +159,7 @@ class CommentsViewModel @Inject constructor(
                 onLoading = false,
                 onError = false,
                 commentsList = emptyList(),
-                commentsSummary = emptyList()
+                commentsSummary = null
             )
         }
     }
@@ -188,7 +169,7 @@ data class CommentsUiState(
     val onLoading: Boolean = false,
     val onError: Boolean = false,
     val commentsList: List<Comment> = emptyList(),
-    val commentsSummary: List<Comment> = emptyList(),
+    val commentsSummary: CommentsSummary? = null,
     val onCommentsUpdated: Boolean = false,
     val displayEditLayout: Boolean = false
 )
@@ -210,6 +191,7 @@ data class Comment(
 data class CommentsSummary(
     val text: String,
     val date: Instant,
+    val isUploaded: Boolean,
     val entryTypeCode: String,
     val parentEntryId: String,
     val count: Int,

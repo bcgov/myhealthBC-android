@@ -23,6 +23,7 @@ import ca.bc.gov.bchealth.ui.custom.MyHealthClickableText
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordListItem
 import ca.bc.gov.bchealth.widget.CommentInputUI
+import ca.bc.gov.common.BuildConfig
 import java.time.Instant
 
 @Composable
@@ -61,18 +62,25 @@ fun BoxScope.HealthVisitDetailScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             val date = Instant.now()
-            val commentsSummary = CommentsSummary(
+            val commentsSummary: CommentsSummary? = CommentsSummary(
                 count = 5,
                 text = "This is a long comment that should break the line",
                 date = date,
                 entryTypeCode = "Enc",
                 parentEntryId = "f57bcb39-64ca-0a17-5477-92ea7f084fbf",
+                isUploaded = true
             )
 
-            CommentsSummaryUI(commentsSummary = commentsSummary, onClickComments)
+            if (BuildConfig.FLAG_ADD_COMMENTS) {
+                commentsSummary?.let {
+                    CommentsSummaryUI(commentsSummary = it, onClickComments)
+                }
+            }
         }
 
-        CommentInputUI(onSubmitComment = {})
+        if (BuildConfig.FLAG_ADD_COMMENTS) {
+            CommentInputUI(onSubmitComment = {})
+        }
     }
 }
 

@@ -86,7 +86,8 @@ fun PreviewCommentsSummaryUI() {
             date = date,
             entryTypeCode = "",
             count = 5,
-            parentEntryId = ""
+            parentEntryId = "",
+            isUploaded = true
         )
 
         CommentsSummaryUI(commentsSummary, {})
