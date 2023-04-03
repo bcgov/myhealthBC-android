@@ -1,6 +1,5 @@
 package ca.bc.gov.bchealth.ui.healthrecord.healthvisits
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,24 +12,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.ui.comment.CommentsSummary
 import ca.bc.gov.bchealth.ui.comment.CommentsSummaryUI
+import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.ui.custom.MyHealthClickableText
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordListItem
 import ca.bc.gov.bchealth.widget.CommentInputUI
 import ca.bc.gov.common.BuildConfig
-import java.time.Instant
 
 @Composable
 fun BoxScope.HealthVisitDetailScreen(
     uiState: HealthVisitDetailUiState,
     onClickFaq: () -> Unit,
     onClickComments: (CommentsSummary) -> Unit,
+    commentsViewModel: CommentsViewModel,
 ) {
     Column(
         modifier = Modifier
@@ -61,47 +59,16 @@ fun BoxScope.HealthVisitDetailScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            val date = Instant.now()
-            val commentsSummary: CommentsSummary? = CommentsSummary(
-                count = 5,
-                text = "This is a long comment that should break the line",
-                date = date,
-                entryTypeCode = "Enc",
-                parentEntryId = "f57bcb39-64ca-0a17-5477-92ea7f084fbf",
-                isUploaded = true
-            )
-
             if (BuildConfig.FLAG_ADD_COMMENTS) {
-                commentsSummary?.let {
-                    CommentsSummaryUI(commentsSummary = it, onClickComments)
-                }
+                CommentsSummaryUI(
+                    commentsViewModel = commentsViewModel,
+                    onClickComments = onClickComments
+                )
             }
         }
 
         if (BuildConfig.FLAG_ADD_COMMENTS) {
             CommentInputUI(onSubmitComment = {})
         }
-    }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable
-private fun PreviewHealthVisitDetailContent() {
-    Box {
-        HealthVisitDetailScreen(
-            HealthVisitDetailUiState(
-                uiList = listOf(
-                    HealthRecordDetailItem(
-                        R.string.clinic_name,
-                        "FRANCIS N WER"
-                    ),
-                    HealthRecordDetailItem(
-                        R.string.practitioner_name,
-                        "Daniel Something"
-                    )
-                )
-            ),
-            {}, {}
-        )
     }
 }

@@ -8,22 +8,31 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.comment.CommentsSummary
+import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
+import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.common.BuildConfig
+import ca.bc.gov.repository.SYNC_COMMENTS
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HealthVisitDetailFragment : BaseFragment(null) {
-
     private val viewModel: HealthVisitViewModel by viewModels()
     private val args: HealthVisitDetailFragmentArgs by navArgs()
+    private val commentsViewModel: CommentsViewModel by viewModels()
 
     @Composable
     override fun GetComposableLayout() {
         val uiState = viewModel.uiState.collectAsState().value
+
+        if (BuildConfig.FLAG_ADD_COMMENTS) {
+            uiState.parentEntryId?.let { commentsViewModel.getComments(it) }
+        }
 
         MyHealthScaffold(
             title = uiState.title,
@@ -34,6 +43,7 @@ class HealthVisitDetailFragment : BaseFragment(null) {
                 uiState = uiState,
                 onClickFaq = { requireContext().redirect(getString(R.string.faq_link)) },
                 onClickComments = ::navigateToComments,
+                commentsViewModel = commentsViewModel,
             )
         }
 
@@ -46,6 +56,19 @@ class HealthVisitDetailFragment : BaseFragment(null) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.fetchHealthVisitDetails(args.healthVisitRecordId)
+        observeCommentsSyncCompletion()
+    }
+
+    private fun observeCommentsSyncCompletion() {
+        if (BuildConfig.FLAG_ADD_COMMENTS.not()) return
+
+        observeWork(SYNC_COMMENTS) {
+            if (it == WorkInfo.State.SUCCEEDED) {
+                viewModel.getParentEntryId()?.let { parentId ->
+                    commentsViewModel.getComments(parentId)
+                }
+            }
+        }
     }
 
     private fun navigateToComments(commentsSummary: CommentsSummary) {
