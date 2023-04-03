@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.comment
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,6 +13,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
@@ -50,10 +52,7 @@ fun CommentsSummaryUI(
 }
 
 @Composable
-private fun CommentItem(commentsSummary: CommentsSummary) {
-    val commentMsg = commentsSummary.text
-    val footer = commentsSummary.date.toDateTimeString()
-
+private fun CommentItem(commentsSummary: CommentsSummary) = with(commentsSummary) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -61,15 +60,14 @@ private fun CommentItem(commentsSummary: CommentsSummary) {
             .clip(RoundedCornerShape(4.dp))
             .background(greyBg)
     ) {
-
         Text(
             modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp),
-            text = commentMsg,
+            text = text,
             style = MyHealthTypography.body2
         )
 
         Text(
-            text = footer,
+            text = if (isUploaded) date.toDateTimeString() else stringResource(id = R.string.posting),
             style = MyHealthTypography.caption.copy(color = grey),
             modifier = Modifier.padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
         )
@@ -90,6 +88,10 @@ fun PreviewCommentsSummaryUI() {
             isUploaded = true
         )
 
-        CommentsSummaryUI(commentsSummary, {})
+        Column {
+            CommentsSummaryUI(commentsSummary, {})
+            Spacer(Modifier.padding(10.dp))
+            CommentsSummaryUI(commentsSummary.copy(isUploaded = false), {})
+        }
     }
 }
