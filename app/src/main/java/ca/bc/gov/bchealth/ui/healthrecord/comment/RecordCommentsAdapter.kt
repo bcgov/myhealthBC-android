@@ -38,7 +38,7 @@ class RecordCommentsAdapter(
             )
 
             tvComment.text = summary.text
-            tvDateTime.text = if (summary.isUploaded) {
+            tvDateTime.text = if (summary.isUploaded && summary.date != null) {
                 summary.date.toDateTimeString()
             } else {
                 holder.itemView.context.getString(R.string.posting)

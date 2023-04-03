@@ -79,7 +79,11 @@ private fun CommentItem(commentsSummary: CommentsSummary) = with(commentsSummary
         )
 
         Text(
-            text = if (isUploaded) date.toDateTimeString() else stringResource(id = R.string.posting),
+            text = if (isUploaded && date != null) {
+                date.toDateTimeString()
+            } else {
+                stringResource(id = R.string.posting)
+            },
             style = MyHealthTypography.caption.copy(color = grey),
             modifier = Modifier.padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
         )

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.model.comment.CommentDto
+import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.repository.CommentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -145,7 +146,7 @@ class CommentsViewModel @Inject constructor(
 
         return CommentsSummary(
             text = lastComment.text.orEmpty(),
-            date = lastComment.createdDateTime,
+            date = lastComment.createdDateTime.toLocalDateTimeInstant(),
             entryTypeCode = lastComment.entryTypeCode.orEmpty(),
             isUploaded = lastComment.syncStatus == SyncStatus.UP_TO_DATE,
             parentEntryId = parentEntryId,
@@ -190,7 +191,7 @@ data class Comment(
 
 data class CommentsSummary(
     val text: String,
-    val date: Instant,
+    val date: Instant?,
     val isUploaded: Boolean,
     val entryTypeCode: String,
     val parentEntryId: String,

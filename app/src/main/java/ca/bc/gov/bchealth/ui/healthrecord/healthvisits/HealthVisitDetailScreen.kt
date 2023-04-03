@@ -29,6 +29,7 @@ fun BoxScope.HealthVisitDetailScreen(
     onClickFaq: () -> Unit,
     onClickComments: (CommentsSummary) -> Unit,
     commentsViewModel: CommentsViewModel,
+    onSubmitComment: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -68,7 +69,7 @@ fun BoxScope.HealthVisitDetailScreen(
         }
 
         if (BuildConfig.FLAG_ADD_COMMENTS) {
-            CommentInputUI(onSubmitComment = {})
+            CommentInputUI(onSubmitComment = onSubmitComment)
         }
     }
 }

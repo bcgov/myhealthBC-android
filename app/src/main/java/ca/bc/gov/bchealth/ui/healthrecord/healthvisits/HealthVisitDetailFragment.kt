@@ -11,6 +11,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.comment.CommentsSummary
 import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
@@ -44,6 +45,7 @@ class HealthVisitDetailFragment : BaseFragment(null) {
                 onClickFaq = { requireContext().redirect(getString(R.string.faq_link)) },
                 onClickComments = ::navigateToComments,
                 commentsViewModel = commentsViewModel,
+                onSubmitComment = ::onSubmitComment
             )
         }
 
@@ -57,6 +59,16 @@ class HealthVisitDetailFragment : BaseFragment(null) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.fetchHealthVisitDetails(args.healthVisitRecordId)
         observeCommentsSyncCompletion()
+    }
+
+    private fun onSubmitComment(content: String) {
+        viewModel.getParentEntryId()?.let { parentEntryId ->
+            commentsViewModel.addComment(
+                parentEntryId,
+                content,
+                CommentEntryTypeCode.HEALTH_VISITS.value,
+            )
+        }
     }
 
     private fun observeCommentsSyncCompletion() {
