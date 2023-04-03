@@ -13,6 +13,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.comment.CommentsSummary
+import ca.bc.gov.bchealth.ui.comment.CommentsUiState
 import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 import ca.bc.gov.bchealth.utils.observeWork
@@ -30,9 +31,11 @@ class HealthVisitDetailFragment : BaseFragment(null) {
     @Composable
     override fun GetComposableLayout() {
         val uiState = viewModel.uiState.collectAsState().value
+        var commentState: CommentsUiState? = null
 
         if (BuildConfig.FLAG_ADD_COMMENTS) {
             uiState.parentEntryId?.let { commentsViewModel.getComments(it) }
+            commentState = commentsViewModel.uiState.collectAsState().value
         }
 
         MyHealthScaffold(
@@ -44,7 +47,7 @@ class HealthVisitDetailFragment : BaseFragment(null) {
                 uiState = uiState,
                 onClickFaq = { requireContext().redirect(getString(R.string.faq_link)) },
                 onClickComments = ::navigateToComments,
-                commentsViewModel = commentsViewModel,
+                commentsSummary = commentState?.commentsSummary,
                 onSubmitComment = ::onSubmitComment
             )
         }

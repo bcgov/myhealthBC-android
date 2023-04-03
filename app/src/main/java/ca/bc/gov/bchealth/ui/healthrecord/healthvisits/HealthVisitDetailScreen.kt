@@ -1,5 +1,6 @@
 package ca.bc.gov.bchealth.ui.healthrecord.healthvisits
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,11 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.ui.comment.CommentsSummary
 import ca.bc.gov.bchealth.ui.comment.CommentsSummaryUI
-import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.ui.custom.MyHealthClickableText
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordListItem
 import ca.bc.gov.bchealth.widget.CommentInputUI
 import ca.bc.gov.common.BuildConfig
@@ -28,7 +30,7 @@ fun BoxScope.HealthVisitDetailScreen(
     uiState: HealthVisitDetailUiState,
     onClickFaq: () -> Unit,
     onClickComments: (CommentsSummary) -> Unit,
-    commentsViewModel: CommentsViewModel,
+    commentsSummary: CommentsSummary?,
     onSubmitComment: (String) -> Unit,
 ) {
     Column(
@@ -62,7 +64,7 @@ fun BoxScope.HealthVisitDetailScreen(
 
             if (BuildConfig.FLAG_ADD_COMMENTS) {
                 CommentsSummaryUI(
-                    commentsViewModel = commentsViewModel,
+                    commentsSummary = commentsSummary,
                     onClickComments = onClickComments
                 )
             }
@@ -71,5 +73,37 @@ fun BoxScope.HealthVisitDetailScreen(
         if (BuildConfig.FLAG_ADD_COMMENTS) {
             CommentInputUI(onSubmitComment = onSubmitComment)
         }
+    }
+}
+
+@BasePreview
+@Composable
+private fun PreviewHealthVisitDetailContent() {
+    Box {
+        HealthVisitDetailScreen(
+            HealthVisitDetailUiState(
+                uiList = listOf(
+                    HealthRecordDetailItem(
+                        R.string.clinic_name,
+                        "FRANCIS N WER"
+                    ),
+                    HealthRecordDetailItem(
+                        R.string.practitioner_name,
+                        "Daniel Something"
+                    )
+                )
+            ),
+            {},
+            {},
+            CommentsSummary(
+                text = "comment05",
+                date = null,
+                entryTypeCode = "",
+                count = 5,
+                parentEntryId = "",
+                isUploaded = true
+            ),
+            {}
+        )
     }
 }

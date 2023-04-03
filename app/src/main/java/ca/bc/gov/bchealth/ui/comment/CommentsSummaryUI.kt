@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,23 +25,14 @@ import ca.bc.gov.bchealth.compose.greyBg
 import ca.bc.gov.common.utils.toDateTimeString
 import java.time.Instant
 
-@Composable
-fun CommentsSummaryUI(
-    commentsViewModel: CommentsViewModel,
-    onClickComments: (CommentsSummary) -> Unit
-) {
-    val uiState = commentsViewModel.uiState.collectAsState().value
-    val commentsSummary = uiState.commentsSummary ?: return
-
-    CommentsSummaryUI(commentsSummary, onClickComments)
-}
-
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun CommentsSummaryUI(
-    commentsSummary: CommentsSummary,
+fun CommentsSummaryUI(
+    commentsSummary: CommentsSummary?,
     onClickComments: (CommentsSummary) -> Unit
 ) {
+    commentsSummary ?: return
+
     Column(
         Modifier
             .clickable { onClickComments.invoke(commentsSummary) }
