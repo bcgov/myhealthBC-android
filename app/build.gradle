@@ -99,11 +99,11 @@ android {
 }
 
 dependencies {
-    implementation "androidx.core:core-ktx:$versions.core_ktx"
+    implementation libs.androidx.core.ktx
 
-    implementation "androidx.appcompat:appcompat:$versions.appcompat"
-    implementation "com.google.android.material:material:$versions.material"
-    implementation "androidx.recyclerview:recyclerview:$versions.recycler"
+    implementation libs.androidx.appcompat
+    implementation libs.material
+    implementation libs.androidx.recyclerview
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swipe_refresh_layout"
     implementation "androidx.coordinatorlayout:coordinatorlayout:$versions.coordinator"
@@ -117,15 +117,11 @@ dependencies {
 
 
     //Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:$versions.navigation"
-    implementation "androidx.navigation:navigation-ui-ktx:$versions.navigation"
-    implementation "androidx.navigation:navigation-runtime-ktx:$versions.navigation"
+    implementation libs.bundles.androidx.navigation
 
     //JetPack LiveData ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$versions.lifecycle"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle"
+    implementation libs.bundles.androidx.lifecycle
 
     //Dagger Hilt
     implementation "com.google.dagger:hilt-android:$versions.hilt"
@@ -140,10 +136,7 @@ dependencies {
     implementation "com.google.mlkit:barcode-scanning:$versions.barcode_scanning"
 
     //Camerax
-    implementation "androidx.camera:camera-camera2:$versions.camerax"
-    implementation "androidx.camera:camera-lifecycle:$versions.camerax"
-    implementation "androidx.camera:camera-view:$versions.camerax"
-    implementation "androidx.camera:camera-extensions:$versions.camerax"
+    implementation libs.bundles.androidx.camerax
 
     //Custom chrome tab
     implementation "androidx.browser:browser:$versions.browser"
