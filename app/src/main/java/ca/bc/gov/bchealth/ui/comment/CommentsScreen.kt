@@ -7,11 +7,13 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,7 +24,6 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,44 +47,14 @@ import ca.bc.gov.bchealth.compose.greyBg
 import ca.bc.gov.bchealth.compose.minButtonSize
 import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.compose.red
-import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 import ca.bc.gov.bchealth.widget.CommentInputUI
 import ca.bc.gov.bchealth.widget.EditableCommentInputUI
 import ca.bc.gov.common.utils.toDateTimeString
-import kotlinx.coroutines.flow.StateFlow
 import java.time.Instant
-
-@Composable
-fun CommentsUI(
-    uiStateFlow: StateFlow<CommentsUiState>,
-    navigationAction: () -> Unit,
-    editAction: (Comment) -> Unit,
-    deleteAction: (Comment) -> Unit,
-    submitAction: (String) -> Unit,
-    updateAction: (Comment) -> Unit,
-    cancelAction: (Comment) -> Unit,
-) {
-    val uiState = uiStateFlow.collectAsState().value
-
-    MyHealthScaffold(
-        title = stringResource(id = R.string.comments),
-        isLoading = uiState.onLoading,
-        navigationAction = navigationAction
-    ) {
-        CommentsContent(
-            uiState,
-            editAction,
-            deleteAction,
-            submitAction,
-            updateAction,
-            cancelAction,
-        )
-    }
-}
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CommentsContent(
+fun CommentsScreen(
     uiState: CommentsUiState,
     editAction: (Comment) -> Unit,
     deleteAction: (Comment) -> Unit,
@@ -186,6 +157,8 @@ private fun CommentItemUI(
                                 },
                             contentDescription = stringResource(id = R.string.edit)
                         )
+                    } else {
+                        Spacer(modifier = Modifier.size(width = 8.dp, height = 0.dp))
                     }
                     OptionsMenu(
                         expanded = expanded,
@@ -245,7 +218,7 @@ private fun OptionsMenu(
 fun PreviewCommentsContent() {
     val date = Instant.now()
     val comment = Comment(
-        text = "comment01",
+        text = "This is a long comment that should break the line",
         date = date,
         version = 0L,
         isUploaded = true,
@@ -258,11 +231,11 @@ fun PreviewCommentsContent() {
 
     val comments = listOf(
         comment,
-        comment.copy(text = "comment02", isUploaded = false),
+        comment.copy(isUploaded = false),
     )
 
     val uiState = CommentsUiState(
         commentsList = comments
     )
-    CommentsContent(uiState, {}, {}, {}, {}, {})
+    CommentsScreen(uiState, {}, {}, {}, {}, {})
 }

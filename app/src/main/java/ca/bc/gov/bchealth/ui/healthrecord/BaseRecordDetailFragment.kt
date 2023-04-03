@@ -13,6 +13,7 @@ import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
+import ca.bc.gov.bchealth.ui.comment.CommentsSummary
 import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.ui.healthrecord.comment.RecordCommentsAdapter
 import ca.bc.gov.bchealth.utils.launchOnStart
@@ -66,8 +67,8 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
             commentsViewModel.uiState.collect { state ->
                 getProgressBar()?.isVisible = state.onLoading
 
-                if (state.commentsSummary.isNotEmpty()) {
-                    recordCommentsAdapter.submitList(state.commentsSummary) {
+                if (state.commentsSummary != null) {
+                    recordCommentsAdapter.submitList(listOf(state.commentsSummary)) {
                         if (state.onCommentsUpdated) {
                             scrollToBottom()
                         }
@@ -110,13 +111,12 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
         }
     }
 
-    private fun navigateToComments(commentEntryTypeCode: String, recordType: String) {
+    private fun navigateToComments(commentsSummary: CommentsSummary) {
         findNavController().navigate(
             R.id.commentsFragment,
             bundleOf(
-                "parentEntryId" to commentEntryTypeCode,
-                "recordType" to recordType,
-
+                "parentEntryId" to commentsSummary.parentEntryId,
+                "recordType" to commentsSummary.entryTypeCode,
             )
         )
     }

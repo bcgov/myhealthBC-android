@@ -53,15 +53,13 @@ import java.time.Instant
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CommentInputUI(
-    onSubmitComment: (String) -> Unit
-) {
+fun CommentInputUI(onSubmitComment: (String) -> Unit) {
     var comment by rememberSaveable { mutableStateOf("") }
     var validation by rememberSaveable { mutableStateOf(CommentValidation.VALID) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val submitAction: (String) -> Unit = {
-        if (validation == CommentValidation.VALID) {
+        if (validation == CommentValidation.VALID && onSubmitComment != {}) {
             onSubmitComment.invoke(it)
             comment = ""
             keyboardController?.hide()

@@ -3,12 +3,15 @@ package ca.bc.gov.bchealth.ui.comment
 import android.os.Bundle
 import android.view.View
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.observeWork
@@ -23,15 +26,23 @@ class CommentsFragment : BaseFragment(null) {
 
     @Composable
     override fun GetComposableLayout() {
-        CommentsUI(
-            viewModel.uiState,
-            ::popNavigation,
-            ::onTapEdit,
-            ::onTapDelete,
-            ::onTapSubmit,
-            ::onTapUpdate,
-            ::onTapCancelUpdate,
-        )
+
+        val uiState = viewModel.uiState.collectAsState().value
+
+        MyHealthScaffold(
+            title = stringResource(id = R.string.comments),
+            isLoading = uiState.onLoading,
+            navigationAction = ::popNavigation,
+        ) {
+            CommentsScreen(
+                uiState,
+                ::onTapEdit,
+                ::onTapDelete,
+                ::onTapSubmit,
+                ::onTapUpdate,
+                ::onTapCancelUpdate,
+            )
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
