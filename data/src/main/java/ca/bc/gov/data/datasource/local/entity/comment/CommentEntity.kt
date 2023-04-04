@@ -3,6 +3,7 @@ package ca.bc.gov.data.datasource.local.entity.comment
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import ca.bc.gov.common.model.SyncStatus
 import java.time.Instant
 
 /**
@@ -21,7 +22,7 @@ data class CommentEntity(
     val entryTypeCode: String? = null,
     @ColumnInfo(name = "parent_entry_id")
     val parentEntryId: String? = null,
-    val version: Int,
+    val version: Long,
     @ColumnInfo(name = "created_date_time")
     val createdDateTime: Instant,
     @ColumnInfo(name = "created_by")
@@ -30,6 +31,6 @@ data class CommentEntity(
     val updatedDateTime: Instant,
     @ColumnInfo(name = "updated_by")
     val updatedBy: String? = null,
-    @ColumnInfo(name = "is_uploaded")
-    val isUploaded: Boolean = true
+    @ColumnInfo(name = "sync_status")
+    val syncStatus: SyncStatus = SyncStatus.UP_TO_DATE
 )

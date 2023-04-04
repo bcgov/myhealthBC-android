@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.usecases
 import ca.bc.gov.bchealth.usecases.records.BaseRecordUseCase
 import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.common.model.AuthParametersDto
+import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.repository.CommentRepository
 import ca.bc.gov.repository.di.IoDispatcher
@@ -25,7 +26,7 @@ class FetchCommentsUseCase @Inject constructor(
     }
 
     private suspend fun insertComments(comments: List<CommentDto>?) {
-        commentsRepository.delete(true)
+        commentsRepository.delete(SyncStatus.UP_TO_DATE)
         comments?.let { commentsRepository.insert(it) }
     }
 }

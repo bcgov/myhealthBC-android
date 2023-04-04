@@ -66,8 +66,8 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
             commentsViewModel.uiState.collect { state ->
                 getProgressBar()?.isVisible = state.onLoading
 
-                if (state.latestComment.isNotEmpty()) {
-                    recordCommentsAdapter.submitList(state.latestComment) {
+                if (state.commentsSummary.isNotEmpty()) {
+                    recordCommentsAdapter.submitList(state.commentsSummary) {
                         if (state.onCommentsUpdated) {
                             scrollToBottom()
                         }
@@ -110,10 +110,14 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
         }
     }
 
-    private fun navigateToComments(commentEntryTypeCode: String) {
+    private fun navigateToComments(commentEntryTypeCode: String, recordType: String) {
         findNavController().navigate(
             R.id.commentsFragment,
-            bundleOf("parentEntryId" to commentEntryTypeCode)
+            bundleOf(
+                "parentEntryId" to commentEntryTypeCode,
+                "recordType" to recordType,
+
+            )
         )
     }
 

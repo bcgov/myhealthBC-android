@@ -1,6 +1,5 @@
 package ca.bc.gov.data.datasource.remote
 
-import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.common.const.MESSAGE_INVALID_RESPONSE
 import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
@@ -15,7 +14,6 @@ class HospitalVisitRemoteDataSource @Inject constructor(
 ) {
 
     suspend fun getHospitalVisit(token: String, hdid: String): List<HospitalVisitDto> {
-        if (BuildConfig.FLAG_HOSPITAL_VISITS.not()) return emptyList()
 
         val response = safeCall { healthGatewayPrivateApi.getHospitalVisit(token, hdid) }
             ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)

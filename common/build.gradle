@@ -28,41 +28,45 @@ android {
 
         mock {
             dimension "version"
-            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
-            buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "true"
+            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
             buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "true"
             buildConfigField "boolean", "FLAG_VIEW_PROFILE", "true"
             buildConfigField "boolean", "FLAG_IMMZ_BANNER", "true"
+            buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "true"
             buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "true"
+            buildConfigField "boolean", "FLAG_MANUAL_REFRESH", "true"
         }
         dev {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
-            buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "true"
             buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "true"
             buildConfigField "boolean", "FLAG_VIEW_PROFILE", "false"
             buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
-            buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "true"
+            buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "false"
+            buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
+            buildConfigField "boolean", "FLAG_MANUAL_REFRESH", "false"
         }
 
         stage {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
-            buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "true"
             buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "true"
             buildConfigField "boolean", "FLAG_VIEW_PROFILE", "false"
             buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
+            buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
+            buildConfigField "boolean", "FLAG_MANUAL_REFRESH", "false"
         }
 
         prod {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
-            buildConfigField "boolean", "FLAG_HOSPITAL_VISITS", "true"
             buildConfigField "boolean", "FLAG_CLINICAL_DOCUMENTS", "true"
             buildConfigField "boolean", "FLAG_VIEW_PROFILE", "false"
             buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
+            buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
+            buildConfigField "boolean", "FLAG_MANUAL_REFRESH", "false"
         }
     }
 

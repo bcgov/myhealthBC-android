@@ -5,9 +5,11 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentDependentRecordsBinding
 import ca.bc.gov.bchealth.ui.dependents.records.filter.DependentFilterViewModel
@@ -15,9 +17,11 @@ import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordFilterFragment
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordsAdapter
 import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.common.BuildConfig.FLAG_MANUAL_REFRESH
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -30,10 +34,11 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
 
     override fun getFilterViewModel() = filterSharedViewModel
     override fun getFilter() = healthRecordsAdapter.filter
-    override fun getLayoutChipGroup() = binding.chipGroup
+    override fun getLayoutChipGroup() = binding.content.chipGroup
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupSwipeToRefresh()
         setUpRecyclerView()
 
         launchOnStart { observeUiState() }
@@ -46,14 +51,26 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
     private suspend fun observeUiState() {
         viewModel.uiState.collect { uiState ->
             binding.apply {
+
+                if (!uiState.isConnected) {
+                    root.showNoInternetConnectionMessage(requireContext())
+                    viewModel.onNetworkDialogDisplayed()
+                    content.srHealthRecords.isRefreshing = false
+                }
                 if (uiState.isHgServicesUp == false) {
                     root.showServiceDownMessage(requireContext())
                     viewModel.resetUiState()
+                    content.srHealthRecords.isRefreshing = false
                 } else {
-                    progressBar.indicator.toggleVisibility(uiState.onLoading)
+                    with(content.srHealthRecords) {
+                        isEnabled = FLAG_MANUAL_REFRESH
+                        progressBar.indicator.toggleVisibility(uiState.onLoading && isRefreshing.not())
+                        if (isRefreshing && uiState.records.isNotEmpty()) {
+                            isRefreshing = false
+                        }
+                    }
                     healthRecordsAdapter.setData(uiState.records)
                     healthRecordsAdapter.filter.filter(filterSharedViewModel.getFilterString())
-                    rvHealthRecords.setLoading(uiState.onLoading)
                 }
             }
         }
@@ -71,9 +88,9 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
                     DependentRecordsFragmentDirections
                         .actionDependentRecordsFragmentToMedicationDetailFragment(it.recordId)
 
-                HealthRecordType.LAB_TEST_RECORD ->
+                HealthRecordType.LAB_RESULT_RECORD ->
                     DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToLabTestDetailFragment(it.recordId)
+                        .actionDependentRecordsFragmentToLabTestDetailFragment(it.recordId, args.hdid)
 
                 HealthRecordType.IMMUNIZATION_RECORD ->
                     DependentRecordsFragmentDirections
@@ -91,36 +108,62 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
                     DependentRecordsFragmentDirections
                         .actionDependentRecordsFragmentToHospitalVisitDetailsFragment(it.recordId)
 
-                HealthRecordType.CLINICAL_DOCUMENT_RECORD -> null
+                HealthRecordType.CLINICAL_DOCUMENT_RECORD ->
+                    DependentRecordsFragmentDirections
+                        .actionDependentRecordsFragmentToClinicalDocsDetailsFragment(it.recordId, args.hdid)
             }
 
             navDirection?.let { findNavController().navigate(navDirection) }
         }
-        binding.rvHealthRecords.adapter = healthRecordsAdapter
-        binding.rvHealthRecords.emptyView = binding.viewEmptyScreen
+        binding.content.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
+        binding.content.rvHealthRecords.adapter = healthRecordsAdapter
+        binding.content.rvHealthRecords.emptyView = binding.emptyView.root
     }
 
     override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
-        binding.layoutToolbar.apply {
-            toolbar.stateListAnimator = null
-            toolbar.elevation = 0f
-
-            btnBack.setOnClickListener {
+        with(binding.layoutToolbar.topAppBar) {
+            title = args.fullName
+            isTitleCentered = false
+            setNavigationIcon(R.drawable.ic_toolbar_back)
+            setNavigationOnClickListener {
                 findNavController().popBackStack()
             }
+            inflateMenu(R.menu.menu_dependent_health_record)
+            menu.findItem(R.id.menu_refresh).isVisible = FLAG_MANUAL_REFRESH
+            setOnMenuItemClickListener { menu ->
+                when (menu.itemId) {
 
-            btnProfile.setOnClickListener {
-                navigate(
-                    R.id.dependentProfileFragment,
-                    bundleOf("patient_id" to args.patientId)
-                )
+                    R.id.menu_refresh -> {
+                        healthRecordsAdapter.setData(emptyList())
+                        with(binding.content.srHealthRecords) {
+                            if (isRefreshing.not()) {
+                                isRefreshing = true
+                                viewModel.refresh(args.patientId, args.hdid)
+                            }
+                        }
+                    }
+                    R.id.menu_profile -> {
+                        findNavController().navigate(
+                            R.id.dependentProfileFragment,
+                            bundleOf("patient_id" to args.patientId)
+                        )
+                    }
+                    R.id.menu_filter -> {
+                        findNavController().navigate(R.id.dependentFilterFragment)
+                    }
+                }
+                return@setOnMenuItemClickListener true
             }
+        }
+    }
 
-            btnFilter.setOnClickListener {
-                findNavController().navigate(R.id.dependentFilterFragment)
+    private fun setupSwipeToRefresh() {
+        with(binding.content.srHealthRecords) {
+            setOnRefreshListener {
+                if (FLAG_MANUAL_REFRESH) {
+                    viewModel.refresh(args.patientId, args.hdid)
+                }
             }
-
-            tvTitle.text = args.fullName
         }
     }
 }

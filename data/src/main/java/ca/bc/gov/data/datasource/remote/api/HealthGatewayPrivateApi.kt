@@ -6,7 +6,9 @@ import ca.bc.gov.data.datasource.remote.model.base.healthvisits.HealthVisitsResp
 import ca.bc.gov.data.datasource.remote.model.base.hospitalvisit.HospitalVisitResponse
 import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityResponse
 import ca.bc.gov.data.datasource.remote.model.request.CommentRequest
+import ca.bc.gov.data.datasource.remote.model.request.CommentUpdateRequest
 import ca.bc.gov.data.datasource.remote.model.request.DependentRegistrationRequest
+import ca.bc.gov.data.datasource.remote.model.request.FeedbackRequest
 import ca.bc.gov.data.datasource.remote.model.request.UserProfileRequest
 import ca.bc.gov.data.datasource.remote.model.response.AddCommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.AllCommentsResponse
@@ -30,6 +32,7 @@ import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -50,6 +53,7 @@ interface HealthGatewayPrivateApi {
         private const val BASE_MEDICATION_SERVICE = "api/medicationservice"
         private const val BASE_PATIENT_SERVICE = "api/patientservice"
         private const val BASE_USER_PROFILE_SERVICE = "api/gatewayapiservice/UserProfile"
+        private const val BASE_USER_FEEDBACK_SERVICE = "api/gatewayapiservice/UserFeedback"
         private const val BASE_HEALTH_VISIT_SERVICE = "api/encounterservice"
         private const val BASE_CLINICAL_SERVICE = "api/clinicaldocumentservice"
     }
@@ -129,6 +133,13 @@ interface HealthGatewayPrivateApi {
         @Body commentRequest: CommentRequest
     ): Response<AddCommentResponse>
 
+    @PUT("$BASE_USER_PROFILE_SERVICE/{$HDID}/Comment")
+    suspend fun updateComment(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String,
+        @Body commentUpdateRequest: CommentUpdateRequest
+    ): Response<AddCommentResponse>
+
     @GET("$BASE_IMMUNIZATION_SERVICE/Immunization")
     suspend fun getImmunization(
         @Header(AUTHORIZATION) accessToken: String,
@@ -196,4 +207,11 @@ interface HealthGatewayPrivateApi {
         @Path(DEPENDENT_HDID) dependentHdid: String,
         @Body dependentPayload: DependentPayload
     ): Response<DependentResponse>
+
+    @POST("$BASE_USER_FEEDBACK_SERVICE/{$HDID}")
+    suspend fun addFeedback(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String,
+        @Body feedbackRequest: FeedbackRequest
+    ): Response<Unit>
 }

@@ -14,16 +14,13 @@ class PatientFilterFragment : FilterFragment() {
     override val availableFilters = mutableListOf(
         R.id.chip_date,
         R.id.chip_medication,
-        R.id.chip_lab_test,
+        R.id.chip_lab_results,
         R.id.chip_covid_test,
         R.id.chip_immunizations,
         R.id.chip_health_visit,
         R.id.chip_special_authority,
+        R.id.chip_hospital_visits,
     ).apply {
-        if (BuildConfig.FLAG_HOSPITAL_VISITS) {
-            this.add(R.id.chip_hospital_visits)
-        }
-
         if (BuildConfig.FLAG_CLINICAL_DOCUMENTS) {
             this.add(R.id.chip_clinical_document)
         }

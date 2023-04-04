@@ -8,3 +8,10 @@ import androidx.compose.ui.tooling.preview.Preview
     device = "id:pixel_5",
 )
 annotation class BasePreview
+
+@Preview(
+    name = "Nexus One",
+    showBackground = true, backgroundColor = 0xFFFFFFFF,
+    device = "id:3.7in WVGA (Nexus One)",
+)
+annotation class SmallDevicePreview

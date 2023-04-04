@@ -23,11 +23,12 @@ class ClinicalDocumentDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ClinicalDocumentUiState())
     val uiState: StateFlow<ClinicalDocumentUiState> = _uiState.asStateFlow()
     private var fileId: String? = null
+    private var hdid: String? = null
 
-    fun getClinicalDocumentDetails(clinicalDocumentId: Long) = viewModelScope.launch {
+    fun getClinicalDocumentDetails(clinicalDocumentId: Long, hdid: String?) = viewModelScope.launch {
         try {
             val dto: ClinicalDocumentDto = repository.getClinicalDocument(clinicalDocumentId)
-
+            this@ClinicalDocumentDetailViewModel.hdid = hdid
             fileId = dto.fileId
 
             val uiList: List<HealthRecordDetailItem> = listOf(
@@ -63,7 +64,7 @@ class ClinicalDocumentDetailViewModel @Inject constructor(
             mobileConfigRepository.refreshMobileConfiguration()
 
             fileId?.apply {
-                val pdfData = repository.fetchPdf(this)
+                val pdfData = repository.fetchPdf(this, hdid)
                 _uiState.update { it.copy(pdfData = pdfData, onLoading = false) }
             }
         } catch (e: Exception) {

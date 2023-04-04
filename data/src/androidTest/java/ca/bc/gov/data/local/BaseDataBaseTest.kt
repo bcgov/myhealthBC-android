@@ -107,7 +107,7 @@ abstract class BaseDataBaseTest {
         text: String = "Sample Comment",
         entryTypeCode: String = "Med",
         parentEntryId: String = UUID.randomUUID().toString(),
-        version: Int = 0,
+        version: Long = 0L,
         createdDateTime: Instant = Instant.now(),
         createdBy: String = "Created By Pinakin",
         updateDateTime: Instant = Instant.now(),

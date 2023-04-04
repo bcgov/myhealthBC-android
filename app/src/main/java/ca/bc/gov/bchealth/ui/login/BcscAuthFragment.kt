@@ -20,7 +20,6 @@ import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceStatus
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceViewModel
-import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -50,12 +49,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
         if (activityResult.resultCode == Activity.RESULT_OK) {
             viewModel.processLogoutResponse(requireContext())
         } else {
-            AlertDialogHelper.showAlertDialog(
-                context = requireContext(),
-                title = getString(R.string.error),
-                msg = getString(R.string.error_message),
-                positiveBtnMsg = getString(R.string.dialog_button_ok)
-            )
+            respondToError()
         }
     }
 
@@ -258,12 +252,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
     }
 
     private fun respondToError() {
-        AlertDialogHelper.showAlertDialog(
-            context = requireContext(),
-            title = getString(R.string.error),
-            msg = getString(R.string.error_message),
-            positiveBtnMsg = getString(R.string.dialog_button_ok)
-        )
+        findNavController().navigate(R.id.action_bcscAuthFragment_to_bcscAuthErrorFragment)
     }
 
     private fun showLoader(value: Boolean) {

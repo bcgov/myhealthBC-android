@@ -65,12 +65,12 @@
             android:textColor="@color/blue"
             android:textSize="14sp"
             android:visibility="gone"
-            tools:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_full_name" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_full_name"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -173,6 +173,35 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_privacy_statement" />
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_feedback"
+        style="?textAppearanceHeadline4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:drawableStart="@drawable/ic_feedback"
+        android:drawablePadding="@dimen/space_1_x"
+        android:filterTouchesWhenObscured="true"
+        android:paddingStart="@dimen/space_4_x"
+        android:paddingTop="@dimen/space_2_x"
+        android:paddingEnd="@dimen/space_4_x"
+        android:paddingBottom="@dimen/space_2_x"
+        android:text="@string/settings_feedback"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line3" />
+
+    <View
+        android:id="@+id/line4"
+        android:layout_width="0dp"
+        android:layout_height="1.5dp"
+        android:background="@drawable/solid_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_feedback" />
+
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_log_out"
         style="?textAppearanceHeadline4"
         android:layout_width="match_parent"
@@ -190,10 +219,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line3" />
+        app:layout_constraintTop_toBottomOf="@+id/line4" />
 
     <View
-        android:id="@+id/line4"
+        android:id="@+id/line5"
         android:layout_width="0dp"
         android:layout_height="1.5dp"
         android:background="@drawable/solid_line"

@@ -12,15 +12,11 @@ abstract class BaseViewModel : ViewModel() {
     private val _baseUiState = MutableStateFlow(BaseUiState())
     val baseUiState: StateFlow<BaseUiState> = _baseUiState.asStateFlow()
 
-    fun handleBaseException(e: Exception) {
+    fun handleBaseException(e: Exception, errorHandling: (Exception) -> Unit = {}) {
         when (e) {
-            is NetworkConnectionException -> _baseUiState.update {
-                it.copy(connected = false)
-            }
-
-            is ServiceDownException -> _baseUiState.update {
-                it.copy(serviceUp = false)
-            }
+            is NetworkConnectionException -> _baseUiState.update { it.copy(connected = false) }
+            is ServiceDownException -> _baseUiState.update { it.copy(serviceUp = false) }
+            else -> errorHandling.invoke(e)
         }
     }
 

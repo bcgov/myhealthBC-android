@@ -82,6 +82,11 @@
         <argument
             android:name="lab_order_id"
             app:argType="long" />
+        <argument
+            android:name="hdid"
+            app:argType="string"
+            android:defaultValue="@null"
+            app:nullable="true" />
         <action
             android:id="@+id/action_labTestDetailFragment_to_commentsFragment"
             app:destination="@id/commentsFragment" />
@@ -117,6 +122,9 @@
         android:name="ca.bc.gov.bchealth.ui.comment.CommentsFragment"
         android:label="fragment_comments"
         tools:layout="@layout/fragment_comments">
+        <argument
+            android:name="recordType"
+            app:argType="string" />
         <argument
             android:name="parentEntryId"
             app:argType="string" />
@@ -164,6 +172,11 @@
         <argument
             android:name="clinicalDocumentId"
             app:argType="long" />
+        <argument
+            android:name="hdid"
+            app:argType="string"
+            android:defaultValue="@null"
+            app:nullable="true" />
     </fragment>
 
 </navigation>

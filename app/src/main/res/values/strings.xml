@@ -8,6 +8,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="not_available">Not available</string>
+    <string name="email_copied_to_clipboard">Email address copied to clipboard</string>
 
     <!--Informational screen for camera permission-->
     <string name="privacy_policy">Privacy Policy</string>
@@ -81,6 +82,7 @@
 
     <!--Settings-->
     <string name="settings">Settings</string>
+    <string name="settings_feedback">Feedback</string>
     <string name="privacy_statement">Privacy statement</string>
     <string name="no_app_found">No app found to open link!</string>
     <string name="turn_on_analytics">Turn on analytics</string>
@@ -98,6 +100,16 @@
     <string name="logout_dialog_title">Log out of Health Gateway</string>
     <string name="logout_dialog_message">You won\'t be able to access your health records until you log in again.</string>
     <string name="log_out">Log out</string>
+    <string name="refresh">Refresh</string>
+
+    <!--    Feedback-->
+    <string name="feedback_title">Feedback</string>
+    <string name="feedback_body">Do you have a suggestion or idea? Let us know in the field below</string>
+    <string name="feedback_input_hint">Describe your suggestion or idea…</string>
+    <string name="feedback_input_error">Maximum %s characters</string>
+    <string name="feedback_button">Send Message</string>
+    <string name="feedback_success_message">Your message has been sent successfully!</string>
+    <string name="feedback_error_message">Unable to submit feedback.\nPlease try again later.</string>
 
     <!--    Profile-->
     <string name="profile">Profile</string>
@@ -145,7 +157,7 @@
     <string name="enter_dob">Enter date of birth</string>
     <string name="enter_dot">Enter date of test</string>
     <string name="enter_dov">Enter date of vaccination</string>
-    <string name="privacy_statement_info_vaccine">Your information is being collected to provide you with your COVID-19 vaccination status under s. 26(c) of the Freedom of Information and Protection of Privacy Act. If you have any questions, contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849.</string>
+    <string name="privacy_statement_info_vaccine">Your information is being collected to provide you with your COVID–19 vaccination status under s. 26(c) of the Freedom of Information and Protection of Privacy Act. If you have any questions, contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849.</string>
     <string name="privacy_statement_info_test_result">Your information is being collected to provide you with your COVID-19 test results under s. 26(c) of the Freedom of Information and Protection of Privacy Act. Contact the Ministry Privacy Officer at MOH.Privacy.Officer@gov.bc.ca or 778-698-5849 if you have any questions about this collection.</string>
     <string name="phn_number_required">Personal Health Number is required</string>
     <string name="dob_required">Date of Birth is required</string>
@@ -200,7 +212,7 @@
     <string name="update_success">Update Success!</string>
     <string name="update_cancelled">Update Cancelled!</string>
     <string name="update_failed">Update Failed!</string>
-    <string name="update_downloaded">An update has just been downloaded.</string>
+    <string name="update_downloaded">Update downloaded successfully, restart to take effect.</string>
     <string name="restart">RESTART</string>
     <string name="tap_to_zoom_in">Tap to zoom in</string>
 
@@ -298,13 +310,6 @@
     <string name="enter_to_date">Enter to date</string>
     <string name="after">and after</string>
     <string name="before">and before</string>
-    <plurals name="comments">
-        <item quantity="one">%1$s Comment</item>
-        <item quantity="other">%1$s Comments</item>
-    </plurals>
-    <string name="comment_here">Comment here</string>
-    <string name="comments">Comments</string>
-    <string name="comments_medication_subtitle">Only you can see comments added to your medical records.</string>
     <string name="download">Download</string>
     <string name="test_summary">Test summary</string>
     <string name="summary_desc">Find resources to learn about your lab test and what the results mean. Learn more</string>
@@ -320,6 +325,18 @@
     <string name="loading">Loading…</string>
     <string name="corrected">Corrected</string>
     <string name="posting">Posting…</string>
+
+    <!--COMMENTS-->
+    <string name="comment_edit">Edit comment</string>
+    <string name="comment_delete">Delete</string>
+    <string name="comment_update">Update</string>
+    <plurals name="comments">
+        <item quantity="one">%1$s Comment</item>
+        <item quantity="other">%1$s Comments</item>
+    </plurals>
+    <string name="comment_here">Comment here</string>
+    <string name="comments">Comments</string>
+    <string name="comments_medication_subtitle">Only you can see comments added to your medical records.</string>
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>
@@ -368,6 +385,12 @@
     <string name="don_t_have_bc_service_card_app_please_download_here">Don\'t have BC Service Card app, please <b>download</b> here.</string>
     <string name="download_small_case">download</string>
 
+    <!-- Error -->
+    <string name="bcsc_auth_error_title">Problem with log in</string>
+    <string name="bcsc_auth_error_body">We are unable to retrive your health record at this moment because of problem with BC Service Card log in, please contact Health Gateway team: healthgateway@gov.bc.ca for more information</string>
+    <string name="bcsc_auth_error_click_email">healthgateway@gov.bc.ca</string>
+    <string name="bcsc_auth_error_button">Email us</string>
+
     <!--ERROR-->
     <string name="error">Error!</string>
     <string name="error_message">Something went wrong. Please retry.</string>
@@ -388,7 +411,7 @@
     <string name="service_down">Maintenance is underway. Please try later.</string>
     <string name="dismiss">Dismiss</string>
     <string name="no_internet_connection">Unable to refresh your data. Please check your internet connection.</string>
-    <string name="error_max_character">Maximum 1000 characters</string>
+    <string name="comments_error_max_character">Maximum 1000 characters</string>
 
     <!--Timeline View-->
     <string name="type">Type</string>
@@ -442,8 +465,8 @@
     <!-- Filter screen -->
     <string name="clear_all">Clear all</string>
     <string name="record_type">Record type</string>
-    <string name="lab_tests">Lab tests</string>
-    <string name="covid_19_tests">COVID-19 tests</string>
+    <string name="lab_results">Lab Results</string>
+    <string name="covid_19_tests">COVID-19 Tests</string>
     <string name="immunizations">Immunizations</string>
     <string name="health_visits">Health Visits</string>
     <string name="special_authorities">Special Authorities</string>
@@ -510,5 +533,4 @@
     <string name="clinical_documents_detail_button_download">Download Full Report</string>
     <string name="clinical_documents_detail_discipline">Discipline:</string>
     <string name="clinical_documents_detail_facility">Facility:</string>
-
 </resources>

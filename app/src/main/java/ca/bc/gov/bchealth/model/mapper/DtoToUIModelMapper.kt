@@ -1,6 +1,7 @@
 package ca.bc.gov.bchealth.model.mapper
 
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.ui.comment.Comment
 import ca.bc.gov.bchealth.ui.dependents.DependentDetailItem
 import ca.bc.gov.bchealth.ui.healthpass.FederalTravelPassState
 import ca.bc.gov.bchealth.ui.healthpass.HealthPass
@@ -15,7 +16,9 @@ import ca.bc.gov.bchealth.ui.recommendations.RecommendationDetailItem
 import ca.bc.gov.bchealth.utils.orPlaceholder
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ImmunizationStatus
+import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
+import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.common.model.healthvisits.HealthVisitsDto
 import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
@@ -31,6 +34,7 @@ import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
+import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import java.time.Instant
 import java.time.LocalDate
 
@@ -105,7 +109,7 @@ fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
         icon = R.drawable.ic_lab_test,
         date = labOrder.timelineDateTime,
         description = description,
-        healthRecordType = HealthRecordType.LAB_TEST_RECORD,
+        healthRecordType = HealthRecordType.LAB_RESULT_RECORD,
         dataSource = labOrder.dataSorce.name
     )
 }
@@ -276,6 +280,19 @@ fun DependentDto.toUiModel(currentDate: LocalDate) = DependentDetailItem(
     firstName = firstname,
     fullName = "$firstname $lastname",
     agedOut = isDependentAgedOut(currentDate)
+)
+
+fun CommentDto.toUiModel() = Comment(
+    id,
+    text,
+    createdDateTime.toLocalDateTimeInstant(),
+    version,
+    entryTypeCode.orEmpty(),
+    createdDateTime,
+    createdBy.orEmpty(),
+    updatedDateTime,
+    updatedBy.orEmpty(),
+    syncStatus == SyncStatus.UP_TO_DATE
 )
 
 private fun ImmunizationForecastDto.toUiModel() = ForecastDetailItem(

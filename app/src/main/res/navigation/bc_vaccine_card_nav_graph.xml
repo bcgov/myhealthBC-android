@@ -52,11 +52,15 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="ca.bc.gov.bchealth.ui.setting.SettingsFragment"
-        tools:layout="@layout/fragment_settings"/>
+        tools:layout="@layout/fragment_settings" />
 
     <fragment
         android:id="@+id/profileFragment"
         android:name="ca.bc.gov.bchealth.ui.profile.ProfileFragment" />
+
+    <fragment
+        android:id="@+id/feedbackFragment"
+        android:name="ca.bc.gov.bchealth.ui.feeback.FeedbackFragment" />
 
     <fragment
         android:id="@+id/biometricsAuthenticationFragment"
@@ -75,10 +79,21 @@
             android:id="@+id/action_bcscAuthInfoFragment_to_bcscAuthFragment"
             app:destination="@id/bcscAuthFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/bcscAuthFragment"
         android:name="ca.bc.gov.bchealth.ui.login.BcscAuthFragment"
+        tools:layout="@layout/fragment_bcsc_auth" >
+        <action
+            android:id="@+id/action_bcscAuthFragment_to_bcscAuthErrorFragment"
+            app:destination="@id/bcscAuthErrorFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/bcscAuthErrorFragment"
+        android:name="ca.bc.gov.bchealth.ui.login.error.BcscAuthErrorFragment"
         tools:layout="@layout/fragment_bcsc_auth" />
+
     <fragment
         android:id="@+id/termsOfServiceFragment"
         android:name="ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment"

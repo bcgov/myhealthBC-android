@@ -19,7 +19,7 @@ fun DecorativeImage(@DrawableRes resourceId: Int, modifier: Modifier = Modifier)
 
 @Preview
 @Composable
-fun PreviewDecorativeIcon() {
+fun PreviewDecorativeImage() {
     DecorativeImage(
         resourceId = R.drawable.ic_profile_image,
     )

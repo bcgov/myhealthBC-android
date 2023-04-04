@@ -1,6 +1,5 @@
 package ca.bc.gov.bchealth.usecases.records
 
-import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.repository.RecordsRepository
@@ -19,8 +18,6 @@ class FetchHospitalVisitsUseCase @Inject constructor(
         patientId: Long,
         authParameters: AuthParametersDto
     ) {
-        if (BuildConfig.FLAG_HOSPITAL_VISITS.not()) return
-
         val hospitalVisits: List<HospitalVisitDto>? = fetchRecord(
             authParameters, hospitalVisitRepository::getHospitalVisits
         )

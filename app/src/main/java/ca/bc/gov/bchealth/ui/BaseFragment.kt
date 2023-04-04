@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
@@ -17,6 +16,7 @@ import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolbar
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.HEALTH_GATEWAY_EMAIL_ADDRESS
+import ca.bc.gov.bchealth.utils.composeEmail
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
@@ -71,12 +71,8 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
         }
     }
 
-    protected fun navigate(@IdRes screenId: Int, args: Bundle? = null) {
-        findNavController().navigate(screenId, args)
-    }
-
     fun composeEmail(address: String = HEALTH_GATEWAY_EMAIL_ADDRESS, subject: String = "") {
-        (activity as? BaseActivity)?.composeEmail(address, subject)
+        requireActivity().composeEmail(address, subject)
     }
 
     fun showGenericError() {

@@ -2,13 +2,14 @@ package ca.bc.gov.repository
 
 import android.util.Log
 import ca.bc.gov.common.BuildConfig
-import ca.bc.gov.common.BuildConfig.FLAG_HOSPITAL_VISITS
+import ca.bc.gov.common.BuildConfig.FLAG_GUARDIAN_CLINICAL_DOCS
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.common.model.dependents.DependentDto
-import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
+import ca.bc.gov.common.model.patient.PatientWithClinicalDocumentsDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
@@ -20,6 +21,7 @@ import ca.bc.gov.data.model.mapper.toDto
 import ca.bc.gov.data.model.mapper.toEntity
 import ca.bc.gov.data.model.mapper.toPatientEntity
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
+import ca.bc.gov.repository.clinicaldocument.ClinicalDocumentRepository
 import ca.bc.gov.repository.extensions.mapFlowContent
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
@@ -41,6 +43,7 @@ class DependentsRepository @Inject constructor(
     private val immunizationRecordRepository: ImmunizationRecordRepository,
     private val labOrderRepository: LabOrderRepository,
     private val recordsRepository: RecordsRepository,
+    private val clinicalDocumentRepository: ClinicalDocumentRepository,
     private val mobileConfigRepository: MobileConfigRepository,
 ) {
 
@@ -103,6 +106,7 @@ class DependentsRepository @Inject constructor(
             var covidOrders: List<CovidOrderWithCovidTestDto>? = null
             var immunizationDto: ImmunizationDto? = null
             var labOrders: List<LabOrderWithLabTestDto>? = null
+            var clinicalDocs: List<ClinicalDocumentDto>? = null
 
             val token = bcscAuthRepo.getAuthParametersDto().token
 
@@ -128,7 +132,22 @@ class DependentsRepository @Inject constructor(
                 }
             }
 
-            storeRecords(patientId, vaccineRecords, covidOrders, immunizationDto, labOrders)
+            if (FLAG_GUARDIAN_CLINICAL_DOCS) {
+                try {
+                    clinicalDocs = clinicalDocumentRepository.getClinicalDocuments(token, hdid)
+                } catch (e: Exception) {
+                    handleException(e)
+                }
+            }
+
+            storeRecords(
+                patientId,
+                vaccineRecords,
+                covidOrders,
+                immunizationDto,
+                labOrders,
+                clinicalDocs
+            )
         }
     }
 
@@ -157,14 +176,16 @@ class DependentsRepository @Inject constructor(
         covidOrderResponse: List<CovidOrderWithCovidTestDto>?,
         immunizationDto: ImmunizationDto?,
         labOrdersResponse: List<LabOrderWithLabTestDto>?,
+        clinicalDocs: List<ClinicalDocumentDto>?,
     ) {
         vaccineRecordsResponse?.let { insertVaccineRecords(patientId, it) }
         recordsRepository.apply {
             storeCovidOrders(patientId, covidOrderResponse)
             storeImmunizationRecords(patientId, immunizationDto)
             storeLabOrders(patientId, labOrdersResponse)
+            storeClinicalDocuments(patientId, clinicalDocs)
         }
-        localDataSource.enableDependentCacheFlag(patientId)
+        localDataSource.updateDependentCacheFlag(patientId, true)
     }
 
     private suspend fun insertVaccineRecords(
@@ -194,12 +215,9 @@ class DependentsRepository @Inject constructor(
         patientLocalDataSource.getPatientWithLabOrdersAndLabTests(patientId)
             ?: throw getDatabaseException(patientId)
 
-    suspend fun getPatientWithHospitalVisits(patientId: Long): List<HospitalVisitDto> {
-        if (FLAG_HOSPITAL_VISITS.not()) return emptyList()
-
-        return patientLocalDataSource.getPatientWithHospitalVisits(patientId)?.hospitalVisits
+    suspend fun getPatientWithClinicalDocuments(patientId: Long): PatientWithClinicalDocumentsDto =
+        patientLocalDataSource.getPatientWithClinicalDocuments(patientId)
             ?: throw getDatabaseException(patientId)
-    }
 
     suspend fun updateDependentListOrder(list: List<DependentDto>) {
         localDataSource.deleteAllDependentListOrders()
@@ -220,6 +238,10 @@ class DependentsRepository @Inject constructor(
     suspend fun deleteDependent(patientId: Long) {
         val dependentDto = getDependent(patientId)
         deleteDependent(dependentDto)
+    }
+
+    suspend fun invalidateDependentCache(patientId: Long) {
+        localDataSource.updateDependentCacheFlag(patientId, false)
     }
 
     private suspend fun deleteDependent(dependentDto: DependentDto) {

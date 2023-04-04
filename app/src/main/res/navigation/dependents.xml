@@ -69,6 +69,10 @@
             android:id="@+id/action_dependentRecordsFragment_to_hospitalVisitDetailsFragment"
             app:destination="@id/dependentHospitalVisitDetailFragment" />
 
+        <action
+            android:id="@+id/action_dependentRecordsFragment_to_clinicalDocsDetailsFragment"
+            app:destination="@id/dependentClinicalDocumentDetailFragment" />
+
     </fragment>
 
     <fragment
@@ -119,6 +123,9 @@
         android:label="fragment_comments"
         tools:layout="@layout/fragment_comments">
         <argument
+            android:name="recordType"
+            app:argType="string" />
+        <argument
             android:name="parentEntryId"
             app:argType="string" />
     </fragment>
@@ -130,6 +137,10 @@
         <argument
             android:name="lab_order_id"
             app:argType="long" />
+        <argument
+            android:name="hdid"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
     <fragment
@@ -186,6 +197,19 @@
         <argument
             android:name="hospitalVisitId"
             app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dependentClinicalDocumentDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.clinicaldocument.ClinicalDocumentDetailFragment"
+        android:label="fragment_clinical_document_detail">
+        <argument
+            android:name="clinicalDocumentId"
+            app:argType="long" />
+        <argument
+            android:name="hdid"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
 </navigation>
