@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.comment
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.model.comment.CommentDto
@@ -140,7 +141,7 @@ class CommentsViewModel @Inject constructor(
             text = lastComment.text.orEmpty(),
             date = lastComment.createdDateTime.toLocalDateTimeInstant(),
             entryTypeCode = lastComment.entryTypeCode.orEmpty(),
-            isUploaded = lastComment.syncStatus == SyncStatus.UP_TO_DATE,
+            syncStatus = lastComment.syncStatus,
             parentEntryId = parentEntryId,
             count = commentsDtoList.size,
         )
@@ -191,18 +192,25 @@ data class Comment(
     val createdBy: String,
     val updatedDateTime: Instant,
     val updatedBy: String,
-    val isUploaded: Boolean = true,
+    val syncStatus: SyncStatus = SyncStatus.UP_TO_DATE,
     var editable: Boolean = false
 )
 
 data class CommentsSummary(
     val text: String,
     val date: Instant?,
-    val isUploaded: Boolean,
+    val syncStatus: SyncStatus,
     val entryTypeCode: String,
     val parentEntryId: String,
     val count: Int,
 )
+
+fun SyncStatus.getDescription(): Int? = when (this) {
+    SyncStatus.UP_TO_DATE -> null
+    SyncStatus.INSERT -> R.string.posting
+    SyncStatus.EDIT -> R.string.posting
+    SyncStatus.DELETE -> R.string.deleting
+}
 
 enum class CommentEntryTypeCode(val value: String) {
     MEDICATION("Med"),

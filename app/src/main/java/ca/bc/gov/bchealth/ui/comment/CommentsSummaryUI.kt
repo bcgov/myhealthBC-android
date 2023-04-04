@@ -22,6 +22,7 @@ import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.blue
 import ca.bc.gov.bchealth.compose.grey
 import ca.bc.gov.bchealth.compose.greyBg
+import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.utils.toDateTimeString
 import java.time.Instant
 
@@ -69,10 +70,10 @@ private fun CommentItem(commentsSummary: CommentsSummary) = with(commentsSummary
         )
 
         Text(
-            text = if (isUploaded && date != null) {
+            text = if (syncStatus == SyncStatus.UP_TO_DATE && date != null) {
                 date.toDateTimeString()
             } else {
-                stringResource(id = R.string.posting)
+                syncStatus.getDescription()?.let { stringResource(id = it) }.orEmpty()
             },
             style = MyHealthTypography.caption.copy(color = grey),
             modifier = Modifier.padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
@@ -91,13 +92,17 @@ fun PreviewCommentsSummaryUI() {
             entryTypeCode = "",
             count = 5,
             parentEntryId = "",
-            isUploaded = true
+            syncStatus = SyncStatus.UP_TO_DATE
         )
 
         Column {
-            CommentsSummaryUI(commentsSummary, {})
+            CommentsSummaryUI(commentsSummary) {}
             Spacer(Modifier.padding(5.dp))
-            CommentsSummaryUI(commentsSummary.copy(isUploaded = false), {})
+            CommentsSummaryUI(commentsSummary.copy(syncStatus = SyncStatus.INSERT)) {}
+            Spacer(Modifier.padding(5.dp))
+            CommentsSummaryUI(commentsSummary.copy(syncStatus = SyncStatus.EDIT)) {}
+            Spacer(Modifier.padding(5.dp))
+            CommentsSummaryUI(commentsSummary.copy(syncStatus = SyncStatus.DELETE)) {}
         }
     }
 }

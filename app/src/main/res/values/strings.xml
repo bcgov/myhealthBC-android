@@ -325,6 +325,7 @@
     <string name="loading">Loading…</string>
     <string name="corrected">Corrected</string>
     <string name="posting">Posting…</string>
+    <string name="deleting">Deleting…</string>
 
     <!--COMMENTS-->
     <string name="comment_edit">Edit comment</string>

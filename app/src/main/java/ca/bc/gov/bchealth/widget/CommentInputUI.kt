@@ -49,6 +49,7 @@ import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.compose.red
 import ca.bc.gov.bchealth.compose.white
 import ca.bc.gov.bchealth.ui.comment.Comment
+import ca.bc.gov.common.model.SyncStatus
 import java.time.Instant
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -293,7 +294,7 @@ private fun PreviewCommentInputEditUI() {
         text = "comment01",
         date = null,
         version = 0L,
-        isUploaded = true,
+        syncStatus = SyncStatus.UP_TO_DATE,
         entryTypeCode = "",
         createdBy = "",
         createdDateTime = date,
