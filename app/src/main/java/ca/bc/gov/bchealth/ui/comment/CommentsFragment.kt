@@ -96,9 +96,12 @@ class CommentsFragment : BaseFragment(null) {
     private fun observeComments() {
         launchOnStart {
             viewModel.uiState.collect { state ->
-                if (state.onError) {
-                    showError()
-                    viewModel.resetUiState()
+                when {
+                    state.onError -> {
+                        showError()
+                        viewModel.resetUiState()
+                    }
+                    state.commentsList != null && state.commentsList.isEmpty() -> popNavigation()
                 }
             }
         }

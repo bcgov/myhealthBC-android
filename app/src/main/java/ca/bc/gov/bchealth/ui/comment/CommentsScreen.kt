@@ -63,7 +63,7 @@ fun CommentsScreen(
     updateAction: (Comment) -> Unit,
     cancelAction: (Comment) -> Unit,
 ) {
-    val comments = uiState.commentsList
+    val comments = uiState.commentsList ?: return
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(

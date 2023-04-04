@@ -67,14 +67,18 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
             commentsViewModel.uiState.collect { state ->
                 getProgressBar()?.isVisible = state.onLoading
 
-                if (state.commentsSummary != null) {
-                    recordCommentsAdapter.submitList(listOf(state.commentsSummary)) {
-                        if (state.onCommentsUpdated) {
-                            scrollToBottom()
-                        }
-                    }
-                    getCommentView().clearComment()
+                val list = if (state.commentsSummary != null) {
+                    listOf(state.commentsSummary)
+                } else {
+                    listOf()
                 }
+
+                recordCommentsAdapter.submitList(list) {
+                    if (state.onCommentsUpdated) {
+                        scrollToBottom()
+                    }
+                }
+                getCommentView().clearComment()
 
                 handleError(state.onError)
             }

@@ -176,7 +176,7 @@ class CommentsViewModel @Inject constructor(
 data class CommentsUiState(
     val onLoading: Boolean = false,
     val onError: Boolean = false,
-    val commentsList: List<Comment> = emptyList(),
+    val commentsList: List<Comment>? = null,
     val commentsSummary: CommentsSummary? = null,
     val onCommentsUpdated: Boolean = false,
     val displayEditLayout: Boolean = false
