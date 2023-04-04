@@ -74,7 +74,7 @@ fun CommentsScreen(
     ) {
         Text(
             modifier = Modifier.padding(top = 16.dp, start = 32.dp, end = 32.dp),
-            text = stringResource(id = R.string.comments_medication_subtitle)
+            text = stringResource(id = R.string.comments_list_subtitle)
         )
 
         LazyColumn(

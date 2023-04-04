@@ -140,6 +140,17 @@ interface HealthGatewayPrivateApi {
         @Body commentUpdateRequest: CommentUpdateRequest
     ): Response<AddCommentResponse>
 
+    @HTTP(
+        method = "DELETE",
+        path = "$BASE_USER_PROFILE_SERVICE/{$HDID}/Comment",
+        hasBody = true
+    )
+    suspend fun deleteComment(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String,
+        @Body commentUpdateRequest: CommentUpdateRequest
+    ): Response<AddCommentResponse>
+
     @GET("$BASE_IMMUNIZATION_SERVICE/Immunization")
     suspend fun getImmunization(
         @Header(AUTHORIZATION) accessToken: String,

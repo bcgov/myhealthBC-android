@@ -28,11 +28,7 @@ class CommentsViewModel @Inject constructor(
     val uiState: StateFlow<CommentsUiState> = _uiState.asStateFlow()
 
     fun getComments(parentEntryId: String) = viewModelScope.launch {
-        _uiState.update {
-            it.copy(
-                onLoading = true
-            )
-        }
+        onLoading()
 
         try {
             val commentsDtoList = commentRepository.getLocalComments(parentEntryId)
@@ -46,19 +42,14 @@ class CommentsViewModel @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-            _uiState.update {
-                it.copy(
-                    onLoading = false,
-                    onError = true
-                )
-            }
+            handleException(e)
         }
     }
 
     fun addComment(parentEntryId: String, comment: String, entryTypeCode: String) =
         viewModelScope.launch {
             try {
-                _uiState.update { it.copy(onLoading = true) }
+                onLoading()
 
                 val commentsDtoList = commentRepository.addComment(
                     parentEntryId,
@@ -77,13 +68,7 @@ class CommentsViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
-                _uiState.update {
-                    it.copy(
-                        onError = true,
-                        onLoading = false
-                    )
-                }
+                handleException(e)
             }
         }
 
@@ -96,25 +81,14 @@ class CommentsViewModel @Inject constructor(
     fun updateComment(parentEntryId: String, comment: Comment) = viewModelScope.launch {
         comment.id ?: return@launch
 
-        val commentDto = CommentDto(
-            id = comment.id,
-            userProfileId = null,
-            text = comment.text,
-            entryTypeCode = comment.entryTypeCode,
-            parentEntryId = parentEntryId,
-            version = comment.version,
-            createdDateTime = comment.createdDateTime,
-            createdBy = comment.createdBy,
-            updatedDateTime = comment.updatedDateTime,
-            updatedBy = comment.updatedBy,
-            syncStatus = SyncStatus.EDIT,
-        )
-
         try {
-            _uiState.update {
-                it.copy(onLoading = true)
-            }
-            val comments = commentRepository.updateComment(commentDto)
+            onLoading()
+
+            val comments = commentRepository.enqueueEditComment(
+                comment.id,
+                comment.text.orEmpty(),
+                parentEntryId
+            )
 
             _uiState.update { it ->
                 it.copy(
@@ -126,13 +100,31 @@ class CommentsViewModel @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            handleException(e)
+        }
+    }
+
+    fun deleteComment(parentEntryId: String, comment: Comment) = viewModelScope.launch {
+        comment.id ?: return@launch
+
+        try {
+            onLoading()
+
+            val comments = commentRepository.enqueueDeleteComment(comment.id, parentEntryId)
+
             _uiState.update {
                 it.copy(
-                    onError = true,
-                    onLoading = false
+                    onLoading = false,
+                    displayEditLayout = false,
+                    commentsList = comments.map { comment ->
+                        comment.toUiModel()
+                    },
+                    commentsSummary = getCommentsSummary(comments, parentEntryId),
+                    onCommentsUpdated = true
                 )
             }
+        } catch (e: Exception) {
+            handleException(e)
         }
     }
 
@@ -161,6 +153,20 @@ class CommentsViewModel @Inject constructor(
                 onError = false,
                 commentsList = emptyList(),
                 commentsSummary = null
+            )
+        }
+    }
+
+    private fun onLoading() {
+        _uiState.update { it.copy(onLoading = true) }
+    }
+
+    private fun handleException(e: Exception) {
+        e.printStackTrace()
+        _uiState.update {
+            it.copy(
+                onError = true,
+                onLoading = false
             )
         }
     }

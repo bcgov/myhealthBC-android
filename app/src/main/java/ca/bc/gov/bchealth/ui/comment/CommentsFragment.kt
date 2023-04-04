@@ -60,7 +60,17 @@ class CommentsFragment : BaseFragment(null) {
     }
 
     private fun onTapDelete(comment: Comment) {
-        // todo
+        AlertDialogHelper.showAlertDialog(
+            context = requireContext(),
+            title = getString(R.string.comments_alert_delete_title),
+            msg = getString(R.string.comments_alert_delete_body),
+            positiveBtnMsg = getString(R.string.delete),
+            negativeBtnMsg = getString(R.string.cancel),
+            positiveBtnCallback = {
+                viewModel.deleteComment(args.parentEntryId, comment)
+            },
+            cancelable = true
+        )
     }
 
     private fun onTapSubmit(commentText: String) {

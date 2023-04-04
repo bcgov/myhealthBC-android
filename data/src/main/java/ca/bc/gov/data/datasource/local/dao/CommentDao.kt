@@ -28,4 +28,7 @@ interface CommentDao : BaseDao<CommentEntity> {
 
     @Query("UPDATE comments SET text=:content , sync_status=:syncStatus WHERE id = :commentId")
     suspend fun updateComment(commentId: String, content: String, syncStatus: SyncStatus)
+
+    @Query("UPDATE comments SET sync_status=:syncStatus WHERE id = :commentId")
+    suspend fun updateComment(commentId: String, syncStatus: SyncStatus)
 }

@@ -34,6 +34,14 @@ class CommentLocalDataSource @Inject constructor(
         return commentDao.updateComment(commentId, content, syncStatus)
     }
 
+    suspend fun updateCommentStatus(commentId: String, syncStatus: SyncStatus) {
+        return commentDao.updateComment(commentId, syncStatus)
+    }
+
+    suspend fun deleteComment(commentId: String) {
+        return commentDao.deleteById(commentId)
+    }
+
     suspend fun delete(parentEntryId: String?, syncStatus: SyncStatus) =
         commentDao.delete(parentEntryId, syncStatus)
 
