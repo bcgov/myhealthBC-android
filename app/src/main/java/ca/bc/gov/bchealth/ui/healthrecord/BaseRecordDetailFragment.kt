@@ -16,12 +16,14 @@ import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.comment.CommentsSummary
 import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.ui.healthrecord.comment.RecordCommentsAdapter
+import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.scrollToBottom
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.widget.AddCommentCallback
 import ca.bc.gov.bchealth.widget.AddCommentLayout
+import ca.bc.gov.bchealth.widget.CommentFocusChangeCallback
 import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.repository.SYNC_COMMENTS
 
@@ -55,6 +57,19 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
                         commentText,
                         getCommentEntryTypeCode().value,
                     )
+                }
+            }
+        })
+
+        addFocusChangeListener(object : CommentFocusChangeCallback {
+            override fun onFocusChange(hasFocus: Boolean) {
+                if (hasFocus) {
+                    getScrollableView()?.setOnTouchListener { view, _ ->
+                        requireContext().hideKeyboard(view)
+                        view?.clearFocus()
+                        this@with.clearFocus()
+                        return@setOnTouchListener false
+                    }
                 }
             }
         })
