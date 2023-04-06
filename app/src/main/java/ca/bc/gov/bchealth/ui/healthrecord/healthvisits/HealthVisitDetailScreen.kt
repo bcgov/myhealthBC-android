@@ -24,6 +24,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordListItem
 import ca.bc.gov.bchealth.widget.CommentInputUI
 import ca.bc.gov.common.BuildConfig
+import ca.bc.gov.common.model.SyncStatus
 
 @Composable
 fun BoxScope.HealthVisitDetailScreen(
@@ -93,15 +94,14 @@ private fun PreviewHealthVisitDetailContent() {
                     )
                 )
             ),
-            {},
-            {},
+            {}, {},
             CommentsSummary(
                 text = "comment05",
                 date = null,
                 entryTypeCode = "",
                 count = 5,
                 parentEntryId = "",
-                isUploaded = true
+                syncStatus = SyncStatus.UP_TO_DATE
             ),
             {}
         )

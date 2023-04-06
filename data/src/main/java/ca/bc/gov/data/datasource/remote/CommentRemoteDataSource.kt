@@ -88,4 +88,28 @@ class CommentRemoteDataSource @Inject constructor(
 
         return response.toDto()
     }
+
+    suspend fun deleteComment(
+        commentDto: CommentDto,
+        hdid: String,
+        accessToken: String
+    ) {
+        val commentUpdateRequest = CommentUpdateRequest(
+            id = commentDto.id,
+            text = commentDto.text.orEmpty(),
+            parentEntryId = commentDto.parentEntryId,
+            userProfileId = hdid,
+            entryTypeCode = commentDto.entryTypeCode,
+            version = commentDto.version,
+            createdDateTime = commentDto.createdDateTime.toString(),
+            createdBy = commentDto.createdBy.orEmpty()
+        )
+        safeCall {
+            healthGatewayPrivateApi.deleteComment(
+                hdid,
+                accessToken,
+                commentUpdateRequest
+            )
+        } ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
+    }
 }

@@ -49,6 +49,7 @@ import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.compose.red
 import ca.bc.gov.bchealth.widget.CommentInputUI
 import ca.bc.gov.bchealth.widget.EditableCommentInputUI
+import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.utils.toDateTimeString
 import java.time.Instant
 
@@ -62,7 +63,7 @@ fun CommentsScreen(
     updateAction: (Comment) -> Unit,
     cancelAction: (Comment) -> Unit,
 ) {
-    val comments = uiState.commentsList
+    val comments = uiState.commentsList ?: return
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
@@ -74,7 +75,7 @@ fun CommentsScreen(
     ) {
         Text(
             modifier = Modifier.padding(top = 16.dp, start = 32.dp, end = 32.dp),
-            text = stringResource(id = R.string.comments_medication_subtitle)
+            text = stringResource(id = R.string.comments_list_subtitle)
         )
 
         LazyColumn(
@@ -113,11 +114,6 @@ private fun CommentItemUI(
     var expanded by remember { mutableStateOf(false) }
 
     val commentMsg = comment.text.orEmpty()
-    val footer = if (comment.isUploaded) {
-        comment.date?.toDateTimeString().orEmpty()
-    } else {
-        stringResource(R.string.posting)
-    }
 
     val alpha = if (displayEditLayout) 0.3f else 1f
 
@@ -145,7 +141,7 @@ private fun CommentItemUI(
                 )
 
                 Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
-                    if (displayEditLayout.not() && comment.isUploaded) {
+                    if (displayEditLayout.not() && comment.syncStatus == SyncStatus.UP_TO_DATE) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_comment_options),
                             contentScale = ContentScale.Inside,
@@ -175,13 +171,26 @@ private fun CommentItemUI(
                 }
             }
 
-            Text(
-                text = footer,
-                style = MyHealthTypography.caption.copy(color = grey),
-                modifier = Modifier.padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
-            )
+            CommentFooter(comment)
         }
     }
+}
+
+@Composable
+private fun CommentFooter(comment: Comment) {
+    val footer = with(comment) {
+        if (syncStatus == SyncStatus.UP_TO_DATE && date != null) {
+            date.toDateTimeString()
+        } else {
+            syncStatus.getDescription()?.let { stringResource(id = it) }.orEmpty()
+        }
+    }
+
+    Text(
+        text = footer,
+        style = MyHealthTypography.caption.copy(color = grey),
+        modifier = Modifier.padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
+    )
 }
 
 @Composable
@@ -221,7 +230,7 @@ fun PreviewCommentsContent() {
         text = "This is a long comment that should break the line",
         date = date,
         version = 0L,
-        isUploaded = true,
+        syncStatus = SyncStatus.UP_TO_DATE,
         entryTypeCode = "",
         createdBy = "",
         createdDateTime = date,
@@ -231,11 +240,11 @@ fun PreviewCommentsContent() {
 
     val comments = listOf(
         comment,
-        comment.copy(isUploaded = false),
+        comment.copy(syncStatus = SyncStatus.EDIT),
+        comment.copy(syncStatus = SyncStatus.INSERT),
+        comment.copy(syncStatus = SyncStatus.DELETE),
     )
 
-    val uiState = CommentsUiState(
-        commentsList = comments
-    )
+    val uiState = CommentsUiState(commentsList = comments)
     CommentsScreen(uiState, {}, {}, {}, {}, {})
 }

@@ -1,5 +1,6 @@
 package ca.bc.gov.bchealth.ui.healthrecord.comment
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,11 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.ItemCommentsCountBinding
 import ca.bc.gov.bchealth.ui.comment.CommentsSummary
+import ca.bc.gov.bchealth.ui.comment.getDescription
+import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.utils.toDateTimeString
 
 /**
  * @author Pinakin Kansara
  */
+@Deprecated("Consider using CommentsSummaryUI")
 class RecordCommentsAdapter(
     private val onItemClick: (CommentsSummary) -> Unit
 ) : ListAdapter<CommentsSummary, RecordCommentsAdapter.CommentsCountViewHolder>(
@@ -38,11 +42,15 @@ class RecordCommentsAdapter(
             )
 
             tvComment.text = summary.text
-            tvDateTime.text = if (summary.isUploaded && summary.date != null) {
-                summary.date.toDateTimeString()
-            } else {
-                holder.itemView.context.getString(R.string.posting)
-            }
+            tvDateTime.text = getFooterText(summary, holder.itemView.context)
+        }
+    }
+
+    private fun getFooterText(summary: CommentsSummary, context: Context): String = with(summary) {
+        if (syncStatus == SyncStatus.UP_TO_DATE && date != null) {
+            date.toDateTimeString()
+        } else {
+            syncStatus.getDescription()?.let { context.getString(it) }.orEmpty()
         }
     }
 
