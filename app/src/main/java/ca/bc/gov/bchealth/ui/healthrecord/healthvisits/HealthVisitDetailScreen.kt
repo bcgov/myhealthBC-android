@@ -1,5 +1,6 @@
 package ca.bc.gov.bchealth.ui.healthrecord.healthvisits
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -11,7 +12,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
@@ -26,6 +30,7 @@ import ca.bc.gov.bchealth.widget.CommentInputUI
 import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.common.model.SyncStatus
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun BoxScope.HealthVisitDetailScreen(
     uiState: HealthVisitDetailUiState,
@@ -34,9 +39,15 @@ fun BoxScope.HealthVisitDetailScreen(
     commentsSummary: CommentsSummary?,
     onSubmitComment: (String) -> Unit,
 ) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(onPress = { keyboardController?.hide() })
+            }
             .align(Alignment.TopCenter),
     ) {
         Column(
