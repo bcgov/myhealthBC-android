@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.individual
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -29,6 +30,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordA
 import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.hide
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.redirect
@@ -83,6 +85,8 @@ class IndividualHealthRecordFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupSearchView()
+
         setupSwipeToRefresh()
 
         setUpRecyclerView()
@@ -118,9 +122,6 @@ class IndividualHealthRecordFragment :
                                 }
                             }
                         }
-                        R.id.menu_filter -> {
-                            findNavController().navigate(R.id.filterFragment)
-                        }
                         R.id.menu_settings -> {
                             findNavController().navigate(R.id.settingsFragment)
                         }
@@ -128,6 +129,13 @@ class IndividualHealthRecordFragment :
                     return@setOnMenuItemClickListener true
                 }
             }
+        }
+    }
+
+    private fun setupSearchView() {
+        binding.content.searchBar.ivFilter.setOnClickListener {
+            it.requestFocus()
+            findNavController().navigate(R.id.filterFragment)
         }
     }
 
@@ -166,6 +174,8 @@ class IndividualHealthRecordFragment :
                 hiddenMedicationRecordsAdapter.submitList(emptyList())
                 binding.emptyView.tvNoRecord.text = getString(R.string.fetching_records)
                 binding.emptyView.tvClearFilterMsg.text = ""
+
+                binding.content.searchBar.layoutSearch.hide()
             } else {
                 binding.content.srHealthRecords.isRefreshing = false
                 binding.emptyView.tvNoRecord.text = getString(R.string.no_records_found)
@@ -179,9 +189,7 @@ class IndividualHealthRecordFragment :
     private fun observeHealthRecords() {
         launchOnStart {
             viewModel.uiState.collect { uiState ->
-                if (uiState.isBcscAuthenticatedPatientAvailable != null &&
-                    uiState.isBcscAuthenticatedPatientAvailable
-                ) {
+                if (uiState.isBcscAuthenticatedPatientAvailable == true) {
                     updateUi(uiState)
                 }
             }
@@ -189,7 +197,6 @@ class IndividualHealthRecordFragment :
     }
 
     private fun updateUi(uiState: IndividualHealthRecordsUiState) {
-
         if (!uiState.isHgServicesUp) {
             binding.root.showServiceDownMessage(requireContext())
             binding.content.srHealthRecords.isRefreshing = false
@@ -205,17 +212,18 @@ class IndividualHealthRecordFragment :
         uiState.bcscAuthenticatedPatientDto?.let {
             setToolBar(it.fullName)
         }
+
+        binding.content.searchBar.layoutSearch.isVisible = uiState.isBcscSessionActive == true
+
         with(binding.topAppBar1.menu) {
             findItem(R.id.menu_refresh).isVisible =
-                uiState.isBcscSessionActive != null && uiState.isBcscSessionActive && FLAG_MANUAL_REFRESH
-            findItem(R.id.menu_filter).isVisible =
-                uiState.isBcscSessionActive != null && uiState.isBcscSessionActive
+                uiState.isBcscSessionActive == true && FLAG_MANUAL_REFRESH
         }
 
         binding.content.srHealthRecords.isEnabled =
-            uiState.isBcscSessionActive != null && uiState.isBcscSessionActive && FLAG_MANUAL_REFRESH
+            uiState.isBcscSessionActive == true && FLAG_MANUAL_REFRESH
 
-        if (uiState.isBcscSessionActive != null && uiState.isBcscSessionActive) {
+        if (uiState.isBcscSessionActive == true) {
             val adapters = arrayListOf<RecyclerView.Adapter<out RecyclerView.ViewHolder?>>()
 
             if (FLAG_IMMZ_BANNER && sharedViewModel.displayImmunizationBanner) {
