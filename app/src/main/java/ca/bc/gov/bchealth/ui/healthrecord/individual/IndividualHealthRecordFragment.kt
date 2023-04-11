@@ -57,10 +57,14 @@ class IndividualHealthRecordFragment :
     private lateinit var healthRecordsAdapter: HealthRecordsAdapter
     private lateinit var immunizationBannerAdapter: ImmunizationBannerAdapter
     private lateinit var concatAdapter: ConcatAdapter
+
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val filterSharedViewModel: PatientFilterViewModel by activityViewModels()
 
+    override fun getSearchBar() = binding.content.searchBar
     override fun getFilterViewModel() = filterSharedViewModel
+    override fun getFilterFragmentId() = R.id.filterFragment
+
     override fun getFilter() = healthRecordsAdapter.filter
     override fun getLayoutChipGroup() = binding.content.chipGroup
 
@@ -86,21 +90,14 @@ class IndividualHealthRecordFragment :
         super.onViewCreated(view, savedInstanceState)
 
         setupSearchView()
-
         setupSwipeToRefresh()
-
         setUpRecyclerView()
 
         handleBcscAuthResponse()
-
         observeHealthRecords()
-
         observeHealthRecordsSyncCompletion()
-
         clearFilterClickListener()
-
         observeFilterState()
-
         observeNavigationFlow()
     }
 
@@ -129,13 +126,6 @@ class IndividualHealthRecordFragment :
                     return@setOnMenuItemClickListener true
                 }
             }
-        }
-    }
-
-    private fun setupSearchView() {
-        binding.content.searchBar.ivFilter.setOnClickListener {
-            it.requestFocus()
-            findNavController().navigate(R.id.filterFragment)
         }
     }
 
@@ -300,7 +290,9 @@ class IndividualHealthRecordFragment :
 
                 IMMUNIZATION_RECORD ->
                     IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToImmunizationRecordDetailFragment(it.recordId)
+                        .actionIndividualHealthRecordFragmentToImmunizationRecordDetailFragment(
+                            it.recordId
+                        )
 
                 HEALTH_VISIT_RECORD ->
                     IndividualHealthRecordFragmentDirections
@@ -308,7 +300,9 @@ class IndividualHealthRecordFragment :
 
                 SPECIAL_AUTHORITY_RECORD ->
                     IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordFragmentToSpecialAuthorityDetailsFragment(it.recordId)
+                        .actionIndividualHealthRecordFragmentToSpecialAuthorityDetailsFragment(
+                            it.recordId
+                        )
 
                 HOSPITAL_VISITS_RECORD ->
                     IndividualHealthRecordFragmentDirections
@@ -316,7 +310,9 @@ class IndividualHealthRecordFragment :
 
                 CLINICAL_DOCUMENT_RECORD ->
                     IndividualHealthRecordFragmentDirections
-                        .actionIndividualHealthRecordsFragmentToClinicalDocumentDetailsFragment(it.recordId)
+                        .actionIndividualHealthRecordsFragmentToClinicalDocumentDetailsFragment(
+                            it.recordId
+                        )
             }
 
             findNavController().navigate(navDirection)

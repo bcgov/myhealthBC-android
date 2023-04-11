@@ -32,18 +32,21 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
     private val viewModel: DependentRecordsViewModel by viewModels()
     private val filterSharedViewModel: DependentFilterViewModel by activityViewModels()
 
+    override fun getSearchBar() = binding.content.searchBar
     override fun getFilterViewModel() = filterSharedViewModel
     override fun getFilter() = healthRecordsAdapter.filter
     override fun getLayoutChipGroup() = binding.content.chipGroup
+    override fun getFilterFragmentId() = R.id.dependentFilterFragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setupSwipeToRefresh()
         setUpRecyclerView()
+        setupSearchView()
 
         launchOnStart { observeUiState() }
         viewModel.loadRecords(patientId = args.patientId, hdid = args.hdid)
-
         clearFilterClickListener()
         observeFilterState()
     }
@@ -90,7 +93,10 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
 
                 HealthRecordType.LAB_RESULT_RECORD ->
                     DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToLabTestDetailFragment(it.recordId, args.hdid)
+                        .actionDependentRecordsFragmentToLabTestDetailFragment(
+                            it.recordId,
+                            args.hdid
+                        )
 
                 HealthRecordType.IMMUNIZATION_RECORD ->
                     DependentRecordsFragmentDirections
@@ -110,7 +116,10 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
 
                 HealthRecordType.CLINICAL_DOCUMENT_RECORD ->
                     DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToClinicalDocsDetailsFragment(it.recordId, args.hdid)
+                        .actionDependentRecordsFragmentToClinicalDocsDetailsFragment(
+                            it.recordId,
+                            args.hdid
+                        )
             }
 
             navDirection?.let { findNavController().navigate(navDirection) }
@@ -147,9 +156,6 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
                             R.id.dependentProfileFragment,
                             bundleOf("patient_id" to args.patientId)
                         )
-                    }
-                    R.id.menu_filter -> {
-                        findNavController().navigate(R.id.dependentFilterFragment)
                     }
                 }
                 return@setOnMenuItemClickListener true
