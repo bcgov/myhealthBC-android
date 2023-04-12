@@ -40,6 +40,7 @@ import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.common.BuildConfig.FLAG_IMMZ_BANNER
 import ca.bc.gov.common.BuildConfig.FLAG_MANUAL_REFRESH
+import ca.bc.gov.common.BuildConfig.FLAG_SEARCH_RECORDS
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -122,6 +123,9 @@ class IndividualHealthRecordFragment :
                         R.id.menu_settings -> {
                             findNavController().navigate(R.id.settingsFragment)
                         }
+                        R.id.menu_filter -> {
+                            findNavController().navigate(R.id.filterFragment)
+                        }
                     }
                     return@setOnMenuItemClickListener true
                 }
@@ -203,11 +207,14 @@ class IndividualHealthRecordFragment :
             setToolBar(it.fullName)
         }
 
-        binding.content.searchBar.layoutSearch.isVisible = uiState.isBcscSessionActive == true
+        binding.content.searchBar.layoutSearch.isVisible = uiState.isBcscSessionActive == true && FLAG_SEARCH_RECORDS
 
         with(binding.topAppBar1.menu) {
             findItem(R.id.menu_refresh).isVisible =
                 uiState.isBcscSessionActive == true && FLAG_MANUAL_REFRESH
+
+            findItem(R.id.menu_filter).isVisible =
+                uiState.isBcscSessionActive == true && FLAG_SEARCH_RECORDS.not()
         }
 
         binding.content.srHealthRecords.isEnabled =

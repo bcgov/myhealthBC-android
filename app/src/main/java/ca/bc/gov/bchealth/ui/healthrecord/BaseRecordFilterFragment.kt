@@ -17,6 +17,7 @@ import ca.bc.gov.bchealth.ui.filter.FilterViewModel
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.utils.hide
 import ca.bc.gov.bchealth.utils.show
+import ca.bc.gov.common.BuildConfig
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -35,6 +36,8 @@ abstract class BaseRecordFilterFragment(@LayoutRes id: Int) : BaseFragment(id) {
     abstract fun getFilterFragmentId(): Int
 
     fun setupSearchView() {
+        if (BuildConfig.FLAG_SEARCH_RECORDS.not()) return
+
         getSearchBar().apply {
 
             ivFilter.setOnClickListener {
@@ -79,7 +82,9 @@ abstract class BaseRecordFilterFragment(@LayoutRes id: Int) : BaseFragment(id) {
 
     fun observeFilterState() {
         getFilterViewModel().filterState.collectOnStart { filterState ->
-            getSearchBar().searchRecords.setQuery(filterState.search, false)
+            if (BuildConfig.FLAG_SEARCH_RECORDS) {
+                getSearchBar().searchRecords.setQuery(filterState.search, false)
+            }
             // update filter date selection
             if (isFilterDateSelected(filterState)) {
                 getLayoutChipGroup().chipDate.apply {

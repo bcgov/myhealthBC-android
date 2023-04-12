@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.dependents.records
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
@@ -22,6 +23,7 @@ import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.BuildConfig.FLAG_MANUAL_REFRESH
+import ca.bc.gov.common.BuildConfig.FLAG_SEARCH_RECORDS
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -49,6 +51,8 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
         viewModel.loadRecords(patientId = args.patientId, hdid = args.hdid)
         clearFilterClickListener()
         observeFilterState()
+
+        binding.content.searchBar.layoutSearch.isVisible = FLAG_SEARCH_RECORDS
     }
 
     private suspend fun observeUiState() {
@@ -139,6 +143,7 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
             }
             inflateMenu(R.menu.menu_dependent_health_record)
             menu.findItem(R.id.menu_refresh).isVisible = FLAG_MANUAL_REFRESH
+            menu.findItem(R.id.menu_filter).isVisible = FLAG_SEARCH_RECORDS.not()
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
 
@@ -156,6 +161,9 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
                             R.id.dependentProfileFragment,
                             bundleOf("patient_id" to args.patientId)
                         )
+                    }
+                    R.id.menu_filter -> {
+                        findNavController().navigate(R.id.dependentFilterFragment)
                     }
                 }
                 return@setOnMenuItemClickListener true
