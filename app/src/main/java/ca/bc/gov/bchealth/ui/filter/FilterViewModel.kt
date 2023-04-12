@@ -14,6 +14,12 @@ abstract class FilterViewModel : ViewModel() {
         updateFilter(listOf(TimelineTypeFilter.ALL.name), null, null)
     }
 
+    fun updateFilter(search: String) {
+        _filterState.update { state ->
+            state.copy(search = search)
+        }
+    }
+
     fun updateFilter(timelineTypeFilter: List<String>, fromDate: String?, toDate: String?) {
         val startDate: String? = if (fromDate.isNullOrBlank()) {
             null
@@ -30,21 +36,24 @@ abstract class FilterViewModel : ViewModel() {
             state.copy(
                 timelineTypeFilter = timelineTypeFilter,
                 filterFromDate = startDate,
-                filterToDate = endDate
+                filterToDate = endDate,
             )
         }
     }
 
-    fun getFilterString(): String {
-        var filterString =
-            filterState.value.timelineTypeFilter.joinToString(",")
-        if (filterState.value.filterFromDate != null) {
-            filterString = filterString.plus(",FROM:")
-                .plus(filterState.value.filterFromDate)
+    fun getFilterString(): String = with(filterState.value) {
+        var filterString = timelineTypeFilter.joinToString(",")
+
+        if (filterFromDate != null) {
+            filterString = filterString.plus(",FROM:").plus(filterFromDate)
         }
-        if (filterState.value.filterToDate != null) {
-            filterString =
-                filterString.plus(",TO:").plus(filterState.value.filterToDate)
+
+        if (filterToDate != null) {
+            filterString = filterString.plus(",TO:").plus(filterToDate)
+        }
+
+        if (search != null) {
+            filterString = filterString.plus(",SEARCH:").plus(search)
         }
 
         return filterString
@@ -54,5 +63,6 @@ abstract class FilterViewModel : ViewModel() {
 data class FilterUiState(
     val timelineTypeFilter: List<String> = listOf(TimelineTypeFilter.ALL.name),
     val filterFromDate: String? = null,
-    val filterToDate: String? = null
+    val filterToDate: String? = null,
+    val search: String? = null
 )

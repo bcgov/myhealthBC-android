@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.dependents.records
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
@@ -22,6 +23,7 @@ import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.BuildConfig.FLAG_MANUAL_REFRESH
+import ca.bc.gov.common.BuildConfig.FLAG_SEARCH_RECORDS
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,20 +34,25 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
     private val viewModel: DependentRecordsViewModel by viewModels()
     private val filterSharedViewModel: DependentFilterViewModel by activityViewModels()
 
+    override fun getSearchBar() = binding.content.searchBar
     override fun getFilterViewModel() = filterSharedViewModel
     override fun getFilter() = healthRecordsAdapter.filter
     override fun getLayoutChipGroup() = binding.content.chipGroup
+    override fun getFilterFragmentId() = R.id.dependentFilterFragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setupSwipeToRefresh()
         setUpRecyclerView()
+        setupSearchView()
 
         launchOnStart { observeUiState() }
         viewModel.loadRecords(patientId = args.patientId, hdid = args.hdid)
-
         clearFilterClickListener()
         observeFilterState()
+
+        binding.content.searchBar.layoutSearch.isVisible = FLAG_SEARCH_RECORDS
     }
 
     private suspend fun observeUiState() {
@@ -90,7 +97,10 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
 
                 HealthRecordType.LAB_RESULT_RECORD ->
                     DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToLabTestDetailFragment(it.recordId, args.hdid)
+                        .actionDependentRecordsFragmentToLabTestDetailFragment(
+                            it.recordId,
+                            args.hdid
+                        )
 
                 HealthRecordType.IMMUNIZATION_RECORD ->
                     DependentRecordsFragmentDirections
@@ -110,7 +120,10 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
 
                 HealthRecordType.CLINICAL_DOCUMENT_RECORD ->
                     DependentRecordsFragmentDirections
-                        .actionDependentRecordsFragmentToClinicalDocsDetailsFragment(it.recordId, args.hdid)
+                        .actionDependentRecordsFragmentToClinicalDocsDetailsFragment(
+                            it.recordId,
+                            args.hdid
+                        )
             }
 
             navDirection?.let { findNavController().navigate(navDirection) }
@@ -130,6 +143,7 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
             }
             inflateMenu(R.menu.menu_dependent_health_record)
             menu.findItem(R.id.menu_refresh).isVisible = FLAG_MANUAL_REFRESH
+            menu.findItem(R.id.menu_filter).isVisible = FLAG_SEARCH_RECORDS.not()
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
 

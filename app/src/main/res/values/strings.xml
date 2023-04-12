@@ -434,6 +434,7 @@
     <string name="from_yyyy_mm_dd">From (yyyy-mm-dd)</string>
     <string name="to_yyyy_mm_dd">To (yyyy-mm-dd)</string>
     <string name="timeline">Timeline</string>
+    <string name="search_hint">Type here to search…</string>
 
     <!--Lab test-->
     <string name="lab_test">Lab test</string>

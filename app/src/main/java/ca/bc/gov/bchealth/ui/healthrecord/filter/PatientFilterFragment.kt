@@ -3,7 +3,6 @@ package ca.bc.gov.bchealth.ui.healthrecord.filter
 import androidx.fragment.app.activityViewModels
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.filter.FilterFragment
-import ca.bc.gov.common.BuildConfig
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,9 +19,6 @@ class PatientFilterFragment : FilterFragment() {
         R.id.chip_health_visit,
         R.id.chip_special_authority,
         R.id.chip_hospital_visits,
-    ).apply {
-        if (BuildConfig.FLAG_CLINICAL_DOCUMENTS) {
-            this.add(R.id.chip_clinical_document)
-        }
-    }
+        R.id.chip_clinical_document
+    )
 }

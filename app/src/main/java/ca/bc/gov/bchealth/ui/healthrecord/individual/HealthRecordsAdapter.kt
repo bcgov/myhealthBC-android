@@ -56,8 +56,8 @@ class HealthRecordsAdapter(
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(charSequence: CharSequence?): FilterResults {
-                val filteredList = mutableListOf<HealthRecordItem>()
-                val tempList = mutableListOf<HealthRecordItem>()
+                val resultList = mutableListOf<HealthRecordItem>()
+
                 if (charSequence.isNullOrBlank()) {
                     return FilterResults()
                 } else {
@@ -65,26 +65,35 @@ class HealthRecordsAdapter(
 
                     val fromDate = queries.find { it.contains("FROM:") }?.substringAfter(":")
                     val toDate = queries.find { it.contains("TO:") }?.substringAfter(":")
+                    val search = queries.find { it.contains("SEARCH:") }?.substringAfter(":")
 
-                    tempList.addAll(getFilterByDate(fromDate, toDate))
+                    val listFilteredByDate = getFilterByDate(fromDate, toDate)
+
+                    val listFilteredBySearch = if (search != null && search.isNotBlank()) {
+                        listFilteredByDate.filter { record ->
+                            record.title.contains(search, true)
+                        }
+                    } else {
+                        listFilteredByDate
+                    }
 
                     queries.forEach { query ->
                         when (query) {
-                            TimelineTypeFilter.ALL.name -> filteredList.addAll(tempList)
+                            TimelineTypeFilter.ALL.name -> resultList.addAll(listFilteredBySearch)
 
                             else -> {
                                 val typeFilter = TimelineTypeFilter.findByName(query)
                                 typeFilter?.let {
-                                    val itemsToAdd = tempList.filter {
+                                    val itemsToAdd = listFilteredBySearch.filter {
                                         it.healthRecordType == typeFilter.recordType
                                     }
-                                    filteredList.addAll(itemsToAdd)
+                                    resultList.addAll(itemsToAdd)
                                 }
                             }
                         }
                     }
                     return FilterResults().apply {
-                        values = filteredList.sortedByDescending { it.date }
+                        values = resultList.sortedByDescending { it.date }
                     }
                 }
             }

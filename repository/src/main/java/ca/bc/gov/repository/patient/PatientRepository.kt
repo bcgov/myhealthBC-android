@@ -1,6 +1,5 @@
 package ca.bc.gov.repository.patient
 
-import ca.bc.gov.common.BuildConfig.FLAG_CLINICAL_DOCUMENTS
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.AuthenticationStatus
@@ -108,12 +107,9 @@ class PatientRepository @Inject constructor(
             ?: throw getNoRecordFoundException(patientId)
     }
 
-    suspend fun getPatientWithClinicalDocuments(patientId: Long): List<ClinicalDocumentDto> {
-        if (FLAG_CLINICAL_DOCUMENTS.not()) return emptyList()
-
-        return patientLocalDataSource.getPatientWithClinicalDocuments(patientId)?.clinicalDocuments
+    suspend fun getPatientWithClinicalDocuments(patientId: Long): List<ClinicalDocumentDto> =
+        patientLocalDataSource.getPatientWithClinicalDocuments(patientId)?.clinicalDocuments
             ?: throw getNoRecordFoundException(patientId)
-    }
 
     private fun getNoRecordFoundException(patientId: Long) = MyHealthException(
         DATABASE_ERROR, "No record found for patient id=  $patientId"
