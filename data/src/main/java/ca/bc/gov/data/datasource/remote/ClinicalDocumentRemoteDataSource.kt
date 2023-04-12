@@ -1,6 +1,5 @@
 package ca.bc.gov.data.datasource.remote
 
-import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.common.const.MESSAGE_INVALID_RESPONSE
 import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.exceptions.InvalidResponseException
@@ -32,8 +31,6 @@ class ClinicalDocumentRemoteDataSource @Inject constructor(
     }
 
     suspend fun getClinicalDocument(token: String, hdid: String): List<ClinicalDocumentDto> {
-        if (BuildConfig.FLAG_CLINICAL_DOCUMENTS.not()) return emptyList()
-
         val response = safeCall { privateApi.getClinicalDocument(token, hdid) }
             ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 
