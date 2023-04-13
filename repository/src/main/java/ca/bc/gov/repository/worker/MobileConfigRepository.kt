@@ -21,11 +21,7 @@ class MobileConfigRepository @Inject constructor(
 
     @Throws(ServiceDownException::class)
     suspend fun refreshMobileConfiguration() {
-        val isHgServicesUp = fetchAndStoreMobileConfiguration().online ?: false
-
-        if (isHgServicesUp.not()) {
-            throw ServiceDownException()
-        }
+        fetchAndStoreMobileConfiguration()
     }
 
     private suspend fun fetchAndStoreMobileConfiguration(): MobileConfigurationResponse {
