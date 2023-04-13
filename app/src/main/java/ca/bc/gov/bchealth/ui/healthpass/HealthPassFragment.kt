@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -32,6 +33,7 @@ import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.bchealth.widget.RecyclerView
+import ca.bc.gov.common.BuildConfig
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.Snackbar
@@ -216,6 +218,12 @@ class HealthPassFragment : BaseFragment(R.layout.fragment_helath_pass) {
             elevation = 0f
         }
         with(binding.layoutToolbar.topAppBar) {
+            if (BuildConfig.FLAG_SERVICE_TAB) {
+                setNavigationIcon(R.drawable.ic_toolbar_back)
+                setNavigationOnClickListener {
+                    findNavController().popBackStack()
+                }
+            }
             inflateMenu(R.menu.settings_menu)
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
