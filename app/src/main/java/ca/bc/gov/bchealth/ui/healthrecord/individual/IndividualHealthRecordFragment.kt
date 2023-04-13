@@ -207,7 +207,8 @@ class IndividualHealthRecordFragment :
             setToolBar(it.fullName)
         }
 
-        binding.content.searchBar.layoutSearch.isVisible = uiState.isBcscSessionActive == true && FLAG_SEARCH_RECORDS
+        binding.content.searchBar.layoutSearch.isVisible =
+            uiState.isBcscSessionActive == true && FLAG_SEARCH_RECORDS && uiState.onHealthRecords.isNotEmpty()
 
         with(binding.topAppBar1.menu) {
             findItem(R.id.menu_refresh).isVisible =

@@ -1,5 +1,6 @@
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_search"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,7 +8,9 @@
     android:layout_marginTop="@dimen/space_1_x"
     android:layout_marginEnd="@dimen/space_4_x"
     android:background="@drawable/shape_rectangle_medium_grey"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:visibility="gone"
+    tools:visibility="visible">
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_records"

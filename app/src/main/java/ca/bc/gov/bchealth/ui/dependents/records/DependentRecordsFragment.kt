@@ -78,6 +78,18 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
                     }
                     healthRecordsAdapter.setData(uiState.records)
                     healthRecordsAdapter.filter.filter(filterSharedViewModel.getFilterString())
+                    binding.content.searchBar.layoutSearch.isVisible = uiState.records.isNotEmpty()
+
+                    binding.emptyView.apply {
+                        if (uiState.onLoading) {
+                            tvNoRecord.text = getString(R.string.fetching_records)
+                            tvClearFilterMsg.text = ""
+                        } else {
+                            tvNoRecord.text = getString(R.string.no_records_found)
+                            tvClearFilterMsg.text =
+                                getString(R.string.clear_all_filters_and_start_over)
+                        }
+                    }
                 }
             }
         }
