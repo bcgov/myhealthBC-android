@@ -341,9 +341,12 @@ class IndividualHealthRecordFragment :
             hiddenMedicationRecordsAdapter,
             healthRecordsAdapter
         )
-        binding.content.rvHealthRecords.adapter = concatAdapter
-        binding.content.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
-        binding.content.rvHealthRecords.emptyView = binding.emptyView.root
+        binding.content.rvHealthRecords.apply {
+            adapter = concatAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+            emptyView = binding.emptyView.root
+            excludeAdapterFromEmptyCount(immunizationBannerAdapter)
+        }
     }
 
     private fun openImmunizationPage() {
