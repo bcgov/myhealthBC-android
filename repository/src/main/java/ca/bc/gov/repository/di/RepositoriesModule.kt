@@ -11,6 +11,7 @@ import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
 import ca.bc.gov.data.datasource.local.LocalDataSource
 import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
+import ca.bc.gov.data.datasource.local.OrganDonationLocalDataSource
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
@@ -21,6 +22,7 @@ import ca.bc.gov.data.datasource.remote.FeedbackRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
+import ca.bc.gov.data.datasource.remote.OrganDonorRemoteDataSource
 import ca.bc.gov.data.datasource.remote.TermsOfServiceRemoteDataSource
 import ca.bc.gov.repository.BannerRepository
 import ca.bc.gov.repository.ClearStorageRepository
@@ -47,6 +49,7 @@ import ca.bc.gov.repository.labtest.LabTestRepository
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.ProcessQrRepository
 import ca.bc.gov.repository.scanner.QrScanner
+import ca.bc.gov.repository.services.OrganDonorRepository
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.testrecord.CovidTestRepository
 import ca.bc.gov.repository.utils.Base64ToInputImageConverter
@@ -309,4 +312,11 @@ class RepositoriesModule {
         remoteDataSource: FeedbackRemoteDataSource,
         bcscAuthRepo: BcscAuthRepo,
     ): FeedbackRepository = FeedbackRepository(remoteDataSource, bcscAuthRepo)
+
+    @Provides
+    @Singleton
+    fun providesOrganDonorRepository(
+        remoteDataSource: OrganDonorRemoteDataSource,
+        localDataSource: OrganDonationLocalDataSource
+    ): OrganDonorRepository = OrganDonorRepository(remoteDataSource, localDataSource)
 }

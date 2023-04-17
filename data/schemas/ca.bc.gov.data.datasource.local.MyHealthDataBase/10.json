@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 9,
-    "identityHash": "e38b40c09c8d08b0ea8f84f21c85ca56",
+    "version": 10,
+    "identityHash": "a57334caf3b63777ce42ba0da5796166",
     "entities": [
       {
         "tableName": "patient",
@@ -1776,7 +1776,7 @@
       },
       {
         "tableName": "organ_donation",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `status` TEXT NOT NULL DEFAULT 'Unknown', `status_message` TEXT, `registration_file_id` TEXT, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `status` TEXT NOT NULL DEFAULT 'Unknown', `status_message` TEXT, `registration_file_id` TEXT, `decision_file` TEXT, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1808,6 +1808,12 @@
             "columnName": "registration_file_id",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "file",
+            "columnName": "decision_file",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -1835,7 +1841,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e38b40c09c8d08b0ea8f84f21c85ca56')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a57334caf3b63777ce42ba0da5796166')"
     ]
   }
 }

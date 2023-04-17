@@ -248,7 +248,7 @@ class BcscAuthViewModel @Inject constructor(
                 it.copy(
                     showLoading = false,
                     userName = userName,
-                    loginStatus = LoginStatus.EXPIRED
+                    loginStatus = LoginStatus.UN_AUTHENTICATED
                 )
             }
         }
@@ -263,7 +263,7 @@ class BcscAuthViewModel @Inject constructor(
                 isError = false,
                 userName = null,
                 queItTokenUpdated = false,
-                loginStatus = null,
+                loginStatus = LoginStatus.UN_AUTHENTICATED,
                 ageLimitCheck = null,
                 canInitiateBcscLogin = null,
                 tosAccepted = null,
@@ -450,7 +450,7 @@ data class AuthStatus(
     val userName: String? = null,
     val queItTokenUpdated: Boolean = false,
     val queItUrl: String? = null,
-    val loginStatus: LoginStatus? = null,
+    val loginStatus: LoginStatus = LoginStatus.UN_AUTHENTICATED,
     val ageLimitCheck: AgeLimitCheck? = null,
     val canInitiateBcscLogin: Boolean? = null,
     val tosAccepted: TOSAccepted? = null,
@@ -459,7 +459,8 @@ data class AuthStatus(
 
 enum class LoginStatus {
     ACTIVE,
-    EXPIRED
+    EXPIRED,
+    UN_AUTHENTICATED
 }
 
 enum class AgeLimitCheck {
