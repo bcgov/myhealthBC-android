@@ -207,7 +207,8 @@ class IndividualHealthRecordFragment :
             setToolBar(it.fullName)
         }
 
-        binding.content.searchBar.layoutSearch.isVisible = uiState.isBcscSessionActive == true && FLAG_SEARCH_RECORDS
+        binding.content.searchBar.layoutSearch.isVisible =
+            uiState.isBcscSessionActive == true && FLAG_SEARCH_RECORDS && uiState.onHealthRecords.isNotEmpty()
 
         with(binding.topAppBar1.menu) {
             findItem(R.id.menu_refresh).isVisible =
@@ -340,9 +341,12 @@ class IndividualHealthRecordFragment :
             hiddenMedicationRecordsAdapter,
             healthRecordsAdapter
         )
-        binding.content.rvHealthRecords.adapter = concatAdapter
-        binding.content.rvHealthRecords.layoutManager = LinearLayoutManager(requireContext())
-        binding.content.rvHealthRecords.emptyView = binding.emptyView.root
+        binding.content.rvHealthRecords.apply {
+            adapter = concatAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+            emptyView = binding.emptyView.root
+            excludeAdapterFromEmptyCount(immunizationBannerAdapter)
+        }
     }
 
     private fun openImmunizationPage() {
