@@ -21,6 +21,8 @@ import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestPdfResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
+import ca.bc.gov.data.datasource.remote.model.response.PatientDataResponse
+import ca.bc.gov.data.datasource.remote.model.response.PatientFileResponse
 import ca.bc.gov.data.datasource.remote.model.response.PatientResponse
 import ca.bc.gov.data.datasource.remote.model.response.ProfileValidationResponse
 import ca.bc.gov.data.datasource.remote.model.response.TermsOfServiceResponse
@@ -228,4 +230,20 @@ interface HealthGatewayPrivateApi {
         @Header(AUTHORIZATION) accessToken: String,
         @Body feedbackRequest: FeedbackRequest
     ): Response<Unit>
+
+    @GET("$BASE_PATIENT_SERVICE/PatientData/{$HDID}")
+    suspend fun getPatientData(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String,
+        @Query("patientDataTypes") patientDataTypes: List<String>,
+        @Query(API_VERSION) apiVersion: String = V2
+    ): Response<PatientDataResponse>
+
+    @GET("$BASE_PATIENT_SERVICE/PatientData/{$HDID}/file/{fileId}")
+    suspend fun getPatientFile(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String,
+        @Path("fileId") fileId: String,
+        @Query(API_VERSION) apiVersion: String = V2
+    ): Response<PatientFileResponse>
 }

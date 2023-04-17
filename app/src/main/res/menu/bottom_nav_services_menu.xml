@@ -16,7 +16,7 @@
     <item
         android:id="@+id/services"
         android:enabled="true"
-        android:icon="@drawable/pass_selector"
+        android:icon="@drawable/services_selector"
         android:title="@string/services" />
 
     <item

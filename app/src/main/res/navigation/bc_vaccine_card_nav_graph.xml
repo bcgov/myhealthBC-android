@@ -48,6 +48,7 @@
     <include app:graph="@navigation/news_feed" />
     <include app:graph="@navigation/dependents" />
     <include app:graph="@navigation/resources" />
+    <include app:graph="@navigation/services" />
 
     <fragment
         android:id="@+id/settingsFragment"
@@ -120,4 +121,12 @@
             android:defaultValue=""
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/bcServicesCardLoginFragment"
+        android:name="ca.bc.gov.bchealth.ui.auth.BcServicesCardLoginFragment"
+        android:label="BcServicesCardLoginFragment" />
+    <fragment
+        android:id="@+id/bcServiceCardSessionFragment"
+        android:name="ca.bc.gov.bchealth.ui.auth.BcServicesCardSessionFragment"
+        android:label="BcServiceCardSessionFragment" />
 </navigation>

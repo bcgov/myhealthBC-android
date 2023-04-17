@@ -28,6 +28,8 @@ import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientNameDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
+import ca.bc.gov.common.model.services.OrganDonationDto
+import ca.bc.gov.common.model.services.OrganDonorStatusDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
@@ -57,6 +59,8 @@ import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationSummary
 import ca.bc.gov.data.datasource.remote.model.base.patient.PatientAddress
 import ca.bc.gov.data.datasource.remote.model.base.patient.PatientName
 import ca.bc.gov.data.datasource.remote.model.base.patient.PatientPayload
+import ca.bc.gov.data.datasource.remote.model.base.patientdata.OrganDonorStatus
+import ca.bc.gov.data.datasource.remote.model.base.patientdata.PatientDataItem
 import ca.bc.gov.data.datasource.remote.model.base.profile.UserProfilePayload
 import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityPayload
 import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityResponse
@@ -450,3 +454,20 @@ fun PatientPayload.toDto(): PatientDto {
         mailingAddress = mailingAddress?.toDto()
     )
 }
+
+fun OrganDonorStatus.toDto() = when (this) {
+    OrganDonorStatus.UNKNOWN -> OrganDonorStatusDto.UNKNOWN
+    OrganDonorStatus.ERROR -> OrganDonorStatusDto.ERROR
+    OrganDonorStatus.PENDING -> OrganDonorStatusDto.PENDING
+    OrganDonorStatus.NOT_REGISTERED -> OrganDonorStatusDto.NOT_REGISTERED
+    OrganDonorStatus.REGISTERED -> OrganDonorStatusDto.REGISTERED
+}
+
+fun PatientDataItem.toDto() = OrganDonationDto(
+    id = 0,
+    patientId = 0,
+    status = status.toDto(),
+    statusMessage = statusMessage,
+    registrationFileId = registrationFileId,
+    file = null
+)

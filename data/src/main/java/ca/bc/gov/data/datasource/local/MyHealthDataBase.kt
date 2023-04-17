@@ -25,6 +25,7 @@ import ca.bc.gov.data.datasource.local.dao.LabOrderDao
 import ca.bc.gov.data.datasource.local.dao.LabTestDao
 import ca.bc.gov.data.datasource.local.dao.MedicationRecordDao
 import ca.bc.gov.data.datasource.local.dao.MedicationSummaryDao
+import ca.bc.gov.data.datasource.local.dao.OrganDonationDao
 import ca.bc.gov.data.datasource.local.dao.PatientDao
 import ca.bc.gov.data.datasource.local.dao.SpecialAuthorityDao
 import ca.bc.gov.data.datasource.local.dao.UserProfileDao
@@ -48,6 +49,7 @@ import ca.bc.gov.data.datasource.local.entity.labtest.LabTestEntity
 import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
+import ca.bc.gov.data.datasource.local.entity.services.OrganDonationEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 
@@ -55,7 +57,7 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
  * @author Pinakin Kansara
  */
 @Database(
-    version = 9,
+    version = 10,
     entities = [
         PatientEntity::class,
         VaccineRecordEntity::class,
@@ -78,9 +80,11 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
         SpecialAuthorityEntity::class,
         ClinicalDocumentEntity::class,
         UserProfileEntity::class,
+        OrganDonationEntity::class
     ],
     autoMigrations = [
-        AutoMigration(from = 8, to = 9)
+        AutoMigration(from = 8, to = 9),
+        AutoMigration(from = 9, to = 10)
     ],
     exportSchema = true
 )
@@ -132,4 +136,6 @@ abstract class MyHealthDataBase : RoomDatabase() {
     abstract fun getClinicalDocumentDao(): ClinicalDocumentDao
 
     abstract fun getUserProfileDao(): UserProfileDao
+
+    abstract fun getOrganDonationDao(): OrganDonationDao
 }

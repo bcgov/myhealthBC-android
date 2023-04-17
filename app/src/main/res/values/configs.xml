@@ -25,4 +25,7 @@
 
     <!--Play store link-->
     <string name="play_store">"https://play.google.com/store/apps/details?id=ca.bc.gov.id.servicescard"</string>
+
+    <!--OrganDonor Registration URL-->
+    <string name="organ_donor_registration_link">http://www.transplant.bc.ca/Pages/Register-your-Decision.aspx</string>
 </resources>

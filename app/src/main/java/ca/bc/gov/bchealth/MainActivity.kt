@@ -83,7 +83,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.homeFragment,
                 R.id.bannerDetailFragment,
                 R.id.newsfeedFragment,
-                R.id.servicesFragment, -> {
+                R.id.servicesFragment,
+                R.id.bcServiceCardSessionFragment,
+                R.id.bcServicesCardLoginFragment -> {
                     showBottomNav()
                 }
                 else -> hideBottomNav()
@@ -128,14 +130,17 @@ class MainActivity : AppCompatActivity() {
                     WorkInfo.State.RUNNING -> {
                         isWorkerStarted = true
                     }
+
                     WorkInfo.State.FAILED -> {
                         handleError(workInfo.outputData)
                     }
+
                     WorkInfo.State.SUCCEEDED -> {
                         if (isWorkerStarted) {
                             inAppUpdate.checkForUpdate(AppUpdateType.FLEXIBLE)
                         }
                     }
+
                     else -> {}
                 }
             }

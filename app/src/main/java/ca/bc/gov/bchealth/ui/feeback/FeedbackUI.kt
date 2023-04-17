@@ -36,7 +36,6 @@ import ca.bc.gov.bchealth.compose.grey
 import ca.bc.gov.bchealth.compose.lightBlue
 import ca.bc.gov.bchealth.compose.minButtonSize
 import ca.bc.gov.bchealth.compose.red
-import ca.bc.gov.bchealth.compose.white
 import ca.bc.gov.bchealth.model.validation.BaseTextValidation
 import ca.bc.gov.bchealth.model.validation.BaseTextValidation.BLANK
 import ca.bc.gov.bchealth.model.validation.BaseTextValidation.EXCEEDS_LENGTH
@@ -163,7 +162,6 @@ private fun SendButton(
         Text(
             text = stringResource(id = R.string.feedback_button),
             textAlign = TextAlign.Center,
-            color = white,
             style = MyHealthTypography.button,
         )
     }

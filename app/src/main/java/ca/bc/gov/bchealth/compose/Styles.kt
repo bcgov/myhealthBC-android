@@ -54,15 +54,15 @@ val MyHealthTypography = Typography(
 
     button = TextStyle(
         fontFamily = fonts,
-        fontWeight = FontWeight.Bold,
+        fontStyle = FontStyle.Normal,
         fontSize = 16.sp,
-        color = primaryBlue
+        color = white
     ),
 
     h2 = TextStyle(
         fontFamily = fonts,
         fontWeight = FontWeight.Bold,
-        fontSize = 20.sp,
+        fontSize = 24.sp,
         color = darkText
     ),
 
@@ -71,6 +71,20 @@ val MyHealthTypography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 17.sp,
         color = darkText
+    ),
+
+    h4 = TextStyle(
+        fontFamily = fonts,
+        fontSize = 16.sp,
+        color = darkText,
+        fontStyle = FontStyle.Normal
+    ),
+
+    h6 = TextStyle(
+        fontFamily = fonts,
+        fontSize = 14.sp,
+        color = primaryBlue,
+        fontStyle = FontStyle.Normal
     ),
 
     caption = TextStyle(
@@ -95,7 +109,13 @@ fun TextStyle.italic() = this.copy(fontStyle = FontStyle.Italic)
 @Composable
 fun MyHealthTheme(content: @Composable () -> Unit) = MaterialTheme(
     colors = MaterialTheme.colors.copy(
-        primary = primaryBlue
+        primary = primaryBlue,
+        primaryVariant = white,
+        background = white,
+        surface = white,
+        secondary = primaryBlue,
+        secondaryVariant = primaryBlue,
+        onBackground = primaryBlue
     ),
     typography = MyHealthTypography,
     shapes = MaterialTheme.shapes,

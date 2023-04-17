@@ -17,6 +17,17 @@ fun Fragment.launchOnStart(action: (suspend CoroutineScope.() -> Unit)) {
     }
 }
 
+inline fun Fragment.launchAndRepeatWithLifecycle(
+    state: Lifecycle.State = Lifecycle.State.STARTED,
+    crossinline block: suspend CoroutineScope.() -> Unit
+) {
+    viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.lifecycle.repeatOnLifecycle(state) {
+            block()
+        }
+    }
+}
+
 fun Fragment.observeWork(workName: String, action: (WorkInfo.State?) -> Unit) {
     val workRequest = WorkManager.getInstance(requireContext())
         .getWorkInfosForUniqueWorkLiveData(workName)
