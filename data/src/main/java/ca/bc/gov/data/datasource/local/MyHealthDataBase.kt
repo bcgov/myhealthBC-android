@@ -1,11 +1,13 @@
 package ca.bc.gov.data.datasource.local
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ca.bc.gov.data.datasource.local.converter.AddressConverter
 import ca.bc.gov.data.datasource.local.converter.AuthenticationStatusTypeConverter
 import ca.bc.gov.data.datasource.local.converter.DateTimeConverter
+import ca.bc.gov.data.datasource.local.converter.PatientNameConverter
 import ca.bc.gov.data.datasource.local.converter.SyncStatusConverter
 import ca.bc.gov.data.datasource.local.dao.ClinicalDocumentDao
 import ca.bc.gov.data.datasource.local.dao.CommentDao
@@ -53,7 +55,7 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
  * @author Pinakin Kansara
  */
 @Database(
-    version = 8,
+    version = 9,
     entities = [
         PatientEntity::class,
         VaccineRecordEntity::class,
@@ -77,6 +79,9 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
         ClinicalDocumentEntity::class,
         UserProfileEntity::class,
     ],
+    autoMigrations = [
+        AutoMigration(from = 8, to = 9)
+    ],
     exportSchema = true
 )
 @TypeConverters(
@@ -84,6 +89,7 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
     AuthenticationStatusTypeConverter::class,
     AddressConverter::class,
     SyncStatusConverter::class,
+    PatientNameConverter::class
 )
 abstract class MyHealthDataBase : RoomDatabase() {
 

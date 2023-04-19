@@ -137,7 +137,7 @@ class SettingsFragment : BaseFragment(R.layout.fragment_settings) {
                         return@collect
                     } else {
                         initClickListeners()
-                        val isLoginStatusActive = it.loginStatus == LoginStatus.ACTIVE
+                        val isLoginStatusActive = (it.loginStatus != null && it.loginStatus == LoginStatus.ACTIVE)
 
                         binding.apply {
                             layoutProfile.isVisible = isLoginStatusActive
