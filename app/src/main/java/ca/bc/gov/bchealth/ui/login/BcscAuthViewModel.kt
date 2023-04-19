@@ -229,20 +229,28 @@ class BcscAuthViewModel @Inject constructor(
         try {
             userName =
                 patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).fullName
+            val loginSessionStatus = if (isLoggedSuccess) {
+                LoginStatus.ACTIVE
+            } else {
+                LoginStatus.EXPIRED
+            }
+            _authStatus.update {
+                it.copy(
+                    showLoading = false,
+                    userName = userName,
+                    loginStatus = loginSessionStatus
+                )
+            }
         } catch (e: Exception) {
             // no implementation required.
-        }
-        val loginSessionStatus = if (isLoggedSuccess) {
-            LoginStatus.ACTIVE
-        } else {
-            LoginStatus.EXPIRED
-        }
-        _authStatus.update {
-            it.copy(
-                showLoading = false,
-                userName = userName,
-                loginStatus = loginSessionStatus
-            )
+
+            _authStatus.update {
+                it.copy(
+                    showLoading = false,
+                    userName = userName,
+                    loginStatus = LoginStatus.EXPIRED
+                )
+            }
         }
     }
 

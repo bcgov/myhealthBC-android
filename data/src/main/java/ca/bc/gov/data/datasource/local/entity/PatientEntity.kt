@@ -27,6 +27,15 @@ data class PatientEntity(
     @ColumnInfo(name = "last_name")
     val lastName: String,
 
+    @ColumnInfo(name = "legal_name")
+    val legalName: PatientNameEntity?,
+
+    @ColumnInfo(name = "common_name")
+    val commonName: PatientNameEntity?,
+
+    @ColumnInfo(name = "preferred_ame")
+    val preferredName: PatientNameEntity?,
+
     @ColumnInfo(name = "dob")
     val dateOfBirth: Instant,
 
@@ -69,4 +78,11 @@ data class PatientOrderUpdate(
 
     @ColumnInfo(name = "patient_order")
     val patientOrder: Long
+)
+
+data class PatientNameEntity(
+    @ColumnInfo(name = "given_name")
+    val givenName: String?,
+    @ColumnInfo(name = "sur_name")
+    val surName: String?
 )
