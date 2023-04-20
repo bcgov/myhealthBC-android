@@ -24,6 +24,7 @@ import ca.bc.gov.common.model.labtest.LabOrderWithLabTestsAndPatientDto
 import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
+import ca.bc.gov.common.model.patient.PatientNameDto
 import ca.bc.gov.common.model.patient.PatientWithClinicalDocumentsDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithHealthVisitsDto
@@ -44,6 +45,7 @@ import ca.bc.gov.common.model.userprofile.UserProfileDto
 import ca.bc.gov.common.utils.titleCase
 import ca.bc.gov.data.datasource.local.entity.PatientAddressEntity
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
+import ca.bc.gov.data.datasource.local.entity.PatientNameEntity
 import ca.bc.gov.data.datasource.local.entity.clinicaldocument.ClinicalDocumentEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderEntity
@@ -90,8 +92,15 @@ fun PatientEntity.toDto() = PatientDto(
     authenticationStatus = authenticationStatus,
     firstName = firstName,
     lastName = lastName,
+    legalName = legalName?.toDto(),
+    commonName = commonName?.toDto(),
+    preferredName = preferredName?.toDto(),
     mailingAddress = mailingAddress?.toDto(),
     physicalAddress = physicalAddress?.toDto(),
+)
+
+fun PatientNameEntity.toDto() = PatientNameDto(
+    givenName, surName
 )
 
 fun PatientAddressEntity.toDto() = PatientAddressDto(

@@ -56,12 +56,15 @@ interface HealthGatewayPrivateApi {
         private const val BASE_USER_FEEDBACK_SERVICE = "api/gatewayapiservice/UserFeedback"
         private const val BASE_HEALTH_VISIT_SERVICE = "api/encounterservice"
         private const val BASE_CLINICAL_SERVICE = "api/clinicaldocumentservice"
+        private const val API_VERSION = "api-version"
+        private const val V2 = "2"
     }
 
     @GET("$BASE_PATIENT_SERVICE/Patient/{hdid}")
     suspend fun getPatient(
         @Header(AUTHORIZATION) token: String,
-        @Path(HDID) hdid: String
+        @Path(HDID) hdid: String,
+        @Query(API_VERSION) apiVersions: String = V2
     ): Response<PatientResponse>
 
     @GET("$BASE_IMMUNIZATION_SERVICE/AuthenticatedVaccineStatus")

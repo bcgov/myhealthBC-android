@@ -15,6 +15,7 @@ import javax.inject.Inject
  * @author Pinakin Kansara
  */
 class RetryInterceptor @Inject constructor() : Interceptor {
+    private val urlExcludedFromRefreshCheck = listOf("MobileConfiguration", "api-version=2")
 
     companion object {
         private const val MAX_RETRY_COUNT = 5
@@ -35,6 +36,10 @@ class RetryInterceptor @Inject constructor() : Interceptor {
         val requestUrlBuilder = chain.request().url.newBuilder()
 
         val originRequest = chain.request()
+        if (urlExcludedFromRefreshCheck.any { originRequest.url.toString().contains(it, true) }) {
+            return chain.proceed(originRequest)
+        }
+
         val request = originRequest.newBuilder()
             .url(requestUrlBuilder.build())
             .build()
@@ -52,9 +57,8 @@ class RetryInterceptor @Inject constructor() : Interceptor {
                 stringBody = body?.string()
                 val json: JsonObject? = Gson().fromJson(stringBody, JsonObject::class.java)
 
-                when {
-                    json == null -> loaded = true
-                    request.url.toString().contains("MobileConfiguration", true) -> loaded = true
+                when (json) {
+                    null -> loaded = true
                     else -> {
                         loaded = checkForLoadedFlag(json)
                         retryCount++

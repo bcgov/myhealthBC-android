@@ -2,6 +2,7 @@ package ca.bc.gov.data.model.mapper
 
 import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
@@ -24,6 +25,8 @@ import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabTestDto
+import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.model.patient.PatientNameDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
@@ -35,7 +38,6 @@ import ca.bc.gov.common.utils.toDateTimeZ
 import ca.bc.gov.common.utils.toOffsetDateTime
 import ca.bc.gov.data.datasource.remote.model.base.CovidLabResult
 import ca.bc.gov.data.datasource.remote.model.base.CovidOrder
-import ca.bc.gov.data.datasource.remote.model.base.PatientAddress
 import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
 import ca.bc.gov.data.datasource.remote.model.base.banner.BannerPayload
 import ca.bc.gov.data.datasource.remote.model.base.clinicaldocument.ClinicalDocumentResponse
@@ -52,6 +54,9 @@ import ca.bc.gov.data.datasource.remote.model.base.immunization.Recommendation
 import ca.bc.gov.data.datasource.remote.model.base.medication.DispensingPharmacy
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationStatementPayload
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationSummary
+import ca.bc.gov.data.datasource.remote.model.base.patient.PatientAddress
+import ca.bc.gov.data.datasource.remote.model.base.patient.PatientName
+import ca.bc.gov.data.datasource.remote.model.base.patient.PatientPayload
 import ca.bc.gov.data.datasource.remote.model.base.profile.UserProfilePayload
 import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityPayload
 import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityResponse
@@ -403,3 +408,45 @@ fun DependentPayload.toDto() = DependentDto(
     reasonCode = reasonCode,
     version = version
 )
+
+fun PatientName.toDto(): PatientNameDto {
+    return PatientNameDto(
+        givenName,
+        surName
+    )
+}
+
+fun PatientPayload.toDto(): PatientDto {
+
+    val patientName = preferredName ?: throw MyHealthException(
+        SERVER_ERROR, INVALID_RESPONSE
+    )
+    val fullNameBuilder = StringBuilder()
+    fullNameBuilder.append(
+        "${patientName.givenName ?: throw MyHealthException(
+            SERVER_ERROR, INVALID_RESPONSE
+        )} "
+    )
+    fullNameBuilder.append(
+        patientName.surName ?: throw MyHealthException(
+            SERVER_ERROR, INVALID_RESPONSE
+        )
+    )
+    val date = birthDate ?: throw MyHealthException(SERVER_ERROR, INVALID_RESPONSE)
+
+    return PatientDto(
+        id = 0,
+        hdid = hdid ?: throw MyHealthException(SERVER_ERROR, INVALID_RESPONSE),
+        phn = personalHealthNumber ?: throw MyHealthException(SERVER_ERROR, INVALID_RESPONSE),
+        fullName = fullNameBuilder.toString(),
+        firstName = patientName.givenName,
+        lastName = patientName.surName,
+        dateOfBirth = date.toDateTime(),
+        legalName = legalName?.toDto(),
+        preferredName = preferredName.toDto(),
+        commonName = commonName?.toDto(),
+        authenticationStatus = AuthenticationStatus.AUTHENTICATED,
+        physicalAddress = physicalAddress?.toDto(),
+        mailingAddress = mailingAddress?.toDto()
+    )
+}

@@ -1,10 +1,16 @@
-package ca.bc.gov.data.datasource.remote.model.base
+package ca.bc.gov.data.datasource.remote.model.base.patient
 
 import com.google.gson.annotations.SerializedName
 
 data class PatientPayload(
     @SerializedName("birthdate")
     val birthDate: String?,
+
+    val commonName: PatientName?,
+
+    val legalName: PatientName?,
+
+    val preferredName: PatientName?,
 
     @SerializedName("firstname")
     val firstName: String?,
@@ -18,7 +24,7 @@ data class PatientPayload(
     @SerializedName("lastname")
     val lastName: String?,
 
-    @SerializedName("personalhealthnumber")
+    @SerializedName("personalHealthNumber")
     val personalHealthNumber: String?,
 
     @SerializedName("physicalAddress")
@@ -26,6 +32,8 @@ data class PatientPayload(
 
     @SerializedName("postalAddress")
     val mailingAddress: PatientAddress?,
+
+    val responseCode: String?
 )
 
 data class PatientAddress(
