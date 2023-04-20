@@ -22,7 +22,6 @@ import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.patient.PatientRepository
-import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,7 +39,6 @@ class HomeViewModel @Inject constructor(
     private val workerInvoker: WorkerInvoker,
     recommendationRepository: ImmunizationRecommendationRepository,
     private val bannerRepository: BannerRepository,
-    private val mobileConfigRepository: MobileConfigRepository,
 ) : ViewModel() {
 
     private var bannerRequested = false
@@ -86,17 +84,21 @@ class HomeViewModel @Inject constructor(
                     state.copy(isLoading = false, isOnBoardingRequired = true)
                 }
             }
+
             onBoardingRepository.dependentOnBoardingRequired -> {
                 _uiState.update { state ->
                     state.copy(isLoading = false, isDependentOnBoardingRequired = true)
                 }
             }
+
             isAuthenticationRequired -> {
                 _uiState.update { state -> state.copy(isAuthenticationRequired = true) }
             }
+
             onBoardingRepository.onBCSCLoginRequiredPostBiometric -> {
                 _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = true) }
             }
+
             bcscAuthRepo.getPostLoginCheck() == PostLoginCheck.IN_PROGRESS.name -> {
                 _uiState.update { state -> state.copy(isForceLogout = true) }
             }
@@ -206,7 +208,6 @@ class HomeViewModel @Inject constructor(
             viewModelScope.launch {
 
                 try {
-                    mobileConfigRepository.refreshMobileConfiguration()
                     callBannerRepository()
                 } catch (e: Exception) {
                     when (e) {
