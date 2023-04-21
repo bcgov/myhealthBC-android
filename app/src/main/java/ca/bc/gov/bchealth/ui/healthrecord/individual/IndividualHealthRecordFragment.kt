@@ -1,5 +1,6 @@
 package ca.bc.gov.bchealth.ui.healthrecord.individual
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -31,6 +32,7 @@ import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.hide
+import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.redirect
@@ -281,6 +283,7 @@ class IndividualHealthRecordFragment :
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setUpRecyclerView() {
         healthRecordsAdapter = HealthRecordsAdapter {
             val navDirection = when (it.healthRecordType) {
@@ -346,6 +349,10 @@ class IndividualHealthRecordFragment :
             layoutManager = LinearLayoutManager(requireContext())
             emptyView = binding.emptyView.root
             excludeAdapterFromEmptyCount(immunizationBannerAdapter)
+            setOnTouchListener { v, _ ->
+                requireActivity().hideKeyboard(v)
+                false
+            }
         }
     }
 
