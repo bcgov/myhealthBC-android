@@ -15,6 +15,9 @@ class DependentFilterFragment : FilterFragment() {
         R.id.chip_covid_test,
         R.id.chip_immunizations,
     ).apply {
+        if (BuildConfig.FLAG_GUARDIAN_MEDICATIONS) {
+            this.add(R.id.chip_medication,)
+        }
         if (BuildConfig.FLAG_GUARDIAN_CLINICAL_DOCS) {
             this.add(R.id.chip_clinical_document)
         }
