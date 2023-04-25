@@ -1,14 +1,14 @@
 name: Android CICD deployment
 
 on:
-  push:
+  pull_request_review:
+    types: [ submitted ]
     branches:
-      - main
-      - release_candidate
+      - develop
 
 jobs:
   build:
-    name: Clean build
+    name: Generate Builds
     runs-on: ubuntu-latest
 
     steps:
