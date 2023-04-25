@@ -25,6 +25,7 @@ import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.fromHtml
 import ca.bc.gov.bchealth.utils.hide
+import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
@@ -73,6 +74,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                     viewModel.launchCheck()
                     viewModel.executeOneTimeDataFetch()
                 }
+
                 else -> {
                     findNavController().popBackStack()
                 }
@@ -91,6 +93,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                         findNavController().navigate(sharedViewModel.destinationId)
                     }
                 }
+
                 else -> {
                     // no implementation required
                 }
@@ -134,37 +137,35 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
     }
 
     private fun initRecyclerview() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                homeAdapter = HomeAdapter {
-                    when (it) {
-                        HomeNavigationType.HEALTH_RECORD -> {
-                            if (bcscAuthViewModel.authStatus.value.loginStatus != null && bcscAuthViewModel.authStatus.value.loginStatus == LoginStatus.ACTIVE) {
-                                findNavController().navigate(R.id.action_homeFragment_to_health_records)
-                            } else {
-                                sharedViewModel.destinationId = R.id.health_records
-                                findNavController().navigate(R.id.bcscAuthInfoFragment)
-                            }
-                        }
-                        HomeNavigationType.VACCINE_PROOF -> {
-                            findNavController().navigate(R.id.action_homeFragment_to_health_pass)
-                        }
-                        HomeNavigationType.RESOURCES -> {
-                            findNavController().navigate(R.id.action_homeFragment_to_resources)
-                        }
-                        HomeNavigationType.RECOMMENDATIONS -> {
-                            findNavController().navigate(R.id.action_homeFragment_to_recommendations)
-                        }
-                    }
-                }
-                binding.rvHome.adapter = homeAdapter
-
-                viewModel.homeList.observe(viewLifecycleOwner) {
-                    homeAdapter.submitList(it)
-                }
-                viewModel.getHomeRecordsList()
+        launchOnStart {
+            homeAdapter = HomeAdapter { navigateToDestination(it) }
+            binding.rvHome.adapter = homeAdapter
+            viewModel.homeList.observe(viewLifecycleOwner) {
+                homeAdapter.setData(it)
+                homeAdapter.notifyDataSetChanged()
             }
+            viewModel.getHomeRecordsList()
         }
+    }
+
+    private fun navigateToDestination(destinationType: HomeNavigationType) {
+        val destination = when (destinationType) {
+            HomeNavigationType.HEALTH_RECORD -> {
+                if (bcscAuthViewModel.authStatus.value.loginStatus == LoginStatus.ACTIVE) {
+                    R.id.action_homeFragment_to_health_records
+                } else {
+                    sharedViewModel.destinationId = R.id.health_records
+                    R.id.bcscAuthInfoFragment
+                }
+            }
+
+            HomeNavigationType.VACCINE_PROOF -> R.id.action_homeFragment_to_health_pass
+
+            HomeNavigationType.RESOURCES -> R.id.action_homeFragment_to_resources
+
+            HomeNavigationType.RECOMMENDATIONS -> R.id.action_homeFragment_to_recommendations
+        }
+        findNavController().navigate(destination)
     }
 
     private suspend fun onBoardingFlow() {
