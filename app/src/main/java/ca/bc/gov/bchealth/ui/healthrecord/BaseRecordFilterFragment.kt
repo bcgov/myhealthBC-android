@@ -83,7 +83,11 @@ abstract class BaseRecordFilterFragment(@LayoutRes id: Int) : BaseFragment(id) {
     fun observeFilterState() {
         getFilterViewModel().filterState.collectOnStart { filterState ->
             if (BuildConfig.FLAG_SEARCH_RECORDS) {
-                getSearchBar().searchRecords.setQuery(filterState.search, false)
+                getSearchBar().searchRecords.apply {
+                    if (query.toString() != filterState.search) {
+                        setQuery(filterState.search, false)
+                    }
+                }
             }
             // update filter date selection
             if (isFilterDateSelected(filterState)) {
@@ -93,9 +97,11 @@ abstract class BaseRecordFilterFragment(@LayoutRes id: Int) : BaseFragment(id) {
                         filterState.filterFromDate.isNullOrBlank() -> {
                             filterState.filterToDate + " " + getString(R.string.before)
                         }
+
                         filterState.filterToDate.isNullOrBlank() -> {
                             filterState.filterFromDate + " " + getString(R.string.after)
                         }
+
                         else -> {
                             filterState.filterFromDate + " - " + filterState.filterToDate
                         }
