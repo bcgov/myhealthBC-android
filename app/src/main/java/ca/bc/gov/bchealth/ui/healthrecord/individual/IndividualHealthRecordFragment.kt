@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentIndividualHealthRecordBinding
+import ca.bc.gov.bchealth.ui.BcscAuthState
+import ca.bc.gov.bchealth.ui.NavigationAction
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordFilterFragment
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
-import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
 import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.CLINICAL_DOCUMENT_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.COVID_TEST_RECORD
@@ -28,14 +28,13 @@ import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.LAB_RESULT
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.MEDICATION_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.SPECIAL_AUTHORITY_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.protectiveword.HiddenMedicationRecordAdapter
-import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
-import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.hide
 import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.setActionToPreviousBackStackEntry
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -78,11 +77,7 @@ class IndividualHealthRecordFragment :
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    findNavController().previousBackStackEntry?.savedStateHandle
-                        ?.set(
-                            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
-                            NavigationAction.ACTION_BACK
-                        )
+                    setActionToPreviousBackStackEntry(NavigationAction.ACTION_BACK)
                     findNavController().popBackStack()
                 }
             }
@@ -96,12 +91,42 @@ class IndividualHealthRecordFragment :
         setupSwipeToRefresh()
         setUpRecyclerView()
 
-        handleBcscAuthResponse()
         observeHealthRecords()
         observeHealthRecordsSyncCompletion()
         clearFilterClickListener()
         observeFilterState()
-        observeNavigationFlow()
+    }
+
+    override fun handleNavigationAction(navigationAction: NavigationAction) {
+        when (navigationAction) {
+            NavigationAction.ACTION_BACK -> {
+                // no implementation required
+            }
+
+            NavigationAction.ACTION_RE_CHECK -> {
+                setActionToPreviousBackStackEntry(NavigationAction.ACTION_RE_CHECK)
+                findNavController().popBackStack()
+            }
+
+            else -> {}
+        }
+    }
+
+    override fun handleBCSCAuthState(bcscAuthState: BcscAuthState) {
+        when (bcscAuthState) {
+            BcscAuthState.SUCCESS,
+            BcscAuthState.NO_ACTION -> {
+                findNavController().setActionToPreviousBackStackEntry(
+                    NAVIGATION_ACTION,
+                    NavigationAction.ACTION_RE_CHECK
+                )
+                findNavController().popBackStack()
+            }
+
+            else -> {
+                // no implementation required
+            }
+        }
     }
 
     private fun setToolBar(bcscAuthenticatedPatientName: String) {
@@ -122,37 +147,16 @@ class IndividualHealthRecordFragment :
                                 }
                             }
                         }
+
                         R.id.menu_settings -> {
                             findNavController().navigate(R.id.settingsFragment)
                         }
+
                         R.id.menu_filter -> {
                             findNavController().navigate(R.id.filterFragment)
                         }
                     }
                     return@setOnMenuItemClickListener true
-                }
-            }
-        }
-    }
-
-    private fun handleBcscAuthResponse() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
-            BcscAuthFragment.BCSC_AUTH_STATUS
-        )?.observe(viewLifecycleOwner) {
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<BcscAuthState>(
-                BcscAuthFragment.BCSC_AUTH_STATUS
-            )
-            when (it) {
-                BcscAuthState.SUCCESS,
-                BcscAuthState.NO_ACTION -> {
-                    findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                        HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
-                        NavigationAction.ACTION_RE_CHECK
-                    )
-                    findNavController().popBackStack()
-                }
-                else -> {
-                    // no implementation required
                 }
             }
         }
@@ -387,30 +391,6 @@ class IndividualHealthRecordFragment :
     private fun onBCSCLoginClick() {
         sharedViewModel.destinationId = 0
         findNavController().navigate(R.id.bcscAuthInfoFragment)
-    }
-
-    private fun observeNavigationFlow() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<NavigationAction>(
-            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION
-        )?.observe(viewLifecycleOwner) {
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<NavigationAction>(
-                HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION
-            )
-            it?.let {
-                when (it) {
-                    NavigationAction.ACTION_BACK -> {
-                        // no implementation required
-                    }
-                    NavigationAction.ACTION_RE_CHECK -> {
-                        findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
-                            NavigationAction.ACTION_RE_CHECK
-                        )
-                        findNavController().popBackStack()
-                    }
-                }
-            }
-        }
     }
 
     private fun setupSwipeToRefresh() {

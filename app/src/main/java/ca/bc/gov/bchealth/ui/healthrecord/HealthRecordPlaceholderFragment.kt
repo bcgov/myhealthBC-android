@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.ui.healthrecord
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -11,6 +10,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.ui.BaseSecureFragment
+import ca.bc.gov.bchealth.ui.NavigationAction
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -23,7 +24,8 @@ import kotlinx.coroutines.launch
 * observeNavigationFlow() is required as user will never stay on this fragment.
 * */
 @AndroidEntryPoint
-class HealthRecordPlaceholderFragment : Fragment(R.layout.health_record_placeholder_fragment) {
+class HealthRecordPlaceholderFragment :
+    BaseSecureFragment(R.layout.health_record_placeholder_fragment) {
 
     private val viewModel: HealthRecordPlaceholderViewModel by viewModels()
     private var isHealthRecordsFlowActive = false
@@ -35,25 +37,15 @@ class HealthRecordPlaceholderFragment : Fragment(R.layout.health_record_placehol
             isHealthRecordsFlowActive = true
             collectHealthRecordsFlow()
         }
-        observeNavigationFlow()
     }
 
-    private fun observeNavigationFlow() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<NavigationAction>(
-            PLACE_HOLDER_NAVIGATION
-        )?.observe(viewLifecycleOwner) {
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<NavigationAction>(
-                PLACE_HOLDER_NAVIGATION
-            )
-            it?.let {
-                when (it) {
-                    NavigationAction.ACTION_BACK -> {
-                        findNavController().popBackStack()
-                    }
-                    NavigationAction.ACTION_RE_CHECK -> {
-                        collectHealthRecordsFlow()
-                    }
-                }
+    override fun handleNavigationAction(navigationAction: NavigationAction) {
+        when (navigationAction) {
+            NavigationAction.ACTION_RE_CHECK -> {
+                collectHealthRecordsFlow()
+            }
+            NavigationAction.ACTION_BACK -> {
+                findNavController().popBackStack()
             }
         }
     }
@@ -83,13 +75,4 @@ class HealthRecordPlaceholderFragment : Fragment(R.layout.health_record_placehol
         }
         viewModel.resetUiState()
     }
-
-    companion object {
-        const val PLACE_HOLDER_NAVIGATION = "PLACE_HOLDER_NAVIGATION"
-    }
-}
-
-enum class NavigationAction {
-    ACTION_BACK,
-    ACTION_RE_CHECK
 }

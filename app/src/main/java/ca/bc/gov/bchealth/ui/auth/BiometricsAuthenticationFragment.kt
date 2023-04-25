@@ -19,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentBiometricAuthenticationBinding
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.setActionToPreviousBackStackEntry
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.Executor
@@ -78,17 +79,21 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
                     .build()
                 biometricPrompt.authenticate(promptInfo)
             }
+
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
             BiometricManager.BIOMETRIC_STATUS_UNKNOWN,
             BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> {
                 showAuthenticationErrorDialog(getString(R.string.error_biometric_unknown))
             }
+
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
                 showNoHardwareDialog()
             }
+
             BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {
                 // no implementation required
             }
+
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
                 showUserNotEnrolledDialog()
             }
@@ -106,6 +111,7 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
                         BiometricPrompt.ERROR_USER_CANCELED -> {
                             // no implementation required
                         }
+
                         else -> {
                             val errorMessage = "$errorCode, $errString"
                             showAuthenticationErrorDialog(errorMessage)
@@ -115,7 +121,7 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
-                    findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    findNavController().setActionToPreviousBackStackEntry(
                         BIOMETRIC_STATE,
                         BioMetricState.FAILED
                     )
@@ -123,7 +129,7 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
 
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    findNavController().setActionToPreviousBackStackEntry(
                         BIOMETRIC_STATE,
                         BioMetricState.SUCCESS
                     )
@@ -172,9 +178,11 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
                             )
                         }
                     }
+
                     Build.VERSION.SDK_INT < Build.VERSION_CODES.R && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> {
                         enrollIntent = Intent(Settings.ACTION_FINGERPRINT_ENROLL)
                     }
+
                     else -> {
                         enrollIntent = Intent(Settings.ACTION_SECURITY_SETTINGS)
                     }
