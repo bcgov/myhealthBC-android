@@ -21,6 +21,8 @@ import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceStatus
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceViewModel
+import ca.bc.gov.bchealth.utils.observeCurrentBackStackForAction
+import ca.bc.gov.bchealth.utils.removeActionFromCurrentBackStackEntry
 import ca.bc.gov.bchealth.utils.setActionToPreviousBackStackEntry
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
@@ -62,12 +64,9 @@ class BcscAuthFragment : BaseSecureFragment(R.layout.fragment_bcsc_auth) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<TermsOfServiceStatus>(
-            TermsOfServiceFragment.TERMS_OF_SERVICE_STATUS
-        )?.observe(viewLifecycleOwner) {
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<TermsOfServiceStatus>(
-                TermsOfServiceFragment.TERMS_OF_SERVICE_STATUS
-            )
+
+        observeCurrentBackStackForAction<TermsOfServiceStatus>(TermsOfServiceFragment.TERMS_OF_SERVICE_STATUS) {
+            findNavController().removeActionFromCurrentBackStackEntry<TermsOfServiceStatus>(TermsOfServiceFragment.TERMS_OF_SERVICE_STATUS)
             when (it) {
                 TermsOfServiceStatus.ACCEPTED -> {
                     if (termsOfServiceViewModel.tosUiState.value.termsOfServiceId != null) {

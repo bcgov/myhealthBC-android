@@ -22,11 +22,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTheme
-import ca.bc.gov.bchealth.ui.BaseFragment
-import ca.bc.gov.bchealth.ui.BaseViewModel
+import ca.bc.gov.bchealth.ui.BaseSecureFragment
+import ca.bc.gov.bchealth.ui.NavigationAction
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolBar
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
-import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.PdfHelper
@@ -42,7 +40,7 @@ import java.io.File
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
-class ServicesFragment : BaseFragment(null) {
+class ServicesFragment : BaseSecureFragment(null) {
 
     private val pdfDecoderViewModel: PdfDecoderViewModel by viewModels()
     private val servicesViewModel: ServicesViewModel by viewModels()
@@ -65,8 +63,6 @@ class ServicesFragment : BaseFragment(null) {
         launchAndRepeatWithLifecycle {
             handlePDFState()
         }
-
-        observeNavigationFlow()
 
         observeHealthRecordsSyncCompletion()
 
@@ -180,22 +176,13 @@ class ServicesFragment : BaseFragment(null) {
         )
     }
 
-    private fun observeNavigationFlow() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<NavigationAction>(
-            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION
-        )?.observe(viewLifecycleOwner) {
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<NavigationAction>(
-                HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION
-            )
-            it?.let {
-                when (it) {
-                    NavigationAction.ACTION_BACK -> {
-                        findNavController().popBackStack()
-                    }
-                    NavigationAction.ACTION_RE_CHECK -> {
-                        bcscAuthViewModel.checkSession()
-                    }
-                }
+    override fun handleNavigationAction(navigationAction: NavigationAction) {
+        when (navigationAction) {
+            NavigationAction.ACTION_BACK -> {
+                findNavController().popBackStack()
+            }
+            NavigationAction.ACTION_RE_CHECK -> {
+                bcscAuthViewModel.checkSession()
             }
         }
     }

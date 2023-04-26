@@ -1,7 +1,6 @@
 package ca.bc.gov.bchealth.ui.auth
 
 import android.os.Bundle
-import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
@@ -18,12 +17,11 @@ import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.model.BcServiceCardLoginInfoType
-import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.BaseSecureFragment
+import ca.bc.gov.bchealth.ui.BcscAuthState
+import ca.bc.gov.bchealth.ui.NavigationAction
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolBar
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
-import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
-import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
-import ca.bc.gov.bchealth.ui.login.BcscAuthState
+import ca.bc.gov.bchealth.utils.setActionToPreviousBackStackEntry
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,7 +36,7 @@ import dagger.hilt.android.AndroidEntryPoint
  * - [ca.bc.gov.bchealth.ui.dependents.DependentsFragment]
  */
 @AndroidEntryPoint
-class BcServicesCardLoginFragment : BaseFragment(null) {
+class BcServicesCardLoginFragment : BaseSecureFragment(null) {
 
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
@@ -49,43 +47,37 @@ class BcServicesCardLoginFragment : BaseFragment(null) {
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    findNavController().previousBackStackEntry?.savedStateHandle
-                        ?.set(
-                            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
-                            NavigationAction.ACTION_BACK
-                        )
+                    findNavController().setActionToPreviousBackStackEntry(NAVIGATION_ACTION, NavigationAction.ACTION_BACK)
                     findNavController().popBackStack()
                 }
             }
         )
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
-            BcscAuthFragment.BCSC_AUTH_STATUS
-        )?.observe(viewLifecycleOwner) {
-            findNavController().currentBackStackEntry?.savedStateHandle
-                ?.remove<BcscAuthState>(BcscAuthFragment.BCSC_AUTH_STATUS)
-            it?.let {
-                when (it) {
-                    BcscAuthState.SUCCESS -> {
-                        findNavController().previousBackStackEntry?.savedStateHandle
-                            ?.set(
-                                HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
-                                NavigationAction.ACTION_RE_CHECK
-                            )
-                        findNavController().popBackStack()
-                    }
-                    BcscAuthState.NOT_NOW,
-                    BcscAuthState.NO_ACTION -> {
-                        // no implementation required
-                    }
-                }
+    override fun handleBCSCAuthState(bcscAuthState: BcscAuthState) {
+        when (bcscAuthState) {
+            BcscAuthState.SUCCESS -> {
+                findNavController().setActionToPreviousBackStackEntry(NAVIGATION_ACTION, NavigationAction.ACTION_RE_CHECK)
+                findNavController().popBackStack()
+            }
+            BcscAuthState.NOT_NOW,
+            BcscAuthState.NO_ACTION -> {
+                // no implementation required
             }
         }
-        observeNavigationFlow()
+    }
+
+    override fun handleNavigationAction(navigationAction: NavigationAction) {
+        when (navigationAction) {
+            NavigationAction.ACTION_BACK -> {
+                findNavController().setActionToPreviousBackStackEntry(NAVIGATION_ACTION, NavigationAction.ACTION_BACK)
+                findNavController().popBackStack()
+            }
+            NavigationAction.ACTION_RE_CHECK -> {
+                findNavController().setActionToPreviousBackStackEntry(NAVIGATION_ACTION, NavigationAction.ACTION_RE_CHECK)
+                findNavController().popBackStack()
+            }
+        }
     }
 
     @Composable
@@ -116,34 +108,6 @@ class BcServicesCardLoginFragment : BaseFragment(null) {
                 },
                 contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.background)
             )
-        }
-    }
-
-    private fun observeNavigationFlow() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<NavigationAction>(
-            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION
-        )?.observe(viewLifecycleOwner) {
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<NavigationAction>(
-                HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION
-            )
-            it?.let {
-                when (it) {
-                    NavigationAction.ACTION_BACK -> {
-                        findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
-                            NavigationAction.ACTION_BACK
-                        )
-                        findNavController().popBackStack()
-                    }
-                    NavigationAction.ACTION_RE_CHECK -> {
-                        findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                            HealthRecordPlaceholderFragment.PLACE_HOLDER_NAVIGATION,
-                            NavigationAction.ACTION_RE_CHECK
-                        )
-                        findNavController().popBackStack()
-                    }
-                }
-            }
         }
     }
 }
