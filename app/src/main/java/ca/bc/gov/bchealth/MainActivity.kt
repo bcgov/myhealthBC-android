@@ -25,6 +25,7 @@ import ca.bc.gov.common.model.settings.AnalyticsFeature
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.install.model.AppUpdateType
+import com.microsoft.windowsazure.messaging.notificationhubs.NotificationHub
 import com.snowplowanalytics.snowplow.Snowplow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -47,6 +48,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        NotificationHub.setListener(CustomNotificationListener())
+        NotificationHub.start(this.application, "PocAndroidHub01", "Endpoint=sb://PocAndroid...paste...connection...string...here")
 
         setContentView(R.layout.activity_main)
 
@@ -83,7 +87,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.homeFragment,
                 R.id.bannerDetailFragment,
                 R.id.newsfeedFragment,
-                R.id.servicesFragment, -> {
+                R.id.servicesFragment,
+                -> {
                     showBottomNav()
                 }
                 else -> hideBottomNav()

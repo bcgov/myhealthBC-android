@@ -5,6 +5,7 @@ plugins {
     id 'kotlin-parcelize'
     id 'androidx.navigation.safeargs.kotlin'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -119,7 +120,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$versions.navigation"
     implementation "androidx.navigation:navigation-runtime-ktx:$versions.navigation"
 
-    //JatPack LiveData ViewModel
+    //JetPack LiveData ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle"
@@ -149,10 +150,14 @@ dependencies {
     implementation "com.google.android.play:app-update:$versions.app_update"
     implementation "com.google.android.play:app-update-ktx:$versions.app_update"
 
-    //work manager
+    //Work manager
     api "androidx.work:work-runtime-ktx:$versions.work"
     api "androidx.hilt:hilt-work:$versions.hilt_work"
     kapt "androidx.hilt:hilt-compiler:$versions.hilt_work"
+
+    //Notifications
+    implementation platform('com.google.firebase:firebase-bom:31.5.0')
+    implementation 'com.microsoft.azure:notification-hubs-android-sdk-fcm:1.1.4'
 
     // https://stackoverflow.com/questions/29402155/android-unit-test-not-mocked
     testImplementation 'org.json:json:20210307'
@@ -168,3 +173,5 @@ dependencies {
 
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$versions.hilt"
 }
+
+apply plugin: 'com.google.gms.google-services'
