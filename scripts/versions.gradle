@@ -32,7 +32,7 @@ versions.navigation = "2.5.3"
 versions.lifecycle = "2.6.1"
 
 versions.compose_compiler = "1.4.6"
-versions.compose_ui = "1.4.2"
+versions.compose_bom = "2023.04.01"
 
 versions.hilt = "2.45"
 
