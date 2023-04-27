@@ -101,7 +101,7 @@ dependencies {
     //app auth
     api "androidx.browser:browser:$versions.browser"
 
-    implementation "androidx.annotation:annotation:1.6.0"
+    implementation "androidx.annotation:annotation:$versions.annotation"
 
     //work manager
     api "androidx.work:work-runtime-ktx:$versions.work"
