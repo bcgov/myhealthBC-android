@@ -12,7 +12,7 @@ versions.localApiVersion = 2
 
 //Tools & Libs
 versions.kotlin_gradle_plugin = "1.8.20"
-versions.gradle = '7.3.0'
+versions.gradle = '7.4.2'
 
 versions.annotation = '1.6.0'
 versions.appcompat = '1.6.1'
