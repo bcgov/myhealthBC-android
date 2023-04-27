@@ -1,11 +1,14 @@
 package ca.bc.gov.repository.utils
 
+import android.Manifest
 import android.app.Notification.DEFAULT_SOUND
 import android.app.Notification.DEFAULT_VIBRATE
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import ca.bc.gov.common.R
@@ -55,7 +58,15 @@ class NotificationHelper @Inject constructor(
             .setStyle(NotificationCompat.BigTextStyle())
             .setContentIntent(launchingIntent)
 
+        // todo: proper implementation will be done here: HAPP-1390
         with(NotificationManagerCompat.from(context)) {
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
             notify(BACKGROUND_WORK_NOTIFICATION_ID, notificationBuilder.build())
         }
     }
@@ -64,7 +75,15 @@ class NotificationHelper @Inject constructor(
         notificationBuilder
             .setContentTitle(title)
 
+        // todo: proper implementation will be done here: HAPP-1390
         with(NotificationManagerCompat.from(context)) {
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
             notify(BACKGROUND_WORK_NOTIFICATION_ID, notificationBuilder.build())
         }
     }
