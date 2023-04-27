@@ -100,7 +100,7 @@ android {
 
 dependencies {
 
-    implementation "androidx.core:core-ktx:$versions.core_ktx"
+    implementation "androidx.core:core-ktx:$versions.core_ktx" //upgrade to 1.10.0
 
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
     implementation "com.google.android.material:material:$versions.material"
@@ -121,9 +121,9 @@ dependencies {
     implementation "androidx.navigation:navigation-runtime-ktx:$versions.navigation"
 
     //JatPack LiveData ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"  //upgrade to 2.6.1
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle" //upgrade to 2.6.1
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle" //upgrade to 2.6.1
 
     //Dagger Hilt
     implementation "com.google.dagger:hilt-android:$versions.hilt"
