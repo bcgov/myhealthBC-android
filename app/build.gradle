@@ -100,7 +100,16 @@ android {
 
 dependencies {
 
-    implementation "androidx.core:core-ktx:$versions.core_ktx" //upgrade to 1.10.0
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
+            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
+            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
+        }
+    }
+
+    implementation "androidx.core:core-ktx:$versions.core_ktx"
 
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
     implementation "com.google.android.material:material:$versions.material"
@@ -120,10 +129,10 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$versions.navigation"
     implementation "androidx.navigation:navigation-runtime-ktx:$versions.navigation"
 
-    //JatPack LiveData ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"  //upgrade to 2.6.1
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle" //upgrade to 2.6.1
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle" //upgrade to 2.6.1
+    //JetPack LiveData ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle"
 
     //Dagger Hilt
     implementation "com.google.dagger:hilt-android:$versions.hilt"
