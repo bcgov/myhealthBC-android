@@ -14,6 +14,7 @@ versions.localApiVersion = 2
 versions.kotlin = "1.8.20"
 versions.gradle = '7.3.0'
 
+versions.annotation = '1.6.0'
 versions.appcompat = '1.6.1'
 versions.core_ktx = "1.10.0"
 versions.constraint_layout = "2.1.4"
