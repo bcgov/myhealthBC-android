@@ -11,7 +11,7 @@ versions.versionCode = 174
 versions.localApiVersion = 2
 
 //Tools & Libs
-versions.kotlin = "1.8.20"
+versions.kotlin_gradle_plugin = "1.8.20"
 versions.gradle = '7.3.0'
 
 versions.annotation = '1.6.0'
@@ -34,7 +34,7 @@ versions.lifecycle = "2.6.1"
 versions.compose_compiler = "1.4.6"
 versions.compose_ui = "1.4.2"
 
-versions.hilt = "2.44"
+versions.hilt = "2.45"
 
 versions.barcode_scanning = "17.1.0"
 
