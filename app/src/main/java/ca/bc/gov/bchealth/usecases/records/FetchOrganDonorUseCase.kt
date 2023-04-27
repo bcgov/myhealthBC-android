@@ -20,10 +20,6 @@ class FetchOrganDonorUseCase @Inject constructor(
         if (BuildConfig.FLAG_SERVICE_TAB.not()) return
 
         val organDonor = organDonorRepository.fetchOrganDonationStatus(authParameters.hdid, authParameters.token)
-        organDonor.registrationFileId?.let {
-            val result = organDonorRepository.fetchPatientFile(authParameters.hdid, authParameters.token, it)
-            organDonor.file = result
-        }
 
         organDonor.patientId = patientId
         organDonorRepository.insert(organDonor)

@@ -43,7 +43,8 @@ fun ServicesScreen(
     modifier: Modifier,
     viewModel: ServicesViewModel,
     onRegisterOnUpdateDecisionClicked: (String) -> Unit,
-    onDownloadButtonClicked: (String) -> Unit
+    onDownloadButtonClicked: (String) -> Unit,
+    openPdfFile: (String?) -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
@@ -51,15 +52,23 @@ fun ServicesScreen(
         modifier = modifier,
         onLoading = uiState.value.onLoading,
         organDonationRegistrationDetail = uiState.value.organDonationRegistrationDetail,
+        organDonorFileStatus = uiState.value.organDonorFileStatus,
         onRegisterOnUpdateDecisionClicked = { url ->
             onRegisterOnUpdateDecisionClicked(url)
-        }
+        },
+        onDownloadButtonClicked = {
+            uiState.value.organDonationRegistrationDetail?.fileId?.let { fileId ->
+                onDownloadButtonClicked(
+                    fileId
+                )
+            }
+        },
     ) {
-        uiState.value.organDonationRegistrationDetail?.file?.let { file ->
-            onDownloadButtonClicked(
-                file
-            )
-        }
+        openPdfFile(uiState.value.organDonationRegistrationDetail?.file)
+    }
+    if (uiState.value.organDonorFileStatus == OrganDonorFileStatus.DOWNLOADED) {
+        openPdfFile(uiState.value.organDonationRegistrationDetail?.file)
+        viewModel.onPdfViewed()
     }
 }
 
@@ -68,8 +77,10 @@ private fun ServiceScreenContent(
     modifier: Modifier = Modifier,
     onLoading: Boolean,
     organDonationRegistrationDetail: OrganDonationRegistrationDetail?,
+    organDonorFileStatus: OrganDonorFileStatus,
     onRegisterOnUpdateDecisionClicked: (String) -> Unit,
-    onDownloadButtonClicked: () -> Unit
+    onDownloadButtonClicked: () -> Unit,
+    openPdfFile: (String?) -> Unit
 ) {
 
     Column(
@@ -102,11 +113,11 @@ private fun ServiceScreenContent(
             }
         } else {
             organDonationRegistrationDetail?.let {
-                OrganDonor(it, onRegisterOnUpdateDecisionClicked = { url ->
+                OrganDonor(it, organDonorFileStatus, onRegisterOnUpdateDecisionClicked = { url ->
                     onRegisterOnUpdateDecisionClicked(url)
-                }) {
-                    onDownloadButtonClicked()
-                }
+                }, onDownloadButtonClicked = { onDownloadButtonClicked() }, openPdfFile = { file ->
+                    file?.let { pdf -> openPdfFile(pdf) }
+                })
             }
         }
     }
@@ -115,8 +126,10 @@ private fun ServiceScreenContent(
 @Composable
 private fun OrganDonor(
     organDonationRegistrationDetail: OrganDonationRegistrationDetail,
+    organDonorFileStatus: OrganDonorFileStatus,
     onRegisterOnUpdateDecisionClicked: (String) -> Unit,
-    onDownloadButtonClicked: () -> Unit
+    onDownloadButtonClicked: () -> Unit,
+    openPdfFile: (String?) -> Unit
 ) {
 
     Card(
@@ -183,17 +196,42 @@ private fun OrganDonor(
                 when (organDonationRegistrationDetail.status) {
                     OrganDonorStatusDto.REGISTERED -> {
                         OutlinedButton(
-                            onClick = { onDownloadButtonClicked() },
+                            onClick = {
+                                if (organDonorFileStatus == OrganDonorFileStatus.DOWNLOADED) {
+                                    openPdfFile(organDonationRegistrationDetail.file)
+                                } else {
+                                    onDownloadButtonClicked()
+                                }
+                            },
                             modifier = Modifier.fillMaxWidth(),
                             border = BorderStroke(1.dp, color = MaterialTheme.colors.primary)
                         ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_download_pdf),
-                                contentDescription = stringResource(id = R.string.download)
-                            )
+
+                            var buttonText = stringResource(id = R.string.organ_donor_decision_download)
+                            when (organDonorFileStatus) {
+                                OrganDonorFileStatus.ERROR -> {
+                                    buttonText = stringResource(id = R.string.retry)
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_download_pdf),
+                                        contentDescription = stringResource(id = R.string.download)
+                                    )
+                                }
+                                OrganDonorFileStatus.REQUIRE_DOWNLOAD,
+                                OrganDonorFileStatus.DOWNLOADED -> {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_download_pdf),
+                                        contentDescription = stringResource(id = R.string.download)
+                                    )
+                                }
+                                OrganDonorFileStatus.DOWNLOAD_IN_PROGRESS -> {
+                                    buttonText = stringResource(id = R.string.downloading)
+                                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colors.primary)
+                                }
+                            }
+
                             Spacer(modifier = Modifier.size(ButtonDefaults.IconSize))
                             Text(
-                                text = stringResource(id = R.string.organ_donor_decision_download),
+                                text = buttonText,
                                 style = MaterialTheme.typography.body1,
                                 color = MaterialTheme.colors.primary
                             )
@@ -245,12 +283,14 @@ private fun RegisterOrUpdateDecision(onRegisterOnUpdateDecisionClicked: (String)
 private fun ServiceScreenContentPreview() {
     MyHealthTheme {
         ServiceScreenContent(
-            onLoading = true,
+            onLoading = false,
             organDonationRegistrationDetail = OrganDonationRegistrationDetail(
                 status = OrganDonorStatusDto.REGISTERED
             ),
+            organDonorFileStatus = OrganDonorFileStatus.DOWNLOAD_IN_PROGRESS,
             onRegisterOnUpdateDecisionClicked = {},
-            onDownloadButtonClicked = {}
+            onDownloadButtonClicked = {},
+            openPdfFile = {}
         )
     }
 }

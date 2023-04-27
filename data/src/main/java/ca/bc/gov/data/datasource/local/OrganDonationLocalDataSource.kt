@@ -19,4 +19,6 @@ class OrganDonationLocalDataSource @Inject constructor(
         organDonationDao.findOrganDonationById(patientId)?.toDto()
 
     suspend fun delete(patientId: Long): Int = organDonationDao.delete(patientId)
+
+    suspend fun update(organDonationDto: OrganDonationDto) = organDonationDao.update(organDonationDto.toEntity())
 }

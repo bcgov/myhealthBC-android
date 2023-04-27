@@ -30,4 +30,6 @@ class OrganDonorRepository @Inject constructor(
         organDonationLocalDataSource.findOrganDonationById(patientId) ?: throw MyHealthException(
             DATABASE_ERROR, "No record found for patient id=  $patientId"
         )
+
+    suspend fun update(organDonor: OrganDonationDto) = organDonationLocalDataSource.update(organDonor)
 }

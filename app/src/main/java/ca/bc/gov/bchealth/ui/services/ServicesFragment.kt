@@ -23,6 +23,7 @@ import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolBar
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment
 import ca.bc.gov.bchealth.ui.healthrecord.NavigationAction
@@ -52,6 +53,10 @@ class ServicesFragment : BaseFragment(null) {
         ActivityResultContracts.StartActivityForResult()
     ) { _ ->
         fileInMemory?.delete()
+    }
+
+    override fun getBaseViewModel(): BaseViewModel {
+        return servicesViewModel
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,7 +116,7 @@ class ServicesFragment : BaseFragment(null) {
                         }
                     )
                 },
-                content = {
+                content = { it ->
                     ServicesScreen(
                         modifier = Modifier
                             .statusBarsPadding()
@@ -121,8 +126,13 @@ class ServicesFragment : BaseFragment(null) {
                         onRegisterOnUpdateDecisionClicked = { url ->
                             requireActivity().redirect(url)
                         },
-                        onDownloadButtonClicked = { file ->
-                            pdfDecoderViewModel.base64ToPDFFile(file)
+                        onDownloadButtonClicked = { fileId ->
+                            servicesViewModel.getPatientFile(fileId)
+                        },
+                        openPdfFile = { pdf ->
+                            pdf?.let { file ->
+                                pdfDecoderViewModel.base64ToPDFFile(file)
+                            }
                         }
                     )
                 },

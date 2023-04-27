@@ -311,6 +311,8 @@
     <string name="after">and after</string>
     <string name="before">and before</string>
     <string name="download">Download</string>
+    <string name="downloading">Downloading..</string>
+    <string name="retry">Retry</string>
     <string name="test_summary">Test summary</string>
     <string name="summary_desc">Find resources to learn about your lab test and what the results mean. Learn more</string>
     <string name="test_name">Test name:</string>
