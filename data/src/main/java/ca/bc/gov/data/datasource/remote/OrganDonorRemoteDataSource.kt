@@ -4,7 +4,7 @@ import android.util.Base64
 import ca.bc.gov.common.const.MESSAGE_INVALID_RESPONSE
 import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
-import ca.bc.gov.common.model.services.OrganDonationDto
+import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
 import ca.bc.gov.data.datasource.remote.model.base.patientdata.PatientDataType
 import ca.bc.gov.data.model.mapper.toDto
@@ -23,7 +23,7 @@ class OrganDonorRemoteDataSource @Inject constructor(
      * @see [PatientDataType]
      * uses api = v2
      */
-    suspend fun getOrganDonorData(hdid: String, token: String): OrganDonationDto {
+    suspend fun getOrganDonorData(hdid: String, token: String): OrganDonorDto {
         val response = safeCall {
             healthGatewayPrivateApi.getPatientData(
                 hdid,

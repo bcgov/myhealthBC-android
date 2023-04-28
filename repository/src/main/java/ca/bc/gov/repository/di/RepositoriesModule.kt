@@ -11,7 +11,7 @@ import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
 import ca.bc.gov.data.datasource.local.LocalDataSource
 import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
-import ca.bc.gov.data.datasource.local.OrganDonationLocalDataSource
+import ca.bc.gov.data.datasource.local.OrganDonorLocalDataSource
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
@@ -317,6 +317,6 @@ class RepositoriesModule {
     @Singleton
     fun providesOrganDonorRepository(
         remoteDataSource: OrganDonorRemoteDataSource,
-        localDataSource: OrganDonationLocalDataSource
+        localDataSource: OrganDonorLocalDataSource
     ): OrganDonorRepository = OrganDonorRepository(remoteDataSource, localDataSource)
 }

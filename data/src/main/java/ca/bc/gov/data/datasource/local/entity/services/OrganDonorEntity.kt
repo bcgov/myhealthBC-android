@@ -17,7 +17,7 @@ import ca.bc.gov.common.model.services.OrganDonorStatusDto
         )
     ]
 )
-data class OrganDonationEntity(
+data class OrganDonorEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     @ColumnInfo(name = "patient_id")

@@ -36,7 +36,7 @@ import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
-import ca.bc.gov.common.model.services.OrganDonationDto
+import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
@@ -81,7 +81,7 @@ import ca.bc.gov.data.datasource.local.entity.relations.PatientWithMedicationRec
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithSpecialAuthorities
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithVaccineAndDoses
 import ca.bc.gov.data.datasource.local.entity.relations.VaccineRecordWithDose
-import ca.bc.gov.data.datasource.local.entity.services.OrganDonationEntity
+import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 import java.time.Instant
@@ -428,7 +428,7 @@ fun DependentEntity.toDto() = DependentDto(
     isCacheValid = isCacheValid,
 )
 
-fun OrganDonationEntity.toDto() = OrganDonationDto(
+fun OrganDonorEntity.toDto() = OrganDonorDto(
     id = id,
     patientId = patientId,
     status = status,

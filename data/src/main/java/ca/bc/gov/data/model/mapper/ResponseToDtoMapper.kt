@@ -28,7 +28,7 @@ import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientNameDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
-import ca.bc.gov.common.model.services.OrganDonationDto
+import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.common.model.services.OrganDonorStatusDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
@@ -463,7 +463,7 @@ fun OrganDonorStatus.toDto() = when (this) {
     OrganDonorStatus.REGISTERED -> OrganDonorStatusDto.REGISTERED
 }
 
-fun PatientDataItem.toDto() = OrganDonationDto(
+fun PatientDataItem.toDto() = OrganDonorDto(
     id = 0,
     patientId = 0,
     status = status.toDto(),

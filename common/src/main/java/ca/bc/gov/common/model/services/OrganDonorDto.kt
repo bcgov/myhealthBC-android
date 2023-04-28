@@ -3,7 +3,7 @@ package ca.bc.gov.common.model.services
 /**
  * @author Pinakin Kansara
  */
-data class OrganDonationDto(
+data class OrganDonorDto(
     var id: Long = 0,
     var patientId: Long = 0,
     val status: OrganDonorStatusDto = OrganDonorStatusDto.UNKNOWN,

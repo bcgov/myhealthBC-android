@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.AuthenticationStatus
-import ca.bc.gov.common.model.services.OrganDonationDto
+import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.common.model.services.OrganDonorStatusDto
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.patient.PatientRepository
@@ -40,7 +40,7 @@ class ServicesViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     onLoading = false,
-                    organDonationRegistrationDetail = organDonation.toUIModel(),
+                    organDonorRegistrationDetail = organDonation.toUIModel(),
                     organDonorFileStatus = OrganDonorFileStatus.REQUIRE_DOWNLOAD
                 )
             }
@@ -50,7 +50,7 @@ class ServicesViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             onLoading = false,
-                            organDonationRegistrationDetail = OrganDonationRegistrationDetail(status = OrganDonorStatusDto.ERROR),
+                            organDonorRegistrationDetail = OrganDonorRegistrationDetail(status = OrganDonorStatusDto.ERROR),
                             organDonorFileStatus = OrganDonorFileStatus.ERROR
                         )
                     }
@@ -81,7 +81,7 @@ class ServicesViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     onLoading = false,
-                    organDonationRegistrationDetail = organDonorDetails.toUIModel(),
+                    organDonorRegistrationDetail = organDonorDetails.toUIModel(),
                     organDonorFileStatus = OrganDonorFileStatus.DOWNLOADED
                 )
             }
@@ -101,7 +101,7 @@ class ServicesViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 onLoading = true,
-                organDonationRegistrationDetail = null,
+                organDonorRegistrationDetail = null,
                 organDonorFileStatus = OrganDonorFileStatus.REQUIRE_DOWNLOAD
             )
         }
@@ -119,7 +119,7 @@ class ServicesViewModel @Inject constructor(
 
 data class ServicesUiState(
     val onLoading: Boolean = false,
-    val organDonationRegistrationDetail: OrganDonationRegistrationDetail? = null,
+    val organDonorRegistrationDetail: OrganDonorRegistrationDetail? = null,
     val organDonorFileStatus: OrganDonorFileStatus = OrganDonorFileStatus.REQUIRE_DOWNLOAD
 )
 
@@ -130,14 +130,14 @@ enum class OrganDonorFileStatus {
     ERROR
 }
 
-data class OrganDonationRegistrationDetail(
+data class OrganDonorRegistrationDetail(
     val status: OrganDonorStatusDto = OrganDonorStatusDto.NOT_REGISTERED,
     val statusMessage: String? = null,
     val fileId: String? = null,
     val file: String? = null
 )
 
-private fun OrganDonationDto.toUIModel() = OrganDonationRegistrationDetail(
+private fun OrganDonorDto.toUIModel() = OrganDonorRegistrationDetail(
     status = status,
     statusMessage = statusMessage,
     fileId = registrationFileId,
