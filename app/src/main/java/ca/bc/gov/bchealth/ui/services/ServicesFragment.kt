@@ -32,6 +32,7 @@ import ca.bc.gov.bchealth.utils.PdfHelper
 import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showErrorSnackbar
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,7 +47,6 @@ class ServicesFragment : BaseSecureFragment(null) {
     private val pdfDecoderViewModel: PdfDecoderViewModel by viewModels()
     private val servicesViewModel: ServicesViewModel by viewModels()
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
-    private var isHealthRecordsFlowActive = false
     private var fileInMemory: File? = null
     private var resultListener = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -65,32 +65,28 @@ class ServicesFragment : BaseSecureFragment(null) {
             handlePDFState()
         }
 
-        observeHealthRecordsSyncCompletion()
+        launchAndRepeatWithLifecycle(Lifecycle.State.RESUMED) {
+            bcscAuthViewModel.authStatus.collect {
+                if (it.showLoading) {
+                    servicesViewModel.showProgressBar()
+                } else {
+                    when (it.loginStatus) {
+                        LoginStatus.ACTIVE -> {
+                            observeHealthRecordsSyncCompletion()
+                        }
 
-        if (!isHealthRecordsFlowActive) {
-            isHealthRecordsFlowActive = true
-            launchAndRepeatWithLifecycle(Lifecycle.State.RESUMED) {
-                bcscAuthViewModel.authStatus.collect {
+                        LoginStatus.EXPIRED -> {
+                            findNavController().navigate(R.id.bcServiceCardSessionFragment)
+                        }
 
-                    if (it.showLoading) {
-                        servicesViewModel.showProgressBar()
-                    } else {
-                        when (it.loginStatus) {
-                            LoginStatus.ACTIVE -> {
-                                observeHealthRecordsSyncCompletion()
-                            }
-                            LoginStatus.EXPIRED -> {
-                                findNavController().navigate(R.id.bcServiceCardSessionFragment)
-                            }
-                            LoginStatus.NOT_AUTHENTICATED -> {
-                                findNavController().navigate(R.id.bcServicesCardLoginFragment)
-                            }
+                        LoginStatus.NOT_AUTHENTICATED -> {
+                            findNavController().navigate(R.id.bcServicesCardLoginFragment)
                         }
                     }
                 }
             }
-            bcscAuthViewModel.checkSession()
         }
+        bcscAuthViewModel.checkSession()
     }
 
     @Composable
@@ -130,7 +126,8 @@ class ServicesFragment : BaseSecureFragment(null) {
                             pdf?.let { file ->
                                 pdfDecoderViewModel.base64ToPDFFile(file)
                             }
-                        }
+                        },
+                        onError = ::displayError
                     )
                 },
                 contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.background)
@@ -182,9 +179,14 @@ class ServicesFragment : BaseSecureFragment(null) {
             NavigationAction.ACTION_BACK -> {
                 findNavController().popBackStack()
             }
+
             NavigationAction.ACTION_RE_CHECK -> {
                 bcscAuthViewModel.checkSession()
             }
         }
+    }
+
+    private fun displayError() {
+        view.showErrorSnackbar(getString(R.string.error_message))
     }
 }
