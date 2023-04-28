@@ -19,6 +19,7 @@ import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientNameDto
+import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidTestDto
@@ -44,6 +45,7 @@ import ca.bc.gov.data.datasource.local.entity.labtest.LabTestEntity
 import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
+import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 
@@ -314,4 +316,13 @@ fun ClinicalDocumentDto.toEntity() = ClinicalDocumentEntity(
     facilityName = facilityName,
     discipline = discipline,
     serviceDate = serviceDate,
+)
+
+fun OrganDonorDto.toEntity() = OrganDonorEntity(
+    id = id,
+    patientId = patientId,
+    status = status,
+    statusMessage = statusMessage,
+    registrationFileId = registrationFileId,
+    file = file
 )

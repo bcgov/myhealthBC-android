@@ -311,6 +311,8 @@
     <string name="after">and after</string>
     <string name="before">and before</string>
     <string name="download">Download</string>
+    <string name="downloading">Downloading..</string>
+    <string name="retry">Retry</string>
     <string name="test_summary">Test summary</string>
     <string name="summary_desc">Find resources to learn about your lab test and what the results mean. Learn more</string>
     <string name="test_name">Test name:</string>
@@ -541,4 +543,20 @@
 
     <!--Services-->
     <string name="services">Services</string>
+    <string name="services_subtitle">You can check and update your Organ Donor Registry information here. More health services will be added in future.</string>
+    <string name="services_subtitle_1">The BC Services Card app is a secure way to prove who you are.</string>
+    <string name="services_session_expired">Log in again to access all services.</string>
+
+    <!--Organ Donor-->
+    <string name="organ_donor_registration_title">Organ Donor Registration</string>
+    <string name="organ_donor_not_registered_subtitle">We do not have a record of your decision about organ donation. If you filled out a paper registration form, we may not have processed it yet. You can also register your decision online now.</string>
+    <string name="organ_donor_registered_subtitle">You can update your registration on BC Transplant website</string>
+    <string name="organ_donor_status">Status:</string>
+    <string name="organ_donor_decision">Decision:</string>
+    <string name="organ_donor_status_registered">Registered</string>
+    <string name="organ_donor_status_not_registered">Not Registered</string>
+    <string name="organ_donor_decision_not_available">Not Available</string>
+    <string name="organ_donor_decision_download">Download</string>
+    <string name="organ_donor_register_or_update">Register or update your decision</string>
+    <string name="organ_donor">Organ Donor</string>
 </resources>

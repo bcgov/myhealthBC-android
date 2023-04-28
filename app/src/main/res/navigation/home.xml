@@ -26,10 +26,6 @@
             android:id="@+id/action_homeFragment_to_recommendations"
             app:destination="@id/recommendations" />
 
-        <action
-            android:id="@+id/action_homeFragment_to_services"
-            app:destination="@id/services" />
-
     </fragment>
 
 
@@ -53,5 +49,6 @@
     <include app:graph="@navigation/resources" />
     <include app:graph="@navigation/recommendations" />
     <include app:graph="@navigation/services" />
+    <include app:graph="@navigation/dependents" />
 
 </navigation>

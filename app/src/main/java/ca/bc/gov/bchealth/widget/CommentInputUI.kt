@@ -14,6 +14,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -166,6 +167,7 @@ fun EditableCommentInputUI(
                 Text(
                     text = stringResource(id = R.string.cancel),
                     textAlign = TextAlign.Center,
+                    color = MaterialTheme.colors.primary,
                     style = MyHealthTypography.button,
                 )
             }
@@ -180,7 +182,6 @@ fun EditableCommentInputUI(
                 Text(
                     text = stringResource(id = R.string.comment_update),
                     textAlign = TextAlign.Center,
-                    color = white,
                     style = MyHealthTypography.button,
                 )
             }

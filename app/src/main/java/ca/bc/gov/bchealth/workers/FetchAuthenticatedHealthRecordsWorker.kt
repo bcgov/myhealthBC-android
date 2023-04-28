@@ -14,6 +14,7 @@ import ca.bc.gov.bchealth.usecases.records.FetchHospitalVisitsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchImmunizationsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchLabOrdersUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchMedicationsUseCase
+import ca.bc.gov.bchealth.usecases.records.FetchOrganDonorUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchSpecialAuthoritiesUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchVaccinesUseCase
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
@@ -63,6 +64,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val fetchSpecialAuthoritiesUseCase: FetchSpecialAuthoritiesUseCase,
     private val fetchClinicalDocumentsUseCase: FetchClinicalDocumentsUseCase,
     private val fetchVaccinesUseCase: FetchVaccinesUseCase,
+    private val organDonorUseCase: FetchOrganDonorUseCase
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
@@ -145,7 +147,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 runTaskAsync { fetchHospitalVisitsUseCase.execute(patientId, authParameters) },
                 runTaskAsync { fetchCommentsUseCase.execute(authParameters) },
                 runTaskAsync { fetchSpecialAuthoritiesUseCase.execute(patientId, authParameters) },
-                runTaskAsync { userProfileRepository.deleteUserProfileCache(patientId) }
+                runTaskAsync { userProfileRepository.deleteUserProfileCache(patientId) },
+                runTaskAsync { organDonorUseCase.execute(patientId, authParameters) }
             ).awaitAll()
 
             isApiFailed = taskResults.contains(Result.failure())
