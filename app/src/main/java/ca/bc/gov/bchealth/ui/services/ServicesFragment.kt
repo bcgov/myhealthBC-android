@@ -23,6 +23,7 @@ import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.ui.BaseSecureFragment
+import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.bchealth.ui.NavigationAction
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolBar
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
