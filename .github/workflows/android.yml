@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Clean build
+    name: Generate Build
     runs-on: ubuntu-latest
 
     steps:
