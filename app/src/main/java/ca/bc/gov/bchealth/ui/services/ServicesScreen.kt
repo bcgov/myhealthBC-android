@@ -45,7 +45,7 @@ fun ServicesScreen(
     onRegisterOnUpdateDecisionClicked: (String) -> Unit,
     onDownloadButtonClicked: (String) -> Unit,
     openPdfFile: (String?) -> Unit,
-    onError: ()->Unit
+    onError: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
@@ -64,9 +64,9 @@ fun ServicesScreen(
                 )
             }
         },
-    openPdfFile = {
-        openPdfFile(uiState.value.organDonorRegistrationDetail?.file)
-    },
+        openPdfFile = {
+            openPdfFile(uiState.value.organDonorRegistrationDetail?.file)
+        },
         onError = onError
     )
     if (uiState.value.organDonorFileStatus == OrganDonorFileStatus.DOWNLOADED) {
@@ -84,7 +84,7 @@ private fun ServiceScreenContent(
     onRegisterOnUpdateDecisionClicked: (String) -> Unit,
     onDownloadButtonClicked: () -> Unit,
     openPdfFile: (String?) -> Unit,
-    onError: ()-> Unit
+    onError: () -> Unit
 ) {
 
     Column(
@@ -116,11 +116,11 @@ private fun ServiceScreenContent(
                 )
             }
         } else {
-                OrganDonor(organDonorRegistrationDetail, organDonorFileStatus, onRegisterOnUpdateDecisionClicked = { url ->
-                    onRegisterOnUpdateDecisionClicked(url)
-                }, onDownloadButtonClicked = { onDownloadButtonClicked() }, openPdfFile = { file ->
-                    file?.let { pdf -> openPdfFile(pdf) }
-                }, onError = onError)
+            OrganDonor(organDonorRegistrationDetail, organDonorFileStatus, onRegisterOnUpdateDecisionClicked = { url ->
+                onRegisterOnUpdateDecisionClicked(url)
+            }, onDownloadButtonClicked = { onDownloadButtonClicked() }, openPdfFile = { file ->
+                file?.let { pdf -> openPdfFile(pdf) }
+            }, onError = onError)
         }
     }
 }

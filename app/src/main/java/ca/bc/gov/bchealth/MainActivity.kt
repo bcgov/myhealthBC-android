@@ -71,8 +71,8 @@ class MainActivity : AppCompatActivity() {
         )
         binding.bottomNav.setupWithNavController(navController)
         binding.bottomNav.setOnItemSelectedListener {
-                NavigationUI.onNavDestinationSelected(it, navController, false)
-                true
+            NavigationUI.onNavDestinationSelected(it, navController, false)
+            true
         }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
