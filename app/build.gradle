@@ -109,8 +109,6 @@ dependencies {
     implementation "androidx.coordinatorlayout:coordinatorlayout:$versions.coordinator"
 
     //Compose
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
-
     def composeBom = platform("androidx.compose:compose-bom:$versions.compose_bom")
     implementation composeBom
     implementation 'androidx.compose.material:material'
@@ -124,6 +122,7 @@ dependencies {
     implementation "androidx.navigation:navigation-runtime-ktx:$versions.navigation"
 
     //JetPack LiveData ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$versions.lifecycle"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle"
