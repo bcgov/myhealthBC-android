@@ -44,7 +44,8 @@ fun ServicesScreen(
     viewModel: ServicesViewModel,
     onRegisterOnUpdateDecisionClicked: (String) -> Unit,
     onDownloadButtonClicked: (String) -> Unit,
-    openPdfFile: (String?) -> Unit
+    openPdfFile: (String?) -> Unit,
+    onError: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
@@ -63,9 +64,11 @@ fun ServicesScreen(
                 )
             }
         },
-    ) {
-        openPdfFile(uiState.value.organDonorRegistrationDetail?.file)
-    }
+        openPdfFile = {
+            openPdfFile(uiState.value.organDonorRegistrationDetail?.file)
+        },
+        onError = onError
+    )
     if (uiState.value.organDonorFileStatus == OrganDonorFileStatus.DOWNLOADED) {
         openPdfFile(uiState.value.organDonorRegistrationDetail?.file)
         viewModel.onPdfViewed()
@@ -80,7 +83,8 @@ private fun ServiceScreenContent(
     organDonorFileStatus: OrganDonorFileStatus,
     onRegisterOnUpdateDecisionClicked: (String) -> Unit,
     onDownloadButtonClicked: () -> Unit,
-    openPdfFile: (String?) -> Unit
+    openPdfFile: (String?) -> Unit,
+    onError: () -> Unit
 ) {
 
     Column(
@@ -102,7 +106,7 @@ private fun ServiceScreenContent(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (onLoading) {
+        if (onLoading || organDonorRegistrationDetail == null) {
             Box(
                 modifier = modifier
                     .fillMaxSize()
@@ -112,13 +116,11 @@ private fun ServiceScreenContent(
                 )
             }
         } else {
-            organDonorRegistrationDetail?.let {
-                OrganDonor(it, organDonorFileStatus, onRegisterOnUpdateDecisionClicked = { url ->
-                    onRegisterOnUpdateDecisionClicked(url)
-                }, onDownloadButtonClicked = { onDownloadButtonClicked() }, openPdfFile = { file ->
-                    file?.let { pdf -> openPdfFile(pdf) }
-                })
-            }
+            OrganDonor(organDonorRegistrationDetail, organDonorFileStatus, onRegisterOnUpdateDecisionClicked = { url ->
+                onRegisterOnUpdateDecisionClicked(url)
+            }, onDownloadButtonClicked = { onDownloadButtonClicked() }, openPdfFile = { file ->
+                file?.let { pdf -> openPdfFile(pdf) }
+            }, onError = onError)
         }
     }
 }
@@ -129,7 +131,8 @@ private fun OrganDonor(
     organDonorFileStatus: OrganDonorFileStatus,
     onRegisterOnUpdateDecisionClicked: (String) -> Unit,
     onDownloadButtonClicked: () -> Unit,
-    openPdfFile: (String?) -> Unit
+    openPdfFile: (String?) -> Unit,
+    onError: () -> Unit
 ) {
 
     Card(
@@ -210,6 +213,7 @@ private fun OrganDonor(
                             var buttonText = stringResource(id = R.string.organ_donor_decision_download)
                             when (organDonorFileStatus) {
                                 OrganDonorFileStatus.ERROR -> {
+                                    onError()
                                     buttonText = stringResource(id = R.string.retry)
                                     Icon(
                                         painter = painterResource(id = R.drawable.ic_download_pdf),
@@ -290,7 +294,8 @@ private fun ServiceScreenContentPreview() {
             organDonorFileStatus = OrganDonorFileStatus.DOWNLOAD_IN_PROGRESS,
             onRegisterOnUpdateDecisionClicked = {},
             onDownloadButtonClicked = {},
-            openPdfFile = {}
+            openPdfFile = {},
+            onError = {}
         )
     }
 }

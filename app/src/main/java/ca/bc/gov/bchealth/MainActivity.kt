@@ -9,6 +9,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.NavigationUiSaveStateControl
 import androidx.navigation.ui.setupWithNavController
 import androidx.work.Data
 import androidx.work.WorkInfo
@@ -34,6 +36,7 @@ import kotlinx.coroutines.launch
  *
  * @author Pinakin Kansara
  */
+@OptIn(NavigationUiSaveStateControl::class)
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -67,6 +70,10 @@ class MainActivity : AppCompatActivity() {
             }
         )
         binding.bottomNav.setupWithNavController(navController)
+        binding.bottomNav.setOnItemSelectedListener {
+            NavigationUI.onNavDestinationSelected(it, navController, false)
+            true
+        }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {

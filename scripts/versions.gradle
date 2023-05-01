@@ -7,7 +7,7 @@ versions.compileSdkVersion = 32
 
 //App
 versions.versionName = '1.9.0'
-versions.versionCode = 168
+versions.versionCode = 169
 versions.localApiVersion = 2
 
 //Tools & Libs
@@ -25,7 +25,7 @@ versions.coordinator = "1.2.0"
 
 //Caution: upgrading navigation to 2.4.1+ may lead to issues in findNavController().currentBackStackEntry?.savedStateHandle?
 //ie.: When you log in or out from a tab, the state does not propagate to the records screen. Check HAPP-1153 for more information
-versions.navigation = "2.3.5" //2.5.3 is compatible but has the same bug as 2.4.1
+versions.navigation = "2.5.3" //2.5.3 is compatible but has the same bug as 2.4.1
 
 versions.lifecycle = "2.5.0" // 2.6.0 requires 13+
 
