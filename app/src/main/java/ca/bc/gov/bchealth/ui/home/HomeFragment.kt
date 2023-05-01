@@ -15,17 +15,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHomeBinding
-import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.BaseSecureFragment
+import ca.bc.gov.bchealth.ui.BcscAuthState
 import ca.bc.gov.bchealth.ui.auth.BioMetricState
 import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment
-import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
-import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.fromHtml
 import ca.bc.gov.bchealth.utils.hide
 import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.observeCurrentBackStackForAction
 import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
@@ -35,7 +35,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomeFragment : BaseFragment(R.layout.fragment_home) {
+class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
 
     private val binding by viewBindings(FragmentHomeBinding::bind)
     private val viewModel: HomeViewModel by activityViewModels()
@@ -62,9 +62,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BioMetricState>(
-            BiometricsAuthenticationFragment.BIOMETRIC_STATE
-        )?.observe(viewLifecycleOwner) {
+        observeCurrentBackStackForAction<BioMetricState>(BiometricsAuthenticationFragment.BIOMETRIC_STATE) {
             when (it) {
                 BioMetricState.SUCCESS -> {
                     findNavController().currentBackStackEntry?.savedStateHandle?.remove<BioMetricState>(
@@ -74,28 +72,8 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                     viewModel.launchCheck()
                     viewModel.executeOneTimeDataFetch()
                 }
-
                 else -> {
                     findNavController().popBackStack()
-                }
-            }
-        }
-
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
-            BcscAuthFragment.BCSC_AUTH_STATUS
-        )?.observe(viewLifecycleOwner) {
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<BcscAuthState>(
-                BcscAuthFragment.BCSC_AUTH_STATUS
-            )
-            when (it) {
-                BcscAuthState.SUCCESS -> {
-                    if (sharedViewModel.destinationId > 0) {
-                        findNavController().navigate(sharedViewModel.destinationId)
-                    }
-                }
-
-                else -> {
-                    // no implementation required
                 }
             }
         }
@@ -116,6 +94,20 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         viewModel.launchCheck()
         viewModel.getAuthenticatedPatientName()
         viewModel.bannerState.observe(viewLifecycleOwner) { displayBanner(it) }
+    }
+
+    override fun handleBCSCAuthState(bcscAuthState: BcscAuthState) {
+        when (bcscAuthState) {
+            BcscAuthState.SUCCESS -> {
+                if (sharedViewModel.destinationId > 0) {
+                    findNavController().navigate(sharedViewModel.destinationId)
+                }
+            }
+
+            else -> {
+                // no implementation required
+            }
+        }
     }
 
     private fun observeAuthStatus() {

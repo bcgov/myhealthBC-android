@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.IncludeSearchBarBinding
 import ca.bc.gov.bchealth.databinding.LayoutChipGroupBinding
-import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.BaseSecureFragment
 import ca.bc.gov.bchealth.ui.filter.FilterUiState
 import ca.bc.gov.bchealth.ui.filter.FilterViewModel
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
@@ -24,7 +24,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-abstract class BaseRecordFilterFragment(@LayoutRes id: Int) : BaseFragment(id) {
+abstract class BaseRecordFilterFragment(@LayoutRes id: Int) : BaseSecureFragment(id) {
     private var queryTextChangedJob: Job? = null
 
     abstract fun getSearchBar(): IncludeSearchBarBinding

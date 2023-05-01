@@ -23,9 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Scene
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHelathPassBinding
-import ca.bc.gov.bchealth.ui.BaseFragment
-import ca.bc.gov.bchealth.ui.login.BcscAuthFragment.Companion.BCSC_AUTH_STATUS
-import ca.bc.gov.bchealth.ui.login.BcscAuthState
+import ca.bc.gov.bchealth.ui.BaseSecureFragment
+import ca.bc.gov.bchealth.ui.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.PdfHelper
@@ -46,7 +45,7 @@ import java.io.File
  * @author Pinakin Kansara
  */
 @AndroidEntryPoint
-class HealthPassFragment : BaseFragment(R.layout.fragment_helath_pass) {
+class HealthPassFragment : BaseSecureFragment(R.layout.fragment_helath_pass) {
 
     private val viewModel: HealthPassViewModel by viewModels()
     private val binding by viewBindings(FragmentHelathPassBinding::bind)
@@ -65,25 +64,6 @@ class HealthPassFragment : BaseFragment(R.layout.fragment_helath_pass) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
-            BCSC_AUTH_STATUS
-        )?.observe(viewLifecycleOwner) {
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<BcscAuthState>(
-                BCSC_AUTH_STATUS
-            )
-            when (it) {
-                BcscAuthState.NOT_NOW -> {
-                    val destinationId = sharedViewModel.destinationId
-                    if (destinationId > 0) {
-                        findNavController().navigate(destinationId)
-                    }
-                }
-                else -> {
-                    // no implementation required
-                }
-            }
-        }
 
         sceneSingleHealthPass = Scene.getSceneForLayout(
             binding.sceneRoot,
@@ -145,6 +125,20 @@ class HealthPassFragment : BaseFragment(R.layout.fragment_helath_pass) {
                 launch {
                     collectUiState()
                 }
+            }
+        }
+    }
+
+    override fun handleBCSCAuthState(bcscAuthState: BcscAuthState) {
+        when (bcscAuthState) {
+            BcscAuthState.NOT_NOW -> {
+                val destinationId = sharedViewModel.destinationId
+                if (destinationId > 0) {
+                    findNavController().navigate(destinationId)
+                }
+            }
+            else -> {
+                // no implementation required
             }
         }
     }
