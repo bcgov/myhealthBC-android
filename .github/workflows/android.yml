@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - main
-      - release_candidate
-  workflow_dispatch:
+      - release_candidate/*
 
 jobs:
   build:
