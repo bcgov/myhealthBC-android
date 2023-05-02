@@ -56,9 +56,7 @@ import ca.bc.gov.data.datasource.remote.model.base.immunization.Recommendation
 import ca.bc.gov.data.datasource.remote.model.base.medication.DispensingPharmacy
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationStatementPayload
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationSummary
-import ca.bc.gov.data.datasource.remote.model.base.patient.PatientAddress
 import ca.bc.gov.data.datasource.remote.model.base.patient.PatientName
-import ca.bc.gov.data.datasource.remote.model.base.patient.PatientPayload
 import ca.bc.gov.data.datasource.remote.model.base.patientdata.OrganDonorStatus
 import ca.bc.gov.data.datasource.remote.model.base.patientdata.PatientDataItem
 import ca.bc.gov.data.datasource.remote.model.base.profile.UserProfilePayload
@@ -73,6 +71,8 @@ import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
+import ca.bc.gov.data.datasource.remote.model.response.PatientAddress
+import ca.bc.gov.data.datasource.remote.model.response.PatientResponse
 import ca.bc.gov.data.model.MediaMetaData
 import ca.bc.gov.data.model.VaccineStatus
 import java.time.Instant
@@ -420,7 +420,7 @@ fun PatientName.toDto(): PatientNameDto {
     )
 }
 
-fun PatientPayload.toDto(): PatientDto {
+fun PatientResponse.toDto(): PatientDto {
 
     val patientName = preferredName ?: throw MyHealthException(
         SERVER_ERROR, INVALID_RESPONSE
