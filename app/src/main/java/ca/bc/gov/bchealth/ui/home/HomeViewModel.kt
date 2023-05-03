@@ -92,7 +92,7 @@ class HomeViewModel @Inject constructor(
             }
 
             isAuthenticationRequired -> {
-                _uiState.update { state -> state.copy(isAuthenticationRequired = true) }
+                _uiState.update { state -> state.copy(isBiometricAuthRequired = true) }
             }
 
             onBoardingRepository.onBCSCLoginRequiredPostBiometric -> {
@@ -113,7 +113,7 @@ class HomeViewModel @Inject constructor(
 
     fun onAuthenticationRequired(isRequired: Boolean) {
         isAuthenticationRequired = isRequired
-        _uiState.update { state -> state.copy(isAuthenticationRequired = isRequired) }
+        _uiState.update { state -> state.copy(isBiometricAuthRequired = isRequired) }
     }
 
     fun onBcscLoginRequired(isRequired: Boolean) {
@@ -285,7 +285,7 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val isOnBoardingRequired: Boolean = false,
     val isReOnBoardingRequired: Boolean = false,
-    val isAuthenticationRequired: Boolean = false,
+    val isBiometricAuthRequired: Boolean = false,
     val isBcscLoginRequiredPostBiometrics: Boolean = false,
     val patientFirstName: String? = null,
     val isForceLogout: Boolean = false,

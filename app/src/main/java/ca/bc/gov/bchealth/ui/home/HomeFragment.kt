@@ -171,7 +171,7 @@ class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
                 viewModel.onBoardingShown()
             }
 
-            if (uiState.isAuthenticationRequired && !sharedViewModel.isBiometricAuthShown) {
+            if (uiState.isBiometricAuthRequired && !sharedViewModel.isBiometricAuthShown) {
                 findNavController().navigate(R.id.biometricsAuthenticationFragment)
                 sharedViewModel.isBiometricAuthShown = true
                 viewModel.onAuthenticationRequired(false)
