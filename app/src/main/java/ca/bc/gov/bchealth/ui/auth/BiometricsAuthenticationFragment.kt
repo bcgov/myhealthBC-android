@@ -123,7 +123,7 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
                     super.onAuthenticationFailed()
                     findNavController().setActionToPreviousBackStackEntry(
                         BIOMETRIC_STATE,
-                        BioMetricState.FAILED
+                        BiometricState.FAILED
                     )
                 }
 
@@ -131,7 +131,7 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
                     super.onAuthenticationSucceeded(result)
                     findNavController().setActionToPreviousBackStackEntry(
                         BIOMETRIC_STATE,
-                        BioMetricState.SUCCESS
+                        BiometricState.SUCCESS
                     )
                     findNavController().popBackStack()
                 }
@@ -196,7 +196,7 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
     }
 }
 
-enum class BioMetricState {
+enum class BiometricState {
     FAILED,
     SUCCESS
 }

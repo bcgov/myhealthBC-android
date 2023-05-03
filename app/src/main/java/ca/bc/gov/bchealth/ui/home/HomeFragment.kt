@@ -17,7 +17,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHomeBinding
 import ca.bc.gov.bchealth.ui.BaseSecureFragment
 import ca.bc.gov.bchealth.ui.BcscAuthState
-import ca.bc.gov.bchealth.ui.auth.BioMetricState
+import ca.bc.gov.bchealth.ui.auth.BiometricState
 import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
@@ -62,19 +62,10 @@ class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeCurrentBackStackForAction<BioMetricState>(BiometricsAuthenticationFragment.BIOMETRIC_STATE) {
+        observeCurrentBackStackForAction<BiometricState>(BiometricsAuthenticationFragment.BIOMETRIC_STATE) {
             when (it) {
-                BioMetricState.SUCCESS -> {
-                    findNavController().currentBackStackEntry?.savedStateHandle?.remove<BioMetricState>(
-                        BiometricsAuthenticationFragment.BIOMETRIC_STATE
-                    )
-                    viewModel.onAuthenticationRequired(false)
-                    viewModel.launchCheck()
-                    viewModel.executeOneTimeDataFetch()
-                }
-                else -> {
-                    findNavController().popBackStack()
-                }
+                BiometricState.SUCCESS -> onBiometricAuthSuccess()
+                else -> findNavController().popBackStack()
             }
         }
 
@@ -94,6 +85,15 @@ class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
         viewModel.launchCheck()
         viewModel.getAuthenticatedPatientName()
         viewModel.bannerState.observe(viewLifecycleOwner) { displayBanner(it) }
+    }
+
+    private fun onBiometricAuthSuccess() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.remove<BiometricState>(
+            BiometricsAuthenticationFragment.BIOMETRIC_STATE
+        )
+        viewModel.onAuthenticationRequired(false)
+        viewModel.launchCheck()
+        viewModel.executeOneTimeDataFetch()
     }
 
     override fun handleBCSCAuthState(bcscAuthState: BcscAuthState) {
