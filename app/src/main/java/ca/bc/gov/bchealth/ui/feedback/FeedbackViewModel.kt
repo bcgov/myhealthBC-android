@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.feeback
+package ca.bc.gov.bchealth.ui.feedback
 
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.ui.BaseViewModel

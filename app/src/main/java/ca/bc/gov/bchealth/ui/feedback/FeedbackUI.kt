@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.feeback
+package ca.bc.gov.bchealth.ui.feedback
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box

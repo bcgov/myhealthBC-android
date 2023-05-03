@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.feeback
+package ca.bc.gov.bchealth.ui.feedback
 
 import androidx.compose.runtime.Composable
 import androidx.fragment.app.viewModels
