@@ -358,6 +358,11 @@
     <string name="biometric_security_tip_2">Do not share or turn off your passcode</string>
     <string name="biometric_security_tip_3">Do not leave your device unlocked</string>
 
+    <!-- NOTIFICATIONS -->
+    <string name="notification_permission_title">Get Notified</string>
+    <string name="notification_permission_body">Enabling this permission allows Health Gateway to notify you on updates in Login, Health records, Lab test results and feedbacks. It is recommended that you enable the permissions for the smooth functioning of the application.</string>
+    <string name="notification_permission_button_agree">I agree</string>
+
     <!--Miscellaneous-->
     <string name="coming_soon">Coming soon!</string>
     <string name="back">Back</string>

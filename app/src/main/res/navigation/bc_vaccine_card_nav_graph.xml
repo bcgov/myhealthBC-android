@@ -73,6 +73,11 @@
     </fragment>
 
     <fragment
+        android:id="@+id/notificationPermissionFragment"
+        android:name="ca.bc.gov.bchealth.ui.notification.permission.NotificationPermissionFragment">
+    </fragment>
+
+    <fragment
         android:id="@+id/bcscAuthInfoFragment"
         android:name="ca.bc.gov.bchealth.ui.login.BcscAuthInfoFragment"
         tools:layout="@layout/fragment_bcsc_auth_info">
