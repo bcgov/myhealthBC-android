@@ -1,5 +1,6 @@
 package ca.bc.gov.repository
 
+import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import javax.inject.Inject
 
@@ -27,4 +28,23 @@ class OnBoardingRepository @Inject constructor(
         set(value) {
             preferenceStorage.onBCSCLoginRequiredPostBiometric = value
         }
+
+    var versionCode: Int
+        get() = preferenceStorage.versionCode
+        set(value) {
+            preferenceStorage.versionCode = value
+        }
+
+    var reOnBoardingRequired: Boolean
+        get() = preferenceStorage.reOnBoardingRequired
+        set(value) {
+            preferenceStorage.reOnBoardingRequired = value
+        }
+
+    fun setReOnBoardingRequiredFlag(currentAppVersionCode: Int) {
+        if (!onBoardingRequired && currentAppVersionCode > versionCode && BuildConfig.FLAG_RE_ONBOARDING_REQUIRED) {
+            versionCode = currentAppVersionCode
+            reOnBoardingRequired = true
+        }
+    }
 }
