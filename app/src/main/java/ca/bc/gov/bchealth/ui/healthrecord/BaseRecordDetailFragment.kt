@@ -80,8 +80,6 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
 
         launchOnStart {
             commentsViewModel.uiState.collect { state ->
-                getProgressBar()?.isVisible = state.onLoading
-
                 val list = if (state.commentsSummary != null) {
                     listOf(state.commentsSummary)
                 } else {
