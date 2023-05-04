@@ -37,6 +37,7 @@ android {
             buildConfigField "boolean", "FLAG_SERVICE_TAB", "true"
             buildConfigField "boolean", "FLAG_SEARCH_RECORDS", "true"
             buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "true"
+            buildConfigField "boolean", "FLAG_RE_ONBOARDING_REQUIRED", "true"
         }
         dev {
             dimension "version"
@@ -49,6 +50,7 @@ android {
             buildConfigField "boolean", "FLAG_SERVICE_TAB", "true"
             buildConfigField "boolean", "FLAG_SEARCH_RECORDS", "true"
             buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "true"
+            buildConfigField "boolean", "FLAG_RE_ONBOARDING_REQUIRED", "true"
         }
 
         stage {
@@ -62,6 +64,7 @@ android {
             buildConfigField "boolean", "FLAG_SERVICE_TAB", "false"
             buildConfigField "boolean", "FLAG_SEARCH_RECORDS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "false"
+            buildConfigField "boolean", "FLAG_RE_ONBOARDING_REQUIRED", "true"
         }
 
         prod {
@@ -75,6 +78,7 @@ android {
             buildConfigField "boolean", "FLAG_SERVICE_TAB", "false"
             buildConfigField "boolean", "FLAG_SEARCH_RECORDS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "false"
+            buildConfigField "boolean", "FLAG_RE_ONBOARDING_REQUIRED", "true"
         }
     }
 

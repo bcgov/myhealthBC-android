@@ -37,6 +37,8 @@ class EncryptedPreferenceStorage @Inject constructor(
         private const val CLIENT_ID = "CLIENT_ID"
         private const val IDENTITY_PROVIDER_ID = "IDENTITY_PROVIDER_ID"
         private const val BASE_URL_IS_ONLINE = "BASE_URL_IS_ONLINE"
+        private const val APP_VERSION_CODE = "APP_VERSION_CODE"
+        private const val RE_ON_BOARDING_REQUIRED = "RE_ON_BOARDING_REQUIRED"
     }
 
     var cookies: MutableSet<String>?
@@ -170,6 +172,20 @@ class EncryptedPreferenceStorage @Inject constructor(
         set(value) {
             encryptedSharedPreferences.edit()
                 .putBoolean(BASE_URL_IS_ONLINE, value)
+                .apply()
+        }
+
+    var versionCode: Int
+        get() = encryptedSharedPreferences.getInt(APP_VERSION_CODE, 0)
+        set(value) {
+            encryptedSharedPreferences.edit().putInt(APP_VERSION_CODE, value)
+                .apply()
+        }
+
+    var reOnBoardingRequired: Boolean
+        get() = encryptedSharedPreferences.getBoolean(RE_ON_BOARDING_REQUIRED, false)
+        set(value) {
+            encryptedSharedPreferences.edit().putBoolean(RE_ON_BOARDING_REQUIRED, value)
                 .apply()
         }
 }

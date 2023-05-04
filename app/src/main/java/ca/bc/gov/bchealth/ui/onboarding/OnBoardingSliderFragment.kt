@@ -6,8 +6,8 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
+import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentOnboardingSliderBinding
 import ca.bc.gov.bchealth.utils.toggleVisibility
@@ -20,11 +20,9 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
 
     private val binding by viewBindings(FragmentOnboardingSliderBinding::bind)
     private val viewModel: OnBoardingSliderViewModel by viewModels()
-    private val args: OnBoardingSliderFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.isDependentOnly = args.dependentOnly
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             requireActivity().finishAndRemoveTask()
@@ -34,7 +32,7 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val educationalScreenAdapter = EducationalScreenAdapter(this, viewModel.isDependentOnly)
+        val educationalScreenAdapter = EducationalScreenAdapter(this, viewModel.reOnBoardingRequired)
 
         binding.viewpagerOnBoardingSlides.adapter = educationalScreenAdapter
         binding.tabOnBoardingSlides.toggleVisibility(viewModel.isDependentOnly.not())
@@ -49,7 +47,7 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     if (position == educationalScreenAdapter.itemCount - 1) {
-                        val buttonText = if (viewModel.isDependentOnly) {
+                        val buttonText = if (viewModel.reOnBoardingRequired) {
                             R.string.btn_ok
                         } else {
                             R.string.get_started
@@ -82,7 +80,9 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
 
     private fun navigateToHealthPasses() {
         viewModel.setOnBoardingRequired(false).invokeOnCompletion {
-            findNavController().popBackStack()
+            viewModel.setAppVersionCode(BuildConfig.VERSION_CODE).invokeOnCompletion {
+                findNavController().popBackStack()
+            }
         }
     }
 }
