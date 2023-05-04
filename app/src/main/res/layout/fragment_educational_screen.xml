@@ -83,21 +83,14 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_new"
-                style="?textAppearanceHeadline4"
-                android:layout_width="wrap_content"
+                style="?textAppearanceHeadline6"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_2_x"
-                android:layout_marginEnd="@dimen/space_2_x"
-                android:layout_marginBottom="8dp"
                 android:text="@string/new_string"
                 android:visibility="invisible"
-                android:textStyle="bold"
-                app:textAllCaps="true"
-                android:textColor="@color/primary_blue"
-                app:layout_constraintStart_toStartOf="@id/tv_slider_title"
-                app:layout_constraintEnd_toEndOf="@id/tv_slider_title"
+                android:textAlignment="center"
                 app:layout_constraintBottom_toTopOf="@id/tv_slider_title"
-                tools:text="@string/onboarding_health_passes_title" />
+                app:layout_constraintStart_toStartOf="@id/tv_slider_title"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_slider_title"

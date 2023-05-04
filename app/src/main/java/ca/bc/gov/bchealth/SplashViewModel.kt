@@ -26,7 +26,7 @@ class SplashViewModel @Inject constructor(
         get() = _updateType
 
     init {
-        onBoardingRepository.setReOnBoardingRequiredFlag(BuildConfig.VERSION_CODE)
+        onBoardingRepository.checkIfReOnBoardingRequired(BuildConfig.VERSION_CODE)
     }
 
     fun checkAppVersion() {

@@ -32,10 +32,10 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val educationalScreenAdapter = EducationalScreenAdapter(this, viewModel.reOnBoardingRequired)
+        val educationalScreenAdapter = EducationalScreenAdapter(this, viewModel.isReOnBoardingRequired)
 
         binding.viewpagerOnBoardingSlides.adapter = educationalScreenAdapter
-        binding.tabOnBoardingSlides.toggleVisibility(viewModel.isDependentOnly.not())
+        binding.tabOnBoardingSlides.toggleVisibility(viewModel.isReOnBoardingRequired.not())
 
         TabLayoutMediator(
             binding.tabOnBoardingSlides,
@@ -47,7 +47,7 @@ class OnBoardingSliderFragment : Fragment(R.layout.fragment_onboarding_slider) {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     if (position == educationalScreenAdapter.itemCount - 1) {
-                        val buttonText = if (viewModel.reOnBoardingRequired) {
+                        val buttonText = if (viewModel.isReOnBoardingRequired) {
                             R.string.btn_ok
                         } else {
                             R.string.get_started

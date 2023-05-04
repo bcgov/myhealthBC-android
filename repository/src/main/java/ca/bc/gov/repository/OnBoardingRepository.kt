@@ -17,34 +17,35 @@ class OnBoardingRepository @Inject constructor(
             preferenceStorage.onBoardingRequired = value
         }
 
-    var dependentOnBoardingRequired: Boolean
-        get() = preferenceStorage.dependentOnBoardingRequired
-        set(value) {
-            preferenceStorage.dependentOnBoardingRequired = value
-        }
-
     var onBCSCLoginRequiredPostBiometric: Boolean
         get() = preferenceStorage.onBCSCLoginRequiredPostBiometric
         set(value) {
             preferenceStorage.onBCSCLoginRequiredPostBiometric = value
         }
 
-    var versionCode: Int
-        get() = preferenceStorage.versionCode
+    var previousVersionCode: Int
+        get() = preferenceStorage.previousAppVersionCode
         set(value) {
-            preferenceStorage.versionCode = value
+            preferenceStorage.previousAppVersionCode = value
         }
 
-    var reOnBoardingRequired: Boolean
-        get() = preferenceStorage.reOnBoardingRequired
+    var isReOnBoardingRequired: Boolean
+        get() = preferenceStorage.isReOnBoardingRequired
         set(value) {
-            preferenceStorage.reOnBoardingRequired = value
+            preferenceStorage.isReOnBoardingRequired = value
         }
 
-    fun setReOnBoardingRequiredFlag(currentAppVersionCode: Int) {
-        if (!onBoardingRequired && currentAppVersionCode > versionCode && BuildConfig.FLAG_RE_ONBOARDING_REQUIRED) {
-            versionCode = currentAppVersionCode
-            reOnBoardingRequired = true
+    var previousOnBoardingScreenName: String?
+        get() = preferenceStorage.previousOnBoardingScreenName
+        set(value) {
+            preferenceStorage.previousOnBoardingScreenName = value
+        }
+
+    fun checkIfReOnBoardingRequired(currentAppVersionCode: Int) {
+        if (!onBoardingRequired && currentAppVersionCode > previousVersionCode &&
+            !BuildConfig.FLAG_NEW_ON_BOARDING_SCREEN.equals(previousOnBoardingScreenName, ignoreCase = true)
+        ) {
+            isReOnBoardingRequired = true
         }
     }
 }

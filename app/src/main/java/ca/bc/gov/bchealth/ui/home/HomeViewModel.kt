@@ -85,7 +85,7 @@ class HomeViewModel @Inject constructor(
                 }
             }
 
-            onBoardingRepository.reOnBoardingRequired -> {
+            onBoardingRepository.isReOnBoardingRequired -> {
                 _uiState.update { state ->
                     state.copy(isLoading = false, isReOnBoardingRequired = true)
                 }
