@@ -74,7 +74,7 @@ class EducationalScreenFragment : Fragment(R.layout.fragment_educational_screen)
                     title = getString(R.string.onboarding_services_title)
                     description = getString(R.string.onboarding_services_desc)
                     ivRightIcon.apply {
-                        setImageResource(R.drawable.id_onboarding_services)
+                        setImageResource(R.drawable.ic_onboarding_services)
                         visibility = View.VISIBLE
                     }
                     if (arguments?.getBoolean(ARG_PARAM_RE_ON_BOARDING) == true) {
