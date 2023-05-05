@@ -14,11 +14,11 @@ class CommentLocalDataSource @Inject constructor(
     private val commentDao: CommentDao
 ) {
 
-    suspend fun findCommentByParentEntryId(parentEntryId: String?): List<CommentDto> {
+    suspend fun findCommentsByParentEntryId(parentEntryId: String?): List<CommentDto> {
         val list = commentDao.findCommentByParentEntryId(parentEntryId)
             .map { it.toDto() }
             .toMutableList()
-        list.sortBy { it.createdDateTime }
+        list.sortByDescending { it.createdDateTime }
         return list
     }
 

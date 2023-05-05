@@ -135,7 +135,7 @@ class CommentsViewModel @Inject constructor(
     ): CommentsSummary? {
         if (commentsDtoList.isEmpty()) return null
 
-        val lastComment = commentsDtoList.last()
+        val lastComment = commentsDtoList.first()
 
         return CommentsSummary(
             text = lastComment.text.orEmpty(),
