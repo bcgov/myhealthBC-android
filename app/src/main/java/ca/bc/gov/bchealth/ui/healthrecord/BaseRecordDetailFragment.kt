@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -80,8 +79,6 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
 
         launchOnStart {
             commentsViewModel.uiState.collect { state ->
-                getProgressBar()?.isVisible = state.onLoading
-
                 val list = if (state.commentsSummary != null) {
                     listOf(state.commentsSummary)
                 } else {
