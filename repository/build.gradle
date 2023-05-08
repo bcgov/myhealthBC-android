@@ -76,6 +76,9 @@ dependencies {
 
     implementation project(path: ':data')
     implementation project(path: ':common')
+    //app auth now added as source code
+    //implementation "net.openid:appauth:$versions.appauth"
+    implementation project(path: ':appauth')
 
     implementation "ca.bc.gov:shcdecoder:$versions.shcdecoder"
 
@@ -97,11 +100,6 @@ dependencies {
     //dagger hilt
     implementation "com.google.dagger:hilt-android:$versions.hilt"
     kapt "com.google.dagger:hilt-compiler:$versions.hilt"
-
-    //app auth
-    //implementation "net.openid:appauth:$versions.appauth"
-    api "androidx.browser:browser:1.3.0"
-    implementation "androidx.annotation:annotation:1.3.0"
 
     //work manager
     api "androidx.work:work-runtime-ktx:$versions.work"
