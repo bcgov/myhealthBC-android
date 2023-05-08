@@ -5,13 +5,13 @@ import android.net.Uri
 import ca.bc.gov.common.const.AUTH_ERROR
 import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
 import ca.bc.gov.common.exceptions.MyHealthException
-import ca.bc.gov.repository.library.java.net.openid.appauth.AuthState
-import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationException
-import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationResponse
-import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationService
-import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationServiceConfiguration
-import ca.bc.gov.repository.library.java.net.openid.appauth.TokenResponse
 import kotlinx.coroutines.suspendCancellableCoroutine
+import net.openid.appauth.AuthState
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationResponse
+import net.openid.appauth.AuthorizationService
+import net.openid.appauth.AuthorizationServiceConfiguration
+import net.openid.appauth.TokenResponse
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -21,7 +21,6 @@ import kotlin.coroutines.resumeWithException
 
 suspend fun awaitFetchFromIssuer(uri: Uri): AuthorizationServiceConfiguration =
     suspendCancellableCoroutine { continuation ->
-
         AuthorizationServiceConfiguration.fetchFromIssuer(
             uri
         ) { serviceConfiguration, ex ->
@@ -37,18 +36,19 @@ suspend fun awaitFetchFromIssuer(uri: Uri): AuthorizationServiceConfiguration =
 suspend fun awaitPerformTokenRequest(
     applicationContext: Context,
     authorizationResponse: AuthorizationResponse
-): Pair<TokenResponse, AuthorizationException?> = suspendCancellableCoroutine { continuation ->
+): Pair<TokenResponse, AuthorizationException?> =
+    suspendCancellableCoroutine { continuation ->
 
-    AuthorizationService(applicationContext).performTokenRequest(
-        authorizationResponse.createTokenExchangeRequest()
-    ) { response, ex ->
-        if (ex != null || response == null) {
-            continuation.resumeWithException(MyHealthException(AUTH_ERROR, "Login failed!"))
-        } else {
-            continuation.resume(Pair(response, ex))
+        AuthorizationService(applicationContext).performTokenRequest(
+            authorizationResponse.createTokenExchangeRequest()
+        ) { response, ex ->
+            if (ex != null || response == null) {
+                continuation.resumeWithException(MyHealthException(AUTH_ERROR, "Login failed!"))
+            } else {
+                continuation.resume(Pair(response, ex))
+            }
         }
     }
-}
 
 suspend fun awaitPerformActionWithFreshTokens(
     applicationContext: Context,
