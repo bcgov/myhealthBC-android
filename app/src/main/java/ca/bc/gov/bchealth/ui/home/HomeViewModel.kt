@@ -85,9 +85,9 @@ class HomeViewModel @Inject constructor(
                 }
             }
 
-            onBoardingRepository.dependentOnBoardingRequired -> {
+            onBoardingRepository.isReOnBoardingRequired -> {
                 _uiState.update { state ->
-                    state.copy(isLoading = false, isDependentOnBoardingRequired = true)
+                    state.copy(isLoading = false, isReOnBoardingRequired = true)
                 }
             }
 
@@ -107,7 +107,7 @@ class HomeViewModel @Inject constructor(
 
     fun onBoardingShown() {
         _uiState.update {
-            it.copy(isOnBoardingRequired = false, isDependentOnBoardingRequired = false)
+            it.copy(isOnBoardingRequired = false, isReOnBoardingRequired = false)
         }
     }
 
@@ -284,7 +284,7 @@ data class BannerItem(
 data class HomeUiState(
     val isLoading: Boolean = false,
     val isOnBoardingRequired: Boolean = false,
-    val isDependentOnBoardingRequired: Boolean = false,
+    val isReOnBoardingRequired: Boolean = false,
     val isAuthenticationRequired: Boolean = false,
     val isBcscLoginRequiredPostBiometrics: Boolean = false,
     val patientFirstName: String? = null,

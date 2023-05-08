@@ -162,12 +162,11 @@ class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
 
     private suspend fun onBoardingFlow() {
         viewModel.uiState.collect { uiState ->
-            if (uiState.isOnBoardingRequired || uiState.isDependentOnBoardingRequired) {
-                val isDependentOnly =
-                    uiState.isOnBoardingRequired.not() && uiState.isDependentOnBoardingRequired
+            if (uiState.isOnBoardingRequired || uiState.isReOnBoardingRequired) {
+
                 findNavController().navigate(
                     R.id.onBoardingSliderFragment,
-                    bundleOf("dependentOnly" to isDependentOnly)
+                    bundleOf("reOnBoardingRequired" to uiState.isReOnBoardingRequired)
                 )
                 viewModel.onBoardingShown()
             }

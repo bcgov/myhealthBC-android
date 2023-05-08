@@ -229,6 +229,8 @@
     <string name="onboarding_news_feed_desc">Get the latest COVID-19 news from  the Government of B.C.</string>
     <string name="onboarding_dependents_title">Dependent record</string>
     <string name="onboarding_dependents_desc">Access to your children’s (11 years old and younger) immunization and COVID-19 test records.</string>
+    <string name="onboarding_services_title">Services</string>
+    <string name="onboarding_services_desc">You can check and update your Organ Donor Registry information here. More health services will be added in future.</string>
 
     <string name="new_string">New</string>
     <string name="ok_camel_case">Ok</string>

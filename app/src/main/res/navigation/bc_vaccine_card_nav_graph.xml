@@ -33,7 +33,7 @@
         android:name="ca.bc.gov.bchealth.ui.onboarding.OnBoardingSliderFragment"
         android:label="OnBoardingSliderFragment">
         <argument
-            android:name="dependentOnly"
+            android:name="reOnBoardingRequired"
             app:argType="boolean" />
     </fragment>
 
