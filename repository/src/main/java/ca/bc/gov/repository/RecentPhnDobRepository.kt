@@ -1,6 +1,6 @@
 package ca.bc.gov.repository
 
-import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.preference.EncryptedPreferenceStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

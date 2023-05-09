@@ -38,6 +38,7 @@ android {
             buildConfigField "boolean", "FLAG_SEARCH_RECORDS", "true"
             buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "true"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
+            resValue "string", "base_url", "https://mock.healthgateway.gov.bc.ca/"
         }
         dev {
             dimension "version"
@@ -51,6 +52,7 @@ android {
             buildConfigField "boolean", "FLAG_SEARCH_RECORDS", "true"
             buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "true"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
+            resValue "string", "base_url", "https://dev.healthgateway.gov.bc.ca/"
         }
 
         stage {
@@ -65,6 +67,7 @@ android {
             buildConfigField "boolean", "FLAG_SEARCH_RECORDS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "false"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
+            resValue "string", "base_url", "https://test.healthgateway.gov.bc.ca/"
         }
 
         prod {
@@ -79,6 +82,7 @@ android {
             buildConfigField "boolean", "FLAG_SEARCH_RECORDS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "false"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
+            resValue "string", "base_url", "https://healthgateway.gov.bc.ca/"
         }
     }
 
@@ -94,7 +98,6 @@ android {
 dependencies {
 
     implementation "androidx.core:core-ktx:$versions.core_ktx"
-    implementation "androidx.appcompat:appcompat:$versions.appcompat"
 
     testImplementation "junit:junit:$versions.junit"
     androidTestImplementation "androidx.test.ext:junit:$versions.ext_junit"

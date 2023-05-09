@@ -1,6 +1,6 @@
 package ca.bc.gov.data.utils
 
-import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.preference.EncryptedPreferenceStorage
 import java.security.SecureRandom
 import javax.inject.Inject
 

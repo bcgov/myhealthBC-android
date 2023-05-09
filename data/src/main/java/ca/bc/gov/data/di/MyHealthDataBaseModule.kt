@@ -5,8 +5,8 @@ import androidx.room.Room
 import ca.bc.gov.data.BuildConfig
 import ca.bc.gov.data.datasource.local.MyHealthDataBase
 import ca.bc.gov.data.datasource.local.migration.ALL_MIGRATIONS
-import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.utils.RandomBytesGenerator
+import ca.bc.gov.preference.EncryptedPreferenceStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

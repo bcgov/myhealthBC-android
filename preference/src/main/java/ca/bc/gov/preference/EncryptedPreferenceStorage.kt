@@ -1,11 +1,11 @@
-package ca.bc.gov.data.datasource.local.preference
+package ca.bc.gov.preference
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
+import ca.bc.gov.common.R
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.settings.AnalyticsFeature
-import ca.bc.gov.data.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

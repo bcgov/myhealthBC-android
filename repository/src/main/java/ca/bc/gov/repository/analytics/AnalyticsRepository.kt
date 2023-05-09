@@ -3,7 +3,7 @@ package ca.bc.gov.repository.analytics
 import ca.bc.gov.common.model.analytics.AnalyticsAction
 import ca.bc.gov.common.model.analytics.AnalyticsActionData
 import ca.bc.gov.common.model.settings.AnalyticsFeature
-import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.preference.EncryptedPreferenceStorage
 import com.snowplowanalytics.snowplow.Snowplow
 import com.snowplowanalytics.snowplow.event.SelfDescribing
 import com.snowplowanalytics.snowplow.payload.SelfDescribingJson
