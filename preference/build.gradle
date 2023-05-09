@@ -6,22 +6,14 @@ plugins {
 }
 
 android {
+    namespace 'ca.bc.gov.preference'
     compileSdk versions.compileSdkVersion
 
     defaultConfig {
         minSdk versions.minSdkVersion
         targetSdk versions.targetSdkVersion
 
-        testInstrumentationRunner "ca.bc.gov.data.HiltTestRunner"
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += [
-                        "room.schemaLocation"  : "$projectDir/schemas".toString(),
-                        "room.incremental"     : "true",
-                        "room.expandProjection": "true"]
-            }
-        }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
 
@@ -58,31 +50,15 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-
-    sourceSets {
-        // Adds exported schema location as test app assets.
-        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
-    }
 }
 
 dependencies {
 
     implementation "androidx.core:core-ktx:$versions.core_ktx"
-    implementation "androidx.appcompat:appcompat:$versions.appcompat"
 
-    implementation project(path: ':preference')
     implementation project(path: ':common')
 
-    //room
-    implementation "androidx.room:room-runtime:$versions.room"
-    implementation "androidx.room:room-ktx:$versions.room"
-    kapt "androidx.room:room-compiler:$versions.room"
-
-    //retrofit
-    implementation "com.google.code.gson:gson:$versions.gson"
-    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
-    implementation "com.squareup.retrofit2:converter-gson:$versions.converter_gson"
-    implementation "com.squareup.okhttp3:logging-interceptor:$versions.logging_interceptor"
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutines")
 
     //dagger hilt
     implementation "com.google.dagger:hilt-android:$versions.hilt"
@@ -91,20 +67,9 @@ dependencies {
     //jetpack security
     implementation "androidx.security:security-crypto:$versions.crypto"
 
-    //sql cipher
-    implementation "net.zetetic:android-database-sqlcipher:$versions.sqlcipher"
-    implementation "androidx.sqlite:sqlite-ktx:$versions.sqlite"
-
     testImplementation "junit:junit:$versions.junit"
     androidTestImplementation "androidx.test.ext:junit:$versions.ext_junit"
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
     androidTestImplementation "androidx.arch.core:core-testing:$versions.androidx_test"
-    androidTestImplementation "io.mockk:mockk-android:$versions.mockk"
     testImplementation "org.mockito:mockito-inline:$versions.mockito"
-
-    androidTestImplementation "androidx.room:room-testing:$versions.room"
-    testImplementation "androidx.room:room-testing:$versions.room"
-
-    androidTestImplementation "com.google.dagger:hilt-android-testing:$versions.hilt"
-    kaptAndroidTest "com.google.dagger:hilt-android-compiler:$versions.hilt"
 }

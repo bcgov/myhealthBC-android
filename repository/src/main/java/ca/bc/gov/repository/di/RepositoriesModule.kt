@@ -14,7 +14,6 @@ import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.OrganDonorLocalDataSource
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
-import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.BannerRemoteDataSource
 import ca.bc.gov.data.datasource.remote.CommentRemoteDataSource
 import ca.bc.gov.data.datasource.remote.DependentsRemoteDataSource
@@ -24,6 +23,7 @@ import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.OrganDonorRemoteDataSource
 import ca.bc.gov.data.datasource.remote.TermsOfServiceRemoteDataSource
+import ca.bc.gov.preference.EncryptedPreferenceStorage
 import ca.bc.gov.repository.BannerRepository
 import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.CommentRepository

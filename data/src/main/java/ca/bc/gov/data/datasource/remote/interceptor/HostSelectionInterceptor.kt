@@ -1,6 +1,6 @@
 package ca.bc.gov.data.datasource.remote.interceptor
 
-import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.preference.EncryptedPreferenceStorage
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException

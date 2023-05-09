@@ -11,7 +11,7 @@ import ca.bc.gov.common.const.MUST_CALL_MOBILE_CONFIG
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
-import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.preference.EncryptedPreferenceStorage
 import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationRequest

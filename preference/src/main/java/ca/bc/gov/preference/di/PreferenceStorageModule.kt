@@ -1,4 +1,4 @@
-package ca.bc.gov.data.di
+package ca.bc.gov.preference.di
 
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences

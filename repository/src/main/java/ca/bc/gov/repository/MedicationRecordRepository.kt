@@ -7,9 +7,9 @@ import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
-import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
 import ca.bc.gov.data.model.mapper.toListOfMedicationDto
+import ca.bc.gov.preference.EncryptedPreferenceStorage
 import javax.inject.Inject
 
 /**

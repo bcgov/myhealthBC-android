@@ -3,7 +3,6 @@ package ca.bc.gov.data.di
 import android.content.Context
 import ca.bc.gov.data.BuildConfig
 import ca.bc.gov.data.R
-import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayMobileConfigApi
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPublicApi
@@ -14,6 +13,7 @@ import ca.bc.gov.data.datasource.remote.interceptor.NetworkConnectionInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.ReceivedCookieInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.RetryInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.UserAgentInterceptor
+import ca.bc.gov.preference.EncryptedPreferenceStorage
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
