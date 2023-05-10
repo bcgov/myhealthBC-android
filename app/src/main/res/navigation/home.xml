@@ -9,6 +9,11 @@
         android:id="@+id/homeFragment"
         android:name="ca.bc.gov.bchealth.ui.home.HomeFragment"
         tools:layout="@layout/fragment_home">
+
+        <action
+            android:id="@+id/action_homeFragment_to_notification_permission"
+            app:destination="@id/notificationPermissionFragment" />
+
         <action
             android:id="@+id/action_homeFragment_to_banner_detail"
             app:destination="@id/bannerDetailFragment" />

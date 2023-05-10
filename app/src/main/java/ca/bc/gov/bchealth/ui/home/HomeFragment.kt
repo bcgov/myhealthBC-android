@@ -91,6 +91,7 @@ class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
         findNavController().currentBackStackEntry?.savedStateHandle?.remove<BiometricState>(
             BiometricsAuthenticationFragment.BIOMETRIC_STATE
         )
+        sharedViewModel.displayNotificationPermission = true
         viewModel.onAuthenticationRequired(false)
         viewModel.launchCheck()
         viewModel.executeOneTimeDataFetch()
@@ -177,7 +178,9 @@ class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
                 viewModel.onAuthenticationRequired(false)
             }
 
-            if (uiState.isBcscLoginRequiredPostBiometrics) {
+            if (sharedViewModel.displayNotificationPermission) {
+                findNavController().navigate(R.id.notificationPermissionFragment)
+            } else if (uiState.isBcscLoginRequiredPostBiometrics) {
                 sharedViewModel.destinationId = 0
                 findNavController().navigate(R.id.bcscAuthInfoFragment)
                 sharedViewModel.isBCSCAuthShown = true

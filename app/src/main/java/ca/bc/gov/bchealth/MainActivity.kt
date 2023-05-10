@@ -1,11 +1,8 @@
 package ca.bc.gov.bchealth
 
-import android.Manifest
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.View
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -103,16 +100,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         observeExceptionFromWorker()
-        requestNotificationPermission()
-    }
-
-    private fun requestNotificationPermission() {
-        // todo: proper implementation will be done here: HAPP-1390
-        val pushNotificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            pushNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        }
     }
 
     private fun toggleAnalyticsFeature() {
