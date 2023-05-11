@@ -9,17 +9,19 @@
         android:icon="@drawable/ic_filter"/>
 
     <item
+        android:id="@+id/menu_refresh"
+        android:icon="@drawable/ic_refresh"
+        android:title="@string/refresh"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/empty"
         android:icon="@drawable/ic_overflow_menu"
         android:orderInCategory="101"
         android:title="Overflow"
         app:showAsAction="always">
         <menu>
-            <item
-                android:id="@+id/menu_refresh"
-                android:icon="@drawable/ic_refresh"
-                android:title="@string/refresh"
-                app:showAsAction="always|withText" />
+
 
             <item
                 android:id="@+id/menu_profile"
