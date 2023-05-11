@@ -21,8 +21,6 @@
         android:title="Overflow"
         app:showAsAction="always">
         <menu>
-
-
             <item
                 android:id="@+id/menu_profile"
                 android:icon="@drawable/ic_profile"
