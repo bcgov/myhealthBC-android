@@ -3,7 +3,6 @@ package ca.bc.gov.repository.bcsc
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Base64
 import androidx.core.net.toUri
 import ca.bc.gov.common.const.AUTH_ERROR
 import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
@@ -20,9 +19,9 @@ import net.openid.appauth.AuthorizationService
 import net.openid.appauth.AuthorizationServiceConfiguration
 import net.openid.appauth.EndSessionRequest
 import net.openid.appauth.ResponseTypeValues
-import org.json.JSONObject
-import java.io.UnsupportedEncodingException
-import java.nio.charset.Charset
+import net.openid.appauth.extension.awaitFetchFromIssuer
+import net.openid.appauth.extension.awaitPerformTokenRequest
+import net.openid.appauth.extension.getBCSCAuthData
 import java.time.Instant
 
 /*
@@ -147,38 +146,13 @@ class BcscAuthRepo(
     }
 
     suspend fun getAuthParametersDto(): AuthParametersDto {
-        val pair: Pair<String, String> = getAuthParameters()
-        return AuthParametersDto(
-            token = pair.first,
-            hdid = pair.second,
-        )
-    }
-
-    private suspend fun getAuthParameters(): Pair<String, String> {
         val authState =
             getAuthState() ?: throw MyHealthException(AUTH_ERROR_DO_LOGIN, "Login again!")
-        val accessToken = awaitPerformActionWithFreshTokens(applicationContext, authState)
-        val json = decodeAccessToken(accessToken)
-        val hdId = json.get(HDID).toString()
-        if (hdId.isEmpty())
-            throw MyHealthException(AUTH_ERROR_DO_LOGIN, "Invalid access token!")
-        else
-            return Pair(BEARER.plus(" ").plus(accessToken), hdId)
-    }
-
-    @Throws(Exception::class)
-    private fun decodeAccessToken(JWTEncodedAccessToken: String): JSONObject {
-        if (JWTEncodedAccessToken.isEmpty()) {
-            throw MyHealthException(AUTH_ERROR_DO_LOGIN, "Invalid access token!")
-        }
-        val split = JWTEncodedAccessToken.split("\\.".toRegex()).toTypedArray()
-        return JSONObject(getJson(split[1]))
-    }
-
-    @Throws(UnsupportedEncodingException::class)
-    private fun getJson(strEncoded: String): String {
-        val decodedBytes: ByteArray = Base64.decode(strEncoded, Base64.URL_SAFE)
-        return String(decodedBytes, Charset.defaultCharset())
+        val bcscAuthDataDto = getBCSCAuthData(applicationContext, authState)
+        return AuthParametersDto(
+            token = bcscAuthDataDto.authToken,
+            hdid = bcscAuthDataDto.hdId,
+        )
     }
 
     fun setPostLoginCheck(postLoginCheck: PostLoginCheck) {
@@ -193,9 +167,6 @@ class BcscAuthRepo(
         const val REDIRECT_URI = "myhealthbc://*"
         private const val SCOPE = "openid email profile"
         private const val PROMPT = "login"
-        private const val HDID = "hdid"
-        private const val NAME = "name"
-        private const val BEARER = "Bearer"
     }
 }
 
