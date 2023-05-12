@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -13,14 +12,17 @@ import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
+import ca.bc.gov.bchealth.ui.comment.CommentsSummary
 import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.ui.healthrecord.comment.RecordCommentsAdapter
+import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.scrollToBottom
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.widget.AddCommentCallback
 import ca.bc.gov.bchealth.widget.AddCommentLayout
+import ca.bc.gov.bchealth.widget.CommentFocusChangeCallback
 import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.repository.SYNC_COMMENTS
 
@@ -57,6 +59,19 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
                 }
             }
         })
+
+        addFocusChangeListener(object : CommentFocusChangeCallback {
+            override fun onFocusChange(hasFocus: Boolean) {
+                if (hasFocus) {
+                    getScrollableView()?.setOnTouchListener { view, _ ->
+                        requireContext().hideKeyboard(view)
+                        view?.clearFocus()
+                        this@with.clearFocus()
+                        return@setOnTouchListener false
+                    }
+                }
+            }
+        })
     }
 
     private fun observeComments() {
@@ -64,16 +79,18 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
 
         launchOnStart {
             commentsViewModel.uiState.collect { state ->
-                getProgressBar()?.isVisible = state.onLoading
-
-                if (state.commentsSummary.isNotEmpty()) {
-                    recordCommentsAdapter.submitList(state.commentsSummary) {
-                        if (state.onCommentsUpdated) {
-                            scrollToBottom()
-                        }
-                    }
-                    getCommentView().clearComment()
+                val list = if (state.commentsSummary != null) {
+                    listOf(state.commentsSummary)
+                } else {
+                    listOf()
                 }
+
+                recordCommentsAdapter.submitList(list) {
+                    if (state.onCommentsUpdated) {
+                        scrollToBottom()
+                    }
+                }
+                getCommentView().clearComment()
 
                 handleError(state.onError)
             }
@@ -110,13 +127,12 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
         }
     }
 
-    private fun navigateToComments(commentEntryTypeCode: String, recordType: String) {
+    private fun navigateToComments(commentsSummary: CommentsSummary) {
         findNavController().navigate(
             R.id.commentsFragment,
             bundleOf(
-                "parentEntryId" to commentEntryTypeCode,
-                "recordType" to recordType,
-
+                "parentEntryId" to commentsSummary.parentEntryId,
+                "recordType" to commentsSummary.entryTypeCode,
             )
         )
     }

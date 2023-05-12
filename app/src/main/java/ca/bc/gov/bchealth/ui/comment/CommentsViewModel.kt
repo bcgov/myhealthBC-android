@@ -2,10 +2,11 @@ package ca.bc.gov.bchealth.ui.comment
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.model.mapper.toUiModel
-import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
 import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.model.comment.CommentDto
+import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.repository.CommentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,11 +29,7 @@ class CommentsViewModel @Inject constructor(
     val uiState: StateFlow<CommentsUiState> = _uiState.asStateFlow()
 
     fun getComments(parentEntryId: String) = viewModelScope.launch {
-        _uiState.update {
-            it.copy(
-                onLoading = true
-            )
-        }
+        onLoading()
 
         try {
             val commentsDtoList = commentRepository.getLocalComments(parentEntryId)
@@ -46,19 +43,14 @@ class CommentsViewModel @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-            _uiState.update {
-                it.copy(
-                    onLoading = false,
-                    onError = true
-                )
-            }
+            handleException(e)
         }
     }
 
     fun addComment(parentEntryId: String, comment: String, entryTypeCode: String) =
         viewModelScope.launch {
             try {
-                _uiState.update { it.copy(onLoading = true) }
+                onLoading()
 
                 val commentsDtoList = commentRepository.addComment(
                     parentEntryId,
@@ -77,13 +69,7 @@ class CommentsViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
-                _uiState.update {
-                    it.copy(
-                        onError = true,
-                        onLoading = false
-                    )
-                }
+                handleException(e)
             }
         }
 
@@ -96,25 +82,14 @@ class CommentsViewModel @Inject constructor(
     fun updateComment(parentEntryId: String, comment: Comment) = viewModelScope.launch {
         comment.id ?: return@launch
 
-        val commentDto = CommentDto(
-            id = comment.id,
-            userProfileId = null,
-            text = comment.text,
-            entryTypeCode = comment.entryTypeCode,
-            parentEntryId = parentEntryId,
-            version = comment.version,
-            createdDateTime = comment.createdDateTime,
-            createdBy = comment.createdBy,
-            updatedDateTime = comment.updatedDateTime,
-            updatedBy = comment.updatedBy,
-            syncStatus = SyncStatus.EDIT,
-        )
-
         try {
-            _uiState.update {
-                it.copy(onLoading = true)
-            }
-            val comments = commentRepository.updateComment(commentDto)
+            onLoading()
+
+            val comments = commentRepository.enqueueEditComment(
+                comment.id,
+                comment.text.orEmpty(),
+                parentEntryId
+            )
 
             _uiState.update { it ->
                 it.copy(
@@ -126,50 +101,50 @@ class CommentsViewModel @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            handleException(e)
+        }
+    }
+
+    fun deleteComment(parentEntryId: String, comment: Comment) = viewModelScope.launch {
+        comment.id ?: return@launch
+
+        try {
+            onLoading()
+
+            val comments = commentRepository.enqueueDeleteComment(comment.id, parentEntryId)
+
             _uiState.update {
                 it.copy(
-                    onError = true,
-                    onLoading = false
+                    onLoading = false,
+                    displayEditLayout = false,
+                    commentsList = comments.map { comment ->
+                        comment.toUiModel()
+                    },
+                    commentsSummary = getCommentsSummary(comments, parentEntryId),
+                    onCommentsUpdated = true
                 )
             }
+        } catch (e: Exception) {
+            handleException(e)
         }
     }
 
     private fun getCommentsSummary(
         commentsDtoList: List<CommentDto>,
         parentEntryId: String
-    ): MutableList<Comment> {
-        val commentsList = mutableListOf<Comment>()
-        if (commentsDtoList.isNotEmpty()) {
-            val date = Instant.now()
-            commentsList.add(
-                Comment(
-                    parentEntryId,
-                    "${commentsDtoList.size}",
-                    Instant.now(),
-                    0L,
-                    commentsDtoList.last().entryTypeCode.orEmpty(),
-                    date,
-                    "",
-                    date,
-                    ""
-                )
-            )
+    ): CommentsSummary? {
+        if (commentsDtoList.isEmpty()) return null
 
-            if (FLAG_ADD_COMMENTS) {
-                commentsDtoList.lastOrNull()?.let {
-                    commentsList.add(it.toUiModel())
-                }
-            } else {
-                commentsList.addAll(
-                    commentsDtoList.map {
-                        it.toUiModel()
-                    }
-                )
-            }
-        }
-        return commentsList
+        val lastComment = commentsDtoList.last()
+
+        return CommentsSummary(
+            text = lastComment.text.orEmpty(),
+            date = lastComment.createdDateTime.toLocalDateTimeInstant(),
+            entryTypeCode = lastComment.entryTypeCode.orEmpty(),
+            syncStatus = lastComment.syncStatus,
+            parentEntryId = parentEntryId,
+            count = commentsDtoList.size,
+        )
     }
 
     fun resetUiState() {
@@ -178,7 +153,21 @@ class CommentsViewModel @Inject constructor(
                 onLoading = false,
                 onError = false,
                 commentsList = emptyList(),
-                commentsSummary = emptyList()
+                commentsSummary = null
+            )
+        }
+    }
+
+    private fun onLoading() {
+        _uiState.update { it.copy(onLoading = true) }
+    }
+
+    private fun handleException(e: Exception) {
+        e.printStackTrace()
+        _uiState.update {
+            it.copy(
+                onError = true,
+                onLoading = false
             )
         }
     }
@@ -187,8 +176,8 @@ class CommentsViewModel @Inject constructor(
 data class CommentsUiState(
     val onLoading: Boolean = false,
     val onError: Boolean = false,
-    val commentsList: List<Comment> = emptyList(),
-    val commentsSummary: List<Comment> = emptyList(),
+    val commentsList: List<Comment>? = null,
+    val commentsSummary: CommentsSummary? = null,
     val onCommentsUpdated: Boolean = false,
     val displayEditLayout: Boolean = false
 )
@@ -203,9 +192,25 @@ data class Comment(
     val createdBy: String,
     val updatedDateTime: Instant,
     val updatedBy: String,
-    val isUploaded: Boolean = true,
+    val syncStatus: SyncStatus = SyncStatus.UP_TO_DATE,
     var editable: Boolean = false
 )
+
+data class CommentsSummary(
+    val text: String,
+    val date: Instant?,
+    val syncStatus: SyncStatus,
+    val entryTypeCode: String,
+    val parentEntryId: String,
+    val count: Int,
+)
+
+fun SyncStatus.getDescription(): Int? = when (this) {
+    SyncStatus.UP_TO_DATE -> null
+    SyncStatus.INSERT -> R.string.posting
+    SyncStatus.EDIT -> R.string.posting
+    SyncStatus.DELETE -> R.string.deleting
+}
 
 enum class CommentEntryTypeCode(val value: String) {
     MEDICATION("Med"),

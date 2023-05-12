@@ -1,11 +1,13 @@
 package ca.bc.gov.data.datasource.local
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ca.bc.gov.data.datasource.local.converter.AddressConverter
 import ca.bc.gov.data.datasource.local.converter.AuthenticationStatusTypeConverter
 import ca.bc.gov.data.datasource.local.converter.DateTimeConverter
+import ca.bc.gov.data.datasource.local.converter.PatientNameConverter
 import ca.bc.gov.data.datasource.local.converter.SyncStatusConverter
 import ca.bc.gov.data.datasource.local.dao.ClinicalDocumentDao
 import ca.bc.gov.data.datasource.local.dao.CommentDao
@@ -23,6 +25,7 @@ import ca.bc.gov.data.datasource.local.dao.LabOrderDao
 import ca.bc.gov.data.datasource.local.dao.LabTestDao
 import ca.bc.gov.data.datasource.local.dao.MedicationRecordDao
 import ca.bc.gov.data.datasource.local.dao.MedicationSummaryDao
+import ca.bc.gov.data.datasource.local.dao.OrganDonorDao
 import ca.bc.gov.data.datasource.local.dao.PatientDao
 import ca.bc.gov.data.datasource.local.dao.SpecialAuthorityDao
 import ca.bc.gov.data.datasource.local.dao.UserProfileDao
@@ -46,6 +49,7 @@ import ca.bc.gov.data.datasource.local.entity.labtest.LabTestEntity
 import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
+import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 
@@ -53,7 +57,7 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
  * @author Pinakin Kansara
  */
 @Database(
-    version = 8,
+    version = 10,
     entities = [
         PatientEntity::class,
         VaccineRecordEntity::class,
@@ -76,6 +80,11 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
         SpecialAuthorityEntity::class,
         ClinicalDocumentEntity::class,
         UserProfileEntity::class,
+        OrganDonorEntity::class
+    ],
+    autoMigrations = [
+        AutoMigration(from = 8, to = 9),
+        AutoMigration(from = 9, to = 10)
     ],
     exportSchema = true
 )
@@ -84,6 +93,7 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
     AuthenticationStatusTypeConverter::class,
     AddressConverter::class,
     SyncStatusConverter::class,
+    PatientNameConverter::class
 )
 abstract class MyHealthDataBase : RoomDatabase() {
 
@@ -126,4 +136,6 @@ abstract class MyHealthDataBase : RoomDatabase() {
     abstract fun getClinicalDocumentDao(): ClinicalDocumentDao
 
     abstract fun getUserProfileDao(): UserProfileDao
+
+    abstract fun getOrganDonationDao(): OrganDonorDao
 }

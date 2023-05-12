@@ -9,6 +9,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.NavigationUiSaveStateControl
 import androidx.navigation.ui.setupWithNavController
 import androidx.work.Data
 import androidx.work.WorkInfo
@@ -20,6 +22,7 @@ import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.workers.FetchAuthenticatedHealthRecordsWorker
+import ca.bc.gov.common.BuildConfig.FLAG_SERVICE_TAB
 import ca.bc.gov.common.model.settings.AnalyticsFeature
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import com.google.android.material.snackbar.Snackbar
@@ -33,6 +36,7 @@ import kotlinx.coroutines.launch
  *
  * @author Pinakin Kansara
  */
+@OptIn(NavigationUiSaveStateControl::class)
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -58,8 +62,18 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
-
+        binding.bottomNav.inflateMenu(
+            if (FLAG_SERVICE_TAB) {
+                R.menu.bottom_nav_services_menu
+            } else {
+                R.menu.bottom_nav_menu
+            }
+        )
         binding.bottomNav.setupWithNavController(navController)
+        binding.bottomNav.setOnItemSelectedListener {
+            NavigationUI.onNavDestinationSelected(it, navController, false)
+            true
+        }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
@@ -75,7 +89,10 @@ class MainActivity : AppCompatActivity() {
                 R.id.addHealthRecordsFragment,
                 R.id.homeFragment,
                 R.id.bannerDetailFragment,
-                R.id.newsfeedFragment -> {
+                R.id.newsfeedFragment,
+                R.id.servicesFragment,
+                R.id.bcServiceCardSessionFragment,
+                R.id.bcServicesCardLoginFragment -> {
                     showBottomNav()
                 }
                 else -> hideBottomNav()
@@ -120,14 +137,17 @@ class MainActivity : AppCompatActivity() {
                     WorkInfo.State.RUNNING -> {
                         isWorkerStarted = true
                     }
+
                     WorkInfo.State.FAILED -> {
                         handleError(workInfo.outputData)
                     }
+
                     WorkInfo.State.SUCCEEDED -> {
                         if (isWorkerStarted) {
                             inAppUpdate.checkForUpdate(AppUpdateType.FLEXIBLE)
                         }
                     }
+
                     else -> {}
                 }
             }

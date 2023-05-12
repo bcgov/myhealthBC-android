@@ -21,6 +21,7 @@ class AddCommentLayout @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     private var callback: AddCommentCallback? = null
+    private var focusChangeCallback: CommentFocusChangeCallback? = null
     private val binding = AddCommentBinding.inflate(LayoutInflater.from(context), this, true)
 
     init {
@@ -36,7 +37,12 @@ class AddCommentLayout @JvmOverloads constructor(
 
         binding.edComment.addTextChangedListener(
             object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
                     if (after > 1000) {
                         binding.tipComment.apply {
                             isErrorEnabled = true
@@ -59,10 +65,18 @@ class AddCommentLayout @JvmOverloads constructor(
                 }
             }
         )
+
+        binding.edComment.setOnFocusChangeListener { _, hasFocus ->
+            focusChangeCallback?.onFocusChange(hasFocus)
+        }
     }
 
     fun clearComment() {
         binding.edComment.setText("")
+    }
+
+    fun addFocusChangeListener(listener: CommentFocusChangeCallback) {
+        focusChangeCallback = listener
     }
 
     fun addCommentListener(listener: AddCommentCallback) {
@@ -72,4 +86,8 @@ class AddCommentLayout @JvmOverloads constructor(
 
 interface AddCommentCallback {
     fun onSubmitComment(commentText: String)
+}
+
+interface CommentFocusChangeCallback {
+    fun onFocusChange(hasFocus: Boolean)
 }

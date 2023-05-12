@@ -4,12 +4,11 @@ on:
   push:
     branches:
       - main
-      - develop
-      - release_candidate
+      - release_candidate/*
 
 jobs:
   build:
-    name: Clean build
+    name: Generate Build
     runs-on: ubuntu-latest
 
     steps:

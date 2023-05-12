@@ -82,6 +82,17 @@
                 tools:visibility="visible" />
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_new"
+                style="?textAppearanceHeadline6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/new_string"
+                android:visibility="invisible"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toTopOf="@id/tv_slider_title"
+                app:layout_constraintStart_toStartOf="@id/tv_slider_title"/>
+
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_slider_title"
                 style="?textAppearanceHeadline2"
                 android:layout_width="wrap_content"

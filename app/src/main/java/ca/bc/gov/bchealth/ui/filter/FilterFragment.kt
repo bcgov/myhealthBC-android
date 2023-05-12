@@ -104,12 +104,7 @@ abstract class FilterFragment : BaseFragment(R.layout.fragment_filter) {
 
     private fun clearClickListener() {
         binding.btnClear.setOnClickListener {
-            filterSharedViewModel.updateFilter(
-                mutableListOf(TimelineTypeFilter.ALL.name),
-                null,
-                null
-            )
-
+            filterSharedViewModel.clearFilter()
             findNavController().popBackStack()
         }
     }

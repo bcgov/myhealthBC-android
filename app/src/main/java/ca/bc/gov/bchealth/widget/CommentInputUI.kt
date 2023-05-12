@@ -14,6 +14,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -49,19 +50,18 @@ import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.compose.red
 import ca.bc.gov.bchealth.compose.white
 import ca.bc.gov.bchealth.ui.comment.Comment
+import ca.bc.gov.common.model.SyncStatus
 import java.time.Instant
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CommentInputUI(
-    onSubmitComment: (String) -> Unit
-) {
+fun CommentInputUI(onSubmitComment: (String) -> Unit) {
     var comment by rememberSaveable { mutableStateOf("") }
     var validation by rememberSaveable { mutableStateOf(CommentValidation.VALID) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val submitAction: (String) -> Unit = {
-        if (validation == CommentValidation.VALID) {
+        if (validation == CommentValidation.VALID && onSubmitComment != {}) {
             onSubmitComment.invoke(it)
             comment = ""
             keyboardController?.hide()
@@ -167,6 +167,7 @@ fun EditableCommentInputUI(
                 Text(
                     text = stringResource(id = R.string.cancel),
                     textAlign = TextAlign.Center,
+                    color = MaterialTheme.colors.primary,
                     style = MyHealthTypography.button,
                 )
             }
@@ -181,7 +182,6 @@ fun EditableCommentInputUI(
                 Text(
                     text = stringResource(id = R.string.comment_update),
                     textAlign = TextAlign.Center,
-                    color = white,
                     style = MyHealthTypography.button,
                 )
             }
@@ -295,7 +295,7 @@ private fun PreviewCommentInputEditUI() {
         text = "comment01",
         date = null,
         version = 0L,
-        isUploaded = true,
+        syncStatus = SyncStatus.UP_TO_DATE,
         entryTypeCode = "",
         createdBy = "",
         createdDateTime = date,

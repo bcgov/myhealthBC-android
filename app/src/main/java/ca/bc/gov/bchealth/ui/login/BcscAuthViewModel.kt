@@ -229,20 +229,28 @@ class BcscAuthViewModel @Inject constructor(
         try {
             userName =
                 patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).fullName
+            val loginSessionStatus = if (isLoggedSuccess) {
+                LoginStatus.ACTIVE
+            } else {
+                LoginStatus.EXPIRED
+            }
+            _authStatus.update {
+                it.copy(
+                    showLoading = false,
+                    userName = userName,
+                    loginStatus = loginSessionStatus
+                )
+            }
         } catch (e: Exception) {
             // no implementation required.
-        }
-        val loginSessionStatus = if (isLoggedSuccess) {
-            LoginStatus.ACTIVE
-        } else {
-            LoginStatus.EXPIRED
-        }
-        _authStatus.update {
-            it.copy(
-                showLoading = false,
-                userName = userName,
-                loginStatus = loginSessionStatus
-            )
+
+            _authStatus.update {
+                it.copy(
+                    showLoading = false,
+                    userName = userName,
+                    loginStatus = LoginStatus.NOT_AUTHENTICATED
+                )
+            }
         }
     }
 
@@ -255,7 +263,7 @@ class BcscAuthViewModel @Inject constructor(
                 isError = false,
                 userName = null,
                 queItTokenUpdated = false,
-                loginStatus = null,
+                loginStatus = LoginStatus.NOT_AUTHENTICATED,
                 ageLimitCheck = null,
                 canInitiateBcscLogin = null,
                 tosAccepted = null,
@@ -442,7 +450,7 @@ data class AuthStatus(
     val userName: String? = null,
     val queItTokenUpdated: Boolean = false,
     val queItUrl: String? = null,
-    val loginStatus: LoginStatus? = null,
+    val loginStatus: LoginStatus = LoginStatus.NOT_AUTHENTICATED,
     val ageLimitCheck: AgeLimitCheck? = null,
     val canInitiateBcscLogin: Boolean? = null,
     val tosAccepted: TOSAccepted? = null,
@@ -451,7 +459,8 @@ data class AuthStatus(
 
 enum class LoginStatus {
     ACTIVE,
-    EXPIRED
+    EXPIRED,
+    NOT_AUTHENTICATED
 }
 
 enum class AgeLimitCheck {

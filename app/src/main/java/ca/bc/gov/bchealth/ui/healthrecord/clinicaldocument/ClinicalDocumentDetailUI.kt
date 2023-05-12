@@ -65,7 +65,7 @@ private fun BoxScope.ClinicalDocumentDetailContent(
                 Text(
                     text = stringResource(id = R.string.clinical_documents_detail_button_download),
                     textAlign = TextAlign.Center,
-                    style = MyHealthTypography.button,
+                    style = MyHealthTypography.button.copy(color = primaryBlue),
                     modifier = Modifier.fillMaxWidth()
                 )
             }

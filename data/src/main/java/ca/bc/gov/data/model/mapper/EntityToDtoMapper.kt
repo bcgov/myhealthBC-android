@@ -24,6 +24,7 @@ import ca.bc.gov.common.model.labtest.LabOrderWithLabTestsAndPatientDto
 import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
+import ca.bc.gov.common.model.patient.PatientNameDto
 import ca.bc.gov.common.model.patient.PatientWithClinicalDocumentsDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithHealthVisitsDto
@@ -35,6 +36,7 @@ import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
+import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
@@ -44,6 +46,7 @@ import ca.bc.gov.common.model.userprofile.UserProfileDto
 import ca.bc.gov.common.utils.titleCase
 import ca.bc.gov.data.datasource.local.entity.PatientAddressEntity
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
+import ca.bc.gov.data.datasource.local.entity.PatientNameEntity
 import ca.bc.gov.data.datasource.local.entity.clinicaldocument.ClinicalDocumentEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderEntity
@@ -78,6 +81,7 @@ import ca.bc.gov.data.datasource.local.entity.relations.PatientWithMedicationRec
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithSpecialAuthorities
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithVaccineAndDoses
 import ca.bc.gov.data.datasource.local.entity.relations.VaccineRecordWithDose
+import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 import java.time.Instant
@@ -90,8 +94,15 @@ fun PatientEntity.toDto() = PatientDto(
     authenticationStatus = authenticationStatus,
     firstName = firstName,
     lastName = lastName,
+    legalName = legalName?.toDto(),
+    commonName = commonName?.toDto(),
+    preferredName = preferredName?.toDto(),
     mailingAddress = mailingAddress?.toDto(),
     physicalAddress = physicalAddress?.toDto(),
+)
+
+fun PatientNameEntity.toDto() = PatientNameDto(
+    givenName, surName
 )
 
 fun PatientAddressEntity.toDto() = PatientAddressDto(
@@ -415,4 +426,13 @@ fun DependentEntity.toDto() = DependentDto(
     version = version,
     patientId = patientId,
     isCacheValid = isCacheValid,
+)
+
+fun OrganDonorEntity.toDto() = OrganDonorDto(
+    id = id,
+    patientId = patientId,
+    status = status,
+    statusMessage = statusMessage,
+    registrationFileId = registrationFileId,
+    file = file
 )

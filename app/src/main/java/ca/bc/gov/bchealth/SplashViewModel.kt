@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
+import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -17,11 +18,16 @@ private const val MAX_SPLASH_DELAY = 2000L
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val mobileConfigRepository: MobileConfigRepository,
+    onBoardingRepository: OnBoardingRepository
 ) : ViewModel() {
 
     private val _updateType: MutableLiveData<UpdateType> = MutableLiveData()
     val updateType: LiveData<UpdateType>
         get() = _updateType
+
+    init {
+        onBoardingRepository.checkIfReOnBoardingRequired(BuildConfig.VERSION_CODE)
+    }
 
     fun checkAppVersion() {
         viewModelScope.launch {

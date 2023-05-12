@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.repository.OnBoardingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -17,12 +18,19 @@ class OnBoardingSliderViewModel @Inject constructor(
     private val onBoardingRepository: OnBoardingRepository
 ) : ViewModel() {
 
-    var isDependentOnly: Boolean = false
+    val isReOnBoardingRequired = onBoardingRepository.isReOnBoardingRequired
 
     fun setOnBoardingRequired(isRequired: Boolean) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
             onBoardingRepository.onBoardingRequired = isRequired
-            onBoardingRepository.dependentOnBoardingRequired = false
+            onBoardingRepository.isReOnBoardingRequired = isRequired
+            onBoardingRepository.previousOnBoardingScreenName = BuildConfig.FLAG_NEW_ON_BOARDING_SCREEN
+        }
+    }
+
+    fun setAppVersionCode(versionCode: Int) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            onBoardingRepository.previousVersionCode = versionCode
         }
     }
 }

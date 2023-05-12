@@ -15,16 +15,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHomeBinding
-import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.BaseSecureFragment
+import ca.bc.gov.bchealth.ui.BcscAuthState
 import ca.bc.gov.bchealth.ui.auth.BioMetricState
 import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment
-import ca.bc.gov.bchealth.ui.login.BcscAuthFragment
-import ca.bc.gov.bchealth.ui.login.BcscAuthState
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.fromHtml
 import ca.bc.gov.bchealth.utils.hide
+import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.observeCurrentBackStackForAction
 import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
@@ -34,7 +35,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomeFragment : BaseFragment(R.layout.fragment_home) {
+class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
 
     private val binding by viewBindings(FragmentHomeBinding::bind)
     private val viewModel: HomeViewModel by activityViewModels()
@@ -61,9 +62,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BioMetricState>(
-            BiometricsAuthenticationFragment.BIOMETRIC_STATE
-        )?.observe(viewLifecycleOwner) {
+        observeCurrentBackStackForAction<BioMetricState>(BiometricsAuthenticationFragment.BIOMETRIC_STATE) {
             when (it) {
                 BioMetricState.SUCCESS -> {
                     findNavController().currentBackStackEntry?.savedStateHandle?.remove<BioMetricState>(
@@ -75,24 +74,6 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                 }
                 else -> {
                     findNavController().popBackStack()
-                }
-            }
-        }
-
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<BcscAuthState>(
-            BcscAuthFragment.BCSC_AUTH_STATUS
-        )?.observe(viewLifecycleOwner) {
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<BcscAuthState>(
-                BcscAuthFragment.BCSC_AUTH_STATUS
-            )
-            when (it) {
-                BcscAuthState.SUCCESS -> {
-                    if (sharedViewModel.destinationId > 0) {
-                        findNavController().navigate(sharedViewModel.destinationId)
-                    }
-                }
-                else -> {
-                    // no implementation required
                 }
             }
         }
@@ -115,6 +96,20 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         viewModel.bannerState.observe(viewLifecycleOwner) { displayBanner(it) }
     }
 
+    override fun handleBCSCAuthState(bcscAuthState: BcscAuthState) {
+        when (bcscAuthState) {
+            BcscAuthState.SUCCESS -> {
+                if (sharedViewModel.destinationId > 0) {
+                    findNavController().navigate(sharedViewModel.destinationId)
+                }
+            }
+
+            else -> {
+                // no implementation required
+            }
+        }
+    }
+
     private fun observeAuthStatus() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -134,47 +129,44 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
     }
 
     private fun initRecyclerview() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                homeAdapter = HomeAdapter {
-                    when (it) {
-                        HomeNavigationType.HEALTH_RECORD -> {
-                            if (bcscAuthViewModel.authStatus.value.loginStatus != null && bcscAuthViewModel.authStatus.value.loginStatus == LoginStatus.ACTIVE) {
-                                findNavController().navigate(R.id.action_homeFragment_to_health_records)
-                            } else {
-                                sharedViewModel.destinationId = R.id.health_records
-                                findNavController().navigate(R.id.bcscAuthInfoFragment)
-                            }
-                        }
-                        HomeNavigationType.VACCINE_PROOF -> {
-                            findNavController().navigate(R.id.action_homeFragment_to_health_pass)
-                        }
-                        HomeNavigationType.RESOURCES -> {
-                            findNavController().navigate(R.id.action_homeFragment_to_resources)
-                        }
-                        HomeNavigationType.RECOMMENDATIONS -> {
-                            findNavController().navigate(R.id.action_homeFragment_to_recommendations)
-                        }
-                    }
-                }
-                binding.rvHome.adapter = homeAdapter
-
-                viewModel.homeList.observe(viewLifecycleOwner) {
-                    homeAdapter.submitList(it)
-                }
-                viewModel.getHomeRecordsList()
+        launchOnStart {
+            homeAdapter = HomeAdapter { navigateToDestination(it) }
+            binding.rvHome.adapter = homeAdapter
+            viewModel.homeList.observe(viewLifecycleOwner) {
+                homeAdapter.setData(it)
+                homeAdapter.notifyDataSetChanged()
             }
+            viewModel.getHomeRecordsList()
         }
+    }
+
+    private fun navigateToDestination(destinationType: HomeNavigationType) {
+        val destination = when (destinationType) {
+            HomeNavigationType.HEALTH_RECORD -> {
+                if (bcscAuthViewModel.authStatus.value.loginStatus == LoginStatus.ACTIVE) {
+                    R.id.action_homeFragment_to_health_records
+                } else {
+                    sharedViewModel.destinationId = R.id.health_records
+                    R.id.bcscAuthInfoFragment
+                }
+            }
+
+            HomeNavigationType.VACCINE_PROOF -> R.id.action_homeFragment_to_health_pass
+
+            HomeNavigationType.RESOURCES -> R.id.action_homeFragment_to_resources
+
+            HomeNavigationType.RECOMMENDATIONS -> R.id.action_homeFragment_to_recommendations
+        }
+        findNavController().navigate(destination)
     }
 
     private suspend fun onBoardingFlow() {
         viewModel.uiState.collect { uiState ->
-            if (uiState.isOnBoardingRequired || uiState.isDependentOnBoardingRequired) {
-                val isDependentOnly =
-                    uiState.isOnBoardingRequired.not() && uiState.isDependentOnBoardingRequired
+            if (uiState.isOnBoardingRequired || uiState.isReOnBoardingRequired) {
+
                 findNavController().navigate(
                     R.id.onBoardingSliderFragment,
-                    bundleOf("dependentOnly" to isDependentOnly)
+                    bundleOf("reOnBoardingRequired" to uiState.isReOnBoardingRequired)
                 )
                 viewModel.onBoardingShown()
             }

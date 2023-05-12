@@ -1,0 +1,156 @@
+name: Android CICD deployment
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - feature/*
+      - bugfixes/*
+
+jobs:
+  build:
+    name: Generate Builds
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check out
+        uses: actions/checkout@v3
+
+      - name: Teams notification
+        uses: toko-bifrost/ms-teams-deploy-card@master
+        with:
+          github-token: ${{ github.token }}
+          webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+          card-layout-exit: complete
+          show-on-start: false
+          show-on-exit: true
+          timezone: America/Vancouver
+          enable-review-diffs-action: false
+          enable-view-status-action: true
+          view-status-action-text: Download builds
+          include-files: false
+
+      - name: setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-caches-
+
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
+      - name: clean build
+        run: ./gradlew clean build
+        env:
+          USER: ${{ secrets.USER }}
+          TOKEN: ${{ secrets.TOKEN }}
+
+      - name: retrieve apk version
+        run: |
+          echo "::set-output name=APK_VERSION::$(${{github.workspace}}/gradlew -q getApkVersion)"
+        id: retrieve_apk_version
+
+      #MOCK
+      - name: sign mock apk
+        id: sign_app_mock
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/apk/mock/debug
+          signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
+          alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
+          keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
+
+      - name: upload mock apk
+        uses: actions/upload-artifact@v3
+        with:
+          name: myhealth_mock_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
+          path: ${{steps.sign_app_mock.outputs.signedReleaseFile}}
+
+      #DEV
+      - name: sign dev apk
+        id: sign_app_dev
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/apk/dev/debug
+          signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
+          alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
+          keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
+
+      - name: upload dev apk
+        uses: actions/upload-artifact@v3
+        with:
+          name: myhealth_dev_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
+          path: ${{steps.sign_app_dev.outputs.signedReleaseFile}}
+
+      #STAGE
+      - name: sign stage apk
+        id: sign_app_stage
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/apk/stage/debug
+          signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
+          alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
+          keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
+
+      - name: upload stage apk
+        uses: actions/upload-artifact@v3
+        with:
+          name: myhealth_stage_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
+          path: ${{steps.sign_app_stage.outputs.signedReleaseFile}}
+
+      #PROD
+      - name: sign prod apk
+        id: sign_app_prod
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/apk/prod/debug
+          signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
+          alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
+          keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
+
+      - name: upload prod apk
+        uses: actions/upload-artifact@v3
+        with:
+          name: myhealth_prod_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
+          path: ${{steps.sign_app_prod.outputs.signedReleaseFile}}
+
+      - name: Saucelabs delete and upload
+        env:
+          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+        run: |
+          curl -u "$SAUCE_USERNAME:$SAUCE_ACCESS_KEY" --location \
+          --request DELETE 'https://api.us-west-1.saucelabs.com/v1/storage/groups/1696366' | json_pp
+
+          curl -u "$SAUCE_USERNAME:$SAUCE_ACCESS_KEY" --location \
+          --request POST 'https://api.us-west-1.saucelabs.com/v1/storage/upload' \
+          --form 'payload=@"app/build/outputs/apk/stage/debug/app-stage-debug.apk"' \
+          --form 'name="app-stage-debug.apk"' \
+          --form 'description="android stage app"'
+
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          repository: ADPandian/HGAndroidmobileapp
+          event-type: my-event
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'  
+          
+          

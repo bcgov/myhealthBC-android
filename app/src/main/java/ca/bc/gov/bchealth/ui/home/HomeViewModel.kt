@@ -22,7 +22,6 @@ import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.patient.PatientRepository
-import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,7 +39,6 @@ class HomeViewModel @Inject constructor(
     private val workerInvoker: WorkerInvoker,
     recommendationRepository: ImmunizationRecommendationRepository,
     private val bannerRepository: BannerRepository,
-    private val mobileConfigRepository: MobileConfigRepository,
 ) : ViewModel() {
 
     private var bannerRequested = false
@@ -86,17 +84,21 @@ class HomeViewModel @Inject constructor(
                     state.copy(isLoading = false, isOnBoardingRequired = true)
                 }
             }
-            onBoardingRepository.dependentOnBoardingRequired -> {
+
+            onBoardingRepository.isReOnBoardingRequired -> {
                 _uiState.update { state ->
-                    state.copy(isLoading = false, isDependentOnBoardingRequired = true)
+                    state.copy(isLoading = false, isReOnBoardingRequired = true)
                 }
             }
+
             isAuthenticationRequired -> {
                 _uiState.update { state -> state.copy(isAuthenticationRequired = true) }
             }
+
             onBoardingRepository.onBCSCLoginRequiredPostBiometric -> {
                 _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = true) }
             }
+
             bcscAuthRepo.getPostLoginCheck() == PostLoginCheck.IN_PROGRESS.name -> {
                 _uiState.update { state -> state.copy(isForceLogout = true) }
             }
@@ -105,7 +107,7 @@ class HomeViewModel @Inject constructor(
 
     fun onBoardingShown() {
         _uiState.update {
-            it.copy(isOnBoardingRequired = false, isDependentOnBoardingRequired = false)
+            it.copy(isOnBoardingRequired = false, isReOnBoardingRequired = false)
         }
     }
 
@@ -157,6 +159,14 @@ class HomeViewModel @Inject constructor(
                 HomeNavigationType.HEALTH_RECORD
             ),
             HomeRecordItem(
+                R.drawable.ic_resources,
+                R.string.health_resources,
+                R.string.resources_desc,
+                R.drawable.ic_right_arrow,
+                R.string.learn_more,
+                HomeNavigationType.RESOURCES
+            ),
+            HomeRecordItem(
                 R.drawable.ic_green_tick,
                 R.string.health_passes,
                 R.string.proof_of_vaccination_desc,
@@ -164,14 +174,6 @@ class HomeViewModel @Inject constructor(
                 R.string.add_proofs,
                 HomeNavigationType.VACCINE_PROOF
             ),
-            HomeRecordItem(
-                R.drawable.ic_resources,
-                R.string.health_resources,
-                R.string.resources_desc,
-                R.drawable.ic_right_arrow,
-                R.string.learn_more,
-                HomeNavigationType.RESOURCES
-            )
         )
 
         _homeList.postValue(list)
@@ -180,13 +182,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun manageRecommendationCard(display: Boolean) {
+    private fun manageRecommendationCard(displayCard: Boolean) {
         _homeList.value?.let { list ->
-            val cardIndex = list.indexOfLast { it.recordType == recommendationItem.recordType }
+            val cardIndex = list.indexOfFirst {
+                it.recordType == HomeNavigationType.RECOMMENDATIONS
+            }
 
-            if (display) {
+            if (displayCard) {
                 if (cardIndex == INDEX_NOT_FOUND) {
-                    _homeList.postValue(list.toMutableList().apply { add(recommendationItem) })
+                    _homeList.postValue(list.toMutableList().apply { add(1, recommendationItem) })
                 }
             } else {
                 if (cardIndex > INDEX_NOT_FOUND) {
@@ -206,7 +210,6 @@ class HomeViewModel @Inject constructor(
             viewModelScope.launch {
 
                 try {
-                    mobileConfigRepository.refreshMobileConfiguration()
                     callBannerRepository()
                 } catch (e: Exception) {
                     when (e) {
@@ -281,7 +284,7 @@ data class BannerItem(
 data class HomeUiState(
     val isLoading: Boolean = false,
     val isOnBoardingRequired: Boolean = false,
-    val isDependentOnBoardingRequired: Boolean = false,
+    val isReOnBoardingRequired: Boolean = false,
     val isAuthenticationRequired: Boolean = false,
     val isBcscLoginRequiredPostBiometrics: Boolean = false,
     val patientFirstName: String? = null,
@@ -300,7 +303,7 @@ data class HomeRecordItem(
 
 enum class HomeNavigationType {
     HEALTH_RECORD,
-    VACCINE_PROOF,
-    RESOURCES,
     RECOMMENDATIONS,
+    RESOURCES,
+    VACCINE_PROOF,
 }

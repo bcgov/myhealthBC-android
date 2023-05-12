@@ -229,6 +229,8 @@
     <string name="onboarding_news_feed_desc">Get the latest COVID-19 news from  the Government of B.C.</string>
     <string name="onboarding_dependents_title">Dependent record</string>
     <string name="onboarding_dependents_desc">Access to your children’s (11 years old and younger) immunization and COVID-19 test records.</string>
+    <string name="onboarding_services_title">Services</string>
+    <string name="onboarding_services_desc">You can check and update your Organ Donor Registry information here. More health services will be added in future.</string>
 
     <string name="new_string">New</string>
     <string name="ok_camel_case">Ok</string>
@@ -311,6 +313,8 @@
     <string name="after">and after</string>
     <string name="before">and before</string>
     <string name="download">Download</string>
+    <string name="downloading">Downloading..</string>
+    <string name="retry">Retry</string>
     <string name="test_summary">Test summary</string>
     <string name="summary_desc">Find resources to learn about your lab test and what the results mean. Learn more</string>
     <string name="test_name">Test name:</string>
@@ -325,18 +329,22 @@
     <string name="loading">Loading…</string>
     <string name="corrected">Corrected</string>
     <string name="posting">Posting…</string>
+    <string name="deleting">Deleting…</string>
 
     <!--COMMENTS-->
     <string name="comment_edit">Edit comment</string>
     <string name="comment_delete">Delete</string>
     <string name="comment_update">Update</string>
-    <plurals name="comments">
+    <plurals name="plurals_comments">
         <item quantity="one">%1$s Comment</item>
         <item quantity="other">%1$s Comments</item>
     </plurals>
     <string name="comment_here">Comment here</string>
     <string name="comments">Comments</string>
-    <string name="comments_medication_subtitle">Only you can see comments added to your medical records.</string>
+    <string name="comments_list_subtitle">Only you can see comments added to your medical records.</string>
+    <string name="comments_alert_delete_title">Delete comment</string>
+    <string name="comments_alert_delete_body">This action cannot be undone. Are you sure you want to delete the comment?</string>
+
 
     <!--BIOMETRICS-->
     <string name="btn_use_biometrics">Use biometrics</string>
@@ -430,6 +438,7 @@
     <string name="from_yyyy_mm_dd">From (yyyy-mm-dd)</string>
     <string name="to_yyyy_mm_dd">To (yyyy-mm-dd)</string>
     <string name="timeline">Timeline</string>
+    <string name="search_hint">Type here to search…</string>
 
     <!--Lab test-->
     <string name="lab_test">Lab test</string>
@@ -533,4 +542,23 @@
     <string name="clinical_documents_detail_button_download">Download Full Report</string>
     <string name="clinical_documents_detail_discipline">Discipline:</string>
     <string name="clinical_documents_detail_facility">Facility:</string>
+
+    <!--Services-->
+    <string name="services">Services</string>
+    <string name="services_subtitle">You can check and update your Organ Donor Registry information here. More health services will be added in future.</string>
+    <string name="services_subtitle_1">The BC Services Card app is a secure way to prove who you are.</string>
+    <string name="services_session_expired">Log in again to access all services.</string>
+
+    <!--Organ Donor-->
+    <string name="organ_donor_registration_title">Organ Donor Registration</string>
+    <string name="organ_donor_not_registered_subtitle">We do not have a record of your decision about organ donation. If you filled out a paper registration form, we may not have processed it yet. You can also register your decision online now.</string>
+    <string name="organ_donor_registered_subtitle">You can update your registration on BC Transplant website</string>
+    <string name="organ_donor_status">Status:</string>
+    <string name="organ_donor_decision">Decision:</string>
+    <string name="organ_donor_status_registered">Registered</string>
+    <string name="organ_donor_status_not_registered">Not Registered</string>
+    <string name="organ_donor_decision_not_available">Not Available</string>
+    <string name="organ_donor_decision_download">Download</string>
+    <string name="organ_donor_register_or_update">Register or update your decision</string>
+    <string name="organ_donor">Organ Donor</string>
 </resources>

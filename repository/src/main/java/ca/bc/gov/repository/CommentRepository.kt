@@ -51,17 +51,22 @@ class CommentRepository @Inject constructor(
 
     suspend fun delete(syncStatus: SyncStatus) = commentLocalDataSource.delete(syncStatus)
 
-    suspend fun deleteById(id: String) = commentLocalDataSource.deleteById(id)
+    private suspend fun deleteById(id: String) = commentLocalDataSource.deleteById(id)
 
-    suspend fun updateComment(commentDto: CommentDto): List<CommentDto> {
-        commentLocalDataSource.updateComment(
-            commentDto.id,
-            commentDto.text.orEmpty(),
-            commentDto.syncStatus
-        )
+    suspend fun enqueueEditComment(
+        id: String,
+        content: String,
+        parentEntryId: String
+    ): List<CommentDto> {
+        commentLocalDataSource.updateComment(id, content, SyncStatus.EDIT)
         enqueueSyncCommentsWorker()
+        return getLocalComments(parentEntryId)
+    }
 
-        return getLocalComments(commentDto.parentEntryId)
+    suspend fun enqueueDeleteComment(id: String, parentEntryId: String): List<CommentDto> {
+        commentLocalDataSource.updateCommentStatus(id, SyncStatus.DELETE)
+        enqueueSyncCommentsWorker()
+        return getLocalComments(parentEntryId)
     }
 
     suspend fun addComment(
@@ -92,11 +97,13 @@ class CommentRepository @Inject constructor(
     suspend fun syncComment(dto: CommentDto) {
         val authParametersDto = bcscAuthRepo.getAuthParametersDto()
 
-        val uploadedComment: CommentDto? = when (dto.syncStatus) {
-            SyncStatus.UP_TO_DATE -> null
-            SyncStatus.DELETE -> null
-            SyncStatus.EDIT -> updateComment(dto, authParametersDto)
-            SyncStatus.INSERT -> addComment(dto, authParametersDto)
+        var uploadedComment: CommentDto? = null
+
+        when (dto.syncStatus) {
+            SyncStatus.UP_TO_DATE -> {} // do nothing
+            SyncStatus.DELETE -> deleteComment(dto, authParametersDto)
+            SyncStatus.EDIT -> uploadedComment = updateComment(dto, authParametersDto)
+            SyncStatus.INSERT -> uploadedComment = addComment(dto, authParametersDto)
         }
 
         uploadedComment ?: return
@@ -125,6 +132,18 @@ class CommentRepository @Inject constructor(
         authParametersDto.hdid,
         authParametersDto.token
     )
+
+    private suspend fun deleteComment(
+        commentDto: CommentDto,
+        authParametersDto: AuthParametersDto
+    ) {
+        commentRemoteDataSource.deleteComment(
+            commentDto,
+            authParametersDto.hdid,
+            authParametersDto.token
+        )
+        deleteById(commentDto.id)
+    }
 
     suspend fun findNonSyncedComments() =
         commentLocalDataSource.findNonSyncedComments()

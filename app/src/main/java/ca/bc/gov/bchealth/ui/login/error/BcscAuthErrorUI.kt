@@ -25,7 +25,6 @@ import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.SmallDevicePreview
 import ca.bc.gov.bchealth.compose.minButtonSize
-import ca.bc.gov.bchealth.compose.white
 import ca.bc.gov.bchealth.ui.custom.DecorativeImage
 import ca.bc.gov.bchealth.ui.custom.MyHealthClickableText
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
@@ -88,7 +87,6 @@ private fun BcscAuthErrorContent(onClickEmail: () -> Unit) {
                         .align(alignment = CenterVertically)
                 )
                 Text(
-                    color = white,
                     style = MyHealthTypography.button,
                     text = stringResource(R.string.bcsc_auth_error_button)
                 )

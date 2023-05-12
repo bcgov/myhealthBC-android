@@ -21,6 +21,8 @@ import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestPdfResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
+import ca.bc.gov.data.datasource.remote.model.response.PatientDataResponse
+import ca.bc.gov.data.datasource.remote.model.response.PatientFileResponse
 import ca.bc.gov.data.datasource.remote.model.response.PatientResponse
 import ca.bc.gov.data.datasource.remote.model.response.ProfileValidationResponse
 import ca.bc.gov.data.datasource.remote.model.response.TermsOfServiceResponse
@@ -56,12 +58,15 @@ interface HealthGatewayPrivateApi {
         private const val BASE_USER_FEEDBACK_SERVICE = "api/gatewayapiservice/UserFeedback"
         private const val BASE_HEALTH_VISIT_SERVICE = "api/encounterservice"
         private const val BASE_CLINICAL_SERVICE = "api/clinicaldocumentservice"
+        private const val API_VERSION = "api-version"
+        private const val V2 = "2"
     }
 
     @GET("$BASE_PATIENT_SERVICE/Patient/{hdid}")
     suspend fun getPatient(
         @Header(AUTHORIZATION) token: String,
-        @Path(HDID) hdid: String
+        @Path(HDID) hdid: String,
+        @Query(API_VERSION) apiVersions: String = V2
     ): Response<PatientResponse>
 
     @GET("$BASE_IMMUNIZATION_SERVICE/AuthenticatedVaccineStatus")
@@ -135,6 +140,17 @@ interface HealthGatewayPrivateApi {
 
     @PUT("$BASE_USER_PROFILE_SERVICE/{$HDID}/Comment")
     suspend fun updateComment(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String,
+        @Body commentUpdateRequest: CommentUpdateRequest
+    ): Response<AddCommentResponse>
+
+    @HTTP(
+        method = "DELETE",
+        path = "$BASE_USER_PROFILE_SERVICE/{$HDID}/Comment",
+        hasBody = true
+    )
+    suspend fun deleteComment(
         @Path(HDID) hdid: String,
         @Header(AUTHORIZATION) accessToken: String,
         @Body commentUpdateRequest: CommentUpdateRequest
@@ -214,4 +230,20 @@ interface HealthGatewayPrivateApi {
         @Header(AUTHORIZATION) accessToken: String,
         @Body feedbackRequest: FeedbackRequest
     ): Response<Unit>
+
+    @GET("$BASE_PATIENT_SERVICE/PatientData/{$HDID}")
+    suspend fun getPatientData(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String,
+        @Query("patientDataTypes") patientDataTypes: List<String>,
+        @Query(API_VERSION) apiVersion: String = V2
+    ): Response<PatientDataResponse>
+
+    @GET("$BASE_PATIENT_SERVICE/PatientData/{$HDID}/file/{fileId}")
+    suspend fun getPatientFile(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String,
+        @Path("fileId") fileId: String,
+        @Query(API_VERSION) apiVersion: String = V2
+    ): Response<PatientFileResponse>
 }

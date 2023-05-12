@@ -7,7 +7,6 @@ import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -16,10 +15,15 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentBcscAuthBinding
+import ca.bc.gov.bchealth.ui.BaseSecureFragment
+import ca.bc.gov.bchealth.ui.BcscAuthState
 import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceFragment
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceStatus
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceViewModel
+import ca.bc.gov.bchealth.utils.observeCurrentBackStackForAction
+import ca.bc.gov.bchealth.utils.removeActionFromCurrentBackStackEntry
+import ca.bc.gov.bchealth.utils.setActionToPreviousBackStackEntry
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -32,7 +36,7 @@ import kotlinx.coroutines.launch
 * @auther amit_metri on 04,January,2022
 */
 @AndroidEntryPoint
-class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
+class BcscAuthFragment : BaseSecureFragment(R.layout.fragment_bcsc_auth) {
 
     private val binding by viewBindings(FragmentBcscAuthBinding::bind)
     private val viewModel: BcscAuthViewModel by viewModels()
@@ -55,18 +59,14 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        findNavController().previousBackStackEntry?.savedStateHandle
-            ?.set(BCSC_AUTH_STATUS, BcscAuthState.NO_ACTION)
+        findNavController().setActionToPreviousBackStackEntry(BCSC_AUTH, BcscAuthState.NO_ACTION)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<TermsOfServiceStatus>(
-            TermsOfServiceFragment.TERMS_OF_SERVICE_STATUS
-        )?.observe(viewLifecycleOwner) {
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<TermsOfServiceStatus>(
-                TermsOfServiceFragment.TERMS_OF_SERVICE_STATUS
-            )
+
+        observeCurrentBackStackForAction<TermsOfServiceStatus>(TermsOfServiceFragment.TERMS_OF_SERVICE_STATUS) {
+            findNavController().removeActionFromCurrentBackStackEntry<TermsOfServiceStatus>(TermsOfServiceFragment.TERMS_OF_SERVICE_STATUS)
             when (it) {
                 TermsOfServiceStatus.ACCEPTED -> {
                     if (termsOfServiceViewModel.tosUiState.value.termsOfServiceId != null) {
@@ -75,6 +75,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                         respondToError()
                     }
                 }
+
                 else -> {
                     showTosNotAcceptedDialog()
                 }
@@ -146,10 +147,12 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                 viewModel.resetAuthStatus()
                 viewModel.isTermsOfServiceAccepted()
             }
+
             AgeLimitCheck.FAILED -> {
                 showAgeLimitRestrictionDialog()
                 viewModel.resetAuthStatus()
             }
+
             null -> return
         }
     }
@@ -163,6 +166,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
                     respondToSuccess()
                     viewModel.executeOneTimeDataFetch()
                 }
+
                 else -> {
                     findNavController().navigate(R.id.termsOfServiceFragment)
                 }
@@ -219,8 +223,7 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             .setCancelable(false)
             .setMessage(getString(R.string.login_success_message))
             .setPositiveButton(getString(R.string.ok_camel_case)) { dialog, _ ->
-                findNavController().previousBackStackEntry?.savedStateHandle
-                    ?.set(BCSC_AUTH_STATUS, BcscAuthState.SUCCESS)
+                findNavController().setActionToPreviousBackStackEntry(BCSC_AUTH, BcscAuthState.SUCCESS)
                 findNavController().popBackStack()
                 dialog.dismiss()
             }
@@ -271,14 +274,4 @@ class BcscAuthFragment : Fragment(R.layout.fragment_bcsc_auth) {
             respondToError()
         }
     }
-
-    companion object {
-        const val BCSC_AUTH_STATUS = "BCSC_AUTH_SUCCESS"
-    }
-}
-
-enum class BcscAuthState {
-    SUCCESS,
-    NO_ACTION,
-    NOT_NOW
 }

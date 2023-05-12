@@ -9,9 +9,13 @@ import java.time.Instant
  */
 data class PatientDto(
     var id: Long = 0,
+    val hdid: String? = null,
     val fullName: String,
     val firstName: String,
     val lastName: String,
+    val legalName: PatientNameDto? = null,
+    val preferredName: PatientNameDto? = null,
+    val commonName: PatientNameDto? = null,
     val physicalAddress: PatientAddressDto?,
     val mailingAddress: PatientAddressDto?,
     val dateOfBirth: Instant,

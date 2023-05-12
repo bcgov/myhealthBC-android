@@ -1,6 +1,5 @@
 package ca.bc.gov.bchealth.usecases.records
 
-import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.repository.RecordsRepository
@@ -19,8 +18,6 @@ class FetchClinicalDocumentsUseCase @Inject constructor(
         patientId: Long,
         authParameters: AuthParametersDto
     ) {
-        if (BuildConfig.FLAG_CLINICAL_DOCUMENTS.not()) return
-
         val clinicalDocuments: List<ClinicalDocumentDto>? = fetchRecord(
             authParameters, clinicalDocumentRepository::getClinicalDocuments
         )

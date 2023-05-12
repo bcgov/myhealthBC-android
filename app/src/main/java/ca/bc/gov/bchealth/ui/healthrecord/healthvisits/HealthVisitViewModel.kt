@@ -44,6 +44,7 @@ class HealthVisitViewModel @Inject constructor(
             )
             _uiState.update {
                 it.copy(
+                    parentEntryId = healthVisitDto?.id,
                     onLoading = false,
                     onError = false,
                     title = healthVisitDto?.specialtyDescription,
@@ -63,9 +64,12 @@ class HealthVisitViewModel @Inject constructor(
     fun resetUiState() {
         _uiState.update { HealthVisitDetailUiState() }
     }
+
+    fun getParentEntryId() = _uiState.value.parentEntryId
 }
 
 data class HealthVisitDetailUiState(
+    val parentEntryId: String? = null,
     val onLoading: Boolean = false,
     val onError: Boolean = false,
     val title: String? = null,

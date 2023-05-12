@@ -1,20 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:filterTouchesWhenObscured="true"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:orientation="vertical">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_comments_count"
         style="?textAppearanceHeadline3"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
+        android:textColor="@color/blue"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_4_x"
         android:layout_marginTop="@dimen/space_1_x"
-        tools:text="2 Comments"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:text="2 Comments" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_4_x"
+        android:layout_marginTop="@dimen/space_1_x"
+        android:layout_marginEnd="@dimen/space_4_x"
+        android:layout_marginBottom="@dimen/space_1_x"
+        android:background="@drawable/layout_shape_round">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_comment"
+            style="?textAppearanceHeadline4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_1_x"
+            android:layout_marginTop="@dimen/space_1_x"
+            android:layout_marginEnd="@dimen/space_1_x"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toTopOf="@+id/tv_date_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Comment details here to test the UI behaviour for multiline text" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_date_time"
+            style="?textAppearanceHeadline4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_1_x"
+            android:layout_marginEnd="@dimen/space_1_x"
+            android:layout_marginBottom="@dimen/space_1_x"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_comment"
+            tools:text="2021-Oct-12, 7:00 PM" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

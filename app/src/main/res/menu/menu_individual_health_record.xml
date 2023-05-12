@@ -9,15 +9,25 @@
         android:icon="@drawable/ic_refresh"/>
 
     <item
-        android:id="@+id/menu_settings"
-        android:title="@string/settings"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_settings"/>
-
-    <item
         android:id="@+id/menu_filter"
         android:title="@string/filter"
         app:showAsAction="always"
         android:icon="@drawable/ic_filter"/>
+
+    <item
+        android:id="@+id/empty"
+        android:icon="@drawable/ic_overflow_menu"
+        android:orderInCategory="101"
+        android:title="Overflow"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/menu_settings"
+                android:title="@string/settings"
+                app:showAsAction="always|withText"
+                android:icon="@drawable/ic_settings"/>
+        </menu>
+
+    </item>
 
 </menu>

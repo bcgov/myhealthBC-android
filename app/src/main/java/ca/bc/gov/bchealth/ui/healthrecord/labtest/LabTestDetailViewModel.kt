@@ -83,14 +83,10 @@ class LabTestDetailViewModel @Inject constructor(
         var testStatus = 0
         labOrderWithLabTestDto.labTests.forEachIndexed { index, labTest ->
             var result: Boolean? = null
-            when {
-                labTest.testStatus.equals("Active", true) -> {
-                    testStatus = R.string.pending
-                }
-                labTest.testStatus.equals("cancelled", true) -> {
-                    testStatus = R.string.cancelled
-                }
-                labTest.testStatus.equals("corrected", true) -> {
+            when (labTest.testStatus?.uppercase()) {
+                "ACTIVE", "PENDING" -> testStatus = R.string.pending
+                "CANCELLED" -> testStatus = R.string.cancelled
+                "CORRECTED" -> {
                     testStatus = R.string.corrected
                     result = labTest.outOfRange
                 }
@@ -183,9 +179,11 @@ class LabTestDetailViewModel @Inject constructor(
                         )
                     }
                 }
+
                 is ServiceDownException -> _uiState.update {
                     it.copy(onLoading = false, isHgServicesUp = false)
                 }
+
                 else -> _uiState.update {
                     it.copy(onLoading = false, onError = true)
                 }

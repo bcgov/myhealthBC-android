@@ -1,5 +1,5 @@
 # My Health BC
-
+#### [![branch: develop](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/myhealthBC-android/tree/develop)
 #### Health Gateway is used to retrieve and store your proof of vaccination, access your health records, view COVID-19 test results, access official resources to navigate your way around Covid-19 and stay up to date with important alerts and official announcements
 
 ## Table of Contents

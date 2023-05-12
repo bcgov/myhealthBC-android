@@ -48,5 +48,7 @@
     <include app:graph="@navigation/health_records" />
     <include app:graph="@navigation/resources" />
     <include app:graph="@navigation/recommendations" />
+    <include app:graph="@navigation/services" />
+    <include app:graph="@navigation/dependents" />
 
 </navigation>

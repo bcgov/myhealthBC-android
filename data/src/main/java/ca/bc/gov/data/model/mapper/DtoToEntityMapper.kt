@@ -18,12 +18,15 @@ import ca.bc.gov.common.model.immunization.ImmunizationRecordDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.model.patient.PatientNameDto
+import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.model.userprofile.UserProfileDto
 import ca.bc.gov.data.datasource.local.entity.PatientAddressEntity
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
+import ca.bc.gov.data.datasource.local.entity.PatientNameEntity
 import ca.bc.gov.data.datasource.local.entity.clinicaldocument.ClinicalDocumentEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderEntity
@@ -42,6 +45,7 @@ import ca.bc.gov.data.datasource.local.entity.labtest.LabTestEntity
 import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
+import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 
@@ -50,12 +54,19 @@ fun PatientDto.toEntity() = PatientEntity(
     fullName = fullName,
     firstName = firstName,
     lastName = lastName,
+    legalName = legalName?.toEntity(),
+    commonName = commonName?.toEntity(),
+    preferredName = preferredName?.toEntity(),
     dateOfBirth = dateOfBirth,
     phn = phn,
     patientOrder = Long.MAX_VALUE,
     authenticationStatus = authenticationStatus,
     mailingAddress = mailingAddress?.toEntity(),
     physicalAddress = physicalAddress?.toEntity(),
+)
+
+fun PatientNameDto.toEntity() = PatientNameEntity(
+    givenName, surName
 )
 
 fun PatientAddressDto.toEntity() = PatientAddressEntity(
@@ -276,6 +287,12 @@ fun DependentDto.toEntity(patientId: Long, guardianId: Long) = DependentEntity(
     isCacheValid = isCacheValid
 )
 
+/**
+ * [PatientEntity.legalName], [PatientEntity.preferredName] and [PatientEntity.commonName]
+ * is set to [null] as these parameters are only expected in patient v2 api.
+ * [DependentDto] is still on v1 and not supporting new naming fields.
+ * TODO: do appropriate handling with v2 api for legal, preferred & common name
+ */
 fun DependentDto.toPatientEntity() = PatientEntity(
     fullName = getFullName(),
     dateOfBirth = dateOfBirth,
@@ -285,7 +302,10 @@ fun DependentDto.toPatientEntity() = PatientEntity(
     physicalAddress = null,
     mailingAddress = null,
     firstName = firstname,
-    lastName = lastname
+    lastName = lastname,
+    legalName = null,
+    commonName = null,
+    preferredName = null
 )
 
 fun ClinicalDocumentDto.toEntity() = ClinicalDocumentEntity(
@@ -296,4 +316,13 @@ fun ClinicalDocumentDto.toEntity() = ClinicalDocumentEntity(
     facilityName = facilityName,
     discipline = discipline,
     serviceDate = serviceDate,
+)
+
+fun OrganDonorDto.toEntity() = OrganDonorEntity(
+    id = id,
+    patientId = patientId,
+    status = status,
+    statusMessage = statusMessage,
+    registrationFileId = registrationFileId,
+    file = file
 )
