@@ -56,6 +56,7 @@ class HealthVisitDetailFragment : BaseFragment(null) {
             showGenericError()
             viewModel.resetUiState()
         }
+        if (commentState?.isBcscSessionActive == false) popNavigation()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
