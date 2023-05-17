@@ -24,15 +24,18 @@ class SyncCommentsWorker @AssistedInject constructor(
         if (bcscAuthRepo.getPostLoginCheck() == PostLoginCheck.IN_PROGRESS.name) {
             return Result.retry()
         }
-        try {
-            val commentDtoList = commentRepository.findNonSyncedComments()
-            commentDtoList.forEach { commentDto ->
+        var result = Result.success()
+
+        val commentDtoList = commentRepository.findNonSyncedComments()
+        commentDtoList.forEach { commentDto ->
+            try {
                 commentRepository.syncComment(commentDto)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                result = Result.retry()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return Result.retry()
         }
-        return Result.success()
+
+        return result
     }
 }
