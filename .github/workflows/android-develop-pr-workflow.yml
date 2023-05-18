@@ -52,8 +52,8 @@ jobs:
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
 
-      - name: clean build
-        run: ./gradlew clean build
+      - name: generate debug apk
+        run: ./gradlew  spotlessCheck assemble{dev,stage,prod}Debug -x test --stacktrace
         env:
           USER: ${{ secrets.USER }}
           TOKEN: ${{ secrets.TOKEN }}
@@ -62,23 +62,6 @@ jobs:
         run: |
           echo "::set-output name=APK_VERSION::$(${{github.workspace}}/gradlew -q getApkVersion)"
         id: retrieve_apk_version
-
-      #MOCK
-      - name: sign mock apk
-        id: sign_app_mock
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: app/build/outputs/apk/mock/debug
-          signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
-          alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
-          keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
-
-      - name: upload mock apk
-        uses: actions/upload-artifact@v3
-        with:
-          name: myhealth_mock_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
-          path: ${{steps.sign_app_mock.outputs.signedReleaseFile}}
 
       #DEV
       - name: sign dev apk
