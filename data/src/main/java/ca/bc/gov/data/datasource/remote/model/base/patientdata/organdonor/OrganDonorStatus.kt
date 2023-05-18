@@ -1,4 +1,4 @@
-package ca.bc.gov.data.datasource.remote.model.base.patientdata
+package ca.bc.gov.data.datasource.remote.model.base.patientdata.organdonor
 
 import com.google.gson.annotations.SerializedName
 

@@ -15,6 +15,7 @@ import ca.bc.gov.data.datasource.local.dao.CovidOrderDao
 import ca.bc.gov.data.datasource.local.dao.CovidTestDao
 import ca.bc.gov.data.datasource.local.dao.DependentDao
 import ca.bc.gov.data.datasource.local.dao.DependentListOrderDao
+import ca.bc.gov.data.datasource.local.dao.DiagnosticImagingDataDao
 import ca.bc.gov.data.datasource.local.dao.DispensingPharmacyDao
 import ca.bc.gov.data.datasource.local.dao.HealthVisitsDao
 import ca.bc.gov.data.datasource.local.dao.HospitalVisitDao
@@ -49,6 +50,7 @@ import ca.bc.gov.data.datasource.local.entity.labtest.LabTestEntity
 import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
+import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
@@ -57,7 +59,7 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
  * @author Pinakin Kansara
  */
 @Database(
-    version = 10,
+    version = 11,
     entities = [
         PatientEntity::class,
         VaccineRecordEntity::class,
@@ -80,11 +82,13 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
         SpecialAuthorityEntity::class,
         ClinicalDocumentEntity::class,
         UserProfileEntity::class,
-        OrganDonorEntity::class
+        OrganDonorEntity::class,
+        DiagnosticImagingDataEntity::class
     ],
     autoMigrations = [
         AutoMigration(from = 8, to = 9),
-        AutoMigration(from = 9, to = 10)
+        AutoMigration(from = 9, to = 10),
+        AutoMigration(from = 10, to = 11)
     ],
     exportSchema = true
 )
@@ -138,4 +142,6 @@ abstract class MyHealthDataBase : RoomDatabase() {
     abstract fun getUserProfileDao(): UserProfileDao
 
     abstract fun getOrganDonationDao(): OrganDonorDao
+
+    abstract fun getDiagnosticImagingDataDao(): DiagnosticImagingDataDao
 }

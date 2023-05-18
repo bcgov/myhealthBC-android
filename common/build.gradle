@@ -39,6 +39,7 @@ android {
             buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "true"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
             resValue "string", "base_url", "https://mock.healthgateway.gov.bc.ca/"
+            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "true"
         }
 
         dev {
@@ -54,6 +55,7 @@ android {
             buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "true"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
             resValue "string", "base_url", "https://dev.healthgateway.gov.bc.ca/"
+            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "true"
         }
 
         stage {
@@ -69,6 +71,7 @@ android {
             buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "false"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
             resValue "string", "base_url", "https://test.healthgateway.gov.bc.ca/"
+            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "false"
         }
 
         prod {
@@ -84,6 +87,7 @@ android {
             buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "false"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
             resValue "string", "base_url", "https://healthgateway.gov.bc.ca/"
+            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "false"
         }
     }
 

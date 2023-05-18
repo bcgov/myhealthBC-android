@@ -19,6 +19,7 @@ import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientNameDto
+import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
@@ -45,6 +46,7 @@ import ca.bc.gov.data.datasource.local.entity.labtest.LabTestEntity
 import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
+import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
@@ -325,4 +327,18 @@ fun OrganDonorDto.toEntity() = OrganDonorEntity(
     statusMessage = statusMessage,
     registrationFileId = registrationFileId,
     file = file
+)
+
+fun DiagnosticImagingDataDto.toEntity() = DiagnosticImagingDataEntity(
+    id = _id,
+    patientId = patientId,
+    diagnosticImagingId = id,
+    examDate = examDate,
+    fileId = fileId,
+    examStatus = examStatus,
+    healthAuthority = healthAuthority,
+    organization = organization,
+    modality = modality,
+    bodyPart = bodyPart,
+    procedureDescription = procedureDescription
 )

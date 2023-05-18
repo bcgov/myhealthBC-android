@@ -1,7 +1,6 @@
 package ca.bc.gov.data.datasource.remote.model.response
 
-import ca.bc.gov.data.datasource.remote.model.base.patientdata.PatientDataItem
-import com.google.gson.annotations.SerializedName
+import ca.bc.gov.data.datasource.remote.model.base.patientdata.PatientData
 
 /**
  * @author Pinakin Kansara
@@ -11,6 +10,5 @@ data class PatientDataResponse(
     /**
      * Hold multiple type of patient data.
      */
-    @SerializedName("items")
-    val items: List<PatientDataItem> = emptyList()
+    val items: List<PatientData> = emptyList()
 )

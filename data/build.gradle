@@ -70,6 +70,7 @@ dependencies {
     implementation "androidx.core:core-ktx:$versions.core_ktx"
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
 
+    implementation project(path: ':appauth')
     implementation project(path: ':preference')
     implementation project(path: ':common')
 
