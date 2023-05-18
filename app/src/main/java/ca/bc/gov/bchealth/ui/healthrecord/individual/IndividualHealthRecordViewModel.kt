@@ -79,6 +79,9 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     patientRepository.getPatientWithHealthVisits(patientId)
                 val patientWithSpecialAuthorities =
                     patientRepository.getPatientWithSpecialAuthority(patientId)
+
+                val patientWithData = patientRepository.getPatientWithData(patientId)
+
                 val hospitalVisits = patientRepository.getPatientWithHospitalVisits(patientId).map {
                     it.toUiModel()
                 }
@@ -104,6 +107,8 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     it.requestedDate != null
                 }.map { it.toUiModel() }
 
+                val diagnosticImaging = patientWithData.toUiModel()
+
                 val bcscInfo = getBcscInfo()
 
                 val records = covidOrders +
@@ -113,6 +118,7 @@ class IndividualHealthRecordViewModel @Inject constructor(
                     specialAuthorities +
                     hospitalVisits +
                     clinicalDocuments +
+                    diagnosticImaging +
                     if (isShowMedicationRecords() && medicationRecords != null) {
                         medicationRecords
                     } else {
@@ -224,7 +230,8 @@ enum class HealthRecordType {
     HEALTH_VISIT_RECORD,
     SPECIAL_AUTHORITY_RECORD,
     HOSPITAL_VISITS_RECORD,
-    CLINICAL_DOCUMENT_RECORD
+    CLINICAL_DOCUMENT_RECORD,
+    DIAGNOSTIC_IMAGING
 }
 
 data class HiddenMedicationRecordItem(

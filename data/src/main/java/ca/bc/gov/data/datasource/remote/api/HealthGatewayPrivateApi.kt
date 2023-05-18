@@ -234,15 +234,13 @@ interface HealthGatewayPrivateApi {
     @GET("$BASE_PATIENT_SERVICE/PatientData/{$HDID}")
     suspend fun getPatientData(
         @Path(HDID) hdid: String,
-        @Header(AUTHORIZATION) accessToken: String,
         @Query("patientDataTypes") patientDataTypes: List<String>,
         @Query(API_VERSION) apiVersion: String = V2
     ): Response<PatientDataResponse>
 
     @GET("$BASE_PATIENT_SERVICE/PatientData/{$HDID}/file/{fileId}")
-    suspend fun getPatientFile(
+    suspend fun getPatientDataFile(
         @Path(HDID) hdid: String,
-        @Header(AUTHORIZATION) accessToken: String,
         @Path("fileId") fileId: String,
         @Query(API_VERSION) apiVersion: String = V2
     ): Response<PatientFileResponse>

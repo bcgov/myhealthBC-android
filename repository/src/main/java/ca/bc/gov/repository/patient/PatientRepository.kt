@@ -7,6 +7,7 @@ import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
+import ca.bc.gov.common.model.patient.PatientWithDataDto
 import ca.bc.gov.common.model.patient.PatientWithHealthVisitsDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
@@ -109,6 +110,10 @@ class PatientRepository @Inject constructor(
 
     suspend fun getPatientWithClinicalDocuments(patientId: Long): List<ClinicalDocumentDto> =
         patientLocalDataSource.getPatientWithClinicalDocuments(patientId)?.clinicalDocuments
+            ?: throw getNoRecordFoundException(patientId)
+
+    suspend fun getPatientWithData(patientId: Long): PatientWithDataDto =
+        patientLocalDataSource.getPatientWithData(patientId)
             ?: throw getNoRecordFoundException(patientId)
 
     private fun getNoRecordFoundException(patientId: Long) = MyHealthException(

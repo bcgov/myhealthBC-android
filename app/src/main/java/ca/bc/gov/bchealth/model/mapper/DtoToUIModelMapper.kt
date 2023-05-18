@@ -26,9 +26,11 @@ import ca.bc.gov.common.model.immunization.ImmunizationRecommendationsDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPatientDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
+import ca.bc.gov.common.model.patient.PatientWithDataDto
 import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
+import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.utils.toDate
@@ -307,4 +309,20 @@ enum class CovidTestResultStatus {
     IndeterminateResult,
     Cancelled,
     Pending
+}
+
+private fun DiagnosticImagingDataDto.toUiModel() = HealthRecordItem(
+    recordId = _id,
+    patientId = patientId,
+    icon = R.drawable.ic_health_record_diagnostic_imaging,
+    title = modality.orEmpty(),
+    description = examStatus.value + " • " + examDate?.toDate(),
+    date = examDate!!,
+    healthRecordType = HealthRecordType.DIAGNOSTIC_IMAGING,
+    dataSource = null
+)
+
+fun PatientWithDataDto.toUiModel(): List<HealthRecordItem> {
+    val healthRecordItems = diagnosticImagingDataList.map { it.toUiModel() }
+    return healthRecordItems
 }

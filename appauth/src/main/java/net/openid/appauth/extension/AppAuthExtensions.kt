@@ -26,11 +26,8 @@ suspend fun awaitFetchFromIssuer(uri: Uri): AuthorizationServiceConfiguration =
         AuthorizationServiceConfiguration.fetchFromIssuer(
             uri
         ) { serviceConfiguration, ex ->
-
             if (serviceConfiguration == null) {
-                ex?.let {
-                    continuation.resumeWithException(it)
-                }
+                continuation.resumeWithException(MyHealthAuthException("Invalid access token!"))
             } else {
                 continuation.resume(serviceConfiguration)
             }
@@ -47,7 +44,7 @@ suspend fun awaitPerformTokenRequest(
             authorizationResponse.createTokenExchangeRequest()
         ) { response, ex ->
             if (response == null) {
-                ex?.let { continuation.resumeWithException(it) }
+                continuation.resumeWithException(MyHealthAuthException("Invalid access token!"))
             } else {
                 continuation.resume(Pair(response, ex))
             }
@@ -63,7 +60,7 @@ suspend fun awaitPerformActionWithFreshTokens(
         authService
     ) { accessToken, idToken, ex ->
         if (accessToken == null || idToken == null) {
-            ex?.let { continuation.resumeWithException(it) }
+            continuation.resumeWithException(MyHealthAuthException("Invalid access token!"))
         } else {
             authService.dispose()
             continuation.resume(accessToken)

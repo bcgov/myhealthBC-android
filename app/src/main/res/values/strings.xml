@@ -481,6 +481,7 @@
     <string name="special_authorities">Special Authorities</string>
     <string name="hospital_visits">Hospital Visits</string>
     <string name="clinical_documents">Clinical Docs</string>
+    <string name="imaging_reports">Imaging Reports</string>
     <string name="filter">Filter</string>
     <string name="apply">Apply</string>
     <string name="no_records_found">No records found</string>
@@ -561,4 +562,12 @@
     <string name="organ_donor_decision_download">Download</string>
     <string name="organ_donor_register_or_update">Register or update your decision</string>
     <string name="organ_donor">Organ Donor</string>
+
+    <!--Diagnostic Imaging-->
+    <string name="diagnostic_imaging_detail_subtitle">If you have questions, contact the doctor or care provider who ordered your imaging.</string>
+    <string name="body_part">Body Part:</string>
+    <string name="description">Description:</string>
+    <string name="health_authority">Health Authority:</string>
+    <string name="facility">Facility:</string>
+
 </resources>

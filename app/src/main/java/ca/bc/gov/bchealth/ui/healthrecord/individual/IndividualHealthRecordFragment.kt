@@ -21,6 +21,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordFilterFragment
 import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.CLINICAL_DOCUMENT_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.COVID_TEST_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.DIAGNOSTIC_IMAGING
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HEALTH_VISIT_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HOSPITAL_VISITS_RECORD
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.IMMUNIZATION_RECORD
@@ -326,6 +327,12 @@ class IndividualHealthRecordFragment :
                 CLINICAL_DOCUMENT_RECORD ->
                     IndividualHealthRecordFragmentDirections
                         .actionIndividualHealthRecordsFragmentToClinicalDocumentDetailsFragment(
+                            it.recordId
+                        )
+
+                DIAGNOSTIC_IMAGING ->
+                    IndividualHealthRecordFragmentDirections
+                        .actionIndividualHealthRecordFragmentToDiagnosticImagingDetailFragment(
                             it.recordId
                         )
             }

@@ -4,6 +4,7 @@ import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientWithClinicalDocumentsDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
+import ca.bc.gov.common.model.patient.PatientWithDataDto
 import ca.bc.gov.common.model.patient.PatientWithHealthVisitsDto
 import ca.bc.gov.common.model.patient.PatientWithHospitalVisitsDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
@@ -126,6 +127,9 @@ class PatientLocalDataSource @Inject constructor(
 
     suspend fun getPatientWithSpecialAuthority(patientId: Long): PatientWithSpecialAuthorityDto? =
         patientDao.getPatientWithSpecialAuthority(patientId)?.toDto()
+
+    suspend fun getPatientWithData(patientId: Long): PatientWithDataDto? =
+        patientDao.getPatientWithData(patientId)?.toDto()
 
     suspend fun getAuthenticatedPatientId() = patientDao.getAuthenticatedPatientId() ?: -1
 

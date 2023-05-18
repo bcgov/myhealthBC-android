@@ -73,6 +73,9 @@ private fun BoxScope.ClinicalDocumentDetailContent(
         uiState.uiList.forEach { listItem ->
             item {
                 HealthRecordListItem(
+                    modifier = Modifier.fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(top = 16.dp, start = 32.dp, end = 32.dp),
                     stringResource(id = listItem.title),
                     listItem.description.orEmpty(),
                 )
