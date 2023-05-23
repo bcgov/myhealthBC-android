@@ -5,6 +5,7 @@ import ca.bc.gov.data.datasource.local.CommentLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidTestLocalDataSource
 import ca.bc.gov.data.datasource.local.DependentsLocalDataSource
+import ca.bc.gov.data.datasource.local.DiagnosticImagingLocalDataSource
 import ca.bc.gov.data.datasource.local.ImmunizationForecastLocalDataSource
 import ca.bc.gov.data.datasource.local.ImmunizationRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
@@ -21,7 +22,7 @@ import ca.bc.gov.data.datasource.remote.FeedbackRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
-import ca.bc.gov.data.datasource.remote.OrganDonorRemoteDataSource
+import ca.bc.gov.data.datasource.remote.PatientServicesRemoteDataSource
 import ca.bc.gov.data.datasource.remote.TermsOfServiceRemoteDataSource
 import ca.bc.gov.preference.EncryptedPreferenceStorage
 import ca.bc.gov.repository.BannerRepository
@@ -49,7 +50,9 @@ import ca.bc.gov.repository.labtest.LabTestRepository
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.ProcessQrRepository
 import ca.bc.gov.repository.scanner.QrScanner
+import ca.bc.gov.repository.services.DiagnosticImagingRepository
 import ca.bc.gov.repository.services.OrganDonorRepository
+import ca.bc.gov.repository.services.PatientServicesRepository
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.testrecord.CovidTestRepository
 import ca.bc.gov.repository.utils.Base64ToInputImageConverter
@@ -316,7 +319,18 @@ class RepositoriesModule {
     @Provides
     @Singleton
     fun providesOrganDonorRepository(
-        remoteDataSource: OrganDonorRemoteDataSource,
         localDataSource: OrganDonorLocalDataSource
-    ): OrganDonorRepository = OrganDonorRepository(remoteDataSource, localDataSource)
+    ): OrganDonorRepository = OrganDonorRepository(localDataSource)
+
+    @Provides
+    @Singleton
+    fun providePatientServicesRepository(
+        remoteDataSource: PatientServicesRemoteDataSource
+    ): PatientServicesRepository = PatientServicesRepository(remoteDataSource)
+
+    @Provides
+    @Singleton
+    fun provideDiagnosticImagingRepository(
+        localDataSource: DiagnosticImagingLocalDataSource
+    ): DiagnosticImagingRepository = DiagnosticImagingRepository(localDataSource)
 }

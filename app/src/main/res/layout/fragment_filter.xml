@@ -112,6 +112,13 @@
                     android:layout_height="wrap_content"
                     android:text="@string/clinical_documents" />
 
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_diagnostic_imaging"
+                    style="@style/ChipFilterByType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/imaging_reports" />
+
             </com.google.android.material.chip.ChipGroup>
 
             <View

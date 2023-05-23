@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -67,6 +68,10 @@ fun BoxScope.HealthVisitDetailScreen(
 
             uiState.uiList.forEach { listItem ->
                 HealthRecordListItem(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(top = 16.dp, start = 32.dp, end = 32.dp),
                     stringResource(id = listItem.title),
                     listItem.description.orEmpty(),
                 )

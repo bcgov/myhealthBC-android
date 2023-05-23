@@ -9,6 +9,7 @@ import ca.bc.gov.common.model.services.OrganDonorStatusDto
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.services.OrganDonorRepository
+import ca.bc.gov.repository.services.PatientServicesRepository
 import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ServicesViewModel @Inject constructor(
     private val patientRepository: PatientRepository,
+    private val patientServicesRepository: PatientServicesRepository,
     private val organDonorRepository: OrganDonorRepository,
     private val mobileConfigRepository: MobileConfigRepository,
     private val bcscAuthRepo: BcscAuthRepo
@@ -74,7 +76,7 @@ class ServicesViewModel @Inject constructor(
                 val authParams = bcscAuthRepo.getAuthParametersDto()
                 mobileConfigRepository.refreshMobileConfiguration()
                 val fileString =
-                    organDonorRepository.fetchPatientFile(authParams.hdid, authParams.token, fileId)
+                    patientServicesRepository.fetchPatientDataFile(authParams.hdid, fileId)
                 organDonorDetails.file = fileString
                 organDonorRepository.update(organDonorDetails)
             }
