@@ -26,7 +26,6 @@ import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.utils.toDateTimeString
 import java.time.Instant
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CommentsSummaryUI(
     commentsSummary: CommentsSummary?,
