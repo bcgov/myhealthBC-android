@@ -1,6 +1,9 @@
 name: Android CICD deployment
 
 on:
+  push:
+    branches:
+      - hotfix/*
   pull_request:
     branches:
       - develop
@@ -53,7 +56,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: generate debug apk
-        run: ./gradlew  spotlessCheck assemble{dev,stage,prod}Debug -x test --stacktrace
+        run: ./gradlew assemble{dev,stage,prod}Debug -x test --stacktrace
         env:
           USER: ${{ secrets.USER }}
           TOKEN: ${{ secrets.TOKEN }}

@@ -19,6 +19,7 @@ import ca.bc.gov.bchealth.databinding.ActivityMainBinding
 import ca.bc.gov.bchealth.ui.inappupdate.InAppUpdateActivity
 import ca.bc.gov.bchealth.utils.InAppUpdateHelper
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
+import ca.bc.gov.bchealth.utils.toast
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.workers.FetchAuthenticatedHealthRecordsWorker
@@ -102,6 +103,10 @@ class MainActivity : AppCompatActivity() {
         observeExceptionFromWorker()
     }
 
+    override fun onResume() {
+        super.onResume()
+        toast("Version: ${BuildConfig.VERSION_NAME}")
+    }
     private fun toggleAnalyticsFeature() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
