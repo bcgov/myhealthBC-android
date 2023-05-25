@@ -1,10 +1,9 @@
 package ca.bc.gov.bchealth.ui.healthrecord.imaging
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -37,6 +36,7 @@ fun DiagnosticImagingDetailScreen(modifier: Modifier, viewModel: DiagnosticImagi
     val uiState = viewModel.uiState.collectAsState().value
     DiagnosticImagingDetailContent(
         modifier,
+        uiState.fileId,
         uiState.details,
         uiState.onLoading
     ) { viewModel.onClickDownload() }
@@ -45,43 +45,45 @@ fun DiagnosticImagingDetailScreen(modifier: Modifier, viewModel: DiagnosticImagi
 @Composable
 private fun DiagnosticImagingDetailContent(
     modifier: Modifier = Modifier,
+    fileId: String? = null,
     details: List<HealthRecordDetailItem>,
     onLoading: Boolean,
     onClickDownload: () -> Unit
 ) {
 
-    if (onLoading) {
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            CircularProgressIndicator(modifier = modifier, color = MaterialTheme.colors.primary)
-        }
-    } else {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
 
+        if (onLoading) {
+            CircularProgressIndicator(
+                modifier = modifier.align(Alignment.Center),
+                color = MaterialTheme.colors.primary
+            )
+        }
         LazyColumn(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 32.dp)
                 .wrapContentHeight()
         ) {
-            item {
-                OutlinedButton(
-                    onClick = onClickDownload,
-                    border = BorderStroke(1.dp, primaryBlue),
-                    colors = ButtonDefaults.outlinedButtonColors(),
-                    modifier = Modifier
-                        .defaultMinSize(minHeight = 56.dp),
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.clinical_documents_detail_button_download),
-                        textAlign = TextAlign.Center,
-                        style = MyHealthTypography.button.copy(color = primaryBlue),
-                        modifier = Modifier.fillMaxWidth()
-                    )
+            if (!fileId.isNullOrBlank()) {
+                item {
+                    OutlinedButton(
+                        onClick = onClickDownload,
+                        border = BorderStroke(1.dp, primaryBlue),
+                        colors = ButtonDefaults.outlinedButtonColors(),
+                        modifier = Modifier
+                            .defaultMinSize(minHeight = 56.dp),
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.clinical_documents_detail_button_download),
+                            textAlign = TextAlign.Center,
+                            style = MyHealthTypography.button.copy(color = primaryBlue),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
             }
 
