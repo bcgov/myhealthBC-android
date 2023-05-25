@@ -18,6 +18,7 @@ import androidx.work.WorkManager
 import ca.bc.gov.bchealth.databinding.ActivityMainBinding
 import ca.bc.gov.bchealth.ui.inappupdate.InAppUpdateActivity
 import ca.bc.gov.bchealth.utils.InAppUpdateHelper
+import ca.bc.gov.bchealth.utils.showErrorSnackbar
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
@@ -136,6 +137,7 @@ class MainActivity : AppCompatActivity() {
                 when (workInfo.state) {
                     WorkInfo.State.RUNNING -> {
                         isWorkerStarted = true
+                        binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_while_fetching_data))
                     }
 
                     WorkInfo.State.FAILED -> {
@@ -145,6 +147,7 @@ class MainActivity : AppCompatActivity() {
                     WorkInfo.State.SUCCEEDED -> {
                         if (isWorkerStarted) {
                             inAppUpdate.checkForUpdate(AppUpdateType.FLEXIBLE)
+                            binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_on_success))
                         }
                     }
 
@@ -171,6 +174,8 @@ class MainActivity : AppCompatActivity() {
                 binding.navHostFragment.showServiceDownMessage(this)
                 return
             }
+
+            binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_on_failed))
         }
     }
 

@@ -85,6 +85,8 @@ class HealthGateWayApiModule {
     ): OkHttpClient {
         val okHttpClient = OkHttpClient.Builder()
             .callTimeout(2, TimeUnit.MINUTES)
+            .readTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES)
             .hostnameVerifier { _, _ ->
                 return@hostnameVerifier true
             }
@@ -113,6 +115,8 @@ class HealthGateWayApiModule {
     ): OkHttpClient {
         val okHttpClient = OkHttpClient.Builder()
             .callTimeout(2, TimeUnit.MINUTES)
+            .readTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES)
             .hostnameVerifier { _, _ ->
                 return@hostnameVerifier true
             }
