@@ -1,5 +1,6 @@
 package ca.bc.gov.bchealth.ui.home
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -13,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHomeBinding
 import ca.bc.gov.bchealth.ui.BaseSecureFragment
@@ -72,6 +74,7 @@ class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
                     viewModel.launchCheck()
                     viewModel.executeOneTimeDataFetch()
                 }
+
                 else -> {
                     findNavController().popBackStack()
                 }
@@ -160,6 +163,7 @@ class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
         findNavController().navigate(destination)
     }
 
+    @SuppressLint("SetTextI18n")
     private suspend fun onBoardingFlow() {
         viewModel.uiState.collect { uiState ->
             if (uiState.isOnBoardingRequired || uiState.isReOnBoardingRequired) {
@@ -184,15 +188,6 @@ class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
                 viewModel.onBcscLoginRequired(false)
             }
 
-            if (!uiState.patientFirstName.isNullOrBlank()) {
-                binding.tvName.text = getString(R.string.hi)
-                    .plus(" ")
-                    .plus(uiState.patientFirstName)
-                    .plus(",")
-            } else {
-                binding.tvName.text = getString(R.string.hello).plus(",")
-            }
-
             if (uiState.isForceLogout) {
                 bcscAuthViewModel.getEndSessionIntent()
                 viewModel.onForceLogout(false)
@@ -202,6 +197,8 @@ class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
                 binding.root.showServiceDownMessage(requireContext())
                 viewModel.resetUiState()
             }
+
+            binding.tvName.text = "Version: ${BuildConfig.VERSION_NAME}"
         }
     }
 
