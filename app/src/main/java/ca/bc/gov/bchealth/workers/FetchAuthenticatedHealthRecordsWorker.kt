@@ -6,6 +6,7 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import ca.bc.gov.bchealth.usecases.FetchCommentsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchClinicalDocumentsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchCovidOrdersUseCase
@@ -18,7 +19,6 @@ import ca.bc.gov.bchealth.usecases.records.FetchPatientDataUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchSpecialAuthoritiesUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchVaccinesUseCase
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
-import ca.bc.gov.common.R
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.repository.DependentsRepository
@@ -28,7 +28,6 @@ import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.patient.PatientRepository
-import ca.bc.gov.repository.utils.NotificationHelper
 import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -52,7 +51,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val dependentsRepository: DependentsRepository,
     private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
     private val userProfileRepository: UserProfileRepository,
-    private val notificationHelper: NotificationHelper,
     private val mobileConfigRepository: MobileConfigRepository,
     private val fetchMedicationsUseCase: FetchMedicationsUseCase,
     private val fetchLabOrdersUseCase: FetchLabOrdersUseCase,
@@ -72,11 +70,11 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         try {
             remoteVersion = mobileConfigRepository.getRemoteApiVersion()
         } catch (e: Exception) {
-            return respondToHgServicesDown()
+            return respondToFailure(FailureReason.IS_HG_SERVICES_UP, false)
         }
 
         if (LOCAL_API_VERSION < remoteVersion) {
-            return respondToAppUpdateRequired()
+            return respondToFailure(FailureReason.APP_UPDATE_REQUIRED, true)
         }
 
         if (bcscAuthRepo.getPostLoginCheck() == PostLoginCheck.IN_PROGRESS.name ||
@@ -92,8 +90,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         val authParameters = bcscAuthRepo.getAuthParametersDto()
         val patientId: Long
 
-        notificationHelper.showNotification(context.getString(R.string.notification_title_while_fetching_data))
-
         try {
             val patient = patientWithBCSCLoginRepository.getPatient(
                 authParameters.token, authParameters.hdid
@@ -102,7 +98,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             patientId = patientRepository.insertAuthenticatedPatient(patient)
         } catch (e: Exception) {
             e.printStackTrace()
-            updateNotification(isApiFailed = true)
             return Result.failure()
         }
 
@@ -111,16 +106,13 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             dependents?.let { dependentsRepository.storeDependents(it, guardianId = patientId) }
         } catch (e: Exception) {
             e.printStackTrace()
-            updateNotification(isApiFailed = true)
             return Result.failure()
         }
 
         val isApiFailed = loadRecords(patientId, authParameters, dependents)
 
-        updateNotification(isApiFailed)
-
         return if (isApiFailed) {
-            Result.failure()
+            return respondToFailure(FailureReason.IS_RECORD_FETCH_FAILED, true)
         } else {
             Result.success()
         }
@@ -132,7 +124,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         dependents: List<DependentDto>?
     ): Boolean {
         val isApiFailed: Boolean
-
+        setProgress(workDataOf(RECORD_FETCH_STARTED to true))
         withContext(dispatcher) {
             val taskResults = listOf(
                 async { fetchMedicationsUseCase.execute(patientId, authParameters) },
@@ -156,15 +148,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         return isApiFailed
     }
 
-    private fun updateNotification(isApiFailed: Boolean) {
-        val notificationText = if (isApiFailed) {
-            R.string.notification_title_on_failed
-        } else {
-            R.string.notification_title_on_success
-        }
-        notificationHelper.updateNotification(context.getString(notificationText))
-    }
-
     private suspend fun <T> fetchRecord(
         authParameters: AuthParametersDto,
         action: suspend (String, String) -> T?
@@ -176,18 +159,10 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         return response
     }
 
-    private fun respondToHgServicesDown(): Result {
+    private fun respondToFailure(reason: FailureReason, result: Boolean): Result {
         return Result.failure(
             Data.Builder()
-                .putBoolean(IS_HG_SERVICES_UP, false)
-                .build()
-        )
-    }
-
-    private fun respondToAppUpdateRequired(): Result {
-        return Result.failure(
-            Data.Builder()
-                .putBoolean(APP_UPDATE_REQUIRED, true)
+                .putBoolean(reason.value, result)
                 .build()
         )
     }
@@ -205,7 +180,11 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         }
 
     companion object {
-        const val APP_UPDATE_REQUIRED = "appUpdateRequired"
-        const val IS_HG_SERVICES_UP = "isHgServicesUp"
+        const val RECORD_FETCH_STARTED = "started"
+    }
+    enum class FailureReason(val value: String) {
+        APP_UPDATE_REQUIRED("appUpdateRequired"),
+        IS_HG_SERVICES_UP("isHgServicesUp"),
+        IS_RECORD_FETCH_FAILED("IS_RECORD_FETCH_FAILED")
     }
 }
