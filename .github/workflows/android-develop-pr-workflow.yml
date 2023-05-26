@@ -56,7 +56,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: generate debug apk
-        run: ./gradlew assemble{prod}Debug -x test --stacktrace
+        run: ./gradlew assembleProdDebug -x test --stacktrace
         env:
           USER: ${{ secrets.USER }}
           TOKEN: ${{ secrets.TOKEN }}
