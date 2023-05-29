@@ -296,9 +296,22 @@ public class AuthorizationManagementActivity extends AppCompatActivity {
             Logger.error("Failed to extract OAuth2 response from redirect");
             return;
         }
-        responseData.setData(responseUri);
 
-        sendResult(mCompleteIntent, responseData, RESULT_OK);
+        /*
+        * Added delay to handle intermittent redirection failure.
+        * */
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                CustomTabsIntent customTabsIntent = builder.build();
+                customTabsIntent.launchUrl(AuthorizationManagementActivity.this, responseUri);
+
+                responseData.setData(responseUri);
+                sendResult(mCompleteIntent, responseData, RESULT_OK);
+                finish();
+            }
+        }, 500);
     }
 
     private void handleAuthorizationCanceled() {

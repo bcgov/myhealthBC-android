@@ -5,18 +5,12 @@ import android.net.Uri
 import ca.bc.gov.common.const.AUTH_ERROR
 import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
 import ca.bc.gov.common.exceptions.MyHealthException
-import ca.bc.gov.repository.library.java.net.openid.appauth.AppAuthConfiguration
 import ca.bc.gov.repository.library.java.net.openid.appauth.AuthState
 import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationException
 import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationResponse
 import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationService
 import ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationServiceConfiguration
 import ca.bc.gov.repository.library.java.net.openid.appauth.TokenResponse
-import ca.bc.gov.repository.library.java.net.openid.appauth.browser.BrowserAllowList
-import ca.bc.gov.repository.library.java.net.openid.appauth.browser.BrowserDenyList
-import ca.bc.gov.repository.library.java.net.openid.appauth.browser.Browsers
-import ca.bc.gov.repository.library.java.net.openid.appauth.browser.VersionRange
-import ca.bc.gov.repository.library.java.net.openid.appauth.browser.VersionedBrowserMatcher
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -45,25 +39,7 @@ suspend fun awaitPerformTokenRequest(
     authorizationResponse: AuthorizationResponse
 ): Pair<TokenResponse, AuthorizationException?> = suspendCancellableCoroutine { continuation ->
 
-    val appauthConfiguration = AppAuthConfiguration.Builder()
-        .setBrowserMatcher(
-            BrowserAllowList(
-                VersionedBrowserMatcher.CHROME_CUSTOM_TAB,
-                VersionedBrowserMatcher.SAMSUNG_CUSTOM_TAB
-            )
-        )
-        .setBrowserMatcher(
-            BrowserDenyList(
-                VersionedBrowserMatcher(
-                    Browsers.SBrowser.PACKAGE_NAME,
-                    Browsers.SBrowser.SIGNATURE_SET,
-                    true,
-                    VersionRange.atMost("5.3")
-                )
-            )
-        )
-        .build()
-    AuthorizationService(applicationContext, appauthConfiguration).performTokenRequest(
+    AuthorizationService(applicationContext).performTokenRequest(
         authorizationResponse.createTokenExchangeRequest()
     ) { response, ex ->
         if (ex != null || response == null) {
@@ -78,25 +54,7 @@ suspend fun awaitPerformActionWithFreshTokens(
     applicationContext: Context,
     authState: AuthState
 ): String = suspendCancellableCoroutine { continuation ->
-    val appauthConfiguration = AppAuthConfiguration.Builder()
-        .setBrowserMatcher(
-            BrowserAllowList(
-                VersionedBrowserMatcher.CHROME_CUSTOM_TAB,
-                VersionedBrowserMatcher.SAMSUNG_CUSTOM_TAB
-            )
-        )
-        .setBrowserMatcher(
-            BrowserDenyList(
-                VersionedBrowserMatcher(
-                    Browsers.SBrowser.PACKAGE_NAME,
-                    Browsers.SBrowser.SIGNATURE_SET,
-                    true,
-                    VersionRange.atMost("5.3")
-                )
-            )
-        )
-        .build()
-    val authService = AuthorizationService(applicationContext, appauthConfiguration)
+    val authService = AuthorizationService(applicationContext)
     authState.performActionWithFreshTokens(
         authService
     ) { accessToken, idToken, ex ->
