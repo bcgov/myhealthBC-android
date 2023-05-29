@@ -72,7 +72,7 @@
             android:name="ca.bc.gov.repository.library.java.net.openid.appauth.RedirectUriReceiverActivity"
             tools:node="replace"
             android:exported="true">
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
@@ -80,7 +80,7 @@
                     android:host="www2.gov.bc.ca"
                     android:path="/gov/content/health/managing-your-health/health-gateway*"/>
             </intent-filter>
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
