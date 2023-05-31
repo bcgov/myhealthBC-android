@@ -1,12 +1,13 @@
 package ca.bc.gov.bchealth.ui.home
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -25,7 +26,14 @@ import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolBar
 
 @Composable
-fun HomeScreen(greeting: String) {
+fun HomeScreen(
+    greeting: String,
+    bannerUiState: BannerItem,
+    onClickToggle: () -> Unit,
+    onClickDismiss: () -> Unit,
+    onClickLearnMore: () -> Unit,
+    homeItems: List<HomeRecordItem>
+) {
     MyHealthTheme {
         Scaffold(
             topBar = {
@@ -49,9 +57,17 @@ fun HomeScreen(greeting: String) {
                     modifier = Modifier
                         .statusBarsPadding()
                         .navigationBarsPadding()
-                        .padding(it),
+                        .padding(it)
+                        .verticalScroll(rememberScrollState()),
                 ) {
-                    HomeContent(greeting)
+                    HomeContent(
+                        greeting,
+                        bannerUiState,
+                        onClickToggle,
+                        onClickDismiss,
+                        onClickLearnMore,
+                        homeItems
+                    )
                 }
             },
             contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.background)
@@ -60,8 +76,16 @@ fun HomeScreen(greeting: String) {
 }
 
 @Composable
-private fun ColumnScope.HomeContent(greeting: String) {
+private fun HomeContent(
+    greeting: String,
+    bannerUiState: BannerItem,
+    onClickToggle: () -> Unit,
+    onClickDismiss: () -> Unit,
+    onClickLearnMore: () -> Unit,
+    homeItems: List<HomeRecordItem>,
+) {
     Text(
+        modifier = Modifier.padding(horizontal = 32.dp),
         text = greeting,
         style = MyHealthTypography.h2,
         color = MaterialTheme.colors.primary
@@ -69,17 +93,62 @@ private fun ColumnScope.HomeContent(greeting: String) {
     Spacer(modifier = Modifier.height(16.dp))
 
     Text(
+        modifier = Modifier.padding(horizontal = 32.dp),
         text = stringResource(id = R.string.home_subtitle),
         style = MyHealthTypography.h2,
         color = MaterialTheme.colors.primary
     )
     Spacer(modifier = Modifier.height(16.dp))
 
-    // BannerUI(ioState, {}, {}, {})
+    BannerUI(bannerUiState, onClickToggle, onClickLearnMore, onClickDismiss)
+
+    homeItems.forEach {
+        HomeCardUI(uiItem = it, onClickItem = {})
+    }
 }
 
 @BasePreview
 @Composable
 private fun PreviewHomeScreen() {
-    HomeScreen("Hello, Bruno")
+    HomeScreen(
+        "Hello, Bruno",
+        bannerUiState = BannerItem(
+            title = "Great news! Really Big Announcement",
+            body = "View and manage all your available health records, including dispensed medications, health visits, COVID-19 test results, immunizations and more.",
+            date = "",
+            displayReadMore = true,
+            isHidden = false,
+        ),
+        onClickToggle = {},
+        onClickLearnMore = {},
+        onClickDismiss = {},
+        homeItems = listOf(
+            HomeRecordItem(
+                iconTitle = R.drawable.ic_login_info,
+                title = R.string.recommendations_home_title,
+                description = R.string.home_recommendations_body,
+                icon = R.drawable.ic_right_arrow,
+                btnTitle = R.string.get_started,
+                recordType = HomeNavigationType.RECOMMENDATIONS
+
+            ),
+            HomeRecordItem(
+                iconTitle = R.drawable.ic_login_info,
+                title = R.string.recommendations_home_title,
+                description = R.string.home_recommendations_body,
+                icon = R.drawable.ic_right_arrow,
+                btnTitle = R.string.get_started,
+                recordType = HomeNavigationType.RECOMMENDATIONS
+
+            ),
+            HomeRecordItem(
+                iconTitle = R.drawable.ic_login_info,
+                title = R.string.recommendations_home_title,
+                description = R.string.home_recommendations_body,
+                icon = R.drawable.ic_right_arrow,
+                btnTitle = R.string.get_started,
+                recordType = HomeNavigationType.RECOMMENDATIONS
+            )
+        )
+    )
 }
