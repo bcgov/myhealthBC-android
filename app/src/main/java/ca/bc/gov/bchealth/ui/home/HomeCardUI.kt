@@ -21,6 +21,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
+import ca.bc.gov.bchealth.compose.bold
 import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.compose.white
 import ca.bc.gov.bchealth.ui.custom.DecorativeImage
@@ -31,7 +32,7 @@ fun HomeCardUI(uiItem: HomeRecordItem, onClickItem: (HomeRecordItem) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 16.dp, bottom = 8.dp, start = 32.dp, end = 32.dp)
-            .shadow(elevation = 8.dp, shape = RoundedCornerShape(10.dp))
+            .shadow(elevation = 8.dp, shape = RoundedCornerShape(4.dp))
             .clip(RoundedCornerShape(4.dp))
             .clickable { onClickItem.invoke(uiItem) }
             .background(white)
@@ -70,7 +71,7 @@ private fun CardButtonUI(uiItem: HomeRecordItem, onClickItem: (HomeRecordItem) -
             ) {
                 Text(
                     text = stringResource(id = uiItem.btnTitle),
-                    style = MyHealthTypography.button
+                    style = MyHealthTypography.button.bold()
                 )
             }
         }
@@ -83,6 +84,7 @@ private fun CardButtonUI(uiItem: HomeRecordItem, onClickItem: (HomeRecordItem) -
                 Text(
                     text = stringResource(id = uiItem.btnTitle),
                     style = MyHealthTypography.h4,
+                    fontSize = 15.sp,
                     color = primaryBlue
                 )
                 DecorativeImage(
