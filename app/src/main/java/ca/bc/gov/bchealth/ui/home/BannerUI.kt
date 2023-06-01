@@ -44,8 +44,8 @@ import ca.bc.gov.bchealth.utils.fromHtml
 fun BannerUI(
     uiState: BannerItem,
     onClickToggle: () -> Unit,
+    onClickLearnMore: (BannerItem) -> Unit,
     onClickDismiss: () -> Unit,
-    onClickLearnMore: () -> Unit,
 ) {
 
     if (uiState.isHidden) return
@@ -135,7 +135,7 @@ fun BannerUI(
             if (uiState.displayReadMore) {
                 Row(
                     modifier = Modifier
-                        .clickable { onClickLearnMore.invoke() }
+                        .clickable { onClickLearnMore.invoke(uiState) }
                         .constrainAs(btLearnMore) {
                             top.linkTo(btDismiss.top)
                             end.linkTo(btDismiss.start, margin = 24.dp)
