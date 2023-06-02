@@ -23,6 +23,11 @@ class HeaderInterceptor @Inject constructor(
     private val context: Context,
     private val preferenceStorage: EncryptedPreferenceStorage
 ) : Interceptor {
+    // todo: refactor OKHTTP client to exclude public apis
+    private val urlExcludedFromCheck = listOf(
+        "api/immunizationservice/PublicVaccineStatus",
+        "/gatewayapiservice/Communication/Mobile"
+    )
 
     companion object {
         private const val AUTHORIZATION = "Authorization"
@@ -31,11 +36,17 @@ class HeaderInterceptor @Inject constructor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
 
+        if (urlExcludedFromCheck.any { originalRequest.url.toString().contains(it, true) }) {
+            return chain.proceed(originalRequest)
+        }
+
         val originalHeaders = originalRequest.headers
 
         if (!originalHeaders.names().contains(AUTHORIZATION)) {
-            val authState: String = preferenceStorage.authState ?: throw MyHealthAuthException("HEADER")
-            val authStateResult = AuthState.jsonDeserialize(authState) ?: throw MyHealthAuthException("HEADER")
+            val authState: String =
+                preferenceStorage.authState ?: throw MyHealthAuthException("HEADER")
+            val authStateResult =
+                AuthState.jsonDeserialize(authState) ?: throw MyHealthAuthException("HEADER")
             val bcscAuthDataDto = runBlocking {
                 getBCSCAuthData(context, authStateResult)
             }
