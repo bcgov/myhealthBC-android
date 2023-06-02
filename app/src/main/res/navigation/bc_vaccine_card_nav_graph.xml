@@ -51,6 +51,10 @@
     <include app:graph="@navigation/services" />
 
     <fragment
+        android:id="@+id/notificationFragment"
+        android:name="ca.bc.gov.bchealth.ui.notification.NotificationFragment" />
+
+    <fragment
         android:id="@+id/settingsFragment"
         android:name="ca.bc.gov.bchealth.ui.setting.SettingsFragment"
         tools:layout="@layout/fragment_settings" />
@@ -84,7 +88,7 @@
     <fragment
         android:id="@+id/bcscAuthFragment"
         android:name="ca.bc.gov.bchealth.ui.login.BcscAuthFragment"
-        tools:layout="@layout/fragment_bcsc_auth" >
+        tools:layout="@layout/fragment_bcsc_auth">
         <action
             android:id="@+id/action_bcscAuthFragment_to_bcscAuthErrorFragment"
             app:destination="@id/bcscAuthErrorFragment" />
