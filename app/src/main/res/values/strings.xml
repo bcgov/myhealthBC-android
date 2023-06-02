@@ -84,6 +84,17 @@
     <string name="label_resource_symptom">COVID-19 self-assessment</string>
     <string name="health_resources">Health resources</string>
 
+    <!--Notification-->
+    <string name="notifications">Notification</string>
+    <string name="notifications_remove">Remove notification</string>
+    <string name="notifications_clear">Clear all notifications</string>
+    <string name="notifications_more_info">More information</string>
+    <string name="notifications_view_details">View details</string>
+    <string name="notifications_enable_body">Enabling notification to stay inform on updates in Login, Health records, Lab test results and feedbacks. </string>
+    <string name="notifications_enable_button">Enable notification</string>
+    <string name="notifications_error_body">Sorry, an error occurred while fetching notifications. Please try again.</string>
+    <string name="notifications_empty_body">There is no notification at this moment.</string>
+
     <!--Settings-->
     <string name="settings">Settings</string>
     <string name="settings_feedback">Feedback</string>

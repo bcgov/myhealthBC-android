@@ -28,6 +28,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.ui.BaseSecureFragment
 import ca.bc.gov.bchealth.ui.BcscAuthState
@@ -113,24 +114,7 @@ class HomeFragment : BaseSecureFragment(null) {
 
         MyHealthTheme {
             Scaffold(
-                topBar = {
-                    MyHealthToolBar(
-                        title = "",
-                        actions = {
-                            IconButton(
-                                onClick = { findNavController().navigate(R.id.settingsFragment) }
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_settings),
-                                    contentDescription = stringResource(
-                                        id = R.string.settings
-                                    ),
-                                    tint = MaterialTheme.colors.primary
-                                )
-                            }
-                        }
-                    )
-                },
+                topBar = { HomeToolbar() },
                 content = {
                     Column(
                         modifier = Modifier
@@ -153,6 +137,37 @@ class HomeFragment : BaseSecureFragment(null) {
                 contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.background)
             )
         }
+    }
+
+    @Composable
+    private fun HomeToolbar() {
+        MyHealthToolBar(
+            title = "",
+            actions = {
+
+                IconButton(
+                    onClick = { findNavController().navigate(R.id.notificationFragment) }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_notification),
+                        contentDescription = stringResource(id = R.string.notifications),
+                        tint = MaterialTheme.colors.primary
+                    )
+                }
+
+                IconButton(
+                    onClick = { findNavController().navigate(R.id.settingsFragment) }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_settings),
+                        contentDescription = stringResource(
+                            id = R.string.settings
+                        ),
+                        tint = MaterialTheme.colors.primary
+                    )
+                }
+            }
+        )
     }
 
     override fun handleBCSCAuthState(bcscAuthState: BcscAuthState) {
@@ -248,5 +263,13 @@ class HomeFragment : BaseSecureFragment(null) {
             body = banner.body,
         )
         findNavController().navigate(action)
+    }
+
+    @BasePreview
+    @Composable
+    private fun PreviewHomeToolbar() {
+        MyHealthTheme {
+            HomeToolbar()
+        }
     }
 }
