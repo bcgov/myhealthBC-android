@@ -22,6 +22,7 @@ import ca.bc.gov.data.datasource.remote.FeedbackRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
+import ca.bc.gov.data.datasource.remote.NotificationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.PatientServicesRemoteDataSource
 import ca.bc.gov.data.datasource.remote.TermsOfServiceRemoteDataSource
 import ca.bc.gov.preference.EncryptedPreferenceStorage
@@ -32,6 +33,7 @@ import ca.bc.gov.repository.DependentsRepository
 import ca.bc.gov.repository.FeedbackRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
+import ca.bc.gov.repository.NotificationRepository
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.PdfDecoderRepository
@@ -263,6 +265,16 @@ class RepositoriesModule {
     fun provideTermsOfServiceRepository(
         termsOfServiceRemoteDataSource: TermsOfServiceRemoteDataSource
     ): TermsOfServiceRepository = TermsOfServiceRepository(termsOfServiceRemoteDataSource)
+
+    @Provides
+    @Singleton
+    fun provideNotificationRepository(
+        notificationRemoteDataSource: NotificationRemoteDataSource,
+        bcscAuthRepo: BcscAuthRepo
+    ): NotificationRepository = NotificationRepository(
+        notificationRemoteDataSource,
+        bcscAuthRepo
+    )
 
     @Provides
     @Singleton

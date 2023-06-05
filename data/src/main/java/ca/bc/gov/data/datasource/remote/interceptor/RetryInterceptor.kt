@@ -55,7 +55,12 @@ class RetryInterceptor @Inject constructor() : Interceptor {
             if (response.isSuccessful) {
                 body = response.body
                 stringBody = body?.string()
-                val json: JsonObject? = Gson().fromJson(stringBody, JsonObject::class.java)
+                val json: JsonObject? =
+                    try {
+                        Gson().fromJson(stringBody, JsonObject::class.java)
+                    } catch (e: Exception) {
+                        null
+                    }
 
                 when (json) {
                     null -> loaded = true
