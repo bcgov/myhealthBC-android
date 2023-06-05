@@ -142,7 +142,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 runTaskAsync { fetchCommentsUseCase.execute(authParameters) },
                 runTaskAsync { fetchSpecialAuthoritiesUseCase.execute(patientId, authParameters) },
                 runTaskAsync { userProfileRepository.deleteUserProfileCache(patientId) },
-                runTaskAsync { notificationRepository.getNotifications() },
+                runTaskAsync { notificationRepository.refreshNotifications(authParameters.hdid) },
                 runTaskAsync { patientDataUseCase.execute(patientId, authParameters) }
             ).awaitAll()
 
