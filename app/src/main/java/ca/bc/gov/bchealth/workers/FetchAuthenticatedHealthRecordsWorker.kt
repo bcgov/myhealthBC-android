@@ -22,6 +22,7 @@ import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.repository.DependentsRepository
+import ca.bc.gov.repository.NotificationRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
 import ca.bc.gov.repository.UserProfileRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
@@ -62,6 +63,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val fetchSpecialAuthoritiesUseCase: FetchSpecialAuthoritiesUseCase,
     private val fetchClinicalDocumentsUseCase: FetchClinicalDocumentsUseCase,
     private val fetchVaccinesUseCase: FetchVaccinesUseCase,
+    private val notificationRepository: NotificationRepository,
     private val patientDataUseCase: FetchPatientDataUseCase
 ) : CoroutineWorker(context, workerParams) {
 
@@ -140,6 +142,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 runTaskAsync { fetchCommentsUseCase.execute(authParameters) },
                 runTaskAsync { fetchSpecialAuthoritiesUseCase.execute(patientId, authParameters) },
                 runTaskAsync { userProfileRepository.deleteUserProfileCache(patientId) },
+                runTaskAsync { notificationRepository.getNotifications() },
                 runTaskAsync { patientDataUseCase.execute(patientId, authParameters) }
             ).awaitAll()
 
