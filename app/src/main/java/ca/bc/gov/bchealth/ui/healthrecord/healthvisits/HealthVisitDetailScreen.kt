@@ -62,7 +62,7 @@ fun BoxScope.HealthVisitDetailScreen(
                     .padding(top = 16.dp, start = 32.dp, end = 32.dp),
                 style = MyHealthTypography.caption,
                 fullText = stringResource(id = R.string.information_is_from_the_billing_claim),
-                clickableText = stringResource(id = R.string.faq),
+                clickableText = stringResource(id = R.string.faq_clickable),
                 action = onClickFaq
             )
 
