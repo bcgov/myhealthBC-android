@@ -22,6 +22,7 @@ import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestsAndPatientDto
 import ca.bc.gov.common.model.labtest.LabTestDto
+import ca.bc.gov.common.model.notification.NotificationDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.patient.PatientNameDto
@@ -72,6 +73,7 @@ import ca.bc.gov.data.datasource.local.entity.labtest.LabTestEntity
 import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
+import ca.bc.gov.data.datasource.local.entity.notification.NotificationEntity
 import ca.bc.gov.data.datasource.local.entity.relations.MedicationWithSummaryAndPharmacy
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithClinicalDocuments
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithCovidOrderAndCovidTest
@@ -458,4 +460,14 @@ fun DiagnosticImagingDataEntity.toDto() = DiagnosticImagingDataDto(
     modality = modality,
     bodyPart = bodyPart,
     procedureDescription = procedureDescription
+)
+
+fun NotificationEntity.toDto() = NotificationDto(
+    id = notificationId,
+    hdid = hdid,
+    category = category,
+    displayText = displayText,
+    actionUrl = actionUrl,
+    actionType = actionType,
+    date = date,
 )

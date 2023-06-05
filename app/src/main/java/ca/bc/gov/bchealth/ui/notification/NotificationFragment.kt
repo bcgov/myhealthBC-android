@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.viewModels
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
@@ -20,11 +21,16 @@ import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.custom.MyHealthBackButton
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolBar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NotificationFragment : BaseFragment(null) {
+    private val notificationViewModel: NotificationViewModel by viewModels()
 
     @Composable
     override fun GetComposableLayout() {
+        notificationViewModel.getNotifications()
+
         MyHealthTheme {
             Scaffold(
                 topBar = { NotificationToolbar() },

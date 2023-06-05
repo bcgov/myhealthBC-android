@@ -25,6 +25,7 @@ import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabTestDto
+import ca.bc.gov.common.model.notification.NotificationDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientNameDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
@@ -76,6 +77,7 @@ import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
+import ca.bc.gov.data.datasource.remote.model.response.NotificationResponse
 import ca.bc.gov.data.datasource.remote.model.response.PatientAddress
 import ca.bc.gov.data.datasource.remote.model.response.PatientDataResponse
 import ca.bc.gov.data.datasource.remote.model.response.PatientResponse
@@ -513,3 +515,13 @@ fun PatientDataResponse.toDto() = items.map { data ->
         }
     }
 }
+
+fun NotificationResponse.toDto(hdid: String) = NotificationDto(
+    id = id,
+    hdid = hdid,
+    category = category,
+    displayText = displayText,
+    actionUrl = actionUrl,
+    actionType = actionType,
+    date = date,
+)

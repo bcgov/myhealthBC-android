@@ -26,6 +26,7 @@ import ca.bc.gov.data.datasource.local.dao.LabOrderDao
 import ca.bc.gov.data.datasource.local.dao.LabTestDao
 import ca.bc.gov.data.datasource.local.dao.MedicationRecordDao
 import ca.bc.gov.data.datasource.local.dao.MedicationSummaryDao
+import ca.bc.gov.data.datasource.local.dao.NotificationDao
 import ca.bc.gov.data.datasource.local.dao.OrganDonorDao
 import ca.bc.gov.data.datasource.local.dao.PatientDao
 import ca.bc.gov.data.datasource.local.dao.SpecialAuthorityDao
@@ -50,6 +51,7 @@ import ca.bc.gov.data.datasource.local.entity.labtest.LabTestEntity
 import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
+import ca.bc.gov.data.datasource.local.entity.notification.NotificationEntity
 import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
@@ -59,7 +61,7 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
  * @author Pinakin Kansara
  */
 @Database(
-    version = 11,
+    version = 12,
     entities = [
         PatientEntity::class,
         VaccineRecordEntity::class,
@@ -79,6 +81,7 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
         ImmunizationForecastEntity::class,
         HealthVisitEntity::class,
         HospitalVisitEntity::class,
+        NotificationEntity::class,
         SpecialAuthorityEntity::class,
         ClinicalDocumentEntity::class,
         UserProfileEntity::class,
@@ -88,7 +91,8 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
     autoMigrations = [
         AutoMigration(from = 8, to = 9),
         AutoMigration(from = 9, to = 10),
-        AutoMigration(from = 10, to = 11)
+        AutoMigration(from = 10, to = 11),
+        AutoMigration(from = 11, to = 12),
     ],
     exportSchema = true
 )
@@ -134,6 +138,8 @@ abstract class MyHealthDataBase : RoomDatabase() {
     abstract fun getHealthVisitDao(): HealthVisitsDao
 
     abstract fun getHospitalVisitDao(): HospitalVisitDao
+
+    abstract fun getNotificationDao(): NotificationDao
 
     abstract fun getSpecialAuthorityDao(): SpecialAuthorityDao
 
