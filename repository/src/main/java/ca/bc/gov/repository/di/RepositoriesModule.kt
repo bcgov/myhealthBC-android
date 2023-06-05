@@ -12,6 +12,7 @@ import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
 import ca.bc.gov.data.datasource.local.LocalDataSource
 import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
+import ca.bc.gov.data.datasource.local.NotificationLocalDataSource
 import ca.bc.gov.data.datasource.local.OrganDonorLocalDataSource
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
@@ -269,9 +270,11 @@ class RepositoriesModule {
     @Provides
     @Singleton
     fun provideNotificationRepository(
+        notificationLocalDataSource: NotificationLocalDataSource,
         notificationRemoteDataSource: NotificationRemoteDataSource,
         bcscAuthRepo: BcscAuthRepo
     ): NotificationRepository = NotificationRepository(
+        notificationLocalDataSource,
         notificationRemoteDataSource,
         bcscAuthRepo
     )
