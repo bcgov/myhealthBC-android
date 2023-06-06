@@ -6,6 +6,19 @@ data class NotificationDto(
     val category: String,
     val displayText: String,
     val actionUrl: String,
-    val actionType: String,
+    val actionType: NotificationActionTypeDto,
     val date: String,
 )
+
+enum class NotificationActionTypeDto(val value: String) {
+    EXTERNAL("ExternalLink"),
+    INTERNAL("InternalLink"),
+    NONE("None");
+
+    companion object {
+        fun getByValue(value: String) =
+            values().firstOrNull {
+                it.value == value
+            } ?: NONE
+    }
+}

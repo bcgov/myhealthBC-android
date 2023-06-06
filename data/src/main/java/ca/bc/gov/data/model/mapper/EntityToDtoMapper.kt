@@ -22,6 +22,7 @@ import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestsAndPatientDto
 import ca.bc.gov.common.model.labtest.LabTestDto
+import ca.bc.gov.common.model.notification.NotificationActionTypeDto
 import ca.bc.gov.common.model.notification.NotificationDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
@@ -469,6 +470,6 @@ fun NotificationEntity.toDto() = NotificationDto(
     category = category,
     displayText = displayText,
     actionUrl = actionUrl,
-    actionType = actionType,
+    actionType = NotificationActionTypeDto.getByValue(actionType),
     date = date,
 )
