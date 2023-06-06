@@ -352,6 +352,6 @@ fun NotificationDto.toEntity() = NotificationEntity(
     category = category,
     displayText = displayText,
     actionUrl = actionUrl,
-    actionType = actionType,
+    actionType = actionType.value,
     date = date,
 )
