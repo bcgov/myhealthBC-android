@@ -1,5 +1,7 @@
 package ca.bc.gov.bchealth.ui.notification
 
+import android.os.Bundle
+import android.view.View
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -9,6 +11,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,9 +30,14 @@ import dagger.hilt.android.AndroidEntryPoint
 class NotificationFragment : BaseFragment(null) {
     private val notificationViewModel: NotificationViewModel by viewModels()
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        notificationViewModel.getNotifications()
+    }
+
     @Composable
     override fun GetComposableLayout() {
-        notificationViewModel.getNotifications()
+        val uiState = notificationViewModel.uiState.collectAsState().value
 
         MyHealthTheme {
             Scaffold(
@@ -42,7 +50,7 @@ class NotificationFragment : BaseFragment(null) {
                             .padding(it)
                             .fillMaxSize(),
                     ) {
-                        NotificationScreen()
+                        NotificationScreen(uiState)
                     }
                 }
             )

@@ -32,19 +32,17 @@ import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.grey
 import ca.bc.gov.bchealth.compose.greyBg
 import ca.bc.gov.bchealth.compose.minButtonSize
+import ca.bc.gov.common.model.notification.NotificationActionTypeDto
+import ca.bc.gov.common.model.notification.NotificationDto
 
 @Composable
-fun NotificationScreen() {
+fun NotificationScreen(uiState: NotificationViewModel.NotificationsUIState) {
+
     LazyColumn(Modifier.padding(horizontal = 32.dp)) {
-        items(
-            listOf(
-                "2021-Oct-12, 7:00 PM" to "You have a new Laboratory result.",
-                "2021-Oct-12, 7:00 PM" to "The Health Gateway is currently intermittent delay, support is currently looking into this issue."
-            )
-        ) {
+        items(uiState.list) {
             Text(
                 modifier = Modifier.padding(top = 16.dp),
-                text = it.first,
+                text = it.date,
                 style = MyHealthTypography.caption.copy(color = grey),
             )
 
@@ -61,7 +59,7 @@ fun NotificationScreen() {
                         modifier = Modifier
                             .weight(1f)
                             .padding(top = 16.dp, start = 16.dp),
-                        text = it.second,
+                        text = it.displayText,
                         style = MyHealthTypography.body2,
                     )
 
@@ -82,13 +80,21 @@ fun NotificationScreen() {
                     }
                 }
 
-                Text(
-                    modifier = Modifier
-                        .padding(top = 16.dp, start = 16.dp, bottom = 16.dp)
-                        .clickable { },
-                    text = stringResource(id = R.string.notifications_view_details),
-                    style = MyHealthTypography.h6.copy(textDecoration = TextDecoration.Underline),
-                )
+                if (it.actionType != NotificationActionTypeDto.NONE) {
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 16.dp, start = 16.dp, bottom = 16.dp)
+                            .clickable { },
+                        text = stringResource(
+                            id = when (it.actionType) {
+                                NotificationActionTypeDto.EXTERNAL -> R.string.notifications_more_info
+                                NotificationActionTypeDto.INTERNAL -> R.string.notifications_view_details
+                                else -> throw RuntimeException("Type ${it.actionType} not mapped")
+                            }
+                        ),
+                        style = MyHealthTypography.h6.copy(textDecoration = TextDecoration.Underline),
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.padding(8.dp))
@@ -99,7 +105,32 @@ fun NotificationScreen() {
 @BasePreview
 @Composable
 private fun Preview() {
+    val sample = NotificationDto(
+        id = "",
+        hdid = "",
+        category = "Feature",
+        displayText = "You have a new COVID19Laboratory result",
+        actionUrl = "",
+        actionType = NotificationActionTypeDto.INTERNAL,
+        date = "2023-05-28T08:20:41.9657635+00:00",
+    )
+
     MyHealthTheme {
-        NotificationScreen()
+        NotificationScreen(
+            NotificationViewModel.NotificationsUIState(
+                list = listOf(
+                    sample,
+                    sample.copy(
+                        category = "ClinicalDocument",
+                        actionType = NotificationActionTypeDto.EXTERNAL,
+                        displayText = "The Health Gateway is currently intermittent delay, support is currently looking into this issue."
+                    ),
+                    sample.copy(
+                        category = "ClinicalDocument",
+                        actionType = NotificationActionTypeDto.NONE,
+                    ),
+                )
+            )
+        )
     }
 }
