@@ -34,6 +34,7 @@ class NotificationViewModel @Inject constructor(
                     loading = false,
                     list = notifications.map { dto ->
                         NotificationItem(
+                            notificationId = dto.notificationId,
                             content = dto.displayText,
                             date = dto.date.toDateTimeString(),
                             actionType = dto.actionType,
@@ -48,12 +49,39 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
+    fun deleteNotifications() = viewModelScope.launch {
+        try {
+            _uiState.update { it.copy(loading = true) }
+
+            repository.deleteNotifications()
+
+            _uiState.update { it.copy(loading = false) }
+        } catch (e: Exception) {
+            _uiState.update { NotificationsUIState(loading = false) }
+            e.printStackTrace()
+        }
+    }
+
+    fun deleteNotification(notificationId: String) = viewModelScope.launch {
+        try {
+            _uiState.update { it.copy(loading = true) }
+
+            repository.deleteNotification(notificationId = notificationId)
+
+            _uiState.update { it.copy(loading = false) }
+        } catch (e: Exception) {
+            _uiState.update { NotificationsUIState(loading = false) }
+            e.printStackTrace()
+        }
+    }
+
     data class NotificationsUIState(
         val loading: Boolean = false,
         val list: List<NotificationItem> = listOf(),
     )
 
     data class NotificationItem(
+        val notificationId: String,
         val content: String,
         val actionUrl: String,
         val actionType: NotificationActionTypeDto,

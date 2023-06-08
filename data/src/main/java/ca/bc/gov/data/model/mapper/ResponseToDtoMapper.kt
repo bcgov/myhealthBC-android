@@ -519,7 +519,7 @@ fun PatientDataResponse.toDto() = items.map { data ->
 }
 
 fun NotificationResponse.toDto(hdid: String) = NotificationDto(
-    id = id,
+    notificationId = id,
     hdid = hdid,
     category = category,
     displayText = displayText,

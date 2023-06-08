@@ -464,7 +464,7 @@ fun DiagnosticImagingDataEntity.toDto() = DiagnosticImagingDataDto(
 )
 
 fun NotificationEntity.toDto() = NotificationDto(
-    id = notificationId,
+    notificationId = notificationId,
     hdid = hdid,
     category = category,
     displayText = displayText,
