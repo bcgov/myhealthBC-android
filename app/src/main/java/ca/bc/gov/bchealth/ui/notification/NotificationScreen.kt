@@ -12,9 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.Center
@@ -35,68 +38,99 @@ import ca.bc.gov.bchealth.compose.minButtonSize
 import ca.bc.gov.common.model.notification.NotificationActionTypeDto
 
 @Composable
-fun NotificationScreen(uiState: NotificationViewModel.NotificationsUIState) {
+fun NotificationScreen(
+    uiState: NotificationViewModel.NotificationsUIState,
+    onClickDelete: (String) -> Unit,
+    onClickAction: (NotificationViewModel.NotificationItem) -> Unit
+) {
 
-    LazyColumn(Modifier.padding(horizontal = 32.dp)) {
-        items(uiState.list) {
-            Text(
-                modifier = Modifier.padding(top = 16.dp),
-                text = it.date,
-                style = MyHealthTypography.caption.copy(color = grey),
-            )
+    Box {
+        LazyColumn(Modifier.padding(horizontal = 32.dp)) {
+            items(uiState.list) {
+                Text(
+                    modifier = Modifier.padding(top = 16.dp),
+                    text = it.date,
+                    style = MyHealthTypography.caption.copy(color = grey),
+                )
 
-            Column(
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(greyBg)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth()
+                Column(
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(greyBg)
                 ) {
-                    Text(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(top = 16.dp, start = 16.dp),
-                        text = it.content,
-                        style = MyHealthTypography.body2,
-                    )
-
-                    Box(
-                        modifier = Modifier
-                            .size(minButtonSize)
-                            .clickable {}
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_close),
-                            contentScale = ContentScale.Inside,
+                        Text(
                             modifier = Modifier
-                                .width(14.dp)
-                                .height(14.dp)
-                                .align(Center),
-                            contentDescription = stringResource(id = R.string.notifications_remove)
+                                .weight(1f)
+                                .padding(top = 16.dp, start = 16.dp),
+                            text = it.content,
+                            style = MyHealthTypography.body2,
                         )
+
+                        Box(
+                            modifier = Modifier
+                                .size(minButtonSize)
+                                .clickable {
+                                    if (uiState.loading.not()) {
+                                        onClickDelete.invoke(it.notificationId)
+                                    }
+                                }
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_close),
+                                contentScale = ContentScale.Inside,
+                                modifier = Modifier
+                                    .width(14.dp)
+                                    .height(14.dp)
+                                    .align(Center),
+                                contentDescription = stringResource(id = R.string.notifications_remove)
+                            )
+                        }
                     }
+
+                    ActionText(it, onClickAction)
                 }
 
-                if (it.actionType != NotificationActionTypeDto.NONE) {
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 16.dp, start = 16.dp, bottom = 16.dp)
-                            .clickable { },
-                        text = stringResource(
-                            id = when (it.actionType) {
-                                NotificationActionTypeDto.EXTERNAL -> R.string.notifications_more_info
-                                NotificationActionTypeDto.INTERNAL -> R.string.notifications_view_details
-                                else -> throw RuntimeException("Type ${it.actionType} not mapped")
-                            }
-                        ),
-                        style = MyHealthTypography.h6.copy(textDecoration = TextDecoration.Underline),
-                    )
-                }
+                Spacer(modifier = Modifier.padding(8.dp))
             }
+        }
+        if (uiState.loading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Center),
+            )
+        }
+    }
+}
 
-            Spacer(modifier = Modifier.padding(8.dp))
+@Composable
+private fun ActionText(
+    notificationItem: NotificationViewModel.NotificationItem,
+    onClickAction: (NotificationViewModel.NotificationItem) -> Unit
+) {
+    if (notificationItem.actionType == NotificationActionTypeDto.NONE) {
+        Spacer(modifier = Modifier.size(16.dp))
+    } else {
+        Box(
+            modifier = Modifier
+                .clickable { onClickAction.invoke(notificationItem) }
+                .wrapContentWidth()
+                .wrapContentHeight()
+                .padding(16.dp)
+
+        ) {
+            Text(
+                text = stringResource(
+                    id = when (notificationItem.actionType) {
+                        NotificationActionTypeDto.EXTERNAL -> R.string.notifications_more_info
+                        NotificationActionTypeDto.INTERNAL -> R.string.notifications_view_details
+                        else -> throw RuntimeException("Type ${notificationItem.actionType} not mapped")
+                    }
+                ),
+                style = MyHealthTypography.h6.copy(textDecoration = TextDecoration.Underline),
+            )
         }
     }
 }
@@ -105,10 +139,11 @@ fun NotificationScreen(uiState: NotificationViewModel.NotificationsUIState) {
 @Composable
 private fun Preview() {
     val sample = NotificationViewModel.NotificationItem(
+        notificationId = "",
         content = "You have a new COVID19Laboratory result",
         actionUrl = "",
         actionType = NotificationActionTypeDto.INTERNAL,
-        date = "2023-05-28T08:20:41.9657635+00:00",
+        date = "2023-May-28 08:20pm",
     )
 
     MyHealthTheme {
@@ -124,7 +159,8 @@ private fun Preview() {
                         actionType = NotificationActionTypeDto.NONE,
                     ),
                 )
-            )
+            ),
+            {}, {}
         )
     }
 }
