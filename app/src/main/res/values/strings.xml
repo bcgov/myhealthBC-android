@@ -88,6 +88,7 @@
     <string name="notifications">Notification</string>
     <string name="notifications_remove">Remove notification</string>
     <string name="notifications_clear">Clear all notifications</string>
+    <string name="notifications_clear_confirmation_body">Are you sure you want to delete all notifications? You won\'t be able to access them again after this.</string>
     <string name="notifications_more_info">More information</string>
     <string name="notifications_view_details">View details</string>
     <string name="notifications_enable_body">Enabling notification to stay inform on updates in Login, Health records, Lab test results and feedbacks. </string>
