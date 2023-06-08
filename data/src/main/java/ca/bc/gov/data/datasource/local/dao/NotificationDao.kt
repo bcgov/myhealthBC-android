@@ -15,5 +15,8 @@ interface NotificationDao : BaseDao<NotificationEntity> {
     ): List<NotificationEntity>
 
     @Query("DELETE FROM notification WHERE hdid = :hdid")
-    suspend fun deleteNotifications(hdid: String): Int
+    suspend fun deleteAllNotifications(hdid: String): Int
+
+    @Query("DELETE FROM notification WHERE hdid = :hdid and notificationId = :notificationId")
+    suspend fun deleteNotification(hdid: String, notificationId: String): Int
 }

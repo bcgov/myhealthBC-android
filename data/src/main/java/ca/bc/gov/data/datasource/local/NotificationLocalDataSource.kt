@@ -17,5 +17,8 @@ class NotificationLocalDataSource @Inject constructor(
     }
 
     suspend fun deleteNotifications(hdid: String): Int =
-        notificationDao.deleteNotifications(hdid)
+        notificationDao.deleteAllNotifications(hdid)
+
+    suspend fun deleteNotification(hdid: String, notificationId: String): Int =
+        notificationDao.deleteNotification(hdid, notificationId)
 }
