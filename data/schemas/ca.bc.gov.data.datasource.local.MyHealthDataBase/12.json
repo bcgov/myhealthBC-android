@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 12,
-    "identityHash": "6144554cb18ca5c970a7952114e78a0b",
+    "identityHash": "46b8a84fb977f6ae65528c3fcca4ea26",
     "entities": [
       {
         "tableName": "patient",
@@ -1542,7 +1542,7 @@
       },
       {
         "tableName": "notification",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `hdid` TEXT NOT NULL, `notificationId` TEXT NOT NULL, `category` TEXT NOT NULL, `displayText` TEXT NOT NULL, `actionUrl` TEXT NOT NULL, `actionType` TEXT NOT NULL, `date` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `hdid` TEXT NOT NULL, `notificationId` TEXT NOT NULL, `category` TEXT NOT NULL, `displayText` TEXT NOT NULL, `actionUrl` TEXT NOT NULL, `actionType` TEXT NOT NULL, `date` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -1589,7 +1589,7 @@
           {
             "fieldPath": "date",
             "columnName": "date",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -1996,7 +1996,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6144554cb18ca5c970a7952114e78a0b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '46b8a84fb977f6ae65528c3fcca4ea26')"
     ]
   }
 }

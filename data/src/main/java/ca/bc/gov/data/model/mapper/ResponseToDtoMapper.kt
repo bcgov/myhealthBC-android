@@ -42,6 +42,7 @@ import ca.bc.gov.common.model.userprofile.UserProfileDto
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.common.utils.toDateTimeZ
 import ca.bc.gov.common.utils.toOffsetDateTime
+import ca.bc.gov.common.utils.toPstFromIsoZoned
 import ca.bc.gov.data.datasource.remote.model.base.CovidLabResult
 import ca.bc.gov.data.datasource.remote.model.base.CovidOrder
 import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
@@ -524,5 +525,5 @@ fun NotificationResponse.toDto(hdid: String) = NotificationDto(
     displayText = displayText,
     actionUrl = actionUrl,
     actionType = NotificationActionTypeDto.getByValue(actionType),
-    date = date,
+    date = date.toPstFromIsoZoned()
 )

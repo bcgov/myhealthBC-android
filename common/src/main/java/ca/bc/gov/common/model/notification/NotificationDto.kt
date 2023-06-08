@@ -1,5 +1,7 @@
 package ca.bc.gov.common.model.notification
 
+import java.time.Instant
+
 data class NotificationDto(
     val id: String,
     var hdid: String = "",
@@ -7,7 +9,7 @@ data class NotificationDto(
     val displayText: String,
     val actionUrl: String,
     val actionType: NotificationActionTypeDto,
-    val date: String,
+    val date: Instant,
 )
 
 enum class NotificationActionTypeDto(val value: String) {
