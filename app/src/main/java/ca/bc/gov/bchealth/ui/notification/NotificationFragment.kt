@@ -22,26 +22,30 @@ import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.bchealth.ui.custom.MyHealthBackButton
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolBar
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class NotificationFragment : BaseFragment(null) {
-    private val notificationViewModel: NotificationViewModel by viewModels()
+    private val viewModel: NotificationViewModel by viewModels()
+
+    override fun getBaseViewModel(): BaseViewModel = viewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        notificationViewModel.getNotifications()
+        viewModel.getNotifications()
     }
 
     @Composable
     override fun GetComposableLayout() {
-        val uiState = notificationViewModel.uiState.collectAsState().value
+        val uiState = viewModel.uiState.collectAsState().value
 
         MyHealthTheme {
             Scaffold(
-                topBar = { NotificationToolbar() },
+                topBar = { NotificationToolbar(uiState.loading) },
                 content = {
                     Column(
                         modifier = Modifier
@@ -50,20 +54,41 @@ class NotificationFragment : BaseFragment(null) {
                             .padding(it)
                             .fillMaxSize(),
                     ) {
-                        NotificationScreen(uiState)
+                        NotificationScreen(uiState, viewModel::deleteNotification, {})
                     }
                 }
             )
         }
+
+        if (uiState.dismissError) {
+            viewModel.resetErrorState()
+            showGenericError()
+        }
+    }
+
+    private fun showDeletionConfirmationDialog() {
+        AlertDialogHelper.showAlertDialog(
+            context = requireContext(),
+            title = getString(R.string.notifications_clear),
+            msg = getString(R.string.notifications_clear_confirmation_body),
+            positiveBtnMsg = getString(R.string.yes),
+            negativeBtnMsg = getString(R.string.cancel),
+            positiveBtnCallback = viewModel::deleteNotifications,
+            cancelable = true
+        )
     }
 
     @Composable
-    private fun NotificationToolbar() {
+    private fun NotificationToolbar(isLoading: Boolean) {
         MyHealthToolBar(
             title = stringResource(id = R.string.notifications),
             navigationIcon = { MyHealthBackButton(::popNavigation) },
             actions = {
-                IconButton(onClick = {}) {
+                IconButton(onClick = {
+                    if (isLoading.not()) {
+                        showDeletionConfirmationDialog()
+                    }
+                }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_trash_can),
                         contentDescription = stringResource(id = R.string.notifications_clear),
