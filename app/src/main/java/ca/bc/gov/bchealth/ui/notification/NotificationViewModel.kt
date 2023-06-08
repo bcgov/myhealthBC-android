@@ -2,7 +2,9 @@ package ca.bc.gov.bchealth.ui.notification
 
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.ui.BaseViewModel
-import ca.bc.gov.common.model.notification.NotificationDto
+import ca.bc.gov.common.model.notification.NotificationActionTypeDto
+import ca.bc.gov.common.utils.toDateTimeString
+import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.repository.NotificationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Instant
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,8 +25,23 @@ class NotificationViewModel @Inject constructor(
     fun getNotifications() = viewModelScope.launch {
         try {
             _uiState.update { it.copy(loading = true) }
-            val notifications = repository.loadNotifications()
-            _uiState.update { it.copy(loading = false, list = notifications) }
+
+            val currentDate = Instant.now().toLocalDateTimeInstant() ?: Instant.now()
+            val notifications = repository.loadNotifications(currentDate)
+
+            _uiState.update {
+                it.copy(
+                    loading = false,
+                    list = notifications.map { dto ->
+                        NotificationItem(
+                            content = dto.displayText,
+                            date = dto.date.toDateTimeString(),
+                            actionType = dto.actionType,
+                            actionUrl = dto.actionUrl
+                        )
+                    }
+                )
+            }
         } catch (e: Exception) {
             _uiState.update { NotificationsUIState(loading = false) }
             e.printStackTrace()
@@ -32,6 +50,13 @@ class NotificationViewModel @Inject constructor(
 
     data class NotificationsUIState(
         val loading: Boolean = false,
-        val list: List<NotificationDto> = listOf(),
+        val list: List<NotificationItem> = listOf(),
+    )
+
+    data class NotificationItem(
+        val content: String,
+        val actionUrl: String,
+        val actionType: NotificationActionTypeDto,
+        val date: String,
     )
 }

@@ -6,6 +6,7 @@ import ca.bc.gov.data.datasource.remote.NotificationRemoteDataSource
 import ca.bc.gov.data.model.mapper.toDto
 import ca.bc.gov.data.model.mapper.toEntity
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
+import java.time.Instant
 import javax.inject.Inject
 
 class NotificationRepository @Inject constructor(
@@ -23,10 +24,9 @@ class NotificationRepository @Inject constructor(
         notificationLocalDataSource.storeNotifications(notificationsDto.map { it.toEntity() })
     }
 
-    suspend fun loadNotifications(): List<NotificationDto> {
+    suspend fun loadNotifications(currentDate: Instant): List<NotificationDto> {
         val hdid = bcscAuthRepo.getAuthParametersDto().hdid
-        return notificationLocalDataSource.getNotifications(hdid = hdid).map {
-            it.toDto()
-        }
+        return notificationLocalDataSource.getNotifications(hdid = hdid, currentDate = currentDate)
+            .map { it.toDto() }
     }
 }

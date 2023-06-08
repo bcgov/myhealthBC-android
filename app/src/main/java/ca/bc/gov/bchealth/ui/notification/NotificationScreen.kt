@@ -33,7 +33,6 @@ import ca.bc.gov.bchealth.compose.grey
 import ca.bc.gov.bchealth.compose.greyBg
 import ca.bc.gov.bchealth.compose.minButtonSize
 import ca.bc.gov.common.model.notification.NotificationActionTypeDto
-import ca.bc.gov.common.model.notification.NotificationDto
 
 @Composable
 fun NotificationScreen(uiState: NotificationViewModel.NotificationsUIState) {
@@ -59,7 +58,7 @@ fun NotificationScreen(uiState: NotificationViewModel.NotificationsUIState) {
                         modifier = Modifier
                             .weight(1f)
                             .padding(top = 16.dp, start = 16.dp),
-                        text = it.displayText,
+                        text = it.content,
                         style = MyHealthTypography.body2,
                     )
 
@@ -105,11 +104,8 @@ fun NotificationScreen(uiState: NotificationViewModel.NotificationsUIState) {
 @BasePreview
 @Composable
 private fun Preview() {
-    val sample = NotificationDto(
-        id = "",
-        hdid = "",
-        category = "Feature",
-        displayText = "You have a new COVID19Laboratory result",
+    val sample = NotificationViewModel.NotificationItem(
+        content = "You have a new COVID19Laboratory result",
         actionUrl = "",
         actionType = NotificationActionTypeDto.INTERNAL,
         date = "2023-05-28T08:20:41.9657635+00:00",
@@ -121,12 +117,10 @@ private fun Preview() {
                 list = listOf(
                     sample,
                     sample.copy(
-                        category = "ClinicalDocument",
                         actionType = NotificationActionTypeDto.EXTERNAL,
-                        displayText = "The Health Gateway is currently intermittent delay, support is currently looking into this issue."
+                        content = "The Health Gateway is currently intermittent delay, support is currently looking into this issue."
                     ),
                     sample.copy(
-                        category = "ClinicalDocument",
                         actionType = NotificationActionTypeDto.NONE,
                     ),
                 )
