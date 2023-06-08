@@ -6,6 +6,7 @@ import ca.bc.gov.common.model.notification.NotificationActionTypeDto
 import ca.bc.gov.common.utils.toDateTimeString
 import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.repository.NotificationRepository
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NotificationViewModel @Inject constructor(
-    val repository: NotificationRepository
+    val repository: NotificationRepository,
+    val mobileConfigRepository: MobileConfigRepository
 ) : BaseViewModel() {
     private val _uiState = MutableStateFlow(NotificationsUIState())
     val uiState: StateFlow<NotificationsUIState> = _uiState.asStateFlow()
@@ -44,7 +46,10 @@ class NotificationViewModel @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-            _uiState.update { NotificationsUIState(loading = false) }
+            _uiState.update { it.copy(loading = false) }
+            handleBaseException(e) {
+                _uiState.update { it.copy(listError = false) }
+            }
             e.printStackTrace()
         }
     }
@@ -53,11 +58,15 @@ class NotificationViewModel @Inject constructor(
         try {
             _uiState.update { it.copy(loading = true) }
 
+            mobileConfigRepository.refreshMobileConfiguration()
             repository.deleteNotifications()
 
-            _uiState.update { it.copy(loading = false) }
+            getNotifications()
         } catch (e: Exception) {
-            _uiState.update { NotificationsUIState(loading = false) }
+            _uiState.update { it.copy(loading = false) }
+            handleBaseException(e) {
+                _uiState.update { it.copy(dismissError = false) }
+            }
             e.printStackTrace()
         }
     }
@@ -66,18 +75,28 @@ class NotificationViewModel @Inject constructor(
         try {
             _uiState.update { it.copy(loading = true) }
 
+            mobileConfigRepository.refreshMobileConfiguration()
             repository.deleteNotification(notificationId = notificationId)
 
-            _uiState.update { it.copy(loading = false) }
+            getNotifications()
         } catch (e: Exception) {
-            _uiState.update { NotificationsUIState(loading = false) }
+            _uiState.update { it.copy(loading = false) }
+            handleBaseException(e) {
+                _uiState.update { it.copy(dismissError = false) }
+            }
             e.printStackTrace()
         }
+    }
+
+    fun resetErrorState() {
+        _uiState.update { it.copy(dismissError = false, listError = true) }
     }
 
     data class NotificationsUIState(
         val loading: Boolean = false,
         val list: List<NotificationItem> = listOf(),
+        val listError: Boolean = false,
+        val dismissError: Boolean = false,
     )
 
     data class NotificationItem(
