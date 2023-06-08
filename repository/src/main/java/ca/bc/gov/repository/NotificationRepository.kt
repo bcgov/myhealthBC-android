@@ -24,6 +24,23 @@ class NotificationRepository @Inject constructor(
         notificationLocalDataSource.storeNotifications(notificationsDto.map { it.toEntity() })
     }
 
+    suspend fun deleteNotifications() {
+        val hdid = bcscAuthRepo.getAuthParametersDto().hdid
+
+        notificationRemoteDataSource.deleteNotifications(hdid = hdid)
+        notificationLocalDataSource.deleteNotifications(hdid)
+    }
+
+    suspend fun deleteNotification(notificationId: String) {
+        val hdid = bcscAuthRepo.getAuthParametersDto().hdid
+
+        notificationRemoteDataSource.deleteNotification(
+            hdid = hdid,
+            notificationId = notificationId
+        )
+        notificationLocalDataSource.deleteNotification(hdid = hdid, notificationId = notificationId)
+    }
+
     suspend fun loadNotifications(currentDate: Instant): List<NotificationDto> {
         val hdid = bcscAuthRepo.getAuthParametersDto().hdid
         return notificationLocalDataSource.getNotifications(hdid = hdid, currentDate = currentDate)

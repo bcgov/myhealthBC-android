@@ -31,6 +31,7 @@ import ca.bc.gov.data.datasource.remote.model.response.UserProfileResponse
 import ca.bc.gov.data.datasource.remote.model.response.VaccineStatusResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.Header
@@ -46,6 +47,7 @@ interface HealthGatewayPrivateApi {
 
     companion object {
         private const val HDID = "hdid"
+        private const val NOTIFICATION_ID = "NOTIFICATION_ID"
         private const val DEPENDENT_HDID = "dependent_hdid"
         private const val AUTHORIZATION = "Authorization"
         private const val REPORT_ID = "reportId"
@@ -251,4 +253,15 @@ interface HealthGatewayPrivateApi {
     suspend fun fetchNotifications(
         @Path(HDID) hdid: String,
     ): Response<List<NotificationResponse>>
+
+    @DELETE("$BASE_NOTIFICATION_SERVICE/{$HDID}")
+    suspend fun deleteNotifications(
+        @Path(HDID) hdid: String,
+    ): Response<Unit>
+
+    @DELETE("$BASE_NOTIFICATION_SERVICE/{$HDID}/{$NOTIFICATION_ID}")
+    suspend fun deleteNotification(
+        @Path(HDID) hdid: String,
+        @Path(NOTIFICATION_ID) notificationId: String,
+    ): Response<Unit>
 }

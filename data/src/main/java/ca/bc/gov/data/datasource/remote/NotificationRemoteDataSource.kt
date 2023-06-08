@@ -15,4 +15,14 @@ class NotificationRemoteDataSource @Inject constructor(
         safeCall {
             healthGatewayPrivateApi.fetchNotifications(hdid)
         } ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
+
+    suspend fun deleteNotifications(hdid: String) =
+        safeCall {
+            healthGatewayPrivateApi.deleteNotifications(hdid)
+        } ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
+
+    suspend fun deleteNotification(hdid: String, notificationId: String) =
+        safeCall {
+            healthGatewayPrivateApi.deleteNotification(hdid, notificationId)
+        } ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
 }
