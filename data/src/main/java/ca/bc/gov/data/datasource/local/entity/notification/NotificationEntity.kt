@@ -3,6 +3,7 @@ package ca.bc.gov.data.datasource.local.entity.notification
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.time.Instant
 
 @Entity(
     tableName = "notification",
@@ -30,5 +31,5 @@ data class NotificationEntity(
     val actionType: String,
 
     @ColumnInfo("date")
-    val date: String,
+    val date: Instant,
 )
