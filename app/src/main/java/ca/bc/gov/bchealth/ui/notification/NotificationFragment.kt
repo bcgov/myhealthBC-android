@@ -17,12 +17,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.BaseViewModel
+import ca.bc.gov.bchealth.ui.auth.BCServicesCardSessionContent
 import ca.bc.gov.bchealth.ui.custom.MyHealthBackButton
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolBar
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
@@ -45,16 +47,22 @@ class NotificationFragment : BaseFragment(null) {
 
         MyHealthTheme {
             Scaffold(
-                topBar = { NotificationToolbar(uiState.loading) },
+                topBar = { NotificationToolbar(uiState) },
                 content = {
-                    Column(
-                        modifier = Modifier
-                            .statusBarsPadding()
-                            .navigationBarsPadding()
-                            .padding(it)
-                            .fillMaxSize(),
-                    ) {
-                        NotificationScreen(uiState, viewModel::deleteNotification, {})
+                    if (uiState.sessionExpired) {
+                        BCServicesCardSessionContent(sessionMessage = stringResource(id = R.string.notifications_session_expired)) {
+                            findNavController().navigate(R.id.bcscAuthInfoFragment)
+                        }
+                    } else {
+                        Column(
+                            modifier = Modifier
+                                .statusBarsPadding()
+                                .navigationBarsPadding()
+                                .padding(it)
+                                .fillMaxSize(),
+                        ) {
+                            NotificationScreen(uiState, viewModel::deleteNotification, {})
+                        }
                     }
                 }
             )
@@ -79,13 +87,13 @@ class NotificationFragment : BaseFragment(null) {
     }
 
     @Composable
-    private fun NotificationToolbar(isLoading: Boolean) {
+    private fun NotificationToolbar(uiState: NotificationViewModel.NotificationsUIState) {
         MyHealthToolBar(
             title = stringResource(id = R.string.notifications),
             navigationIcon = { MyHealthBackButton(::popNavigation) },
             actions = {
                 IconButton(onClick = {
-                    if (isLoading.not()) {
+                    if (uiState.loading.not() && uiState.sessionExpired.not()) {
                         showDeletionConfirmationDialog()
                     }
                 }) {
