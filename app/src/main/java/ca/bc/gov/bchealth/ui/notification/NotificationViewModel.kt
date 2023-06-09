@@ -2,10 +2,12 @@ package ca.bc.gov.bchealth.ui.notification
 
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.ui.BaseViewModel
+import ca.bc.gov.common.exceptions.MyHealthAuthException
 import ca.bc.gov.common.model.notification.NotificationActionTypeDto
 import ca.bc.gov.common.utils.toDateTimeString
 import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.repository.NotificationRepository
+import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,12 +21,18 @@ import javax.inject.Inject
 @HiltViewModel
 class NotificationViewModel @Inject constructor(
     val repository: NotificationRepository,
-    val mobileConfigRepository: MobileConfigRepository
+    val mobileConfigRepository: MobileConfigRepository,
+    val bcscAuthRepo: BcscAuthRepo
 ) : BaseViewModel() {
     private val _uiState = MutableStateFlow(NotificationsUIState())
     val uiState: StateFlow<NotificationsUIState> = _uiState.asStateFlow()
 
     fun getNotifications() = viewModelScope.launch {
+        resetErrorState()
+        loadNotification()
+    }
+
+    private suspend fun loadNotification() {
         try {
             _uiState.update { it.copy(loading = true) }
 
@@ -48,7 +56,11 @@ class NotificationViewModel @Inject constructor(
         } catch (e: Exception) {
             _uiState.update { it.copy(loading = false) }
             handleBaseException(e) {
-                _uiState.update { it.copy(listError = false) }
+                if (e is MyHealthAuthException) {
+                    _uiState.update { it.copy(sessionExpired = true) }
+                } else {
+                    _uiState.update { it.copy(listError = false) }
+                }
             }
             e.printStackTrace()
         }
@@ -61,11 +73,15 @@ class NotificationViewModel @Inject constructor(
             mobileConfigRepository.refreshMobileConfiguration()
             repository.deleteNotifications()
 
-            getNotifications()
+            loadNotification()
         } catch (e: Exception) {
             _uiState.update { it.copy(loading = false) }
             handleBaseException(e) {
-                _uiState.update { it.copy(dismissError = false) }
+                if (e is MyHealthAuthException) {
+                    _uiState.update { it.copy(sessionExpired = true) }
+                } else {
+                    _uiState.update { it.copy(dismissError = false) }
+                }
             }
             e.printStackTrace()
         }
@@ -78,18 +94,22 @@ class NotificationViewModel @Inject constructor(
             mobileConfigRepository.refreshMobileConfiguration()
             repository.deleteNotification(notificationId = notificationId)
 
-            getNotifications()
+            loadNotification()
         } catch (e: Exception) {
             _uiState.update { it.copy(loading = false) }
             handleBaseException(e) {
-                _uiState.update { it.copy(dismissError = false) }
+                if (e is MyHealthAuthException) {
+                    _uiState.update { it.copy(sessionExpired = true) }
+                } else {
+                    _uiState.update { it.copy(dismissError = false) }
+                }
             }
             e.printStackTrace()
         }
     }
 
     fun resetErrorState() {
-        _uiState.update { it.copy(dismissError = false, listError = true) }
+        _uiState.update { it.copy(dismissError = false, listError = false, sessionExpired = false) }
     }
 
     data class NotificationsUIState(
@@ -97,6 +117,7 @@ class NotificationViewModel @Inject constructor(
         val list: List<NotificationItem> = listOf(),
         val listError: Boolean = false,
         val dismissError: Boolean = false,
+        val sessionExpired: Boolean = false,
     )
 
     data class NotificationItem(

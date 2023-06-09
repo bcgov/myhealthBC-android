@@ -95,6 +95,7 @@
     <string name="notifications_enable_button">Enable notification</string>
     <string name="notifications_error_body">Sorry, an error occurred while fetching notifications. Please try again.</string>
     <string name="notifications_empty_body">There is no notification at this moment.</string>
+    <string name="notifications_session_expired">Log in again to access all notifications.</string>
 
     <!--Settings-->
     <string name="settings">Settings</string>
