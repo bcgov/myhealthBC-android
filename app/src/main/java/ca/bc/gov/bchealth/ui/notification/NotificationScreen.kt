@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,15 +28,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
+import ca.bc.gov.bchealth.compose.bold
 import ca.bc.gov.bchealth.compose.grey
 import ca.bc.gov.bchealth.compose.greyBg
 import ca.bc.gov.bchealth.compose.minButtonSize
+import ca.bc.gov.bchealth.compose.primaryBlue
+import ca.bc.gov.bchealth.ui.component.HGLargeButton
 import ca.bc.gov.common.model.notification.NotificationActionTypeDto
 
 @Composable
@@ -44,64 +49,122 @@ fun NotificationScreen(
     onClickDelete: (String) -> Unit,
     onClickAction: (NotificationViewModel.NotificationItem) -> Unit
 ) {
-
     Box(Modifier.fillMaxSize()) {
-        LazyColumn(Modifier.padding(horizontal = 32.dp)) {
-            items(uiState.list) {
-                Text(
-                    modifier = Modifier.padding(top = 16.dp),
-                    text = it.date,
-                    style = MyHealthTypography.caption.copy(color = grey),
-                )
-
-                Column(
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(greyBg)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(top = 16.dp, start = 16.dp),
-                            text = it.content,
-                            style = MyHealthTypography.body2,
-                        )
-
-                        Box(
-                            modifier = Modifier
-                                .size(minButtonSize)
-                                .clickable {
-                                    if (uiState.loading.not()) {
-                                        onClickDelete.invoke(it.notificationId)
-                                    }
-                                }
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_close),
-                                contentScale = ContentScale.Inside,
-                                modifier = Modifier
-                                    .width(14.dp)
-                                    .height(14.dp)
-                                    .align(Center),
-                                contentDescription = stringResource(id = R.string.notifications_remove)
-                            )
-                        }
-                    }
-
-                    ActionText(it, onClickAction)
-                }
-
-                Spacer(modifier = Modifier.padding(8.dp))
-            }
+        if (uiState.list.isEmpty()) {
+            EmptyStateUI()
+        } else {
+            NotificationList(uiState, onClickDelete, onClickAction)
         }
+
         if (uiState.loading) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Center),
             )
+        }
+    }
+}
+
+@Composable
+private fun BoxScope.EmptyStateUI() {
+    Text(
+        text = stringResource(id = R.string.notifications_empty_body),
+        style = MyHealthTypography.body1.bold(),
+        color = primaryBlue,
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .align(Center)
+            .padding(70.dp),
+    )
+}
+
+@Composable
+private fun ErrorStateUI() {
+    Column(Modifier.fillMaxSize()) {
+        Spacer(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+        )
+        Text(
+            text = stringResource(id = R.string.notifications_error_body),
+            style = MyHealthTypography.body1.bold(),
+            color = primaryBlue,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(70.dp),
+        )
+        Spacer(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+        )
+        HGLargeButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(32.dp),
+            onClick = { },
+            text = stringResource(id = R.string.retry)
+        )
+    }
+}
+
+@Composable
+private fun NotificationList(
+    uiState: NotificationViewModel.NotificationsUIState,
+    onClickDelete: (String) -> Unit,
+    onClickAction: (NotificationViewModel.NotificationItem) -> Unit,
+
+) {
+    LazyColumn(Modifier.padding(horizontal = 32.dp)) {
+        items(uiState.list) {
+            Text(
+                modifier = Modifier.padding(top = 16.dp),
+                text = it.date,
+                style = MyHealthTypography.caption.copy(color = grey),
+            )
+
+            Column(
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(greyBg)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(top = 16.dp, start = 16.dp),
+                        text = it.content,
+                        style = MyHealthTypography.body2,
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .size(minButtonSize)
+                            .clickable {
+                                if (uiState.loading.not()) {
+                                    onClickDelete.invoke(it.notificationId)
+                                }
+                            }
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_close),
+                            contentScale = ContentScale.Inside,
+                            modifier = Modifier
+                                .width(14.dp)
+                                .height(14.dp)
+                                .align(Center),
+                            contentDescription = stringResource(id = R.string.notifications_remove)
+                        )
+                    }
+                }
+
+                ActionText(it, onClickAction)
+            }
+
+            Spacer(modifier = Modifier.padding(8.dp))
         }
     }
 }
@@ -138,7 +201,25 @@ private fun ActionText(
 
 @BasePreview
 @Composable
-private fun Preview() {
+private fun PreviewErrorUI() {
+    MyHealthTheme {
+        ErrorStateUI()
+    }
+}
+
+@BasePreview
+@Composable
+private fun PreviewEmptyState() {
+    MyHealthTheme {
+        NotificationScreen(
+            NotificationViewModel.NotificationsUIState(list = listOf()), {}, {}
+        )
+    }
+}
+
+@BasePreview
+@Composable
+private fun PreviewNotifications() {
     val sample = NotificationViewModel.NotificationItem(
         notificationId = "",
         content = "You have a new COVID19Laboratory result",
