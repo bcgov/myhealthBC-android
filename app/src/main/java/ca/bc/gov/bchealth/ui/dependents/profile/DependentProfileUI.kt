@@ -69,6 +69,14 @@ fun DependentProfileContent(
             ListDivider()
         }
 
+        DependentProfileItem(
+            stringResource(id = R.string.access_count),
+            uiState.totalDelegateCount.toString(),
+            stringResource(id = R.string.access_info)
+        )
+
+        ListDivider()
+
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
@@ -114,12 +122,12 @@ private fun ProfileHeaderUi(fullName: String) {
 }
 
 @Composable
-fun DependentProfileItem(label: String, value: String) {
+fun DependentProfileItem(label: String, value: String, placeholder: String? = null) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(top = 20.dp, bottom = 20.dp, start = 32.dp),
+            .padding(top = 20.dp, bottom = 20.dp, start = 32.dp, end = 32.dp),
     ) {
         Text(text = label, style = MyHealthTypography.body1)
         Text(
@@ -127,6 +135,14 @@ fun DependentProfileItem(label: String, value: String) {
             style = MyHealthTypography.body2,
             modifier = Modifier.padding(top = 4.dp)
         )
+
+        if (placeholder != null) {
+            Text(
+                text = placeholder,
+                style = MyHealthTypography.overline,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
     }
 }
 
@@ -153,6 +169,7 @@ private fun PreviewDependentProfileContent() {
             "owner",
             "delegate",
             1,
+            0,
             1,
             -1,
             true

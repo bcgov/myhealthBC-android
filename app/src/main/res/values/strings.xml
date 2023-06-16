@@ -69,6 +69,8 @@
     <string name="dependents_profile_phn">Personal Health Number (PHN)</string>
     <string name="dependents_profile_dob">Date of birth (DoB)</string>
     <string name="dependents_profile_remove_dependent">Remove dependent</string>
+    <string name="access_count">How many others have access</string>
+    <string name="access_info">This shows you how many people other than you have added your dependent to their Health Gateway account. For privacy, we can’t tell you their names. If this number isn’t what you expect, contact us at healthgateway@gov.bc.ca</string>
 
     <!--Resources-->
     <string name="resources">Resources</string>
