@@ -81,7 +81,7 @@ fun MyHealthToolBar(
     actions: @Composable (RowScope.() -> Unit) = {},
     backgroundColor: Color = MaterialTheme.colors.background,
     contentColor: Color = contentColorFor(backgroundColor = backgroundColor),
-    elevation: Dp = AppBarDefaults.TopAppBarElevation
+    elevation: Dp = 0.dp
 ) = TopAppBar(
     modifier = modifier,
     title = {

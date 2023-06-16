@@ -19,18 +19,20 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
+import ca.bc.gov.bchealth.compose.blue
 import ca.bc.gov.bchealth.compose.greyBg
 
 @Composable
 fun BCServicesCardSessionScreen(
     modifier: Modifier,
+    sessionStateInfo: SessionStateInfo,
     onLoginWithBCSCCard: () -> Unit
 ) {
 
     BCServicesCardSessionContent(
-        modifier = modifier, title = stringResource(id = R.string.services),
+        modifier = modifier, title = stringResource(id = sessionStateInfo.title),
         sessionMessage = stringResource(
-            id = R.string.services_session_expired
+            id = sessionStateInfo.sessionDesc
         )
     ) {
         onLoginWithBCSCCard()
@@ -69,7 +71,7 @@ fun BCServicesCardSessionContent(
                 Text(
                     text = stringResource(id = R.string.session_time_out),
                     style = MyHealthTypography.h4,
-                    color = MaterialTheme.colors.primary,
+                    color = blue,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))

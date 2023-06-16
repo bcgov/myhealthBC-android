@@ -22,41 +22,21 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
-import ca.bc.gov.bchealth.model.BcServiceCardLoginInfoType
 
 @Composable
 fun BcServicesCardLoginScreen(
     modifier: Modifier,
-    type: BcServiceCardLoginInfoType,
+    loginStateInfo: LoginStateInfo,
     onLoginWithBCSCCard: () -> Unit
 ) {
-    var title: String
-    var description: String
-    var icon: Painter
-    var iconDesc: String
 
-    when (type) {
-        BcServiceCardLoginInfoType.RECORDS -> {
-            title = stringResource(id = R.string.health_records)
-            description = stringResource(id = R.string.health_records_subtitle)
-            icon = painterResource(id = R.drawable.ic_health_record)
-            iconDesc = stringResource(id = R.string.health_records_subtitle_1)
-        }
-        BcServiceCardLoginInfoType.SERVICES -> {
-            title = stringResource(id = R.string.services)
-            description = stringResource(id = R.string.services_subtitle)
-            icon = painterResource(id = R.drawable.ic_services_graphic)
-            iconDesc = stringResource(id = R.string.services_subtitle_1)
-        }
-        BcServiceCardLoginInfoType.DEPENDENTS -> {
-            title = stringResource(id = R.string.dependent)
-            description = stringResource(id = R.string.dependents_body)
-            icon = painterResource(id = R.drawable.ic_dependents_log_in)
-            iconDesc = stringResource(id = R.string.dependents_log_in)
-        }
-    }
-
-    BcServicesCardLoginContent(modifier = modifier, title = title, subtitle = description, icon = icon, subtitle1 = iconDesc) {
+    BcServicesCardLoginContent(
+        modifier = modifier,
+        title = stringResource(id = loginStateInfo.title),
+        subtitle = stringResource(id = loginStateInfo.description),
+        icon = painterResource(id = loginStateInfo.icon),
+        subtitle1 = stringResource(id = loginStateInfo.info)
+    ) {
         onLoginWithBCSCCard()
     }
 }
