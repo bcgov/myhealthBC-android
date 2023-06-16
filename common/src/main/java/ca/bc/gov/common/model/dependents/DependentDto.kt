@@ -17,6 +17,7 @@ data class DependentDto(
     val ownerId: String,
     val delegateId: String,
     val reasonCode: Long,
+    val totalDelegateCount: Long,
     val version: Long,
     val patientId: Long = 0,
     val isCacheValid: Boolean = false,

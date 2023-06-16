@@ -69,6 +69,13 @@ fun DependentProfileContent(
             ListDivider()
         }
 
+        DependentProfileItem(
+            stringResource(id = R.string.access_count, uiState.totalDelegateCount),
+            stringResource(id = R.string.access_info)
+        )
+
+        ListDivider()
+
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
@@ -153,6 +160,7 @@ private fun PreviewDependentProfileContent() {
             "owner",
             "delegate",
             1,
+            0,
             1,
             -1,
             true

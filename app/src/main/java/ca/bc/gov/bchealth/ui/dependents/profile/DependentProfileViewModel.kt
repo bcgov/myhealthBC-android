@@ -45,6 +45,10 @@ class DependentProfileViewModel @Inject constructor(
                         label = R.string.dependents_profile_dob,
                         value = dependentDto.dateOfBirth.toDate()
                     ),
+                    DependentProfileItem(
+                        label = R.string.access_count,
+                        value = dependentDto.dateOfBirth.toDate()
+                    ),
                 )
 
                 _uiState.update {
@@ -81,7 +85,8 @@ class DependentProfileViewModel @Inject constructor(
         val dto: DependentDto? = null,
         val isLoading: Boolean = false,
         val error: Exception? = null,
-        val onDependentRemoved: Boolean = false
+        val onDependentRemoved: Boolean = false,
+        val totalDelegateCount: Long = 0
     )
 
     data class DependentProfileItem(
