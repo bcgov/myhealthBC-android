@@ -123,7 +123,7 @@ class HomeFragment : BaseSecureFragment(null) {
                             .padding(it)
                             .verticalScroll(rememberScrollState()),
                     ) {
-                        HomeContent(
+                        HomeScreen(
                             homeUiState.patientFirstName,
                             bannerUiState,
                             viewModel::toggleBanner,

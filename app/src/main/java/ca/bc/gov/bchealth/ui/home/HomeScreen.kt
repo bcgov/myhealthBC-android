@@ -16,7 +16,7 @@ import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.blue
 
 @Composable
-fun HomeContent(
+fun HomeScreen(
     patientFirstName: String?,
     bannerUiState: BannerItem?,
     onClickToggle: () -> Unit,
@@ -64,7 +64,7 @@ fun HomeContent(
 @BasePreview
 @Composable
 private fun PreviewHomeScreen() {
-    HomeContent(
+    HomeScreen(
         "Bruno",
         bannerUiState = BannerItem(
             title = "Great news! Really Big Announcement",

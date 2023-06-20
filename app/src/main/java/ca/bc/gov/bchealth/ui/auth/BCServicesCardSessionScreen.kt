@@ -40,7 +40,7 @@ fun BCServicesCardSessionScreen(
 @Composable
 fun BCServicesCardSessionContent(
     modifier: Modifier = Modifier,
-    title: String? = null,
+    title: String,
     description: String? = null,
     sessionMessage: String,
     onLoginWithBCSCClicked: () -> Unit
