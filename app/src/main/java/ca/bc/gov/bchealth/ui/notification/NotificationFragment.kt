@@ -50,7 +50,11 @@ class NotificationFragment : BaseFragment(null) {
                 topBar = { NotificationToolbar(uiState) },
                 content = {
                     if (uiState.sessionExpired) {
-                        BCServicesCardSessionContent(sessionMessage = stringResource(id = R.string.notifications_session_expired)) {
+                        BCServicesCardSessionContent(
+                            modifier = Modifier.padding(top = 16.dp),
+                            title = stringResource(id = R.string.notifications),
+                            sessionMessage = stringResource(id = R.string.notifications_session_expired)
+                        ) {
                             findNavController().navigate(R.id.bcscAuthInfoFragment)
                         }
                     } else {
@@ -89,7 +93,7 @@ class NotificationFragment : BaseFragment(null) {
     @Composable
     private fun NotificationToolbar(uiState: NotificationViewModel.NotificationsUIState) {
         MyHealthToolBar(
-            title = stringResource(id = R.string.notifications),
+            title = if (uiState.sessionExpired) "" else stringResource(id = R.string.notifications),
             navigationIcon = { MyHealthBackButton(::popNavigation) },
             actions = {
                 IconButton(onClick = {
