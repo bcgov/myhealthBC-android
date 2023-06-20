@@ -28,6 +28,7 @@ class NotificationViewModel @Inject constructor(
     fun refreshNotifications() = viewModelScope.launch {
         try {
             _uiState.update { NotificationsUIState(loading = true) }
+            mobileConfigRepository.refreshMobileConfiguration()
             repository.refreshNotifications()
             loadNotifications()
         } catch (e: Exception) {
