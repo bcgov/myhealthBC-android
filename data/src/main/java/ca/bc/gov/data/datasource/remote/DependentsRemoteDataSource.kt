@@ -42,6 +42,7 @@ class DependentsRemoteDataSource @Inject constructor(
             ownerId = dependentDto.ownerId,
             delegateId = dependentDto.delegateId,
             reasonCode = dependentDto.reasonCode,
+            totalDelegateCount = dependentDto.totalDelegateCount,
             version = dependentDto.version,
         )
 

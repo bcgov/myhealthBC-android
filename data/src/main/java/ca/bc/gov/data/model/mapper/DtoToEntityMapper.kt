@@ -285,6 +285,7 @@ fun DependentDto.toEntity(patientId: Long, guardianId: Long) = DependentEntity(
     ownerId = ownerId,
     delegateId = delegateId,
     reasonCode = reasonCode,
+    totalDelegateCount = totalDelegateCount,
     version = version,
     isCacheValid = isCacheValid
 )

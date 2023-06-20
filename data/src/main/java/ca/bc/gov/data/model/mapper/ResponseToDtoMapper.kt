@@ -416,6 +416,7 @@ fun DependentPayload.toDto() = DependentDto(
     ownerId = ownerId,
     delegateId = delegateId,
     reasonCode = reasonCode,
+    totalDelegateCount = totalDelegateCount,
     version = version
 )
 
