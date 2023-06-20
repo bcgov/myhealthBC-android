@@ -93,20 +93,23 @@ class NotificationFragment : BaseFragment(null) {
             navigationIcon = { MyHealthBackButton(::popNavigation) },
             actions = {
                 IconButton(onClick = {
-                    if (uiState.loading.not() && uiState.sessionExpired.not()) {
+                    if (isDeleteIconEnabled(uiState)) {
                         showDeletionConfirmationDialog()
                     }
                 }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_trash_can),
                         contentDescription = stringResource(id = R.string.notifications_clear),
-                        tint = primaryBlue
+                        tint = primaryBlue.copy(alpha = if (isDeleteIconEnabled(uiState)) 1.0f else 0.2f)
                     )
                 }
             },
             elevation = 4.dp
         )
     }
+
+    private fun isDeleteIconEnabled(uiState: NotificationViewModel.NotificationsUIState) =
+        uiState.loading.not() && uiState.sessionExpired.not() && uiState.list.isEmpty().not()
 
     @Composable
     @BasePreview
