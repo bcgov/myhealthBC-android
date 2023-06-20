@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,12 +36,12 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
-import ca.bc.gov.bchealth.compose.bold
 import ca.bc.gov.bchealth.compose.grey
 import ca.bc.gov.bchealth.compose.greyBg
 import ca.bc.gov.bchealth.compose.minButtonSize
 import ca.bc.gov.bchealth.compose.primaryBlue
 import ca.bc.gov.bchealth.ui.component.HGLargeButton
+import ca.bc.gov.bchealth.ui.custom.DecorativeImage
 import ca.bc.gov.common.model.notification.NotificationActionTypeDto
 
 @Composable
@@ -66,15 +67,20 @@ fun NotificationScreen(
 
 @Composable
 private fun BoxScope.EmptyStateUI() {
-    Text(
-        text = stringResource(id = R.string.notifications_empty_body),
-        style = MyHealthTypography.body1.bold(),
-        color = primaryBlue,
-        textAlign = TextAlign.Center,
-        modifier = Modifier
-            .align(Center)
-            .padding(70.dp),
-    )
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.align(Center)
+    ) {
+        DecorativeImage(resourceId = R.drawable.img_notifications_empty)
+
+        Text(
+            text = stringResource(id = R.string.notifications_empty_body),
+            style = MyHealthTypography.body1,
+            color = primaryBlue,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 70.dp, vertical = 16.dp),
+        )
+    }
 }
 
 @Composable
@@ -85,14 +91,21 @@ private fun ErrorStateUI() {
                 .fillMaxSize()
                 .weight(1f)
         )
-        Text(
-            text = stringResource(id = R.string.notifications_error_body),
-            style = MyHealthTypography.body1.bold(),
-            color = primaryBlue,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .padding(70.dp),
-        )
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            DecorativeImage(resourceId = R.drawable.img_notifications_empty)
+
+            Text(
+                text = stringResource(id = R.string.notifications_error_body),
+                style = MyHealthTypography.body1,
+                color = primaryBlue,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 70.dp, vertical = 16.dp),
+            )
+        }
+
         Spacer(
             modifier = Modifier
                 .fillMaxSize()
@@ -103,7 +116,7 @@ private fun ErrorStateUI() {
                 .fillMaxWidth()
                 .padding(32.dp),
             onClick = { },
-            text = stringResource(id = R.string.retry)
+            text = stringResource(id = R.string.try_again)
         )
     }
 }
