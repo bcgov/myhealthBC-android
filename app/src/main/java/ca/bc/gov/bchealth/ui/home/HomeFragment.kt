@@ -111,10 +111,11 @@ class HomeFragment : BaseSecureFragment(null) {
         val homeUiState = viewModel.uiState.collectAsState().value
         val bannerUiState = viewModel.bannerState.collectAsState().value
         val homeItems = viewModel.homeList.collectAsState().value.orEmpty()
+        val authState = bcscAuthViewModel.authStatus.collectAsState().value
 
         MyHealthTheme {
             Scaffold(
-                topBar = { HomeToolbar() },
+                topBar = { HomeToolbar(authState.loginStatus != LoginStatus.NOT_AUTHENTICATED) },
                 content = {
                     Column(
                         modifier = Modifier
@@ -140,21 +141,22 @@ class HomeFragment : BaseSecureFragment(null) {
     }
 
     @Composable
-    private fun HomeToolbar() {
+    private fun HomeToolbar(isAuthenticated: Boolean) {
         MyHealthToolBar(
             title = "",
             actions = {
 
-                IconButton(
-                    onClick = { findNavController().navigate(R.id.notificationFragment) }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_notification),
-                        contentDescription = stringResource(id = R.string.notifications),
-                        tint = MaterialTheme.colors.primary
-                    )
+                if (isAuthenticated) {
+                    IconButton(
+                        onClick = { findNavController().navigate(R.id.notificationFragment) }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_notification),
+                            contentDescription = stringResource(id = R.string.notifications),
+                            tint = MaterialTheme.colors.primary
+                        )
+                    }
                 }
-
                 IconButton(
                     onClick = { findNavController().navigate(R.id.settingsFragment) }
                 ) {
@@ -269,7 +271,15 @@ class HomeFragment : BaseSecureFragment(null) {
     @Composable
     private fun PreviewHomeToolbar() {
         MyHealthTheme {
-            HomeToolbar()
+            HomeToolbar(true)
+        }
+    }
+
+    @BasePreview
+    @Composable
+    private fun PreviewHomeToolbarNonAuthenticated() {
+        MyHealthTheme {
+            HomeToolbar(false)
         }
     }
 }
