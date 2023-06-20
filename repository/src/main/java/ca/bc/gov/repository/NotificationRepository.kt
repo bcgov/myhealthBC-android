@@ -1,6 +1,7 @@
 package ca.bc.gov.repository
 
 import ca.bc.gov.common.model.notification.NotificationDto
+import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.data.datasource.local.NotificationLocalDataSource
 import ca.bc.gov.data.datasource.remote.NotificationRemoteDataSource
 import ca.bc.gov.data.model.mapper.toDto
@@ -14,8 +15,8 @@ class NotificationRepository @Inject constructor(
     private val notificationRemoteDataSource: NotificationRemoteDataSource,
     private val bcscAuthRepo: BcscAuthRepo,
 ) {
-
-    suspend fun refreshNotifications(hdid: String) {
+    suspend fun refreshNotifications() {
+        val hdid = bcscAuthRepo.getAuthParametersDto().hdid
         val notificationsDto = notificationRemoteDataSource.fetchNotifications(
             hdid = hdid,
         ).map { it.toDto(hdid) }
@@ -41,7 +42,9 @@ class NotificationRepository @Inject constructor(
         notificationLocalDataSource.deleteNotification(hdid = hdid, notificationId = notificationId)
     }
 
-    suspend fun loadNotifications(currentDate: Instant): List<NotificationDto> {
+    suspend fun loadNotifications(): List<NotificationDto> {
+        val currentDate = Instant.now().toLocalDateTimeInstant() ?: Instant.now()
+
         val hdid = bcscAuthRepo.getAuthParametersDto().hdid
         return notificationLocalDataSource.getNotifications(hdid = hdid, currentDate = currentDate)
             .map { it.toDto() }

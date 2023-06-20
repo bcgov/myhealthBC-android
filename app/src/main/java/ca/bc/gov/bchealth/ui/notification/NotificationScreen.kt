@@ -49,13 +49,14 @@ import ca.bc.gov.common.model.notification.NotificationActionTypeDto
 fun NotificationScreen(
     uiState: NotificationViewModel.NotificationsUIState,
     onClickDelete: (String) -> Unit,
-    onClickAction: (NotificationViewModel.NotificationItem) -> Unit
+    onClickAction: (NotificationViewModel.NotificationItem) -> Unit,
+    onClickRetry: () -> Unit,
 ) {
     Box(Modifier.fillMaxSize()) {
-        if (uiState.list.isEmpty()) {
-            EmptyStateUI()
-        } else {
-            NotificationList(uiState, onClickDelete, onClickAction)
+        when {
+            uiState.listError && uiState.loading.not() -> ErrorStateUI(onClickRetry)
+            uiState.list.isEmpty() && uiState.loading.not() -> EmptyStateUI()
+            else -> NotificationList(uiState, onClickDelete, onClickAction)
         }
 
         if (uiState.loading) {
@@ -85,7 +86,7 @@ private fun BoxScope.EmptyStateUI() {
 }
 
 @Composable
-private fun ErrorStateUI() {
+private fun ErrorStateUI(onClickTryAgain: () -> Unit) {
     Column(Modifier.fillMaxSize()) {
         Spacer(
             modifier = Modifier
@@ -116,7 +117,7 @@ private fun ErrorStateUI() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(32.dp),
-            onClick = { },
+            onClick = onClickTryAgain,
             text = stringResource(id = R.string.try_again)
         )
     }
@@ -229,7 +230,7 @@ private fun ActionText(
 @Composable
 private fun PreviewErrorUI() {
     MyHealthTheme {
-        ErrorStateUI()
+        ErrorStateUI {}
     }
 }
 
@@ -238,7 +239,7 @@ private fun PreviewErrorUI() {
 private fun PreviewEmptyState() {
     MyHealthTheme {
         NotificationScreen(
-            NotificationViewModel.NotificationsUIState(list = listOf()), {}, {}
+            NotificationViewModel.NotificationsUIState(list = listOf()), {}, {}, {}
         )
     }
 }
@@ -268,7 +269,7 @@ private fun PreviewNotifications() {
                     ),
                 )
             ),
-            {}, {}
+            {}, {}, {}
         )
     }
 }

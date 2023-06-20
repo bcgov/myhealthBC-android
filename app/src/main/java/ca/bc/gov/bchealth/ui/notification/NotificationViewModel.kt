@@ -5,7 +5,6 @@ import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.common.exceptions.MyHealthAuthException
 import ca.bc.gov.common.model.notification.NotificationActionTypeDto
 import ca.bc.gov.common.utils.toDateTimeString
-import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.repository.NotificationRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.worker.MobileConfigRepository
@@ -15,7 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Instant
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,17 +25,75 @@ class NotificationViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(NotificationsUIState())
     val uiState: StateFlow<NotificationsUIState> = _uiState.asStateFlow()
 
-    fun getNotifications() = viewModelScope.launch {
-        resetErrorState()
-        loadNotification()
+    fun refreshNotifications() = viewModelScope.launch {
+        try {
+            _uiState.update { NotificationsUIState(loading = true) }
+            repository.refreshNotifications()
+            loadNotifications()
+        } catch (e: Exception) {
+            _uiState.update { it.copy(loading = false) }
+            handleBaseException(e) {
+                if (e is MyHealthAuthException) {
+                    _uiState.update { it.copy(sessionExpired = true) }
+                } else {
+                    _uiState.update { it.copy(listError = true) }
+                }
+            }
+            e.printStackTrace()
+        }
     }
 
-    private suspend fun loadNotification() {
+    fun deleteNotifications() = viewModelScope.launch {
         try {
             _uiState.update { it.copy(loading = true) }
 
-            val currentDate = Instant.now().toLocalDateTimeInstant() ?: Instant.now()
-            val notifications = repository.loadNotifications(currentDate)
+            mobileConfigRepository.refreshMobileConfiguration()
+            repository.deleteNotifications()
+
+            loadNotifications()
+        } catch (e: Exception) {
+            _uiState.update { it.copy(loading = false) }
+            handleBaseException(e) {
+                if (e is MyHealthAuthException) {
+                    _uiState.update { it.copy(sessionExpired = true) }
+                } else {
+                    _uiState.update { it.copy(dismissError = true) }
+                }
+            }
+            e.printStackTrace()
+        }
+    }
+
+    fun deleteNotification(notificationId: String) = viewModelScope.launch {
+        try {
+            _uiState.update { it.copy(loading = true) }
+
+            mobileConfigRepository.refreshMobileConfiguration()
+            repository.deleteNotification(notificationId = notificationId)
+
+            loadNotifications()
+        } catch (e: Exception) {
+            _uiState.update { it.copy(loading = false) }
+            handleBaseException(e) {
+                if (e is MyHealthAuthException) {
+                    _uiState.update { it.copy(sessionExpired = true) }
+                } else {
+                    _uiState.update { it.copy(dismissError = true) }
+                }
+            }
+            e.printStackTrace()
+        }
+    }
+
+    fun resetErrorState() {
+        _uiState.update { it.copy(dismissError = false, listError = false, sessionExpired = false) }
+    }
+
+    private suspend fun loadNotifications() {
+        try {
+            _uiState.update { it.copy(loading = true) }
+
+            val notifications = repository.loadNotifications()
 
             _uiState.update {
                 it.copy(
@@ -59,57 +115,11 @@ class NotificationViewModel @Inject constructor(
                 if (e is MyHealthAuthException) {
                     _uiState.update { it.copy(sessionExpired = true) }
                 } else {
-                    _uiState.update { it.copy(listError = false) }
+                    _uiState.update { it.copy(listError = true) }
                 }
             }
             e.printStackTrace()
         }
-    }
-
-    fun deleteNotifications() = viewModelScope.launch {
-        try {
-            _uiState.update { it.copy(loading = true) }
-
-            mobileConfigRepository.refreshMobileConfiguration()
-            repository.deleteNotifications()
-
-            loadNotification()
-        } catch (e: Exception) {
-            _uiState.update { it.copy(loading = false) }
-            handleBaseException(e) {
-                if (e is MyHealthAuthException) {
-                    _uiState.update { it.copy(sessionExpired = true) }
-                } else {
-                    _uiState.update { it.copy(dismissError = false) }
-                }
-            }
-            e.printStackTrace()
-        }
-    }
-
-    fun deleteNotification(notificationId: String) = viewModelScope.launch {
-        try {
-            _uiState.update { it.copy(loading = true) }
-
-            mobileConfigRepository.refreshMobileConfiguration()
-            repository.deleteNotification(notificationId = notificationId)
-
-            loadNotification()
-        } catch (e: Exception) {
-            _uiState.update { it.copy(loading = false) }
-            handleBaseException(e) {
-                if (e is MyHealthAuthException) {
-                    _uiState.update { it.copy(sessionExpired = true) }
-                } else {
-                    _uiState.update { it.copy(dismissError = false) }
-                }
-            }
-            e.printStackTrace()
-        }
-    }
-
-    fun resetErrorState() {
-        _uiState.update { it.copy(dismissError = false, listError = false, sessionExpired = false) }
     }
 
     data class NotificationsUIState(
