@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -128,58 +129,70 @@ private fun NotificationList(
     onClickAction: (NotificationViewModel.NotificationItem) -> Unit,
 
 ) {
-    LazyColumn(Modifier.padding(horizontal = 32.dp)) {
+    LazyColumn(
+        contentPadding = PaddingValues(horizontal = 32.dp),
+    ) {
         items(uiState.list) {
-            Text(
-                modifier = Modifier.padding(top = 16.dp),
-                text = it.date,
-                style = MyHealthTypography.caption.copy(color = grey),
-            )
-
-            Column(
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(greyBg)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(top = 16.dp, start = 16.dp),
-                        text = it.content,
-                        style = MyHealthTypography.body2,
-                    )
-
-                    Box(
-                        modifier = Modifier
-                            .size(minButtonSize)
-                            .clickable {
-                                if (uiState.loading.not()) {
-                                    onClickDelete.invoke(it.notificationId)
-                                }
-                            }
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_close),
-                            contentScale = ContentScale.Inside,
-                            modifier = Modifier
-                                .width(14.dp)
-                                .height(14.dp)
-                                .align(Center),
-                            contentDescription = stringResource(id = R.string.notifications_remove)
-                        )
-                    }
-                }
-
-                ActionText(it, onClickAction)
-            }
-
-            Spacer(modifier = Modifier.padding(8.dp))
+            NotificationItemUI(it, uiState, onClickDelete, onClickAction)
         }
     }
+}
+
+@Composable
+private fun NotificationItemUI(
+    notificationItem: NotificationViewModel.NotificationItem,
+    uiState: NotificationViewModel.NotificationsUIState,
+    onClickDelete: (String) -> Unit,
+    onClickAction: (NotificationViewModel.NotificationItem) -> Unit,
+) {
+    Text(
+        modifier = Modifier.padding(top = 16.dp),
+        text = notificationItem.date,
+        style = MyHealthTypography.caption.copy(color = grey),
+    )
+
+    Column(
+        modifier = Modifier
+            .padding(top = 8.dp)
+            .clip(RoundedCornerShape(4.dp))
+            .background(greyBg)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(top = 16.dp, start = 16.dp),
+                text = notificationItem.content,
+                style = MyHealthTypography.body2,
+            )
+
+            Box(
+                modifier = Modifier
+                    .size(minButtonSize)
+                    .clickable {
+                        if (uiState.loading.not()) {
+                            onClickDelete.invoke(notificationItem.notificationId)
+                        }
+                    }
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_close),
+                    contentScale = ContentScale.Inside,
+                    modifier = Modifier
+                        .width(14.dp)
+                        .height(14.dp)
+                        .align(Center),
+                    contentDescription = stringResource(id = R.string.notifications_remove)
+                )
+            }
+        }
+
+        ActionText(notificationItem, onClickAction)
+    }
+
+    Spacer(modifier = Modifier.padding(8.dp))
 }
 
 @Composable
