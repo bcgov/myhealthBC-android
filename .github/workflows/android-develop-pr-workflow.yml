@@ -6,7 +6,9 @@ on:
       - develop
       - feature/*
       - bugfixes/*
-
+      
+  workflow_dispatch:
+  
 jobs:
   build:
     name: Generate Builds
