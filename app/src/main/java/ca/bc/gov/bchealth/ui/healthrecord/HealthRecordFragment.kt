@@ -19,8 +19,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.work.WorkInfo
+import ca.bc.gov.bchealth.BcVaccineCardNavGraphDirections
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTheme
+import ca.bc.gov.bchealth.model.BcServiceCardLoginInfoType
+import ca.bc.gov.bchealth.model.BcServiceCardSessionInfoType
 import ca.bc.gov.bchealth.ui.BaseSecureFragment
 import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.bchealth.ui.NavigationAction
@@ -54,11 +57,19 @@ class HealthRecordFragment : BaseSecureFragment(null) {
                 } else {
                     when (state.loginStatus) {
                         LoginStatus.NOT_AUTHENTICATED -> {
-                            findNavController().navigate(R.id.bcServicesCardLoginFragment)
+                            val action =
+                                BcVaccineCardNavGraphDirections.actionGlobalBcServicesCardLoginFragment(
+                                    BcServiceCardLoginInfoType.RECORDS
+                                )
+                            findNavController().navigate(action)
                         }
 
                         LoginStatus.EXPIRED -> {
-                            findNavController().navigate(R.id.bcServiceCardSessionFragment)
+                            val action =
+                                BcVaccineCardNavGraphDirections.actionGlobalBcServiceCardSessionFragment(
+                                    BcServiceCardSessionInfoType.RECORDS
+                                )
+                            findNavController().navigate(action)
                         }
 
                         LoginStatus.ACTIVE -> {
@@ -129,41 +140,49 @@ class HealthRecordFragment : BaseSecureFragment(null) {
                     .actionHealthRecordFragmentToCovidTestResultDetailFragment(healthRecordItem.recordId)
                 findNavController().navigate(action)
             }
+
             HealthRecordType.HEALTH_VISIT_RECORD -> {
                 val action = HealthRecordFragmentDirections
                     .actionHealthRecordFragmentToHealthVisitDetailsFragment(healthRecordItem.recordId)
                 findNavController().navigate(action)
             }
+
             HealthRecordType.MEDICATION_RECORD -> {
                 val action = HealthRecordFragmentDirections
                     .actionHealthRecordFragmentToMedicationDetailFragment(healthRecordItem.recordId)
                 findNavController().navigate(action)
             }
+
             HealthRecordType.IMMUNIZATION_RECORD -> {
                 val action = HealthRecordFragmentDirections
                     .actionHealthRecordFragmentToImmunizationRecordDetailFragment(healthRecordItem.recordId)
                 findNavController().navigate(action)
             }
+
             HealthRecordType.CLINICAL_DOCUMENT_RECORD -> {
                 val action = HealthRecordFragmentDirections
                     .actionHealthRecordFragmentToClinicalDocumentDetailsFragment(healthRecordItem.recordId)
                 findNavController().navigate(action)
             }
+
             HealthRecordType.HOSPITAL_VISITS_RECORD -> {
                 val action = HealthRecordFragmentDirections
                     .actionHealthRecordFragmentToHospitalVisitDetailsFragment(healthRecordItem.recordId)
                 findNavController().navigate(action)
             }
+
             HealthRecordType.LAB_RESULT_RECORD -> {
                 val action = HealthRecordFragmentDirections
                     .actionHealthRecordFragmentToLabTestDetailFragment(healthRecordItem.recordId)
                 findNavController().navigate(action)
             }
+
             HealthRecordType.SPECIAL_AUTHORITY_RECORD -> {
                 val action = HealthRecordFragmentDirections
                     .actionHealthRecordFragmentToSpecialAuthorityDetailsFragment(healthRecordItem.recordId)
                 findNavController().navigate(action)
             }
+
             HealthRecordType.DIAGNOSTIC_IMAGING -> {
                 val action = HealthRecordFragmentDirections
                     .actionHealthRecordFragmentToDiagnosticImagingDetailFragment(healthRecordItem.recordId)
