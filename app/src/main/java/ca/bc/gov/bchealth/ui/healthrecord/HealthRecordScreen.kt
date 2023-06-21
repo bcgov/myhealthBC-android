@@ -23,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -116,7 +117,8 @@ private fun HealthRecordScreenContent(
 private fun HGTabLayout(
     onTabSelected: (Int) -> Unit
 ) {
-    var tabIndex by remember { mutableStateOf(0) }
+    var tabIndex by rememberSaveable { mutableStateOf(0) }
+    onTabSelected(tabIndex)
     val tabs = listOf("Timeline", "Notes")
     TabRow(
         backgroundColor = MaterialTheme.colors.background,
