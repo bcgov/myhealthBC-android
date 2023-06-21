@@ -33,13 +33,14 @@ class NotificationViewModel @Inject constructor(
             loadNotifications()
         } catch (e: Exception) {
             _uiState.update { it.copy(loading = false) }
-            handleBaseException(e) {
-                if (e is MyHealthAuthException) {
-                    _uiState.update { it.copy(sessionExpired = true) }
-                } else {
-                    _uiState.update { it.copy(listError = true) }
-                }
+            handleBaseException(e)
+
+            if (e is MyHealthAuthException) {
+                _uiState.update { it.copy(sessionExpired = true) }
+            } else {
+                _uiState.update { it.copy(listError = true) }
             }
+
             e.printStackTrace()
         }
     }
