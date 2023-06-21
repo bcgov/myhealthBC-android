@@ -63,7 +63,6 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
 
     open fun setToolBar(appBarConfiguration: AppBarConfiguration) {}
 
-    @Deprecated(message = "use launchAndRepeatWithLifecycle", level = DeprecationLevel.WARNING)
     fun <T> StateFlow<T>.collectOnStart(action: ((T) -> Unit)) {
         launchOnStart {
             this@collectOnStart.collect { state ->
@@ -120,7 +119,7 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
         setOf(
             R.id.homeFragment,
             R.id.healthPassFragment,
-            R.id.healthRecordFragment,
+            R.id.individualHealthRecordFragment,
             R.id.dependentsFragment
         ),
         null

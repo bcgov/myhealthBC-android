@@ -31,8 +31,6 @@ versions.lifecycle = "2.5.0" // 2.6.0 requires 13+
 
 versions.compose_compiler = "1.3.2" //1.4.0 requires 33+
 versions.compose_ui = "1.2.1" //1.4.4 requires 33+
-versions.compose_constraint = "1.0.1"
-versions.accompnish_swipe_refresh = "0.21.1-beta"
 
 versions.hilt = "2.42"
 

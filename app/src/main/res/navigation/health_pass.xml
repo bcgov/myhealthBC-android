@@ -27,7 +27,7 @@
     <fragment
         android:id="@+id/healthPassesFragment"
         android:name="ca.bc.gov.bchealth.ui.healthpass.HealthPassesFragment"
-        tools:layout="@layout/fragment_helath_passes"
+        tools:layout="@layout/fragment_health_records"
         android:label="HealthPassesFragment">
         <action
             android:id="@+id/action_healthPassesFragment_to_manageHealthPassFragment"

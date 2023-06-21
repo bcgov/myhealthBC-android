@@ -1,12 +1,9 @@
 package ca.bc.gov.bchealth.ui.component
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
@@ -45,36 +42,14 @@ fun HGLargeButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    text: String,
-    leadingIcon: @Composable (() -> Unit)? = null,
+    text: String
 ) {
     HGButton(
         onClick = onClick,
         modifier = modifier.defaultMinSize(minHeight = 54.dp),
-        enabled,
-        contentPadding = if (leadingIcon != null) {
-            ButtonDefaults.ButtonWithIconContentPadding
-        } else {
-            ButtonDefaults.ContentPadding
-        }
+        enabled
     ) {
-        if (leadingIcon != null) {
-            Box(Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize)) {
-                leadingIcon()
-            }
-        }
-        Box(
-            Modifier
-                .padding(
-                    start = if (leadingIcon != null) {
-                        ButtonDefaults.IconSpacing
-                    } else {
-                        0.dp
-                    },
-                ),
-        ) {
-            Text(text = text, style = MaterialTheme.typography.largeButton)
-        }
+        Text(text = text, style = MaterialTheme.typography.largeButton)
     }
 }
 
@@ -83,36 +58,14 @@ fun HGSmallButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    text: String,
-    leadingIcon: @Composable (() -> Unit)? = null,
+    text: String
 ) {
     HGButton(
         onClick = onClick,
         modifier = modifier.defaultMinSize(minHeight = 42.dp),
-        enabled,
-        contentPadding = if (leadingIcon != null) {
-            ButtonDefaults.ButtonWithIconContentPadding
-        } else {
-            ButtonDefaults.ContentPadding
-        }
+        enabled
     ) {
-        if (leadingIcon != null) {
-            Box(Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize)) {
-                leadingIcon()
-            }
-        }
-        Box(
-            Modifier
-                .padding(
-                    start = if (leadingIcon != null) {
-                        ButtonDefaults.IconSpacing
-                    } else {
-                        0.dp
-                    },
-                ),
-        ) {
-            Text(text = text, style = MaterialTheme.typography.smallButton)
-        }
+        Text(text = text, style = MaterialTheme.typography.smallButton)
     }
 }
 
@@ -198,11 +151,3 @@ private fun SmallOutlinedButtonPreview() {
         HGSmallOutlinedButton(onClick = { }, text = "Hello")
     }
 }
-
-val ButtonDefaults.ButtonWithIconContentPadding: PaddingValues
-    get() = PaddingValues(
-        start = 16.dp,
-        top = 8.dp,
-        end = 8.dp,
-        bottom = 8.dp
-    )

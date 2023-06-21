@@ -6,11 +6,12 @@ import ca.bc.gov.bchealth.ui.dependents.DependentDetailItem
 import ca.bc.gov.bchealth.ui.healthpass.FederalTravelPassState
 import ca.bc.gov.bchealth.ui.healthpass.HealthPass
 import ca.bc.gov.bchealth.ui.healthpass.PassState
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordItem
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordType
+import ca.bc.gov.bchealth.ui.healthrecord.PatientHealthRecord
 import ca.bc.gov.bchealth.ui.healthrecord.immunization.ForecastDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.immunization.ImmunizationDoseDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.immunization.ImmunizationRecordDetailItem
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.bchealth.ui.recommendations.RecommendationDetailItem
 import ca.bc.gov.bchealth.utils.orPlaceholder
 import ca.bc.gov.common.model.AuthenticationStatus
@@ -26,6 +27,7 @@ import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPati
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientWithDataDto
+import ca.bc.gov.common.model.patient.PatientWithHealthRecordCount
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
@@ -199,6 +201,16 @@ fun getHealthPassStateResources(state: ImmunizationStatus?): PassState = when (s
     else -> {
         PassState(R.color.grey, R.string.no_record, 0)
     }
+}
+
+fun PatientWithHealthRecordCount.toUiModel(): PatientHealthRecord {
+    return PatientHealthRecord(
+        patientId = patientDto.id,
+        name = patientDto.fullName,
+        totalRecord = vaccineRecordCount + testResultCount + labTestCount + medicationRecordCount +
+            covidTestCount,
+        authStatus = patientDto.authenticationStatus
+    )
 }
 
 fun ImmunizationRecordWithForecastAndPatientDto.toUiModel(): ImmunizationRecordDetailItem {
