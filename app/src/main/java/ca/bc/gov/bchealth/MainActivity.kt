@@ -141,7 +141,7 @@ class MainActivity : AppCompatActivity() {
                             false
                         )
                         if (started) {
-                            binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_while_fetching_data))
+                            binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_while_fetching_data), binding.bottomNav)
                         }
                     }
 

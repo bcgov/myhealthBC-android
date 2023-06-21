@@ -223,7 +223,7 @@ fun View.showNoInternetConnectionMessage(context: Context) {
     showErrorSnackbar(context.getString(R.string.no_internet_connection))
 }
 
-fun View?.showErrorSnackbar(message: String) {
+fun View?.showErrorSnackbar(message: String, anchor: View? = null) {
     this ?: return
 
     val snackBar = Snackbar.make(
@@ -232,6 +232,10 @@ fun View?.showErrorSnackbar(message: String) {
     snackBar.setAction(context.getString(R.string.dismiss)) {
         performClick()
     }
+    if (anchor != null) {
+        snackBar.anchorView = anchor
+    }
+
     snackBar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines =
         10
     snackBar.show()

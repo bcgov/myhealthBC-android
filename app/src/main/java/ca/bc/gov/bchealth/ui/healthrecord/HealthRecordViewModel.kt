@@ -4,12 +4,15 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.bchealth.ui.BaseViewModel
+import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.workers.WorkerInvoker
 import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
+import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.toStartOfDayInstant
 import ca.bc.gov.repository.CacheRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.patient.PatientRepository
@@ -37,14 +40,85 @@ class HealthRecordViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HealthRecordUiState())
     val uiState: StateFlow<HealthRecordUiState> = _uiState.asStateFlow()
 
-    fun showTimeLine() = viewModelScope.launch {
+    fun showTimeLine(filterString: String) = viewModelScope.launch {
         val healthRecords = generateTimeline()
-        val requiredProtectiveWordVerification = !(healthRecords.any { record -> record.healthRecordType == HealthRecordType.MEDICATION_RECORD } && isShowMedicationRecords())
+        val requiredProtectiveWordVerification =
+            !(healthRecords.any { record -> record.healthRecordType == HealthRecordType.MEDICATION_RECORD } && isShowMedicationRecords())
+
+        val timeLineFilters = mutableListOf<String>()
+        val filteredResult = mutableListOf<HealthRecordItem>()
+        if (filterString.isNotBlank()) {
+            val filterQuery = filterString.split(",")
+
+            val fromDate = filterQuery.find { it.contains("FROM:") }?.substringAfter(":")
+            val toDate = filterQuery.find { it.contains("TO:") }?.substringAfter(":")
+            val search = filterQuery.find { it.contains("SEARCH:") }?.substringAfter(":")
+
+            val listFilteredByDate = getFilterByDate(healthRecords, fromDate, toDate)
+
+            val listFilteredBySearch = if (!search.isNullOrBlank()) {
+                listFilteredByDate.filter { record ->
+                    record.title.contains(search, true)
+                }
+            } else {
+                listFilteredByDate
+            }
+
+            timeLineFilters +=
+                filterQuery.mapNotNull { query -> TimelineTypeFilter.findByName(query)?.recordType?.name }
+
+            filteredResult += if (timeLineFilters.isNotEmpty()) {
+                listFilteredBySearch.filter { recordType -> timeLineFilters.contains(recordType.healthRecordType.name) }
+            } else {
+                listFilteredBySearch
+            }
+
+            val dateFilter = getDateFilter(fromDate, toDate)
+            dateFilter?.let {
+                timeLineFilters.add(it)
+            }
+        }
+
         _uiState.update {
             it.copy(
-                isLoading = false, healthRecords = healthRecords,
+                isLoading = false,
+                healthRecords = filteredResult,
+                filters = timeLineFilters,
                 requiredProtectiveWordVerification = requiredProtectiveWordVerification
             )
+        }
+    }
+
+    private fun getDateFilter(fromDate: String?, toDate: String?): String? {
+        if (fromDate.isNullOrBlank() && toDate.isNullOrBlank()) {
+            return null
+        }
+        return when {
+            fromDate.isNullOrBlank() -> {
+                "$toDate and before"
+            }
+
+            toDate.isNullOrBlank() -> {
+                "$fromDate and after"
+            }
+
+            else -> {
+                "$fromDate - $toDate"
+            }
+        }
+    }
+
+    private fun getFilterByDate(healthRecords: List<HealthRecordItem>, fromDate: String?, toDate: String?): MutableList<HealthRecordItem> {
+        return if (!fromDate.isNullOrBlank() && !toDate.isNullOrBlank()) {
+            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
+                .toMutableList()
+        } else if (!fromDate.isNullOrBlank()) {
+            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
+                .toMutableList()
+        } else if (!toDate.isNullOrBlank()) {
+            healthRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }.toMutableList()
+        } else {
+            healthRecords.toMutableList()
         }
     }
 
@@ -139,9 +213,11 @@ class HealthRecordViewModel @Inject constructor(
                 is NetworkConnectionException -> {
                     // TODO: handle error
                 }
+
                 is ServiceDownException -> {
                     // TODO: handle error
                 }
+
                 else -> {
                     e.printStackTrace()
                 }
@@ -154,7 +230,8 @@ data class HealthRecordUiState(
     val isLoading: Boolean = true,
     val healthRecords: List<HealthRecordItem> = emptyList(),
     val requiredProtectiveWordVerification: Boolean = true,
-    val notes: List<String> = emptyList()
+    val notes: List<String> = emptyList(),
+    val filters: List<String> = emptyList()
 )
 
 data class HealthRecordItem(
