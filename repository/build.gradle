@@ -83,7 +83,7 @@ dependencies {
 
     implementation "ca.bc.gov:shcdecoder:$versions.shcdecoder"
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0-RC3'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutines"
 
     // Snowplow Android Tracker
     api "com.snowplowanalytics:snowplow-android-tracker:$versions.snowplow@aar"
