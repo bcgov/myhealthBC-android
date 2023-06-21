@@ -1,6 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ca.bc.gov.repository">
-
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-</manifest>
+<manifest package="ca.bc.gov.repository" />
