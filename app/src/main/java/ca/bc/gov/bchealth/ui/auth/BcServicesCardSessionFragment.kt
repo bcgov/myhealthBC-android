@@ -13,9 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.ui.BaseSecureFragment
@@ -33,13 +31,12 @@ import dagger.hilt.android.AndroidEntryPoint
  * that makes it a reusable screen to handle session expiry state in the app.
  *
  * Following places in the code require to be updated in future
+ * - [ca.bc.gov.bchealth.ui.healthrecord.individual.IndividualHealthRecordFragment]
  * - [ca.bc.gov.bchealth.ui.dependents.DependentsFragment]
  */
 @AndroidEntryPoint
 class BcServicesCardSessionFragment : BaseSecureFragment(null) {
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private val bcServiceCardSessionViewModel: BCServiceCardSessionViewModel by viewModels()
-    private val args: BcServicesCardSessionFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,10 +45,7 @@ class BcServicesCardSessionFragment : BaseSecureFragment(null) {
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    findNavController().setActionToPreviousBackStackEntry(
-                        NAVIGATION_ACTION,
-                        NavigationAction.ACTION_BACK
-                    )
+                    findNavController().setActionToPreviousBackStackEntry(NAVIGATION_ACTION, NavigationAction.ACTION_BACK)
                     findNavController().popBackStack()
                 }
             }
@@ -61,13 +55,9 @@ class BcServicesCardSessionFragment : BaseSecureFragment(null) {
     override fun handleBCSCAuthState(bcscAuthState: BcscAuthState) {
         when (bcscAuthState) {
             BcscAuthState.SUCCESS -> {
-                findNavController().setActionToPreviousBackStackEntry(
-                    NAVIGATION_ACTION,
-                    NavigationAction.ACTION_RE_CHECK
-                )
+                findNavController().setActionToPreviousBackStackEntry(NAVIGATION_ACTION, NavigationAction.ACTION_RE_CHECK)
                 findNavController().popBackStack()
             }
-
             BcscAuthState.NOT_NOW,
             BcscAuthState.NO_ACTION -> {
                 // no implementation required
@@ -78,18 +68,11 @@ class BcServicesCardSessionFragment : BaseSecureFragment(null) {
     override fun handleNavigationAction(navigationAction: NavigationAction) {
         when (navigationAction) {
             NavigationAction.ACTION_BACK -> {
-                findNavController().setActionToPreviousBackStackEntry(
-                    NAVIGATION_ACTION,
-                    NavigationAction.ACTION_BACK
-                )
+                findNavController().setActionToPreviousBackStackEntry(NAVIGATION_ACTION, NavigationAction.ACTION_BACK)
                 findNavController().popBackStack()
             }
-
             NavigationAction.ACTION_RE_CHECK -> {
-                findNavController().setActionToPreviousBackStackEntry(
-                    NAVIGATION_ACTION,
-                    NavigationAction.ACTION_RE_CHECK
-                )
+                findNavController().setActionToPreviousBackStackEntry(NAVIGATION_ACTION, NavigationAction.ACTION_RE_CHECK)
                 findNavController().popBackStack()
             }
         }
@@ -116,10 +99,7 @@ class BcServicesCardSessionFragment : BaseSecureFragment(null) {
                     )
                 },
                 content = {
-                    BCServicesCardSessionScreen(
-                        modifier = Modifier.padding(it),
-                        sessionStateInfo = bcServiceCardSessionViewModel.getSessionStateInfo(args.source)
-                    ) {
+                    BCServicesCardSessionScreen(modifier = Modifier.padding(it)) {
                         sharedViewModel.destinationId = 0
                         findNavController().navigate(R.id.bcscAuthInfoFragment)
                     }

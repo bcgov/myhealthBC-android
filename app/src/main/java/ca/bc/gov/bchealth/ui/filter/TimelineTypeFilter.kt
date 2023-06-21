@@ -2,15 +2,15 @@ package ca.bc.gov.bchealth.ui.filter
 
 import androidx.annotation.IdRes
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordType
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordType.CLINICAL_DOCUMENT_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordType.COVID_TEST_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordType.HEALTH_VISIT_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordType.HOSPITAL_VISITS_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordType.IMMUNIZATION_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordType.LAB_RESULT_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordType.MEDICATION_RECORD
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordType.SPECIAL_AUTHORITY_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.CLINICAL_DOCUMENT_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.COVID_TEST_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HEALTH_VISIT_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.HOSPITAL_VISITS_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.IMMUNIZATION_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.LAB_RESULT_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.MEDICATION_RECORD
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType.SPECIAL_AUTHORITY_RECORD
 
 enum class TimelineTypeFilter(@IdRes val id: Int?, val recordType: HealthRecordType?) {
     ALL(null, null),

@@ -3,7 +3,50 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/health_records"
-    app:startDestination="@id/healthRecordFragment">
+    app:startDestination="@id/healthRecordPlaceholderFragment">
+
+    <fragment
+        android:id="@+id/addHealthRecordsFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.add.AddHealthRecordsFragment"
+        android:label="AddHealthRecordsFragment"
+        tools:layout="@layout/scene_health_records_add" />
+    <fragment
+        android:id="@+id/individualHealthRecordFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.individual.IndividualHealthRecordFragment">
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_vaccineRecordDetailFragment"
+            app:destination="@id/vaccineRecordDetailFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_medicationDetailFragment"
+            app:destination="@id/medicationDetailsFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_labTestDetailFragment"
+            app:destination="@id/labTestDetailFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_protectiveWordFragment"
+            app:destination="@+id/protectiveWordFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_covidTestResultDetailFragment"
+            app:destination="@id/covidTestResultDetailFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_immunizationRecordDetailFragment"
+            app:destination="@id/immunizationRecordDetailFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_healthVisitDetailsFragment"
+            app:destination="@id/healthVisitDetailFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_specialAuthorityDetailsFragment"
+            app:destination="@id/specialAuthorityDetailFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordsFragment_to_hospitalVisitDetailsFragment"
+            app:destination="@id/hospitalVisitDetailFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordsFragment_to_clinicalDocumentDetailsFragment"
+            app:destination="@id/clinicalDocumentDetailFragment" />
+        <action
+            android:id="@+id/action_individualHealthRecordFragment_to_diagnosticImagingDetailFragment"
+            app:destination="@id/diagnosticImagingDetailFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/fetchVaccineRecordFragment"
@@ -58,6 +101,15 @@
         <argument
             android:name="patient_id"
             app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/healthRecordPlaceholderFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.HealthRecordPlaceholderFragment"
+        android:label="health_record_placeholder_fragment"
+        tools:layout="@layout/health_record_placeholder_fragment">
+        <action
+            android:id="@+id/action_healthRecordsPlaceHolderFragment_to_individualHealthRecordFragment"
+            app:destination="@id/individualHealthRecordFragment" />
     </fragment>
 
     <fragment
@@ -142,48 +194,5 @@
             android:defaultValue="@null"
             app:nullable="true" />
     </fragment>
-    <fragment
-        android:id="@+id/healthRecordFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.HealthRecordFragment"
-        android:label="HealthRecordFragment" >
-        <action
-            android:id="@+id/action_healthRecordFragment_to_vaccineRecordDetailFragment"
-            app:destination="@id/vaccineRecordDetailFragment" />
-        <action
-            android:id="@+id/action_healthRecordFragment_to_medicationDetailFragment"
-            app:destination="@id/medicationDetailsFragment" />
-        <action
-            android:id="@+id/action_healthRecordFragment_to_labTestDetailFragment"
-            app:destination="@id/labTestDetailFragment" />
-        <action
-            android:id="@+id/action_healthRecordFragment_to_protectiveWordFragment"
-            app:destination="@+id/protectiveWordFragment" />
-        <action
-            android:id="@+id/action_healthRecordFragment_to_covidTestResultDetailFragment"
-            app:destination="@id/covidTestResultDetailFragment" />
-        <action
-            android:id="@+id/action_healthRecordFragment_to_immunizationRecordDetailFragment"
-            app:destination="@id/immunizationRecordDetailFragment" />
-        <action
-            android:id="@+id/action_healthRecordFragment_to_healthVisitDetailsFragment"
-            app:destination="@id/healthVisitDetailFragment" />
-        <action
-            android:id="@+id/action_healthRecordFragment_to_specialAuthorityDetailsFragment"
-            app:destination="@id/specialAuthorityDetailFragment" />
-        <action
-            android:id="@+id/action_healthRecordFragment_to_hospitalVisitDetailsFragment"
-            app:destination="@id/hospitalVisitDetailFragment" />
-        <action
-            android:id="@+id/action_healthRecordFragment_to_clinicalDocumentDetailsFragment"
-            app:destination="@id/clinicalDocumentDetailFragment" />
-        <action
-            android:id="@+id/action_healthRecordFragment_to_diagnosticImagingDetailFragment"
-            app:destination="@id/diagnosticImagingDetailFragment" />
-
-    </fragment>
-    <fragment
-        android:id="@+id/addNotesFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.notes.AddNotesFragment"
-        android:label="AddNotesFragment" />
 
 </navigation>

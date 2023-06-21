@@ -15,7 +15,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentDependentRecordsBinding
 import ca.bc.gov.bchealth.ui.dependents.records.filter.DependentFilterViewModel
 import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordFilterFragment
-import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordType
+import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordType
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordsAdapter
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage

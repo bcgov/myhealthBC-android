@@ -46,7 +46,7 @@ class SettingsFragment : BaseSecureFragment(R.layout.fragment_settings) {
         if (activityResult.resultCode == Activity.RESULT_OK) {
             bcscAuthViewModel.processLogoutResponse(requireContext())
             if (findNavController().previousBackStackEntry?.destination?.id ==
-                R.id.healthRecordFragment
+                R.id.individualHealthRecordFragment
             ) {
                 findNavController().setActionToPreviousBackStackEntry(
                     NAVIGATION_ACTION,

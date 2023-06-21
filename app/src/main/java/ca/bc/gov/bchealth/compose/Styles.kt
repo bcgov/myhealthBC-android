@@ -33,12 +33,9 @@ val lightBlue = Color(0xFFB2C1CF)
 val statusBlue30 = Color(0x4D38598A)
 val descriptionGrey = Color(0xFF6D757D)
 val grey = Color(0xFF606060)
-val mediumGrey = Color(0XFFB7B7B7)
-val lightGrey = Color(0XFFF7F7F7)
 val greyBg = Color(0xFFF2F2F2)
 val green = Color(0xFF2E8540)
 val red = Color(0xFFD8292F)
-val disabledTextColor = Color(0xFFCFCFCF)
 
 val Typography.largeButton: TextStyle
     @Composable
