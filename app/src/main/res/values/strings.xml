@@ -572,4 +572,15 @@
     <string name="health_authority">Health Authority:</string>
     <string name="facility">Facility:</string>
 
+    <!--Notes-->
+    <string name="notes_content_description">Notes</string>
+    <string name="notes_empty_title">No Note Yet?</string>
+    <string name="notes_empty_description">Start adding note by click on\nthe “Note” button below</string>
+
+    <!--ADD Notes-->
+    <string name="add_to_my_timeline">Add to my Timeline</string>
+    <string name="untitled">Untitled</string>
+    <string name="tap_to_start_typing">Tap here to start typing...</string>
+
+
 </resources>

@@ -76,6 +76,7 @@ fun MyHealthToolbar(
 fun MyHealthToolBar(
     modifier: Modifier = Modifier,
     title: String = "",
+    isCenterAligned: Boolean = true,
     navigationIcon: @Composable (() -> Unit)? = null,
     actions: @Composable (RowScope.() -> Unit) = {},
     backgroundColor: Color = MaterialTheme.colors.background,
@@ -88,9 +89,12 @@ fun MyHealthToolBar(
             modifier = Modifier.fillMaxWidth(1F),
             text = title,
             style = MaterialTheme.typography.h3,
-            textAlign = TextAlign.Center,
+            textAlign = if (isCenterAligned) { TextAlign.Center } else {
+                null
+            },
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            color = MaterialTheme.colors.primary
         )
     },
     navigationIcon = navigationIcon,

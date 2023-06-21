@@ -227,8 +227,9 @@ class BcscAuthViewModel @Inject constructor(
         val isLoggedSuccess = bcscAuthRepo.checkSession()
         var userName: String? = null
         try {
-            userName =
-                patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).fullName
+            val patient =
+                patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
+            userName = patient.fullName
             val loginSessionStatus = if (isLoggedSuccess) {
                 LoginStatus.ACTIVE
             } else {
@@ -238,7 +239,8 @@ class BcscAuthViewModel @Inject constructor(
                 it.copy(
                     showLoading = false,
                     userName = userName,
-                    loginStatus = loginSessionStatus
+                    loginStatus = loginSessionStatus,
+                    patient = patient
                 )
             }
         } catch (e: Exception) {
@@ -454,7 +456,8 @@ data class AuthStatus(
     val ageLimitCheck: AgeLimitCheck? = null,
     val canInitiateBcscLogin: Boolean? = null,
     val tosAccepted: TOSAccepted? = null,
-    val isConnected: Boolean = true
+    val isConnected: Boolean = true,
+    val patient: PatientDto? = null
 )
 
 enum class LoginStatus {
