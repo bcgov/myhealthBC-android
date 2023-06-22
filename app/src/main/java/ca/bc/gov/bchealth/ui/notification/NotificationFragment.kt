@@ -38,7 +38,7 @@ class NotificationFragment : BaseFragment(null) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getNotifications()
+        viewModel.refreshNotifications()
     }
 
     @Composable
@@ -65,7 +65,7 @@ class NotificationFragment : BaseFragment(null) {
                                 .padding(it)
                                 .fillMaxSize(),
                         ) {
-                            NotificationScreen(uiState, viewModel::deleteNotification, {})
+                            NotificationScreen(uiState, viewModel::deleteNotification, {}, viewModel::refreshNotifications)
                         }
                     }
                 }
