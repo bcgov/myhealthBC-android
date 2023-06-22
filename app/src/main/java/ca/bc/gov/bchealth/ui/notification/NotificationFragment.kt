@@ -28,6 +28,8 @@ import ca.bc.gov.bchealth.ui.auth.BCServicesCardSessionContent
 import ca.bc.gov.bchealth.ui.custom.MyHealthBackButton
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolBar
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.common.model.notification.NotificationActionTypeDto
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -65,7 +67,12 @@ class NotificationFragment : BaseFragment(null) {
                                 .padding(it)
                                 .fillMaxSize(),
                         ) {
-                            NotificationScreen(uiState, viewModel::deleteNotification, {}, viewModel::refreshNotifications)
+                            NotificationScreen(
+                                uiState,
+                                viewModel::deleteNotification,
+                                ::onClickNotification,
+                                viewModel::refreshNotifications
+                            )
                         }
                     }
                 }
@@ -110,6 +117,14 @@ class NotificationFragment : BaseFragment(null) {
             },
             elevation = 4.dp
         )
+    }
+
+    private fun onClickNotification(notificationItem: NotificationViewModel.NotificationItem) {
+        when (notificationItem.actionType) {
+            NotificationActionTypeDto.EXTERNAL -> context?.redirect(notificationItem.actionUrl)
+            NotificationActionTypeDto.INTERNAL -> {}
+            NotificationActionTypeDto.NONE -> {}
+        }
     }
 
     private fun isDeleteIconEnabled(uiState: NotificationViewModel.NotificationsUIState) =
