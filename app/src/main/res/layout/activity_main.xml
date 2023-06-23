@@ -29,6 +29,8 @@
         android:filterTouchesWhenObscured="true"
         app:itemIconTint="@drawable/bottom_nav_selector"
         app:itemTextColor="@drawable/bottom_nav_selector"
+        app:itemTextAppearanceActive="@style/HealthGateway.BottomNavigationView.TextAppearanceActive"
+        app:itemTextAppearanceInactive="@style/HealthGateway.BottomNavigationView.TextAppearanceInactive"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
