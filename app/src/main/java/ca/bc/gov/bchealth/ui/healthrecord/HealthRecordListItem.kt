@@ -10,8 +10,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.bold
-import ca.bc.gov.bchealth.compose.descriptionGrey
 import ca.bc.gov.bchealth.compose.italic
+import ca.bc.gov.bchealth.compose.theme.descriptionGrey
 
 @Composable
 fun HealthRecordListItem(modifier: Modifier = Modifier, label: String, value: String, footer: String? = null) {

@@ -77,4 +77,19 @@
         <item name="fontFamily">@font/bc_sans_font_family</item>
         <item name="android:textStyle">normal</item>
     </style>
+
+    <!--Bottom nav font style-->
+    <style name="HealthGateway.BottomNavigationView.TextAppearanceActive" parent="">
+        <item name="android:textSize">10sp</item>
+        <item name="android:lineSpacingExtra">0sp</item>
+        <item name="fontFamily">@font/bc_sans_font_family</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="HealthGateway.BottomNavigationView.TextAppearanceInactive" parent="">
+        <item name="android:textSize">10sp</item>
+        <item name="android:lineSpacingExtra">0sp</item>
+        <item name="fontFamily">@font/bc_sans_font_family</item>
+        <item name="android:textStyle">normal</item>
+    </style>
 </resources>
