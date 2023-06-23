@@ -20,7 +20,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
-import ca.bc.gov.bchealth.compose.descriptionGrey
+import ca.bc.gov.bchealth.compose.theme.descriptionGrey
 import ca.bc.gov.bchealth.ui.component.HGLargeOutlinedButton
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordListItem

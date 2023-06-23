@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
-import ca.bc.gov.bchealth.compose.primaryBlue
-import ca.bc.gov.bchealth.compose.white
+import ca.bc.gov.bchealth.compose.theme.primaryBlue
+import ca.bc.gov.bchealth.compose.theme.white
 
 @Composable
 fun MyHealthToolbar(

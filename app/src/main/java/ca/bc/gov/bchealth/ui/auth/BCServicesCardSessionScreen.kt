@@ -19,7 +19,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
-import ca.bc.gov.bchealth.compose.greyBg
+import ca.bc.gov.bchealth.compose.theme.greyBg
 
 @Composable
 fun BCServicesCardSessionScreen(
