@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
@@ -22,13 +21,16 @@ import ca.bc.gov.bchealth.compose.mediumGrey
 @Composable
 fun SearchBarUI(
     modifier: Modifier = Modifier,
+    enableFilter: Boolean = true,
     onFilterClicked: () -> Unit = {}
 ) {
     Row(
         modifier = modifier
-            .padding(start = 16.dp, top = 16.dp, end = 16.dp)
-            .border(width = 1.dp, shape = MaterialTheme.shapes.medium, color = mediumGrey)
-            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                shape = MaterialTheme.shapes.medium,
+                color = mediumGrey
+            )
     ) {
         AndroidView(
             modifier = Modifier.weight(1f, fill = true),
@@ -42,14 +44,16 @@ fun SearchBarUI(
             }
         )
 
-        Image(
-            modifier = Modifier
-                .clickable { onFilterClicked() }
-                .size(width = 48.dp, height = 48.dp)
-                .padding(12.dp),
-            painter = painterResource(id = R.drawable.ic_filter),
-            contentDescription = "Filter"
-        )
+        if (enableFilter) {
+            Image(
+                modifier = Modifier
+                    .clickable { onFilterClicked() }
+                    .size(width = 48.dp, height = 48.dp)
+                    .padding(12.dp),
+                painter = painterResource(id = R.drawable.ic_filter),
+                contentDescription = "Filter"
+            )
+        }
     }
 }
 

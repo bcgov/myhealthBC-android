@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
@@ -28,6 +29,7 @@ import ca.bc.gov.bchealth.ui.BaseSecureFragment
 import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.bchealth.ui.NavigationAction
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolBar
+import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
@@ -42,6 +44,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class HealthRecordFragment : BaseSecureFragment(null) {
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
     private val healthRecordViewModel: HealthRecordViewModel by viewModels()
+    private val filterViewModel: PatientFilterViewModel by activityViewModels()
 
     override fun getBaseViewModel(): BaseViewModel {
         return healthRecordViewModel
@@ -124,7 +127,12 @@ class HealthRecordFragment : BaseSecureFragment(null) {
                             onClick(record)
                         },
                         onSwipeToRefresh = { healthRecordViewModel.executeOneTimeDataFetch() },
-                        onAddNotesClicked = { findNavController().navigate(R.id.addNotesFragment) }
+                        onAddNotesClicked = { findNavController().navigate(R.id.addNotesFragment) },
+                        onFilterClicked = { findNavController().navigate(R.id.filterFragment) },
+                        onFilterCleared = {
+                            filterViewModel.clearFilter()
+                            healthRecordViewModel.showTimeLine(filterViewModel.getFilterString())
+                        }
                     )
                 },
                 contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.background)
@@ -196,7 +204,7 @@ class HealthRecordFragment : BaseSecureFragment(null) {
             if (state == WorkInfo.State.RUNNING) {
                 healthRecordViewModel.showProgressBar()
             } else {
-                healthRecordViewModel.showTimeLine()
+                healthRecordViewModel.showTimeLine(filterViewModel.getFilterString())
             }
         }
     }
