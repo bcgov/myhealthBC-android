@@ -31,11 +31,11 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.SmallDevicePreview
-import ca.bc.gov.bchealth.compose.black
-import ca.bc.gov.bchealth.compose.grey
-import ca.bc.gov.bchealth.compose.lightBlue
 import ca.bc.gov.bchealth.compose.minButtonSize
-import ca.bc.gov.bchealth.compose.red
+import ca.bc.gov.bchealth.compose.theme.black
+import ca.bc.gov.bchealth.compose.theme.grey
+import ca.bc.gov.bchealth.compose.theme.lightBlue
+import ca.bc.gov.bchealth.compose.theme.red
 import ca.bc.gov.bchealth.model.validation.BaseTextValidation
 import ca.bc.gov.bchealth.model.validation.BaseTextValidation.BLANK
 import ca.bc.gov.bchealth.model.validation.BaseTextValidation.EXCEEDS_LENGTH

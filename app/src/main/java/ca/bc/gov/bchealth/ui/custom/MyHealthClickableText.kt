@@ -9,7 +9,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import ca.bc.gov.bchealth.compose.primaryBlue
+import ca.bc.gov.bchealth.compose.theme.primaryBlue
 
 private const val TEXT_TAG = "TEXT_TAG"
 
