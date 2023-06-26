@@ -51,6 +51,7 @@ class HomeFragment : BaseSecureFragment(null) {
     private val viewModel: HomeViewModel by activityViewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
+    private val homeViewModel: HomeComposeViewModel by viewModels()
 
     private var logoutResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -125,13 +126,12 @@ class HomeFragment : BaseSecureFragment(null) {
                             .verticalScroll(rememberScrollState()),
                     ) {
                         HomeScreen(
-                            homeUiState.patientFirstName,
-                            bannerUiState,
-                            viewModel::toggleBanner,
-                            viewModel::dismissBanner,
-                            ::onClickLearnMore,
-                            homeItems,
-                            ::navigateToDestination
+                            Modifier
+                                .statusBarsPadding()
+                                .navigationBarsPadding()
+                                .padding(it),
+                            homeViewModel,
+                            onQuickAccessTileClicked = {}
                         )
                     }
                 },
