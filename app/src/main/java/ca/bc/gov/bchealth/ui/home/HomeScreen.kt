@@ -1,109 +1,98 @@
 package ca.bc.gov.bchealth.ui.home
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
-import ca.bc.gov.bchealth.compose.MyHealthTypography
-import ca.bc.gov.bchealth.compose.blue
+import ca.bc.gov.bchealth.compose.component.AnnouncementBannerUI
+import ca.bc.gov.bchealth.compose.component.LoginInfoCardUI
+import ca.bc.gov.bchealth.compose.component.QuickAccessTileItemUI
+import ca.bc.gov.bchealth.compose.theme.HealthGatewayTheme
 
 @Composable
 fun HomeScreen(
-    patientFirstName: String?,
-    bannerUiState: BannerItem?,
-    onClickToggle: () -> Unit,
-    onClickDismiss: () -> Unit,
-    onClickLearnMore: (BannerItem) -> Unit,
-    homeItems: List<HomeRecordItem>,
-    onClickHomeCard: (HomeNavigationType) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: HomeComposeViewModel,
+    onQuickAccessTileClicked: (QuickAccessTileItem) -> Unit
 ) {
-    val greeting = if (!patientFirstName.isNullOrBlank()) {
-        stringResource(R.string.hi)
-            .plus(" ")
-            .plus(patientFirstName)
-            .plus(",")
-    } else {
-        stringResource(R.string.hello).plus(",")
+    val uiState = viewModel.uiState.collectAsState().value
+    LaunchedEffect(key1 = Unit) {
+        viewModel.loadQuickAccessTiles()
     }
+    HomeScreenContent(modifier, onQuickAccessTileClicked, uiState.quickAccessTileItems)
+}
 
-    Text(
-        modifier = Modifier.padding(horizontal = 32.dp),
-        text = greeting,
-        style = MyHealthTypography.h2,
-        fontSize = 28.sp,
-        color = MaterialTheme.colors.primary
-    )
-    Spacer(modifier = Modifier.height(8.dp))
+@Composable
+private fun HomeScreenContent(
+    modifier: Modifier = Modifier,
+    onQuickAccessTileClicked: (QuickAccessTileItem) -> Unit,
+    quickAccessTileItems: List<QuickAccessTileItem>
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(32.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
 
-    Text(
-        modifier = Modifier.padding(horizontal = 32.dp),
-        text = stringResource(id = R.string.home_subtitle),
-        style = MyHealthTypography.h2,
-        fontSize = 20.sp,
-        color = blue
-    )
-    Spacer(modifier = Modifier.height(16.dp))
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            AnnouncementBannerUI(
+                title = stringResource(id = R.string.home_banner_toolbar_title),
+                description = stringResource(id = R.string.home_banner_toolbar_title),
+                onLearnMoreClick = { /*TODO*/ },
+                onDismissClick = { /*TODO*/ }
+            )
+        }
 
-    bannerUiState?.let {
-        BannerUI(it, onClickToggle, onClickLearnMore, onClickDismiss)
-    }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            LoginInfoCardUI(
+                onClick = { /*TODO*/ },
+                title = stringResource(id = R.string.log_in_with_bc_services_card),
+                subTitle = stringResource(id = R.string.login_to_view_hidden_records_msg)
+            )
+        }
 
-    homeItems.forEach {
-        HomeCardUI(uiItem = it, onClickItem = { onClickHomeCard.invoke(it.recordType) })
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            Text(
+                text = stringResource(id = R.string.quick_access),
+                style = MaterialTheme.typography.subtitle2,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colors.primary
+            )
+        }
+
+        items(quickAccessTileItems) {
+            QuickAccessTileItemUI(
+                onClick = { onQuickAccessTileClicked(it) },
+                icon = painterResource(id = it.icon),
+                title = stringResource(
+                    it.name
+                )
+            )
+        }
     }
 }
 
-@BasePreview
 @Composable
-private fun PreviewHomeScreen() {
-    HomeScreen(
-        "Bruno",
-        bannerUiState = BannerItem(
-            title = "Great news! Really Big Announcement",
-            body = "View and manage all your available health records, including dispensed medications, health visits, COVID-19 test results, immunizations and more.",
-            date = "",
-            displayReadMore = true,
-            isHidden = false,
-        ),
-        onClickToggle = {},
-        onClickLearnMore = {},
-        onClickDismiss = {},
-        homeItems = listOf(
-            HomeRecordItem(
-                iconTitle = R.drawable.ic_login_info,
-                title = R.string.recommendations_home_title,
-                description = R.string.home_recommendations_body,
-                icon = R.drawable.ic_right_arrow,
-                btnTitle = R.string.get_started,
-                recordType = HomeNavigationType.RECOMMENDATIONS
-
-            ),
-            HomeRecordItem(
-                iconTitle = R.drawable.ic_login_info,
-                title = R.string.recommendations_home_title,
-                description = R.string.home_recommendations_body,
-                icon = R.drawable.ic_right_arrow,
-                btnTitle = R.string.get_started,
-                recordType = HomeNavigationType.RECOMMENDATIONS
-
-            ),
-            HomeRecordItem(
-                iconTitle = R.drawable.ic_login_info,
-                title = R.string.recommendations_home_title,
-                description = R.string.home_recommendations_body,
-                icon = R.drawable.ic_right_arrow,
-                btnTitle = R.string.get_started,
-                recordType = HomeNavigationType.RECOMMENDATIONS
-            )
-        ),
-        onClickHomeCard = {}
-    )
+@BasePreview
+private fun HomeScreenPreview() {
+    HealthGatewayTheme {
+        HomeScreenContent(onQuickAccessTileClicked = {}, quickAccessTileItems = emptyList())
+    }
 }

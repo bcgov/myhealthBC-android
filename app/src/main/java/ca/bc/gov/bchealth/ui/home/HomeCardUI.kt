@@ -22,8 +22,8 @@ import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.bold
-import ca.bc.gov.bchealth.compose.primaryBlue
-import ca.bc.gov.bchealth.compose.white
+import ca.bc.gov.bchealth.compose.theme.primaryBlue
+import ca.bc.gov.bchealth.compose.theme.white
 import ca.bc.gov.bchealth.ui.custom.DecorativeImage
 
 @Composable

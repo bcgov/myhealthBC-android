@@ -121,11 +121,12 @@ fun MyHealthTheme(content: @Composable () -> Unit) = MaterialTheme(
     colors = MaterialTheme.colors.copy(
         primary = primaryBlue,
         primaryVariant = white,
+        onPrimary = white,
         background = white,
         surface = white,
         secondary = primaryBlue,
         secondaryVariant = primaryBlue,
-        onBackground = primaryBlue
+        onBackground = primaryBlue,
     ),
     typography = MyHealthTypography,
     shapes = MaterialTheme.shapes,

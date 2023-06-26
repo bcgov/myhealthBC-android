@@ -484,6 +484,8 @@
     <string name="learn_more">Learn more</string>
     <string name="home_subtitle">What do you want to focus on today?</string>
     <string name="home_banner_toolbar_title">New updates</string>
+    <string name="quick_access">Quick access</string>
+    <string name="immunization_schedules">Immunization schedules</string>
 
     <!--Terms of service-->
     <string name="terms_of_service">Terms of service</string>
@@ -588,4 +590,6 @@
     <string name="health_authority">Health Authority:</string>
     <string name="facility">Facility:</string>
 
+    <!--MENU-->
+    <string name="more_options">More Options</string>
 </resources>

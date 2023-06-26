@@ -25,6 +25,7 @@ versions.room = "2.5.1"
 versions.material = "1.8.0"
 versions.recycler = "1.3.0"
 versions.coordinator = "1.2.0"
+versions.constraint_compose = "1.0.1"
 
 versions.navigation = "2.5.3"
 
