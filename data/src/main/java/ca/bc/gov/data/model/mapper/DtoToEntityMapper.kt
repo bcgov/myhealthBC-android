@@ -22,6 +22,8 @@ import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientNameDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.services.OrganDonorDto
+import ca.bc.gov.common.model.settings.AppFeatureDto
+import ca.bc.gov.common.model.settings.QuickAccessTileDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidTestDto
@@ -50,6 +52,8 @@ import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
 import ca.bc.gov.data.datasource.local.entity.notification.NotificationEntity
 import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
+import ca.bc.gov.data.datasource.local.entity.settings.AppFeatureEntity
+import ca.bc.gov.data.datasource.local.entity.settings.QuickAccessTileEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 
@@ -355,4 +359,21 @@ fun NotificationDto.toEntity() = NotificationEntity(
     actionUrl = actionUrl,
     actionType = actionType.value,
     date = date,
+)
+
+fun AppFeatureDto.toEntity() = AppFeatureEntity(
+    id,
+    featureNameId,
+    featureIconId,
+    destinationId,
+    isEnabled,
+    isQuickAccessEnabled
+)
+
+fun QuickAccessTileDto.toEntity() = QuickAccessTileEntity(
+    id,
+    featureId,
+    titleNameId,
+    titleIconId,
+    isEnabled
 )
