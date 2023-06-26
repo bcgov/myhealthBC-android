@@ -9,6 +9,7 @@ import ca.bc.gov.data.datasource.local.converter.AuthenticationStatusTypeConvert
 import ca.bc.gov.data.datasource.local.converter.DateTimeConverter
 import ca.bc.gov.data.datasource.local.converter.PatientNameConverter
 import ca.bc.gov.data.datasource.local.converter.SyncStatusConverter
+import ca.bc.gov.data.datasource.local.dao.AppFeatureDao
 import ca.bc.gov.data.datasource.local.dao.ClinicalDocumentDao
 import ca.bc.gov.data.datasource.local.dao.CommentDao
 import ca.bc.gov.data.datasource.local.dao.CovidOrderDao
@@ -29,6 +30,7 @@ import ca.bc.gov.data.datasource.local.dao.MedicationSummaryDao
 import ca.bc.gov.data.datasource.local.dao.NotificationDao
 import ca.bc.gov.data.datasource.local.dao.OrganDonorDao
 import ca.bc.gov.data.datasource.local.dao.PatientDao
+import ca.bc.gov.data.datasource.local.dao.QuickAccessTileDao
 import ca.bc.gov.data.datasource.local.dao.SpecialAuthorityDao
 import ca.bc.gov.data.datasource.local.dao.UserProfileDao
 import ca.bc.gov.data.datasource.local.dao.VaccineRecordDao
@@ -54,6 +56,8 @@ import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
 import ca.bc.gov.data.datasource.local.entity.notification.NotificationEntity
 import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
+import ca.bc.gov.data.datasource.local.entity.settings.AppFeatureEntity
+import ca.bc.gov.data.datasource.local.entity.settings.QuickAccessTileEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 
@@ -87,6 +91,8 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
         OrganDonorEntity::class,
         DiagnosticImagingDataEntity::class,
         NotificationEntity::class,
+        AppFeatureEntity::class,
+        QuickAccessTileEntity::class
     ],
     autoMigrations = [
         AutoMigration(from = 8, to = 9),
@@ -153,4 +159,8 @@ abstract class MyHealthDataBase : RoomDatabase() {
     abstract fun getDiagnosticImagingDataDao(): DiagnosticImagingDataDao
 
     abstract fun getNotificationDao(): NotificationDao
+
+    abstract fun getAppFeatureDao(): AppFeatureDao
+
+    abstract fun getQuickAccessTileDao(): QuickAccessTileDao
 }

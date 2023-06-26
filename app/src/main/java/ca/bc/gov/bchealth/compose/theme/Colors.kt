@@ -12,6 +12,7 @@ val primaryBlue = Color(0xFF003366)
 val lightBlue = Color(0xFFB2C1CF)
 val statusBlue30 = Color(0x4D38598A)
 val statusBlue = Color(0xFF38598A)
+val bannerBackgroundBlue = Color(0xFFD9EAF7)
 
 val descriptionGrey = Color(0xFF6D757D)
 val grey = Color(0xFF606060)

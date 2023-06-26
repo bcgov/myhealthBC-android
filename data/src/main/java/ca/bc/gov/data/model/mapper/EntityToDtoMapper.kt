@@ -41,6 +41,9 @@ import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.services.OrganDonorDto
+import ca.bc.gov.common.model.settings.AppFeatureDto
+import ca.bc.gov.common.model.settings.AppFeatureWithQuickAccessTilesDto
+import ca.bc.gov.common.model.settings.QuickAccessTileDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
@@ -75,6 +78,7 @@ import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntit
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
 import ca.bc.gov.data.datasource.local.entity.notification.NotificationEntity
+import ca.bc.gov.data.datasource.local.entity.relations.AppFeatureWithQuickAccessTiles
 import ca.bc.gov.data.datasource.local.entity.relations.MedicationWithSummaryAndPharmacy
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithClinicalDocuments
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithCovidOrderAndCovidTest
@@ -89,6 +93,8 @@ import ca.bc.gov.data.datasource.local.entity.relations.PatientWithVaccineAndDos
 import ca.bc.gov.data.datasource.local.entity.relations.VaccineRecordWithDose
 import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
+import ca.bc.gov.data.datasource.local.entity.settings.AppFeatureEntity
+import ca.bc.gov.data.datasource.local.entity.settings.QuickAccessTileEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 import java.time.Instant
@@ -474,4 +480,26 @@ fun NotificationEntity.toDto() = NotificationDto(
     actionUrl = actionUrl,
     actionType = NotificationActionTypeDto.getByValue(actionType),
     date = date,
+)
+
+fun AppFeatureEntity.toDto() = AppFeatureDto(
+    id,
+    featureNameId,
+    featureIconId,
+    destinationId,
+    isEnabled,
+    isQuickAccessEnabled
+)
+
+fun QuickAccessTileEntity.toDto() = QuickAccessTileDto(
+    id,
+    featureId,
+    tileNameId,
+    tileIconId,
+    isEnabled
+)
+
+fun AppFeatureWithQuickAccessTiles.toDto() = AppFeatureWithQuickAccessTilesDto(
+    appFeature.toDto(),
+    quickAccessTiles.map { it.toDto() }
 )
