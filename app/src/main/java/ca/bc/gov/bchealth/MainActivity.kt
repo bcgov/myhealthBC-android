@@ -89,6 +89,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.vaccineRecordDetailFragment,
                 R.id.addHealthRecordsFragment,
                 R.id.homeFragment,
+                R.id.homeComposeFragment,
                 R.id.bannerDetailFragment,
                 R.id.newsfeedFragment,
                 R.id.servicesFragment,
