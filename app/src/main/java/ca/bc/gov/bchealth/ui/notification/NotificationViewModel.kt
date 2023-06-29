@@ -106,7 +106,8 @@ class NotificationViewModel @Inject constructor(
                             content = dto.displayText,
                             date = dto.date.toDateTimeString(),
                             actionType = dto.actionType,
-                            actionUrl = dto.actionUrl
+                            actionUrl = dto.actionUrl,
+                            category = dto.category,
                         )
                     }
                 )
@@ -136,6 +137,7 @@ class NotificationViewModel @Inject constructor(
         val notificationId: String,
         val content: String,
         val actionUrl: String,
+        val category: String,
         val actionType: NotificationActionTypeDto,
         val date: String,
     )

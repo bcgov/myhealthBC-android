@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
@@ -27,6 +28,8 @@ import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.bchealth.ui.auth.BCServicesCardSessionContent
 import ca.bc.gov.bchealth.ui.custom.MyHealthBackButton
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolBar
+import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
+import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.common.model.notification.NotificationActionTypeDto
@@ -35,6 +38,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class NotificationFragment : BaseFragment(null) {
     private val viewModel: NotificationViewModel by viewModels()
+    private val filterSharedViewModel: PatientFilterViewModel by activityViewModels()
 
     override fun getBaseViewModel(): BaseViewModel = viewModel
 
@@ -122,9 +126,18 @@ class NotificationFragment : BaseFragment(null) {
     private fun onClickNotification(notificationItem: NotificationViewModel.NotificationItem) {
         when (notificationItem.actionType) {
             NotificationActionTypeDto.EXTERNAL -> context?.redirect(notificationItem.actionUrl)
-            NotificationActionTypeDto.INTERNAL -> {}
+            NotificationActionTypeDto.INTERNAL -> goToRecords(notificationItem.category)
+
             NotificationActionTypeDto.NONE -> {}
         }
+    }
+
+    private fun goToRecords(category: String) {
+        filterSharedViewModel.updateFilter(
+            listOf(TimelineTypeFilter.findByFilterValue(category).name),
+        )
+
+        findNavController().navigate(R.id.health_records)
     }
 
     private fun isDeleteIconEnabled(uiState: NotificationViewModel.NotificationsUIState) =
