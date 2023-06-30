@@ -253,6 +253,7 @@ private fun PreviewNotifications() {
         actionUrl = "",
         actionType = NotificationActionTypeDto.INTERNAL,
         date = "2023-May-28 08:20pm",
+        category = ""
     )
 
     MyHealthTheme {

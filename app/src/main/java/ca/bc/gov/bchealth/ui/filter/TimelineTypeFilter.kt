@@ -28,5 +28,18 @@ enum class TimelineTypeFilter(@IdRes val id: Int?, val recordType: HealthRecordT
         fun findByName(name: String): TimelineTypeFilter? = values().find {
             it.name == name
         }
+
+        fun findByFilterValue(filterValue: String): TimelineTypeFilter = when (filterValue) {
+            "Medications" -> MEDICATION
+            "Laboratory" -> LAB_RESULT
+            "COVID19Laboratory" -> COVID_19_TEST
+            "Immunization" -> IMMUNIZATION
+            "HealthVisit" -> HEALTH_VISIT
+            "SpecialAuthority" -> SPECIAL_AUTHORITY
+            "HospitalVisit" -> HOSPITAL_VISITS
+            "ClinicalDocument" -> CLINICAL_DOCUMENT
+            "ImagingReports" -> DIAGNOSTIC_IMAGING
+            else -> ALL
+        }
     }
 }
