@@ -12,6 +12,7 @@ import ca.bc.gov.data.datasource.local.LabOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
 import ca.bc.gov.data.datasource.local.LocalDataSource
 import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
+import ca.bc.gov.data.datasource.local.NotificationLocalDataSource
 import ca.bc.gov.data.datasource.local.OrganDonorLocalDataSource
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
@@ -22,6 +23,7 @@ import ca.bc.gov.data.datasource.remote.FeedbackRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
+import ca.bc.gov.data.datasource.remote.NotificationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.PatientServicesRemoteDataSource
 import ca.bc.gov.data.datasource.remote.TermsOfServiceRemoteDataSource
 import ca.bc.gov.preference.EncryptedPreferenceStorage
@@ -32,6 +34,7 @@ import ca.bc.gov.repository.DependentsRepository
 import ca.bc.gov.repository.FeedbackRepository
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
+import ca.bc.gov.repository.NotificationRepository
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.PdfDecoderRepository
@@ -263,6 +266,18 @@ class RepositoriesModule {
     fun provideTermsOfServiceRepository(
         termsOfServiceRemoteDataSource: TermsOfServiceRemoteDataSource
     ): TermsOfServiceRepository = TermsOfServiceRepository(termsOfServiceRemoteDataSource)
+
+    @Provides
+    @Singleton
+    fun provideNotificationRepository(
+        notificationLocalDataSource: NotificationLocalDataSource,
+        notificationRemoteDataSource: NotificationRemoteDataSource,
+        bcscAuthRepo: BcscAuthRepo
+    ): NotificationRepository = NotificationRepository(
+        notificationLocalDataSource,
+        notificationRemoteDataSource,
+        bcscAuthRepo
+    )
 
     @Provides
     @Singleton

@@ -2,8 +2,6 @@ package ca.bc.gov.bchealth.ui.home
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
@@ -42,18 +40,17 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var bannerRequested = false
-    private val _bannerState: MutableLiveData<BannerItem> = MutableLiveData()
-    val bannerState: LiveData<BannerItem>
-        get() = _bannerState
+
+    private val _bannerState = MutableStateFlow<BannerItem?>(null)
+    val bannerState: StateFlow<BannerItem?> = _bannerState.asStateFlow()
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     var isAuthenticationRequired: Boolean = true
     var isForceLogout: Boolean = false
 
-    private val _homeList = MutableLiveData<List<HomeRecordItem>>()
-    val homeList: LiveData<List<HomeRecordItem>>
-        get() = _homeList
+    private val _homeList = MutableStateFlow<List<HomeRecordItem>?>(null)
+    val homeList: StateFlow<List<HomeRecordItem>?> = _homeList.asStateFlow()
 
     private val recommendationItem = HomeRecordItem(
         R.drawable.ic_recommendation,
@@ -176,7 +173,7 @@ class HomeViewModel @Inject constructor(
             ),
         )
 
-        _homeList.postValue(list)
+        _homeList.update { list }
         displayRecommendations.collect {
             manageRecommendationCard(it)
         }
@@ -190,11 +187,15 @@ class HomeViewModel @Inject constructor(
 
             if (displayCard) {
                 if (cardIndex == INDEX_NOT_FOUND) {
-                    _homeList.postValue(list.toMutableList().apply { add(1, recommendationItem) })
+                    _homeList.update {
+                        list.toMutableList().apply { add(1, recommendationItem) }
+                    }
                 }
             } else {
                 if (cardIndex > INDEX_NOT_FOUND) {
-                    _homeList.postValue(list.toMutableList().apply { removeAt(cardIndex) })
+                    _homeList.update {
+                        list.toMutableList().apply { removeAt(cardIndex) }
+                    }
                 }
             }
         }
@@ -232,14 +233,14 @@ class HomeViewModel @Inject constructor(
     private suspend fun callBannerRepository() {
         bannerRepository.getBanner()?.apply {
             if (validateBannerDates(this)) {
-                _bannerState.postValue(
+                _bannerState.update {
                     BannerItem(
                         title = title,
                         date = startDate.toDate(yyyy_MM_dd),
                         body = body,
                         displayReadMore = shouldDisplayReadMore(body),
                     )
-                )
+                }
             }
         }
     }
@@ -251,17 +252,11 @@ class HomeViewModel @Inject constructor(
     }
 
     fun toggleBanner() {
-        _bannerState.value?.let {
-            it.expanded = it.expanded.not()
-            _bannerState.postValue(it)
-        }
+        _bannerState.update { it?.copy(expanded = it.expanded.not()) }
     }
 
     fun dismissBanner() {
-        _bannerState.value?.let {
-            it.isHidden = true
-            _bannerState.postValue(it)
-        }
+        _bannerState.update { it?.copy(isHidden = true) }
     }
 
     private fun shouldDisplayReadMore(body: String): Boolean =

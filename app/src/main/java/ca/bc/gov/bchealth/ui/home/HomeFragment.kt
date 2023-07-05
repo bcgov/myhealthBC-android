@@ -2,9 +2,24 @@ package ca.bc.gov.bchealth.ui.home
 
 import android.app.Activity
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.contentColorFor
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -12,42 +27,37 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.databinding.FragmentHomeBinding
+import ca.bc.gov.bchealth.compose.BasePreview
+import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.ui.BaseSecureFragment
 import ca.bc.gov.bchealth.ui.BcscAuthState
 import ca.bc.gov.bchealth.ui.auth.BioMetricState
 import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment
+import ca.bc.gov.bchealth.ui.custom.MyHealthToolBar
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
-import ca.bc.gov.bchealth.utils.fromHtml
-import ca.bc.gov.bchealth.utils.hide
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.observeCurrentBackStackForAction
-import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
-import ca.bc.gov.bchealth.utils.toggleVisibility
-import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
+class HomeFragment : BaseSecureFragment(null) {
 
-    private val binding by viewBindings(FragmentHomeBinding::bind)
     private val viewModel: HomeViewModel by activityViewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private lateinit var homeAdapter: HomeAdapter
     private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
+
     private var logoutResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { activityResult ->
         if (activityResult.resultCode == Activity.RESULT_OK) {
             bcscAuthViewModel.processLogoutResponse(requireContext()).invokeOnCompletion {
-                initRecyclerview()
+                updateHomeRecordsList()
             }
         } else {
             AlertDialogHelper.showAlertDialog(
@@ -72,6 +82,7 @@ class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
                     viewModel.launchCheck()
                     viewModel.executeOneTimeDataFetch()
                 }
+
                 else -> {
                     findNavController().popBackStack()
                 }
@@ -86,26 +97,85 @@ class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
             }
         }
 
-        initRecyclerview()
+        updateHomeRecordsList()
         observeAuthStatus()
 
         bcscAuthViewModel.checkSession()
 
         viewModel.launchCheck()
         viewModel.getAuthenticatedPatientName()
-        viewModel.bannerState.observe(viewLifecycleOwner) { displayBanner(it) }
+    }
+
+    @Composable
+    override fun GetComposableLayout() {
+        val homeUiState = viewModel.uiState.collectAsState().value
+        val bannerUiState = viewModel.bannerState.collectAsState().value
+        val homeItems = viewModel.homeList.collectAsState().value.orEmpty()
+        val authState = bcscAuthViewModel.authStatus.collectAsState().value
+
+        MyHealthTheme {
+            Scaffold(
+                topBar = { HomeToolbar(authState.loginStatus != LoginStatus.NOT_AUTHENTICATED) },
+                content = {
+                    Column(
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .navigationBarsPadding()
+                            .padding(it)
+                            .verticalScroll(rememberScrollState()),
+                    ) {
+                        HomeScreen(
+                            homeUiState.patientFirstName,
+                            bannerUiState,
+                            viewModel::toggleBanner,
+                            viewModel::dismissBanner,
+                            ::onClickLearnMore,
+                            homeItems,
+                            ::navigateToDestination
+                        )
+                    }
+                },
+                contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.background)
+            )
+        }
+    }
+
+    @Composable
+    private fun HomeToolbar(isAuthenticated: Boolean) {
+        MyHealthToolBar(
+            title = "",
+            actions = {
+
+                if (isAuthenticated) {
+                    IconButton(
+                        onClick = { findNavController().navigate(R.id.notificationFragment) }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_notification),
+                            contentDescription = stringResource(id = R.string.notifications),
+                            tint = MaterialTheme.colors.primary
+                        )
+                    }
+                }
+                IconButton(
+                    onClick = { findNavController().navigate(R.id.settingsFragment) }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_settings),
+                        contentDescription = stringResource(
+                            id = R.string.settings
+                        ),
+                        tint = MaterialTheme.colors.primary
+                    )
+                }
+            }
+        )
     }
 
     override fun handleBCSCAuthState(bcscAuthState: BcscAuthState) {
-        when (bcscAuthState) {
-            BcscAuthState.SUCCESS -> {
-                if (sharedViewModel.destinationId > 0) {
-                    findNavController().navigate(sharedViewModel.destinationId)
-                }
-            }
-
-            else -> {
-                // no implementation required
+        if (bcscAuthState == BcscAuthState.SUCCESS) {
+            if (sharedViewModel.destinationId > 0) {
+                findNavController().navigate(sharedViewModel.destinationId)
             }
         }
     }
@@ -128,16 +198,8 @@ class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
         }
     }
 
-    private fun initRecyclerview() {
-        launchOnStart {
-            homeAdapter = HomeAdapter { navigateToDestination(it) }
-            binding.rvHome.adapter = homeAdapter
-            viewModel.homeList.observe(viewLifecycleOwner) {
-                homeAdapter.setData(it)
-                homeAdapter.notifyDataSetChanged()
-            }
-            viewModel.getHomeRecordsList()
-        }
+    private fun updateHomeRecordsList() {
+        launchOnStart { viewModel.getHomeRecordsList() }
     }
 
     private fun navigateToDestination(destinationType: HomeNavigationType) {
@@ -184,76 +246,40 @@ class HomeFragment : BaseSecureFragment(R.layout.fragment_home) {
                 viewModel.onBcscLoginRequired(false)
             }
 
-            if (!uiState.patientFirstName.isNullOrBlank()) {
-                binding.tvName.text = getString(R.string.hi)
-                    .plus(" ")
-                    .plus(uiState.patientFirstName)
-                    .plus(",")
-            } else {
-                binding.tvName.text = getString(R.string.hello).plus(",")
-            }
-
             if (uiState.isForceLogout) {
                 bcscAuthViewModel.getEndSessionIntent()
                 viewModel.onForceLogout(false)
             }
 
             if (uiState.displayServiceDownMessage) {
-                binding.root.showServiceDownMessage(requireContext())
+                view?.showServiceDownMessage(requireContext())
                 viewModel.resetUiState()
             }
         }
     }
 
-    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
-        with(binding.layoutToolbar.appbar) {
-            stateListAnimator = null
-            elevation = 0f
-        }
-        with(binding.layoutToolbar.topAppBar) {
-            inflateMenu(R.menu.settings_menu)
-            setOnMenuItemClickListener { menu ->
-                when (menu.itemId) {
-                    R.id.menu_settings -> {
-                        findNavController().navigate(R.id.settingsFragment)
-                    }
-                }
-                return@setOnMenuItemClickListener true
-            }
+    private fun onClickLearnMore(banner: BannerItem) {
+        val action = HomeFragmentDirections.actionHomeFragmentToBannerDetail(
+            title = banner.title,
+            date = banner.date,
+            body = banner.body,
+        )
+        findNavController().navigate(action)
+    }
+
+    @BasePreview
+    @Composable
+    private fun PreviewHomeToolbar() {
+        MyHealthTheme {
+            HomeToolbar(true)
         }
     }
 
-    private fun displayBanner(banner: BannerItem) = with(binding.includeBanner) {
-        if (banner.isHidden) {
-            viewBanner.hide()
-            return
+    @BasePreview
+    @Composable
+    private fun PreviewHomeToolbarNonAuthenticated() {
+        MyHealthTheme {
+            HomeToolbar(false)
         }
-
-        tvTitle.text = banner.title
-
-        tvBody.movementMethod = LinkMovementMethod.getInstance()
-        tvBody.text = banner.body.fromHtml().trimEnd()
-
-        ivToggle.isSelected = banner.expanded
-        groupFullContent.toggleVisibility(banner.expanded)
-
-        ivToggle.setOnClickListener {
-            viewModel.toggleBanner()
-        }
-
-        tvLearnMore.toggleVisibility(banner.displayReadMore && banner.expanded)
-        tvLearnMore.setOnClickListener {
-            val action = HomeFragmentDirections.actionHomeFragmentToBannerDetail(
-                title = banner.title,
-                date = banner.date,
-                body = banner.body,
-            )
-            findNavController().navigate(action)
-        }
-        tvDismiss.setOnClickListener {
-            viewModel.dismissBanner()
-        }
-
-        viewBanner.show()
     }
 }
