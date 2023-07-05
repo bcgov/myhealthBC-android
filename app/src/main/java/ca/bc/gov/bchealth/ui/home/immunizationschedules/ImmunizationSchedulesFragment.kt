@@ -1,6 +1,5 @@
 package ca.bc.gov.bchealth.ui.home.immunizationschedules
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -31,14 +30,14 @@ class ImmunizationSchedulesFragment : BaseFragment(null) {
                     )
                 },
                 content = {
-                    Box(
+                    ImmunizationSchedulesScreen(
+                        uiList = uiList,
+                        onClickItem = ::onClickUrl,
                         modifier = Modifier
                             .statusBarsPadding()
                             .navigationBarsPadding()
                             .padding(it)
-                    ) {
-                        ImmunizationSchedulesScreen(uiList, ::onClickUrl)
-                    }
+                    )
                 },
             )
         }
