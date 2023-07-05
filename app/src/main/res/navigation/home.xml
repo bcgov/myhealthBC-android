@@ -65,6 +65,11 @@
             app:argType="string" />
     </fragment>
 
+    <fragment
+        android:id="@+id/immunizationSchedulesFragment"
+        android:name="ca.bc.gov.bchealth.ui.home.immunizationschedules.ImmunizationSchedulesFragment"
+        android:label="@string/immnz_forecast_title" />
+
     <include app:graph="@navigation/health_pass" />
     <include app:graph="@navigation/health_records" />
     <include app:graph="@navigation/resources" />
