@@ -487,6 +487,13 @@
     <string name="quick_access">Quick access</string>
     <string name="immunization_schedules">Immunization schedules</string>
 
+    <!-- Immunization Schedules -->
+    <string name="immnz_schedules_title">Immunization Schedules</string>
+    <string name="immnz_schedules_body">Click on the tabs below to expand and view individual immunization schedules for different age groups and individuals at high risk.</string>
+    <string name="immnz_schedules_infant">Infant and children</string>
+    <string name="immnz_schedules_school_age">School age children</string>
+    <string name="immnz_schedules_adult_seniors">Adult, seniors and individual with high risk</string>
+
     <!--Terms of service-->
     <string name="terms_of_service">Terms of service</string>
     <string name="btn_agree">Agree</string>
