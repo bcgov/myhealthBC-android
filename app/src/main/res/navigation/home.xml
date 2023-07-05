@@ -7,8 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="ca.bc.gov.bchealth.ui.home.HomeFragment"
-        tools:layout="@layout/fragment_home">
+        android:name="ca.bc.gov.bchealth.ui.home.HomeFragment">
         <action
             android:id="@+id/action_homeFragment_to_banner_detail"
             app:destination="@id/bannerDetailFragment" />

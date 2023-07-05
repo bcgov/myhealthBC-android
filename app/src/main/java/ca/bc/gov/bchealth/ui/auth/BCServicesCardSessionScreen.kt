@@ -51,7 +51,9 @@ fun BCServicesCardSessionContent(
             .padding(start = 32.dp, end = 32.dp, bottom = 32.dp)
     ) {
 
-        Text(text = title, style = MyHealthTypography.h2, color = MaterialTheme.colors.primary)
+        title?.let {
+            Text(text = title, style = MyHealthTypography.h2, color = MaterialTheme.colors.primary)
+        }
         if (!description.isNullOrBlank()) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = description, style = MyHealthTypography.h4)

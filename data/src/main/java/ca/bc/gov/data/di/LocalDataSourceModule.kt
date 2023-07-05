@@ -16,6 +16,7 @@ import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
 import ca.bc.gov.data.datasource.local.LocalDataSource
 import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.MyHealthDataBase
+import ca.bc.gov.data.datasource.local.NotificationLocalDataSource
 import ca.bc.gov.data.datasource.local.OrganDonorLocalDataSource
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.SpecialAuthorityLocalDataSource
@@ -122,6 +123,11 @@ class LocalDataSourceModule {
     @Singleton
     fun provideHospitalVisitLocalDataSource(db: MyHealthDataBase): HospitalVisitLocalDataSource =
         HospitalVisitLocalDataSource(db.getHospitalVisitDao())
+
+    @Provides
+    @Singleton
+    fun provideNotificationLocalDataSource(db: MyHealthDataBase): NotificationLocalDataSource =
+        NotificationLocalDataSource(db.getNotificationDao())
 
     @Provides
     @Singleton

@@ -20,17 +20,14 @@ abstract class FilterViewModel : ViewModel() {
         }
     }
 
-    fun updateFilter(timelineTypeFilter: List<String>, fromDate: String?, toDate: String?) {
-        val startDate: String? = if (fromDate.isNullOrBlank()) {
-            null
-        } else {
-            fromDate
-        }
-        val endDate: String? = if (toDate.isNullOrBlank()) {
-            null
-        } else {
-            toDate
-        }
+    fun updateFilter(
+        timelineTypeFilter: List<String>,
+        fromDate: String? = null,
+        toDate: String? = null
+    ) {
+
+        val startDate: String? = fromDate.takeUnless { it.isNullOrBlank() }
+        val endDate: String? = toDate.takeUnless { it.isNullOrBlank() }
 
         _filterState.update { state ->
             state.copy(

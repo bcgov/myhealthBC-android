@@ -25,6 +25,8 @@ import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabTestDto
+import ca.bc.gov.common.model.notification.NotificationActionTypeDto
+import ca.bc.gov.common.model.notification.NotificationDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientNameDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
@@ -40,6 +42,7 @@ import ca.bc.gov.common.model.userprofile.UserProfileDto
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.common.utils.toDateTimeZ
 import ca.bc.gov.common.utils.toOffsetDateTime
+import ca.bc.gov.common.utils.toPstFromIsoZoned
 import ca.bc.gov.data.datasource.remote.model.base.CovidLabResult
 import ca.bc.gov.data.datasource.remote.model.base.CovidOrder
 import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
@@ -76,6 +79,7 @@ import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
+import ca.bc.gov.data.datasource.remote.model.response.NotificationResponse
 import ca.bc.gov.data.datasource.remote.model.response.PatientAddress
 import ca.bc.gov.data.datasource.remote.model.response.PatientDataResponse
 import ca.bc.gov.data.datasource.remote.model.response.PatientResponse
@@ -514,3 +518,13 @@ fun PatientDataResponse.toDto() = items.map { data ->
         }
     }
 }
+
+fun NotificationResponse.toDto(hdid: String) = NotificationDto(
+    notificationId = id,
+    hdid = hdid,
+    category = category,
+    displayText = displayText,
+    actionUrl = actionUrl,
+    actionType = NotificationActionTypeDto.getByValue(actionType),
+    date = date.toPstFromIsoZoned()
+)
