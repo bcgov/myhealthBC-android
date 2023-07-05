@@ -6,6 +6,11 @@
     <string name="url_news_feed">https://news.gov.bc.ca/news-subscribe/covid-19/feed</string>
     <string name="url_immunize_bc">https://immunizebc.ca/</string>
 
+    <!-- Immunization Schedules -->
+    <string name="url_immnz_schedules_infant">https://www.healthlinkbc.ca/bc-immunization-schedules#child</string>
+    <string name="url_immnz_schedules_school_age">https://www.healthlinkbc.ca/bc-immunization-schedules#school</string>
+    <string name="url_immnz_schedules_adult_seniors">https://www.healthlinkbc.ca/bc-immunization-schedules#adult</string>
+
     <!--Resources-->
     <string name="url_update_your_immnz">https://immunizationrecord.gov.bc.ca/</string>
     <string name="url_get_health_advice">https://www.healthlinkbc.ca/</string>
