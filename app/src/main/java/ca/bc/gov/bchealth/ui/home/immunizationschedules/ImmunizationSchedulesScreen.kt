@@ -15,6 +15,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +33,21 @@ import ca.bc.gov.bchealth.ui.home.immunizationschedules.ImmunizationSchedulesVie
 
 @Composable
 fun ImmunizationSchedulesScreen(
+    viewModel: ImmunizationSchedulesViewModel,
+    onClickItem: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val uiState = viewModel.uiState.collectAsState().value
+
+    LaunchedEffect(Unit) {
+        viewModel.loadUiList()
+    }
+
+    ImmunizationSchedulesContent(uiState.uiList, onClickItem, modifier)
+}
+
+@Composable
+private fun ImmunizationSchedulesContent(
     uiList: List<ImmunizationSchedulesItem>,
     onClickItem: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -100,8 +117,13 @@ private fun ImmunizationScheduleUI(item: ImmunizationSchedulesItem, onClickItem:
 @BasePreview
 @Composable
 private fun PreviewImmunizationSchedulesScreen() {
-    val viewModel = ImmunizationSchedulesViewModel()
-    ImmunizationSchedulesScreen(
-        viewModel.getUiList(), {}
+    val item = ImmunizationSchedulesItem(
+        R.drawable.ic_immnz_schedules_infant,
+        R.string.immnz_schedules_infant,
+        R.string.url_immnz_schedules_infant
+    )
+
+    ImmunizationSchedulesContent(
+        listOf(item, item, item), {}
     )
 }
