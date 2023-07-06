@@ -63,6 +63,12 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
 
     open fun setToolBar(appBarConfiguration: AppBarConfiguration) {}
 
+    @Deprecated(
+        "Should replace with extension mentioned in the FragmentExtensions" +
+            "as in compose we need to get rid of all the fragment",
+        replaceWith = ReplaceWith("launchAndRepeatWithLifecycle"),
+        level = DeprecationLevel.WARNING
+    )
     fun <T> StateFlow<T>.collectOnStart(action: ((T) -> Unit)) {
         launchOnStart {
             this@collectOnStart.collect { state ->
@@ -71,6 +77,12 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
         }
     }
 
+    @Deprecated(
+        "Should be added as a extension to the fragment" +
+            "as in compose we need to get rid of all the fragment",
+        replaceWith = ReplaceWith(""),
+        level = DeprecationLevel.WARNING
+    )
     fun composeEmail(address: String = HEALTH_GATEWAY_EMAIL_ADDRESS, subject: String = "") {
         requireActivity().composeEmail(address, subject)
     }
@@ -84,6 +96,12 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
         )
     }
 
+    @Deprecated(
+        "remove usage of popup navigation and replace it with the a findNavController().popBackStack()" +
+            "as in compose we need to get rid of all the fragment",
+        replaceWith = ReplaceWith("findNavController().popBackStack()"),
+        level = DeprecationLevel.WARNING
+    )
     fun popNavigation() {
         findNavController().popBackStack()
     }

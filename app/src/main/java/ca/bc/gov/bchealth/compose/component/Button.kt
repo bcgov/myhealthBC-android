@@ -150,7 +150,7 @@ fun HGTextButton(
         contentPadding = if (leadingIcon != null) {
             ButtonDefaults.ButtonWithIconContentPadding
         } else {
-            ButtonDefaults.ContentPadding
+            ButtonDefaults.TextButtonContentPadding
         }
     ) {
         HGButtonContent(
@@ -187,7 +187,7 @@ fun HGTextButton(
         contentPadding = if (leadingIcon != null) {
             ButtonDefaults.ButtonWithIconContentPadding
         } else {
-            ButtonDefaults.ContentPadding
+            ButtonDefaults.TextButtonContentPadding
         }
     ) {
         HGButtonContent(
@@ -203,7 +203,7 @@ fun HGTextButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     defaultHeight: Dp = HGButtonDefaults.LargeButtonHeight,
-    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    contentPadding: PaddingValues = ButtonDefaults.TextButtonContentPadding,
     content: @Composable RowScope.() -> Unit
 ) {
 
