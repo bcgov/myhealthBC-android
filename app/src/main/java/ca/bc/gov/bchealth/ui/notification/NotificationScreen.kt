@@ -37,10 +37,10 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
-import ca.bc.gov.bchealth.compose.grey
-import ca.bc.gov.bchealth.compose.greyBg
 import ca.bc.gov.bchealth.compose.minButtonSize
-import ca.bc.gov.bchealth.compose.primaryBlue
+import ca.bc.gov.bchealth.compose.theme.grey
+import ca.bc.gov.bchealth.compose.theme.greyBg
+import ca.bc.gov.bchealth.compose.theme.primaryBlue
 import ca.bc.gov.bchealth.ui.component.HGLargeButton
 import ca.bc.gov.bchealth.ui.custom.DecorativeImage
 import ca.bc.gov.common.model.notification.NotificationActionTypeDto
