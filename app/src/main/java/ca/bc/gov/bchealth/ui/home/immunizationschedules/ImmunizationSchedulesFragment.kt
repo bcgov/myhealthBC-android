@@ -20,7 +20,6 @@ class ImmunizationSchedulesFragment : BaseFragment(null) {
 
     @Composable
     override fun GetComposableLayout() {
-        val uiList = viewModel.getUiList()
         MyHealthTheme {
             Scaffold(
                 topBar = {
@@ -31,7 +30,7 @@ class ImmunizationSchedulesFragment : BaseFragment(null) {
                 },
                 content = {
                     ImmunizationSchedulesScreen(
-                        uiList = uiList,
+                        viewModel = viewModel,
                         onClickItem = ::onClickUrl,
                         modifier = Modifier
                             .statusBarsPadding()
