@@ -20,6 +20,7 @@ import ca.bc.gov.data.datasource.local.MyHealthDataBase
 import ca.bc.gov.data.datasource.local.NotificationLocalDataSource
 import ca.bc.gov.data.datasource.local.OrganDonorLocalDataSource
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
+import ca.bc.gov.data.datasource.local.QuickActionTileLocalDataSource
 import ca.bc.gov.data.datasource.local.SpecialAuthorityLocalDataSource
 import ca.bc.gov.data.datasource.local.UserProfileLocalDataSource
 import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
@@ -159,4 +160,9 @@ class LocalDataSourceModule {
     @Singleton
     fun provideAppFeatureLocalDataSource(db: MyHealthDataBase): AppFeatureLocalDataSource =
         AppFeatureLocalDataSource(db.getAppFeatureDao())
+
+    @Provides
+    @Singleton
+    fun provideQuickAccessLocalDataSource(db: MyHealthDataBase): QuickActionTileLocalDataSource =
+        QuickActionTileLocalDataSource(db.getQuickAccessTileDao())
 }

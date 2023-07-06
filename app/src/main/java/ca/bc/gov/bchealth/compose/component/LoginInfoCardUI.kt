@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -29,19 +28,22 @@ fun LoginInfoCardUI(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     title: String,
-    subTitle: String,
-    image: Painter = painterResource(id = R.drawable.img_un_authenticated_home_screen)
+    description: String,
+    buttonText: String,
+    image: Painter? = null
 ) {
     Card(
         modifier = modifier,
         backgroundColor = greyBg
     ) {
         Box(modifier = modifier) {
-            Image(
-                modifier = Modifier.align(Alignment.BottomEnd),
-                painter = image,
-                contentDescription = null
-            )
+            image?.let {
+                Image(
+                    modifier = Modifier.align(Alignment.BottomEnd),
+                    painter = it,
+                    contentDescription = null
+                )
+            }
 
             Column(
                 modifier = modifier
@@ -57,13 +59,13 @@ fun LoginInfoCardUI(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = subTitle,
+                    text = description,
                     style = MaterialTheme.typography.body2
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 HGButton(
                     onClick = onClick,
-                    text = stringResource(id = R.string.get_started),
+                    text = buttonText,
                     defaultHeight = HGButtonDefaults.SmallButtonHeight
                 )
             }
@@ -78,7 +80,8 @@ private fun LoginInfoCardUIPreview() {
         LoginInfoCardUI(
             onClick = { /*TODO*/ },
             title = stringResource(id = R.string.log_in_with_bc_services_card),
-            subTitle = stringResource(id = R.string.login_to_view_hidden_records_msg)
+            description = stringResource(id = R.string.login_to_view_hidden_records_msg),
+            buttonText = stringResource(id = R.string.get_started)
         )
     }
 }

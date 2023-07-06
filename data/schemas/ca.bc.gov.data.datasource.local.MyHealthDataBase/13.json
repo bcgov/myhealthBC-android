@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 13,
-    "identityHash": "cd63a7ddb38d8002c82af9bc1156c3dc",
+    "identityHash": "d250a01adf6d2d797cb46b6b9b0a2178",
     "entities": [
       {
         "tableName": "patient",
@@ -1998,132 +1998,12 @@
         },
         "indices": [],
         "foreignKeys": []
-      },
-      {
-        "tableName": "app_feature",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `feature_name_id` INTEGER NOT NULL, `feature_icon_id` INTEGER NOT NULL, `destination_id` INTEGER NOT NULL, `enabled` INTEGER NOT NULL DEFAULT false, `quick_access_enabled` INTEGER NOT NULL DEFAULT false)",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "featureNameId",
-            "columnName": "feature_name_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "featureIconId",
-            "columnName": "feature_icon_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "destinationId",
-            "columnName": "destination_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isEnabled",
-            "columnName": "enabled",
-            "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "false"
-          },
-          {
-            "fieldPath": "isQuickAccessEnabled",
-            "columnName": "quick_access_enabled",
-            "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "false"
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": true,
-          "columnNames": [
-            "id"
-          ]
-        },
-        "indices": [
-          {
-            "name": "index_app_feature_feature_name_id_feature_icon_id",
-            "unique": true,
-            "columnNames": [
-              "feature_name_id",
-              "feature_icon_id"
-            ],
-            "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_app_feature_feature_name_id_feature_icon_id` ON `${TABLE_NAME}` (`feature_name_id`, `feature_icon_id`)"
-          }
-        ],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "quick_access_tile",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `feature_id` INTEGER NOT NULL, `tile_name_id` INTEGER NOT NULL, `tile_icon_id` INTEGER NOT NULL, `enabled` INTEGER NOT NULL DEFAULT false, FOREIGN KEY(`feature_id`) REFERENCES `app_feature`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "featureId",
-            "columnName": "feature_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "tileNameId",
-            "columnName": "tile_name_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "tileIconId",
-            "columnName": "tile_icon_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isEnabled",
-            "columnName": "enabled",
-            "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "false"
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": true,
-          "columnNames": [
-            "id"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": [
-          {
-            "table": "app_feature",
-            "onDelete": "CASCADE",
-            "onUpdate": "CASCADE",
-            "columns": [
-              "feature_id"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
-        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cd63a7ddb38d8002c82af9bc1156c3dc')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd250a01adf6d2d797cb46b6b9b0a2178')"
     ]
   }
 }
