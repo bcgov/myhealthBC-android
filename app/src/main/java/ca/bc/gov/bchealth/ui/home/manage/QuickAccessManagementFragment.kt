@@ -18,7 +18,6 @@ import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.custom.AppBarDefaults
 import ca.bc.gov.bchealth.ui.custom.MyHealthBackButton
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolBar
-import ca.bc.gov.bchealth.ui.home.QuickAccessTileItem
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -60,7 +59,7 @@ class QuickAccessManagementFragment : BaseFragment(null) {
         }
     }
 
-    private fun onClickItem(item: QuickAccessTileItem) {
+    private fun onClickItem(item: QuickAccessManagementViewModel.QuickAccessItem) {
         viewModel.toggleItem(item)
     }
 }

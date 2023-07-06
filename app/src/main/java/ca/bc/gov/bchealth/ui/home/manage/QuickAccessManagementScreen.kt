@@ -1,7 +1,6 @@
 package ca.bc.gov.bchealth.ui.home.manage
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -14,7 +13,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,43 +28,39 @@ import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.bold
+import ca.bc.gov.bchealth.compose.component.HGProgressIndicator
 import ca.bc.gov.bchealth.compose.theme.primaryBlue
 import ca.bc.gov.bchealth.compose.theme.statusBlue
 import ca.bc.gov.bchealth.compose.theme.white
-import ca.bc.gov.bchealth.ui.home.QuickAccessTileItem
 
 @Composable
 fun QuickAccessManagementScreen(
     viewModel: QuickAccessManagementViewModel,
-    onClickItem: (QuickAccessTileItem) -> Unit,
+    onClickItem: (QuickAccessManagementViewModel.QuickAccessItem) -> Unit,
     onUpdateCompleted: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState = viewModel.uiState.collectAsState().value
 
     LaunchedEffect(Unit) {
-        viewModel.loadTilesUi()
+        viewModel.loadQuickAccessTileData()
     }
 
-    Box {
-        QuickAccessManagementContent(uiState.uiMap, onClickItem, modifier)
-
-        if (uiState.isLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-            )
-        }
+    if (uiState.isLoading) {
+        HGProgressIndicator(modifier)
+    } else {
+        QuickAccessManagementContent(uiState.featureWithQuickAccessItems, onClickItem = onClickItem)
     }
 
     if (uiState.isUpdateCompleted) {
-        onUpdateCompleted.invoke()
+        onUpdateCompleted()
     }
 }
 
 @Composable
 private fun QuickAccessManagementContent(
-    uiMap: Map<Int, List<QuickAccessTileItem>>,
-    onClickItem: (QuickAccessTileItem) -> Unit,
+    featureWithQuickAccessItems: List<QuickAccessManagementViewModel.FeatureWithQuickAccessItems>,
+    onClickItem: (QuickAccessManagementViewModel.QuickAccessItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -83,22 +77,19 @@ private fun QuickAccessManagementContent(
 
             item { Spacer(modifier = Modifier.size(16.dp)) }
 
-            for ((category, tiles) in uiMap) {
+            featureWithQuickAccessItems.forEach {
                 item {
                     Text(
-                        text = stringResource(id = category),
+                        text = it.name,
                         style = MyHealthTypography.body1.bold(),
                         color = statusBlue
                     )
                 }
-
                 item { Spacer(modifier = Modifier.size(12.dp)) }
-
-                items(tiles) { tile ->
+                items(it.quickAccessItems) { tile ->
                     TileItemUi(tile, onClickItem)
                     Spacer(modifier = Modifier.size(10.dp))
                 }
-
                 item { Spacer(modifier = Modifier.size(6.dp)) }
             }
         }
@@ -107,10 +98,10 @@ private fun QuickAccessManagementContent(
 
 @Composable
 private fun TileItemUi(
-    item: QuickAccessTileItem,
-    onClickItem: (QuickAccessTileItem) -> Unit,
+    item: QuickAccessManagementViewModel.QuickAccessItem,
+    onClickItem: (QuickAccessManagementViewModel.QuickAccessItem) -> Unit,
 ) {
-    val checkedState = remember { mutableStateOf(item.enabled) }
+    val checkedState = remember { mutableStateOf(item.isEnabled) }
 
     Card(
         modifier = Modifier.clickable {
@@ -143,17 +134,12 @@ private fun TileItemUi(
 }
 
 @Composable
-private fun RowScope.TileName(item: QuickAccessTileItem) {
-    val name = when (item) {
-        is QuickAccessTileItem.PredefinedItem -> stringResource(id = item.nameId)
-        is QuickAccessTileItem.DynamicItem -> item.text
-    }
-
+private fun RowScope.TileName(item: QuickAccessManagementViewModel.QuickAccessItem) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
             .weight(1f),
-        text = name,
+        text = item.name,
         style = MyHealthTypography.body1.bold(),
     )
 }
@@ -161,27 +147,10 @@ private fun RowScope.TileName(item: QuickAccessTileItem) {
 @BasePreview
 @Composable
 private fun PreviewQuickAccessManagementContent() {
-    val sample = QuickAccessTileItem.PredefinedItem(
-        id = -1,
-        destinationId = -1,
-        destinationParam = null,
-        categoryId = -1,
-        enabled = false,
-        icon = -1,
-        nameId = -1
-    )
 
     MyHealthTheme {
         QuickAccessManagementContent(
-            mapOf(
-                R.string.health_records to listOf(
-                    sample.copy(nameId = R.string.feature_medications, enabled = true),
-                    sample.copy(nameId = R.string.feature_health_visit, enabled = false),
-                ),
-                R.string.services to listOf(
-                    sample.copy(nameId = R.string.organ_donor, enabled = true),
-                ),
-            ),
+            emptyList(),
             {}
         )
     }

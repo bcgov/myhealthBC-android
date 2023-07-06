@@ -16,6 +16,7 @@ import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.NotificationLocalDataSource
 import ca.bc.gov.data.datasource.local.OrganDonorLocalDataSource
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
+import ca.bc.gov.data.datasource.local.QuickActionTileLocalDataSource
 import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import ca.bc.gov.data.datasource.remote.BannerRemoteDataSource
 import ca.bc.gov.data.datasource.remote.CommentRemoteDataSource
@@ -58,6 +59,8 @@ import ca.bc.gov.repository.services.DiagnosticImagingRepository
 import ca.bc.gov.repository.services.OrganDonorRepository
 import ca.bc.gov.repository.services.PatientServicesRepository
 import ca.bc.gov.repository.settings.AppFeatureRepository
+import ca.bc.gov.repository.settings.AppFeatureWithQuickAccessTilesRepository
+import ca.bc.gov.repository.settings.QuickAccessTileRepository
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.testrecord.CovidTestRepository
 import ca.bc.gov.repository.utils.Base64ToInputImageConverter
@@ -356,4 +359,18 @@ class RepositoriesModule {
     fun provideAppFeatureRepository(
         appFeatureLocalDataSource: AppFeatureLocalDataSource
     ): AppFeatureRepository = AppFeatureRepository(appFeatureLocalDataSource)
+
+    @Provides
+    @Singleton
+    fun providesQuickAccessTileRepository(
+        quickActionTileLocalDataSource: QuickActionTileLocalDataSource
+    ): QuickAccessTileRepository = QuickAccessTileRepository(quickActionTileLocalDataSource)
+
+    @Provides
+    @Singleton
+    fun providesAppFeatureWithQuickAccessTilesRepository(
+        appFeatureRepository: AppFeatureRepository,
+        preferenceStorage: EncryptedPreferenceStorage
+    ): AppFeatureWithQuickAccessTilesRepository =
+        AppFeatureWithQuickAccessTilesRepository(appFeatureRepository, preferenceStorage)
 }

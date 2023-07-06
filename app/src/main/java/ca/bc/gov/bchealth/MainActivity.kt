@@ -89,7 +89,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.vaccineRecordDetailFragment,
                 R.id.addHealthRecordsFragment,
                 R.id.homeFragment,
-                R.id.homeComposeFragment,
                 R.id.bannerDetailFragment,
                 R.id.newsfeedFragment,
                 R.id.servicesFragment,
@@ -144,7 +143,7 @@ class MainActivity : AppCompatActivity() {
                             false
                         )
                         if (started) {
-                            binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_while_fetching_data))
+                            binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_while_fetching_data), binding.bottomNav)
                         }
                     }
 
@@ -155,7 +154,7 @@ class MainActivity : AppCompatActivity() {
                     WorkInfo.State.SUCCEEDED -> {
                         if (isWorkerStarted) {
                             inAppUpdate.checkForUpdate(AppUpdateType.FLEXIBLE)
-                            binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_on_success))
+                            binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_on_success), binding.bottomNav)
                         }
                     }
 
@@ -191,7 +190,7 @@ class MainActivity : AppCompatActivity() {
                     false
                 )
             if (isRecordFetchFailed) {
-                binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_on_failed))
+                binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_on_failed), binding.bottomNav)
             }
         }
     }
