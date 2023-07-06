@@ -70,17 +70,19 @@ class ServicesFragment : BaseSecureFragment(null) {
                 if (it.showLoading) {
                     servicesViewModel.showProgressBar()
                 } else {
-                    when (it.loginStatus) {
-                        LoginStatus.ACTIVE -> {
-                            observeHealthRecordsSyncCompletion()
-                        }
+                    it.loginStatus?.let { status ->
+                        when (status) {
+                            LoginStatus.ACTIVE -> {
+                                observeHealthRecordsSyncCompletion()
+                            }
 
-                        LoginStatus.EXPIRED -> {
-                            findNavController().navigate(R.id.bcServiceCardSessionFragment)
-                        }
+                            LoginStatus.EXPIRED -> {
+                                findNavController().navigate(R.id.bcServiceCardSessionFragment)
+                            }
 
-                        LoginStatus.NOT_AUTHENTICATED -> {
-                            findNavController().navigate(R.id.bcServicesCardLoginFragment)
+                            LoginStatus.NOT_AUTHENTICATED -> {
+                                findNavController().navigate(R.id.bcServicesCardLoginFragment)
+                            }
                         }
                     }
                 }
