@@ -500,7 +500,11 @@
     <string name="home_subtitle">What do you want to focus on today?</string>
     <string name="home_banner_toolbar_title">New updates</string>
     <string name="quick_access">Quick access</string>
+    <string name="manage">Manage</string>
     <string name="immunization_schedules">Immunization schedules</string>
+    <string name="log_in">Log in</string>
+    <string name="log_in_description">Gain full access to health records for you and your family.</string>
+    <string name="manage_hint">Set a folder to display \non your home page \nfor quick access.</string>
 
     <!-- Immunization Schedules -->
     <string name="immnz_schedules_title">Immunization Schedules</string>

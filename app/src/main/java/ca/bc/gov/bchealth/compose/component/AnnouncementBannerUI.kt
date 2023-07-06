@@ -1,12 +1,15 @@
 package ca.bc.gov.bchealth.compose.component
 
+import android.text.method.LinkMovementMethod
+import android.util.TypedValue
+import android.widget.TextView
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Card
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
@@ -29,6 +33,7 @@ import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.theme.HealthGatewayTheme
 import ca.bc.gov.bchealth.compose.theme.bannerBackgroundBlue
 import ca.bc.gov.bchealth.compose.theme.blue
+import ca.bc.gov.bchealth.utils.fromHtml
 
 private const val bannerIconId = "bannerIconId"
 private const val bannerTitleId = "bannerTitleId"
@@ -42,12 +47,13 @@ fun AnnouncementBannerUI(
     modifier: Modifier = Modifier,
     title: String,
     description: String,
+    showReadMore: Boolean,
     onLearnMoreClick: () -> Unit,
     onDismissClick: () -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(true) }
     Card(
-        modifier.clickable { expanded = !expanded },
+        modifier,
         backgroundColor = bannerBackgroundBlue
     ) {
         BoxWithConstraints(
@@ -56,7 +62,7 @@ fun AnnouncementBannerUI(
                 .wrapContentHeight()
                 .padding(16.dp)
         ) {
-            val constraint = bannerConstraints(expanded)
+            val constraint = bannerConstraints(expanded, showReadMore)
             ConstraintLayout(constraint, modifier = Modifier.fillMaxWidth()) {
                 Image(
                     modifier = Modifier.layoutId(bannerIconId),
@@ -71,17 +77,32 @@ fun AnnouncementBannerUI(
                     fontWeight = FontWeight.Bold,
                     color = blue
                 )
+                val toggleIcon = if (expanded) {
+                    R.drawable.ic_content_short
+                } else {
+                    R.drawable.ic_content_full
+                }
 
-                Image(
-                    modifier = Modifier.layoutId(bannerArrowId),
-                    painter = painterResource(id = R.drawable.ic_arrow_down),
-                    contentDescription = null
-                )
+                IconButton(
+                    onClick = { expanded = !expanded },
+                    modifier = Modifier
+                        .layoutId(bannerArrowId)
+                ) {
+                    Image(painter = painterResource(id = toggleIcon), contentDescription = null)
+                }
 
-                Text(
+                AndroidView(
                     modifier = Modifier.layoutId(bannerBodyId),
-                    text = description,
-                    style = MaterialTheme.typography.body1
+                    factory = { context ->
+                        TextView(context).apply {
+                            setTextAppearance(R.style.HealthGateway_TextAppearance_MaterialComponents_Headline4)
+                            setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+                        }
+                    },
+                    update = {
+                        it.text = description.fromHtml().trimEnd().take(120)
+                        it.movementMethod = LinkMovementMethod.getInstance()
+                    }
                 )
 
                 HGTextButton(
@@ -104,7 +125,7 @@ fun AnnouncementBannerUI(
     }
 }
 
-private fun bannerConstraints(expanded: Boolean): ConstraintSet {
+private fun bannerConstraints(expanded: Boolean, showReadMore: Boolean): ConstraintSet {
     return ConstraintSet {
         val bannerIcon = createRefFor(bannerIconId)
         val bannerTitle = createRefFor(bannerTitleId)
@@ -159,7 +180,7 @@ private fun bannerConstraints(expanded: Boolean): ConstraintSet {
             top.linkTo(buttonDismiss.top)
             end.linkTo(buttonDismiss.start)
             bottom.linkTo(buttonDismiss.bottom)
-            visibility = if (expanded) {
+            visibility = if (expanded && showReadMore) {
                 Visibility.Visible
             } else {
                 Visibility.Gone
@@ -175,6 +196,7 @@ private fun AnnouncementBannerUIPreview() {
         AnnouncementBannerUI(
             title = stringResource(id = R.string.news_feed),
             description = stringResource(id = R.string.news_feed),
+            showReadMore = false,
             onDismissClick = {},
             onLearnMoreClick = {}
         )

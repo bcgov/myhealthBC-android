@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.ui.services
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,6 +35,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
+import ca.bc.gov.bchealth.compose.component.HGProgressIndicator
 import ca.bc.gov.common.model.services.OrganDonorStatusDto
 
 @Composable
@@ -107,14 +107,7 @@ private fun ServiceScreenContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         if (onLoading || organDonorRegistrationDetail == null) {
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                )
-            }
+            HGProgressIndicator(modifier)
         } else {
             OrganDonor(organDonorRegistrationDetail, organDonorFileStatus, onRegisterOnUpdateDecisionClicked = { url ->
                 onRegisterOnUpdateDecisionClicked(url)
