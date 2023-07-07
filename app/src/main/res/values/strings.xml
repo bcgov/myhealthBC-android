@@ -494,6 +494,11 @@
     <string name="immnz_schedules_school_age">School age children</string>
     <string name="immnz_schedules_adult_seniors">Adult, seniors and individual with high risk</string>
 
+    <!-- Quick Access Management -->
+    <string name="quick_access_management_title">Manage</string>
+    <string name="quick_access_management_body">Set a folder to display on your home page for quick and easy access.</string>
+    <string name="quick_access_management_save">Save</string>
+
     <!--Terms of service-->
     <string name="terms_of_service">Terms of service</string>
     <string name="btn_agree">Agree</string>
