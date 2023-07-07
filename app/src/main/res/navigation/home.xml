@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/homeComposeFragment"
-    android:id="@+id/home">
+    android:id="@+id/home"
+    app:startDestination="@id/homeComposeFragment">
 
     <fragment
         android:id="@+id/homeComposeFragment"
-        android:name="ca.bc.gov.bchealth.ui.home.HomeComposeFragment"
-        >
+        android:name="ca.bc.gov.bchealth.ui.home.HomeComposeFragment">
         <action
             android:id="@+id/action_homeFragment_to_banner_detail"
             app:destination="@id/bannerDetailFragment" />
@@ -68,7 +66,13 @@
     <fragment
         android:id="@+id/immunizationSchedulesFragment"
         android:name="ca.bc.gov.bchealth.ui.home.immunizationschedules.ImmunizationSchedulesFragment"
-        android:label="@string/immnz_forecast_title" />
+        android:label="@string/immnz_schedules_title" />
+
+    <fragment
+        android:id="@+id/quickAccessManagementFragment"
+        android:name="ca.bc.gov.bchealth.ui.home.manage.QuickAccessManagementFragment"
+        android:label="@string/quick_access_management_title" />
+
 
     <include app:graph="@navigation/health_pass" />
     <include app:graph="@navigation/health_records" />
