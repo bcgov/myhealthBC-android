@@ -366,7 +366,7 @@ fun AppFeatureDto.toEntity() = AppFeatureEntity(
     featureNameId,
     featureIconId,
     destinationId,
-    isEnabled,
+    isManagementEnabled,
     isQuickAccessEnabled
 )
 
