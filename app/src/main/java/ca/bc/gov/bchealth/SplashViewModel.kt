@@ -67,28 +67,28 @@ class SplashViewModel @Inject constructor(
                 featureNameId = R.string.health_records,
                 featureIconId = R.drawable.icon_tile_health_record,
                 destinationId = R.id.health_records,
-                isEnabled = true,
+                isManagementEnabled = true,
                 isQuickAccessEnabled = true,
             ),
             AppFeatureDto(
                 featureNameId = R.string.immunization_schedules,
                 featureIconId = R.drawable.ic_tile_immunization_schedules,
                 destinationId = R.id.health_records,
-                isEnabled = true,
+                isManagementEnabled = true,
                 isQuickAccessEnabled = true,
             ),
             AppFeatureDto(
                 featureNameId = R.string.health_resources,
                 featureIconId = R.drawable.ic_tile_healt_resources,
                 destinationId = R.id.action_homeFragment_to_resources,
-                isEnabled = true,
+                isManagementEnabled = true,
                 isQuickAccessEnabled = true,
             ),
             AppFeatureDto(
                 featureNameId = R.string.health_passes,
                 featureIconId = R.drawable.ic_tile_proof_of_vaccine,
                 destinationId = R.id.action_homeFragment_to_health_pass,
-                isEnabled = true,
+                isManagementEnabled = true,
                 isQuickAccessEnabled = true,
             )
         )
