@@ -21,20 +21,20 @@ class HomeComposeViewModel @Inject constructor(
     fun loadQuickAccessTiles() = viewModelScope.launch {
         val quickAccessTileItems =
             appFeatureWithQuickAccessTilesRepository.getAppFeaturesWithQuickAccessTiles()
-                .filter { it.appFeatureDto.isQuickAccessEnabled }
+                .filter { it.isQuickAccessEnabled }
                 .map {
-                    if (it.appFeatureDto.featureName == null) {
+                    if (it.featureName == null) {
                         QuickAccessTileItem.PredefinedItem(
-                            icon = it.appFeatureDto.featureIconId,
-                            nameId = it.appFeatureDto.featureNameId ?: -1,
-                            destinationId = it.appFeatureDto.destinationId
+                            icon = it.featureIconId,
+                            nameId = it.featureNameId ?: -1,
+                            destinationId = it.destinationId
                         )
                     } else {
                         QuickAccessTileItem.DynamicItem(
-                            icon = it.appFeatureDto.featureIconId,
-                            nameId = it.appFeatureDto.featureNameId,
-                            text = it.appFeatureDto.featureName.orEmpty(),
-                            destinationId = it.appFeatureDto.destinationId
+                            icon = it.featureIconId,
+                            nameId = it.featureNameId,
+                            text = it.featureName.orEmpty(),
+                            destinationId = it.destinationId
                         )
                     }
                 }
