@@ -32,7 +32,7 @@ class SplashViewModel @Inject constructor(
     init {
         onBoardingRepository.checkIfReOnBoardingRequired(BuildConfig.VERSION_CODE)
         runBlocking {
-            initializeAppFeatureAndQuickAccessTileData()
+            initializeAppFeaturesData()
         }
     }
 
@@ -61,36 +61,130 @@ class SplashViewModel @Inject constructor(
         FORCE_UPDATE, CHECK_SOFT_UPDATE
     }
 
-    private suspend fun initializeAppFeatureAndQuickAccessTileData() {
+    private suspend fun initializeAppFeaturesData() {
         val appFeatures = listOf(
             AppFeatureDto(
                 featureNameId = R.string.health_records,
+                categoryId = R.string.feature_category_health_record,
                 featureIconId = R.drawable.icon_tile_health_record,
                 destinationId = R.id.health_records,
-                isManagementEnabled = true,
+                isManagementEnabled = false,
                 isQuickAccessEnabled = true,
             ),
             AppFeatureDto(
                 featureNameId = R.string.immunization_schedules,
+                categoryId = R.string.feature_category_health_record,
                 featureIconId = R.drawable.ic_tile_immunization_schedules,
                 destinationId = R.id.health_records,
-                isManagementEnabled = true,
+                isManagementEnabled = false,
                 isQuickAccessEnabled = true,
             ),
             AppFeatureDto(
                 featureNameId = R.string.health_resources,
+                categoryId = R.string.feature_category_health_record,
                 featureIconId = R.drawable.ic_tile_healt_resources,
                 destinationId = R.id.action_homeFragment_to_resources,
-                isManagementEnabled = true,
+                isManagementEnabled = false,
                 isQuickAccessEnabled = true,
             ),
             AppFeatureDto(
                 featureNameId = R.string.health_passes,
+                categoryId = R.string.feature_category_health_record,
                 featureIconId = R.drawable.ic_tile_proof_of_vaccine,
                 destinationId = R.id.action_homeFragment_to_health_pass,
-                isManagementEnabled = true,
+                isManagementEnabled = false,
                 isQuickAccessEnabled = true,
-            )
+            ),
+
+            AppFeatureDto(
+                featureNameId = R.string.feature_my_notes,
+                categoryId = R.string.feature_category_health_record,
+                featureIconId = R.drawable.icon_tile_health_record,
+                destinationId = R.id.health_records,
+                isManagementEnabled = true,
+                isQuickAccessEnabled = false,
+            ),
+
+            AppFeatureDto(
+                featureNameId = R.string.feature_immunization,
+                categoryId = R.string.feature_category_health_record,
+                featureIconId = R.drawable.icon_tile_health_record,
+                destinationId = R.id.health_records,
+                isManagementEnabled = true,
+                isQuickAccessEnabled = false,
+            ),
+
+            AppFeatureDto(
+                featureNameId = R.string.feature_medications,
+                categoryId = R.string.feature_category_health_record,
+                featureIconId = R.drawable.icon_tile_health_record,
+                destinationId = R.id.health_records,
+                isManagementEnabled = true,
+                isQuickAccessEnabled = false,
+            ),
+
+            AppFeatureDto(
+                featureNameId = R.string.feature_lab_results,
+                categoryId = R.string.feature_category_health_record,
+                featureIconId = R.drawable.icon_tile_health_record,
+                destinationId = R.id.health_records,
+                isManagementEnabled = true,
+                isQuickAccessEnabled = false,
+            ),
+
+            AppFeatureDto(
+                featureNameId = R.string.feature_special_authority,
+                categoryId = R.string.feature_category_health_record,
+                featureIconId = R.drawable.icon_tile_health_record,
+                destinationId = R.id.health_records,
+                isManagementEnabled = true,
+                isQuickAccessEnabled = false,
+            ),
+
+            AppFeatureDto(
+                featureNameId = R.string.feature_health_visit,
+                categoryId = R.string.feature_category_health_record,
+                featureIconId = R.drawable.icon_tile_health_record,
+                destinationId = R.id.health_records,
+                isManagementEnabled = true,
+                isQuickAccessEnabled = false,
+            ),
+
+            AppFeatureDto(
+                featureNameId = R.string.feature_clinic_documents,
+                categoryId = R.string.feature_category_health_record,
+                featureIconId = R.drawable.icon_tile_health_record,
+                destinationId = R.id.health_records,
+                isManagementEnabled = true,
+                isQuickAccessEnabled = false,
+            ),
+
+            AppFeatureDto(
+                featureNameId = R.string.feature_organ_donor,
+                categoryId = R.string.feature_category_service,
+                featureIconId = R.drawable.icon_tile_health_record,
+                destinationId = R.id.health_records,
+                isManagementEnabled = true,
+                isQuickAccessEnabled = false,
+            ),
+
+            AppFeatureDto(
+                featureName = "To-do: Jane",
+                categoryId = R.string.feature_category_dependents_records,
+                featureIconId = R.drawable.icon_tile_health_record,
+                destinationId = R.id.health_records,
+                isManagementEnabled = true,
+                isQuickAccessEnabled = false,
+            ),
+
+            AppFeatureDto(
+                featureName = "To-do: Anne",
+                categoryId = R.string.feature_category_dependents_records,
+                featureIconId = R.drawable.icon_tile_health_record,
+                destinationId = R.id.health_records,
+                isManagementEnabled = true,
+                isQuickAccessEnabled = false,
+            ),
         )
 
         appFeatures.forEach {
