@@ -363,7 +363,9 @@ fun NotificationDto.toEntity() = NotificationEntity(
 
 fun AppFeatureDto.toEntity() = AppFeatureEntity(
     id,
+    featureName,
     featureNameId,
+    categoryId,
     featureIconId,
     destinationId,
     isManagementEnabled,

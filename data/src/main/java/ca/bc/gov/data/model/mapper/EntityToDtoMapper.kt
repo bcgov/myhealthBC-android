@@ -483,23 +483,25 @@ fun NotificationEntity.toDto() = NotificationDto(
 )
 
 fun AppFeatureEntity.toDto() = AppFeatureDto(
-    id,
-    featureNameId,
-    featureIconId,
-    destinationId,
-    isEnabled,
-    isQuickAccessEnabled
+    id = id,
+    featureName = featureName,
+    featureNameId = featureNameId,
+    categoryId = categoryNameId,
+    featureIconId = featureIconId,
+    destinationId = destinationId,
+    isManagementEnabled = isManagementEnabled,
+    isQuickAccessEnabled = isQuickAccessEnabled
 )
 
 fun QuickAccessTileEntity.toDto() = QuickAccessTileDto(
-    id,
-    featureId,
-    tileNameId,
-    tileIconId,
-    isEnabled
+    id = id,
+    featureId = featureId,
+    titleNameId = tileNameId,
+    titleIconId = tileIconId,
+    isEnabled = isEnabled
 )
 
 fun AppFeatureWithQuickAccessTiles.toDto() = AppFeatureWithQuickAccessTilesDto(
-    appFeature.toDto(),
-    quickAccessTiles.map { it.toDto() }
+    appFeatureDto = appFeature.toDto(),
+    quickAccessTiles = quickAccessTiles.map { it.toDto() }
 )

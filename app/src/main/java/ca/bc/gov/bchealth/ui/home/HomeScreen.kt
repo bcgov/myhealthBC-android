@@ -78,21 +78,73 @@ private fun HomeScreenContent(
         }
 
         items(quickAccessTileItems) {
-            QuickAccessTileItemUI(
-                onClick = { onQuickAccessTileClicked(it) },
-                icon = painterResource(id = it.icon),
-                title = stringResource(
-                    it.name
-                )
-            )
+            QuickAccessTileItemUi(it, onQuickAccessTileClicked)
         }
     }
+}
+
+@Composable
+private fun QuickAccessTileItemUi(
+    item: QuickAccessTileItem,
+    onQuickAccessTileClicked: (QuickAccessTileItem) -> Unit
+) {
+    val title: String
+    val icon: Int
+
+    when (item) {
+        is QuickAccessTileItem.PredefinedItem -> {
+            icon = item.icon
+            title = stringResource(id = item.nameId)
+        }
+
+        is QuickAccessTileItem.DynamicItem -> {
+            icon = item.icon
+            title = if (item.nameId == null) {
+                item.text
+            } else {
+                stringResource(item.nameId, item.text).replaceFirst("s’s", "s’")
+            }
+        }
+    }
+
+    QuickAccessTileItemUI(
+        onClick = { onQuickAccessTileClicked(item) },
+        icon = painterResource(id = icon),
+        title = title
+    )
 }
 
 @Composable
 @BasePreview
 private fun HomeScreenPreview() {
     HealthGatewayTheme {
-        HomeScreenContent(onQuickAccessTileClicked = {}, quickAccessTileItems = emptyList())
+        HomeScreenContent(
+            onQuickAccessTileClicked = {},
+            quickAccessTileItems = listOf(
+                QuickAccessTileItem.DynamicItem(
+                    icon = R.drawable.ic_health_record,
+                    nameId = R.string.feature_quick_action_dependents,
+                    text = "Jane",
+                    destinationId = -1,
+                ),
+                QuickAccessTileItem.DynamicItem(
+                    icon = R.drawable.ic_health_record,
+                    nameId = R.string.feature_quick_action_dependents,
+                    text = "James",
+                    destinationId = -1,
+                ),
+                QuickAccessTileItem.DynamicItem(
+                    icon = R.drawable.ic_health_record,
+                    nameId = null,
+                    text = "Dynamic text",
+                    destinationId = -1,
+                ),
+                QuickAccessTileItem.PredefinedItem(
+                    icon = R.drawable.ic_health_record,
+                    nameId = R.string.immnz_schedules_infant,
+                    destinationId = -1,
+                ),
+            )
+        )
     }
 }
