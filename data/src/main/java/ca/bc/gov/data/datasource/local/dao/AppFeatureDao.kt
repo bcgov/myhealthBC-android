@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import ca.bc.gov.data.datasource.local.entity.relations.AppFeatureWithQuickAccessTiles
 import ca.bc.gov.data.datasource.local.entity.settings.AppFeatureEntity
 
 @Dao
@@ -16,6 +15,6 @@ interface AppFeatureDao {
     @Query("DELETE FROM app_feature")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM app_feature")
-    suspend fun getAllFeatureWithQuickAccessTiles(): List<AppFeatureWithQuickAccessTiles>
+    @Query("SELECT * FROM app_feature WHERE quick_access_enabled = 1 ")
+    suspend fun getAllFeatureWithQuickAccessTiles(): List<AppFeatureEntity>
 }
