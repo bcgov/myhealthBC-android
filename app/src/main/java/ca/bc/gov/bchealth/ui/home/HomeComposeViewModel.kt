@@ -23,11 +23,20 @@ class HomeComposeViewModel @Inject constructor(
             appFeatureWithQuickAccessTilesRepository.getAppFeaturesWithQuickAccessTiles()
                 .filter { it.appFeatureDto.isQuickAccessEnabled }
                 .map {
-                    QuickAccessTileItem(
-                        it.appFeatureDto.featureIconId,
-                        it.appFeatureDto.featureNameId,
-                        it.appFeatureDto.destinationId
-                    )
+                    if (it.appFeatureDto.featureName == null) {
+                        QuickAccessTileItem.PredefinedItem(
+                            icon = it.appFeatureDto.featureIconId,
+                            nameId = it.appFeatureDto.featureNameId ?: -1,
+                            destinationId = it.appFeatureDto.destinationId
+                        )
+                    } else {
+                        QuickAccessTileItem.DynamicItem(
+                            icon = it.appFeatureDto.featureIconId,
+                            nameId = it.appFeatureDto.featureNameId,
+                            text = it.appFeatureDto.featureName.orEmpty(),
+                            destinationId = it.appFeatureDto.destinationId
+                        )
+                    }
                 }
 
         _uiState.update { it.copy(quickAccessTileItems = quickAccessTileItems) }
@@ -38,8 +47,17 @@ data class HomeComposeUiState(
     val quickAccessTileItems: List<QuickAccessTileItem> = emptyList()
 )
 
-data class QuickAccessTileItem(
-    val icon: Int,
-    val name: Int,
-    val destinationId: Int
-)
+sealed class QuickAccessTileItem(open val destinationId: Int) {
+    data class PredefinedItem(
+        val icon: Int,
+        val nameId: Int,
+        override val destinationId: Int
+    ) : QuickAccessTileItem(destinationId)
+
+    data class DynamicItem(
+        val icon: Int,
+        val nameId: Int?,
+        val text: String,
+        override val destinationId: Int
+    ) : QuickAccessTileItem(destinationId)
+}
