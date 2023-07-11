@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 14,
-    "identityHash": "cd63a7ddb38d8002c82af9bc1156c3dc",
+    "identityHash": "0d2a4368494a9528fd6ea9995291028a",
     "entities": [
       {
         "tableName": "patient",
@@ -2001,7 +2001,7 @@
       },
       {
         "tableName": "app_feature",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `feature_name_id` INTEGER NOT NULL, `feature_icon_id` INTEGER NOT NULL, `destination_id` INTEGER NOT NULL, `enabled` INTEGER NOT NULL DEFAULT false, `quick_access_enabled` INTEGER NOT NULL DEFAULT false)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `feature_name` TEXT, `feature_name_id` INTEGER, `category` INTEGER NOT NULL, `feature_icon_id` INTEGER NOT NULL, `destination_id` INTEGER NOT NULL, `is_management_enabled` INTEGER NOT NULL DEFAULT false, `quick_access_enabled` INTEGER NOT NULL DEFAULT false)",
         "fields": [
           {
             "fieldPath": "id",
@@ -2010,8 +2010,20 @@
             "notNull": true
           },
           {
+            "fieldPath": "featureName",
+            "columnName": "feature_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "featureNameId",
             "columnName": "feature_name_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "categoryId",
+            "columnName": "category",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -2028,8 +2040,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "isEnabled",
-            "columnName": "enabled",
+            "fieldPath": "isManagementEnabled",
+            "columnName": "is_management_enabled",
             "affinity": "INTEGER",
             "notNull": true,
             "defaultValue": "false"
@@ -2123,7 +2135,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cd63a7ddb38d8002c82af9bc1156c3dc')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0d2a4368494a9528fd6ea9995291028a')"
     ]
   }
 }
