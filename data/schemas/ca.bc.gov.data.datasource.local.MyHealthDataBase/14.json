@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 14,
-    "identityHash": "0d2a4368494a9528fd6ea9995291028a",
+    "identityHash": "c9795b9cfc67222bed0194b4722c64e4",
     "entities": [
       {
         "tableName": "patient",
@@ -2001,7 +2001,7 @@
       },
       {
         "tableName": "app_feature",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `feature_name` TEXT, `feature_name_id` INTEGER, `category` INTEGER NOT NULL, `feature_icon_id` INTEGER NOT NULL, `destination_id` INTEGER NOT NULL, `is_management_enabled` INTEGER NOT NULL DEFAULT false, `quick_access_enabled` INTEGER NOT NULL DEFAULT false)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `feature_name` TEXT, `feature_name_id` INTEGER, `category_name_id` INTEGER NOT NULL, `feature_icon_id` INTEGER NOT NULL, `destination_id` INTEGER NOT NULL, `is_management_enabled` INTEGER NOT NULL DEFAULT false, `quick_access_enabled` INTEGER NOT NULL DEFAULT false)",
         "fields": [
           {
             "fieldPath": "id",
@@ -2022,8 +2022,8 @@
             "notNull": false
           },
           {
-            "fieldPath": "categoryId",
-            "columnName": "category",
+            "fieldPath": "categoryNameId",
+            "columnName": "category_name_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -2073,69 +2073,12 @@
           }
         ],
         "foreignKeys": []
-      },
-      {
-        "tableName": "quick_access_tile",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `feature_id` INTEGER NOT NULL, `tile_name_id` INTEGER NOT NULL, `tile_icon_id` INTEGER NOT NULL, `enabled` INTEGER NOT NULL DEFAULT false, FOREIGN KEY(`feature_id`) REFERENCES `app_feature`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "featureId",
-            "columnName": "feature_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "tileNameId",
-            "columnName": "tile_name_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "tileIconId",
-            "columnName": "tile_icon_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isEnabled",
-            "columnName": "enabled",
-            "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "false"
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": true,
-          "columnNames": [
-            "id"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": [
-          {
-            "table": "app_feature",
-            "onDelete": "CASCADE",
-            "onUpdate": "CASCADE",
-            "columns": [
-              "feature_id"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
-        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0d2a4368494a9528fd6ea9995291028a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c9795b9cfc67222bed0194b4722c64e4')"
     ]
   }
 }
