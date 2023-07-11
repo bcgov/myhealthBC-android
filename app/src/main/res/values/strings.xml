@@ -12,6 +12,21 @@
     <string name="expand_content">Expand content</string>
     <string name="collapse_content">Collapse content</string>
 
+    <!--    App Features-->
+    <string name="feature_category_health_record">Health record</string>
+    <string name="feature_category_service">Service</string>
+    <string name="feature_category_dependents_records">Dependents’ records</string>
+    <string name="feature_quick_action_dependents">%s’s record</string>
+
+    <string name="feature_my_notes">My Notes</string>
+    <string name="feature_immunization">Immunization</string>
+    <string name="feature_medications">Medications</string>
+    <string name="feature_lab_results">Lab Results</string>
+    <string name="feature_special_authority">Special authority</string>
+    <string name="feature_health_visit">Health visit</string>
+    <string name="feature_clinic_documents">Clinic documents</string>
+    <string name="feature_organ_donor">Organ donor</string>
+
     <!--Informational screen for camera permission-->
     <string name="privacy_policy">Privacy Policy</string>
     <string name="allow">Allow camera access</string>
