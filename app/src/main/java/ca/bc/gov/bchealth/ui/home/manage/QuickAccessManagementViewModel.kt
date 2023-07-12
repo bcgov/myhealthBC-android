@@ -2,72 +2,40 @@ package ca.bc.gov.bchealth.ui.home.manage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.ui.home.QuickAccessTileItem
+import ca.bc.gov.bchealth.ui.home.toUiItem
+import ca.bc.gov.repository.settings.AppFeatureRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class QuickAccessManagementViewModel : ViewModel() {
+@HiltViewModel
+class QuickAccessManagementViewModel @Inject constructor(
+    private val appFeatureRepository: AppFeatureRepository
+) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(QuickAccessManagementUiState())
-    val uiState: StateFlow<QuickAccessManagementUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(mapOf<Int, List<QuickAccessTileItem>>())
+    val uiState: StateFlow<Map<Int, List<QuickAccessTileItem>>> = _uiState.asStateFlow()
 
     fun loadUiList() = viewModelScope.launch {
-        _uiState.update {
-            QuickAccessManagementUiState(
-                listOf(
-                    QuickAccessManagementList(
-                        "Health record",
-                        listOf(
-                            QuickAccessManagementItem("My Notes", false),
-                            QuickAccessManagementItem("Immunization", true),
-                            QuickAccessManagementItem("Medications", false),
-                            QuickAccessManagementItem("Lab Results", false),
-                            QuickAccessManagementItem("Special authority", false),
-                            QuickAccessManagementItem("Health visit", false),
-                            QuickAccessManagementItem("Clinic documents", false),
-                        )
-                    ),
-                    QuickAccessManagementList(
-                        "Service",
-                        listOf(
-                            QuickAccessManagementItem("Organ donor", false),
-                        )
-                    ),
-                    QuickAccessManagementList(
-                        "Dependents’ records",
-                        listOf(
-                            QuickAccessManagementItem("Jane", false),
-                            QuickAccessManagementItem("Anne", false),
-                        )
-                    )
-                )
-            )
-        }
+        val manageableTiles = appFeatureRepository.getManageableTiles()
+            .map { it.toUiItem() }
+            .groupBy { it.categoryId }
+
+        _uiState.update { manageableTiles }
     }
 
-    fun toggleItem(item: QuickAccessManagementItem) {
-        item.selected = item.selected.not()
+    fun toggleItem(item: QuickAccessTileItem) {
+        item.enabled = item.enabled.not()
     }
 
     fun saveSelection() {
         // todo
-        val result = _uiState.value.uiList
+        val result = _uiState.value
         println(result)
     }
-
-    data class QuickAccessManagementUiState(
-        val uiList: List<QuickAccessManagementList> = listOf()
-    )
-
-    data class QuickAccessManagementList(
-        val tileCategory: String,
-        val tiles: List<QuickAccessManagementItem>
-    )
-
-    data class QuickAccessManagementItem(
-        val tileName: String,
-        var selected: Boolean
-    )
 }

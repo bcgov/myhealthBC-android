@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 14,
-    "identityHash": "c9795b9cfc67222bed0194b4722c64e4",
+    "identityHash": "60e44af13a556d67a2aed22c9e362661",
     "entities": [
       {
         "tableName": "patient",
@@ -2061,14 +2061,15 @@
         },
         "indices": [
           {
-            "name": "index_app_feature_feature_name_id_feature_icon_id",
+            "name": "index_app_feature_feature_name_id_feature_icon_id_feature_name",
             "unique": true,
             "columnNames": [
               "feature_name_id",
-              "feature_icon_id"
+              "feature_icon_id",
+              "feature_name"
             ],
             "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_app_feature_feature_name_id_feature_icon_id` ON `${TABLE_NAME}` (`feature_name_id`, `feature_icon_id`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_app_feature_feature_name_id_feature_icon_id_feature_name` ON `${TABLE_NAME}` (`feature_name_id`, `feature_icon_id`, `feature_name`)"
           }
         ],
         "foreignKeys": []
@@ -2077,7 +2078,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c9795b9cfc67222bed0194b4722c64e4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '60e44af13a556d67a2aed22c9e362661')"
     ]
   }
 }
