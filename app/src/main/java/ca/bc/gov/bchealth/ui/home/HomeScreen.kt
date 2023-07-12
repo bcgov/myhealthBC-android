@@ -88,7 +88,7 @@ private fun HomeScreenContent(
                     color = MaterialTheme.colors.primary
                 )
 
-                //todo: Replace it: HAPP-1537
+                // todo: Replace it: HAPP-1537
                 Text(
                     modifier = Modifier.clickable { onClickManage.invoke() },
                     text = "Manage",
@@ -96,7 +96,6 @@ private fun HomeScreenContent(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.primary
                 )
-
             }
         }
 
