@@ -58,7 +58,6 @@ import ca.bc.gov.repository.services.DiagnosticImagingRepository
 import ca.bc.gov.repository.services.OrganDonorRepository
 import ca.bc.gov.repository.services.PatientServicesRepository
 import ca.bc.gov.repository.settings.AppFeatureRepository
-import ca.bc.gov.repository.settings.AppFeatureWithQuickAccessTilesRepository
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.testrecord.CovidTestRepository
 import ca.bc.gov.repository.utils.Base64ToInputImageConverter
@@ -357,11 +356,4 @@ class RepositoriesModule {
     fun provideAppFeatureRepository(
         appFeatureLocalDataSource: AppFeatureLocalDataSource
     ): AppFeatureRepository = AppFeatureRepository(appFeatureLocalDataSource)
-
-    @Provides
-    @Singleton
-    fun providesAppFeatureWithQuickAccessTilesRepository(
-        appFeatureRepository: AppFeatureRepository
-    ): AppFeatureWithQuickAccessTilesRepository =
-        AppFeatureWithQuickAccessTilesRepository(appFeatureRepository)
 }
