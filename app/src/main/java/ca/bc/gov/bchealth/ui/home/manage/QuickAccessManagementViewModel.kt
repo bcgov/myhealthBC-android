@@ -6,6 +6,7 @@ import ca.bc.gov.bchealth.ui.home.QuickAccessTileItem
 import ca.bc.gov.bchealth.ui.home.toUiItem
 import ca.bc.gov.repository.settings.AppFeatureRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,15 +19,17 @@ class QuickAccessManagementViewModel @Inject constructor(
     private val appFeatureRepository: AppFeatureRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(mapOf<Int, List<QuickAccessTileItem>>())
-    val uiState: StateFlow<Map<Int, List<QuickAccessTileItem>>> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(QuickAccessManagementUiState())
+    val uiState: StateFlow<QuickAccessManagementUiState> = _uiState.asStateFlow()
 
-    fun loadUiList() = viewModelScope.launch {
-        val manageableTiles = appFeatureRepository.getManageableTiles()
+    fun loadTilesUi() = viewModelScope.launch {
+        _uiState.update { it.copy(isLoading = true) }
+
+        val tiles = appFeatureRepository.getManageableTiles()
             .map { it.toUiItem() }
             .groupBy { it.categoryId }
 
-        _uiState.update { manageableTiles }
+        _uiState.update { it.copy(uiMap = tiles, isLoading = false) }
     }
 
     fun toggleItem(item: QuickAccessTileItem) {
@@ -34,8 +37,24 @@ class QuickAccessManagementViewModel @Inject constructor(
     }
 
     fun saveSelection() {
-        // todo
-        val result = _uiState.value
-        println(result)
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            for ((_, features) in _uiState.value.uiMap) {
+                features.forEach { tileItem ->
+                    appFeatureRepository.updateQuickAccessFlag(tileItem.id, tileItem.enabled)
+                }
+            }
+
+            delay(300L)
+
+            _uiState.update { it.copy(isLoading = false, isUpdateCompleted = true) }
+        }
     }
+
+    data class QuickAccessManagementUiState(
+        val uiMap: Map<Int, List<QuickAccessTileItem>> = mapOf(),
+        val isLoading: Boolean = false,
+        val isUpdateCompleted: Boolean = false,
+    )
 }

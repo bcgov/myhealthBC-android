@@ -167,28 +167,8 @@ class SplashViewModel @Inject constructor(
                 isManagementEnabled = true,
                 isQuickAccessEnabled = false,
             ),
-
-            AppFeatureDto(
-                featureName = "To-do: Jane",
-                categoryId = R.string.feature_category_dependents_records,
-                featureIconId = R.drawable.icon_tile_health_record,
-                destinationId = R.id.health_records,
-                isManagementEnabled = true,
-                isQuickAccessEnabled = false,
-            ),
-
-            AppFeatureDto(
-                featureName = "To-do: Anne",
-                categoryId = R.string.feature_category_dependents_records,
-                featureIconId = R.drawable.icon_tile_health_record,
-                destinationId = R.id.health_records,
-                isManagementEnabled = true,
-                isQuickAccessEnabled = false,
-            ),
         )
 
-        appFeatures.forEach {
-            appFeatureRepository.insert(it)
-        }
+        appFeatureRepository.insert(appFeatures)
     }
 }

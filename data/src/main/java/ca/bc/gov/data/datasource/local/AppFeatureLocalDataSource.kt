@@ -10,8 +10,17 @@ class AppFeatureLocalDataSource @Inject constructor(
     private val appFeatureDao: AppFeatureDao
 ) {
 
-    suspend fun insert(appFeatureDto: AppFeatureDto): Long {
-        return appFeatureDao.insert(appFeatureDto.toEntity())
+    suspend fun insertIfEmpty(appFeatures: List<AppFeatureDto>) {
+        val count = appFeatureDao.countRegisters()
+        if (count == 0) {
+            appFeatures.forEach { dto ->
+                appFeatureDao.insert(dto.toEntity())
+            }
+        }
+    }
+
+    suspend fun updateQuickAccessFlag(id: Long, enabled: Boolean) {
+        appFeatureDao.updateQuickAccessFlag(id, enabled)
     }
 
     suspend fun getQuickAccessTiles(): List<AppFeatureDto> {
@@ -24,5 +33,9 @@ class AppFeatureLocalDataSource @Inject constructor(
         return appFeatureDao.getManageableTiles().map {
             it.toDto()
         }
+    }
+
+    suspend fun deleteAll() {
+        appFeatureDao.deleteAll()
     }
 }
