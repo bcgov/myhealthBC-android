@@ -20,3 +20,5 @@ val greyBg = Color(0xFFF2F2F2)
 
 val green = Color(0xFF2E8540)
 val red = Color(0xFFD8292F)
+
+val bannerInfoBg = Color(0xFFD9EAF7)
