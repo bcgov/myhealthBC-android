@@ -2,12 +2,10 @@ package ca.bc.gov.data.datasource.local.entity.settings
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "app_feature",
-    indices = [Index(value = ["feature_name_id", "feature_icon_id", "feature_name"], unique = true)]
 )
 data class AppFeatureEntity(
     @PrimaryKey(autoGenerate = true)

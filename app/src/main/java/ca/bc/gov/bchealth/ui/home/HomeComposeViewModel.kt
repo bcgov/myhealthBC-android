@@ -33,31 +33,35 @@ data class HomeComposeUiState(
 )
 
 sealed class QuickAccessTileItem(
+    open val id: Long,
     open val destinationId: Int,
     open val categoryId: Int,
     open var enabled: Boolean,
 ) {
     data class PredefinedItem(
+        override val id: Long,
         val icon: Int,
         val nameId: Int,
         override val destinationId: Int,
         override val categoryId: Int,
         override var enabled: Boolean,
-    ) : QuickAccessTileItem(destinationId, categoryId, enabled)
+    ) : QuickAccessTileItem(id, destinationId, categoryId, enabled)
 
     data class DynamicItem(
+        override val id: Long,
         val icon: Int,
         val nameId: Int?,
         val text: String,
         override val destinationId: Int,
         override val categoryId: Int,
         override var enabled: Boolean,
-    ) : QuickAccessTileItem(destinationId, categoryId, enabled)
+    ) : QuickAccessTileItem(id, destinationId, categoryId, enabled)
 }
 
 fun AppFeatureDto.toUiItem(): QuickAccessTileItem =
     if (this.featureName == null) {
         QuickAccessTileItem.PredefinedItem(
+            id = this.id,
             icon = this.featureIconId,
             nameId = this.featureNameId ?: -1,
             destinationId = this.destinationId,
@@ -66,6 +70,7 @@ fun AppFeatureDto.toUiItem(): QuickAccessTileItem =
         )
     } else {
         QuickAccessTileItem.DynamicItem(
+            id = this.id,
             icon = this.featureIconId,
             nameId = this.featureNameId,
             text = this.featureName.orEmpty(),
