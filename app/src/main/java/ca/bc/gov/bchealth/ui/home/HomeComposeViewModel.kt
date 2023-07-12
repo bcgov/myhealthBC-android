@@ -2,7 +2,8 @@ package ca.bc.gov.bchealth.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.repository.settings.AppFeatureWithQuickAccessTilesRepository
+import ca.bc.gov.common.model.settings.AppFeatureDto
+import ca.bc.gov.repository.settings.AppFeatureRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,31 +14,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeComposeViewModel @Inject constructor(
-    private val appFeatureWithQuickAccessTilesRepository: AppFeatureWithQuickAccessTilesRepository
+    private val appFeatureRepository: AppFeatureRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeComposeUiState())
     val uiState: StateFlow<HomeComposeUiState> = _uiState.asStateFlow()
 
     fun loadQuickAccessTiles() = viewModelScope.launch {
-        val quickAccessTileItems =
-            appFeatureWithQuickAccessTilesRepository.getAppFeaturesWithQuickAccessTiles()
-                .filter { it.isQuickAccessEnabled }
-                .map {
-                    if (it.featureName == null) {
-                        QuickAccessTileItem.PredefinedItem(
-                            icon = it.featureIconId,
-                            nameId = it.featureNameId ?: -1,
-                            destinationId = it.destinationId
-                        )
-                    } else {
-                        QuickAccessTileItem.DynamicItem(
-                            icon = it.featureIconId,
-                            nameId = it.featureNameId,
-                            text = it.featureName.orEmpty(),
-                            destinationId = it.destinationId
-                        )
-                    }
-                }
+        val quickAccessTileItems = appFeatureRepository.getQuickAccessTiles().map {
+            it.toUiItem()
+        }
 
         _uiState.update { it.copy(quickAccessTileItems = quickAccessTileItems) }
     }
@@ -47,17 +32,45 @@ data class HomeComposeUiState(
     val quickAccessTileItems: List<QuickAccessTileItem> = emptyList()
 )
 
-sealed class QuickAccessTileItem(open val destinationId: Int) {
+sealed class QuickAccessTileItem(
+    open val destinationId: Int,
+    open val categoryId: Int,
+    open var enabled: Boolean,
+) {
     data class PredefinedItem(
         val icon: Int,
         val nameId: Int,
-        override val destinationId: Int
-    ) : QuickAccessTileItem(destinationId)
+        override val destinationId: Int,
+        override val categoryId: Int,
+        override var enabled: Boolean,
+    ) : QuickAccessTileItem(destinationId, categoryId, enabled)
 
     data class DynamicItem(
         val icon: Int,
         val nameId: Int?,
         val text: String,
-        override val destinationId: Int
-    ) : QuickAccessTileItem(destinationId)
+        override val destinationId: Int,
+        override val categoryId: Int,
+        override var enabled: Boolean,
+    ) : QuickAccessTileItem(destinationId, categoryId, enabled)
 }
+
+fun AppFeatureDto.toUiItem(): QuickAccessTileItem =
+    if (this.featureName == null) {
+        QuickAccessTileItem.PredefinedItem(
+            icon = this.featureIconId,
+            nameId = this.featureNameId ?: -1,
+            destinationId = this.destinationId,
+            categoryId = this.categoryId,
+            enabled = this.isQuickAccessEnabled
+        )
+    } else {
+        QuickAccessTileItem.DynamicItem(
+            icon = this.featureIconId,
+            nameId = this.featureNameId,
+            text = this.featureName.orEmpty(),
+            destinationId = this.destinationId,
+            categoryId = this.categoryId,
+            enabled = this.isQuickAccessEnabled
+        )
+    }

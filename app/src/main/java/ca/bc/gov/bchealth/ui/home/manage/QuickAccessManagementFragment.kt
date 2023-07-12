@@ -17,7 +17,10 @@ import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.custom.MyHealthBackButton
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolBar
+import ca.bc.gov.bchealth.ui.home.QuickAccessTileItem
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class QuickAccessManagementFragment : BaseFragment(null) {
     private val viewModel: QuickAccessManagementViewModel by viewModels()
 
@@ -54,7 +57,7 @@ class QuickAccessManagementFragment : BaseFragment(null) {
         }
     }
 
-    private fun onClickItem(item: QuickAccessManagementViewModel.QuickAccessManagementItem) {
+    private fun onClickItem(item: QuickAccessTileItem) {
         viewModel.toggleItem(item)
     }
 }

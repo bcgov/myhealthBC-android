@@ -14,8 +14,14 @@ class AppFeatureLocalDataSource @Inject constructor(
         return appFeatureDao.insert(appFeatureDto.toEntity())
     }
 
-    suspend fun getAppFeaturesWithQuickAccessTiles(): List<AppFeatureDto> {
-        return appFeatureDao.getAllFeatureWithQuickAccessTiles().map {
+    suspend fun getQuickAccessTiles(): List<AppFeatureDto> {
+        return appFeatureDao.getQuickAccessTiles().map {
+            it.toDto()
+        }
+    }
+
+    suspend fun getManageableTiles(): List<AppFeatureDto> {
+        return appFeatureDao.getManageableTiles().map {
             it.toDto()
         }
     }
