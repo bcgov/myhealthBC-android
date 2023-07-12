@@ -122,6 +122,7 @@ private fun HomeScreenPreview() {
             onQuickAccessTileClicked = {},
             quickAccessTileItems = listOf(
                 QuickAccessTileItem.DynamicItem(
+                    id = 0,
                     icon = R.drawable.ic_health_record,
                     nameId = R.string.feature_quick_action_dependents,
                     text = "Jane",
@@ -130,6 +131,7 @@ private fun HomeScreenPreview() {
                     enabled = true,
                 ),
                 QuickAccessTileItem.DynamicItem(
+                    id = 0,
                     icon = R.drawable.ic_health_record,
                     nameId = R.string.feature_quick_action_dependents,
                     text = "James",
@@ -138,6 +140,7 @@ private fun HomeScreenPreview() {
                     enabled = true,
                 ),
                 QuickAccessTileItem.DynamicItem(
+                    id = 0,
                     icon = R.drawable.ic_health_record,
                     nameId = null,
                     text = "Dynamic text",
@@ -146,6 +149,7 @@ private fun HomeScreenPreview() {
                     enabled = true,
                 ),
                 QuickAccessTileItem.PredefinedItem(
+                    id = 0,
                     icon = R.drawable.ic_health_record,
                     nameId = R.string.immnz_schedules_infant,
                     destinationId = -1,
