@@ -16,5 +16,8 @@ interface AppFeatureDao {
     suspend fun deleteAll()
 
     @Query("SELECT * FROM app_feature WHERE quick_access_enabled = 1 ")
-    suspend fun getAllFeatureWithQuickAccessTiles(): List<AppFeatureEntity>
+    suspend fun getQuickAccessTiles(): List<AppFeatureEntity>
+
+    @Query("SELECT * FROM app_feature WHERE is_management_enabled = 1 ")
+    suspend fun getManageableTiles(): List<AppFeatureEntity>
 }
