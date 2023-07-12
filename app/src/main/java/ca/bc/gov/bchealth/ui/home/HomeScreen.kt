@@ -126,23 +126,31 @@ private fun HomeScreenPreview() {
                     nameId = R.string.feature_quick_action_dependents,
                     text = "Jane",
                     destinationId = -1,
+                    categoryId = -1,
+                    enabled = true,
                 ),
                 QuickAccessTileItem.DynamicItem(
                     icon = R.drawable.ic_health_record,
                     nameId = R.string.feature_quick_action_dependents,
                     text = "James",
                     destinationId = -1,
+                    categoryId = -1,
+                    enabled = true,
                 ),
                 QuickAccessTileItem.DynamicItem(
                     icon = R.drawable.ic_health_record,
                     nameId = null,
                     text = "Dynamic text",
                     destinationId = -1,
+                    categoryId = -1,
+                    enabled = true,
                 ),
                 QuickAccessTileItem.PredefinedItem(
                     icon = R.drawable.ic_health_record,
                     nameId = R.string.immnz_schedules_infant,
                     destinationId = -1,
+                    categoryId = -1,
+                    enabled = true,
                 ),
             )
         )
