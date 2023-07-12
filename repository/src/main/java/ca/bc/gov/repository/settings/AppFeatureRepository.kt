@@ -7,10 +7,11 @@ import javax.inject.Inject
 class AppFeatureRepository @Inject constructor(
     private val appFeatureLocalDataSource: AppFeatureLocalDataSource
 ) {
-
     suspend fun insert(appFeatureDto: AppFeatureDto) {
         appFeatureLocalDataSource.insert(appFeatureDto)
     }
 
-    suspend fun getAppFeaturesWithQuickAccessTiles() = appFeatureLocalDataSource.getAppFeaturesWithQuickAccessTiles()
+    suspend fun getQuickAccessTiles() = appFeatureLocalDataSource.getQuickAccessTiles()
+
+    suspend fun getManageableTiles() = appFeatureLocalDataSource.getManageableTiles()
 }

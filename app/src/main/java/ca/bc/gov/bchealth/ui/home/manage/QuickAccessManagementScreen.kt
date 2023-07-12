@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.home.manage
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,18 +24,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.compose.BasePreview
-import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.bold
 import ca.bc.gov.bchealth.compose.theme.primaryBlue
 import ca.bc.gov.bchealth.compose.theme.statusBlue
 import ca.bc.gov.bchealth.compose.theme.white
+import ca.bc.gov.bchealth.ui.home.QuickAccessTileItem
 
 @Composable
 fun QuickAccessManagementScreen(
     viewModel: QuickAccessManagementViewModel,
-    onClickItem: (QuickAccessManagementViewModel.QuickAccessManagementItem) -> Unit,
+    onClickItem: (QuickAccessTileItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState = viewModel.uiState.collectAsState().value
@@ -43,13 +43,13 @@ fun QuickAccessManagementScreen(
         viewModel.loadUiList()
     }
 
-    QuickAccessManagementContent(uiState.uiList, onClickItem, modifier)
+    QuickAccessManagementContent(uiState, onClickItem, modifier)
 }
 
 @Composable
 private fun QuickAccessManagementContent(
-    uiList: List<QuickAccessManagementViewModel.QuickAccessManagementList>,
-    onClickItem: (QuickAccessManagementViewModel.QuickAccessManagementItem) -> Unit,
+    uiState: Map<Int, List<QuickAccessTileItem>>,
+    onClickItem: (QuickAccessTileItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -66,11 +66,10 @@ private fun QuickAccessManagementContent(
 
             item { Spacer(modifier = Modifier.size(16.dp)) }
 
-            uiList.forEach { categories ->
-
+            for ((category, tiles) in uiState) {
                 item {
                     Text(
-                        text = categories.tileCategory,
+                        text = stringResource(id = category),
                         style = MyHealthTypography.body1.bold(),
                         color = statusBlue
                     )
@@ -78,7 +77,7 @@ private fun QuickAccessManagementContent(
 
                 item { Spacer(modifier = Modifier.size(12.dp)) }
 
-                items(categories.tiles) { tile ->
+                items(tiles) { tile ->
                     TileItemUi(tile, onClickItem)
                     Spacer(modifier = Modifier.size(10.dp))
                 }
@@ -91,10 +90,10 @@ private fun QuickAccessManagementContent(
 
 @Composable
 private fun TileItemUi(
-    item: QuickAccessManagementViewModel.QuickAccessManagementItem,
-    onClickItem: (QuickAccessManagementViewModel.QuickAccessManagementItem) -> Unit,
+    item: QuickAccessTileItem,
+    onClickItem: (QuickAccessTileItem) -> Unit,
 ) {
-    val checkedState = remember { mutableStateOf(item.selected) }
+    val checkedState = remember { mutableStateOf(item.enabled) }
 
     Card(
         modifier = Modifier.clickable {
@@ -112,13 +111,7 @@ private fun TileItemUi(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                text = item.tileName,
-                style = MyHealthTypography.body1.bold(),
-            )
+            TileName(item)
 
             Checkbox(
                 modifier = Modifier.size(24.dp),
@@ -132,63 +125,79 @@ private fun TileItemUi(
     }
 }
 
-@BasePreview
 @Composable
-private fun PreviewQuickAccessManagementContent() {
-    MyHealthTheme {
-        QuickAccessManagementContent(
-            listOf(
-                QuickAccessManagementViewModel.QuickAccessManagementList(
-                    "Health record",
-                    listOf(
-                        QuickAccessManagementViewModel.QuickAccessManagementItem(
-                            "My Notes",
-                            false
-                        ),
-                        QuickAccessManagementViewModel.QuickAccessManagementItem(
-                            "Immunization",
-                            true
-                        ),
-                        QuickAccessManagementViewModel.QuickAccessManagementItem(
-                            "Medications",
-                            false
-                        ),
-                        QuickAccessManagementViewModel.QuickAccessManagementItem(
-                            "Lab Results",
-                            false
-                        ),
-                        QuickAccessManagementViewModel.QuickAccessManagementItem(
-                            "Special authority",
-                            false
-                        ),
-                        QuickAccessManagementViewModel.QuickAccessManagementItem(
-                            "Health visit",
-                            false
-                        ),
-                        QuickAccessManagementViewModel.QuickAccessManagementItem(
-                            "Clinic documents",
-                            false
-                        ),
-                    )
-                ),
-                QuickAccessManagementViewModel.QuickAccessManagementList(
-                    "Service",
-                    listOf(
-                        QuickAccessManagementViewModel.QuickAccessManagementItem(
-                            "Organ donor",
-                            false
-                        ),
-                    )
-                ),
-                QuickAccessManagementViewModel.QuickAccessManagementList(
-                    "Dependents’ records",
-                    listOf(
-                        QuickAccessManagementViewModel.QuickAccessManagementItem("Jane", false),
-                        QuickAccessManagementViewModel.QuickAccessManagementItem("Anne", false),
-                    )
-                )
-            ),
-            {}
-        )
+private fun RowScope.TileName(item: QuickAccessTileItem) {
+    val name = when (item) {
+        is QuickAccessTileItem.PredefinedItem -> stringResource(id = item.nameId)
+        is QuickAccessTileItem.DynamicItem -> item.text
     }
+
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f),
+        text = name,
+        style = MyHealthTypography.body1.bold(),
+    )
 }
+
+// @BasePreview
+// @Composable
+// private fun PreviewQuickAccessManagementContent() {
+//     MyHealthTheme {
+//         QuickAccessManagementContent(
+//             listOf(
+//                 QuickAccessManagementViewModel.QuickAccessManagementList(
+//                     "Health record",
+//                     listOf(
+//                         QuickAccessManagementViewModel.QuickAccessManagementItem(
+//                             "My Notes",
+//                             false
+//                         ),
+//                         QuickAccessManagementViewModel.QuickAccessManagementItem(
+//                             "Immunization",
+//                             true
+//                         ),
+//                         QuickAccessManagementViewModel.QuickAccessManagementItem(
+//                             "Medications",
+//                             false
+//                         ),
+//                         QuickAccessManagementViewModel.QuickAccessManagementItem(
+//                             "Lab Results",
+//                             false
+//                         ),
+//                         QuickAccessManagementViewModel.QuickAccessManagementItem(
+//                             "Special authority",
+//                             false
+//                         ),
+//                         QuickAccessManagementViewModel.QuickAccessManagementItem(
+//                             "Health visit",
+//                             false
+//                         ),
+//                         QuickAccessManagementViewModel.QuickAccessManagementItem(
+//                             "Clinic documents",
+//                             false
+//                         ),
+//                     )
+//                 ),
+//                 QuickAccessManagementViewModel.QuickAccessManagementList(
+//                     "Service",
+//                     listOf(
+//                         QuickAccessManagementViewModel.QuickAccessManagementItem(
+//                             "Organ donor",
+//                             false
+//                         ),
+//                     )
+//                 ),
+//                 QuickAccessManagementViewModel.QuickAccessManagementList(
+//                     "Dependents’ records",
+//                     listOf(
+//                         QuickAccessManagementViewModel.QuickAccessManagementItem("Jane", false),
+//                         QuickAccessManagementViewModel.QuickAccessManagementItem("Anne", false),
+//                     )
+//                 )
+//             ),
+//             {}
+//         )
+//     }
+// }
