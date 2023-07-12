@@ -131,6 +131,7 @@ class HomeFragment : BaseSecureFragment(null) {
                                 .navigationBarsPadding()
                                 .padding(it),
                             homeViewModel,
+                            onClickManage = {},
                             onQuickAccessTileClicked = {}
                         )
                     }
