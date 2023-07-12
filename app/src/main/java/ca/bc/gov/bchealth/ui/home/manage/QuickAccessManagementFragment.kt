@@ -47,6 +47,7 @@ class QuickAccessManagementFragment : BaseFragment(null) {
                     QuickAccessManagementScreen(
                         viewModel = viewModel,
                         onClickItem = ::onClickItem,
+                        onUpdateCompleted = ::popNavigation,
                         modifier = Modifier
                             .statusBarsPadding()
                             .navigationBarsPadding()
