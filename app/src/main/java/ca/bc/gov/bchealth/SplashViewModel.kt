@@ -75,7 +75,7 @@ class SplashViewModel @Inject constructor(
                 featureNameId = R.string.immunization_schedules,
                 categoryId = R.string.feature_category_health_record,
                 featureIconId = R.drawable.ic_tile_immunization_schedules,
-                destinationId = R.id.health_records,
+                destinationId = R.id.immunizationSchedulesFragment,
                 isManagementEnabled = false,
                 isQuickAccessEnabled = true,
             ),
@@ -108,7 +108,7 @@ class SplashViewModel @Inject constructor(
             AppFeatureDto(
                 featureNameId = R.string.feature_immunization,
                 categoryId = R.string.feature_category_health_record,
-                featureIconId = R.drawable.icon_tile_health_record,
+                featureIconId = R.drawable.ic_health_record_vaccine,
                 destinationId = R.id.health_records,
                 isManagementEnabled = true,
                 isQuickAccessEnabled = false,
@@ -117,7 +117,7 @@ class SplashViewModel @Inject constructor(
             AppFeatureDto(
                 featureNameId = R.string.feature_medications,
                 categoryId = R.string.feature_category_health_record,
-                featureIconId = R.drawable.icon_tile_health_record,
+                featureIconId = R.drawable.ic_health_record_medication,
                 destinationId = R.id.health_records,
                 isManagementEnabled = true,
                 isQuickAccessEnabled = false,
@@ -126,7 +126,7 @@ class SplashViewModel @Inject constructor(
             AppFeatureDto(
                 featureNameId = R.string.feature_lab_results,
                 categoryId = R.string.feature_category_health_record,
-                featureIconId = R.drawable.icon_tile_health_record,
+                featureIconId = R.drawable.ic_lab_test,
                 destinationId = R.id.health_records,
                 isManagementEnabled = true,
                 isQuickAccessEnabled = false,
@@ -135,7 +135,7 @@ class SplashViewModel @Inject constructor(
             AppFeatureDto(
                 featureNameId = R.string.feature_special_authority,
                 categoryId = R.string.feature_category_health_record,
-                featureIconId = R.drawable.icon_tile_health_record,
+                featureIconId = R.drawable.ic_health_record_special_authority,
                 destinationId = R.id.health_records,
                 isManagementEnabled = true,
                 isQuickAccessEnabled = false,
@@ -144,7 +144,7 @@ class SplashViewModel @Inject constructor(
             AppFeatureDto(
                 featureNameId = R.string.feature_health_visit,
                 categoryId = R.string.feature_category_health_record,
-                featureIconId = R.drawable.icon_tile_health_record,
+                featureIconId = R.drawable.ic_health_record_health_visit,
                 destinationId = R.id.health_records,
                 isManagementEnabled = true,
                 isQuickAccessEnabled = false,
@@ -153,7 +153,7 @@ class SplashViewModel @Inject constructor(
             AppFeatureDto(
                 featureNameId = R.string.feature_clinic_documents,
                 categoryId = R.string.feature_category_health_record,
-                featureIconId = R.drawable.icon_tile_health_record,
+                featureIconId = R.drawable.ic_health_record_clinical_document,
                 destinationId = R.id.health_records,
                 isManagementEnabled = true,
                 isQuickAccessEnabled = false,
@@ -162,7 +162,7 @@ class SplashViewModel @Inject constructor(
             AppFeatureDto(
                 featureNameId = R.string.feature_organ_donor,
                 categoryId = R.string.feature_category_service,
-                featureIconId = R.drawable.icon_tile_health_record,
+                featureIconId = R.drawable.ic_organ_donor,
                 destinationId = R.id.health_records,
                 isManagementEnabled = true,
                 isQuickAccessEnabled = false,
