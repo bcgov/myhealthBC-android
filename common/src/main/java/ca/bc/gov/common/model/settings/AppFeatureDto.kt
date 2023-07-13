@@ -7,6 +7,7 @@ data class AppFeatureDto(
     val categoryId: Int,
     val featureIconId: Int,
     val destinationId: Int,
+    val destinationParam: String? = null,
     val isManagementEnabled: Boolean = false,
     val isQuickAccessEnabled: Boolean = false
 )

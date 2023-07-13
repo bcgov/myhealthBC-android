@@ -485,6 +485,7 @@ fun AppFeatureEntity.toDto() = AppFeatureDto(
     categoryId = categoryNameId,
     featureIconId = featureIconId,
     destinationId = destinationId,
+    destinationParam = destinationParam,
     isManagementEnabled = isManagementEnabled,
     isQuickAccessEnabled = isQuickAccessEnabled
 )
