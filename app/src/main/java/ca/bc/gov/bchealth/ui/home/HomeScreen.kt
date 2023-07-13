@@ -139,43 +139,40 @@ private fun QuickAccessTileItemUi(
 @Composable
 @BasePreview
 private fun HomeScreenPreview() {
+    val dynamicItemSample = QuickAccessTileItem.DynamicItem(
+        id = 0,
+        icon = R.drawable.ic_health_record,
+        nameId = -1,
+        text = "",
+        destinationId = -1,
+        destinationParam = null,
+        categoryId = -1,
+        enabled = true,
+    )
+
     HealthGatewayTheme {
         HomeScreenContent(
             onQuickAccessTileClicked = {},
             onClickManage = {},
             quickAccessTileItems = listOf(
-                QuickAccessTileItem.DynamicItem(
-                    id = 0,
-                    icon = R.drawable.ic_health_record,
+                dynamicItemSample.copy(
                     nameId = R.string.feature_quick_action_dependents,
                     text = "Jane",
-                    destinationId = -1,
-                    categoryId = -1,
-                    enabled = true,
                 ),
-                QuickAccessTileItem.DynamicItem(
-                    id = 0,
-                    icon = R.drawable.ic_health_record,
+                dynamicItemSample.copy(
                     nameId = R.string.feature_quick_action_dependents,
                     text = "James",
-                    destinationId = -1,
-                    categoryId = -1,
-                    enabled = true,
                 ),
-                QuickAccessTileItem.DynamicItem(
-                    id = 0,
-                    icon = R.drawable.ic_health_record,
+                dynamicItemSample.copy(
                     nameId = null,
                     text = "Dynamic text",
-                    destinationId = -1,
-                    categoryId = -1,
-                    enabled = true,
                 ),
                 QuickAccessTileItem.PredefinedItem(
                     id = 0,
                     icon = R.drawable.ic_health_record,
                     nameId = R.string.immnz_schedules_infant,
                     destinationId = -1,
+                    destinationParam = null,
                     categoryId = -1,
                     enabled = true,
                 ),
