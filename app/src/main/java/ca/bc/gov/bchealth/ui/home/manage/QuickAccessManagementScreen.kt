@@ -164,6 +164,7 @@ private fun PreviewQuickAccessManagementContent() {
     val sample = QuickAccessTileItem.PredefinedItem(
         id = -1,
         destinationId = -1,
+        destinationParam = null,
         categoryId = -1,
         enabled = false,
         icon = -1,
