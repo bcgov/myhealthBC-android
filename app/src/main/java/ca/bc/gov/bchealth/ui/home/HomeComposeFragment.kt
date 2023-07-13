@@ -7,6 +7,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
@@ -14,12 +15,14 @@ import ca.bc.gov.bchealth.compose.component.HGTopAppBar
 import ca.bc.gov.bchealth.compose.component.menu.TopAppBarActionItem
 import ca.bc.gov.bchealth.compose.theme.HealthGatewayTheme
 import ca.bc.gov.bchealth.ui.BaseSecureFragment
+import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
+import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeComposeFragment : BaseSecureFragment(null) {
-
     private val viewModel: HomeComposeViewModel by viewModels()
+    private val filterSharedViewModel: PatientFilterViewModel by activityViewModels()
 
     @Composable
     override fun GetComposableLayout() {
@@ -59,6 +62,12 @@ class HomeComposeFragment : BaseSecureFragment(null) {
     }
 
     private fun onQuickAccessTileClicked(quickAccessTileItem: QuickAccessTileItem) {
+        if (quickAccessTileItem.destinationId == R.id.health_records && quickAccessTileItem.destinationParam != null) {
+            filterSharedViewModel.updateFilter(
+                listOf(TimelineTypeFilter.findByFilterValue(quickAccessTileItem.destinationParam!!).name),
+            )
+        }
+
         findNavController().navigate(quickAccessTileItem.destinationId)
     }
 }

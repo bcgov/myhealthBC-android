@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 14,
-    "identityHash": "c437306952b7aadf43512299ea481345",
+    "identityHash": "276a9e926008aa206fc634d8899c0b77",
     "entities": [
       {
         "tableName": "patient",
@@ -2000,7 +2000,7 @@
       },
       {
         "tableName": "app_feature",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `feature_name` TEXT, `feature_name_id` INTEGER, `category_name_id` INTEGER NOT NULL, `feature_icon_id` INTEGER NOT NULL, `destination_id` INTEGER NOT NULL, `is_management_enabled` INTEGER NOT NULL DEFAULT false, `quick_access_enabled` INTEGER NOT NULL DEFAULT false)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `feature_name` TEXT, `feature_name_id` INTEGER, `category_name_id` INTEGER NOT NULL, `feature_icon_id` INTEGER NOT NULL, `destination_id` INTEGER NOT NULL, `destination_param` TEXT, `is_management_enabled` INTEGER NOT NULL DEFAULT false, `quick_access_enabled` INTEGER NOT NULL DEFAULT false)",
         "fields": [
           {
             "fieldPath": "id",
@@ -2039,6 +2039,12 @@
             "notNull": true
           },
           {
+            "fieldPath": "destinationParam",
+            "columnName": "destination_param",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "isManagementEnabled",
             "columnName": "is_management_enabled",
             "affinity": "INTEGER",
@@ -2066,7 +2072,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c437306952b7aadf43512299ea481345')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '276a9e926008aa206fc634d8899c0b77')"
     ]
   }
 }
