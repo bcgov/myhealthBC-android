@@ -46,11 +46,16 @@ class HomeComposeFragment : BaseSecureFragment(null) {
                             .navigationBarsPadding()
                             .padding(it),
                         viewModel,
+                        onClickManage = ::onClickManage,
                         onQuickAccessTileClicked = ::onQuickAccessTileClicked
                     )
                 }
             )
         }
+    }
+
+    private fun onClickManage() {
+        findNavController().navigate(R.id.quickAccessManagementFragment)
     }
 
     private fun onQuickAccessTileClicked(quickAccessTileItem: QuickAccessTileItem) {

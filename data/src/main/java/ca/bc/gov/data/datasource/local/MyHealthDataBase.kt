@@ -30,7 +30,6 @@ import ca.bc.gov.data.datasource.local.dao.MedicationSummaryDao
 import ca.bc.gov.data.datasource.local.dao.NotificationDao
 import ca.bc.gov.data.datasource.local.dao.OrganDonorDao
 import ca.bc.gov.data.datasource.local.dao.PatientDao
-import ca.bc.gov.data.datasource.local.dao.QuickAccessTileDao
 import ca.bc.gov.data.datasource.local.dao.SpecialAuthorityDao
 import ca.bc.gov.data.datasource.local.dao.UserProfileDao
 import ca.bc.gov.data.datasource.local.dao.VaccineRecordDao
@@ -57,7 +56,6 @@ import ca.bc.gov.data.datasource.local.entity.notification.NotificationEntity
 import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
 import ca.bc.gov.data.datasource.local.entity.settings.AppFeatureEntity
-import ca.bc.gov.data.datasource.local.entity.settings.QuickAccessTileEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 
@@ -92,7 +90,6 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
         DiagnosticImagingDataEntity::class,
         NotificationEntity::class,
         AppFeatureEntity::class,
-        QuickAccessTileEntity::class
     ],
     autoMigrations = [
         AutoMigration(from = 8, to = 9),
@@ -160,6 +157,4 @@ abstract class MyHealthDataBase : RoomDatabase() {
     abstract fun getNotificationDao(): NotificationDao
 
     abstract fun getAppFeatureDao(): AppFeatureDao
-
-    abstract fun getQuickAccessTileDao(): QuickAccessTileDao
 }

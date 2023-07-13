@@ -1,8 +1,11 @@
 package ca.bc.gov.bchealth.ui.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -28,19 +31,26 @@ import ca.bc.gov.bchealth.compose.theme.HealthGatewayTheme
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeComposeViewModel,
-    onQuickAccessTileClicked: (QuickAccessTileItem) -> Unit
+    onQuickAccessTileClicked: (QuickAccessTileItem) -> Unit,
+    onClickManage: () -> Unit,
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     LaunchedEffect(key1 = Unit) {
         viewModel.loadQuickAccessTiles()
     }
-    HomeScreenContent(modifier, onQuickAccessTileClicked, uiState.quickAccessTileItems)
+    HomeScreenContent(
+        modifier,
+        onQuickAccessTileClicked,
+        onClickManage,
+        uiState.quickAccessTileItems
+    )
 }
 
 @Composable
 private fun HomeScreenContent(
     modifier: Modifier = Modifier,
     onQuickAccessTileClicked: (QuickAccessTileItem) -> Unit,
+    onClickManage: () -> Unit,
     quickAccessTileItems: List<QuickAccessTileItem>
 ) {
     LazyVerticalGrid(
@@ -69,30 +79,107 @@ private fun HomeScreenContent(
         }
 
         item(span = { GridItemSpan(maxLineSpan) }) {
-            Text(
-                text = stringResource(id = R.string.quick_access),
-                style = MaterialTheme.typography.subtitle2,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colors.primary
-            )
+            Row(Modifier.fillMaxWidth()) {
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = stringResource(id = R.string.quick_access),
+                    style = MaterialTheme.typography.subtitle2,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colors.primary
+                )
+
+                // todo: Replace it: HAPP-1537
+                Text(
+                    modifier = Modifier.clickable { onClickManage.invoke() },
+                    text = "Manage",
+                    style = MaterialTheme.typography.subtitle2,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colors.primary
+                )
+            }
         }
 
         items(quickAccessTileItems) {
-            QuickAccessTileItemUI(
-                onClick = { onQuickAccessTileClicked(it) },
-                icon = painterResource(id = it.icon),
-                title = stringResource(
-                    it.name
-                )
-            )
+            QuickAccessTileItemUi(it, onQuickAccessTileClicked)
         }
     }
+}
+
+@Composable
+private fun QuickAccessTileItemUi(
+    item: QuickAccessTileItem,
+    onQuickAccessTileClicked: (QuickAccessTileItem) -> Unit
+) {
+    val title: String
+    val icon: Int
+
+    when (item) {
+        is QuickAccessTileItem.PredefinedItem -> {
+            icon = item.icon
+            title = stringResource(id = item.nameId)
+        }
+
+        is QuickAccessTileItem.DynamicItem -> {
+            icon = item.icon
+            title = if (item.nameId == null) {
+                item.text
+            } else {
+                stringResource(item.nameId, item.text).replaceFirst("s’s", "s’")
+            }
+        }
+    }
+
+    QuickAccessTileItemUI(
+        onClick = { onQuickAccessTileClicked(item) },
+        icon = painterResource(id = icon),
+        title = title
+    )
 }
 
 @Composable
 @BasePreview
 private fun HomeScreenPreview() {
     HealthGatewayTheme {
-        HomeScreenContent(onQuickAccessTileClicked = {}, quickAccessTileItems = emptyList())
+        HomeScreenContent(
+            onQuickAccessTileClicked = {},
+            onClickManage = {},
+            quickAccessTileItems = listOf(
+                QuickAccessTileItem.DynamicItem(
+                    id = 0,
+                    icon = R.drawable.ic_health_record,
+                    nameId = R.string.feature_quick_action_dependents,
+                    text = "Jane",
+                    destinationId = -1,
+                    categoryId = -1,
+                    enabled = true,
+                ),
+                QuickAccessTileItem.DynamicItem(
+                    id = 0,
+                    icon = R.drawable.ic_health_record,
+                    nameId = R.string.feature_quick_action_dependents,
+                    text = "James",
+                    destinationId = -1,
+                    categoryId = -1,
+                    enabled = true,
+                ),
+                QuickAccessTileItem.DynamicItem(
+                    id = 0,
+                    icon = R.drawable.ic_health_record,
+                    nameId = null,
+                    text = "Dynamic text",
+                    destinationId = -1,
+                    categoryId = -1,
+                    enabled = true,
+                ),
+                QuickAccessTileItem.PredefinedItem(
+                    id = 0,
+                    icon = R.drawable.ic_health_record,
+                    nameId = R.string.immnz_schedules_infant,
+                    destinationId = -1,
+                    categoryId = -1,
+                    enabled = true,
+                ),
+            )
+        )
     }
 }
