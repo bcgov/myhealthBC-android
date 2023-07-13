@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.custom.AppBarDefaults
 import ca.bc.gov.bchealth.ui.custom.MyHealthBackButton
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolBar
 import ca.bc.gov.bchealth.ui.home.QuickAccessTileItem
@@ -40,7 +41,8 @@ class QuickAccessManagementFragment : BaseFragment(null) {
                                     tint = MaterialTheme.colors.primary
                                 )
                             }
-                        }
+                        },
+                        elevation = AppBarDefaults.TopAppBarElevation
                     )
                 },
                 content = {
