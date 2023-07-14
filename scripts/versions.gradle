@@ -6,7 +6,7 @@ versions.targetSdkVersion = 33
 versions.compileSdkVersion = 33
 
 //App
-versions.versionName = '1.10.0'
+versions.versionName = '2.0.0'
 versions.versionCode = 203
 versions.localApiVersion = 2
 
