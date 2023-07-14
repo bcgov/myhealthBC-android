@@ -20,6 +20,8 @@ data class AppFeatureEntity(
     val featureIconId: Int,
     @ColumnInfo(name = "destination_id")
     val destinationId: Int,
+    @ColumnInfo(name = "destination_param")
+    val destinationParam: String?,
     @ColumnInfo(name = "is_management_enabled", defaultValue = "false")
     val isManagementEnabled: Boolean = false,
     @ColumnInfo(name = "quick_access_enabled", defaultValue = "false")
