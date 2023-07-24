@@ -31,7 +31,6 @@ import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientNameDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
-import ca.bc.gov.common.model.services.DiagnosticImagingExamStatusDto
 import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.common.model.services.OrganDonorStatusDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
@@ -63,7 +62,6 @@ import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationStatemen
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationSummary
 import ca.bc.gov.data.datasource.remote.model.base.patient.PatientName
 import ca.bc.gov.data.datasource.remote.model.base.patientdata.DiagnosticImagingData
-import ca.bc.gov.data.datasource.remote.model.base.patientdata.DiagnosticImagingExamStatus
 import ca.bc.gov.data.datasource.remote.model.base.patientdata.OrganDonorData
 import ca.bc.gov.data.datasource.remote.model.base.patientdata.PatientDataType
 import ca.bc.gov.data.datasource.remote.model.base.patientdata.organdonor.OrganDonorStatus
@@ -485,21 +483,11 @@ private fun OrganDonorData.toDto() = OrganDonorDto(
     file = null
 )
 
-private fun DiagnosticImagingExamStatus.toDto() = when (this) {
-    DiagnosticImagingExamStatus.UNKNOWN -> DiagnosticImagingExamStatusDto.UNKNOWN
-    DiagnosticImagingExamStatus.SCHEDULED -> DiagnosticImagingExamStatusDto.SCHEDULED
-    DiagnosticImagingExamStatus.IN_PROGRESS -> DiagnosticImagingExamStatusDto.IN_PROGRESS
-    DiagnosticImagingExamStatus.FINALIZED -> DiagnosticImagingExamStatusDto.FINALIZED
-    DiagnosticImagingExamStatus.PENDING -> DiagnosticImagingExamStatusDto.PENDING
-    DiagnosticImagingExamStatus.COMPLETED -> DiagnosticImagingExamStatusDto.COMPLETED
-    DiagnosticImagingExamStatus.AMENDED -> DiagnosticImagingExamStatusDto.AMENDED
-}
-
 private fun DiagnosticImagingData.toDto() = DiagnosticImagingDataDto(
     id = id,
     examDate = examDate?.toDateTime(),
     fileId = fileId,
-    examStatus = examStatus.toDto(),
+    examStatus = examStatus ?: "Unknown",
     healthAuthority = healthAuthority,
     organization = organization,
     modality = modality,
