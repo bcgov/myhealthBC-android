@@ -16,6 +16,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Teams notification
+        if: ${{ secrets.ENABLE_TEAMS_NOTIFICATION == 'true' }}
         uses: toko-bifrost/ms-teams-deploy-card@master
         with:
           github-token: ${{ github.token }}
