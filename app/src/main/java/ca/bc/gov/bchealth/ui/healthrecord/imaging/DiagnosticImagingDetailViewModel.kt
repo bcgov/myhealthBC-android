@@ -37,11 +37,6 @@ class DiagnosticImagingDetailViewModel @Inject constructor(
                 ),
 
                 HealthRecordDetailItem(
-                    title = R.string.description,
-                    description = data.procedureDescription ?: "--"
-                ),
-
-                HealthRecordDetailItem(
                     title = R.string.health_authority,
                     description = data.healthAuthority ?: "--"
                 ),
