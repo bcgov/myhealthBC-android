@@ -7,15 +7,10 @@ import javax.inject.Inject
 class AppFeatureRepository @Inject constructor(
     private val appFeatureLocalDataSource: AppFeatureLocalDataSource
 ) {
-    suspend fun insert(appFeatures: List<AppFeatureDto>) {
-        appFeatureLocalDataSource.insertIfEmpty(appFeatures)
+
+    suspend fun insert(appFeatureDto: AppFeatureDto): Long {
+        return appFeatureLocalDataSource.insert(appFeatureDto)
     }
 
-    suspend fun updateQuickAccessFlag(id: Long, enabled: Boolean) {
-        appFeatureLocalDataSource.updateQuickAccessFlag(id, enabled)
-    }
-
-    suspend fun getQuickAccessTiles() = appFeatureLocalDataSource.getQuickAccessTiles()
-
-    suspend fun getManageableTiles() = appFeatureLocalDataSource.getManageableTiles()
+    suspend fun getAppFeaturesWithQuickAccessTiles() = appFeatureLocalDataSource.getAppFeaturesWithQuickAccessTiles()
 }

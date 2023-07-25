@@ -1,304 +1,331 @@
 package ca.bc.gov.bchealth.ui.home
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.COMMUNICATION_BANNER_MAX_LENGTH
-import ca.bc.gov.bchealth.utils.INDEX_NOT_FOUND
 import ca.bc.gov.bchealth.utils.fromHtml
-import ca.bc.gov.bchealth.workers.WorkerInvoker
-import ca.bc.gov.common.exceptions.ServiceDownException
-import ca.bc.gov.common.model.AuthenticationStatus
-import ca.bc.gov.common.model.banner.BannerDto
-import ca.bc.gov.common.utils.toDate
-import ca.bc.gov.common.utils.yyyy_MM_dd
+import ca.bc.gov.common.model.AppFeatureName
+import ca.bc.gov.common.model.QuickAccessLinkName
+import ca.bc.gov.common.model.settings.AppFeatureDto
+import ca.bc.gov.common.model.settings.QuickAccessTileDto
 import ca.bc.gov.repository.BannerRepository
 import ca.bc.gov.repository.OnBoardingRepository
-import ca.bc.gov.repository.bcsc.BcscAuthRepo
-import ca.bc.gov.repository.bcsc.PostLoginCheck
-import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
-import ca.bc.gov.repository.patient.PatientRepository
+import ca.bc.gov.repository.settings.AppFeatureWithQuickAccessTilesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    private val appFeatureWithQuickAccessTilesRepository: AppFeatureWithQuickAccessTilesRepository,
     private val onBoardingRepository: OnBoardingRepository,
-    private val patientRepository: PatientRepository,
-    private val bcscAuthRepo: BcscAuthRepo,
-    private val workerInvoker: WorkerInvoker,
-    recommendationRepository: ImmunizationRecommendationRepository,
-    private val bannerRepository: BannerRepository,
+    private val bannerRepository: BannerRepository
 ) : ViewModel() {
+    private val _uiState =
+        MutableStateFlow(HomeComposeUiState(isQuickAccessTileTutorialRequired = appFeatureWithQuickAccessTilesRepository.isQuickAccessTileTutorialRequired))
+    val uiState: StateFlow<HomeComposeUiState> = _uiState.asStateFlow()
 
-    private var bannerRequested = false
+    private var isBiometricAuthenticationRequired: Boolean = true
 
-    private val _bannerState = MutableStateFlow<BannerItem?>(null)
-    val bannerState: StateFlow<BannerItem?> = _bannerState.asStateFlow()
+    fun loadQuickAccessTiles(loginStatus: LoginStatus) = viewModelScope.launch {
+        var quickAccessTileItems = mutableListOf<QuickAccessTileItem>()
+        val data = appFeatureWithQuickAccessTilesRepository.getAppFeaturesWithQuickAccessTiles()
 
-    private val _uiState = MutableStateFlow(HomeUiState())
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
-    var isAuthenticationRequired: Boolean = true
-    var isForceLogout: Boolean = false
+        val appFeatures =
+            appFeatureWithQuickAccessTilesRepository.getAppFeaturesWithQuickAccessTiles()
+                .filter { it.appFeatureDto.showAsQuickAccess }
+                .map {
+                    QuickAccessTileItem.FeatureTileItem.from(it.appFeatureDto)
+                }
 
-    private val _homeList = MutableStateFlow<List<HomeRecordItem>?>(null)
-    val homeList: StateFlow<List<HomeRecordItem>?> = _homeList.asStateFlow()
+        quickAccessTileItems.addAll(appFeatures)
 
-    private val recommendationItem = HomeRecordItem(
-        R.drawable.ic_recommendation,
-        R.string.home_recommendations_title,
-        R.string.home_recommendations_body,
-        R.drawable.ic_right_arrow,
-        R.string.learn_more,
-        HomeNavigationType.RECOMMENDATIONS
-    )
-
-    private val displayRecommendations =
-        recommendationRepository.getAllRecommendations().map { list ->
-            val isLoggedIn: Boolean = try {
-                bcscAuthRepo.checkSession()
-            } catch (e: Exception) {
-                false
-            }
-            list.isNotEmpty() && isLoggedIn
+        data.filter { it.appFeatureDto.showAsQuickAccess }.forEach {
+            val quickLink = it.quickAccessTiles.filter { it.showAsQuickAccess }
+                .map { tile -> QuickAccessTileItem.QuickLinkTileItem.from(tile) }
+            quickAccessTileItems.addAll(quickLink)
         }
+
+        if (loginStatus != LoginStatus.ACTIVE) {
+            quickAccessTileItems =
+                quickAccessTileItems.filterIsInstance<QuickAccessTileItem.FeatureTileItem>().toMutableList()
+        }
+        _uiState.update { it.copy(quickAccessTileItems = quickAccessTileItems) }
+    }
 
     fun launchCheck() = viewModelScope.launch {
-        if (bcscAuthRepo.checkSession()) {
-            onBoardingRepository.onBCSCLoginRequiredPostBiometric = false
-        }
         when {
             onBoardingRepository.onBoardingRequired -> {
                 _uiState.update { state ->
-                    state.copy(isLoading = false, isOnBoardingRequired = true)
+                    state.copy(
+                        isLoading = false,
+                        launchCheckStatus = LaunchCheckStatus.REQUIRE_ON_BOARDING
+                    )
                 }
             }
 
             onBoardingRepository.isReOnBoardingRequired -> {
-                _uiState.update { state ->
-                    state.copy(isLoading = false, isReOnBoardingRequired = true)
-                }
-            }
-
-            isAuthenticationRequired -> {
-                _uiState.update { state -> state.copy(isAuthenticationRequired = true) }
-            }
-
-            onBoardingRepository.onBCSCLoginRequiredPostBiometric -> {
-                _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = true) }
-            }
-
-            bcscAuthRepo.getPostLoginCheck() == PostLoginCheck.IN_PROGRESS.name -> {
-                _uiState.update { state -> state.copy(isForceLogout = true) }
-            }
-        }
-    }
-
-    fun onBoardingShown() {
-        _uiState.update {
-            it.copy(isOnBoardingRequired = false, isReOnBoardingRequired = false)
-        }
-    }
-
-    fun onAuthenticationRequired(isRequired: Boolean) {
-        isAuthenticationRequired = isRequired
-        _uiState.update { state -> state.copy(isAuthenticationRequired = isRequired) }
-    }
-
-    fun onBcscLoginRequired(isRequired: Boolean) {
-        onBoardingRepository.onBCSCLoginRequiredPostBiometric = isRequired
-        _uiState.update { state -> state.copy(isBcscLoginRequiredPostBiometrics = isRequired) }
-    }
-
-    fun onForceLogout(isRequired: Boolean) {
-        isForceLogout = isRequired
-        _uiState.update { state -> state.copy(isForceLogout = isRequired) }
-    }
-
-    fun getAuthenticatedPatientName() = viewModelScope.launch {
-        try {
-            val patient =
-                patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
-            val names = patient.fullName.split(" ")
-            val firstName = if (names.isNotEmpty()) names.first() else ""
-            _uiState.update {
-                it.copy(patientFirstName = firstName)
-            }
-        } catch (e: Exception) {
-            _uiState.update {
-                it.copy(patientFirstName = "")
-            }
-        }
-    }
-
-    suspend fun getHomeRecordsList() {
-        val isLoggedIn: Boolean = try {
-            bcscAuthRepo.checkSession()
-        } catch (e: Exception) {
-            false
-        }
-
-        val list = mutableListOf(
-            HomeRecordItem(
-                R.drawable.ic_login_info,
-                R.string.health_records,
-                R.string.health_records_desc,
-                0,
-                if (isLoggedIn) R.string.view_records else R.string.get_started,
-                HomeNavigationType.HEALTH_RECORD
-            ),
-            HomeRecordItem(
-                R.drawable.ic_resources,
-                R.string.health_resources,
-                R.string.resources_desc,
-                R.drawable.ic_right_arrow,
-                R.string.learn_more,
-                HomeNavigationType.RESOURCES
-            ),
-            HomeRecordItem(
-                R.drawable.ic_green_tick,
-                R.string.health_passes,
-                R.string.proof_of_vaccination_desc,
-                R.drawable.ic_right_arrow,
-                R.string.add_proofs,
-                HomeNavigationType.VACCINE_PROOF
-            ),
-        )
-
-        _homeList.update { list }
-        displayRecommendations.collect {
-            manageRecommendationCard(it)
-        }
-    }
-
-    private fun manageRecommendationCard(displayCard: Boolean) {
-        _homeList.value?.let { list ->
-            val cardIndex = list.indexOfFirst {
-                it.recordType == HomeNavigationType.RECOMMENDATIONS
-            }
-
-            if (displayCard) {
-                if (cardIndex == INDEX_NOT_FOUND) {
-                    _homeList.update {
-                        list.toMutableList().apply { add(1, recommendationItem) }
-                    }
-                }
-            } else {
-                if (cardIndex > INDEX_NOT_FOUND) {
-                    _homeList.update {
-                        list.toMutableList().apply { removeAt(cardIndex) }
-                    }
-                }
-            }
-        }
-    }
-
-    fun executeOneTimeDataFetch() {
-        fetchBanner()
-        workerInvoker.executeOneTimeDataFetch()
-    }
-
-    private fun fetchBanner() {
-        if (bannerRequested.not()) {
-            viewModelScope.launch {
-
-                try {
-                    callBannerRepository()
-                } catch (e: Exception) {
-                    when (e) {
-                        is ServiceDownException -> displayServiceDownMessage()
-                        else -> e.printStackTrace()
-                    }
-                }
-            }
-
-            bannerRequested = true
-        }
-    }
-
-    private fun displayServiceDownMessage() {
-        _uiState.update { state ->
-            state.copy(displayServiceDownMessage = true)
-        }
-    }
-
-    private suspend fun callBannerRepository() {
-        bannerRepository.getBanner()?.apply {
-            if (validateBannerDates(this)) {
-                _bannerState.update {
-                    BannerItem(
-                        title = title,
-                        date = startDate.toDate(yyyy_MM_dd),
-                        body = body,
-                        displayReadMore = shouldDisplayReadMore(body),
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        launchCheckStatus = LaunchCheckStatus.REQUIRE_RE_ON_BOARDING
                     )
                 }
             }
+
+            isBiometricAuthenticationRequired -> {
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        launchCheckStatus = LaunchCheckStatus.REQUIRE_BIOMETRIC_AUTHENTICATION
+                    )
+                }
+            }
+
+            else -> {
+                _uiState.update {
+                    it.copy(isLoading = false, launchCheckStatus = LaunchCheckStatus.SUCCESS)
+                }
+            }
         }
     }
 
-    private fun validateBannerDates(bannerDto: BannerDto): Boolean {
-        val currentTime = System.currentTimeMillis()
-        return bannerDto.startDate.toEpochMilli() <= currentTime &&
-            currentTime < bannerDto.endDate.toEpochMilli()
+    fun onBiometricAuthenticationCompleted() {
+        isBiometricAuthenticationRequired = false
+        resetUIState()
+        launchCheck()
     }
 
-    fun toggleBanner() {
-        _bannerState.update { it?.copy(expanded = it.expanded.not()) }
+    fun resetUIState() {
+        _uiState.update {
+            it.copy(launchCheckStatus = null)
+        }
+    }
+
+    fun fetchBanner() = viewModelScope.launch {
+        try {
+            bannerRepository.getBanner()?.let { banner ->
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        bannerItem = HomeBannerItem(
+                            banner.title,
+                            body = banner.body
+                        )
+                    )
+                }
+            }
+        } catch (e: Exception) {
+        }
     }
 
     fun dismissBanner() {
-        _bannerState.update { it?.copy(isHidden = true) }
+        _uiState.update {
+            it.copy(isLoading = false, bannerItem = it.bannerItem?.copy(isDismissed = true))
+        }
     }
 
-    private fun shouldDisplayReadMore(body: String): Boolean =
-        body.fromHtml().length > COMMUNICATION_BANNER_MAX_LENGTH
+    fun getLoginInfoCardData(loginStatus: LoginStatus): LoginInfoCardData? {
 
-    fun resetUiState() {
-        _uiState.tryEmit(HomeUiState())
+        return when (loginStatus) {
+
+            LoginStatus.ACTIVE -> {
+                null
+            }
+
+            LoginStatus.EXPIRED -> {
+                LoginInfoCardData(
+                    title = R.string.session_time_out,
+                    description = R.string.login_to_view_hidden_records_msg,
+                    buttonText = R.string.log_in
+                )
+            }
+
+            LoginStatus.NOT_AUTHENTICATED -> {
+                LoginInfoCardData(
+                    title = R.string.log_in_with_bc_services_card,
+                    description = R.string.log_in_description,
+                    buttonText = R.string.get_started,
+                    image = R.drawable.img_un_authenticated_home_screen
+                )
+            }
+        }
+    }
+
+    fun tutorialDismissed() {
+        appFeatureWithQuickAccessTilesRepository.isQuickAccessTileTutorialRequired = false
+        _uiState.update {
+            it.copy(isQuickAccessTileTutorialRequired = false)
+        }
     }
 }
 
-data class BannerItem(
-    val title: String,
-    val date: String,
-    val body: String,
-    val displayReadMore: Boolean,
-    var expanded: Boolean = true,
-    var isHidden: Boolean = false
-)
-
-data class HomeUiState(
+data class HomeComposeUiState(
     val isLoading: Boolean = false,
-    val isOnBoardingRequired: Boolean = false,
-    val isReOnBoardingRequired: Boolean = false,
-    val isAuthenticationRequired: Boolean = false,
-    val isBcscLoginRequiredPostBiometrics: Boolean = false,
-    val patientFirstName: String? = null,
-    val isForceLogout: Boolean = false,
-    val displayServiceDownMessage: Boolean = false
+    val launchCheckStatus: LaunchCheckStatus? = null,
+    val bannerItem: HomeBannerItem? = null,
+    val loginInfoCardData: LoginInfoCardData? = null,
+    val quickAccessTileItems: List<QuickAccessTileItem> = emptyList(),
+    val isQuickAccessTileTutorialRequired: Boolean = false
 )
 
-data class HomeRecordItem(
-    @DrawableRes val iconTitle: Int,
+enum class LaunchCheckStatus {
+    REQUIRE_ON_BOARDING,
+    REQUIRE_RE_ON_BOARDING,
+    REQUIRE_BIOMETRIC_AUTHENTICATION,
+    SUCCESS
+}
+
+data class LoginInfoCardData(
     @StringRes val title: Int,
     @StringRes val description: Int,
-    @DrawableRes val icon: Int,
-    @StringRes val btnTitle: Int,
-    val recordType: HomeNavigationType
+    @StringRes val buttonText: Int,
+    @DrawableRes val image: Int = 0
 )
 
-enum class HomeNavigationType {
-    HEALTH_RECORD,
-    RECOMMENDATIONS,
-    RESOURCES,
-    VACCINE_PROOF,
+sealed class QuickAccessTileItem(
+    @DrawableRes open val icon: Int,
+    open val name: String,
+    open val payload: String? = null,
+    @IdRes open val destinationId: Int,
+    open val isEditable: Boolean = false
+) {
+    data class FeatureTileItem(
+        val id: Long,
+        override val icon: Int,
+        override val name: String,
+        override val payload: String?,
+        override val destinationId: Int,
+        override val isEditable: Boolean
+    ) : QuickAccessTileItem(
+        icon, name, payload, destinationId, isEditable
+    ) {
+        companion object {
+            fun from(appFeatureDto: AppFeatureDto): FeatureTileItem {
+                val (tileIcon, endDestinationId) = when (appFeatureDto.name) {
+                    AppFeatureName.HEALTH_RECORDS -> {
+                        Pair(R.drawable.icon_tile_health_record, R.id.health_records)
+                    }
+
+                    AppFeatureName.IMMUNIZATION_SCHEDULES -> {
+
+                        Pair(
+                            R.drawable.ic_tile_immunization_schedules,
+                            R.id.immunizationSchedulesFragment
+                        )
+                    }
+
+                    AppFeatureName.HEALTH_RESOURCES -> {
+                        Pair(
+                            R.drawable.ic_tile_healt_resources,
+                            R.id.action_homeFragment_to_resources
+                        )
+                    }
+
+                    AppFeatureName.PROOF_OF_VACCINE -> {
+                        Pair(
+                            R.drawable.ic_tile_proof_of_vaccine,
+                            R.id.action_homeFragment_to_health_pass
+                        )
+                    }
+
+                    AppFeatureName.SERVICES -> {
+                        Pair(R.drawable.ic_organ_donor, R.id.services)
+                    }
+                }
+                return FeatureTileItem(
+                    id = appFeatureDto.id,
+                    name = appFeatureDto.name.value,
+                    icon = tileIcon,
+                    destinationId = endDestinationId,
+                    payload = null,
+                    isEditable = false
+                )
+            }
+        }
+    }
+
+    data class QuickLinkTileItem(
+        val id: Long,
+        val featureId: Long,
+        override val icon: Int,
+        override val name: String,
+        override val payload: String?,
+        override val destinationId: Int,
+        override val isEditable: Boolean
+    ) : QuickAccessTileItem(
+        icon, name, payload, destinationId, isEditable
+    ) {
+        companion object {
+            fun from(quickAccessTileDto: QuickAccessTileDto): QuickLinkTileItem {
+                val (tileIcon, endDestination) = when (quickAccessTileDto.tileName) {
+                    QuickAccessLinkName.IMMUNIZATIONS -> {
+                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                    }
+
+                    QuickAccessLinkName.MEDICATIONS -> {
+                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                    }
+
+                    QuickAccessLinkName.LAB_RESULTS -> {
+                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                    }
+
+                    QuickAccessLinkName.COVID_19_TESTS -> {
+                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                    }
+
+                    QuickAccessLinkName.HEALTH_VISITS -> {
+                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                    }
+
+                    QuickAccessLinkName.MY_NOTES -> {
+                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                    }
+
+                    QuickAccessLinkName.SPECIAL_AUTHORITY -> {
+                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                    }
+
+                    QuickAccessLinkName.CLINICAL_DOCUMENTS -> {
+                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                    }
+
+                    QuickAccessLinkName.HOSPITAL_VISITS -> {
+                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                    }
+
+                    QuickAccessLinkName.IMAGING_REPORTS -> {
+                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                    }
+                }
+                return QuickLinkTileItem(
+                    id = quickAccessTileDto.id,
+                    featureId = quickAccessTileDto.featureId,
+                    name = quickAccessTileDto.tileName.value,
+                    payload = quickAccessTileDto.tilePayload,
+                    icon = tileIcon,
+                    destinationId = endDestination,
+                    isEditable = true
+                )
+            }
+        }
+    }
+}
+
+data class HomeBannerItem(
+    val title: String,
+    val body: String,
+    var isDismissed: Boolean = false
+) {
+    fun showReadMore() = body.fromHtml().length > COMMUNICATION_BANNER_MAX_LENGTH
 }

@@ -2,12 +2,17 @@ package ca.bc.gov.data.datasource.local
 
 import androidx.room.AutoMigration
 import androidx.room.Database
+import androidx.room.DeleteColumn
+import androidx.room.RenameColumn
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.AutoMigrationSpec
 import ca.bc.gov.data.datasource.local.converter.AddressConverter
+import ca.bc.gov.data.datasource.local.converter.AppFeatureNameConverter
 import ca.bc.gov.data.datasource.local.converter.AuthenticationStatusTypeConverter
 import ca.bc.gov.data.datasource.local.converter.DateTimeConverter
 import ca.bc.gov.data.datasource.local.converter.PatientNameConverter
+import ca.bc.gov.data.datasource.local.converter.QuickAccessLinkNameConverter
 import ca.bc.gov.data.datasource.local.converter.SyncStatusConverter
 import ca.bc.gov.data.datasource.local.dao.AppFeatureDao
 import ca.bc.gov.data.datasource.local.dao.ClinicalDocumentDao
@@ -30,6 +35,7 @@ import ca.bc.gov.data.datasource.local.dao.MedicationSummaryDao
 import ca.bc.gov.data.datasource.local.dao.NotificationDao
 import ca.bc.gov.data.datasource.local.dao.OrganDonorDao
 import ca.bc.gov.data.datasource.local.dao.PatientDao
+import ca.bc.gov.data.datasource.local.dao.QuickAccessTileDao
 import ca.bc.gov.data.datasource.local.dao.SpecialAuthorityDao
 import ca.bc.gov.data.datasource.local.dao.UserProfileDao
 import ca.bc.gov.data.datasource.local.dao.VaccineRecordDao
@@ -56,6 +62,7 @@ import ca.bc.gov.data.datasource.local.entity.notification.NotificationEntity
 import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
 import ca.bc.gov.data.datasource.local.entity.settings.AppFeatureEntity
+import ca.bc.gov.data.datasource.local.entity.settings.QuickAccessTileEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 
@@ -63,7 +70,7 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
  * @author Pinakin Kansara
  */
 @Database(
-    version = 14,
+    version = 15,
     entities = [
         PatientEntity::class,
         VaccineRecordEntity::class,
@@ -90,6 +97,7 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
         DiagnosticImagingDataEntity::class,
         NotificationEntity::class,
         AppFeatureEntity::class,
+        QuickAccessTileEntity::class
     ],
     autoMigrations = [
         AutoMigration(from = 8, to = 9),
@@ -97,7 +105,8 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
         AutoMigration(from = 10, to = 11),
         AutoMigration(from = 11, to = 12),
         AutoMigration(from = 12, to = 13),
-        AutoMigration(from = 13, to = 14)
+        AutoMigration(from = 13, to = 14),
+        AutoMigration(from = 14, to = 15, spec = MyHealthDataBase.AppFeatureMigration::class)
     ],
     exportSchema = true
 )
@@ -106,9 +115,32 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
     AuthenticationStatusTypeConverter::class,
     AddressConverter::class,
     SyncStatusConverter::class,
-    PatientNameConverter::class
+    PatientNameConverter::class,
+    AppFeatureNameConverter::class,
+    QuickAccessLinkNameConverter::class
 )
 abstract class MyHealthDataBase : RoomDatabase() {
+
+    @DeleteColumn.Entries(
+        DeleteColumn(tableName = "app_feature", columnName = "feature_name_id"),
+        DeleteColumn(tableName = "app_feature", columnName = "feature_icon_id"),
+        DeleteColumn(tableName = "app_feature", columnName = "destination_id"),
+        DeleteColumn(tableName = "app_feature", columnName = "category_name_id"),
+        DeleteColumn(tableName = "app_feature", columnName = "destination_param")
+    )
+    @RenameColumn.Entries(
+        RenameColumn(
+            tableName = "app_feature",
+            fromColumnName = "quick_access_enabled",
+            toColumnName = "show_as_quick_access"
+        ),
+        RenameColumn(
+            tableName = "app_feature",
+            fromColumnName = "is_management_enabled",
+            toColumnName = "has_manageable_quick_access_links"
+        )
+    )
+    class AppFeatureMigration : AutoMigrationSpec
 
     abstract fun getPatientDao(): PatientDao
 
@@ -157,4 +189,6 @@ abstract class MyHealthDataBase : RoomDatabase() {
     abstract fun getNotificationDao(): NotificationDao
 
     abstract fun getAppFeatureDao(): AppFeatureDao
+
+    abstract fun getQuickAccessTileDao(): QuickAccessTileDao
 }

@@ -2,29 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/home"
-    app:startDestination="@id/homeComposeFragment">
+    app:startDestination="@id/homeFragment">
 
-    <fragment
-        android:id="@+id/homeComposeFragment"
-        android:name="ca.bc.gov.bchealth.ui.home.HomeComposeFragment">
-        <action
-            android:id="@+id/action_homeFragment_to_banner_detail"
-            app:destination="@id/bannerDetailFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_health_records"
-            app:destination="@id/health_records" />
-        <action
-            android:id="@+id/action_homeFragment_to_health_pass"
-            app:destination="@id/health_pass" />
-        <action
-            android:id="@+id/action_homeFragment_to_resources"
-            app:destination="@id/resources" />
-
-        <action
-            android:id="@+id/action_homeFragment_to_recommendations"
-            app:destination="@id/recommendations" />
-
-    </fragment>
     <fragment
         android:id="@+id/homeFragment"
         android:name="ca.bc.gov.bchealth.ui.home.HomeFragment">
