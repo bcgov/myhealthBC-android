@@ -60,4 +60,19 @@
     <include app:graph="@navigation/services" />
     <include app:graph="@navigation/dependents" />
 
+    <dialog
+        android:id="@+id/removeQuickAccessTileBottomSheetFragment"
+        android:name="ca.bc.gov.bchealth.ui.home.RemoveQuickAccessTileBottomSheetFragment"
+        android:label="RemoveQuickAccessTileBottomSheetFragment" >
+        <argument
+            android:name="id"
+            app:argType="long" />
+        <argument
+            android:name="name"
+            app:argType="string" />
+    </dialog>
+    <action
+        android:id="@+id/action_global_removeQuickAccessTileBottomSheetFragment"
+        app:destination="@id/removeQuickAccessTileBottomSheetFragment" />
+
 </navigation>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.ui.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,7 +16,7 @@ class HospitalVisitDetailFragment : BaseFragment(null) {
 
     @Composable
     override fun GetComposableLayout() {
-        HospitalVisitDetailUI(viewModel, ::popNavigation)
+        HospitalVisitDetailUI(viewModel, { findNavController().popBackStack() })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

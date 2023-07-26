@@ -625,4 +625,9 @@
 
     <!--MENU-->
     <string name="more_options">More Options</string>
+
+    <!--Bottom Sheet Dialog-->
+    <string name="remove_tile_confirmation_title">Remove %s</string>
+    <string name="remove_tile_confirmation_description">You can easily restore it by managing the settings.</string>
+    <string name="remove">Remove</string>
 </resources>

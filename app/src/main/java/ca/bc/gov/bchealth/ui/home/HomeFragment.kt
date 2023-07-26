@@ -5,6 +5,7 @@ import android.view.View
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -13,7 +14,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.fragment.findNavController
+import ca.bc.gov.bchealth.HomeDirections
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.component.HGTopAppBar
 import ca.bc.gov.bchealth.compose.component.menu.TopAppBarActionItem
@@ -24,11 +28,12 @@ import ca.bc.gov.bchealth.ui.NavigationAction
 import ca.bc.gov.bchealth.ui.auth.BioMetricState
 import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationFragment
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
-import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.observeCurrentBackStackForAction
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
+import ca.bc.gov.common.model.UserAuthenticationStatus
 import dagger.hilt.android.AndroidEntryPoint
 
+@OptIn(ExperimentalMaterialApi::class)
 @AndroidEntryPoint
 class HomeFragment : BaseSecureFragment(null) {
 
@@ -58,7 +63,8 @@ class HomeFragment : BaseSecureFragment(null) {
 
     @Composable
     override fun GetComposableLayout() {
-        println("Home: ComposeCreated")
+        val userAuthState = authViewModel.userAuthenticationState.collectAsStateWithLifecycle(minActiveState = Lifecycle.State.RESUMED).value
+
         val authState = authViewModel.authStatus.collectAsState().value
         val menuItems = mutableListOf<TopAppBarActionItem>(
             TopAppBarActionItem.IconActionItem.AlwaysShown(
@@ -69,19 +75,18 @@ class HomeFragment : BaseSecureFragment(null) {
             )
         )
 
-        authState.loginStatus?.let {
-            if (it == LoginStatus.ACTIVE) {
-                menuItems.add(
-                    0,
-                    TopAppBarActionItem.IconActionItem.AlwaysShown(
-                        title = getString(R.string.notifications),
-                        onClick = { findNavController().navigate(R.id.notificationFragment) },
-                        icon = R.drawable.ic_notification,
-                        contentDescription = getString(R.string.notifications),
-                    )
+        if (userAuthState == UserAuthenticationStatus.AUTHENTICATED) {
+            menuItems.add(
+                0,
+                TopAppBarActionItem.IconActionItem.AlwaysShown(
+                    title = getString(R.string.notifications),
+                    onClick = { findNavController().navigate(R.id.notificationFragment) },
+                    icon = R.drawable.ic_notification,
+                    contentDescription = getString(R.string.notifications),
                 )
-            }
+            )
         }
+
         HealthGatewayTheme {
             Scaffold(
                 topBar = {
@@ -103,7 +108,8 @@ class HomeFragment : BaseSecureFragment(null) {
                         onManageClick = ::onManageClicked,
                         onOnBoardingRequired = ::onOnBoardingRequired,
                         onBiometricAuthenticationRequired = ::onBiometricAuthenticationRequired,
-                        onQuickAccessTileClicked = ::onQuickAccessTileClicked
+                        onQuickAccessTileClicked = ::onQuickAccessTileClicked,
+                        onMoreActionClick = ::onMoreActionClicked
                     )
                 }
             )
@@ -118,8 +124,10 @@ class HomeFragment : BaseSecureFragment(null) {
                     findNavController().navigate(sharedViewModel.destinationId)
                 }
             }
+
             BcscAuthState.NO_ACTION,
-            BcscAuthState.NOT_NOW -> {}
+            BcscAuthState.NOT_NOW -> {
+            }
         }
     }
 
@@ -154,11 +162,18 @@ class HomeFragment : BaseSecureFragment(null) {
             bundleOf("reOnBoardingRequired" to isReOnBoarding)
         )
     }
+
     private fun onQuickAccessTileClicked(quickAccessTileItem: QuickAccessTileItem) {
         findNavController().navigate(quickAccessTileItem.destinationId)
     }
 
     private fun onManageClicked() {
         findNavController().navigate(R.id.quickAccessManagementFragment)
+    }
+
+    private fun onMoreActionClicked(id: Long, name: String) {
+        val action =
+            HomeDirections.actionGlobalRemoveQuickAccessTileBottomSheetFragment(id, name)
+        findNavController().navigate(action)
     }
 }
