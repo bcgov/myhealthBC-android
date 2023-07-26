@@ -3,6 +3,7 @@ package ca.bc.gov.common.model
 enum class AppFeatureName(val value: String) {
     HEALTH_RECORDS("Health records"),
     IMMUNIZATION_SCHEDULES("Immunization schedules"),
+    RECOMMENDED_IMMUNIZATIONS("Recommended immunizations"),
     HEALTH_RESOURCES("Health resources"),
     PROOF_OF_VACCINE("Proof of vaccination"),
     SERVICES("Services");
