@@ -7,7 +7,7 @@ data class DiagnosticImagingData(
     val id: String? = null,
     val examDate: String?,
     val fileId: String?,
-    val examStatus: DiagnosticImagingExamStatus = DiagnosticImagingExamStatus.UNKNOWN,
+    val examStatus: String?,
     val healthAuthority: String?,
     val organization: String?,
     val modality: String?,
