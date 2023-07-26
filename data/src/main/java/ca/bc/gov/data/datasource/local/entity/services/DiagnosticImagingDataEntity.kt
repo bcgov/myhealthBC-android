@@ -3,7 +3,6 @@ package ca.bc.gov.data.datasource.local.entity.services
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ca.bc.gov.common.model.services.DiagnosticImagingExamStatusDto
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import java.time.Instant
 
@@ -30,8 +29,8 @@ data class DiagnosticImagingDataEntity(
     val examDate: Instant?,
     @ColumnInfo(name = "file_id")
     val fileId: String?,
-    @ColumnInfo(name = "exam_status", defaultValue = "Unknown")
-    val examStatus: DiagnosticImagingExamStatusDto = DiagnosticImagingExamStatusDto.UNKNOWN,
+    @ColumnInfo(name = "exam_status")
+    val examStatus: String,
     @ColumnInfo(name = "health_authority")
     val healthAuthority: String?,
     val organization: String?,

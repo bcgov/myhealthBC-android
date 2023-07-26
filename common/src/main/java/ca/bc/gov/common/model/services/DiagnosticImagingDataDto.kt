@@ -11,7 +11,7 @@ data class DiagnosticImagingDataDto(
     var patientId: Long = 0,
     val examDate: Instant?,
     val fileId: String?,
-    val examStatus: DiagnosticImagingExamStatusDto = DiagnosticImagingExamStatusDto.UNKNOWN,
+    val examStatus: String,
     val healthAuthority: String?,
     val organization: String?,
     val modality: String?,
