@@ -17,6 +17,7 @@ val bannerBackgroundBlue = Color(0xFFD9EAF7)
 val descriptionGrey = Color(0xFF6D757D)
 val grey = Color(0xFF606060)
 val greyBg = Color(0xFFF2F2F2)
+val dividerGrey = Color(0x14212121)
 
 val green = Color(0xFF2E8540)
 val red = Color(0xFFD8292F)

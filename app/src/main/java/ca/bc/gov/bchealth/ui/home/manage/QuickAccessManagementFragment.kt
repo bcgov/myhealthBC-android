@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.ui.BaseFragment
@@ -31,7 +32,7 @@ class QuickAccessManagementFragment : BaseFragment(null) {
                 topBar = {
                     MyHealthToolBar(
                         title = stringResource(id = R.string.quick_access_management_title),
-                        navigationIcon = { MyHealthBackButton(::popNavigation) },
+                        navigationIcon = { MyHealthBackButton({ findNavController().popBackStack() }) },
                         actions = {
                             IconButton(onClick = viewModel::saveSelection) {
                                 Icon(
@@ -48,7 +49,7 @@ class QuickAccessManagementFragment : BaseFragment(null) {
                     QuickAccessManagementScreen(
                         viewModel = viewModel,
                         onClickItem = ::onClickItem,
-                        onUpdateCompleted = ::popNavigation,
+                        onUpdateCompleted = { findNavController().popBackStack() },
                         modifier = Modifier
                             .statusBarsPadding()
                             .navigationBarsPadding()

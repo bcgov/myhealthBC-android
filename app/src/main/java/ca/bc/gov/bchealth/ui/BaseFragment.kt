@@ -15,8 +15,6 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolbar
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
-import ca.bc.gov.bchealth.utils.HEALTH_GATEWAY_EMAIL_ADDRESS
-import ca.bc.gov.bchealth.utils.composeEmail
 import ca.bc.gov.bchealth.utils.launchOnStart
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
@@ -77,16 +75,6 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
         }
     }
 
-    @Deprecated(
-        "Should be added as a extension to the fragment" +
-            "as in compose we need to get rid of all the fragment",
-        replaceWith = ReplaceWith(""),
-        level = DeprecationLevel.WARNING
-    )
-    fun composeEmail(address: String = HEALTH_GATEWAY_EMAIL_ADDRESS, subject: String = "") {
-        requireActivity().composeEmail(address, subject)
-    }
-
     fun showGenericError() {
         AlertDialogHelper.showAlertDialog(
             context = requireContext(),
@@ -96,23 +84,13 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
         )
     }
 
-    @Deprecated(
-        "remove usage of popup navigation and replace it with the a findNavController().popBackStack()" +
-            "as in compose we need to get rid of all the fragment",
-        replaceWith = ReplaceWith("findNavController().popBackStack()"),
-        level = DeprecationLevel.WARNING
-    )
-    fun popNavigation() {
-        findNavController().popBackStack()
-    }
-
     fun setupComposeToolbar(composeView: ComposeView, title: String? = null) {
         composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MyHealthTheme {
                     MyHealthToolbar(title) {
-                        popNavigation()
+                        findNavController().popBackStack()
                     }
                 }
             }

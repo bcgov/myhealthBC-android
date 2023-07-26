@@ -116,6 +116,7 @@ fun TextStyle.bold() = this.copy(fontWeight = FontWeight.Bold)
 
 fun TextStyle.italic() = this.copy(fontStyle = FontStyle.Italic)
 
+@Deprecated("Replace with HealthGatewayTheme", replaceWith = ReplaceWith("HealthGatewayTheme"), DeprecationLevel.WARNING)
 @Composable
 fun MyHealthTheme(content: @Composable () -> Unit) = MaterialTheme(
     colors = MaterialTheme.colors.copy(
