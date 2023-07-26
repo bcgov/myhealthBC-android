@@ -12,6 +12,8 @@ class ImmunizationRecommendationRepository @Inject constructor(
     fun getAllRecommendations(): Flow<List<ImmunizationRecommendationsDto>> =
         localDataSource.getAllRecommendations()
 
+    suspend fun hasRecommendations() = localDataSource.hasRecommendations()
+
     suspend fun insert(immunizationRecommendation: ImmunizationRecommendationsDto): Long =
         localDataSource.insert(immunizationRecommendation)
 

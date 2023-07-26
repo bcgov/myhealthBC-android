@@ -9,26 +9,32 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.COMMUNICATION_BANNER_MAX_LENGTH
 import ca.bc.gov.bchealth.utils.fromHtml
+import ca.bc.gov.bchealth.workers.WorkerInvoker
 import ca.bc.gov.common.model.AppFeatureName
 import ca.bc.gov.common.model.QuickAccessLinkName
 import ca.bc.gov.common.model.settings.AppFeatureDto
 import ca.bc.gov.common.model.settings.QuickAccessTileDto
 import ca.bc.gov.repository.BannerRepository
 import ca.bc.gov.repository.OnBoardingRepository
+import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.settings.AppFeatureWithQuickAccessTilesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val appFeatureWithQuickAccessTilesRepository: AppFeatureWithQuickAccessTilesRepository,
     private val onBoardingRepository: OnBoardingRepository,
-    private val bannerRepository: BannerRepository
+    private val bannerRepository: BannerRepository,
+    private val workerInvoker: WorkerInvoker,
+    private val recommendationRepository: ImmunizationRecommendationRepository,
 ) : ViewModel() {
     private val _uiState =
         MutableStateFlow(HomeComposeUiState(isQuickAccessTileTutorialRequired = appFeatureWithQuickAccessTilesRepository.isQuickAccessTileTutorialRequired))
@@ -37,7 +43,7 @@ class HomeViewModel @Inject constructor(
     private var isBiometricAuthenticationRequired: Boolean = true
 
     fun loadQuickAccessTiles(loginStatus: LoginStatus) = viewModelScope.launch {
-        var quickAccessTileItems = mutableListOf<QuickAccessTileItem>()
+        val quickAccessTileItems = mutableListOf<QuickAccessTileItem>()
         val data = appFeatureWithQuickAccessTilesRepository.getAppFeaturesWithQuickAccessTiles()
 
         val appFeatures =
@@ -49,17 +55,41 @@ class HomeViewModel @Inject constructor(
 
         quickAccessTileItems.addAll(appFeatures)
 
-        data.filter { it.appFeatureDto.showAsQuickAccess }.forEach {
-            val quickLink = it.quickAccessTiles.filter { it.showAsQuickAccess }
-                .map { tile -> QuickAccessTileItem.QuickLinkTileItem.from(tile) }
-            quickAccessTileItems.addAll(quickLink)
+        if (loginStatus == LoginStatus.ACTIVE) {
+            data.filter { it.appFeatureDto.showAsQuickAccess }.forEach {
+                val quickLink = it.quickAccessTiles.filter { tile -> tile.showAsQuickAccess }
+                    .map { tile -> QuickAccessTileItem.QuickLinkTileItem.from(tile) }
+                quickAccessTileItems.addAll(quickLink)
+            }
+
+            quickAccessTileItems.removeIf { tile ->
+                (tile.name == AppFeatureName.IMMUNIZATION_SCHEDULES.value)
+            }
+            runBlocking(Dispatchers.IO) {
+                val hasRecommendations = recommendationRepository.hasRecommendations()
+
+                if (!hasRecommendations) {
+                    quickAccessTileItems.removeIf {
+                        (it.name == AppFeatureName.RECOMMENDED_IMMUNIZATIONS.value)
+                    }
+                } else {
+                    quickAccessTileItems.find { it.name == AppFeatureName.RECOMMENDED_IMMUNIZATIONS.value }
+                        ?.let {
+                            val index = quickAccessTileItems.indexOf(it)
+                            if (index != 1) {
+                                quickAccessTileItems.removeAt(index)
+                                quickAccessTileItems.add(1, it)
+                            }
+                        }
+                }
+            }
         }
 
-        if (loginStatus != LoginStatus.ACTIVE) {
-            quickAccessTileItems =
-                quickAccessTileItems.filterIsInstance<QuickAccessTileItem.FeatureTileItem>().toMutableList()
+        quickAccessTileItems.removeIf {
+            (it.name == AppFeatureName.RECOMMENDED_IMMUNIZATIONS.value && (loginStatus != LoginStatus.ACTIVE))
         }
-        _uiState.update { it.copy(quickAccessTileItems = quickAccessTileItems) }
+
+        _uiState.update { it.copy(isLoading = false, quickAccessTileItems = quickAccessTileItems) }
     }
 
     fun launchCheck() = viewModelScope.launch {
@@ -167,6 +197,8 @@ class HomeViewModel @Inject constructor(
             it.copy(isQuickAccessTileTutorialRequired = false)
         }
     }
+
+    fun executeOneTimeDataFetch() = workerInvoker.executeOneTimeDataFetch()
 }
 
 data class HomeComposeUiState(
@@ -240,6 +272,10 @@ sealed class QuickAccessTileItem(
 
                     AppFeatureName.SERVICES -> {
                         Pair(R.drawable.ic_organ_donor, R.id.services)
+                    }
+
+                    AppFeatureName.RECOMMENDED_IMMUNIZATIONS -> {
+                        Pair(R.drawable.ic_recommendation_immunization, R.id.recommendations)
                     }
                 }
                 return FeatureTileItem(
