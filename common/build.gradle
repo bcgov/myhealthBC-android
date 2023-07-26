@@ -102,6 +102,7 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+    namespace 'ca.bc.gov.common'
 }
 
 dependencies {

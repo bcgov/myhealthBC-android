@@ -72,6 +72,7 @@ suspend fun getBCSCAuthData(applicationContext: Context, authState: AuthState): 
     val accessToken = awaitPerformActionWithFreshTokens(applicationContext, authState)
     val json = decodeAccessToken(accessToken)
     val hdId = json.get(HDID).toString()
+    println("USERNAME = ${json.get("name")} PREFEREDNAME = ${json.get("preferred_username")}")
     if (hdId.isEmpty())
         throw MyHealthAuthException("Invalid access token!")
     else
