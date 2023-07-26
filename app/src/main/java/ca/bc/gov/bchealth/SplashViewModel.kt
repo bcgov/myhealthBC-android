@@ -84,6 +84,13 @@ class SplashViewModel @Inject constructor(
         )
         appFeatureRepository.insert(immunizationSchedule)
 
+        val recommendations = AppFeatureDto(
+            name = AppFeatureName.RECOMMENDED_IMMUNIZATIONS,
+            hasManageableQuickAccessLinks = false,
+            showAsQuickAccess = true
+        )
+        appFeatureRepository.insert(recommendations)
+
         val healthResources = AppFeatureDto(
             name = AppFeatureName.HEALTH_RESOURCES,
             hasManageableQuickAccessLinks = false,
