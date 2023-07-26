@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.resources
 
 import androidx.compose.runtime.Composable
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
@@ -18,7 +19,7 @@ class ResourcesFragment : BaseFragment(null) {
     override fun GetComposableLayout() {
         ResourcesUI(
             uiList = resourcesViewModel.getResourcesList(),
-            navigationAction = ::popNavigation,
+            navigationAction = { findNavController().popBackStack() },
             onClickResource = ::onClickResource
         )
     }

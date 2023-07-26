@@ -9,8 +9,11 @@ import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
 import ca.bc.gov.common.const.MUST_CALL_MOBILE_CONFIG
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.AuthParametersDto
+import ca.bc.gov.common.model.UserAuthenticationStatus
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.preference.EncryptedPreferenceStorage
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationRequest
@@ -38,6 +41,22 @@ class BcscAuthRepo(
     private lateinit var authState: AuthState
     private lateinit var authService: AuthorizationService
     private lateinit var authServiceConfiguration: AuthorizationServiceConfiguration
+
+    val userAuthenticationStatus: Flow<UserAuthenticationStatus> = flow {
+        val authString = encryptedPreferenceStorage.authState
+        authString?.let {
+            val authState = AuthState.jsonDeserialize(it)
+            if (authState.isAuthorized) {
+                if (authState.needsTokenRefresh) {
+                    emit(UserAuthenticationStatus.SESSION_TIME_OUT)
+                } else {
+                    emit(UserAuthenticationStatus.AUTHENTICATED)
+                }
+            } else {
+                emit(UserAuthenticationStatus.UN_AUTHENTICATED)
+            }
+        } ?: emit(UserAuthenticationStatus.UN_AUTHENTICATED)
+    }
 
     private fun setAuthState(authState: AuthState?) {
         if (authState != null) {
