@@ -28,6 +28,7 @@ import ca.bc.gov.bchealth.compose.statusBlue30
 import ca.bc.gov.bchealth.compose.white
 import ca.bc.gov.bchealth.ui.custom.DecorativeImage
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
+import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.common.model.dependents.DependentDto
 import java.time.Instant
 
@@ -69,13 +70,15 @@ fun DependentProfileContent(
             ListDivider()
         }
 
-        DependentProfileItem(
-            stringResource(id = R.string.access_count),
-            uiState.totalDelegateCount.toString(),
-            stringResource(id = R.string.access_info)
-        )
+        if (BuildConfig.FLAG_GUARDIAN_AUDIT) {
+            DependentProfileItem(
+                stringResource(id = R.string.access_count),
+                uiState.totalDelegateCount.toString(),
+                stringResource(id = R.string.access_info)
+            )
 
-        ListDivider()
+            ListDivider()
+        }
 
         Spacer(modifier = Modifier.weight(1f))
 
