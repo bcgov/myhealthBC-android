@@ -46,6 +46,7 @@ class HomeFragment : BaseSecureFragment(null) {
                     findNavController().currentBackStackEntry?.savedStateHandle?.remove<BioMetricState>(
                         BiometricsAuthenticationFragment.BIOMETRIC_STATE
                     )
+                    viewModel.executeOneTimeDataFetch()
                 }
 
                 else -> {
