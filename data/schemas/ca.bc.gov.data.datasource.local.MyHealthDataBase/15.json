@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 15,
-    "identityHash": "f9106fa8c6ada8891f2e471e45771bcd",
+    "identityHash": "e3995cb275743e3c517026d89c6fd254",
     "entities": [
       {
         "tableName": "patient",
@@ -1846,7 +1846,7 @@
       },
       {
         "tableName": "diagnostic_imaging",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `diagnostic_imaging_id` TEXT, `exam_date` INTEGER, `file_id` TEXT, `exam_status` TEXT NOT NULL DEFAULT 'Unknown', `health_authority` TEXT, `organization` TEXT, `modality` TEXT, `body_part` TEXT, `procedure_description` TEXT, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `diagnostic_imaging_id` TEXT, `exam_date` INTEGER, `file_id` TEXT, `exam_status` TEXT NOT NULL, `health_authority` TEXT, `organization` TEXT, `modality` TEXT, `body_part` TEXT, `procedure_description` TEXT, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1882,8 +1882,7 @@
             "fieldPath": "examStatus",
             "columnName": "exam_status",
             "affinity": "TEXT",
-            "notNull": true,
-            "defaultValue": "'Unknown'"
+            "notNull": true
           },
           {
             "fieldPath": "healthAuthority",
@@ -2121,7 +2120,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f9106fa8c6ada8891f2e471e45771bcd')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e3995cb275743e3c517026d89c6fd254')"
     ]
   }
 }
