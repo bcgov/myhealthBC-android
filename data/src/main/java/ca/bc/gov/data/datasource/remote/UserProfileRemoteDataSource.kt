@@ -4,11 +4,14 @@ import ca.bc.gov.common.const.MESSAGE_INVALID_RESPONSE
 import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
+import ca.bc.gov.data.datasource.remote.model.base.profile.QuickLinksItem
 import ca.bc.gov.data.datasource.remote.model.base.profile.UserProfile
 import ca.bc.gov.data.datasource.remote.model.request.UserProfileRequest
 import ca.bc.gov.data.datasource.remote.model.response.ProfileValidationResponse
 import ca.bc.gov.data.datasource.remote.model.response.UserProfileResponse
 import ca.bc.gov.data.utils.safeCall
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import javax.inject.Inject
 
 /*
@@ -48,10 +51,15 @@ class UserProfileRemoteDataSource @Inject constructor(
             throw MyHealthException(SERVER_ERROR, response.error.message)
         }
 
+        response.resourcePayload.preferences?.quickLinks?.apply {
+            val listType = object : TypeToken<List<QuickLinksItem>>() {}.type
+            list = Gson().fromJson(jsonList, listType)
+        }
+
         return response
     }
 
-    suspend fun acceptTermsOfService(token: String, hdid: String, termsOfServiceId: String,): UserProfileResponse {
+    suspend fun acceptTermsOfService(token: String, hdid: String, termsOfServiceId: String): Boolean {
         val request = UserProfileRequest(UserProfile(hdid, termsOfServiceId))
         val response = safeCall { healthGatewayPrivateApi.updateUserProfile(hdid, token, request) }
             ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)
@@ -60,6 +68,6 @@ class UserProfileRemoteDataSource @Inject constructor(
             throw MyHealthException(SERVER_ERROR, response.error.message)
         }
 
-        return response
+        return response.resourcePayload.acceptedTermsOfService
     }
 }

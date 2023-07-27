@@ -41,9 +41,7 @@ class UserProfileRepository @Inject constructor(
         hdid: String,
         termsOfServiceId: String,
     ): Boolean {
-        val response =
-            userProfileRemoteDataSource.acceptTermsOfService(token, hdid, termsOfServiceId)
-        return response.resourcePayload.acceptedTermsOfService
+        return userProfileRemoteDataSource.acceptTermsOfService(token, hdid, termsOfServiceId)
     }
 
     suspend fun deleteUserProfileCache(patientId: Long) {
