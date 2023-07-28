@@ -29,6 +29,7 @@ import ca.bc.gov.common.model.notification.NotificationActionTypeDto
 import ca.bc.gov.common.model.notification.NotificationDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientNameDto
+import ca.bc.gov.common.model.quicklink.QuickLinkDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.services.DiagnosticImagingExamStatusDto
@@ -67,6 +68,7 @@ import ca.bc.gov.data.datasource.remote.model.base.patientdata.DiagnosticImaging
 import ca.bc.gov.data.datasource.remote.model.base.patientdata.OrganDonorData
 import ca.bc.gov.data.datasource.remote.model.base.patientdata.PatientDataType
 import ca.bc.gov.data.datasource.remote.model.base.patientdata.organdonor.OrganDonorStatus
+import ca.bc.gov.data.datasource.remote.model.base.profile.QuickLinksItem
 import ca.bc.gov.data.datasource.remote.model.base.profile.UserProfilePayload
 import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityPayload
 import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityResponse
@@ -102,6 +104,11 @@ fun UserProfilePayload.toDto(patientId: Long) = UserProfileDto(
     isEmailVerified = isEmailVerified,
     smsNumber = smsNumber,
     isPhoneVerified = isSMSNumberVerified,
+)
+
+fun QuickLinksItem.toDto() = QuickLinkDto(
+    name = this.name,
+    modules = this.filter.modules
 )
 
 fun MedicationStatementResponse.toListOfMedicationDto(): List<MedicationWithSummaryAndPharmacyDto> =

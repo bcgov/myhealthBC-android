@@ -57,7 +57,8 @@ class HomeViewModel @Inject constructor(
 
         if (loginStatus != LoginStatus.ACTIVE) {
             quickAccessTileItems =
-                quickAccessTileItems.filterIsInstance<QuickAccessTileItem.FeatureTileItem>().toMutableList()
+                quickAccessTileItems.filterIsInstance<QuickAccessTileItem.FeatureTileItem>()
+                    .toMutableList()
         }
         _uiState.update { it.copy(quickAccessTileItems = quickAccessTileItems) }
     }
@@ -212,35 +213,66 @@ sealed class QuickAccessTileItem(
         companion object {
             fun from(appFeatureDto: AppFeatureDto): FeatureTileItem {
                 val (tileIcon, endDestinationId) = when (appFeatureDto.name) {
-                    AppFeatureName.HEALTH_RECORDS -> {
-                        Pair(R.drawable.icon_tile_health_record, R.id.health_records)
-                    }
 
-                    AppFeatureName.IMMUNIZATION_SCHEDULES -> {
+                    AppFeatureName.HEALTH_RECORDS ->
+                        R.drawable.icon_tile_health_record to
+                            R.id.health_records
 
-                        Pair(
-                            R.drawable.ic_tile_immunization_schedules,
+                    AppFeatureName.IMMUNIZATION_SCHEDULES ->
+                        R.drawable.ic_tile_immunization_schedules to
                             R.id.immunizationSchedulesFragment
-                        )
-                    }
 
-                    AppFeatureName.HEALTH_RESOURCES -> {
-                        Pair(
-                            R.drawable.ic_tile_healt_resources,
+                    AppFeatureName.HEALTH_RESOURCES ->
+                        R.drawable.ic_tile_healt_resources to
                             R.id.action_homeFragment_to_resources
-                        )
-                    }
 
-                    AppFeatureName.PROOF_OF_VACCINE -> {
-                        Pair(
-                            R.drawable.ic_tile_proof_of_vaccine,
+                    AppFeatureName.PROOF_OF_VACCINE ->
+                        R.drawable.ic_tile_proof_of_vaccine to
                             R.id.action_homeFragment_to_health_pass
-                        )
-                    }
 
-                    AppFeatureName.SERVICES -> {
-                        Pair(R.drawable.ic_organ_donor, R.id.services)
-                    }
+                    AppFeatureName.SERVICES ->
+                        R.drawable.ic_organ_donor to
+                            R.id.services
+
+                    AppFeatureName.IMMUNIZATIONS ->
+                        R.drawable.ic_health_record_vaccine to
+                            R.id.health_records
+
+                    AppFeatureName.MEDICATIONS ->
+                        R.drawable.ic_health_record_medication to
+                            R.id.health_records
+
+                    AppFeatureName.COVID_TESTS ->
+                        R.drawable.ic_health_record_covid_test to
+                            R.id.health_records
+
+                    AppFeatureName.IMAGING_REPORTS ->
+                        R.drawable.ic_health_record_diagnostic_imaging to
+                            R.id.health_records
+
+                    AppFeatureName.HOSPITAL_VISITS ->
+                        R.drawable.ic_health_record_hospital_visit to
+                            R.id.health_records
+
+                    AppFeatureName.MY_NOTES ->
+                        R.drawable.icon_tile_health_record to
+                            R.id.health_records
+
+                    AppFeatureName.LAB_RESULTS ->
+                        R.drawable.ic_lab_test to
+                            R.id.health_records
+
+                    AppFeatureName.SPECIAL_AUTHORITY ->
+                        R.drawable.ic_health_record_special_authority to
+                            R.id.health_records
+
+                    AppFeatureName.HEALTH_VISITS ->
+                        R.drawable.ic_health_record_health_visit to
+                            R.id.health_records
+
+                    AppFeatureName.CLINICAL_DOCUMENTS ->
+                        R.drawable.ic_health_record_clinical_document to
+                            R.id.health_records
                 }
                 return FeatureTileItem(
                     id = appFeatureDto.id,
