@@ -1,6 +1,6 @@
 package ca.bc.gov.data.datasource.local
 
-import ca.bc.gov.common.model.settings.QuickAccessTileDto
+import ca.bc.gov.common.model.quicklink.QuickLinkDto
 import ca.bc.gov.data.datasource.local.dao.QuickAccessTileDao
 import ca.bc.gov.data.model.mapper.toEntity
 import javax.inject.Inject
@@ -8,8 +8,10 @@ import javax.inject.Inject
 class QuickActionTileLocalDataSource @Inject constructor(
     private val quickAccessTileDao: QuickAccessTileDao
 ) {
-
-    suspend fun insert(quickAccessTileDto: QuickAccessTileDto): Long {
-        return quickAccessTileDao.insert(quickAccessTileDto.toEntity())
+    suspend fun update(quickAccessTiles: List<QuickLinkDto>) {
+        quickAccessTileDao.deleteAll()
+        quickAccessTiles.forEach {
+            quickAccessTileDao.insert(it.toEntity())
+        }
     }
 }

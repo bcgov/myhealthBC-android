@@ -1,13 +1,22 @@
 package ca.bc.gov.repository.settings
 
+import ca.bc.gov.common.model.AppFeatureName
+import ca.bc.gov.common.model.quicklink.QuickLinkDto
 import ca.bc.gov.common.model.settings.AppFeatureDto
 import ca.bc.gov.data.datasource.local.AppFeatureLocalDataSource
+import ca.bc.gov.data.datasource.local.QuickActionTileLocalDataSource
 import javax.inject.Inject
 
 class AppFeatureRepository @Inject constructor(
-    private val appFeatureLocalDataSource: AppFeatureLocalDataSource
+    private val appFeatureLocalDataSource: AppFeatureLocalDataSource,
+    private val quickActionLocalDataSource: QuickActionTileLocalDataSource,
 ) {
 
+    suspend fun updateQuickLinks(quickLinks: List<QuickLinkDto>?) {
+        if (quickLinks.isNullOrEmpty()) return
+        quickActionLocalDataSource.update(quickLinks)
+        appFeatureLocalDataSource.updateManageableQuickLinks(quickLinks)
+    }
 
     suspend fun loadAppFeatures() {
         listOf(
@@ -116,5 +125,6 @@ class AppFeatureRepository @Inject constructor(
         return appFeatureLocalDataSource.insert(appFeatureDto)
     }
 
-    suspend fun getAppFeaturesWithQuickAccessTiles() = appFeatureLocalDataSource.getAppFeaturesWithQuickAccessTiles()
+    suspend fun getQuickAccessFeatures() =
+        appFeatureLocalDataSource.getQuickAccessFeatures()
 }

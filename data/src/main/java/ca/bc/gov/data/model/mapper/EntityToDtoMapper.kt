@@ -35,6 +35,7 @@ import ca.bc.gov.common.model.patient.PatientWithHospitalVisitsDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.patient.PatientWithSpecialAuthorityDto
+import ca.bc.gov.common.model.quicklink.QuickLinkDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
@@ -42,8 +43,6 @@ import ca.bc.gov.common.model.relation.VaccineWithDosesDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.common.model.settings.AppFeatureDto
-import ca.bc.gov.common.model.settings.AppFeatureWithQuickAccessTilesDto
-import ca.bc.gov.common.model.settings.QuickAccessTileDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
@@ -78,7 +77,6 @@ import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntit
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
 import ca.bc.gov.data.datasource.local.entity.notification.NotificationEntity
-import ca.bc.gov.data.datasource.local.entity.relations.AppFeatureWithQuickAccessTiles
 import ca.bc.gov.data.datasource.local.entity.relations.MedicationWithSummaryAndPharmacy
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithClinicalDocuments
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithCovidOrderAndCovidTest
@@ -487,15 +485,7 @@ fun AppFeatureEntity.toDto() = AppFeatureDto(
     showAsQuickAccess
 )
 
-fun QuickAccessTileEntity.toDto() = QuickAccessTileDto(
-    id,
-    featureId,
-    tileName,
-    tilePayload,
-    showAsQuickAccess
-)
-
-fun AppFeatureWithQuickAccessTiles.toDto() = AppFeatureWithQuickAccessTilesDto(
-    appFeature.toDto(),
-    quickAccessTiles.map { it.toDto() }
+fun QuickAccessTileEntity.toDto() = QuickLinkDto(
+    name,
+    modules
 )

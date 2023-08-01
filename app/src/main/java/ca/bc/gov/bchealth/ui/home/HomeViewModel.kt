@@ -10,9 +10,7 @@ import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.COMMUNICATION_BANNER_MAX_LENGTH
 import ca.bc.gov.bchealth.utils.fromHtml
 import ca.bc.gov.common.model.AppFeatureName
-import ca.bc.gov.common.model.QuickAccessLinkName
 import ca.bc.gov.common.model.settings.AppFeatureDto
-import ca.bc.gov.common.model.settings.QuickAccessTileDto
 import ca.bc.gov.repository.BannerRepository
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.settings.AppFeatureWithQuickAccessTilesRepository
@@ -37,30 +35,19 @@ class HomeViewModel @Inject constructor(
     private var isBiometricAuthenticationRequired: Boolean = true
 
     fun loadQuickAccessTiles(loginStatus: LoginStatus) = viewModelScope.launch {
-        var quickAccessTileItems = mutableListOf<QuickAccessTileItem>()
-        val data = appFeatureWithQuickAccessTilesRepository.getAppFeaturesWithQuickAccessTiles()
-
-        val appFeatures =
-            appFeatureWithQuickAccessTilesRepository.getAppFeaturesWithQuickAccessTiles()
-                .filter { it.appFeatureDto.showAsQuickAccess }
-                .map {
-                    QuickAccessTileItem.FeatureTileItem.from(it.appFeatureDto)
+        val appFeatures = appFeatureWithQuickAccessTilesRepository
+            .getQuickAccessFeatures()
+            .apply {
+                if (loginStatus != LoginStatus.ACTIVE) {
+                    this.filter {
+                        it.hasManageableQuickAccessLinks.not()
+                    }
                 }
+            }.map {
+                QuickAccessTileItem.from(it)
+            }
 
-        quickAccessTileItems.addAll(appFeatures)
-
-        data.filter { it.appFeatureDto.showAsQuickAccess }.forEach {
-            val quickLink = it.quickAccessTiles.filter { it.showAsQuickAccess }
-                .map { tile -> QuickAccessTileItem.QuickLinkTileItem.from(tile) }
-            quickAccessTileItems.addAll(quickLink)
-        }
-
-        if (loginStatus != LoginStatus.ACTIVE) {
-            quickAccessTileItems =
-                quickAccessTileItems.filterIsInstance<QuickAccessTileItem.FeatureTileItem>()
-                    .toMutableList()
-        }
-        _uiState.update { it.copy(quickAccessTileItems = quickAccessTileItems) }
+        _uiState.update { it.copy(quickAccessTileItems = appFeatures) }
     }
 
     fun launchCheck() = viewModelScope.launch {
@@ -193,163 +180,84 @@ data class LoginInfoCardData(
     @DrawableRes val image: Int = 0
 )
 
-sealed class QuickAccessTileItem(
-    @DrawableRes open val icon: Int,
-    open val name: String,
-    open val payload: String? = null,
-    @IdRes open val destinationId: Int,
-    open val isEditable: Boolean = false
+data class QuickAccessTileItem(
+    @DrawableRes val icon: Int,
+    val name: String,
+    val payload: String? = null,
+    @IdRes val destinationId: Int,
+    val isEditable: Boolean = false,
 ) {
-    data class FeatureTileItem(
-        val id: Long,
-        override val icon: Int,
-        override val name: String,
-        override val payload: String?,
-        override val destinationId: Int,
-        override val isEditable: Boolean
-    ) : QuickAccessTileItem(
-        icon, name, payload, destinationId, isEditable
-    ) {
-        companion object {
-            fun from(appFeatureDto: AppFeatureDto): FeatureTileItem {
-                val (tileIcon, endDestinationId) = when (appFeatureDto.name) {
+    companion object {
+        fun from(appFeatureDto: AppFeatureDto): QuickAccessTileItem {
+            val (tileIcon, endDestinationId) = when (appFeatureDto.name) {
 
-                    AppFeatureName.HEALTH_RECORDS ->
-                        R.drawable.icon_tile_health_record to
-                            R.id.health_records
+                AppFeatureName.HEALTH_RECORDS ->
+                    R.drawable.icon_tile_health_record to
+                        R.id.health_records
 
-                    AppFeatureName.IMMUNIZATION_SCHEDULES ->
-                        R.drawable.ic_tile_immunization_schedules to
-                            R.id.immunizationSchedulesFragment
+                AppFeatureName.IMMUNIZATION_SCHEDULES ->
+                    R.drawable.ic_tile_immunization_schedules to
+                        R.id.immunizationSchedulesFragment
 
-                    AppFeatureName.HEALTH_RESOURCES ->
-                        R.drawable.ic_tile_healt_resources to
-                            R.id.action_homeFragment_to_resources
+                AppFeatureName.HEALTH_RESOURCES ->
+                    R.drawable.ic_tile_healt_resources to
+                        R.id.action_homeFragment_to_resources
 
-                    AppFeatureName.PROOF_OF_VACCINE ->
-                        R.drawable.ic_tile_proof_of_vaccine to
-                            R.id.action_homeFragment_to_health_pass
+                AppFeatureName.PROOF_OF_VACCINE ->
+                    R.drawable.ic_tile_proof_of_vaccine to
+                        R.id.action_homeFragment_to_health_pass
 
-                    AppFeatureName.SERVICES ->
-                        R.drawable.ic_organ_donor to
-                            R.id.services
+                AppFeatureName.SERVICES ->
+                    R.drawable.ic_organ_donor to
+                        R.id.services
 
-                    AppFeatureName.IMMUNIZATIONS ->
-                        R.drawable.ic_health_record_vaccine to
-                            R.id.health_records
+                AppFeatureName.IMMUNIZATIONS ->
+                    R.drawable.ic_health_record_vaccine to
+                        R.id.health_records
 
-                    AppFeatureName.MEDICATIONS ->
-                        R.drawable.ic_health_record_medication to
-                            R.id.health_records
+                AppFeatureName.MEDICATIONS ->
+                    R.drawable.ic_health_record_medication to
+                        R.id.health_records
 
-                    AppFeatureName.COVID_TESTS ->
-                        R.drawable.ic_health_record_covid_test to
-                            R.id.health_records
+                AppFeatureName.COVID_TESTS ->
+                    R.drawable.ic_health_record_covid_test to
+                        R.id.health_records
 
-                    AppFeatureName.IMAGING_REPORTS ->
-                        R.drawable.ic_health_record_diagnostic_imaging to
-                            R.id.health_records
+                AppFeatureName.IMAGING_REPORTS ->
+                    R.drawable.ic_health_record_diagnostic_imaging to
+                        R.id.health_records
 
-                    AppFeatureName.HOSPITAL_VISITS ->
-                        R.drawable.ic_health_record_hospital_visit to
-                            R.id.health_records
+                AppFeatureName.HOSPITAL_VISITS ->
+                    R.drawable.ic_health_record_hospital_visit to
+                        R.id.health_records
 
-                    AppFeatureName.MY_NOTES ->
-                        R.drawable.icon_tile_health_record to
-                            R.id.health_records
+                AppFeatureName.MY_NOTES ->
+                    R.drawable.icon_tile_health_record to
+                        R.id.health_records
 
-                    AppFeatureName.LAB_RESULTS ->
-                        R.drawable.ic_lab_test to
-                            R.id.health_records
+                AppFeatureName.LAB_RESULTS ->
+                    R.drawable.ic_lab_test to
+                        R.id.health_records
 
-                    AppFeatureName.SPECIAL_AUTHORITY ->
-                        R.drawable.ic_health_record_special_authority to
-                            R.id.health_records
+                AppFeatureName.SPECIAL_AUTHORITY ->
+                    R.drawable.ic_health_record_special_authority to
+                        R.id.health_records
 
-                    AppFeatureName.HEALTH_VISITS ->
-                        R.drawable.ic_health_record_health_visit to
-                            R.id.health_records
+                AppFeatureName.HEALTH_VISITS ->
+                    R.drawable.ic_health_record_health_visit to
+                        R.id.health_records
 
-                    AppFeatureName.CLINICAL_DOCUMENTS ->
-                        R.drawable.ic_health_record_clinical_document to
-                            R.id.health_records
-                }
-                return FeatureTileItem(
-                    id = appFeatureDto.id,
-                    name = appFeatureDto.name.value,
-                    icon = tileIcon,
-                    destinationId = endDestinationId,
-                    payload = null,
-                    isEditable = false
-                )
+                AppFeatureName.CLINICAL_DOCUMENTS ->
+                    R.drawable.ic_health_record_clinical_document to
+                        R.id.health_records
             }
-        }
-    }
-
-    data class QuickLinkTileItem(
-        val id: Long,
-        val featureId: Long,
-        override val icon: Int,
-        override val name: String,
-        override val payload: String?,
-        override val destinationId: Int,
-        override val isEditable: Boolean
-    ) : QuickAccessTileItem(
-        icon, name, payload, destinationId, isEditable
-    ) {
-        companion object {
-            fun from(quickAccessTileDto: QuickAccessTileDto): QuickLinkTileItem {
-                val (tileIcon, endDestination) = when (quickAccessTileDto.tileName) {
-                    QuickAccessLinkName.IMMUNIZATIONS -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
-                    }
-
-                    QuickAccessLinkName.MEDICATIONS -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
-                    }
-
-                    QuickAccessLinkName.LAB_RESULTS -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
-                    }
-
-                    QuickAccessLinkName.COVID_19_TESTS -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
-                    }
-
-                    QuickAccessLinkName.HEALTH_VISITS -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
-                    }
-
-                    QuickAccessLinkName.MY_NOTES -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
-                    }
-
-                    QuickAccessLinkName.SPECIAL_AUTHORITY -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
-                    }
-
-                    QuickAccessLinkName.CLINICAL_DOCUMENTS -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
-                    }
-
-                    QuickAccessLinkName.HOSPITAL_VISITS -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
-                    }
-
-                    QuickAccessLinkName.IMAGING_REPORTS -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
-                    }
-                }
-                return QuickLinkTileItem(
-                    id = quickAccessTileDto.id,
-                    featureId = quickAccessTileDto.featureId,
-                    name = quickAccessTileDto.tileName.value,
-                    payload = quickAccessTileDto.tilePayload,
-                    icon = tileIcon,
-                    destinationId = endDestination,
-                    isEditable = true
-                )
-            }
+            return QuickAccessTileItem(
+                name = appFeatureDto.name.value,
+                icon = tileIcon,
+                destinationId = endDestinationId,
+                payload = appFeatureDto.name.value,
+                isEditable = false
+            )
         }
     }
 }

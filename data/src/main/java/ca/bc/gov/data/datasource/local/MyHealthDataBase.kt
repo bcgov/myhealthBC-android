@@ -13,6 +13,7 @@ import ca.bc.gov.data.datasource.local.converter.AuthenticationStatusTypeConvert
 import ca.bc.gov.data.datasource.local.converter.DateTimeConverter
 import ca.bc.gov.data.datasource.local.converter.PatientNameConverter
 import ca.bc.gov.data.datasource.local.converter.QuickAccessLinkNameConverter
+import ca.bc.gov.data.datasource.local.converter.StringListConverter
 import ca.bc.gov.data.datasource.local.converter.SyncStatusConverter
 import ca.bc.gov.data.datasource.local.dao.AppFeatureDao
 import ca.bc.gov.data.datasource.local.dao.ClinicalDocumentDao
@@ -117,7 +118,9 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
     SyncStatusConverter::class,
     PatientNameConverter::class,
     AppFeatureNameConverter::class,
-    QuickAccessLinkNameConverter::class
+    QuickAccessLinkNameConverter::class,
+    StringListConverter::class,
+
 )
 abstract class MyHealthDataBase : RoomDatabase() {
 

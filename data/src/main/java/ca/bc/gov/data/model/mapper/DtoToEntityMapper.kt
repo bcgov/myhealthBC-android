@@ -20,10 +20,10 @@ import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.notification.NotificationDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientNameDto
+import ca.bc.gov.common.model.quicklink.QuickLinkDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.common.model.settings.AppFeatureDto
-import ca.bc.gov.common.model.settings.QuickAccessTileDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidTestDto
@@ -361,16 +361,13 @@ fun NotificationDto.toEntity() = NotificationEntity(
 )
 
 fun AppFeatureDto.toEntity() = AppFeatureEntity(
-    id,
-    name,
-    hasManageableQuickAccessLinks,
-    showAsQuickAccess
+    id = id,
+    name = name,
+    hasManageableQuickAccessLinks = hasManageableQuickAccessLinks,
+    showAsQuickAccess = showAsQuickAccess,
 )
 
-fun QuickAccessTileDto.toEntity() = QuickAccessTileEntity(
-    id,
-    featureId,
-    tileName,
-    tilePayload,
-    showAsQuickAccess
+fun QuickLinkDto.toEntity() = QuickAccessTileEntity(
+    name = name,
+    modules = modules,
 )

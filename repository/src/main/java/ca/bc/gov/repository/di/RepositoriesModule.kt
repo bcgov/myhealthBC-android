@@ -357,8 +357,9 @@ class RepositoriesModule {
     @Provides
     @Singleton
     fun provideAppFeatureRepository(
-        appFeatureLocalDataSource: AppFeatureLocalDataSource
-    ): AppFeatureRepository = AppFeatureRepository(appFeatureLocalDataSource)
+        appFeatureLocalDataSource: AppFeatureLocalDataSource,
+        quickActionTileLocalDataSource: QuickActionTileLocalDataSource,
+    ): AppFeatureRepository = AppFeatureRepository(appFeatureLocalDataSource, quickActionTileLocalDataSource)
 
     @Provides
     @Singleton
