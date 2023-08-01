@@ -32,11 +32,12 @@ import ca.bc.gov.bchealth.compose.component.HGProgressIndicator
 import ca.bc.gov.bchealth.compose.theme.primaryBlue
 import ca.bc.gov.bchealth.compose.theme.statusBlue
 import ca.bc.gov.bchealth.compose.theme.white
+import ca.bc.gov.bchealth.ui.home.QuickAccessTileItem
 
 @Composable
 fun QuickAccessManagementScreen(
     viewModel: QuickAccessManagementViewModel,
-    onClickItem: (QuickAccessManagementViewModel.QuickAccessItem) -> Unit,
+    onClickItem: (QuickAccessTileItem) -> Unit,
     onUpdateCompleted: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -59,8 +60,8 @@ fun QuickAccessManagementScreen(
 
 @Composable
 private fun QuickAccessManagementContent(
-    featureWithQuickAccessItems: List<QuickAccessManagementViewModel.FeatureWithQuickAccessItems>,
-    onClickItem: (QuickAccessManagementViewModel.QuickAccessItem) -> Unit,
+    featureWithQuickAccessItems: Map<Int, List<QuickAccessTileItem>>,
+    onClickItem: (QuickAccessTileItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -80,13 +81,13 @@ private fun QuickAccessManagementContent(
             featureWithQuickAccessItems.forEach {
                 item {
                     Text(
-                        text = it.name,
+                        text = stringResource(id = it.key),
                         style = MyHealthTypography.body1.bold(),
                         color = statusBlue
                     )
                 }
                 item { Spacer(modifier = Modifier.size(12.dp)) }
-                items(it.quickAccessItems) { tile ->
+                items(it.value) { tile ->
                     TileItemUi(tile, onClickItem)
                     Spacer(modifier = Modifier.size(10.dp))
                 }
@@ -98,10 +99,10 @@ private fun QuickAccessManagementContent(
 
 @Composable
 private fun TileItemUi(
-    item: QuickAccessManagementViewModel.QuickAccessItem,
-    onClickItem: (QuickAccessManagementViewModel.QuickAccessItem) -> Unit,
+    item: QuickAccessTileItem,
+    onClickItem: (QuickAccessTileItem) -> Unit,
 ) {
-    val checkedState = remember { mutableStateOf(item.isEnabled) }
+    val checkedState = remember { mutableStateOf(item.isQuickAccess) }
 
     Card(
         modifier = Modifier.clickable {
@@ -134,7 +135,7 @@ private fun TileItemUi(
 }
 
 @Composable
-private fun RowScope.TileName(item: QuickAccessManagementViewModel.QuickAccessItem) {
+private fun RowScope.TileName(item: QuickAccessTileItem) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
@@ -150,7 +151,7 @@ private fun PreviewQuickAccessManagementContent() {
 
     MyHealthTheme {
         QuickAccessManagementContent(
-            emptyList(),
+            emptyMap(),
             {}
         )
     }

@@ -35,17 +35,15 @@ class HomeViewModel @Inject constructor(
     private var isBiometricAuthenticationRequired: Boolean = true
 
     fun loadQuickAccessTiles(loginStatus: LoginStatus) = viewModelScope.launch {
-        val appFeatures = appFeatureWithQuickAccessTilesRepository
-            .getQuickAccessFeatures()
-            .apply {
-                if (loginStatus != LoginStatus.ACTIVE) {
-                    this.filter {
-                        it.hasManageableQuickAccessLinks.not()
-                    }
-                }
-            }.map {
-                QuickAccessTileItem.from(it)
-            }
+        val tiles = if (loginStatus == LoginStatus.ACTIVE) {
+            appFeatureWithQuickAccessTilesRepository.getQuickAccessFeatures()
+        } else {
+            appFeatureWithQuickAccessTilesRepository.getNonManageableAppFeatures()
+        }
+
+        val appFeatures = tiles.map {
+            QuickAccessTileItem.from(it)
+        }
 
         _uiState.update { it.copy(quickAccessTileItems = appFeatures) }
     }
@@ -186,77 +184,99 @@ data class QuickAccessTileItem(
     val payload: String? = null,
     @IdRes val destinationId: Int,
     val isEditable: Boolean = false,
+    var isQuickAccess: Boolean = false,
+    @StringRes val category: Int,
 ) {
     companion object {
         fun from(appFeatureDto: AppFeatureDto): QuickAccessTileItem {
-            val (tileIcon, endDestinationId) = when (appFeatureDto.name) {
 
-                AppFeatureName.HEALTH_RECORDS ->
-                    R.drawable.icon_tile_health_record to
-                        R.id.health_records
+            val (tileIcon, endDestinationId, category) = when (appFeatureDto.name) {
 
-                AppFeatureName.IMMUNIZATION_SCHEDULES ->
-                    R.drawable.ic_tile_immunization_schedules to
-                        R.id.immunizationSchedulesFragment
+                AppFeatureName.HEALTH_RECORDS -> Triple(
+                    R.drawable.icon_tile_health_record,
+                    R.id.health_records,
+                    R.string.feature_category_health_record
+                )
 
-                AppFeatureName.HEALTH_RESOURCES ->
-                    R.drawable.ic_tile_healt_resources to
-                        R.id.action_homeFragment_to_resources
+                AppFeatureName.IMMUNIZATION_SCHEDULES -> Triple(
+                    R.drawable.ic_tile_immunization_schedules,
+                    R.id.immunizationSchedulesFragment, R.string.feature_category_health_record
+                )
 
-                AppFeatureName.PROOF_OF_VACCINE ->
-                    R.drawable.ic_tile_proof_of_vaccine to
-                        R.id.action_homeFragment_to_health_pass
+                AppFeatureName.HEALTH_RESOURCES -> Triple(
+                    R.drawable.ic_tile_healt_resources,
+                    R.id.action_homeFragment_to_resources, R.string.feature_category_health_record
+                )
 
-                AppFeatureName.SERVICES ->
-                    R.drawable.ic_organ_donor to
-                        R.id.services
+                AppFeatureName.PROOF_OF_VACCINE -> Triple(
+                    R.drawable.ic_tile_proof_of_vaccine,
+                    R.id.action_homeFragment_to_health_pass, R.string.feature_category_health_record
+                )
 
-                AppFeatureName.IMMUNIZATIONS ->
-                    R.drawable.ic_health_record_vaccine to
-                        R.id.health_records
+                AppFeatureName.SERVICES -> Triple(
+                    R.drawable.ic_organ_donor,
+                    R.id.services, R.string.feature_category_service
+                )
 
-                AppFeatureName.MEDICATIONS ->
-                    R.drawable.ic_health_record_medication to
-                        R.id.health_records
+                AppFeatureName.IMMUNIZATIONS -> Triple(
+                    R.drawable.ic_health_record_vaccine,
+                    R.id.health_records, R.string.feature_category_health_record
+                )
 
-                AppFeatureName.COVID_TESTS ->
-                    R.drawable.ic_health_record_covid_test to
-                        R.id.health_records
+                AppFeatureName.MEDICATIONS -> Triple(
+                    R.drawable.ic_health_record_medication,
+                    R.id.health_records, R.string.feature_category_health_record
+                )
 
-                AppFeatureName.IMAGING_REPORTS ->
-                    R.drawable.ic_health_record_diagnostic_imaging to
-                        R.id.health_records
+                AppFeatureName.COVID_TESTS -> Triple(
+                    R.drawable.ic_health_record_covid_test,
+                    R.id.health_records, R.string.feature_category_health_record
+                )
 
-                AppFeatureName.HOSPITAL_VISITS ->
-                    R.drawable.ic_health_record_hospital_visit to
-                        R.id.health_records
+                AppFeatureName.IMAGING_REPORTS -> Triple(
+                    R.drawable.ic_health_record_diagnostic_imaging,
+                    R.id.health_records, R.string.feature_category_health_record
+                )
 
-                AppFeatureName.MY_NOTES ->
-                    R.drawable.icon_tile_health_record to
-                        R.id.health_records
+                AppFeatureName.HOSPITAL_VISITS -> Triple(
+                    R.drawable.ic_health_record_hospital_visit,
+                    R.id.health_records, R.string.feature_category_health_record
+                )
 
-                AppFeatureName.LAB_RESULTS ->
-                    R.drawable.ic_lab_test to
-                        R.id.health_records
+                AppFeatureName.MY_NOTES -> Triple(
+                    R.drawable.icon_tile_health_record,
+                    R.id.health_records, R.string.feature_category_health_record
+                )
 
-                AppFeatureName.SPECIAL_AUTHORITY ->
-                    R.drawable.ic_health_record_special_authority to
-                        R.id.health_records
+                AppFeatureName.LAB_RESULTS -> Triple(
+                    R.drawable.ic_lab_test,
+                    R.id.health_records, R.string.feature_category_health_record
+                )
 
-                AppFeatureName.HEALTH_VISITS ->
-                    R.drawable.ic_health_record_health_visit to
-                        R.id.health_records
+                AppFeatureName.SPECIAL_AUTHORITY -> Triple(
+                    R.drawable.ic_health_record_special_authority,
+                    R.id.health_records, R.string.feature_category_health_record
+                )
 
-                AppFeatureName.CLINICAL_DOCUMENTS ->
-                    R.drawable.ic_health_record_clinical_document to
-                        R.id.health_records
+                AppFeatureName.HEALTH_VISITS -> Triple(
+                    R.drawable.ic_health_record_health_visit,
+                    R.id.health_records, R.string.feature_category_health_record
+                )
+
+                AppFeatureName.CLINICAL_DOCUMENTS -> Triple(
+                    R.drawable.ic_health_record_clinical_document,
+                    R.id.health_records, R.string.feature_category_health_record
+                )
             }
+
             return QuickAccessTileItem(
                 name = appFeatureDto.name.value,
                 icon = tileIcon,
                 destinationId = endDestinationId,
                 payload = appFeatureDto.name.value,
-                isEditable = false
+                category = category,
+                isEditable = appFeatureDto.hasManageableQuickAccessLinks,
+                isQuickAccess = appFeatureDto.showAsQuickAccess
             )
         }
     }

@@ -24,4 +24,8 @@ class AppFeatureLocalDataSource @Inject constructor(
             it.toDto()
         }
     }
+
+    suspend fun getManageableAppFeatures() = appFeatureDao.getManageableAppFeatures()
+
+    suspend fun getNonManageableAppFeatures() = appFeatureDao.getNonManageableAppFeatures()
 }

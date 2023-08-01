@@ -54,7 +54,7 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun initializeAppData() = viewModelScope.launch {
-        appFeatureRepository.loadAppFeatures()
+        appFeatureRepository.initAppFeatures()
     }
 
     enum class UpdateType {

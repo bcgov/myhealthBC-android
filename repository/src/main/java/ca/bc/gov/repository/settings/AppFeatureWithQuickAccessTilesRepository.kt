@@ -14,5 +14,9 @@ class AppFeatureWithQuickAccessTilesRepository @Inject constructor(
             preferenceStorage.isQuickAccessTileTutorialRequired = value
         }
 
+    suspend fun getNonManageableAppFeatures() = appFeatureRepository.getNonManageableAppFeatures()
+
     suspend fun getQuickAccessFeatures() = appFeatureRepository.getQuickAccessFeatures()
+
+    suspend fun getManageableAppFeatures() = appFeatureRepository.getManageableAppFeatures()
 }

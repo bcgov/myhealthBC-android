@@ -60,7 +60,6 @@ import ca.bc.gov.repository.services.OrganDonorRepository
 import ca.bc.gov.repository.services.PatientServicesRepository
 import ca.bc.gov.repository.settings.AppFeatureRepository
 import ca.bc.gov.repository.settings.AppFeatureWithQuickAccessTilesRepository
-import ca.bc.gov.repository.settings.QuickAccessTileRepository
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.testrecord.CovidTestRepository
 import ca.bc.gov.repository.utils.Base64ToInputImageConverter
@@ -360,12 +359,6 @@ class RepositoriesModule {
         appFeatureLocalDataSource: AppFeatureLocalDataSource,
         quickActionTileLocalDataSource: QuickActionTileLocalDataSource,
     ): AppFeatureRepository = AppFeatureRepository(appFeatureLocalDataSource, quickActionTileLocalDataSource)
-
-    @Provides
-    @Singleton
-    fun providesQuickAccessTileRepository(
-        quickActionTileLocalDataSource: QuickActionTileLocalDataSource
-    ): QuickAccessTileRepository = QuickAccessTileRepository(quickActionTileLocalDataSource)
 
     @Provides
     @Singleton

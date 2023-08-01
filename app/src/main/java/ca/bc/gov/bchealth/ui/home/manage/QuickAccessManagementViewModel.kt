@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.home.manage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.bchealth.ui.home.QuickAccessTileItem
 import ca.bc.gov.repository.settings.AppFeatureWithQuickAccessTilesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -23,26 +24,20 @@ class QuickAccessManagementViewModel @Inject constructor(
     fun loadQuickAccessTileData() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
 
-        val featureWithQuickAccessItems = appFeatureRepository.getAppFeaturesWithQuickAccessTiles().filter { it.appFeatureDto.hasManageableQuickAccessLinks }
-            .map {
-                FeatureWithQuickAccessItems(
-                    id = it.appFeatureDto.id,
-                    name = it.appFeatureDto.name.value,
-                    quickAccessItems = it.quickAccessTiles.map { tile ->
-                        QuickAccessItem(
-                            tile.id,
-                            tile.tileName.value,
-                            tile.showAsQuickAccess
-                        )
-                    }
-                )
-            }
+        val featureWithQuickAccessItems = appFeatureRepository.getManageableAppFeatures()
+            .map { QuickAccessTileItem.from(it) }
+            .groupBy { it.category }
 
-        _uiState.update { it.copy(featureWithQuickAccessItems = featureWithQuickAccessItems, isLoading = false) }
+        _uiState.update {
+            it.copy(
+                featureWithQuickAccessItems = featureWithQuickAccessItems,
+                isLoading = false
+            )
+        }
     }
 
-    fun toggleItem(item: QuickAccessItem) {
-        item.isEnabled = item.isEnabled.not()
+    fun toggleItem(item: QuickAccessTileItem) {
+        item.isQuickAccess = item.isQuickAccess.not()
     }
 
     fun saveSelection() {
@@ -50,7 +45,7 @@ class QuickAccessManagementViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
 
             _uiState.value.featureWithQuickAccessItems.forEach {
-                it.quickAccessItems.forEach { tile ->
+                it.value.forEach { tile ->
                     // TODO : make call to the query to update the item
                 }
             }
@@ -64,18 +59,6 @@ class QuickAccessManagementViewModel @Inject constructor(
     data class QuickAccessManagementUiState(
         val isLoading: Boolean = false,
         val isUpdateCompleted: Boolean = false,
-        val featureWithQuickAccessItems: List<FeatureWithQuickAccessItems> = emptyList()
-    )
-
-    data class FeatureWithQuickAccessItems(
-        val id: Long = 0,
-        val name: String,
-        val quickAccessItems: List<QuickAccessItem> = emptyList()
-    )
-
-    data class QuickAccessItem(
-        val id: Long = 0,
-        val name: String,
-        var isEnabled: Boolean = false
+        val featureWithQuickAccessItems: Map<Int, List<QuickAccessTileItem>> = emptyMap()
     )
 }

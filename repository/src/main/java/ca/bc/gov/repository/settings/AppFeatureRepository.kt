@@ -5,6 +5,7 @@ import ca.bc.gov.common.model.quicklink.QuickLinkDto
 import ca.bc.gov.common.model.settings.AppFeatureDto
 import ca.bc.gov.data.datasource.local.AppFeatureLocalDataSource
 import ca.bc.gov.data.datasource.local.QuickActionTileLocalDataSource
+import ca.bc.gov.data.model.mapper.toDto
 import javax.inject.Inject
 
 class AppFeatureRepository @Inject constructor(
@@ -12,15 +13,27 @@ class AppFeatureRepository @Inject constructor(
     private val quickActionLocalDataSource: QuickActionTileLocalDataSource,
 ) {
 
+    suspend fun getNonManageableAppFeatures() =
+        appFeatureLocalDataSource.getNonManageableAppFeatures().map { it.toDto() }
+
+    suspend fun getManageableAppFeatures() =
+        appFeatureLocalDataSource.getManageableAppFeatures().map { it.toDto() }
+
     suspend fun updateQuickLinks(quickLinks: List<QuickLinkDto>?) {
         if (quickLinks.isNullOrEmpty()) return
         quickActionLocalDataSource.update(quickLinks)
         appFeatureLocalDataSource.updateManageableQuickLinks(quickLinks)
     }
 
-    suspend fun loadAppFeatures() {
+    suspend fun initAppFeatures() {
         listOf(
-            // quickLink & non manageable
+            // non manageable
+            AppFeatureDto(
+                name = AppFeatureName.HEALTH_RECORDS,
+                hasManageableQuickAccessLinks = false,
+                showAsQuickAccess = true
+            ),
+
             AppFeatureDto(
                 name = AppFeatureName.IMMUNIZATION_SCHEDULES,
                 hasManageableQuickAccessLinks = false,
@@ -39,14 +52,7 @@ class AppFeatureRepository @Inject constructor(
                 showAsQuickAccess = true
             ),
 
-            // quickLink & manageable
-            AppFeatureDto(
-                name = AppFeatureName.HEALTH_RECORDS,
-                hasManageableQuickAccessLinks = true,
-                showAsQuickAccess = true
-            ),
-
-            // manageable only
+            // manageable
             AppFeatureDto(
                 name = AppFeatureName.HEALTH_RECORDS,
                 hasManageableQuickAccessLinks = true,

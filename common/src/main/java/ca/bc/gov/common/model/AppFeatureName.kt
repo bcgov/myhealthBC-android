@@ -5,7 +5,7 @@ enum class AppFeatureName(val value: String) {
     IMMUNIZATION_SCHEDULES("Immunization schedules"),
     HEALTH_RESOURCES("Health resources"),
     PROOF_OF_VACCINE("Proof of vaccination"),
-    SERVICES("Services"),
+    SERVICES("Organ Donor"),
     IMMUNIZATIONS("Immunizations"),
     MEDICATIONS("Medications"),
     COVID_TESTS("COVID‑19 Tests"),
