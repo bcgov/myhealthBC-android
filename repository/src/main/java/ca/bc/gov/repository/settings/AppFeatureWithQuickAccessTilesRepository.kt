@@ -19,4 +19,10 @@ class AppFeatureWithQuickAccessTilesRepository @Inject constructor(
     suspend fun getQuickAccessFeatures() = appFeatureRepository.getQuickAccessFeatures()
 
     suspend fun getManageableAppFeatures() = appFeatureRepository.getManageableAppFeatures()
+
+    suspend fun updateQuickLinks(manageableQuickLinks: List<Pair<String, Boolean>>) {
+        // retrieve info from quickLink local to create json
+        // call api
+        // store data
+    }
 }
