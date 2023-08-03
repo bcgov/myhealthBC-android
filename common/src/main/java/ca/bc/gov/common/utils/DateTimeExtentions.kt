@@ -43,10 +43,12 @@ fun String.toDateTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL
 
 fun String.toPstFromIsoZoned(): Instant {
     val formatter: DateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
-    val dateStr = if (this.endsWith("+00:00")) {
-        this
+    val dateWithoutZ = this.replace("Z", "+00:00")
+
+    val dateStr = if (dateWithoutZ.endsWith("+00:00")) {
+        dateWithoutZ
     } else {
-        "$this+00:00"
+        "$dateWithoutZ+00:00"
     }
 
     return LocalDateTime.parse(dateStr, formatter)
