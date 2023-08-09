@@ -25,9 +25,12 @@ import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabTestDto
+import ca.bc.gov.common.model.notification.NotificationActionTypeDto
+import ca.bc.gov.common.model.notification.NotificationDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientNameDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
+import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.common.model.services.OrganDonorStatusDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
@@ -38,6 +41,7 @@ import ca.bc.gov.common.model.userprofile.UserProfileDto
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.common.utils.toDateTimeZ
 import ca.bc.gov.common.utils.toOffsetDateTime
+import ca.bc.gov.common.utils.toPstFromIsoZoned
 import ca.bc.gov.data.datasource.remote.model.base.CovidLabResult
 import ca.bc.gov.data.datasource.remote.model.base.CovidOrder
 import ca.bc.gov.data.datasource.remote.model.base.TermsOfServicePayload
@@ -57,8 +61,10 @@ import ca.bc.gov.data.datasource.remote.model.base.medication.DispensingPharmacy
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationStatementPayload
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationSummary
 import ca.bc.gov.data.datasource.remote.model.base.patient.PatientName
-import ca.bc.gov.data.datasource.remote.model.base.patientdata.OrganDonorStatus
-import ca.bc.gov.data.datasource.remote.model.base.patientdata.PatientDataItem
+import ca.bc.gov.data.datasource.remote.model.base.patientdata.DiagnosticImagingData
+import ca.bc.gov.data.datasource.remote.model.base.patientdata.OrganDonorData
+import ca.bc.gov.data.datasource.remote.model.base.patientdata.PatientDataType
+import ca.bc.gov.data.datasource.remote.model.base.patientdata.organdonor.OrganDonorStatus
 import ca.bc.gov.data.datasource.remote.model.base.profile.UserProfilePayload
 import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityPayload
 import ca.bc.gov.data.datasource.remote.model.base.specialauthority.SpecialAuthorityResponse
@@ -71,7 +77,9 @@ import ca.bc.gov.data.datasource.remote.model.response.CommentResponse
 import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
+import ca.bc.gov.data.datasource.remote.model.response.NotificationResponse
 import ca.bc.gov.data.datasource.remote.model.response.PatientAddress
+import ca.bc.gov.data.datasource.remote.model.response.PatientDataResponse
 import ca.bc.gov.data.datasource.remote.model.response.PatientResponse
 import ca.bc.gov.data.model.MediaMetaData
 import ca.bc.gov.data.model.VaccineStatus
@@ -410,6 +418,7 @@ fun DependentPayload.toDto() = DependentDto(
     ownerId = ownerId,
     delegateId = delegateId,
     reasonCode = reasonCode,
+    totalDelegateCount = totalDelegateCount,
     version = version
 )
 
@@ -427,9 +436,11 @@ fun PatientResponse.toDto(): PatientDto {
     )
     val fullNameBuilder = StringBuilder()
     fullNameBuilder.append(
-        "${patientName.givenName ?: throw MyHealthException(
+        "${
+        patientName.givenName ?: throw MyHealthException(
             SERVER_ERROR, INVALID_RESPONSE
-        )} "
+        )
+        } "
     )
     fullNameBuilder.append(
         patientName.surName ?: throw MyHealthException(
@@ -455,7 +466,7 @@ fun PatientResponse.toDto(): PatientDto {
     )
 }
 
-fun OrganDonorStatus.toDto() = when (this) {
+private fun OrganDonorStatus.toDto() = when (this) {
     OrganDonorStatus.UNKNOWN -> OrganDonorStatusDto.UNKNOWN
     OrganDonorStatus.ERROR -> OrganDonorStatusDto.ERROR
     OrganDonorStatus.PENDING -> OrganDonorStatusDto.PENDING
@@ -463,11 +474,45 @@ fun OrganDonorStatus.toDto() = when (this) {
     OrganDonorStatus.REGISTERED -> OrganDonorStatusDto.REGISTERED
 }
 
-fun PatientDataItem.toDto() = OrganDonorDto(
+private fun OrganDonorData.toDto() = OrganDonorDto(
     id = 0,
     patientId = 0,
     status = status.toDto(),
     statusMessage = statusMessage,
     registrationFileId = registrationFileId,
     file = null
+)
+
+private fun DiagnosticImagingData.toDto() = DiagnosticImagingDataDto(
+    id = id,
+    examDate = examDate?.toDateTime(),
+    fileId = fileId,
+    examStatus = examStatus ?: "Unknown",
+    healthAuthority = healthAuthority,
+    organization = organization,
+    modality = modality,
+    bodyPart = bodyPart,
+    procedureDescription = procedureDescription
+)
+
+fun PatientDataResponse.toDto() = items.map { data ->
+    when (data.type) {
+        PatientDataType.ORGAN_DONOR_REGISTRATION -> {
+            (data as OrganDonorData).toDto()
+        }
+
+        PatientDataType.DIAGNOSTIC_IMAGING_EXAM -> {
+            (data as DiagnosticImagingData).toDto()
+        }
+    }
+}
+
+fun NotificationResponse.toDto(hdid: String) = NotificationDto(
+    notificationId = id,
+    hdid = hdid,
+    category = category,
+    displayText = displayText,
+    actionUrl = actionUrl,
+    actionType = NotificationActionTypeDto.getByValue(actionType),
+    date = date.toPstFromIsoZoned()
 )

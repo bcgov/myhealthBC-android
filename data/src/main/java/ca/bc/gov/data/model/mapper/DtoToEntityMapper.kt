@@ -17,8 +17,10 @@ import ca.bc.gov.common.model.immunization.ImmunizationRecommendationsDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordDto
 import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabTestDto
+import ca.bc.gov.common.model.notification.NotificationDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientNameDto
+import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
@@ -45,6 +47,8 @@ import ca.bc.gov.data.datasource.local.entity.labtest.LabTestEntity
 import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
+import ca.bc.gov.data.datasource.local.entity.notification.NotificationEntity
+import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
@@ -283,6 +287,7 @@ fun DependentDto.toEntity(patientId: Long, guardianId: Long) = DependentEntity(
     ownerId = ownerId,
     delegateId = delegateId,
     reasonCode = reasonCode,
+    totalDelegateCount = totalDelegateCount,
     version = version,
     isCacheValid = isCacheValid
 )
@@ -325,4 +330,28 @@ fun OrganDonorDto.toEntity() = OrganDonorEntity(
     statusMessage = statusMessage,
     registrationFileId = registrationFileId,
     file = file
+)
+
+fun DiagnosticImagingDataDto.toEntity() = DiagnosticImagingDataEntity(
+    id = _id,
+    patientId = patientId,
+    diagnosticImagingId = id,
+    examDate = examDate,
+    fileId = fileId,
+    examStatus = examStatus,
+    healthAuthority = healthAuthority,
+    organization = organization,
+    modality = modality,
+    bodyPart = bodyPart,
+    procedureDescription = procedureDescription
+)
+
+fun NotificationDto.toEntity() = NotificationEntity(
+    notificationId = notificationId,
+    hdid = hdid,
+    category = category,
+    displayText = displayText,
+    actionUrl = actionUrl,
+    actionType = actionType.value,
+    date = date,
 )

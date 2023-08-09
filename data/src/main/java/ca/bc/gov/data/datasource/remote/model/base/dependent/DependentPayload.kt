@@ -15,6 +15,9 @@ data class DependentPayload(
     @SerializedName("reasonCode")
     val reasonCode: Long,
 
+    @SerializedName("totalDelegateCount")
+    val totalDelegateCount: Long,
+
     @SerializedName("version")
     val version: Long,
 )

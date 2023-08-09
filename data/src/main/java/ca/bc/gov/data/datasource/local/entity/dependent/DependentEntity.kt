@@ -63,6 +63,9 @@ data class DependentEntity(
     @ColumnInfo(name = "reasonCode")
     val reasonCode: Long,
 
+    @ColumnInfo(name = "totalDelegateCount", defaultValue = "0")
+    val totalDelegateCount: Long,
+
     @ColumnInfo(name = "version")
     val version: Long,
 

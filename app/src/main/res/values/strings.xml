@@ -9,6 +9,8 @@
     <string name="no">No</string>
     <string name="not_available">Not available</string>
     <string name="email_copied_to_clipboard">Email address copied to clipboard</string>
+    <string name="expand_content">Expand content</string>
+    <string name="collapse_content">Collapse content</string>
 
     <!--Informational screen for camera permission-->
     <string name="privacy_policy">Privacy Policy</string>
@@ -69,6 +71,8 @@
     <string name="dependents_profile_phn">Personal Health Number (PHN)</string>
     <string name="dependents_profile_dob">Date of birth (DoB)</string>
     <string name="dependents_profile_remove_dependent">Remove dependent</string>
+    <string name="access_count">How many others have access</string>
+    <string name="access_info">This shows you how many people other than you have added your dependent to their Health Gateway account. For privacy, we can’t tell you their names. If this number isn’t what you expect, contact us at healthgateway@gov.bc.ca</string>
 
     <!--Resources-->
     <string name="resources">Resources</string>
@@ -79,6 +83,19 @@
     <string name="label_resource_get_tested">Get a COVID-19 test</string>
     <string name="label_resource_symptom">COVID-19 self-assessment</string>
     <string name="health_resources">Health resources</string>
+
+    <!--Notification-->
+    <string name="notifications">Notifications</string>
+    <string name="notifications_remove">Remove notification</string>
+    <string name="notifications_clear">Clear all notifications</string>
+    <string name="notifications_clear_confirmation_body">Are you sure you want to delete all notifications? You won\'t be able to access them again after this.</string>
+    <string name="notifications_more_info">More information</string>
+    <string name="notifications_view_details">View details</string>
+    <string name="notifications_enable_body">Enabling notification to stay inform on updates in Login, Health records, Lab test results and feedbacks. </string>
+    <string name="notifications_enable_button">Enable notification</string>
+    <string name="notifications_error_body">Sorry, an error occurred while fetching notifications. Please try again.</string>
+    <string name="notifications_empty_body">There is no notification at this moment.</string>
+    <string name="notifications_session_expired">Log in again to access all notifications.</string>
 
     <!--Settings-->
     <string name="settings">Settings</string>
@@ -315,6 +332,7 @@
     <string name="download">Download</string>
     <string name="downloading">Downloading..</string>
     <string name="retry">Retry</string>
+    <string name="try_again">Try again</string>
     <string name="test_summary">Test summary</string>
     <string name="summary_desc">Find resources to learn about your lab test and what the results mean. Learn more</string>
     <string name="test_name">Test name:</string>
@@ -481,6 +499,7 @@
     <string name="special_authorities">Special Authorities</string>
     <string name="hospital_visits">Hospital Visits</string>
     <string name="clinical_documents">Clinical Docs</string>
+    <string name="imaging_reports">Imaging Reports</string>
     <string name="filter">Filter</string>
     <string name="apply">Apply</string>
     <string name="no_records_found">No records found</string>
@@ -512,7 +531,7 @@
     <string name="clinic_name">Clinic Name:</string>
     <string name="practitioner_name">Practitioner Name:</string>
     <string name="information_is_from_the_billing_claim">Information is from the billing claim and may show a different practitioner or clinic from the one you visited. For more information, visit the FAQ page.</string>
-    <string name="faq">FAQ</string>
+    <string name="faq_clickable">visit the FAQ page</string>
 
     <!--SpecialAuthority Details-->
     <string name="status">Status:</string>
@@ -561,4 +580,12 @@
     <string name="organ_donor_decision_download">Download</string>
     <string name="organ_donor_register_or_update">Register or update your decision</string>
     <string name="organ_donor">Organ Donor</string>
+
+    <!--Diagnostic Imaging-->
+    <string name="diagnostic_imaging_detail_subtitle">If you have questions, contact the doctor or care provider who ordered your imaging.</string>
+    <string name="body_part">Body Part:</string>
+    <string name="description">Description:</string>
+    <string name="health_authority">Health Authority:</string>
+    <string name="facility">Facility:</string>
+
 </resources>

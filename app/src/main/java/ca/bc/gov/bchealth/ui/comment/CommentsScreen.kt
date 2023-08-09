@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.DropdownMenu
@@ -27,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -51,6 +53,7 @@ import ca.bc.gov.bchealth.widget.CommentInputUI
 import ca.bc.gov.bchealth.widget.EditableCommentInputUI
 import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.utils.toDateTimeString
+import kotlinx.coroutines.launch
 import java.time.Instant
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -65,6 +68,8 @@ fun CommentsScreen(
 ) {
     val comments = uiState.commentsList ?: return
     val keyboardController = LocalSoftwareKeyboardController.current
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -79,6 +84,7 @@ fun CommentsScreen(
         )
 
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
@@ -97,7 +103,12 @@ fun CommentsScreen(
         }
 
         if (uiState.displayEditLayout.not()) {
-            CommentInputUI(onSubmitComment = submitAction)
+            CommentInputUI(onSubmitComment = {
+                submitAction.invoke(it)
+                coroutineScope.launch {
+                    listState.animateScrollToItem(index = 0)
+                }
+            })
         }
     }
 }

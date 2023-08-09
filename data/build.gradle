@@ -37,22 +37,17 @@ android {
 
         mock {
             dimension "version"
-            resValue "string", "base_url", "https://mock.healthgateway.gov.bc.ca/"
         }
         dev {
             dimension "version"
-            resValue "string", "base_url", "https://dev.healthgateway.gov.bc.ca/"
-
         }
 
         stage {
             dimension "version"
-            resValue "string", "base_url", "https://test.healthgateway.gov.bc.ca/"
         }
 
         prod {
             dimension "version"
-            resValue "string", "base_url", "https://healthgateway.gov.bc.ca/"
         }
     }
 
@@ -75,6 +70,8 @@ dependencies {
     implementation "androidx.core:core-ktx:$versions.core_ktx"
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
 
+    implementation project(path: ':appauth')
+    implementation project(path: ':preference')
     implementation project(path: ':common')
 
     //room

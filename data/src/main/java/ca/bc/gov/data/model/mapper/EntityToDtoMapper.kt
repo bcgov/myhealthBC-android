@@ -22,11 +22,14 @@ import ca.bc.gov.common.model.labtest.LabOrderDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestsAndPatientDto
 import ca.bc.gov.common.model.labtest.LabTestDto
+import ca.bc.gov.common.model.notification.NotificationActionTypeDto
+import ca.bc.gov.common.model.notification.NotificationDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientListDto
 import ca.bc.gov.common.model.patient.PatientNameDto
 import ca.bc.gov.common.model.patient.PatientWithClinicalDocumentsDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
+import ca.bc.gov.common.model.patient.PatientWithDataDto
 import ca.bc.gov.common.model.patient.PatientWithHealthVisitsDto
 import ca.bc.gov.common.model.patient.PatientWithHospitalVisitsDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
@@ -36,6 +39,7 @@ import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
+import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
@@ -70,9 +74,11 @@ import ca.bc.gov.data.datasource.local.entity.labtest.LabTestEntity
 import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
+import ca.bc.gov.data.datasource.local.entity.notification.NotificationEntity
 import ca.bc.gov.data.datasource.local.entity.relations.MedicationWithSummaryAndPharmacy
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithClinicalDocuments
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithCovidOrderAndCovidTest
+import ca.bc.gov.data.datasource.local.entity.relations.PatientWithData
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithHealthVisits
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithHospitalVisits
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithImmunizationRecordAndForecast
@@ -81,6 +87,7 @@ import ca.bc.gov.data.datasource.local.entity.relations.PatientWithMedicationRec
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithSpecialAuthorities
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithVaccineAndDoses
 import ca.bc.gov.data.datasource.local.entity.relations.VaccineRecordWithDose
+import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
@@ -230,6 +237,11 @@ fun PatientWithClinicalDocuments.toDto() = PatientWithClinicalDocumentsDto(
 fun PatientWithSpecialAuthorities.toDto() = PatientWithSpecialAuthorityDto(
     patient = patient.toDto(),
     specialAuthorities = specialAuthorities.map { it.toDto() }
+)
+
+fun PatientWithData.toDto() = PatientWithDataDto(
+    patient = patient.toDto(),
+    diagnosticImagingDataList = diagnosticImagingDataList.map { it.toDto() }
 )
 
 fun List<PatientEntity>.toDto() = PatientListDto(
@@ -423,6 +435,7 @@ fun DependentEntity.toDto() = DependentDto(
     ownerId = ownerId,
     delegateId = delegateId,
     reasonCode = reasonCode,
+    totalDelegateCount = totalDelegateCount,
     version = version,
     patientId = patientId,
     isCacheValid = isCacheValid,
@@ -435,4 +448,28 @@ fun OrganDonorEntity.toDto() = OrganDonorDto(
     statusMessage = statusMessage,
     registrationFileId = registrationFileId,
     file = file
+)
+
+fun DiagnosticImagingDataEntity.toDto() = DiagnosticImagingDataDto(
+    _id = id,
+    id = diagnosticImagingId,
+    patientId = patientId,
+    examDate = examDate,
+    fileId = fileId,
+    examStatus = examStatus,
+    healthAuthority = healthAuthority,
+    organization = organization,
+    modality = modality,
+    bodyPart = bodyPart,
+    procedureDescription = procedureDescription
+)
+
+fun NotificationEntity.toDto() = NotificationDto(
+    notificationId = notificationId,
+    hdid = hdid,
+    category = category,
+    displayText = displayText,
+    actionUrl = actionUrl,
+    actionType = NotificationActionTypeDto.getByValue(actionType),
+    date = date,
 )

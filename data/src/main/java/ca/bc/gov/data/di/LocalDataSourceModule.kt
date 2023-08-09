@@ -5,6 +5,7 @@ import ca.bc.gov.data.datasource.local.CommentLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidTestLocalDataSource
 import ca.bc.gov.data.datasource.local.DependentsLocalDataSource
+import ca.bc.gov.data.datasource.local.DiagnosticImagingLocalDataSource
 import ca.bc.gov.data.datasource.local.HealthVisitsLocalDataSource
 import ca.bc.gov.data.datasource.local.HospitalVisitLocalDataSource
 import ca.bc.gov.data.datasource.local.ImmunizationForecastLocalDataSource
@@ -15,6 +16,7 @@ import ca.bc.gov.data.datasource.local.LabTestLocalDataSource
 import ca.bc.gov.data.datasource.local.LocalDataSource
 import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
 import ca.bc.gov.data.datasource.local.MyHealthDataBase
+import ca.bc.gov.data.datasource.local.NotificationLocalDataSource
 import ca.bc.gov.data.datasource.local.OrganDonorLocalDataSource
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.SpecialAuthorityLocalDataSource
@@ -124,6 +126,11 @@ class LocalDataSourceModule {
 
     @Provides
     @Singleton
+    fun provideNotificationLocalDataSource(db: MyHealthDataBase): NotificationLocalDataSource =
+        NotificationLocalDataSource(db.getNotificationDao())
+
+    @Provides
+    @Singleton
     fun provideClinicalDocumentLocalDataSource(db: MyHealthDataBase): ClinicalDocumentLocalDataSource =
         ClinicalDocumentLocalDataSource(db.getClinicalDocumentDao())
 
@@ -141,4 +148,9 @@ class LocalDataSourceModule {
     @Singleton
     fun providesOrganDonorLocalDataSource(db: MyHealthDataBase): OrganDonorLocalDataSource =
         OrganDonorLocalDataSource(db.getOrganDonationDao())
+
+    @Provides
+    @Singleton
+    fun providesDiagnosticImagingLocalDataSource(db: MyHealthDataBase): DiagnosticImagingLocalDataSource =
+        DiagnosticImagingLocalDataSource(db.getDiagnosticImagingDataDao())
 }

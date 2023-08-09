@@ -10,4 +10,4 @@ data class OrganDonorDto(
     val statusMessage: String?,
     val registrationFileId: String?,
     var file: String?
-)
+) : PatientDataDto(type = PatientDataTypeDto.ORGAN_DONOR_REGISTRATION)

@@ -1,6 +1,14 @@
 package ca.bc.gov.data.datasource.remote.model.base.patientdata
 
+import com.google.gson.annotations.SerializedName
+
+/**
+ * @author Pinakin Kansara
+ */
 enum class PatientDataType(val value: String) {
-    ORGAN_DONOR("OrganDonorRegistrationStatus"),
-    DIAGNOSTIC_IMAGING("DiagnosticImaging")
+    @SerializedName("DiagnosticImagingExam")
+    DIAGNOSTIC_IMAGING_EXAM("DiagnosticImagingExam"),
+
+    @SerializedName("OrganDonorRegistration")
+    ORGAN_DONOR_REGISTRATION("OrganDonorRegistration")
 }

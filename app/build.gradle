@@ -99,7 +99,6 @@ android {
 }
 
 dependencies {
-
     implementation "androidx.core:core-ktx:$versions.core_ktx"
 
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
@@ -110,17 +109,22 @@ dependencies {
     implementation "androidx.coordinatorlayout:coordinatorlayout:$versions.coordinator"
 
     //Compose
-    implementation "androidx.compose.ui:ui-tooling-preview:$versions.compose_ui"
-    debugImplementation "androidx.compose.ui:ui-tooling:$versions.compose_ui"
-    implementation "androidx.compose.material:material:$versions.compose_ui"
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
+    def composeBom = platform("androidx.compose:compose-bom:$versions.compose_bom")
+    implementation composeBom
+    implementation 'androidx.compose.material:material'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation "androidx.constraintlayout:constraintlayout-compose:$versions.constraint_compose"
+
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+
 
     //Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$versions.navigation"
     implementation "androidx.navigation:navigation-ui-ktx:$versions.navigation"
     implementation "androidx.navigation:navigation-runtime-ktx:$versions.navigation"
 
-    //JatPack LiveData ViewModel
+    //JetPack LiveData ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$versions.lifecycle"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle"
@@ -128,6 +132,7 @@ dependencies {
     //Dagger Hilt
     implementation "com.google.dagger:hilt-android:$versions.hilt"
     implementation project(path: ':repository')
+    implementation project(path: ':appauth')
     implementation project(path: ':common')
     kapt "com.google.dagger:hilt-compiler:$versions.hilt"
 
@@ -160,11 +165,9 @@ dependencies {
 
     testImplementation "junit:junit:$versions.junit"
 
+    androidTestImplementation composeBom
     androidTestImplementation "androidx.test.ext:junit:$versions.ext_junit"
-
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
-
-    //Dagger Hilt
     androidTestImplementation "com.google.dagger:hilt-android-testing:$versions.hilt"
 
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$versions.hilt"

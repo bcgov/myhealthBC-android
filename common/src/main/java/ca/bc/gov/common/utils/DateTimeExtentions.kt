@@ -41,6 +41,21 @@ fun String.toDate(): Instant = LocalDate.parse(this).atStartOfDay().toInstant(Zo
 fun String.toDateTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): Instant =
     LocalDateTime.parse(this, formatter).toInstant(ZoneOffset.UTC)
 
+fun String.toPstFromIsoZoned(): Instant {
+    val formatter: DateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    val dateWithoutZ = this.replace("Z", "+00:00")
+
+    val dateStr = if (dateWithoutZ.endsWith("+00:00")) {
+        dateWithoutZ
+    } else {
+        "$dateWithoutZ+00:00"
+    }
+
+    return LocalDateTime.parse(dateStr, formatter)
+        .toInstant(ZoneOffset.UTC)
+        .toLocalDateTimeInstant() ?: Instant.now()
+}
+
 fun String.toDateTime(datePattern: String): Instant =
     this.toDateTime(DateTimeFormatter.ofPattern(datePattern))
 

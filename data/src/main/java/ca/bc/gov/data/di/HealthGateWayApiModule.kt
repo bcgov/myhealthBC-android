@@ -3,17 +3,23 @@ package ca.bc.gov.data.di
 import android.content.Context
 import ca.bc.gov.data.BuildConfig
 import ca.bc.gov.data.R
-import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayMobileConfigApi
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPublicApi
 import ca.bc.gov.data.datasource.remote.interceptor.CookiesInterceptor
+import ca.bc.gov.data.datasource.remote.interceptor.HeaderInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.HostSelectionInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.MockInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.NetworkConnectionInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.ReceivedCookieInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.RetryInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.UserAgentInterceptor
+import ca.bc.gov.data.datasource.remote.model.base.patientdata.DiagnosticImagingData
+import ca.bc.gov.data.datasource.remote.model.base.patientdata.OrganDonorData
+import ca.bc.gov.data.datasource.remote.model.base.patientdata.PatientData
+import ca.bc.gov.data.datasource.remote.model.base.patientdata.PatientDataType
+import ca.bc.gov.data.utils.RuntimeTypeAdapterFactory
+import ca.bc.gov.preference.EncryptedPreferenceStorage
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -63,17 +69,24 @@ class HealthGateWayApiModule {
         NetworkConnectionInterceptor(context)
 
     @Provides
+    fun providesHeaderInterceptor(@ApplicationContext context: Context, preferenceStorage: EncryptedPreferenceStorage) =
+        HeaderInterceptor(context, preferenceStorage)
+
+    @Provides
     fun providesOkHttpClient(
         cookiesInterceptor: CookiesInterceptor,
         retryInterceptor: RetryInterceptor,
         receivedCookieInterceptor: ReceivedCookieInterceptor,
         mockInterceptor: MockInterceptor,
         hostSelectionInterceptor: HostSelectionInterceptor,
+        headerInterceptor: HeaderInterceptor,
         networkConnectionInterceptor: NetworkConnectionInterceptor,
         loggingInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient {
         val okHttpClient = OkHttpClient.Builder()
             .callTimeout(2, TimeUnit.MINUTES)
+            .readTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES)
             .hostnameVerifier { _, _ ->
                 return@hostnameVerifier true
             }
@@ -84,6 +97,7 @@ class HealthGateWayApiModule {
             okHttpClient
                 .addInterceptor(networkConnectionInterceptor)
                 .addInterceptor(hostSelectionInterceptor)
+                .addInterceptor(headerInterceptor)
                 .addInterceptor(retryInterceptor)
                 .addInterceptor(cookiesInterceptor)
                 .addInterceptor(receivedCookieInterceptor)
@@ -101,6 +115,8 @@ class HealthGateWayApiModule {
     ): OkHttpClient {
         val okHttpClient = OkHttpClient.Builder()
             .callTimeout(2, TimeUnit.MINUTES)
+            .readTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES)
             .hostnameVerifier { _, _ ->
                 return@hostnameVerifier true
             }
@@ -116,6 +132,7 @@ class HealthGateWayApiModule {
     @Provides
     fun providesJsonConverterFactory(): GsonConverterFactory = GsonConverterFactory.create(
         GsonBuilder()
+            .registerTypeAdapterFactory(getTypeAdapterFactoryForPatientData())
             .setLenient()
             .create()
     )
@@ -156,4 +173,10 @@ class HealthGateWayApiModule {
     @Provides
     fun providesHealthGateWayMobileConfigApi(@MobileConfigRetrofit retrofit: Retrofit): HealthGatewayMobileConfigApi =
         retrofit.create(HealthGatewayMobileConfigApi::class.java)
+
+    private fun getTypeAdapterFactoryForPatientData(): RuntimeTypeAdapterFactory<PatientData> {
+        return RuntimeTypeAdapterFactory.of(PatientData::class.java, "type", true)
+            .registerSubtype(OrganDonorData::class.java, PatientDataType.ORGAN_DONOR_REGISTRATION.value)
+            .registerSubtype(DiagnosticImagingData::class.java, PatientDataType.DIAGNOSTIC_IMAGING_EXAM.value)
+    }
 }

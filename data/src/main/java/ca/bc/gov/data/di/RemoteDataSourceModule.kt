@@ -6,8 +6,9 @@ import ca.bc.gov.data.datasource.remote.DependentsRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
-import ca.bc.gov.data.datasource.remote.OrganDonorRemoteDataSource
+import ca.bc.gov.data.datasource.remote.NotificationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.PatientRemoteDataSource
+import ca.bc.gov.data.datasource.remote.PatientServicesRemoteDataSource
 import ca.bc.gov.data.datasource.remote.TermsOfServiceRemoteDataSource
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPublicApi
@@ -62,6 +63,12 @@ class RemoteDataSourceModule {
         healthGatewayPrivateApi: HealthGatewayPrivateApi
     ) = DependentsRemoteDataSource(healthGatewayPrivateApi)
 
+    @Provides
+    @Singleton
+    fun provideNotificationRemoteDataSource(
+        healthGatewayPrivateApi: HealthGatewayPrivateApi
+    ) = NotificationRemoteDataSource(healthGatewayPrivateApi)
+
     @Singleton
     @Provides
     fun providesTermsOfServiceRemoteDataSource(
@@ -76,7 +83,7 @@ class RemoteDataSourceModule {
 
     @Provides
     @Singleton
-    fun provideOrganDonorRemoteDataSource(
+    fun providePatientServicesRemoteDataSource(
         healthGatewayPrivateApi: HealthGatewayPrivateApi
-    ): OrganDonorRemoteDataSource = OrganDonorRemoteDataSource(healthGatewayPrivateApi)
+    ): PatientServicesRemoteDataSource = PatientServicesRemoteDataSource(healthGatewayPrivateApi)
 }

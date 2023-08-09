@@ -21,6 +21,7 @@ import ca.bc.gov.data.datasource.remote.model.response.ImmunizationResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestPdfResponse
 import ca.bc.gov.data.datasource.remote.model.response.LabTestResponse
 import ca.bc.gov.data.datasource.remote.model.response.MedicationStatementResponse
+import ca.bc.gov.data.datasource.remote.model.response.NotificationResponse
 import ca.bc.gov.data.datasource.remote.model.response.PatientDataResponse
 import ca.bc.gov.data.datasource.remote.model.response.PatientFileResponse
 import ca.bc.gov.data.datasource.remote.model.response.PatientResponse
@@ -30,6 +31,7 @@ import ca.bc.gov.data.datasource.remote.model.response.UserProfileResponse
 import ca.bc.gov.data.datasource.remote.model.response.VaccineStatusResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.Header
@@ -45,6 +47,7 @@ interface HealthGatewayPrivateApi {
 
     companion object {
         private const val HDID = "hdid"
+        private const val NOTIFICATION_ID = "NOTIFICATION_ID"
         private const val DEPENDENT_HDID = "dependent_hdid"
         private const val AUTHORIZATION = "Authorization"
         private const val REPORT_ID = "reportId"
@@ -58,6 +61,7 @@ interface HealthGatewayPrivateApi {
         private const val BASE_USER_FEEDBACK_SERVICE = "api/gatewayapiservice/UserFeedback"
         private const val BASE_HEALTH_VISIT_SERVICE = "api/encounterservice"
         private const val BASE_CLINICAL_SERVICE = "api/clinicaldocumentservice"
+        private const val BASE_NOTIFICATION_SERVICE = "api/gatewayapiservice/Notification"
         private const val API_VERSION = "api-version"
         private const val V2 = "2"
     }
@@ -234,16 +238,30 @@ interface HealthGatewayPrivateApi {
     @GET("$BASE_PATIENT_SERVICE/PatientData/{$HDID}")
     suspend fun getPatientData(
         @Path(HDID) hdid: String,
-        @Header(AUTHORIZATION) accessToken: String,
         @Query("patientDataTypes") patientDataTypes: List<String>,
         @Query(API_VERSION) apiVersion: String = V2
     ): Response<PatientDataResponse>
 
     @GET("$BASE_PATIENT_SERVICE/PatientData/{$HDID}/file/{fileId}")
-    suspend fun getPatientFile(
+    suspend fun getPatientDataFile(
         @Path(HDID) hdid: String,
-        @Header(AUTHORIZATION) accessToken: String,
         @Path("fileId") fileId: String,
         @Query(API_VERSION) apiVersion: String = V2
     ): Response<PatientFileResponse>
+
+    @GET("$BASE_NOTIFICATION_SERVICE/{$HDID}")
+    suspend fun fetchNotifications(
+        @Path(HDID) hdid: String,
+    ): Response<List<NotificationResponse>>
+
+    @DELETE("$BASE_NOTIFICATION_SERVICE/{$HDID}")
+    suspend fun deleteNotifications(
+        @Path(HDID) hdid: String,
+    ): Response<Unit>
+
+    @DELETE("$BASE_NOTIFICATION_SERVICE/{$HDID}/{$NOTIFICATION_ID}")
+    suspend fun deleteNotification(
+        @Path(HDID) hdid: String,
+        @Path(NOTIFICATION_ID) notificationId: String,
+    ): Response<Unit>
 }

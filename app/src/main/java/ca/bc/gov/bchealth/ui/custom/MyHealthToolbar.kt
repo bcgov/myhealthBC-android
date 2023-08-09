@@ -48,19 +48,21 @@ fun MyHealthToolbar(
     },
     backgroundColor = white,
     contentColor = primaryBlue,
-    navigationIcon = {
-        navigationAction?.let {
-            IconButton(onClick = it) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_toolbar_back),
-                    contentDescription = stringResource(
-                        id = R.string.back
-                    )
-                )
-            }
-        }
-    },
+    navigationIcon = { MyHealthBackButton(navigationAction) },
 )
+
+@Composable
+fun MyHealthBackButton(navigationAction: (() -> Unit)? = null) {
+    navigationAction?.let {
+        IconButton(onClick = it) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_toolbar_back),
+                contentDescription = stringResource(id = R.string.back),
+                tint = primaryBlue
+            )
+        }
+    }
+}
 
 /**
  * This toolbar is currently used only in
@@ -87,7 +89,7 @@ fun MyHealthToolBar(
         Text(
             modifier = Modifier.fillMaxWidth(1F),
             text = title,
-            style = MaterialTheme.typography.h3,
+            style = MaterialTheme.typography.h3.copy(color = primaryBlue),
             textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

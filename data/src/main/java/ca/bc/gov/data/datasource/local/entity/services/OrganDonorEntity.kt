@@ -4,12 +4,13 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ca.bc.gov.common.model.services.OrganDonorStatusDto
+import ca.bc.gov.data.datasource.local.entity.PatientEntity
 
 @Entity(
     tableName = "organ_donation",
     foreignKeys = [
         androidx.room.ForeignKey(
-            entity = ca.bc.gov.data.datasource.local.entity.PatientEntity::class,
+            entity = PatientEntity::class,
             parentColumns = ["id"],
             childColumns = ["patient_id"],
             onDelete = androidx.room.ForeignKey.CASCADE,

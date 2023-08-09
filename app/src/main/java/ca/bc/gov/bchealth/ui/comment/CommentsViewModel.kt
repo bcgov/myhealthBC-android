@@ -4,10 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.model.mapper.toUiModel
+import ca.bc.gov.common.const.AUTH_ERROR_DO_LOGIN
+import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.SyncStatus
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.repository.CommentRepository
+import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +25,8 @@ import javax.inject.Inject
 */
 @HiltViewModel
 class CommentsViewModel @Inject constructor(
-    private val commentRepository: CommentRepository
+    private val commentRepository: CommentRepository,
+    private val bcscAuthRepo: BcscAuthRepo
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CommentsUiState())
@@ -60,12 +64,15 @@ class CommentsViewModel @Inject constructor(
 
                 val commentsSummary = getCommentsSummary(commentsDtoList, parentEntryId)
 
+                val isBcscSessionActive = bcscAuthRepo.checkSession()
+
                 _uiState.update { it ->
                     it.copy(
                         onLoading = false,
                         commentsList = commentsDtoList.map { it.toUiModel() },
                         commentsSummary = commentsSummary,
-                        onCommentsUpdated = true
+                        onCommentsUpdated = true,
+                        isBcscSessionActive = isBcscSessionActive
                     )
                 }
             } catch (e: Exception) {
@@ -91,13 +98,16 @@ class CommentsViewModel @Inject constructor(
                 parentEntryId
             )
 
+            val isBcscSessionActive = bcscAuthRepo.checkSession()
+
             _uiState.update { it ->
                 it.copy(
                     onLoading = false,
                     displayEditLayout = false,
                     commentsList = comments.map { it.toUiModel() },
                     commentsSummary = getCommentsSummary(comments, parentEntryId),
-                    onCommentsUpdated = true
+                    onCommentsUpdated = true,
+                    isBcscSessionActive = isBcscSessionActive
                 )
             }
         } catch (e: Exception) {
@@ -113,6 +123,8 @@ class CommentsViewModel @Inject constructor(
 
             val comments = commentRepository.enqueueDeleteComment(comment.id, parentEntryId)
 
+            val isBcscSessionActive = bcscAuthRepo.checkSession()
+
             _uiState.update {
                 it.copy(
                     onLoading = false,
@@ -121,7 +133,8 @@ class CommentsViewModel @Inject constructor(
                         comment.toUiModel()
                     },
                     commentsSummary = getCommentsSummary(comments, parentEntryId),
-                    onCommentsUpdated = true
+                    onCommentsUpdated = true,
+                    isBcscSessionActive = isBcscSessionActive
                 )
             }
         } catch (e: Exception) {
@@ -135,7 +148,7 @@ class CommentsViewModel @Inject constructor(
     ): CommentsSummary? {
         if (commentsDtoList.isEmpty()) return null
 
-        val lastComment = commentsDtoList.last()
+        val lastComment = commentsDtoList.first()
 
         return CommentsSummary(
             text = lastComment.text.orEmpty(),
@@ -164,8 +177,10 @@ class CommentsViewModel @Inject constructor(
 
     private fun handleException(e: Exception) {
         e.printStackTrace()
+        val isBcscSessionActive = (e is MyHealthException && e.errCode == AUTH_ERROR_DO_LOGIN).not()
         _uiState.update {
             it.copy(
+                isBcscSessionActive = isBcscSessionActive,
                 onError = true,
                 onLoading = false
             )
@@ -179,7 +194,8 @@ data class CommentsUiState(
     val commentsList: List<Comment>? = null,
     val commentsSummary: CommentsSummary? = null,
     val onCommentsUpdated: Boolean = false,
-    val displayEditLayout: Boolean = false
+    val displayEditLayout: Boolean = false,
+    val isBcscSessionActive: Boolean? = null,
 )
 
 data class Comment(

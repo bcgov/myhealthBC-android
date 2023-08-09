@@ -37,6 +37,27 @@ val greyBg = Color(0xFFF2F2F2)
 val green = Color(0xFF2E8540)
 val red = Color(0xFFD8292F)
 
+val Typography.largeButton: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontFamily = fonts,
+            fontStyle = FontStyle.Normal,
+            fontSize = 17.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+
+val Typography.smallButton: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontFamily = fonts,
+            fontStyle = FontStyle.Normal,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
 val MyHealthTypography = Typography(
     body1 = TextStyle(
         fontFamily = fonts,

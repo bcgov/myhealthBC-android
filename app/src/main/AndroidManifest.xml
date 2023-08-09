@@ -69,7 +69,7 @@
         </provider>
 
         <activity
-            android:name="ca.bc.gov.repository.library.java.net.openid.appauth.RedirectUriReceiverActivity"
+            android:name="net.openid.appauth.RedirectUriReceiverActivity"
             tools:node="replace"
             android:exported="true">
             <intent-filter>
@@ -88,7 +88,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="ca.bc.gov.repository.library.java.net.openid.appauth.AuthorizationManagementActivity"
+        <activity android:name="net.openid.appauth.AuthorizationManagementActivity"
             android:exported="false"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboard|keyboardHidden"
             android:theme="@style/Theme.HealthGateway.Transparent"

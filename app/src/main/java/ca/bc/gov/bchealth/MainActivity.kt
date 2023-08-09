@@ -18,6 +18,7 @@ import androidx.work.WorkManager
 import ca.bc.gov.bchealth.databinding.ActivityMainBinding
 import ca.bc.gov.bchealth.ui.inappupdate.InAppUpdateActivity
 import ca.bc.gov.bchealth.utils.InAppUpdateHelper
+import ca.bc.gov.bchealth.utils.showErrorSnackbar
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
@@ -95,6 +96,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.bcServicesCardLoginFragment -> {
                     showBottomNav()
                 }
+
                 else -> hideBottomNav()
             }
         }
@@ -136,6 +138,13 @@ class MainActivity : AppCompatActivity() {
                 when (workInfo.state) {
                     WorkInfo.State.RUNNING -> {
                         isWorkerStarted = true
+                        val started = workInfo.progress.getBoolean(
+                            FetchAuthenticatedHealthRecordsWorker.RECORD_FETCH_STARTED,
+                            false
+                        )
+                        if (started) {
+                            binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_while_fetching_data))
+                        }
                     }
 
                     WorkInfo.State.FAILED -> {
@@ -145,6 +154,7 @@ class MainActivity : AppCompatActivity() {
                     WorkInfo.State.SUCCEEDED -> {
                         if (isWorkerStarted) {
                             inAppUpdate.checkForUpdate(AppUpdateType.FLEXIBLE)
+                            binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_on_success))
                         }
                     }
 
@@ -157,7 +167,7 @@ class MainActivity : AppCompatActivity() {
     private fun handleError(workData: Data) {
         if (isWorkerStarted) {
             val appUpdateRequired = workData.getBoolean(
-                FetchAuthenticatedHealthRecordsWorker.APP_UPDATE_REQUIRED,
+                FetchAuthenticatedHealthRecordsWorker.FailureReason.APP_UPDATE_REQUIRED.value,
                 false
             )
             if (appUpdateRequired) {
@@ -166,10 +176,21 @@ class MainActivity : AppCompatActivity() {
             }
 
             val isHgServicesUp =
-                workData.getBoolean(FetchAuthenticatedHealthRecordsWorker.IS_HG_SERVICES_UP, true)
+                workData.getBoolean(
+                    FetchAuthenticatedHealthRecordsWorker.FailureReason.IS_HG_SERVICES_UP.value,
+                    true
+                )
             if (!isHgServicesUp) {
                 binding.navHostFragment.showServiceDownMessage(this)
                 return
+            }
+            val isRecordFetchFailed =
+                workData.getBoolean(
+                    FetchAuthenticatedHealthRecordsWorker.FailureReason.IS_RECORD_FETCH_FAILED.value,
+                    false
+                )
+            if (isRecordFetchFailed) {
+                binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_on_failed))
             }
         }
     }

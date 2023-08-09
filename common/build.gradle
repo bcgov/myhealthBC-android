@@ -28,16 +28,19 @@ android {
 
         mock {
             dimension "version"
-            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
-            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "true"
-            buildConfigField "boolean", "FLAG_IMMZ_BANNER", "true"
-            buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "true"
-            buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "true"
+            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
+            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "false"
+            buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
+            buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "false"
+            buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
             buildConfigField "boolean", "FLAG_MANUAL_REFRESH", "true"
             buildConfigField "boolean", "FLAG_SERVICE_TAB", "true"
             buildConfigField "boolean", "FLAG_SEARCH_RECORDS", "true"
-            buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "true"
+            buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "false"
+            buildConfigField "boolean", "FLAG_GUARDIAN_AUDIT", "false"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
+            resValue "string", "base_url", "https://mock.healthgateway.gov.bc.ca/"
+            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "false"
         }
 
         dev {
@@ -51,7 +54,10 @@ android {
             buildConfigField "boolean", "FLAG_SERVICE_TAB", "true"
             buildConfigField "boolean", "FLAG_SEARCH_RECORDS", "true"
             buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "false"
+            buildConfigField "boolean", "FLAG_GUARDIAN_AUDIT", "false"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
+            resValue "string", "base_url", "https://dev.healthgateway.gov.bc.ca/"
+            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "false"
         }
 
         stage {
@@ -65,7 +71,10 @@ android {
             buildConfigField "boolean", "FLAG_SERVICE_TAB", "true"
             buildConfigField "boolean", "FLAG_SEARCH_RECORDS", "true"
             buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "false"
+            buildConfigField "boolean", "FLAG_GUARDIAN_AUDIT", "false"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
+            resValue "string", "base_url", "https://test.healthgateway.gov.bc.ca/"
+            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "false"
         }
 
         prod {
@@ -79,7 +88,10 @@ android {
             buildConfigField "boolean", "FLAG_SERVICE_TAB", "true"
             buildConfigField "boolean", "FLAG_SEARCH_RECORDS", "true"
             buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "false"
+            buildConfigField "boolean", "FLAG_GUARDIAN_AUDIT", "false"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
+            resValue "string", "base_url", "https://healthgateway.gov.bc.ca/"
+            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "false"
         }
     }
 
@@ -95,7 +107,6 @@ android {
 dependencies {
 
     implementation "androidx.core:core-ktx:$versions.core_ktx"
-    implementation "androidx.appcompat:appcompat:$versions.appcompat"
 
     testImplementation "junit:junit:$versions.junit"
     androidTestImplementation "androidx.test.ext:junit:$versions.ext_junit"

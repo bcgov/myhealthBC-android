@@ -1,9 +1,9 @@
 package ca.bc.gov.repository.worker
 
 import ca.bc.gov.common.exceptions.ServiceDownException
-import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
 import ca.bc.gov.data.datasource.remote.MobileConfigRemoteDataSource
 import ca.bc.gov.data.datasource.remote.model.response.MobileConfigurationResponse
+import ca.bc.gov.preference.EncryptedPreferenceStorage
 import javax.inject.Inject
 
 /**

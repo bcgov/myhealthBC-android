@@ -2,7 +2,7 @@ package ca.bc.gov.repository
 
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.data.datasource.local.LocalDataSource
-import ca.bc.gov.data.datasource.local.preference.EncryptedPreferenceStorage
+import ca.bc.gov.preference.EncryptedPreferenceStorage
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

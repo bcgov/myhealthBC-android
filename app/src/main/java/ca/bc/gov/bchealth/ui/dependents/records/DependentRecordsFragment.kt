@@ -136,6 +136,8 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
                             it.recordId,
                             args.hdid
                         )
+
+                HealthRecordType.DIAGNOSTIC_IMAGING -> null
             }
 
             navDirection?.let { findNavController().navigate(navDirection) }

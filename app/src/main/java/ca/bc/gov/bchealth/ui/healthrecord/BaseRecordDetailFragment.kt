@@ -79,20 +79,24 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
 
         launchOnStart {
             commentsViewModel.uiState.collect { state ->
-                val list = if (state.commentsSummary != null) {
-                    listOf(state.commentsSummary)
+                if (state.isBcscSessionActive == false) {
+                    findNavController().navigate(R.id.individualHealthRecordFragment)
                 } else {
-                    listOf()
-                }
-
-                recordCommentsAdapter.submitList(list) {
-                    if (state.onCommentsUpdated) {
-                        scrollToBottom()
+                    val list = if (state.commentsSummary != null) {
+                        listOf(state.commentsSummary)
+                    } else {
+                        listOf()
                     }
-                }
-                getCommentView().clearComment()
 
-                handleError(state.onError)
+                    recordCommentsAdapter.submitList(list) {
+                        if (state.onCommentsUpdated) {
+                            scrollToBottom()
+                        }
+                    }
+                    getCommentView().clearComment()
+
+                    handleError(state.onError)
+                }
             }
         }
     }

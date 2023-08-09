@@ -51,6 +51,7 @@ class DependentProfileViewModel @Inject constructor(
                     it.copy(
                         dependentInfo = data,
                         dto = dependentDto,
+                        totalDelegateCount = dependentDto.totalDelegateCount,
                         isLoading = false
                     )
                 }
@@ -81,7 +82,8 @@ class DependentProfileViewModel @Inject constructor(
         val dto: DependentDto? = null,
         val isLoading: Boolean = false,
         val error: Exception? = null,
-        val onDependentRemoved: Boolean = false
+        val onDependentRemoved: Boolean = false,
+        val totalDelegateCount: Long = 0
     )
 
     data class DependentProfileItem(
