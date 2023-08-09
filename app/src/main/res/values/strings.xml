@@ -48,6 +48,8 @@
     <string name="recommendations_home_title">Recommended immunizations</string>
     <string name="recommendations_description">For more information on vaccines recommendation and eligibility, please visit immunizeBC or speak to your health care provider.</string>
     <string name="recommendations_description_clickable">immunizeBC</string>
+    <string name="recommendations_para1">Recommended immunization are suggestion for your health journey. This page will containt all of future immunization for you and your dependents. To add dependents to application, click on Dependent in the menu bar at the bottom.</string>
+    <string name="recommendations_para2">For more information on vaccines recommendation and eligibility, please visit immunizeBC or speak to your health care provider. </string>
 
     <!--Dependents-->
     <string name="dependent">Dependent</string>
