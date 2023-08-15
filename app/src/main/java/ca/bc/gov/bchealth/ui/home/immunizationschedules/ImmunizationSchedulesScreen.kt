@@ -26,7 +26,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.bold
-import ca.bc.gov.bchealth.compose.theme.bannerInfoBg
+import ca.bc.gov.bchealth.compose.theme.bannerBackgroundBlue
 import ca.bc.gov.bchealth.compose.theme.white
 import ca.bc.gov.bchealth.ui.custom.DecorativeImage
 import ca.bc.gov.bchealth.ui.home.immunizationschedules.ImmunizationSchedulesViewModel.ImmunizationSchedulesItem
@@ -92,7 +92,7 @@ private fun ImmunizationScheduleUI(item: ImmunizationSchedulesItem, onClickItem:
                     .padding(top = 16.dp, bottom = 10.dp)
                     .size(48.dp)
                     .clip(RoundedCornerShape(4.dp))
-                    .background(bannerInfoBg),
+                    .background(bannerBackgroundBlue),
                 contentAlignment = Alignment.Center
             ) {
 
