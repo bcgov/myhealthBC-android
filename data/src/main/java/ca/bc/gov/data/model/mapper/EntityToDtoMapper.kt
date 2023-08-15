@@ -30,8 +30,10 @@ import ca.bc.gov.common.model.patient.PatientNameDto
 import ca.bc.gov.common.model.patient.PatientWithClinicalDocumentsDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithDataDto
+import ca.bc.gov.common.model.patient.PatientWithDependentAndListOrderDto
 import ca.bc.gov.common.model.patient.PatientWithHealthVisitsDto
 import ca.bc.gov.common.model.patient.PatientWithHospitalVisitsDto
+import ca.bc.gov.common.model.patient.PatientWithImmunizationRecommendationsDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.patient.PatientWithSpecialAuthorityDto
@@ -83,8 +85,10 @@ import ca.bc.gov.data.datasource.local.entity.relations.MedicationWithSummaryAnd
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithClinicalDocuments
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithCovidOrderAndCovidTest
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithData
+import ca.bc.gov.data.datasource.local.entity.relations.PatientWithDependentAndListOder
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithHealthVisits
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithHospitalVisits
+import ca.bc.gov.data.datasource.local.entity.relations.PatientWithImmunizationRecommendations
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithImmunizationRecordAndForecast
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithLabOrdersAndLabTests
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithMedicationRecords
@@ -500,4 +504,14 @@ fun QuickAccessTileEntity.toDto() = QuickAccessTileDto(
 fun AppFeatureWithQuickAccessTiles.toDto() = AppFeatureWithQuickAccessTilesDto(
     appFeature.toDto(),
     quickAccessTiles.map { it.toDto() }
+)
+
+fun PatientWithImmunizationRecommendations.toDto() = PatientWithImmunizationRecommendationsDto(
+    patient = patient.toDto(),
+    recommendations = recommendations.map { it.toDto() }
+)
+
+fun PatientWithDependentAndListOder.toDto() = PatientWithDependentAndListOrderDto(
+    patient = patient.toDto(),
+    dependents = dependentAndListOrder.map { it.toDto() }
 )
