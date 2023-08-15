@@ -31,10 +31,6 @@ class DiagnosticImagingDetailViewModel @Inject constructor(
             val data = diagnosticImagingRepository.getDiagnosticImagingDataDetails(id)
 
             val details = listOf<HealthRecordDetailItem>(
-                HealthRecordDetailItem(
-                    title = R.string.body_part,
-                    description = data.bodyPart ?: "--"
-                ),
 
                 HealthRecordDetailItem(
                     title = R.string.description,
@@ -45,11 +41,6 @@ class DiagnosticImagingDetailViewModel @Inject constructor(
                     title = R.string.health_authority,
                     description = data.healthAuthority ?: "--"
                 ),
-
-                HealthRecordDetailItem(
-                    title = R.string.facility,
-                    description = data.organization ?: "--"
-                )
             )
 
             _uiState.update {
