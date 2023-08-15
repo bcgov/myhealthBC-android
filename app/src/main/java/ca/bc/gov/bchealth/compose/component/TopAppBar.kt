@@ -1,7 +1,6 @@
 package ca.bc.gov.bchealth.compose.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -12,11 +11,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.component.menu.ActionMenu
@@ -80,11 +79,11 @@ fun HGCenterAlignedTopAppBar(
         title = {
             Text(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentWidth(align = Alignment.CenterHorizontally),
+                    .fillMaxWidth(),
                 text = title,
                 style = MaterialTheme.typography.subtitle2,
                 fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
         },
         actions = {

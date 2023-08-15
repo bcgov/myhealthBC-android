@@ -16,16 +16,13 @@ import ca.bc.gov.common.model.settings.AppFeatureDto
 import ca.bc.gov.common.model.settings.QuickAccessTileDto
 import ca.bc.gov.repository.BannerRepository
 import ca.bc.gov.repository.OnBoardingRepository
-import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.settings.AppFeatureWithQuickAccessTilesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,7 +31,6 @@ class HomeViewModel @Inject constructor(
     private val onBoardingRepository: OnBoardingRepository,
     private val bannerRepository: BannerRepository,
     private val workerInvoker: WorkerInvoker,
-    private val recommendationRepository: ImmunizationRecommendationRepository,
 ) : ViewModel() {
     private val _uiState =
         MutableStateFlow(HomeComposeUiState(isQuickAccessTileTutorialRequired = appFeatureWithQuickAccessTilesRepository.isQuickAccessTileTutorialRequired))
@@ -65,24 +61,14 @@ class HomeViewModel @Inject constructor(
             quickAccessTileItems.removeIf { tile ->
                 (tile.name == AppFeatureName.IMMUNIZATION_SCHEDULES.value)
             }
-            runBlocking(Dispatchers.IO) {
-                val hasRecommendations = recommendationRepository.hasRecommendations()
-
-                if (!hasRecommendations) {
-                    quickAccessTileItems.removeIf {
-                        (it.name == AppFeatureName.RECOMMENDED_IMMUNIZATIONS.value)
+            quickAccessTileItems.find { it.name == AppFeatureName.RECOMMENDED_IMMUNIZATIONS.value }
+                ?.let {
+                    val index = quickAccessTileItems.indexOf(it)
+                    if (index != 1) {
+                        quickAccessTileItems.removeAt(index)
+                        quickAccessTileItems.add(1, it)
                     }
-                } else {
-                    quickAccessTileItems.find { it.name == AppFeatureName.RECOMMENDED_IMMUNIZATIONS.value }
-                        ?.let {
-                            val index = quickAccessTileItems.indexOf(it)
-                            if (index != 1) {
-                                quickAccessTileItems.removeAt(index)
-                                quickAccessTileItems.add(1, it)
-                            }
-                        }
                 }
-            }
         }
 
         quickAccessTileItems.removeIf {
