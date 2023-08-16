@@ -584,7 +584,6 @@
     <!--Diagnostic Imaging-->
     <string name="diagnostic_imaging_detail_subtitle">If you have questions, contact the doctor or care provider who ordered your imaging.</string>
     <string name="body_part">Body Part:</string>
-    <string name="description">Description:</string>
     <string name="health_authority">Health Authority:</string>
     <string name="facility">Facility:</string>
 

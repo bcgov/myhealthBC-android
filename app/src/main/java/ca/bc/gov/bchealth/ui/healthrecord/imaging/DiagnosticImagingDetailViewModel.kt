@@ -33,11 +33,6 @@ class DiagnosticImagingDetailViewModel @Inject constructor(
             val details = listOf<HealthRecordDetailItem>(
 
                 HealthRecordDetailItem(
-                    title = R.string.description,
-                    description = data.procedureDescription ?: "--"
-                ),
-
-                HealthRecordDetailItem(
                     title = R.string.health_authority,
                     description = data.healthAuthority ?: "--"
                 ),
