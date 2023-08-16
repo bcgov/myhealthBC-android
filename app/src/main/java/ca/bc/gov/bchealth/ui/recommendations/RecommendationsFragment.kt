@@ -10,9 +10,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.compose.component.HGCenterAlignedTopAppBar
 import ca.bc.gov.bchealth.compose.theme.HealthGatewayTheme
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.custom.MyHealthToolbar
 import ca.bc.gov.bchealth.utils.redirect
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,8 +25,8 @@ class RecommendationsFragment : BaseFragment(null) {
         HealthGatewayTheme {
             Scaffold(
                 topBar = {
-                    HGCenterAlignedTopAppBar(
-                        onNavigationAction = { findNavController().popBackStack() },
+                    MyHealthToolbar(
+                        navigationAction = { findNavController().popBackStack() },
                         title = stringResource(id = R.string.recommendations_home_title)
                     )
                 },
