@@ -34,7 +34,8 @@ class RecommendationsViewModel @Inject constructor(
         try {
             val patient =
                 patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
-            val patientData = patientRepository.getPatientWithImmunizationRecommendations(patient.id)
+            val patientData =
+                patientRepository.getPatientWithImmunizationRecommendations(patient.id)
 
             val records = mutableListOf<PatientWithRecommendations>()
             records.add(
@@ -54,7 +55,10 @@ class RecommendationsViewModel @Inject constructor(
                 records.add(
                     PatientWithRecommendations(
                         it.patientId, it.firstname,
-                        dependentData.recommendations.map { recommendation -> recommendation.toUiModel() },
+                        dependentData.recommendations.map { recommendation -> recommendation.toUiModel() }
+                            .sortedByDescending { item ->
+                                item.date
+                            },
                         isDependent = true
                     )
                 )

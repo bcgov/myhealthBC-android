@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.recommendations
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -94,7 +95,11 @@ fun RecommendationItem(
                 )
 
                 Text(
-                    modifier = Modifier.layoutId(ITEM_PATIENT_NAME_ID),
+                    modifier = Modifier.layoutId(ITEM_PATIENT_NAME_ID).clickable {
+                        if (hasRecommendations) {
+                            onArrowClick()
+                        }
+                    },
                     text = patientWithRecommendations.name ?: "",
                     style = MaterialTheme.typography.body1,
                     fontWeight = FontWeight.Bold,
@@ -110,7 +115,11 @@ fun RecommendationItem(
                     text = "${patientWithRecommendations.recommendations.size}",
                     style = MaterialTheme.typography.body1,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colors.primary
+                    color = if (!hasRecommendations) {
+                        descriptionGrey
+                    } else {
+                        MaterialTheme.colors.primary
+                    }
                 )
 
                 val toggleIcon = if (expanded) {
