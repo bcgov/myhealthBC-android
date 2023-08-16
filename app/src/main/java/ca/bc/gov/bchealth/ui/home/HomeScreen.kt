@@ -20,7 +20,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
@@ -64,10 +64,11 @@ fun HomeScreen(
     onOnBoardingRequired: (isReOnBoarding: Boolean) -> Unit,
     onBiometricAuthenticationRequired: () -> Unit,
     onQuickAccessTileClicked: (QuickAccessTileItem) -> Unit,
+    onMoreActionClick: (id: Long, name: String) -> Unit
 ) {
-    val uiState = viewModel.uiState.collectAsState().value
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
 
-    val authState = authViewModel.authStatus.collectAsState().value
+    val authState = authViewModel.authStatus.collectAsStateWithLifecycle().value
 
     LaunchedEffect(key1 = Unit) {
         viewModel.launchCheck()
@@ -107,45 +108,44 @@ fun HomeScreen(
         }
     }
 
-    if (authState.showLoading) {
-        HGProgressIndicator(modifier)
-    } else {
-        authState.loginStatus?.let {
-
-            val context = LocalContext.current
-            val workRequest = WorkManager.getInstance(context)
-                .getWorkInfosForUniqueWorkLiveData(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME)
-                .observeAsState()
-            if (workRequest.value?.firstOrNull()?.state == WorkInfo.State.RUNNING) {
-            } else {
-                LaunchedEffect(key1 = Unit) {
-                    viewModel.loadQuickAccessTiles(it)
-                }
-            }
-
-            if (sharedViewModel.shouldFetchBanner) {
-                LaunchedEffect(key1 = Unit) {
-                    viewModel.fetchBanner()
-                }
-            }
-
-            HomeScreenContent(
-                modifier,
-                onLoginClick,
-                onQuickAccessTileClicked,
-                onManageClick,
-                onDismissClick = {
-                    sharedViewModel.shouldFetchBanner = false
-                    viewModel.dismissBanner()
-                },
-                onDismissTutorialClicked = { viewModel.tutorialDismissed() },
-                it,
-                viewModel.getLoginInfoCardData(it),
-                uiState.bannerItem,
-                uiState.quickAccessTileItems,
-                uiState.isQuickAccessTileTutorialRequired
-            )
+    authState.loginStatus?.let {
+        LaunchedEffect(key1 = it) {
+            viewModel.loadQuickAccessTiles(it)
         }
+        val context = LocalContext.current
+        val workRequest = WorkManager.getInstance(context)
+            .getWorkInfosForUniqueWorkLiveData(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME)
+            .observeAsState()
+        if (workRequest.value?.firstOrNull()?.state == WorkInfo.State.RUNNING) {
+        } else {
+            LaunchedEffect(key1 = Unit) {
+                viewModel.loadQuickAccessTiles(it)
+            }
+        }
+
+        if (sharedViewModel.shouldFetchBanner) {
+            LaunchedEffect(key1 = Unit) {
+                viewModel.fetchBanner()
+            }
+        }
+
+        HomeScreenContent(
+            modifier,
+            onLoginClick,
+            onQuickAccessTileClicked,
+            onManageClick,
+            onDismissClick = {
+                sharedViewModel.shouldFetchBanner = false
+                viewModel.dismissBanner()
+            },
+            onDismissTutorialClicked = { viewModel.tutorialDismissed() },
+            onMoreActionClick = onMoreActionClick,
+            it,
+            viewModel.getLoginInfoCardData(it),
+            uiState.bannerItem,
+            uiState.quickAccessTileItems,
+            uiState.isQuickAccessTileTutorialRequired
+        )
     }
 }
 
@@ -157,6 +157,7 @@ private fun HomeScreenContent(
     onManageClick: () -> Unit,
     onDismissClick: () -> Unit,
     onDismissTutorialClicked: () -> Unit,
+    onMoreActionClick: (id: Long, name: String) -> Unit,
     loginStatus: LoginStatus,
     loginInfoCardData: LoginInfoCardData?,
     bannerItem: HomeBannerItem?,
@@ -209,7 +210,13 @@ private fun HomeScreenContent(
             QuickAccessTileItemUI(
                 onClick = { onQuickAccessTileClicked(it) },
                 icon = painterResource(id = it.icon),
-                title = it.name
+                title = it.name,
+                hasMoreOptions = it is QuickAccessTileItem.QuickLinkTileItem,
+                onMoreActionClick = {
+                    if (it is QuickAccessTileItem.QuickLinkTileItem) {
+                        onMoreActionClick(it.id, it.name)
+                    }
+                }
             )
         }
     }
@@ -324,7 +331,8 @@ private fun HomeScreenNonAuthenticatedPreview() {
             loginInfoCardData = null,
             bannerItem = null,
             quickAccessTileItems = emptyList(),
-            isQuickAccessTileTutorialRequired = false
+            isQuickAccessTileTutorialRequired = false,
+            onMoreActionClick = { id, name -> }
         )
     }
 }
@@ -343,7 +351,8 @@ private fun HomeScreenAuthenticatedPreview() {
             loginInfoCardData = null,
             bannerItem = null,
             quickAccessTileItems = emptyList(),
-            isQuickAccessTileTutorialRequired = false
+            isQuickAccessTileTutorialRequired = false,
+            onMoreActionClick = { id, name -> }
         )
     }
 }

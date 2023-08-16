@@ -116,6 +116,14 @@ class PatientRepository @Inject constructor(
         patientLocalDataSource.getPatientWithData(patientId)
             ?: throw getNoRecordFoundException(patientId)
 
+    suspend fun getPatientWithImmunizationRecommendations(patientId: Long) =
+        patientLocalDataSource.getPatientWithImmunizationRecommendations(patientId)
+            ?: throw getNoRecordFoundException(patientId)
+
+    suspend fun getPatientWithDependents(patientId: Long) =
+        patientLocalDataSource.getPatientWithDependents(patientId)
+            ?: throw getNoRecordFoundException(patientId)
+
     private fun getNoRecordFoundException(patientId: Long) = MyHealthException(
         DATABASE_ERROR, "No record found for patient id=  $patientId"
     )

@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.ui.BaseFragment
@@ -25,7 +26,7 @@ class ImmunizationSchedulesFragment : BaseFragment(null) {
                 topBar = {
                     MyHealthToolbar(
                         title = stringResource(id = R.string.immnz_schedules_title),
-                        navigationAction = ::popNavigation
+                        navigationAction = { findNavController().popBackStack() }
                     )
                 },
                 content = {

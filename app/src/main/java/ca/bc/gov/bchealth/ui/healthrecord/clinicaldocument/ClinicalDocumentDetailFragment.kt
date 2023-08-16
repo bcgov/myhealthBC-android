@@ -29,7 +29,7 @@ class ClinicalDocumentDetailFragment : BaseFragment(null) {
 
     @Composable
     override fun GetComposableLayout() {
-        ClinicalDocumentDetailUI(viewModel, ::popNavigation)
+        ClinicalDocumentDetailUI(viewModel, { findNavController().popBackStack() })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

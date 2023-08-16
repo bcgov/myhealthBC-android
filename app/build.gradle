@@ -69,11 +69,11 @@ android {
 
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 
     buildFeatures {
@@ -96,6 +96,7 @@ android {
     task getApkVersion {
         println defaultConfig.versionName + "-" + defaultConfig.versionCode
     }
+    namespace 'ca.bc.gov.bchealth'
 }
 
 dependencies {
@@ -125,6 +126,7 @@ dependencies {
 
     //JetPack LiveData ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$versions.lifecycle"
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:$versions.lifecycle"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle"

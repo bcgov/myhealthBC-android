@@ -10,36 +10,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.compose.component.HGTopAppBar
-import ca.bc.gov.bchealth.compose.component.menu.TopAppBarActionItem
+import ca.bc.gov.bchealth.compose.component.HGCenterAlignedTopAppBar
 import ca.bc.gov.bchealth.compose.theme.HealthGatewayTheme
-import ca.bc.gov.bchealth.databinding.FragmentRecommendationsBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
-import ca.bc.gov.bchealth.utils.viewBindings
+import ca.bc.gov.bchealth.utils.redirect
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class RecommendationsFragment : BaseFragment(null) {
-    private val binding by viewBindings(FragmentRecommendationsBinding::bind)
-
     private val viewModel: RecommendationsViewModel by viewModels()
 
     @Composable
     override fun GetComposableLayout() {
-        val menuItems = mutableListOf<TopAppBarActionItem>(
-            TopAppBarActionItem.IconActionItem.AlwaysShown(
-                title = getString(R.string.settings),
-                onClick = { findNavController().navigate(R.id.settingsFragment) },
-                icon = R.drawable.ic_menu_settings,
-                contentDescription = getString(R.string.settings),
-            )
-        )
         HealthGatewayTheme {
             Scaffold(
                 topBar = {
-                    HGTopAppBar(
-                        title = stringResource(id = R.string.recommendations_home_title),
-                        actionItems = menuItems
+                    HGCenterAlignedTopAppBar(
+                        onNavigationAction = { findNavController().popBackStack() },
+                        title = stringResource(id = R.string.recommendations_home_title)
                     )
                 },
                 content = {
@@ -48,9 +36,15 @@ class RecommendationsFragment : BaseFragment(null) {
                             .statusBarsPadding()
                             .navigationBarsPadding()
                             .padding(it),
+                        viewModel = viewModel,
+                        onLinkClicked = ::onLinkClicked
                     )
                 }
             )
         }
+    }
+
+    private fun onLinkClicked() {
+        requireContext().redirect("https://immunizebc.ca/")
     }
 }

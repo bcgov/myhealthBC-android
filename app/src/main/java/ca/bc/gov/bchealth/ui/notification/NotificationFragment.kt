@@ -105,7 +105,7 @@ class NotificationFragment : BaseFragment(null) {
     private fun NotificationToolbar(uiState: NotificationViewModel.NotificationsUIState) {
         MyHealthToolBar(
             title = if (uiState.sessionExpired) "" else stringResource(id = R.string.notifications),
-            navigationIcon = { MyHealthBackButton(::popNavigation) },
+            navigationIcon = { MyHealthBackButton({ findNavController().popBackStack() }) },
             actions = {
                 IconButton(onClick = {
                     if (isDeleteIconEnabled(uiState)) {
