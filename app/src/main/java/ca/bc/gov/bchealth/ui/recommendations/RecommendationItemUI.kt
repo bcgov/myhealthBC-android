@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -103,6 +104,8 @@ fun RecommendationItem(
                     text = patientWithRecommendations.name ?: "",
                     style = MaterialTheme.typography.body1,
                     fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     color = if (!hasRecommendations) {
                         descriptionGrey
                     } else {
@@ -149,7 +152,7 @@ fun RecommendationItem(
                 ) {
 
                     LazyColumn(
-                        modifier = Modifier.heightIn(max = (patientWithRecommendations.recommendations.size * 112).dp),
+                        modifier = Modifier.heightIn(max = (patientWithRecommendations.recommendations.size * 136).dp),
                         userScrollEnabled = false
                     ) {
                         item {

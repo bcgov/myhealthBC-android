@@ -55,10 +55,7 @@ class RecommendationsViewModel @Inject constructor(
                 records.add(
                     PatientWithRecommendations(
                         it.patientId, it.firstname,
-                        dependentData.recommendations.map { recommendation -> recommendation.toUiModel() }
-                            .sortedByDescending { item ->
-                                item.date
-                            },
+                        dependentData.recommendations.map { recommendation -> recommendation.toUiModel() },
                         isDependent = true
                     )
                 )
