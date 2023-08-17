@@ -506,7 +506,7 @@ fun AppFeatureWithQuickAccessTiles.toDto() = AppFeatureWithQuickAccessTilesDto(
 
 fun PatientWithImmunizationRecommendations.toDto() = PatientWithImmunizationRecommendationsDto(
     patient = patient.toDto(),
-    recommendations = recommendations.map { it.toDto() }
+    recommendations = recommendations.map { it.toDto() }.sortedByDescending { record -> record.agentDueDate }
 )
 
 fun PatientWithDependentAndListOder.toDto() = PatientWithDependentAndListOrderDto(

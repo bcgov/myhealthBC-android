@@ -2,20 +2,17 @@ package ca.bc.gov.bchealth.ui.recommendations
 
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
-import ca.bc.gov.bchealth.R
+import androidx.constraintlayout.compose.Dimension
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.theme.HealthGatewayTheme
 import ca.bc.gov.bchealth.compose.theme.descriptionGrey
@@ -39,22 +36,15 @@ fun RecommendationDetailItem(
         ) {
             Text(
                 modifier = Modifier
-                    .layoutId(ITEM_VACCINE_NAME_ID)
-                    .widthIn(min = 100.dp, max = 250.dp),
+                    .layoutId(ITEM_VACCINE_NAME_ID),
                 text = recommendationDetailItem.title,
                 style = MaterialTheme.typography.body1,
                 fontWeight = FontWeight.Bold,
                 maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
                 color = statusBlue
             )
-            Icon(
-                modifier = Modifier
-                    .size(16.dp)
-                    .layoutId(ITEM_ICON_ID),
-                painter = painterResource(id = R.drawable.ic_recommendation),
-                tint = MaterialTheme.colors.primary,
-                contentDescription = null
-            )
+
             Text(
                 modifier = Modifier.layoutId(ITEM_STATUS_ID),
                 text = recommendationDetailItem.status?.text ?: "",
@@ -79,13 +69,9 @@ private fun recommendationDetailItemConstraint() = ConstraintSet {
 
     constrain(itemVaccineNameId) {
         start.linkTo(parent.start, 16.dp)
+        end.linkTo(parent.end, 16.dp)
         top.linkTo(parent.top, 16.dp)
-    }
-
-    constrain(itemIconId) {
-        start.linkTo(itemVaccineNameId.end, 16.dp)
-        top.linkTo(itemVaccineNameId.top)
-        bottom.linkTo(itemVaccineNameId.bottom)
+        width = Dimension.fillToConstraints
     }
 
     constrain(itemStatusId) {
