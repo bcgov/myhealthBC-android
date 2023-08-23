@@ -52,7 +52,7 @@ class HomeViewModel @Inject constructor(
         quickAccessTileItems.addAll(appFeatures)
 
         if (loginStatus == LoginStatus.ACTIVE) {
-            data.filter { it.appFeatureDto.showAsQuickAccess }.forEach {
+            data.filter { it.appFeatureDto.hasManageableQuickAccessLinks }.forEach {
                 val quickLink = it.quickAccessTiles.filter { tile -> tile.showAsQuickAccess }
                     .map { tile -> QuickAccessTileItem.QuickLinkTileItem.from(tile) }
                 quickAccessTileItems.addAll(quickLink)
@@ -295,19 +295,19 @@ sealed class QuickAccessTileItem(
                     }
 
                     QuickAccessLinkName.MEDICATIONS -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                        Pair(R.drawable.ic_health_record_medication, R.id.health_records)
                     }
 
                     QuickAccessLinkName.LAB_RESULTS -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                        Pair(R.drawable.ic_lab_test, R.id.health_records)
                     }
 
                     QuickAccessLinkName.COVID_19_TESTS -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                        Pair(R.drawable.ic_health_record_covid_test, R.id.health_records)
                     }
 
                     QuickAccessLinkName.HEALTH_VISITS -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                        Pair(R.drawable.ic_health_record_health_visit, R.id.health_records)
                     }
 
                     QuickAccessLinkName.MY_NOTES -> {
@@ -315,19 +315,23 @@ sealed class QuickAccessTileItem(
                     }
 
                     QuickAccessLinkName.SPECIAL_AUTHORITY -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                        Pair(R.drawable.ic_health_record_special_authority, R.id.health_records)
                     }
 
                     QuickAccessLinkName.CLINICAL_DOCUMENTS -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                        Pair(R.drawable.ic_health_record_clinical_document, R.id.health_records)
                     }
 
                     QuickAccessLinkName.HOSPITAL_VISITS -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                        Pair(R.drawable.ic_health_record_hospital_visit, R.id.health_records)
                     }
 
                     QuickAccessLinkName.IMAGING_REPORTS -> {
-                        Pair(R.drawable.ic_health_record_vaccine, R.id.health_records)
+                        Pair(R.drawable.ic_health_record_diagnostic_imaging, R.id.health_records)
+                    }
+
+                    QuickAccessLinkName.ORGAN_DONOR -> {
+                        Pair(R.drawable.ic_organ_donor, R.id.services)
                     }
                 }
                 return QuickLinkTileItem(

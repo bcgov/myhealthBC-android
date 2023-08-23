@@ -74,5 +74,11 @@
     <action
         android:id="@+id/action_global_removeQuickAccessTileBottomSheetFragment"
         app:destination="@id/removeQuickAccessTileBottomSheetFragment" />
+    <action
+        android:id="@+id/action_home_self"
+        app:destination="@id/home"
+        app:popUpTo="@id/home"
+        app:popUpToInclusive="true"
+        app:launchSingleTop="true" />
 
 </navigation>

@@ -2,7 +2,9 @@ package ca.bc.gov.bchealth.ui.home.manage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.bc.gov.common.model.QuickAccessTileShowAsQuickLinkDto
 import ca.bc.gov.repository.settings.AppFeatureWithQuickAccessTilesRepository
+import ca.bc.gov.repository.settings.QuickAccessTileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QuickAccessManagementViewModel @Inject constructor(
-    private val appFeatureRepository: AppFeatureWithQuickAccessTilesRepository
+    private val appFeatureRepository: AppFeatureWithQuickAccessTilesRepository,
+    private val quickAccessTileRepository: QuickAccessTileRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(QuickAccessManagementUiState())
@@ -50,9 +53,11 @@ class QuickAccessManagementViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
 
             _uiState.value.featureWithQuickAccessItems.forEach {
-                it.quickAccessItems.forEach { tile ->
-                    // TODO : make call to the query to update the item
-                }
+                quickAccessTileRepository.updateAll(
+                    it.quickAccessItems.map { tile ->
+                        QuickAccessTileShowAsQuickLinkDto(tile.id, tile.isEnabled)
+                    }
+                )
             }
 
             delay(300L)
