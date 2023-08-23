@@ -20,11 +20,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,9 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.component.AnnouncementBannerUI
@@ -51,7 +48,6 @@ import ca.bc.gov.bchealth.compose.theme.white
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
-import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 
 @Composable
 fun HomeScreen(
@@ -66,9 +62,13 @@ fun HomeScreen(
     onQuickAccessTileClicked: (QuickAccessTileItem) -> Unit,
     onMoreActionClick: (id: Long, name: String) -> Unit
 ) {
-    val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle(
+        minActiveState = Lifecycle.State.RESUMED
+    ).value
 
-    val authState = authViewModel.authStatus.collectAsStateWithLifecycle().value
+    val authState = authViewModel.authStatus.collectAsStateWithLifecycle(
+        minActiveState = Lifecycle.State.RESUMED
+    ).value
 
     LaunchedEffect(key1 = Unit) {
         viewModel.launchCheck()
@@ -111,16 +111,6 @@ fun HomeScreen(
     authState.loginStatus?.let {
         LaunchedEffect(key1 = it) {
             viewModel.loadQuickAccessTiles(it)
-        }
-        val context = LocalContext.current
-        val workRequest = WorkManager.getInstance(context)
-            .getWorkInfosForUniqueWorkLiveData(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME)
-            .observeAsState()
-        if (workRequest.value?.firstOrNull()?.state == WorkInfo.State.RUNNING) {
-        } else {
-            LaunchedEffect(key1 = Unit) {
-                viewModel.loadQuickAccessTiles(it)
-            }
         }
 
         if (sharedViewModel.shouldFetchBanner) {

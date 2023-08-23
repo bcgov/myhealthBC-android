@@ -68,13 +68,9 @@ class SplashViewModel @Inject constructor(
         val id = appFeatureRepository.insert(healthRecord)
 
         if (id > 0) {
-            val immunization = QuickAccessTileDto(
-                featureId = id,
-                tileName = QuickAccessLinkName.IMMUNIZATIONS,
-                tilePayload = "Immunization",
-                showAsQuickAccess = true
-            )
-            quickAccessTileRepository.insert(immunization)
+
+            val tiles = timelineQuickLinkTiles(id)
+            quickAccessTileRepository.insertAll(tiles)
         }
 
         val immunizationSchedule = AppFeatureDto(
@@ -104,6 +100,87 @@ class SplashViewModel @Inject constructor(
             showAsQuickAccess = true
         )
         appFeatureRepository.insert(proofOfVaccine)
+
+        val services = AppFeatureDto(
+            name = AppFeatureName.SERVICES,
+            hasManageableQuickAccessLinks = true,
+            showAsQuickAccess = false
+        )
+
+        val serviceId = appFeatureRepository.insert(services)
+        if (serviceId > 0) {
+            quickAccessTileRepository.insertAll(serviceQuickLinkTilesItem(serviceId))
+        }
+    }
+
+    private fun serviceQuickLinkTilesItem(id: Long): List<QuickAccessTileDto> {
+        return listOf(
+            QuickAccessTileDto(
+                featureId = id,
+                tileName = QuickAccessLinkName.ORGAN_DONOR,
+                tilePayload = "Organ Donor",
+                showAsQuickAccess = false
+            )
+        )
+    }
+
+    private fun timelineQuickLinkTiles(id: Long): List<QuickAccessTileDto> {
+        return listOf(
+            QuickAccessTileDto(
+                featureId = id,
+                tileName = QuickAccessLinkName.IMMUNIZATIONS,
+                tilePayload = "Immunization",
+                showAsQuickAccess = false
+            ),
+            QuickAccessTileDto(
+                featureId = id,
+                tileName = QuickAccessLinkName.MEDICATIONS,
+                tilePayload = "Medications",
+                showAsQuickAccess = false
+            ),
+            QuickAccessTileDto(
+                featureId = id,
+                tileName = QuickAccessLinkName.LAB_RESULTS,
+                tilePayload = "Laboratory",
+                showAsQuickAccess = false
+            ),
+            QuickAccessTileDto(
+                featureId = id,
+                tileName = QuickAccessLinkName.COVID_19_TESTS,
+                tilePayload = "COVID19Laboratory",
+                showAsQuickAccess = false
+            ),
+            QuickAccessTileDto(
+                featureId = id,
+                tileName = QuickAccessLinkName.HEALTH_VISITS,
+                tilePayload = "HealthVisit",
+                showAsQuickAccess = false
+            ),
+            QuickAccessTileDto(
+                featureId = id,
+                tileName = QuickAccessLinkName.SPECIAL_AUTHORITY,
+                tilePayload = "SpecialAuthority",
+                showAsQuickAccess = false
+            ),
+            QuickAccessTileDto(
+                featureId = id,
+                tileName = QuickAccessLinkName.HOSPITAL_VISITS,
+                tilePayload = "HospitalVisit",
+                showAsQuickAccess = false
+            ),
+            QuickAccessTileDto(
+                featureId = id,
+                tileName = QuickAccessLinkName.CLINICAL_DOCUMENTS,
+                tilePayload = "ClinicalDocument",
+                showAsQuickAccess = false
+            ),
+            QuickAccessTileDto(
+                featureId = id,
+                tileName = QuickAccessLinkName.IMAGING_REPORTS,
+                tilePayload = "ImagingReports",
+                showAsQuickAccess = false
+            )
+        )
     }
 
     enum class UpdateType {

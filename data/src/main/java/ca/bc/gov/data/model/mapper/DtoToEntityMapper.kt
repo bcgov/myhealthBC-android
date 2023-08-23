@@ -5,6 +5,7 @@ import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.PatientAddressDto
+import ca.bc.gov.common.model.QuickAccessTileShowAsQuickLinkDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
@@ -54,6 +55,7 @@ import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEnti
 import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
 import ca.bc.gov.data.datasource.local.entity.settings.AppFeatureEntity
 import ca.bc.gov.data.datasource.local.entity.settings.QuickAccessTileEntity
+import ca.bc.gov.data.datasource.local.entity.settings.QuickAccessTileShowAsQuickLinkEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 
@@ -374,4 +376,8 @@ fun QuickAccessTileDto.toEntity() = QuickAccessTileEntity(
     tileName,
     tilePayload,
     showAsQuickAccess
+)
+
+fun QuickAccessTileShowAsQuickLinkDto.toEntity() = QuickAccessTileShowAsQuickLinkEntity(
+    id, showAsQuickAccess
 )

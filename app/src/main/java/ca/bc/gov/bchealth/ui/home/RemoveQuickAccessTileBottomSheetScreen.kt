@@ -29,18 +29,29 @@ import ca.bc.gov.bchealth.compose.theme.dividerGrey
 @Composable
 fun RemoveQuickAccessTileBottomSheetScreen(
     modifier: Modifier = Modifier,
-    name: String
+    viewModel: RemoveQuickAccessTileViewModel,
+    id: Long = 0,
+    name: String,
+    onRemoveClicked: () -> Unit,
+    ondDismissClicked: () -> Unit
 ) {
     RemoveQuickAccessTileBottomSheetContent(
         modifier = modifier,
-        name = name
+        name = name,
+        onRemoveClicked = {
+            viewModel.updateTile(id)
+            onRemoveClicked()
+        },
+        ondDismissClicked
     )
 }
 
 @Composable
 private fun RemoveQuickAccessTileBottomSheetContent(
     modifier: Modifier = Modifier,
-    name: String
+    name: String,
+    onRemoveClicked: () -> Unit,
+    ondDismissClicked: () -> Unit
 ) {
 
     Column(
@@ -70,12 +81,12 @@ private fun RemoveQuickAccessTileBottomSheetContent(
         Spacer(modifier = Modifier.height(16.dp))
         HGButton(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { },
+            onClick = onRemoveClicked,
             text = stringResource(id = R.string.remove),
             defaultHeight = HGButtonDefaults.SmallButtonHeight
         )
         Spacer(modifier = Modifier.height(16.dp))
-        HGTextButton(onClick = {}) {
+        HGTextButton(onClick = ondDismissClicked) {
             Text(
                 text = stringResource(id = R.string.dismiss),
                 style = MaterialTheme.typography.body2,
@@ -91,6 +102,10 @@ private fun RemoveQuickAccessTileBottomSheetContent(
 @BasePreview
 private fun RemoveQuickAccessTileBottomSheetScreenPreview() {
     HealthGatewayTheme {
-        RemoveQuickAccessTileBottomSheetContent(name = "Test")
+        RemoveQuickAccessTileBottomSheetContent(
+            name = "Test",
+            onRemoveClicked = {},
+            ondDismissClicked = {}
+        )
     }
 }

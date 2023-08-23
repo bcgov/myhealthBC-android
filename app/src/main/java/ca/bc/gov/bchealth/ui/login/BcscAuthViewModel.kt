@@ -23,6 +23,7 @@ import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.patient.PatientRepository
+import ca.bc.gov.repository.settings.QuickAccessTileRepository
 import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,7 +48,8 @@ class BcscAuthViewModel @Inject constructor(
     private val patientRepository: PatientRepository,
     private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
     private val mobileConfigRepository: MobileConfigRepository,
-    private val cacheRepository: CacheRepository
+    private val cacheRepository: CacheRepository,
+    private val quickAccessTileRepository: QuickAccessTileRepository
 ) : ViewModel() {
 
     private val _authStatus = MutableStateFlow(AuthStatus())
@@ -401,6 +403,7 @@ class BcscAuthViewModel @Inject constructor(
             ) {
                 patientRepository.deleteByPatientId(patientFromLocalSource.id)
                 patientRepository.insertAuthenticatedPatient(patientFromRemoteSource)
+                quickAccessTileRepository.update(showAsQuickAccess = false)
             }
         } catch (e: java.lang.Exception) {
             /*
@@ -408,6 +411,7 @@ class BcscAuthViewModel @Inject constructor(
             * to show patient name soon after login
             * */
             patientFromRemoteSource?.let { patientRepository.insertAuthenticatedPatient(it) }
+            quickAccessTileRepository.update(showAsQuickAccess = false)
         }
     }
 
