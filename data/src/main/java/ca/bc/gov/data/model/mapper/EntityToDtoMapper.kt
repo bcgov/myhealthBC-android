@@ -126,6 +126,7 @@ fun UserProfileEntity.toDto() = UserProfileDto(
     isEmailVerified = isEmailVerified,
     smsNumber = smsNumber,
     isPhoneVerified = isPhoneVerified,
+    hasTermsOfServiceUpdated = false
 )
 
 fun VaccineDoseEntity.toDto() = VaccineDoseDto(

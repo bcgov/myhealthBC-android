@@ -100,6 +100,7 @@ fun UserProfilePayload.toDto(patientId: Long) = UserProfileDto(
     isEmailVerified = isEmailVerified,
     smsNumber = smsNumber,
     isPhoneVerified = isSMSNumberVerified,
+    hasTermsOfServiceUpdated = hasTermsOfServiceUpdated
 )
 
 fun MedicationStatementResponse.toListOfMedicationDto(): List<MedicationWithSummaryAndPharmacyDto> =

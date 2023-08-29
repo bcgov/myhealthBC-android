@@ -23,6 +23,7 @@ import ca.bc.gov.bchealth.ui.tos.TermsOfServiceStatus
 import ca.bc.gov.bchealth.ui.tos.TermsOfServiceViewModel
 import ca.bc.gov.bchealth.utils.observeCurrentBackStackForAction
 import ca.bc.gov.bchealth.utils.removeActionFromCurrentBackStackEntry
+import ca.bc.gov.bchealth.utils.setActionToCurrentBackStackEntry
 import ca.bc.gov.bchealth.utils.setActionToPreviousBackStackEntry
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
@@ -57,6 +58,10 @@ class BcscAuthFragment : BaseSecureFragment(R.layout.fragment_bcsc_auth) {
         }
     }
 
+    companion object {
+        private const val TOS_STATUS = "TOS"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         findNavController().setActionToPreviousBackStackEntry(BCSC_AUTH, BcscAuthState.NO_ACTION)
@@ -70,7 +75,11 @@ class BcscAuthFragment : BaseSecureFragment(R.layout.fragment_bcsc_auth) {
             when (it) {
                 TermsOfServiceStatus.ACCEPTED -> {
                     if (termsOfServiceViewModel.tosUiState.value.termsOfServiceId != null) {
-                        viewModel.acceptTermsAndService(termsOfServiceViewModel.tosUiState.value.termsOfServiceId!!)
+                        observeCurrentBackStackForAction<TOSStatus>(TOS_STATUS) { tos ->
+                            findNavController().removeActionFromCurrentBackStackEntry<TOSStatus>(TOS_STATUS)
+                            println("TOS, status = $tos")
+                            viewModel.acceptTermsAndService(termsOfServiceViewModel.tosUiState.value.termsOfServiceId!!, tos == TOSStatus.UPDATED)
+                        }
                     } else {
                         respondToError()
                     }
@@ -145,7 +154,7 @@ class BcscAuthFragment : BaseSecureFragment(R.layout.fragment_bcsc_auth) {
         when (authStatus.ageLimitCheck) {
             AgeLimitCheck.PASSED -> {
                 viewModel.resetAuthStatus()
-                viewModel.isTermsOfServiceAccepted()
+                viewModel.checkTermsOfServiceStatus()
             }
 
             AgeLimitCheck.FAILED -> {
@@ -159,15 +168,16 @@ class BcscAuthFragment : BaseSecureFragment(R.layout.fragment_bcsc_auth) {
 
     private fun handleTosCheck(authStatus: AuthStatus) {
 
-        if (authStatus.tosAccepted != null) {
+        if (authStatus.tosStatus != null) {
             viewModel.resetAuthStatus()
-            when (authStatus.tosAccepted) {
-                TOSAccepted.ACCEPTED -> {
+            when (authStatus.tosStatus) {
+                TOSStatus.ACCEPTED -> {
                     respondToSuccess()
                     viewModel.executeOneTimeDataFetch()
                 }
 
                 else -> {
+                    findNavController().setActionToCurrentBackStackEntry(TOS_STATUS, authStatus.tosStatus)
                     findNavController().navigate(R.id.termsOfServiceFragment)
                 }
             }
