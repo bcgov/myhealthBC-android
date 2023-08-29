@@ -128,6 +128,13 @@ interface HealthGatewayPrivateApi {
     @GET("$BASE_USER_PROFILE_SERVICE/termsofservice")
     suspend fun getTermsOfService(): Response<TermsOfServiceResponse>
 
+    @PUT("$BASE_USER_PROFILE_SERVICE/{$HDID}/acceptedterms")
+    suspend fun acceptTermsOfService(
+        @Path(HDID) hdid: String,
+        @Header(AUTHORIZATION) accessToken: String,
+        @Body body: String
+    ): Response<UserProfileResponse>
+
     @POST("$BASE_USER_PROFILE_SERVICE/{$HDID}")
     suspend fun updateUserProfile(
         @Path(HDID) hdid: String,

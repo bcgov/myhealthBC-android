@@ -31,19 +31,20 @@ class UserProfileRepository @Inject constructor(
         return userProfileRemoteDataSource.checkAgeLimit(token, hdid)
     }
 
-    suspend fun isTermsOfServiceAccepted(token: String, hdid: String): Boolean {
-        val response = userProfileRemoteDataSource.getUserProfile(token, hdid)
-        return response.resourcePayload.acceptedTermsOfService
+    suspend fun checkForTermsOfServices(token: String, hdid: String): UserProfileDto {
+        return userProfileRemoteDataSource.getUserProfile(token, hdid).resourcePayload.toDto(0)
     }
 
     suspend fun acceptTermsOfService(
         token: String,
         hdid: String,
         termsOfServiceId: String,
+        hasTOSUpdated: Boolean = false
     ): Boolean {
         val response =
-            userProfileRemoteDataSource.acceptTermsOfService(token, hdid, termsOfServiceId)
-        return response.resourcePayload.acceptedTermsOfService
+            userProfileRemoteDataSource.acceptTermsOfService(token, hdid, termsOfServiceId, hasTOSUpdated)
+
+        return response.resourcePayload.acceptedTermsOfService && !response.resourcePayload.hasTermsOfServiceUpdated
     }
 
     suspend fun deleteUserProfileCache(patientId: Long) {
