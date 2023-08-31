@@ -1,5 +1,9 @@
 # My Health BC
 #### [![branch: develop](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/myhealthBC-android/tree/develop)
+<a href='https://play.google.com/store/apps/details?id=ca.bc.gov.myhealth&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
+<img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width="150" height="50"/>
+</a>
+
 #### Health Gateway is used to retrieve and store your proof of vaccination, access your health records, view COVID-19 test results, access official resources to navigate your way around Covid-19 and stay up to date with important alerts and official announcements
 
 ## Table of Contents
@@ -19,25 +23,27 @@
 - [Contributors](#contributors)
 
 ## Project Resources
+[![Kotlin](https://img.shields.io/badge/Kotlin-0095D5?&style=for-the-badge&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+- [Android Studio](https://developer.android.com/studio)
 ---
-
-- [Google Play](https://play.google.com/store/apps/details?id=ca.bc.gov.myhealth)
 
 ## Architecture
----
 
-Language: __Kotlin__
+<img src="./documents/HG-Architecture.png" width="750" />
 
-Architecture: __MVVM__
+This application is using Google recommended best practices and architecture. This application mainly contain 3 layers
 
-    -  Architecture used for app: MVVM
-        - One activity with multiple fragments is used. View models associated with fragments seperate the UI from business logic.
-        - Does it differ from standard architecture? No.
-        - Include UML diagram if needed. NA
+UI Layer : Displays application data on the screen
 
-Dependency Injection: __Hilt__
+Domain Layer : Simplify and reuse the interactions between the UI and data layers
 
-Concurrency: __Coroutines, Kotlin Flow__
+Data Layer : Contains the business logic of your app and exposes application data.
+
+
+
+### MVVM
+
+<img src="./documents/mvvm.png" width="750" />
 
 ### Folder Structure
 1. App module contains Activities, Fragments, ViewModels, Adapters, CustomViews, and Helper classes
@@ -65,8 +71,10 @@ Concurrency: __Coroutines, Kotlin Flow__
 - [App Auth Android](https://github.com/openid/AppAuth-Android): For performing single sign on during BCSC login
 - [Workmanager](https://developer.android.com/topic/libraries/architecture/workmanager/basics): For scheduling background tasks
 
-## Configuration
 ---
+
+## Configuration
+
 After cloning the project, open the **local.properties** file under the project root folder, add the following information and Sync Project with Gradle Files:
 > USER = your_user_name
 > TOKEN = your_github_personal_access_token
@@ -94,8 +102,8 @@ After cloning the project, open the **local.properties** file under the project 
 
 Build variants used in the app
 
-- demoDebug
-- demoRelease
+- devDebug
+- devRelease
 - prodDebug
 - prodRelease
 - stageDebug
@@ -116,8 +124,10 @@ Build variants used in the app
 - https://dev.healthgateway.gov.bc.ca/api/laboratoryservice/swagger/index.html
 - https://dev.healthgateway.gov.bc.ca/swagger/index.html
 
-## Deployment
 ---
+
+## Deployment
+
 
 ### Versioning
 
@@ -135,7 +145,10 @@ How is the app deployed and where?
 
 Builds generated manually, distributed through Google Play.
 
-## Contributors
 ---
 
+## Contributors
+
 List past and present contributors. Will S, Pinakin Kansara, Amit Metri, Rashmi Bambhania, Bruno Savoini
+
+---
