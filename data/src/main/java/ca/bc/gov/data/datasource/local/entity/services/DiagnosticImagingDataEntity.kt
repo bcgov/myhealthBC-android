@@ -38,5 +38,7 @@ data class DiagnosticImagingDataEntity(
     @ColumnInfo(name = "body_part")
     val bodyPart: String?,
     @ColumnInfo(name = "procedure_description")
-    val procedureDescription: String?
+    val procedureDescription: String?,
+    @ColumnInfo(name = "updated", defaultValue = "false")
+    val isUpdated: Boolean
 )
