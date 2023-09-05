@@ -266,7 +266,7 @@ class BcscAuthViewModel @Inject constructor(
                 loginStatus = LoginStatus.NOT_AUTHENTICATED,
                 ageLimitCheck = null,
                 canInitiateBcscLogin = null,
-                tosAccepted = null,
+                tosStatus = null,
                 queItUrl = null,
                 isConnected = true
             )
@@ -314,7 +314,7 @@ class BcscAuthViewModel @Inject constructor(
         }
     }
 
-    fun isTermsOfServiceAccepted() = viewModelScope.launch {
+    fun checkTermsOfServiceStatus() = viewModelScope.launch {
         _authStatus.update {
             it.copy(
                 showLoading = true
@@ -322,17 +322,23 @@ class BcscAuthViewModel @Inject constructor(
         }
         try {
             val authParameters = bcscAuthRepo.getAuthParametersDto()
-            val isTosAccepted = userProfileRepository.isTermsOfServiceAccepted(
+            val userProfileDto = userProfileRepository.checkForTermsOfServices(
                 authParameters.token,
                 authParameters.hdid
             )
+
+            val tosStatus = when {
+                userProfileDto.acceptedTermsOfService && !userProfileDto.hasTermsOfServiceUpdated -> TOSStatus.ACCEPTED
+                userProfileDto.acceptedTermsOfService && userProfileDto.hasTermsOfServiceUpdated -> TOSStatus.UPDATED
+                else -> TOSStatus.NOT_ACCEPTED
+            }
 
             performPatientDetailCheck(authParameters)
 
             _authStatus.update {
                 it.copy(
                     showLoading = true,
-                    tosAccepted = if (isTosAccepted) TOSAccepted.ACCEPTED else TOSAccepted.NOT_ACCEPTED
+                    tosStatus = tosStatus
                 )
             }
         } catch (e: Exception) {
@@ -388,7 +394,7 @@ class BcscAuthViewModel @Inject constructor(
         }
     }
 
-    fun acceptTermsAndService(termsOfServiceId: String) = viewModelScope.launch {
+    fun acceptTermsAndService(termsOfServiceId: String, hasTOSUpdated: Boolean = false) = viewModelScope.launch {
         _authStatus.update {
             it.copy(
                 showLoading = true
@@ -400,14 +406,15 @@ class BcscAuthViewModel @Inject constructor(
             val isTosAccepted = userProfileRepository.acceptTermsOfService(
                 authParameters.token,
                 authParameters.hdid,
-                termsOfServiceId
+                termsOfServiceId,
+                hasTOSUpdated
             )
 
             if (isTosAccepted) {
                 _authStatus.update {
                     it.copy(
                         showLoading = true,
-                        tosAccepted = TOSAccepted.ACCEPTED
+                        tosStatus = TOSStatus.ACCEPTED
                     )
                 }
             } else {
@@ -453,7 +460,7 @@ data class AuthStatus(
     val loginStatus: LoginStatus = LoginStatus.NOT_AUTHENTICATED,
     val ageLimitCheck: AgeLimitCheck? = null,
     val canInitiateBcscLogin: Boolean? = null,
-    val tosAccepted: TOSAccepted? = null,
+    val tosStatus: TOSStatus? = null,
     val isConnected: Boolean = true
 )
 
@@ -468,8 +475,9 @@ enum class AgeLimitCheck {
     FAILED
 }
 
-enum class TOSAccepted {
+enum class TOSStatus {
     ACCEPTED,
+    UPDATED,
     NOT_ACCEPTED,
     USER_DECLINED
 }
