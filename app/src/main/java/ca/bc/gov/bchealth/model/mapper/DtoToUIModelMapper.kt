@@ -316,13 +316,12 @@ private fun DiagnosticImagingDataDto.toUiModel() = HealthRecordItem(
     patientId = patientId,
     icon = R.drawable.ic_health_record_diagnostic_imaging,
     title = modality.orEmpty(),
-    description = examStatus + " • " + examDate?.toDate(),
+    description = if (isUpdated) { "Updated" } else { examStatus } + " • " + examDate?.toDate(),
     date = examDate!!,
     healthRecordType = HealthRecordType.DIAGNOSTIC_IMAGING,
     dataSource = null
 )
 
 fun PatientWithDataDto.toUiModel(): List<HealthRecordItem> {
-    val healthRecordItems = diagnosticImagingDataList.map { it.toUiModel() }
-    return healthRecordItems
+    return diagnosticImagingDataList.map { it.toUiModel() }
 }

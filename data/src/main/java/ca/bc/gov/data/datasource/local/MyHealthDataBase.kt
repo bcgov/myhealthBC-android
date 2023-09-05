@@ -61,7 +61,7 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
  * @author Pinakin Kansara
  */
 @Database(
-    version = 14,
+    version = 15,
     entities = [
         PatientEntity::class,
         VaccineRecordEntity::class,
@@ -95,6 +95,7 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
         AutoMigration(from = 11, to = 12),
         AutoMigration(from = 12, to = 13),
         AutoMigration(from = 13, to = 14),
+        AutoMigration(from = 14, to = 15)
     ],
     exportSchema = true
 )

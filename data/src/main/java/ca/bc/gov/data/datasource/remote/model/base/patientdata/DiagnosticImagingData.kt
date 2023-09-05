@@ -5,6 +5,7 @@ package ca.bc.gov.data.datasource.remote.model.base.patientdata
  */
 data class DiagnosticImagingData(
     val id: String? = null,
+    val isUpdated: Boolean,
     val examDate: String?,
     val fileId: String?,
     val examStatus: String?,
