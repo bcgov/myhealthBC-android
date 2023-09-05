@@ -487,6 +487,7 @@ private fun OrganDonorData.toDto() = OrganDonorDto(
 private fun DiagnosticImagingData.toDto() = DiagnosticImagingDataDto(
     id = id,
     examDate = examDate?.toDateTime(),
+    isUpdated = isUpdated,
     fileId = fileId,
     examStatus = examStatus ?: "Unknown",
     healthAuthority = healthAuthority,

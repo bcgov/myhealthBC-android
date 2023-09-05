@@ -8,6 +8,7 @@ import java.time.Instant
 data class DiagnosticImagingDataDto(
     val _id: Long = 0,
     val id: String? = null,
+    val isUpdated: Boolean,
     var patientId: Long = 0,
     val examDate: Instant?,
     val fileId: String?,

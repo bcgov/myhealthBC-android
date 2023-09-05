@@ -462,7 +462,8 @@ fun DiagnosticImagingDataEntity.toDto() = DiagnosticImagingDataDto(
     organization = organization,
     modality = modality,
     bodyPart = bodyPart,
-    procedureDescription = procedureDescription
+    procedureDescription = procedureDescription,
+    isUpdated = isUpdated
 )
 
 fun NotificationEntity.toDto() = NotificationDto(
