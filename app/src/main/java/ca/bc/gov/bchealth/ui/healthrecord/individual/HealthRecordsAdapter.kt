@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.databinding.ItemHealthRecordsAbstractBinding
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordItem
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toStartOfDayInstant
 

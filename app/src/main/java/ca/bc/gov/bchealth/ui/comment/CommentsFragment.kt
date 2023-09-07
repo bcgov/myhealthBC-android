@@ -29,7 +29,7 @@ class CommentsFragment : BaseFragment(null) {
 
         val uiState = viewModel.uiState.collectAsState().value
 
-        if (uiState.isBcscSessionActive == false) findNavController().navigate(R.id.individualHealthRecordFragment)
+        if (uiState.isBcscSessionActive == false) findNavController().navigate(R.id.healthRecordFragment)
 
         MyHealthScaffold(
             title = stringResource(id = R.string.comments),

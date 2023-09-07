@@ -20,8 +20,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.work.WorkInfo
+import ca.bc.gov.bchealth.BcVaccineCardNavGraphDirections
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTheme
+import ca.bc.gov.bchealth.model.BcServiceCardLoginInfoType
+import ca.bc.gov.bchealth.model.BcServiceCardSessionInfoType
 import ca.bc.gov.bchealth.ui.BaseSecureFragment
 import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.bchealth.ui.NavigationAction
@@ -77,11 +80,19 @@ class ServicesFragment : BaseSecureFragment(null) {
                             }
 
                             LoginStatus.EXPIRED -> {
-                                findNavController().navigate(R.id.bcServiceCardSessionFragment)
+                                val action =
+                                    BcVaccineCardNavGraphDirections.actionGlobalBcServiceCardSessionFragment(
+                                        BcServiceCardSessionInfoType.SERVICES
+                                    )
+                                findNavController().navigate(action)
                             }
 
                             LoginStatus.NOT_AUTHENTICATED -> {
-                                findNavController().navigate(R.id.bcServicesCardLoginFragment)
+                                val action =
+                                    BcVaccineCardNavGraphDirections.actionGlobalBcServicesCardLoginFragment(
+                                        BcServiceCardLoginInfoType.SERVICES
+                                    )
+                                findNavController().navigate(action)
                             }
                         }
                     }

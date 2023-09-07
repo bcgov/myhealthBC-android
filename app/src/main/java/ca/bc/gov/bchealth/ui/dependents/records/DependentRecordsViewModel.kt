@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.model.mapper.toUiModel
-import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordItem
+import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordItem
 import ca.bc.gov.common.BuildConfig.FLAG_GUARDIAN_CLINICAL_DOCS
 import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.exceptions.ServiceDownException

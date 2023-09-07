@@ -37,10 +37,6 @@
             app:argType="boolean" />
     </fragment>
 
-    <fragment
-        android:id="@+id/fetchVaccineRecordFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment"
-        tools:layout="@layout/fragment_fetch_vaccine_record" />
 
     <include app:graph="@navigation/home" />
     <include app:graph="@navigation/health_pass" />
@@ -128,9 +124,26 @@
     <fragment
         android:id="@+id/bcServicesCardLoginFragment"
         android:name="ca.bc.gov.bchealth.ui.auth.BcServicesCardLoginFragment"
-        android:label="BcServicesCardLoginFragment" />
+        android:label="BcServicesCardLoginFragment">
+        <argument
+            android:name="source"
+            android:defaultValue="RECORDS"
+            app:argType="ca.bc.gov.bchealth.model.BcServiceCardLoginInfoType" />
+    </fragment>
     <fragment
         android:id="@+id/bcServiceCardSessionFragment"
         android:name="ca.bc.gov.bchealth.ui.auth.BcServicesCardSessionFragment"
-        android:label="BcServiceCardSessionFragment" />
+        android:label="BcServiceCardSessionFragment">
+        <argument
+            android:name="source"
+            android:defaultValue="RECORDS"
+            app:argType="ca.bc.gov.bchealth.model.BcServiceCardSessionInfoType" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_bcServicesCardLoginFragment"
+        app:destination="@id/bcServicesCardLoginFragment" />
+
+    <action
+        android:id="@+id/action_global_bcServiceCardSessionFragment"
+        app:destination="@id/bcServiceCardSessionFragment" />
 </navigation>
