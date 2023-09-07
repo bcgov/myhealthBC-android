@@ -50,17 +50,17 @@ internal val HealthGatewayTypography = Typography(
     ),
     subtitle2 = TextStyle(
         fontSize = 17.sp,
-        lineHeight = 34.sp,
+        lineHeight = 24.sp,
         letterSpacing = 0.sp,
     ),
     body1 = TextStyle(
         fontSize = 15.sp,
-        lineHeight = 24.sp,
+        lineHeight = 21.sp,
         letterSpacing = 0.sp,
     ),
     body2 = TextStyle(
         fontSize = 13.sp,
-        lineHeight = 22.sp,
+        lineHeight = 18.sp,
         fontStyle = FontStyle.Normal,
         letterSpacing = 0.sp,
     )
