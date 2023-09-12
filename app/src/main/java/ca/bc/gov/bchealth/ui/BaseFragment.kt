@@ -99,13 +99,13 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
 
     private fun resetBaseUiState() = getBaseViewModel()?.resetBaseUiState()
 
-    private fun showServiceDownMessage() {
+    fun showServiceDownMessage() {
         view?.let {
             it.showServiceDownMessage(it.context)
         }
     }
 
-    private fun showNoInternetConnectionMessage() {
+    fun showNoInternetConnectionMessage() {
         view?.let {
             it.showNoInternetConnectionMessage(it.context)
         }
