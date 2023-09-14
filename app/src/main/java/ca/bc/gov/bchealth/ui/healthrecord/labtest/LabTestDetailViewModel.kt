@@ -1,9 +1,13 @@
 package ca.bc.gov.bchealth.ui.healthrecord.labtest
 
 import androidx.annotation.StringRes
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.compose.theme.darkText
+import ca.bc.gov.bchealth.compose.theme.green
+import ca.bc.gov.bchealth.compose.theme.red
 import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
@@ -90,6 +94,7 @@ class LabTestDetailViewModel @Inject constructor(
                     testStatus = R.string.corrected
                     result = labTest.outOfRange
                 }
+
                 else -> {
                     testStatus = R.string.completed
                     result = labTest.outOfRange
@@ -243,4 +248,16 @@ data class LabTestDetail(
     val bannerText: Int? = null,
     val bannerClickableText: Int? = null,
     val viewType: Int = LabTestDetailViewModel.ITEM_VIEW_TYPE_LAB_ORDER
-)
+) {
+    fun getResultColor(): Color = when (isOutOfRange) {
+        null -> darkText
+        true -> red
+        false -> green
+    }
+
+    fun getResultText(): Int? = when (isOutOfRange) {
+        null -> testStatus
+        true -> R.string.out_of_range
+        false -> R.string.in_range
+    }
+}
