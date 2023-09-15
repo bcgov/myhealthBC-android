@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -18,6 +17,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.theme.HealthGatewayTheme
@@ -46,13 +47,15 @@ fun LabTestScreen(
     showServiceDownMessage: () -> Unit,
     showNoInternetConnectionMessage: () -> Unit,
 ) {
-    val uiState = viewModel.uiState.collectAsState().value
+    val uiState = viewModel.uiState
+        .collectAsStateWithLifecycle(minActiveState = Lifecycle.State.RESUMED).value
 
     var commentState: CommentsUiState? = null
 
     if (BuildConfig.FLAG_ADD_COMMENTS) {
         uiState.parentEntryId?.let { commentsViewModel.getComments(it) }
-        commentState = commentsViewModel.uiState.collectAsState().value
+        commentState = commentsViewModel.uiState
+            .collectAsStateWithLifecycle(minActiveState = Lifecycle.State.RESUMED).value
     }
 
     MyHealthScaffold(
