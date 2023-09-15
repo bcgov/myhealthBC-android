@@ -10,26 +10,125 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.theme.HealthGatewayTheme
 import ca.bc.gov.bchealth.ui.comment.CommentsSummary
 import ca.bc.gov.bchealth.ui.comment.CommentsSummaryUI
+import ca.bc.gov.bchealth.ui.comment.CommentsUiState
+import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
+import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 import ca.bc.gov.bchealth.ui.healthrecord.labtest.LabTestDetailViewModel.Companion.ITEM_VIEW_PDF
 import ca.bc.gov.bchealth.ui.healthrecord.labtest.LabTestDetailViewModel.Companion.ITEM_VIEW_TYPE_LAB_ORDER
 import ca.bc.gov.bchealth.ui.healthrecord.labtest.LabTestDetailViewModel.Companion.ITEM_VIEW_TYPE_LAB_TEST
 import ca.bc.gov.bchealth.ui.healthrecord.labtest.LabTestDetailViewModel.Companion.ITEM_VIEW_TYPE_LAB_TEST_BANNER
+import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import ca.bc.gov.bchealth.widget.CommentInputUI
 import ca.bc.gov.common.BuildConfig
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LabTestScreen(
+    hdid: String?,
+    viewModel: LabTestDetailViewModel,
+    commentsViewModel: CommentsViewModel,
+    pdfDecoderViewModel: PdfDecoderViewModel,
+    onClickFaq: () -> Unit,
+    onPopNavigation: () -> Unit,
+    showServiceDownMessage: () -> Unit,
+    showNoInternetConnectionMessage: () -> Unit,
+) {
+    val uiState = viewModel.uiState.collectAsState().value
+
+    var commentState: CommentsUiState? = null
+
+    if (BuildConfig.FLAG_ADD_COMMENTS) {
+        uiState.parentEntryId?.let { commentsViewModel.getComments(it) }
+        commentState = commentsViewModel.uiState.collectAsState().value
+    }
+
+    MyHealthScaffold(
+        title = uiState.toolbarTitle,
+        isLoading = uiState.onLoading,
+        navigationAction = onPopNavigation
+    ) {
+        LabTestContent(
+            uiState = uiState,
+            onClickViewPdf = { viewModel.getLabTestPdf(hdid) },
+            onClickFaq = onClickFaq,
+            onClickComments = {}, // ::navigateToComments,
+            commentsSummary = commentState?.commentsSummary,
+            onSubmitComment = {}
+        ) // ::onSubmitComment)
+    }
+    handledServiceDown(uiState, viewModel, showServiceDownMessage)
+
+    if (uiState.onError) {
+        ErrorDialog()
+        viewModel.resetUiState()
+    }
+
+    handlePdfDownload(uiState, viewModel, pdfDecoderViewModel)
+
+    handleNoInternetConnection(uiState, viewModel, showNoInternetConnectionMessage)
+
+    if (commentState?.isBcscSessionActive == false) onPopNavigation.invoke()
+}
+
+private fun handledServiceDown(
+    state: LabTestDetailUiState,
+    viewModel: LabTestDetailViewModel,
+    showServiceDownMessage: () -> Unit,
+) {
+    if (!state.isHgServicesUp) {
+        showServiceDownMessage()
+        viewModel.resetUiState()
+    }
+}
+
+private fun handleNoInternetConnection(
+    uiState: LabTestDetailUiState,
+    viewModel: LabTestDetailViewModel,
+    showNoInternetConnectionMessage: () -> Unit,
+) {
+    if (!uiState.isConnected) {
+        showNoInternetConnectionMessage()
+        viewModel.resetUiState()
+    }
+}
+
+private fun handlePdfDownload(
+    state: LabTestDetailUiState,
+    viewModel: LabTestDetailViewModel,
+    pdfDecoderViewModel: PdfDecoderViewModel,
+) {
+    if (state.pdfData?.isNotEmpty() == true) {
+        pdfDecoderViewModel.base64ToPDFFile(state.pdfData)
+        viewModel.resetUiState()
+    }
+}
+
+@Composable
+private fun ErrorDialog() {
+    AlertDialogHelper.showAlertDialog(
+        context = LocalContext.current,
+        title = stringResource(R.string.error),
+        msg = stringResource(R.string.error_message),
+        positiveBtnMsg = stringResource(R.string.dialog_button_ok)
+    )
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+private fun LabTestContent(
     uiState: LabTestDetailUiState,
     onClickViewPdf: () -> Unit,
     onClickFaq: () -> Unit,
@@ -93,7 +192,7 @@ private fun ColumnScope.LabTestContent(
 
 @Composable
 @BasePreview
-fun LabTestScreenPreview() {
+fun LabTestContentPreview() {
     val sample = listOf(
         LabTestDetail(
             bannerHeader = R.string.lab_test_banner_pending_title,
@@ -139,10 +238,9 @@ fun LabTestScreenPreview() {
             testStatus = R.string.corrected,
             viewType = ITEM_VIEW_TYPE_LAB_TEST
         ),
-
     )
     HealthGatewayTheme {
-        LabTestScreen(
+        LabTestContent(
             LabTestDetailUiState(labTestDetails = sample, toolbarTitle = "Lab Results"),
             {},
             {},

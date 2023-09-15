@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -17,10 +16,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.comment.CommentsSummary
-import ca.bc.gov.bchealth.ui.comment.CommentsUiState
 import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
-import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
-import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.PdfHelper
 import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.redirect
@@ -56,42 +52,16 @@ class LabTestDetailFragment : BaseFragment(null) {
 
     @Composable
     override fun GetComposableLayout() {
-
-        val uiState = viewModel.uiState.collectAsState().value
-
-        var commentState: CommentsUiState? = null
-
-        if (BuildConfig.FLAG_ADD_COMMENTS) {
-            uiState.parentEntryId?.let { commentsViewModel.getComments(it) }
-            commentState = commentsViewModel.uiState.collectAsState().value
-        }
-
-        MyHealthScaffold(
-            title = uiState.toolbarTitle,
-            isLoading = uiState.onLoading,
-            navigationAction = { findNavController().popBackStack() }
-        ) {
-            LabTestScreen(
-                uiState = uiState,
-                onClickViewPdf = { viewModel.getLabTestPdf(args.hdid) },
-                onClickFaq = { context?.redirect(getString(R.string.faq_link)) },
-                onClickComments = ::navigateToComments,
-                commentsSummary = commentState?.commentsSummary,
-                onSubmitComment = ::onSubmitComment,
-            )
-        }
-        handledServiceDown(uiState)
-
-        if (uiState.onError) {
-            showError()
-            viewModel.resetUiState()
-        }
-
-        handlePdfDownload(uiState)
-
-        handleNoInternetConnection(uiState)
-
-        if (commentState?.isBcscSessionActive == false) findNavController().popBackStack()
+        LabTestScreen(
+            hdid = args.hdid,
+            viewModel = viewModel,
+            commentsViewModel = commentsViewModel,
+            pdfDecoderViewModel = pdfDecoderViewModel,
+            onClickFaq = { context?.redirect(getString(R.string.faq_link)) },
+            onPopNavigation = findNavController()::popBackStack,
+            showServiceDownMessage = ::showServiceDownMessage,
+            showNoInternetConnectionMessage = ::showNoInternetConnectionMessage,
+        )
     }
 
     private fun observeCommentsSyncCompletion() {
@@ -127,36 +97,6 @@ class LabTestDetailFragment : BaseFragment(null) {
     }
 
     private fun getParentEntryId(): String? = viewModel.uiState.value.parentEntryId
-
-    private fun handledServiceDown(state: LabTestDetailUiState) {
-        if (!state.isHgServicesUp) {
-            showServiceDownMessage()
-            viewModel.resetUiState()
-        }
-    }
-
-    private fun handleNoInternetConnection(uiState: LabTestDetailUiState) {
-        if (!uiState.isConnected) {
-            showNoInternetConnectionMessage()
-            viewModel.resetUiState()
-        }
-    }
-
-    private fun handlePdfDownload(state: LabTestDetailUiState) {
-        if (state.pdfData?.isNotEmpty() == true) {
-            pdfDecoderViewModel.base64ToPDFFile(state.pdfData)
-            viewModel.resetUiState()
-        }
-    }
-
-    private fun showError() {
-        AlertDialogHelper.showAlertDialog(
-            context = requireContext(),
-            title = getString(R.string.error),
-            msg = getString(R.string.error_message),
-            positiveBtnMsg = getString(R.string.dialog_button_ok)
-        )
-    }
 
     private fun observePdfData() {
         viewLifecycleOwner.lifecycleScope.launch {
