@@ -216,6 +216,15 @@ class LabTestDetailViewModel @Inject constructor(
             )
         }
     }
+
+    fun resetPdfUiState() {
+        _uiState.update {
+            it.copy(
+                onLoading = false,
+                pdfData = null,
+            )
+        }
+    }
 }
 
 data class LabTestDetailUiState(

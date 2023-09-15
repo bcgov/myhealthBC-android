@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -32,20 +33,23 @@ import ca.bc.gov.bchealth.ui.healthrecord.labtest.LabTestDetailViewModel.Compani
 import ca.bc.gov.bchealth.ui.healthrecord.labtest.LabTestDetailViewModel.Companion.ITEM_VIEW_TYPE_LAB_TEST
 import ca.bc.gov.bchealth.ui.healthrecord.labtest.LabTestDetailViewModel.Companion.ITEM_VIEW_TYPE_LAB_TEST_BANNER
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.viewmodel.PdfDecoderUiState
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import ca.bc.gov.bchealth.widget.CommentInputUI
 import ca.bc.gov.common.BuildConfig
 
 @Composable
 fun LabTestScreen(
-    hdid: String?,
-    viewModel: LabTestDetailViewModel,
-    commentsViewModel: CommentsViewModel,
-    pdfDecoderViewModel: PdfDecoderViewModel,
+    onPdfStateChanged: (PdfDecoderUiState) -> Unit,
     onClickFaq: () -> Unit,
     onPopNavigation: () -> Unit,
     showServiceDownMessage: () -> Unit,
     showNoInternetConnectionMessage: () -> Unit,
+    hdid: String?,
+    labOrderId: Long,
+    viewModel: LabTestDetailViewModel,
+    commentsViewModel: CommentsViewModel,
+    pdfDecoderViewModel: PdfDecoderViewModel,
 ) {
     val uiState = viewModel.uiState
         .collectAsStateWithLifecycle(minActiveState = Lifecycle.State.RESUMED).value
@@ -56,6 +60,13 @@ fun LabTestScreen(
         uiState.parentEntryId?.let { commentsViewModel.getComments(it) }
         commentState = commentsViewModel.uiState
             .collectAsStateWithLifecycle(minActiveState = Lifecycle.State.RESUMED).value
+    }
+
+    val pdfUiState = pdfDecoderViewModel.uiState
+        .collectAsStateWithLifecycle(minActiveState = Lifecycle.State.RESUMED).value
+
+    LaunchedEffect(Unit) {
+        viewModel.getLabTestDetails(labOrderId)
     }
 
     MyHealthScaffold(
@@ -72,6 +83,9 @@ fun LabTestScreen(
             onSubmitComment = {}
         ) // ::onSubmitComment)
     }
+
+    onPdfStateChanged(pdfUiState)
+
     handledServiceDown(uiState, viewModel, showServiceDownMessage)
 
     if (uiState.onError) {
@@ -115,7 +129,7 @@ private fun handlePdfDownload(
 ) {
     if (state.pdfData?.isNotEmpty() == true) {
         pdfDecoderViewModel.base64ToPDFFile(state.pdfData)
-        viewModel.resetUiState()
+        viewModel.resetPdfUiState()
     }
 }
 

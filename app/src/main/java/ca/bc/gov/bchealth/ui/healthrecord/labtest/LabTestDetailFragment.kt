@@ -6,9 +6,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.work.WorkInfo
@@ -20,11 +17,11 @@ import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.utils.PdfHelper
 import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.viewmodel.PdfDecoderUiState
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.repository.SYNC_COMMENTS
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import java.io.File
 
 @AndroidEntryPoint
@@ -41,19 +38,14 @@ class LabTestDetailFragment : BaseFragment(null) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observePdfData()
         observeCommentsSyncCompletion()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.getLabTestDetails(args.labOrderId)
     }
 
     @Composable
     override fun GetComposableLayout() {
         LabTestScreen(
             hdid = args.hdid,
+            labOrderId = args.labOrderId,
             viewModel = viewModel,
             commentsViewModel = commentsViewModel,
             pdfDecoderViewModel = pdfDecoderViewModel,
@@ -61,6 +53,7 @@ class LabTestDetailFragment : BaseFragment(null) {
             onPopNavigation = findNavController()::popBackStack,
             showServiceDownMessage = ::showServiceDownMessage,
             showNoInternetConnectionMessage = ::showNoInternetConnectionMessage,
+            onPdfStateChanged = ::onPdfStateChanged,
         )
     }
 
@@ -98,26 +91,20 @@ class LabTestDetailFragment : BaseFragment(null) {
 
     private fun getParentEntryId(): String? = viewModel.uiState.value.parentEntryId
 
-    private fun observePdfData() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                pdfDecoderViewModel.uiState.collect { uiState ->
-                    uiState.pdf?.let {
-                        val (base64Pdf, file) = it
-                        if (file != null) {
-                            try {
-                                fileInMemory = file
-                                PdfHelper().showPDF(file, requireActivity(), resultListener)
-                            } catch (e: Exception) {
-                                fallBackToPdfRenderer(base64Pdf)
-                            }
-                        } else {
-                            fallBackToPdfRenderer(base64Pdf)
-                        }
-                        pdfDecoderViewModel.resetUiState()
-                    }
+    private fun onPdfStateChanged(uiState: PdfDecoderUiState) {
+        uiState.pdf?.let {
+            val (base64Pdf, file) = it
+            if (file != null) {
+                try {
+                    fileInMemory = file
+                    PdfHelper().showPDF(file, requireActivity(), resultListener)
+                } catch (e: Exception) {
+                    fallBackToPdfRenderer(base64Pdf)
                 }
+            } else {
+                fallBackToPdfRenderer(base64Pdf)
             }
+            pdfDecoderViewModel.resetUiState()
         }
     }
 
