@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -20,9 +21,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.theme.HealthGatewayTheme
+import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.comment.CommentsSummary
 import ca.bc.gov.bchealth.ui.comment.CommentsSummaryUI
 import ca.bc.gov.bchealth.ui.comment.CommentsUiState
@@ -37,6 +41,7 @@ import ca.bc.gov.bchealth.viewmodel.PdfDecoderUiState
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import ca.bc.gov.bchealth.widget.CommentInputUI
 import ca.bc.gov.common.BuildConfig
+import ca.bc.gov.repository.SYNC_COMMENTS
 
 @Composable
 fun LabTestScreen(
@@ -45,6 +50,7 @@ fun LabTestScreen(
     onPopNavigation: () -> Unit,
     showServiceDownMessage: () -> Unit,
     showNoInternetConnectionMessage: () -> Unit,
+    navigateToComments: (CommentsSummary) -> Unit,
     hdid: String?,
     labOrderId: Long,
     viewModel: LabTestDetailViewModel,
@@ -62,6 +68,8 @@ fun LabTestScreen(
             .collectAsStateWithLifecycle(minActiveState = Lifecycle.State.RESUMED).value
     }
 
+    ObserveCommentsWorker(viewModel, commentsViewModel)
+
     val pdfUiState = pdfDecoderViewModel.uiState
         .collectAsStateWithLifecycle(minActiveState = Lifecycle.State.RESUMED).value
 
@@ -78,10 +86,10 @@ fun LabTestScreen(
             uiState = uiState,
             onClickViewPdf = { viewModel.getLabTestPdf(hdid) },
             onClickFaq = onClickFaq,
-            onClickComments = {}, // ::navigateToComments,
+            onClickComments = navigateToComments,
             commentsSummary = commentState?.commentsSummary,
-            onSubmitComment = {}
-        ) // ::onSubmitComment)
+            onSubmitComment = { onSubmitComment(viewModel, commentsViewModel, it) }
+        )
     }
 
     onPdfStateChanged(pdfUiState)
@@ -98,6 +106,41 @@ fun LabTestScreen(
     handleNoInternetConnection(uiState, viewModel, showNoInternetConnectionMessage)
 
     if (commentState?.isBcscSessionActive == false) onPopNavigation.invoke()
+}
+
+private fun onSubmitComment(
+    viewModel: LabTestDetailViewModel,
+    commentsViewModel: CommentsViewModel,
+    content: String
+) {
+    viewModel.uiState.value.parentEntryId?.let { parentEntryId ->
+        commentsViewModel.addComment(
+            parentEntryId,
+            content,
+            CommentEntryTypeCode.LAB_RESULTS.value,
+        )
+    }
+}
+
+@Composable
+private fun ObserveCommentsWorker(
+    viewModel: LabTestDetailViewModel,
+    commentsViewModel: CommentsViewModel
+) {
+    if (BuildConfig.FLAG_ADD_COMMENTS.not()) return
+
+    val workRequest = WorkManager
+        .getInstance(LocalContext.current)
+        .getWorkInfosForUniqueWorkLiveData(SYNC_COMMENTS)
+        .observeAsState()
+    val workState = workRequest.value?.firstOrNull()?.state
+    if (workState == WorkInfo.State.SUCCEEDED && workState.isFinished) {
+        LaunchedEffect(key1 = Unit) {
+            viewModel.uiState.value.parentEntryId?.let { parentId ->
+                commentsViewModel.getComments(parentId)
+            }
+        }
+    }
 }
 
 private fun handledServiceDown(

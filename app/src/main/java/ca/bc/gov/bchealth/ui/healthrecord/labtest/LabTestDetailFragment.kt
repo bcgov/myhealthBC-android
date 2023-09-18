@@ -1,26 +1,19 @@
 package ca.bc.gov.bchealth.ui.healthrecord.labtest
 
-import android.os.Bundle
-import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseFragment
-import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.comment.CommentsSummary
 import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.utils.PdfHelper
-import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderUiState
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
-import ca.bc.gov.common.BuildConfig
-import ca.bc.gov.repository.SYNC_COMMENTS
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
@@ -36,11 +29,6 @@ class LabTestDetailFragment : BaseFragment(null) {
         ActivityResultContracts.StartActivityForResult()
     ) { fileInMemory?.delete() }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        observeCommentsSyncCompletion()
-    }
-
     @Composable
     override fun GetComposableLayout() {
         LabTestScreen(
@@ -54,29 +42,8 @@ class LabTestDetailFragment : BaseFragment(null) {
             showServiceDownMessage = ::showServiceDownMessage,
             showNoInternetConnectionMessage = ::showNoInternetConnectionMessage,
             onPdfStateChanged = ::onPdfStateChanged,
+            navigateToComments = ::navigateToComments
         )
-    }
-
-    private fun observeCommentsSyncCompletion() {
-        if (BuildConfig.FLAG_ADD_COMMENTS.not()) return
-
-        observeWork(SYNC_COMMENTS) {
-            if (it == WorkInfo.State.SUCCEEDED) {
-                getParentEntryId()?.let { parentId ->
-                    commentsViewModel.getComments(parentId)
-                }
-            }
-        }
-    }
-
-    private fun onSubmitComment(content: String) {
-        getParentEntryId()?.let { parentEntryId ->
-            commentsViewModel.addComment(
-                parentEntryId,
-                content,
-                CommentEntryTypeCode.LAB_RESULTS.value,
-            )
-        }
     }
 
     private fun navigateToComments(commentsSummary: CommentsSummary) {
@@ -88,8 +55,6 @@ class LabTestDetailFragment : BaseFragment(null) {
             )
         )
     }
-
-    private fun getParentEntryId(): String? = viewModel.uiState.value.parentEntryId
 
     private fun onPdfStateChanged(uiState: PdfDecoderUiState) {
         uiState.pdf?.let {
