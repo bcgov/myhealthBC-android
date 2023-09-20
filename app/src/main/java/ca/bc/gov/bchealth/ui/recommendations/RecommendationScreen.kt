@@ -20,7 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
-import ca.bc.gov.bchealth.compose.component.HGProgressIndicator
+import ca.bc.gov.bchealth.compose.component.HGCircularProgressIndicator
 import ca.bc.gov.bchealth.compose.theme.HealthGatewayTheme
 import ca.bc.gov.bchealth.compose.theme.grey
 import ca.bc.gov.bchealth.ui.custom.MyHealthClickableText
@@ -51,7 +51,7 @@ fun RecommendationScreen(
     }
 
     if (uiState.isLoading) {
-        HGProgressIndicator(modifier)
+        HGCircularProgressIndicator(modifier)
     } else {
         RecommendationScreenContent(
             modifier,

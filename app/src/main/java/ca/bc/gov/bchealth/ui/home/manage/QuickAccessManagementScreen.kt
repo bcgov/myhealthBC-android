@@ -28,7 +28,7 @@ import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.bold
-import ca.bc.gov.bchealth.compose.component.HGProgressIndicator
+import ca.bc.gov.bchealth.compose.component.HGCircularProgressIndicator
 import ca.bc.gov.bchealth.compose.theme.primaryBlue
 import ca.bc.gov.bchealth.compose.theme.statusBlue
 import ca.bc.gov.bchealth.compose.theme.white
@@ -47,7 +47,7 @@ fun QuickAccessManagementScreen(
     }
 
     if (uiState.isLoading) {
-        HGProgressIndicator(modifier)
+        HGCircularProgressIndicator(modifier)
     } else {
         QuickAccessManagementContent(uiState.featureWithQuickAccessItems, onClickItem = onClickItem)
     }

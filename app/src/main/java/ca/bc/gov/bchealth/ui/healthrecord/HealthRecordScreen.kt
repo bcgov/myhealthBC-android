@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterialApi::class)
-
 package ca.bc.gov.bchealth.ui.healthrecord
 
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +28,7 @@ import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.component.EmptyStateUI
-import ca.bc.gov.bchealth.compose.component.HGProgressIndicator
+import ca.bc.gov.bchealth.compose.component.HGCircularProgressIndicator
 import ca.bc.gov.bchealth.compose.component.HealthRecordItemUI
 import ca.bc.gov.bchealth.compose.component.HorizontalFilterGroupUI
 import ca.bc.gov.bchealth.compose.component.ImmunizationBannerUI
@@ -140,6 +138,7 @@ fun HealthRecordScreen(
     )
 }
 
+@ExperimentalMaterialApi
 @Composable
 private fun HealthRecordScreenContent(
     onPullToRefresh: () -> Unit,
@@ -161,7 +160,7 @@ private fun HealthRecordScreenContent(
     Box(modifier = Modifier.pullRefresh(pullToRefresh)) {
 
         if (uiState.isLoading) {
-            HGProgressIndicator()
+            HGCircularProgressIndicator()
         } else {
             Column(
                 modifier = modifier
