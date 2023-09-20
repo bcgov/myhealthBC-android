@@ -37,7 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.component.AnnouncementBannerUI
-import ca.bc.gov.bchealth.compose.component.HGProgressIndicator
+import ca.bc.gov.bchealth.compose.component.HGCircularProgressIndicator
 import ca.bc.gov.bchealth.compose.component.HGTextButton
 import ca.bc.gov.bchealth.compose.component.LoginInfoCardUI
 import ca.bc.gov.bchealth.compose.component.QuickAccessTileItemUI
@@ -75,7 +75,7 @@ fun HomeScreen(
     }
 
     if (uiState.isLoading) {
-        HGProgressIndicator(modifier)
+        HGCircularProgressIndicator(modifier)
     } else {
         uiState.launchCheckStatus?.let {
             when (it) {

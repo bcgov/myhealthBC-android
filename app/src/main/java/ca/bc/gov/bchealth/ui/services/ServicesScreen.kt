@@ -35,7 +35,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
-import ca.bc.gov.bchealth.compose.component.HGProgressIndicator
+import ca.bc.gov.bchealth.compose.component.HGCircularProgressIndicator
 import ca.bc.gov.common.model.services.OrganDonorStatusDto
 
 @Composable
@@ -107,7 +107,7 @@ private fun ServiceScreenContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         if (onLoading || organDonorRegistrationDetail == null) {
-            HGProgressIndicator(modifier)
+            HGCircularProgressIndicator(modifier)
         } else {
             OrganDonor(organDonorRegistrationDetail, organDonorFileStatus, onRegisterOnUpdateDecisionClicked = { url ->
                 onRegisterOnUpdateDecisionClicked(url)
