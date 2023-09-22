@@ -15,22 +15,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
-import ca.bc.gov.bchealth.compose.MyHealthTheme
-import ca.bc.gov.bchealth.compose.MyHealthTypography
+import ca.bc.gov.bchealth.compose.theme.HealthGatewayTheme
+import ca.bc.gov.bchealth.compose.theme.blue
 import ca.bc.gov.bchealth.compose.theme.greyBg
+import ca.bc.gov.bchealth.model.BcServiceCardSessionInfoType
 
 @Composable
 fun BCServicesCardSessionScreen(
     modifier: Modifier,
+    viewModel: BCServiceCardSessionViewModel = viewModel(),
+    type: BcServiceCardSessionInfoType,
     onLoginWithBCSCCard: () -> Unit
 ) {
 
+    val sessionInfo = viewModel.getSessionStateInfo(type)
+
     BCServicesCardSessionContent(
-        modifier = modifier, title = stringResource(id = R.string.services),
+        modifier = modifier, title = stringResource(id = sessionInfo.title),
         sessionMessage = stringResource(
-            id = R.string.services_session_expired
+            id = sessionInfo.sessionDesc
         )
     ) {
         onLoginWithBCSCCard()
@@ -51,12 +57,10 @@ fun BCServicesCardSessionContent(
             .padding(start = 32.dp, end = 32.dp, bottom = 32.dp)
     ) {
 
-        title?.let {
-            Text(text = title, style = MyHealthTypography.h2, color = MaterialTheme.colors.primary)
-        }
+        Text(text = title, style = MaterialTheme.typography.h2, color = MaterialTheme.colors.primary)
         if (!description.isNullOrBlank()) {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = description, style = MyHealthTypography.h4)
+            Text(text = description, style = MaterialTheme.typography.h4)
         }
         Spacer(modifier = Modifier.height(16.dp))
         Card(
@@ -70,12 +74,12 @@ fun BCServicesCardSessionContent(
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = stringResource(id = R.string.session_time_out),
-                    style = MyHealthTypography.h4,
-                    color = MaterialTheme.colors.primary,
+                    style = MaterialTheme.typography.h4,
+                    color = blue,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = sessionMessage, style = MyHealthTypography.h4)
+                Text(text = sessionMessage, style = MaterialTheme.typography.h4)
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = { onLoginWithBCSCClicked() },
@@ -95,7 +99,7 @@ fun BCServicesCardSessionContent(
 @Composable
 @BasePreview
 private fun previewBCServicesCardSession() {
-    MyHealthTheme {
+    HealthGatewayTheme {
         BCServicesCardSessionContent(title = "Title", sessionMessage = "Message") {
         }
     }
