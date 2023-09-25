@@ -1,5 +1,6 @@
 package ca.bc.gov.bchealth.compose.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
@@ -10,6 +11,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -43,6 +45,63 @@ fun HGButton(
         contentPadding = contentPadding,
         content = content
     )
+}
+
+@Composable
+fun HGOutlineButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    defaultHeight: Dp = HGButtonDefaults.LargeButtonHeight,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    content: @Composable RowScope.() -> Unit
+) {
+    OutlinedButton(
+        onClick = onClick,
+        modifier = modifier.defaultMinSize(minHeight = defaultHeight),
+        enabled = enabled,
+        border = BorderStroke(1.dp, color = MaterialTheme.colors.primary),
+        colors = ButtonDefaults.outlinedButtonColors(),
+        contentPadding = contentPadding,
+        content = content
+    )
+}
+
+@Composable
+fun HGOutlineButton(
+    onClick: () -> Unit,
+    text: String,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    defaultHeight: Dp = HGButtonDefaults.LargeButtonHeight,
+    leadingIcon: @Composable (() -> Unit)? = null
+) {
+    HGOutlineButton(
+        onClick,
+        modifier,
+        enabled,
+        defaultHeight,
+        contentPadding = if (leadingIcon != null) {
+            ButtonDefaults.ButtonWithIconContentPadding
+        } else {
+            ButtonDefaults.ContentPadding
+        }
+    ) {
+        HGButtonContent(
+            {
+                Text(
+                    text = text,
+                    style = if (defaultHeight == HGButtonDefaults.SmallButtonHeight) {
+                        MaterialTheme.typography.body2
+                    } else {
+                        MaterialTheme.typography.subtitle2
+                    },
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            leadingIcon
+        )
+    }
 }
 
 @Composable
