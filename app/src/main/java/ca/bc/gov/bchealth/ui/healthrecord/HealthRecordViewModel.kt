@@ -208,7 +208,7 @@ class HealthRecordViewModel @Inject constructor(
                 } else {
                     emptyList()
                 }
-            return records
+            return records.sortedByDescending { it.date }
         } catch (e: Exception) {
             Log.d("Timeline", "Error in generating timeline ${e.message}")
             return emptyList()
