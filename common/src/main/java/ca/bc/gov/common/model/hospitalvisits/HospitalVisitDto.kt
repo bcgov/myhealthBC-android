@@ -11,4 +11,5 @@ data class HospitalVisitDto(
     val visitType: String,
     val visitDate: Instant,
     val dischargeDate: Instant?,
+    val encounterId: String?
 )

@@ -27,8 +27,8 @@ import java.time.Instant
 
 @Composable
 fun CommentsSummaryUI(
-    commentsSummary: CommentsSummary?,
-    onClickComments: (CommentsSummary) -> Unit
+    onClickComments: (CommentsSummary) -> Unit,
+    commentsSummary: CommentsSummary?
 ) {
     commentsSummary ?: return
 
@@ -94,13 +94,13 @@ fun PreviewCommentsSummaryUI() {
         )
 
         Column {
-            CommentsSummaryUI(commentsSummary) {}
+            CommentsSummaryUI(onClickComments = {}, commentsSummary)
             Spacer(Modifier.padding(5.dp))
-            CommentsSummaryUI(commentsSummary.copy(syncStatus = SyncStatus.INSERT)) {}
+            CommentsSummaryUI(onClickComments = {}, commentsSummary.copy(syncStatus = SyncStatus.INSERT))
             Spacer(Modifier.padding(5.dp))
-            CommentsSummaryUI(commentsSummary.copy(syncStatus = SyncStatus.EDIT)) {}
+            CommentsSummaryUI(onClickComments = {}, commentsSummary.copy(syncStatus = SyncStatus.EDIT))
             Spacer(Modifier.padding(5.dp))
-            CommentsSummaryUI(commentsSummary.copy(syncStatus = SyncStatus.DELETE)) {}
+            CommentsSummaryUI(onClickComments = {}, commentsSummary.copy(syncStatus = SyncStatus.DELETE))
         }
     }
 }

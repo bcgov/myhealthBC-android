@@ -256,6 +256,7 @@ fun HospitalVisitDto.toEntity() = HospitalVisitEntity(
     visitType = visitType,
     visitDate = visitDate,
     dischargeDate = dischargeDate,
+    encounterId = encounterId
 )
 
 fun SpecialAuthorityDto.toEntity() = SpecialAuthorityEntity(
