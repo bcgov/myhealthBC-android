@@ -354,6 +354,7 @@ fun HospitalVisitInformation.toDto() = HospitalVisitDto(
     visitType = visitType.orEmpty(),
     visitDate = admitDateTime.toDateTime(),
     dischargeDate = endDateTime?.toDateTime(),
+    encounterId = encounterId
 )
 
 fun ClinicalDocumentResponse.toDto(): List<ClinicalDocumentDto> =
