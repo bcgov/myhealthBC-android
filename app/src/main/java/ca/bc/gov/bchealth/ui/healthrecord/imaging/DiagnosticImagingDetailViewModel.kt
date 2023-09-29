@@ -43,7 +43,8 @@ class DiagnosticImagingDetailViewModel @Inject constructor(
                     onLoading = false,
                     toolbarTitle = data.modality ?: "",
                     details = details,
-                    fileId = data.fileId
+                    fileId = data.fileId,
+                    id = data.id
                 )
             }
         } catch (e: Exception) {
@@ -84,5 +85,6 @@ data class DiagnosticImagingDataDetailUiState(
     val toolbarTitle: String = "",
     val details: List<HealthRecordDetailItem> = emptyList(),
     val fileId: String? = null,
-    val pdfData: String? = null
+    val pdfData: String? = null,
+    val id: String? = null
 )
