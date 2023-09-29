@@ -235,5 +235,6 @@ enum class CommentEntryTypeCode(val value: String) {
     HEALTH_VISITS("Enc"),
     SPECIAL_AUTHORITY("SAR"),
     HOSPITAL_VISIT("Hos"),
-    CLINICAL_DOCS("CDO")
+    CLINICAL_DOCS("CDO"),
+    DIAGNOSTIC_IMAGING("DIA")
 }
