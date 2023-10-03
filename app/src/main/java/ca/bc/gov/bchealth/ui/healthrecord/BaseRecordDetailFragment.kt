@@ -16,7 +16,7 @@ import ca.bc.gov.bchealth.ui.comment.CommentsSummary
 import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.ui.healthrecord.comment.RecordCommentsAdapter
 import ca.bc.gov.bchealth.utils.hideKeyboard
-import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.scrollToBottom
 import ca.bc.gov.bchealth.utils.toggleVisibility
@@ -77,7 +77,7 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
     private fun observeComments() {
         if (BuildConfig.FLAG_ADD_COMMENTS.not()) return
 
-        launchOnStart {
+        launchAndRepeatWithLifecycle {
             commentsViewModel.uiState.collect { state ->
                 if (state.isBcscSessionActive == false) {
                     findNavController().navigate(R.id.healthRecordFragment)

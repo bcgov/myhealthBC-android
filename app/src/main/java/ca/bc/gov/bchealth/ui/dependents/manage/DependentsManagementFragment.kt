@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentDependentsManagementBinding
 import ca.bc.gov.bchealth.ui.dependents.BaseDependentFragment
-import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,8 +25,8 @@ class DependentsManagementFragment : BaseDependentFragment(R.layout.fragment_dep
 
         setUpRecyclerView()
 
-        launchOnStart { collectDependents() }
-        launchOnStart { collectUiState() }
+        launchAndRepeatWithLifecycle { collectDependents() }
+        launchAndRepeatWithLifecycle() { collectUiState() }
     }
 
     private fun setUpRecyclerView() {

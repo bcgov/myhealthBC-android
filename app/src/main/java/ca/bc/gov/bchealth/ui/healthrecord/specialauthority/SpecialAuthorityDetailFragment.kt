@@ -11,6 +11,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentSpecialAuthorityDetailBinding
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordDetailFragment
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -40,16 +41,18 @@ class SpecialAuthorityDetailFragment :
     override fun getCommentView() = binding.viewComment
 
     private fun observeUiState() {
-        viewModel.uiState.collectOnStart { state ->
+        launchAndRepeatWithLifecycle {
+            viewModel.uiState.collect{state ->
 
-            binding.progressBar.isVisible = state.onLoading
-            setupComposeToolbar(binding.composeToolbar.root, state.toolbarTitle)
+                binding.progressBar.isVisible = state.onLoading
+                setupComposeToolbar(binding.composeToolbar.root, state.toolbarTitle)
 
-            if (state.specialAuthorityDetailItems.isNotEmpty()) {
-                specialAuthorityAdapter.submitList(state.specialAuthorityDetailItems)
+                if (state.specialAuthorityDetailItems.isNotEmpty()) {
+                    specialAuthorityAdapter.submitList(state.specialAuthorityDetailItems)
+                }
+
+                getComments(state.parentEntryId)
             }
-
-            getComments(state.parentEntryId)
         }
     }
 
