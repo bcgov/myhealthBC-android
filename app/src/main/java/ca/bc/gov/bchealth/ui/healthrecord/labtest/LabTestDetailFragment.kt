@@ -18,6 +18,7 @@ import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordDetailFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.PdfHelper
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -73,25 +74,27 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
     }
 
     private fun observeUiState() {
-        viewModel.uiState.collectOnStart { state ->
-            binding.progressBar.isVisible = state.onLoading
+        launchAndRepeatWithLifecycle {
+            viewModel.uiState.collect{ state ->
+                binding.progressBar.isVisible = state.onLoading
 
-            handledServiceDown(state)
+                handledServiceDown(state)
 
-            if (state.labTestDetails?.isNotEmpty() == true) {
-                labTestDetailAdapter.submitList(state.labTestDetails)
-                setupComposeToolbar(binding.composeToolbar.root, state.toolbarTitle)
+                if (state.labTestDetails?.isNotEmpty() == true) {
+                    labTestDetailAdapter.submitList(state.labTestDetails)
+                    setupComposeToolbar(binding.composeToolbar.root, state.toolbarTitle)
+                }
+
+                if (state.onError) {
+                    showError()
+                    viewModel.resetUiState()
+                }
+
+                handlePdfDownload(state)
+
+                handleNoInternetConnection(state)
+                getComments(state.parentEntryId)
             }
-
-            if (state.onError) {
-                showError()
-                viewModel.resetUiState()
-            }
-
-            handlePdfDownload(state)
-
-            handleNoInternetConnection(state)
-            getComments(state.parentEntryId)
         }
     }
 

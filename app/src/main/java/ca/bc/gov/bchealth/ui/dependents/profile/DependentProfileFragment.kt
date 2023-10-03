@@ -8,6 +8,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.dependents.BaseDependentFragment
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.common.exceptions.NetworkConnectionException
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,11 +37,12 @@ class DependentProfileFragment : BaseDependentFragment(null) {
     }
 
     private fun collectUiState() {
-        viewModel.uiState.collectOnStart { uiState ->
-            uiState.error?.let { handleError(it) }
-
-            if (uiState.onDependentRemoved) {
-                findNavController().navigate(R.id.action_dependentProfile_to_dependentList)
+        launchAndRepeatWithLifecycle {
+            viewModel.uiState.collect { uiState ->
+                uiState.error?.let { handleError(it) }
+                if (uiState.onDependentRemoved) {
+                    findNavController().navigate(R.id.action_dependentProfile_to_dependentList)
+                }
             }
         }
     }

@@ -15,6 +15,7 @@ import ca.bc.gov.bchealth.databinding.FragmentSingleTestResultBinding
 import ca.bc.gov.bchealth.model.mapper.CovidTestResultStatus
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordDetailFragment
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showIfNullOrBlank
 import ca.bc.gov.bchealth.utils.viewBindings
@@ -76,10 +77,12 @@ class CovidTestResultFragment(private val itemClickListener: ItemClickListener) 
     override fun getScrollableView() = binding.scrollView
 
     private fun observeTestRecordDetails() {
-        viewModel.uiState.collectOnStart { state ->
-            if (state.covidTest != null && state.patient != null && state.covidOrder != null) {
-                initUi(state.covidOrder, state.covidTest, state.patient)
-                getComments(state.parentEntryId)
+        launchAndRepeatWithLifecycle {
+            viewModel.uiState.collect{state ->
+                if (state.covidTest != null && state.patient != null && state.covidOrder != null) {
+                    initUi(state.covidOrder, state.covidTest, state.patient)
+                    getComments(state.parentEntryId)
+                }
             }
         }
     }
