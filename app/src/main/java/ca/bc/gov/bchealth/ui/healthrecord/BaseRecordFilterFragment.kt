@@ -16,6 +16,7 @@ import ca.bc.gov.bchealth.ui.filter.FilterUiState
 import ca.bc.gov.bchealth.ui.filter.FilterViewModel
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.utils.hide
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.show
 import ca.bc.gov.common.BuildConfig
 import com.google.android.material.chip.Chip
@@ -81,39 +82,42 @@ abstract class BaseRecordFilterFragment(@LayoutRes id: Int) : BaseSecureFragment
     }
 
     fun observeFilterState() {
-        getFilterViewModel().filterState.collectOnStart { filterState ->
-            if (BuildConfig.FLAG_SEARCH_RECORDS) {
-                getSearchBar().searchRecords.apply {
-                    if (query.toString() != filterState.search) {
-                        setQuery(filterState.search, false)
-                    }
-                }
-            }
-            // update filter date selection
-            if (isFilterDateSelected(filterState)) {
-                getLayoutChipGroup().chipDate.apply {
-                    show()
-                    text = when {
-                        filterState.filterFromDate.isNullOrBlank() -> {
-                            filterState.filterToDate + " " + getString(R.string.before)
-                        }
 
-                        filterState.filterToDate.isNullOrBlank() -> {
-                            filterState.filterFromDate + " " + getString(R.string.after)
-                        }
-
-                        else -> {
-                            filterState.filterFromDate + " - " + filterState.filterToDate
+        launchAndRepeatWithLifecycle {
+            getFilterViewModel().filterState.collect { filterState ->
+                if (BuildConfig.FLAG_SEARCH_RECORDS) {
+                    getSearchBar().searchRecords.apply {
+                        if (query.toString() != filterState.search) {
+                            setQuery(filterState.search, false)
                         }
                     }
                 }
-            } else {
-                getLayoutChipGroup().chipDate.hide()
+                // update filter date selection
+                if (isFilterDateSelected(filterState)) {
+                    getLayoutChipGroup().chipDate.apply {
+                        show()
+                        text = when {
+                            filterState.filterFromDate.isNullOrBlank() -> {
+                                filterState.filterToDate + " " + getString(R.string.before)
+                            }
+
+                            filterState.filterToDate.isNullOrBlank() -> {
+                                filterState.filterFromDate + " " + getString(R.string.after)
+                            }
+
+                            else -> {
+                                filterState.filterFromDate + " - " + filterState.filterToDate
+                            }
+                        }
+                    }
+                } else {
+                    getLayoutChipGroup().chipDate.hide()
+                }
+
+                updateTypeFilterSelection(filterState)
+
+                updateClearButton(filterState)
             }
-
-            updateTypeFilterSelection(filterState)
-
-            updateClearButton(filterState)
         }
     }
 

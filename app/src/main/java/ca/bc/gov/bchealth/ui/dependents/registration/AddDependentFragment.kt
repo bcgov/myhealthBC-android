@@ -14,7 +14,7 @@ import ca.bc.gov.bchealth.utils.DatePickerHelper
 import ca.bc.gov.bchealth.utils.PhnHelper
 import ca.bc.gov.bchealth.utils.composeEmail
 import ca.bc.gov.bchealth.utils.hideKeyboard
-import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.validateCheckbox
@@ -36,7 +36,7 @@ class AddDependentFragment : BaseFragment(R.layout.fragment_add_dependent) {
     }
 
     private fun observeUiState() {
-        launchOnStart {
+        launchAndRepeatWithLifecycle {
             viewModel.uiState.collect { uiState ->
 
                 showLoader(uiState.onLoading)

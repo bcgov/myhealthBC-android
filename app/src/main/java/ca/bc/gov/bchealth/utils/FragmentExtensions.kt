@@ -11,14 +11,6 @@ import androidx.work.WorkManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-fun Fragment.launchOnStart(action: (suspend CoroutineScope.() -> Unit)) {
-    viewLifecycleOwner.lifecycleScope.launch {
-        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            action.invoke(this)
-        }
-    }
-}
-
 inline fun Fragment.launchAndRepeatWithLifecycle(
     state: Lifecycle.State = Lifecycle.State.STARTED,
     crossinline block: suspend CoroutineScope.() -> Unit

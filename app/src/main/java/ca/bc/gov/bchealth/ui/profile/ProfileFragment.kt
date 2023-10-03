@@ -8,6 +8,7 @@ import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.URL_ADDRESS_CHANGE
 import ca.bc.gov.bchealth.utils.URL_COMMUNICATION_PREFS
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.redirect
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,8 +29,10 @@ class ProfileFragment : BaseFragment(null) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.uiState.collectOnStart {
-            if (it.error != null) findNavController().popBackStack()
+        launchAndRepeatWithLifecycle {
+            viewModel.uiState.collect{
+                if (it.error != null) findNavController().popBackStack()
+            }
         }
         viewModel.load()
     }
