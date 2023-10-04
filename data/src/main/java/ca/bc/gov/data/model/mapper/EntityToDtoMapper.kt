@@ -401,6 +401,7 @@ fun HospitalVisitEntity.toDto() = HospitalVisitDto(
     visitType = visitType,
     visitDate = visitDate,
     dischargeDate = dischargeDate,
+    encounterId = encounterId
 )
 
 fun ClinicalDocumentEntity.toDto() = ClinicalDocumentDto(

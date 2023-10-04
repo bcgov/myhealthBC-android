@@ -47,7 +47,8 @@ class ClinicalDocumentDetailViewModel @Inject constructor(
                 state.copy(
                     onLoading = false,
                     toolbarTitle = dto.name,
-                    uiList = uiList
+                    uiList = uiList,
+                    id = dto.fileId
                 )
             }
         } catch (e: Exception) {
@@ -82,5 +83,6 @@ data class ClinicalDocumentUiState(
     val onLoading: Boolean = false,
     val toolbarTitle: String? = "",
     val uiList: List<HealthRecordDetailItem> = emptyList(),
-    val pdfData: String? = null
+    val pdfData: String? = null,
+    val id: String? = null
 )
