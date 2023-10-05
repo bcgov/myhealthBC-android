@@ -33,9 +33,18 @@ class DiagnosticImagingDetailViewModel @Inject constructor(
             val details = listOf<HealthRecordDetailItem>(
 
                 HealthRecordDetailItem(
+                    title = R.string.procedure_description,
+                    description = data.procedureDescription ?: "--"
+                ),
+
+                HealthRecordDetailItem(
                     title = R.string.health_authority,
                     description = data.healthAuthority ?: "--"
                 ),
+                HealthRecordDetailItem(
+                    title = R.string.di_status,
+                    description = data.examStatus ?: "--"
+                )
             )
 
             _uiState.update {

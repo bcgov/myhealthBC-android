@@ -25,6 +25,7 @@ import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolbar
 import ca.bc.gov.bchealth.utils.PdfHelper
 import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
+import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -67,6 +68,7 @@ class DiagnosticImagingDetailFragment : BaseFragment(null) {
                 content = { it ->
                     DiagnosticImagingDetailScreen(
                         onClickComments = ::onClickComments,
+                        onClickLink = ::onClickLink,
                         modifier = Modifier
                             .statusBarsPadding()
                             .navigationBarsPadding()
@@ -127,5 +129,9 @@ class DiagnosticImagingDetailFragment : BaseFragment(null) {
                 "recordType" to commentsSummary.entryTypeCode,
             )
         )
+    }
+
+    private fun onClickLink(url: String) {
+        requireContext().redirect(url)
     }
 }
