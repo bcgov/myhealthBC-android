@@ -42,7 +42,7 @@ class SpecialAuthorityDetailFragment :
 
     private fun observeUiState() {
         launchAndRepeatWithLifecycle {
-            viewModel.uiState.collect{state ->
+            viewModel.uiState.collect { state ->
 
                 binding.progressBar.isVisible = state.onLoading
                 setupComposeToolbar(binding.composeToolbar.root, state.toolbarTitle)

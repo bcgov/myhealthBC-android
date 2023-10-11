@@ -30,7 +30,7 @@ class ProfileFragment : BaseFragment(null) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         launchAndRepeatWithLifecycle {
-            viewModel.uiState.collect{
+            viewModel.uiState.collect {
                 if (it.error != null) findNavController().popBackStack()
             }
         }
