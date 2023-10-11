@@ -47,7 +47,7 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
         setToolBar(getAppBarConfiguration())
 
         launchAndRepeatWithLifecycle {
-            getBaseViewModel()?.baseUiState?.collect{
+            getBaseViewModel()?.baseUiState?.collect {
                 handleBaseUiState(it)
             }
         }
@@ -64,7 +64,7 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
     }
 
     open fun setToolBar(appBarConfiguration: AppBarConfiguration) {}
-    
+
     fun showGenericError() {
         AlertDialogHelper.showAlertDialog(
             context = requireContext(),
@@ -106,7 +106,7 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
             R.id.homeFragment,
             R.id.healthPassFragment,
             R.id.healthRecordFragment,
-            R.id.dependentsFragment
+            R.id.dependentFragment
         ),
         null
     )

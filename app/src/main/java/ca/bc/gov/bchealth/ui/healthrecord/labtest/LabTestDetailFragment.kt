@@ -75,7 +75,7 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
 
     private fun observeUiState() {
         launchAndRepeatWithLifecycle {
-            viewModel.uiState.collect{ state ->
+            viewModel.uiState.collect { state ->
                 binding.progressBar.isVisible = state.onLoading
 
                 handledServiceDown(state)

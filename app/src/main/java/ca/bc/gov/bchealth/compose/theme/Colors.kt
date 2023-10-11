@@ -21,6 +21,8 @@ val lightGrey = Color(0XFFF7F7F7)
 val greyBg = Color(0xFFF2F2F2)
 val dividerGrey = Color(0x14212121)
 val disableBackground = Color(0xFFCFCFCF)
+val warningColor = Color(0xFFF9F1C6)
+val warningText = Color(0xFF6C4A00)
 
 val green = Color(0xFF2E8540)
 val red = Color(0xFFD8292F)

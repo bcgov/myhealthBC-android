@@ -58,7 +58,7 @@ class MedicationDetailsFragment : BaseRecordDetailFragment(R.layout.fragment_med
 
     private fun observeUiState() {
         launchAndRepeatWithLifecycle {
-            viewModel.uiState.collect{state ->
+            viewModel.uiState.collect { state ->
                 binding.progressBar.isVisible = state.onLoading
 
                 if (state.medicationDetails?.isNotEmpty() == true) {

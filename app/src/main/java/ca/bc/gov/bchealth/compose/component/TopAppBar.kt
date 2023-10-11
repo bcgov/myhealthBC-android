@@ -1,6 +1,7 @@
 package ca.bc.gov.bchealth.compose.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -16,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.component.menu.ActionMenu
@@ -27,7 +29,8 @@ import ca.bc.gov.bchealth.compose.theme.primaryBlue
 fun HGTopAppBar(
     modifier: Modifier = Modifier,
     title: String,
-    actionItems: List<TopAppBarActionItem> = emptyList()
+    actionItems: List<TopAppBarActionItem> = emptyList(),
+    elevation: Dp = AppBarDefaults.TopAppBarElevation
 ) {
     var menuOpen by remember {
         mutableStateOf(false)
@@ -51,7 +54,8 @@ fun HGTopAppBar(
             )
         },
         backgroundColor = MaterialTheme.colors.surface,
-        contentColor = MaterialTheme.colors.primary
+        contentColor = MaterialTheme.colors.primary,
+        elevation = elevation
     )
 }
 
