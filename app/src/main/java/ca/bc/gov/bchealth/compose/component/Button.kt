@@ -230,6 +230,43 @@ fun HGTextButton(
 }
 
 @Composable
+fun HGOutlinedButton(
+    onClick: () -> Unit,
+    text: String,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    defaultHeight: Dp = HGButtonDefaults.LargeButtonHeight,
+    leadingIcon: @Composable (() -> Unit)? = null
+) {
+    HGOutlineButton(
+        onClick,
+        modifier,
+        enabled,
+        defaultHeight,
+        contentPadding = if (leadingIcon != null) {
+            ButtonDefaults.ButtonWithIconContentPadding
+        } else {
+            ButtonDefaults.TextButtonContentPadding
+        }
+    ) {
+        HGButtonContent(
+            {
+                Text(
+                    text = text,
+                    style = if (defaultHeight == HGButtonDefaults.SmallButtonHeight) {
+                        MaterialTheme.typography.body2
+                    } else {
+                        MaterialTheme.typography.subtitle2
+                    },
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            leadingIcon
+        )
+    }
+}
+
+@Composable
 fun HGTextButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -267,6 +304,27 @@ fun HGTextButton(
 ) {
 
     TextButton(
+        onClick = onClick,
+        modifier = modifier.defaultMinSize(minHeight = defaultHeight),
+        enabled = enabled,
+        colors = ButtonDefaults.textButtonColors(
+            disabledContentColor = MaterialTheme.colors.onPrimary.copy(alpha = 0.20f)
+        ),
+        contentPadding = contentPadding,
+        content = content
+    )
+}
+
+@Composable
+fun HGOutlinedButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    defaultHeight: Dp = HGButtonDefaults.LargeButtonHeight,
+    contentPadding: PaddingValues = ButtonDefaults.TextButtonContentPadding,
+    content: @Composable RowScope.() -> Unit
+) {
+    OutlinedButton(
         onClick = onClick,
         modifier = modifier.defaultMinSize(minHeight = defaultHeight),
         enabled = enabled,

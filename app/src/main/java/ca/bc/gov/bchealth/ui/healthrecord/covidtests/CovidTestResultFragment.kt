@@ -78,7 +78,7 @@ class CovidTestResultFragment(private val itemClickListener: ItemClickListener) 
 
     private fun observeTestRecordDetails() {
         launchAndRepeatWithLifecycle {
-            viewModel.uiState.collect{state ->
+            viewModel.uiState.collect { state ->
                 if (state.covidTest != null && state.patient != null && state.covidOrder != null) {
                     initUi(state.covidOrder, state.covidTest, state.patient)
                     getComments(state.parentEntryId)
