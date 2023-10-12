@@ -9,6 +9,16 @@
         <item name="android:colorBackground">@color/primary_blue</item>
     </style>
 
+    <style name="Theme.HG.Splash" parent="Theme.SplashScreen">
+        <item name="android:colorBackground">@color/primary_blue</item>
+        <item name="android:windowBackground">@drawable/bc_splash_background</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/primary_blue</item>
+        <item name="windowSplashScreenBackground">@color/primary_blue</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/bc_splash_background</item>
+        <item name="windowSplashScreenAnimationDuration">2000</item>
+        <item name="postSplashScreenTheme">@style/Theme.HealthGateway</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="Theme.HealthGateway" parent="Theme.MaterialComponents.Light.NoActionBar">
 

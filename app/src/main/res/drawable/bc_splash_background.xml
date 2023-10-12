@@ -5,8 +5,13 @@
     <item android:drawable="?android:colorBackground" />
 
     <item
+        android:bottom="@dimen/space_8_x"
         android:drawable="@drawable/ic_splash_logo"
-        android:gravity="center"
-        android:bottom="@dimen/space_8_x"/>
+        android:gravity="center" />
+
+    <item
+        android:bottom="@dimen/space_8_x"
+        android:drawable="@drawable/ic_brand"
+        android:gravity="center|bottom" />
 
 </layer-list>

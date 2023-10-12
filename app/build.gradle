@@ -108,6 +108,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swipe_refresh_layout"
     implementation "androidx.coordinatorlayout:coordinatorlayout:$versions.coordinator"
+    implementation 'androidx.core:core-splashscreen:1.0.1'
 
     //Compose
     def composeBom = platform("androidx.compose:compose-bom:$versions.compose_bom")
