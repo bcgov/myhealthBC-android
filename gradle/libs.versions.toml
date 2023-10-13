@@ -1,0 +1,48 @@
+[versions]
+compose-bom = "2023.06.01"
+compose-constraint-layout = "1.0.1"
+compose-activity = "1.7.2"
+navigation = "2.6.0"
+splash-screen = "1.0.1"
+lifecycle = "2.6.1"
+
+[libraries]
+compose-activity = {group = "androidx.activity", name = "activity-compose", version.ref = "compose-activity"}
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+compose-constraint-layout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "compose-constraint-layout" }
+compose-navigation = {group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation"}
+compose-material2 = { group = "androidx.compose.material", name = "material" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-live-data = { group = "androidx.compose.runtime", name = "runtime-livedata" }
+compose-window-size = { group = "androidx.compose.material3", name = "material3-window-size-class" }
+
+# NAVIGATION
+navitation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
+navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
+navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigation" }
+
+# SPLASH
+androidx-splash-screen = {group = "androidx.core", name = "core-splashscreen", version.ref = "splash-screen"}
+
+# LIFECYCLE
+androidx-lifecycle-viewmodel-compose = {group = "androidx.lifecycle",name = "lifecycle-viewmodel-compose", version.ref = "lifecycle"}
+androidx-lifecycle-runtime-compose = {group = "androidx.lifecycle",name = "lifecycle-runtime-compose", version.ref = "lifecycle"}
+androidx-lifecycle-viewmodel-ktx = {group = "androidx.lifecycle",name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle"}
+androidx-lifecycle-runtime-ktx = {group = "androidx.lifecycle",name = "lifecycle-runtime-ktx", version.ref = "lifecycle"}
+androidx-lifecycle-livedata-ktx = {group = "androidx.lifecycle",name = "lifecycle-livedata-ktx", version.ref = "lifecycle"}
+
+[bundles]
+
+compose = ["compose-material2", "compose-material3", "compose-ui-tooling-preview", "compose-live-data", "compose-window-size"]
+
+navigation = ["navitation-fragment-ktx", "navigation-ui-ktx", "navigation-runtime-ktx"]
+
+androidx = ["androidx-splash-screen"]
+
+androidx-lifecycle = ["androidx-lifecycle-viewmodel-ktx", "androidx-lifecycle-livedata-ktx", "androidx-lifecycle-runtime-ktx"]
+
+androidx-lifecycle-compose = ["androidx-lifecycle-viewmodel-compose", "androidx-lifecycle-runtime-compose"]
+
+[plugins]
