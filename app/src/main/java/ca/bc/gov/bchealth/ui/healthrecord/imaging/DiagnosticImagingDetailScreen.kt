@@ -78,6 +78,12 @@ fun DiagnosticImagingDetailScreen(
         viewModel.getDiagnosticImagingDataDetails(id)
     }
 
+    LaunchedEffect(key1 = Unit) {
+        uiState.id?.let {
+            commentsViewModel.getComments(it)
+        }
+    }
+
     DiagnosticImagingDetailContent(
         onClickDownload = viewModel::onClickDownload,
         onClickComments = onClickComments,
