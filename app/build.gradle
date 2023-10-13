@@ -108,32 +108,29 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swipe_refresh_layout"
     implementation "androidx.coordinatorlayout:coordinatorlayout:$versions.coordinator"
-    implementation 'androidx.core:core-splashscreen:1.0.1'
+
+    implementation libs.bundles.androidx
 
     //Compose
-    def composeBom = platform("androidx.compose:compose-bom:$versions.compose_bom")
+    def composeBom = platform(libs.compose.bom)
     implementation composeBom
-    implementation 'androidx.compose.material:material'
-    implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.compose.runtime:runtime-livedata'
-    implementation "androidx.constraintlayout:constraintlayout-compose:$versions.constraint_compose"
-
-    debugImplementation 'androidx.compose.ui:ui-tooling'
+    implementation libs.compose.activity
+    implementation libs.compose.constraint.layout
+    debugImplementation libs.compose.ui.tooling
+    implementation libs.compose.navigation
+    implementation libs.bundles.compose
 
     //Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:$versions.navigation"
-    implementation "androidx.navigation:navigation-ui-ktx:$versions.navigation"
-    implementation "androidx.navigation:navigation-runtime-ktx:$versions.navigation"
+    implementation libs.bundles.navigation
 
     //JetPack LiveData ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$versions.lifecycle"
-    implementation "androidx.lifecycle:lifecycle-runtime-compose:$versions.lifecycle"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle"
+    implementation libs.bundles.androidx.lifecycle
+    implementation libs.bundles.androidx.lifecycle.compose
+
 
     //Dagger Hilt
     implementation "com.google.dagger:hilt-android:$versions.hilt"
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation project(path: ':repository')
     implementation project(path: ':appauth')
     implementation project(path: ':common')
