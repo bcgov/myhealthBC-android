@@ -46,6 +46,12 @@ fun HospitalVisitDetailScreen(
         viewModel.getHospitalVisitDetails(id)
     }
 
+    LaunchedEffect(key1 = Unit) {
+        uiState.id?.let {
+            commentsViModel.getComments(it)
+        }
+    }
+
     val context = LocalContext.current
     val workRequest = WorkManager.getInstance(context)
         .getWorkInfosForUniqueWorkLiveData(SYNC_COMMENTS)
