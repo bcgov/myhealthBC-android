@@ -46,7 +46,7 @@ fun HospitalVisitDetailScreen(
         viewModel.getHospitalVisitDetails(id)
     }
 
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(key1 = uiState.id) {
         uiState.id?.let {
             commentsViModel.getComments(it)
         }
@@ -58,7 +58,7 @@ fun HospitalVisitDetailScreen(
         .observeAsState()
     val workState = workRequest.value?.firstOrNull()?.state
     if (workState != null && workState.isFinished) {
-        LaunchedEffect(key1 = Unit) {
+        LaunchedEffect(key1 = uiState.id) {
             uiState.id?.let {
                 commentsViModel.getComments(it)
             }

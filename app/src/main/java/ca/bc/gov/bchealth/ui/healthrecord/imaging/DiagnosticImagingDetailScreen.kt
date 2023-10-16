@@ -67,7 +67,7 @@ fun DiagnosticImagingDetailScreen(
         .observeAsState()
     val workState = workRequest.value?.firstOrNull()?.state
     if (workState != null && workState.isFinished) {
-        LaunchedEffect(key1 = Unit) {
+        LaunchedEffect(key1 = uiState.id) {
             uiState.id?.let {
                 commentsViewModel.getComments(it)
             }
@@ -78,7 +78,7 @@ fun DiagnosticImagingDetailScreen(
         viewModel.getDiagnosticImagingDataDetails(id)
     }
 
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(key1 = uiState.id) {
         uiState.id?.let {
             commentsViewModel.getComments(it)
         }
