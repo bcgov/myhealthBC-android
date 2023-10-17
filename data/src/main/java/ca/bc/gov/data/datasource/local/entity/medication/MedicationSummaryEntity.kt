@@ -43,5 +43,17 @@ data class MedicationSummaryEntity(
     @ColumnInfo(name = "strength_unit")
     val strengthUnit: String?,
     @ColumnInfo(name = "is_pin")
-    val isPin: Boolean?
+    val isPin: Boolean?,
+    @ColumnInfo(name = "pharmacy_assessment_title", defaultValue = "@null")
+    val pharmacyAssessmentTitle: String?,
+    @ColumnInfo(name = "prescription_provided", defaultValue = "false")
+    val prescriptionProvided: Boolean = false,
+    @ColumnInfo(name = "redirected_to_health_care_provider", defaultValue = "false")
+    val redirectedToHealthCareProvider: Boolean = false,
+    @ColumnInfo(name = "title", defaultValue = "@null")
+    val title: String? = null,
+    @ColumnInfo(name = "subtitle", defaultValue = "@null")
+    val subtitle: String? = null,
+    @ColumnInfo(name = "is_pharmacist_assessment", defaultValue = "false")
+    val isPharmacistAssessment: Boolean = false
 )

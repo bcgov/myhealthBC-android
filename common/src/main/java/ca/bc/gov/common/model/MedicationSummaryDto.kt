@@ -18,5 +18,11 @@ data class MedicationSummaryDto(
     val manufacturer: String?,
     val strength: String?,
     val strengthUnit: String?,
-    val isPin: Boolean = false
+    val isPin: Boolean = false,
+    val pharmacyAssessmentTitle: String?,
+    val prescriptionProvided: Boolean = false,
+    val redirectedToHealthCareProvider: Boolean = false,
+    val title: String?,
+    val subtitle: String?,
+    val isPharmacistAssessment: Boolean = false
 )

@@ -191,7 +191,13 @@ fun MedicationSummaryEntity.toDto() = MedicationSummaryDto(
     manufacturer,
     strength,
     strengthUnit,
-    isPin ?: false
+    isPin ?: false,
+    pharmacyAssessmentTitle,
+    prescriptionProvided,
+    redirectedToHealthCareProvider,
+    title,
+    subtitle,
+    isPharmacistAssessment
 )
 
 fun DispensingPharmacyEntity.toDto() = DispensingPharmacyDto(
@@ -509,7 +515,8 @@ fun AppFeatureWithQuickAccessTiles.toDto() = AppFeatureWithQuickAccessTilesDto(
 
 fun PatientWithImmunizationRecommendations.toDto() = PatientWithImmunizationRecommendationsDto(
     patient = patient.toDto(),
-    recommendations = recommendations.map { it.toDto() }.sortedByDescending { record -> record.agentDueDate }
+    recommendations = recommendations.map { it.toDto() }
+        .sortedByDescending { record -> record.agentDueDate }
 )
 
 fun PatientWithDependentAndListOder.toDto() = PatientWithDependentAndListOrderDto(
