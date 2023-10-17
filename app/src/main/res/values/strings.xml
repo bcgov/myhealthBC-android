@@ -562,6 +562,12 @@
     <string name="phone_number">Phone Number:</string>
     <string name="fax">Fax:</string>
     <string name="direction_for_use">Direction for use</string>
+    <string name="pharmacy">Pharmacy:</string>
+    <string name="service_type">Service type:</string>
+    <string name="outcome">Outcome:</string>
+    <string name="prescription_provided">Prescription provided</string>
+    <string name="prescription_not_provided">Prescription not provided</string>
+    <string name="outcome_description">Advised the patient to seek medical attention from a physician or other health care professional</string>
 
     <!--Health Visit Details-->
     <string name="clinic_name">Clinic Name:</string>

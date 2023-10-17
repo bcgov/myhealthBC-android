@@ -138,7 +138,13 @@ fun MedicationSummaryDto.toEntity() = MedicationSummaryEntity(
     manufacturer,
     strength,
     strengthUnit,
-    isPin
+    isPin,
+    pharmacyAssessmentTitle,
+    prescriptionProvided,
+    redirectedToHealthCareProvider,
+    title,
+    subtitle,
+    isPharmacistAssessment
 )
 
 fun DispensingPharmacyDto.toEntity() = DispensingPharmacyEntity(

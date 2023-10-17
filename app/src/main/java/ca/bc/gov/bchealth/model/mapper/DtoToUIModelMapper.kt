@@ -77,9 +77,9 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
 fun MedicationWithSummaryAndPharmacyDto.toUiModel() = HealthRecordItem(
     patientId = medicationRecord.patientId,
     recordId = medicationRecord.id,
-    title = medicationSummary.brandName ?: "",
+    title = if (medicationSummary.isPharmacistAssessment) { medicationSummary.title } else { medicationSummary.brandName } ?: "",
     icon = R.drawable.ic_health_record_medication,
-    description = medicationSummary.genericName.orEmpty() + " • " + medicationRecord.dispenseDate.toDate(),
+    description = if (medicationSummary.isPharmacistAssessment) { medicationSummary.subtitle.orEmpty() } else { medicationSummary.genericName.orEmpty() } + " • " + medicationRecord.dispenseDate.toDate(),
     date = medicationRecord.dispenseDate,
     healthRecordType = HealthRecordType.MEDICATION_RECORD,
     dataSource = medicationRecord.dataSource.name

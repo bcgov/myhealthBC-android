@@ -140,7 +140,13 @@ fun MedicationSummary.toMedicationSummaryDto() = MedicationSummaryDto(
     manufacturer = manufacturer,
     strength = strength,
     strengthUnit = strengthUnit,
-    isPin = isPin ?: false
+    isPin = isPin ?: false,
+    pharmacyAssessmentTitle = pharmacyAssessmentTitle,
+    prescriptionProvided = prescriptionProvided ?: false,
+    redirectedToHealthCareProvider = redirectedToHealthCareProvider ?: false,
+    title = title,
+    subtitle = subtitle,
+    isPharmacistAssessment = isPharmacistAssessment ?: false
 )
 
 fun DispensingPharmacy.toDispensingPharmacyDto() = DispensingPharmacyDto(
