@@ -11,5 +11,11 @@ data class MedicationSummary(
     val maxDailyDosage: Float,
     val quantity: Float,
     val strength: String?,
-    val strengthUnit: String?
+    val strengthUnit: String?,
+    val pharmacyAssessmentTitle: String?,
+    val prescriptionProvided: Boolean?,
+    val redirectedToHealthCareProvider: Boolean?,
+    val title: String?,
+    val subtitle: String?,
+    val isPharmacistAssessment: Boolean?
 )

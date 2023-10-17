@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ca.bc.gov.bchealth.databinding.ItemMedicationDetailBinding
 import ca.bc.gov.bchealth.databinding.ItemMedicationDetailDirectionsBinding
+import ca.bc.gov.bchealth.databinding.ItemMedicationOutcomeBinding
 import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_DIRECTIONS
+import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_OUTCOME
 import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_RECORD
 import ca.bc.gov.bchealth.utils.showIfNullOrBlank
 
@@ -23,6 +25,9 @@ class MedicationDetailAdapter :
     class DirectionsViewHolder(val binding: ItemMedicationDetailDirectionsBinding) :
         RecyclerView.ViewHolder(binding.root)
 
+    class OutcomeViewHolder(val binding: ItemMedicationOutcomeBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             ITEM_VIEW_TYPE_RECORD -> {
@@ -31,12 +36,21 @@ class MedicationDetailAdapter :
                 )
                 RecordViewHolder(binding)
             }
+
             ITEM_VIEW_TYPE_DIRECTIONS -> {
                 val binding = ItemMedicationDetailDirectionsBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 )
                 DirectionsViewHolder(binding)
             }
+
+            ITEM_VIEW_TYPE_OUTCOME -> {
+                val binding = ItemMedicationOutcomeBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false
+                )
+                OutcomeViewHolder(binding)
+            }
+
             else -> throw ClassCastException("Unknown viewType $viewType")
         }
     }
@@ -51,11 +65,24 @@ class MedicationDetailAdapter :
                         medicationDetail.description.showIfNullOrBlank(holder.itemView.context)
                 }
             }
+
             is DirectionsViewHolder -> {
                 holder.binding.apply {
                     tvTitle.text = holder.itemView.resources.getString(medicationDetail.title)
                     tvDesc.text =
                         medicationDetail.description.showIfNullOrBlank(holder.itemView.context)
+                }
+            }
+
+            is OutcomeViewHolder -> {
+                holder.binding.apply {
+                    tvTitle.text = holder.itemView.resources.getString(medicationDetail.title)
+                    tvDesc.text =
+                        holder.itemView.resources.getString(medicationDetail.descriptionRes)
+                    if (medicationDetail.additionalDetail > 0) {
+                        tvAcdditionalDetail.text =
+                            holder.itemView.resources.getString(medicationDetail.additionalDetail)
+                    }
                 }
             }
         }

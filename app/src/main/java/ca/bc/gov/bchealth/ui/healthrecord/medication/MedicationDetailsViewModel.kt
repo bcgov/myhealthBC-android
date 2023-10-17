@@ -1,5 +1,6 @@
 package ca.bc.gov.bchealth.ui.healthrecord.medication
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
@@ -39,7 +40,11 @@ class MedicationDetailsViewModel @Inject constructor(
                 it.copy(
                     onLoading = false,
                     medicationDetails = prePareMedicationDetails(medicationWithSummaryAndPharmacyDto),
-                    toolbarTitle = medicationWithSummaryAndPharmacyDto.medicationSummary.brandName,
+                    toolbarTitle = if (medicationWithSummaryAndPharmacyDto.medicationSummary.isPharmacistAssessment) {
+                        medicationWithSummaryAndPharmacyDto.medicationSummary.title
+                    } else {
+                        medicationWithSummaryAndPharmacyDto.medicationSummary.brandName
+                    },
                     parentEntryId = medicationWithSummaryAndPharmacyDto.medicationRecord.prescriptionIdentifier
                 )
             }
@@ -63,32 +68,44 @@ class MedicationDetailsViewModel @Inject constructor(
                 medicationWithSummaryAndPharmacyDto.medicationRecord.practitionerSurname
             )
         )
-        medicationDetails.add(
-            MedicationDetail(
-                R.string.quantity,
-                medicationWithSummaryAndPharmacyDto.medicationSummary.quantity.toString()
+
+        if (medicationWithSummaryAndPharmacyDto.medicationSummary.isPharmacistAssessment) {
+            medicationDetails.add(
+                MedicationDetail(
+                    R.string.service_type,
+                    medicationWithSummaryAndPharmacyDto.medicationSummary.subtitle
+                )
             )
-        )
-        medicationDetails.add(
-            MedicationDetail(
-                R.string.strength,
-                medicationWithSummaryAndPharmacyDto.medicationSummary.strength.toString()
-                    .plus(" ")
-                    .plus(medicationWithSummaryAndPharmacyDto.medicationSummary.strengthUnit)
+        }
+
+        if (!medicationWithSummaryAndPharmacyDto.medicationSummary.isPharmacistAssessment) {
+            medicationDetails.add(
+                MedicationDetail(
+                    R.string.quantity,
+                    medicationWithSummaryAndPharmacyDto.medicationSummary.quantity.toString()
+                )
             )
-        )
-        medicationDetails.add(
-            MedicationDetail(
-                R.string.form,
-                medicationWithSummaryAndPharmacyDto.medicationSummary.form
+            medicationDetails.add(
+                MedicationDetail(
+                    R.string.strength,
+                    medicationWithSummaryAndPharmacyDto.medicationSummary.strength.toString()
+                        .plus(" ")
+                        .plus(medicationWithSummaryAndPharmacyDto.medicationSummary.strengthUnit)
+                )
             )
-        )
-        medicationDetails.add(
-            MedicationDetail(
-                R.string.manufacturer,
-                medicationWithSummaryAndPharmacyDto.medicationSummary.manufacturer
+            medicationDetails.add(
+                MedicationDetail(
+                    R.string.form,
+                    medicationWithSummaryAndPharmacyDto.medicationSummary.form
+                )
             )
-        )
+            medicationDetails.add(
+                MedicationDetail(
+                    R.string.manufacturer,
+                    medicationWithSummaryAndPharmacyDto.medicationSummary.manufacturer
+                )
+            )
+        }
         medicationDetails.add(
             MedicationDetail(
                 if (medicationWithSummaryAndPharmacyDto.medicationSummary.isPin) R.string.pin else
@@ -96,43 +113,73 @@ class MedicationDetailsViewModel @Inject constructor(
                 medicationWithSummaryAndPharmacyDto.medicationSummary.din
             )
         )
+
         medicationDetails.add(
             MedicationDetail(
-                R.string.filled_at,
+                if (medicationWithSummaryAndPharmacyDto.medicationSummary.isPharmacistAssessment) {
+                    R.string.pharmacy
+                } else {
+                    R.string.filled_at
+                },
                 medicationWithSummaryAndPharmacyDto.dispensingPharmacy.name
             )
         )
-        medicationDetails.add(
-            MedicationDetail(
-                R.string.filled_date,
-                medicationWithSummaryAndPharmacyDto.medicationRecord.dispenseDate.toDate()
+        if (!medicationWithSummaryAndPharmacyDto.medicationSummary.isPharmacistAssessment) {
+            medicationDetails.add(
+                MedicationDetail(
+                    R.string.filled_date,
+                    medicationWithSummaryAndPharmacyDto.medicationRecord.dispenseDate.toDate()
+                )
             )
-        )
+        }
         medicationDetails.add(
             MedicationDetail(
                 R.string.address,
                 getAddress(medicationWithSummaryAndPharmacyDto.dispensingPharmacy)
             )
         )
-        medicationDetails.add(
-            MedicationDetail(
-                R.string.phone_number,
-                medicationWithSummaryAndPharmacyDto.dispensingPharmacy.phoneNumber
+        if (!medicationWithSummaryAndPharmacyDto.medicationSummary.isPharmacistAssessment) {
+            medicationDetails.add(
+                MedicationDetail(
+                    R.string.phone_number,
+                    medicationWithSummaryAndPharmacyDto.dispensingPharmacy.phoneNumber
+                )
             )
-        )
-        medicationDetails.add(
-            MedicationDetail(
-                R.string.fax,
-                medicationWithSummaryAndPharmacyDto.dispensingPharmacy.faxNumber
+            medicationDetails.add(
+                MedicationDetail(
+                    R.string.fax,
+                    medicationWithSummaryAndPharmacyDto.dispensingPharmacy.faxNumber
+                )
             )
-        )
-        medicationDetails.add(
-            MedicationDetail(
-                R.string.direction_for_use,
-                medicationWithSummaryAndPharmacyDto.medicationRecord.directions,
-                ITEM_VIEW_TYPE_DIRECTIONS
+            medicationDetails.add(
+                MedicationDetail(
+                    R.string.direction_for_use,
+                    medicationWithSummaryAndPharmacyDto.medicationRecord.directions,
+                    ITEM_VIEW_TYPE_DIRECTIONS
+                )
             )
-        )
+        }
+
+        if (medicationWithSummaryAndPharmacyDto.medicationSummary.isPharmacistAssessment) {
+            medicationDetails.add(
+                MedicationDetail(
+                    title = R.string.outcome,
+                    description = null,
+                    descriptionRes =
+                    if (medicationWithSummaryAndPharmacyDto.medicationSummary.prescriptionProvided) {
+                        R.string.prescription_provided
+                    } else {
+                        R.string.prescription_not_provided
+                    },
+                    viewType = ITEM_VIEW_TYPE_OUTCOME,
+                    additionalDetail = if (medicationWithSummaryAndPharmacyDto.medicationSummary.prescriptionProvided) {
+                        R.string.outcome_description
+                    } else {
+                        0
+                    }
+                )
+            )
+        }
         return medicationDetails
     }
 
@@ -169,6 +216,7 @@ class MedicationDetailsViewModel @Inject constructor(
         const val ITEM_VIEW_TYPE_DIRECTIONS = 1
         const val ITEM_VIEW_TYPE_COMMENTS_COUNT = 2
         const val ITEM_VIEW_TYPE_COMMENTS = 3
+        const val ITEM_VIEW_TYPE_OUTCOME = 4
     }
 }
 
@@ -183,5 +231,7 @@ data class MedicationDetailUiState(
 data class MedicationDetail(
     val title: Int,
     val description: String?,
-    val viewType: Int = ITEM_VIEW_TYPE_RECORD
+    val viewType: Int = ITEM_VIEW_TYPE_RECORD,
+    @StringRes val descriptionRes: Int = 0,
+    @StringRes val additionalDetail: Int = 0
 )
