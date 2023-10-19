@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import ca.bc.gov.bchealth.SplashViewModel.UpdateType.CHECK_SOFT_UPDATE
 import ca.bc.gov.bchealth.SplashViewModel.UpdateType.FORCE_UPDATE
 import ca.bc.gov.bchealth.ui.inappupdate.InAppUpdateActivity
@@ -21,9 +22,10 @@ class SplashActivity : AppCompatActivity() {
     private val viewModel: SplashViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-
+        splashScreen.setKeepOnScreenCondition { true }
         observeUpdateStatus()
         viewModel.checkAppVersion()
     }
