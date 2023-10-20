@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
@@ -79,14 +78,6 @@ private fun RecommendationScreenContent(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-        item {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.recommendations_para1),
-                style = MaterialTheme.typography.body2,
-                color = grey
-            )
-        }
         item {
 
             MyHealthClickableText(

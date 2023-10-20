@@ -49,8 +49,8 @@
     <string name="recommendations_description">For more information on vaccines recommendation and eligibility, please visit immunizeBC or speak to your health care provider.</string>
     <string name="recommendations_description_clickable">immunizeBC</string>
     <string name="recommendations_para1">Recommended immunization are suggestion for your health journey. This page will contains all of future immunization for you and your dependents. To add dependents to application, click on Dependent in the menu bar at the bottom.</string>
-    <string name="recommendations_para2">For more information on vaccines recommendation and eligibility, please visit immunizeBC or speak to your health care provider. </string>
-    <string name="immunizeBC">immunizeBC</string>
+    <string name="recommendations_para2">Vaccine recommendations for you and your dependents are based on the BC Immunization Schedule. For more information on immunizations, visit  ImmunizeBC  or speak to your health care provider.</string>
+    <string name="immunizeBC">ImmunizeBC</string>
 
     <!--Dependents-->
     <string name="dependent">Dependent</string>
@@ -159,7 +159,7 @@
     <string name="profile_address_empty_footer">To add an address, visit this page.</string>
     <string name="profile_address_empty_footer_click">this page</string>
     <string name="profile_communication_prefs_title">Communication Preferences</string>
-    <string name="profile_communication_prefs_body_1">Keep you updated on health record updates (vaccine availability, lab results and more).</string>
+    <string name="profile_communication_prefs_body_1">Stay updated on health record updates (vaccine recommendations, lab results and more).</string>
     <string name="profile_communication_prefs_body_2">To make changes to email address and phone number, please go to www.healthgateway.gov.bc.ca</string>
     <string name="profile_communication_prefs_click">www.healthgateway.gov.bc.ca</string>
     <string name="profile_communication_prefs_email">Email address</string>
@@ -595,7 +595,7 @@
 
     <!--Clinical Documents-->
     <string name="clinical_documents_detail_button_download">Download Full Report</string>
-    <string name="clinical_documents_detail_discipline">Discipline:</string>
+    <string name="clinical_documents_detail_type">Type:</string>
     <string name="clinical_documents_detail_facility">Facility:</string>
 
     <!--Services-->

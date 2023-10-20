@@ -33,7 +33,7 @@ class ClinicalDocumentDetailViewModel @Inject constructor(
 
             val uiList: List<HealthRecordDetailItem> = listOf(
                 HealthRecordDetailItem(
-                    R.string.clinical_documents_detail_discipline,
+                    R.string.clinical_documents_detail_type,
                     dto.discipline,
                 ),
 
