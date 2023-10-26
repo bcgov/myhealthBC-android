@@ -29,12 +29,12 @@ class CommentsFragment : BaseFragment(null) {
 
         val uiState = viewModel.uiState.collectAsState().value
 
-        if (uiState.isBcscSessionActive == false) findNavController().navigate(R.id.individualHealthRecordFragment)
+        if (uiState.isBcscSessionActive == false) findNavController().navigate(R.id.healthRecordFragment)
 
         MyHealthScaffold(
             title = stringResource(id = R.string.comments),
             isLoading = uiState.onLoading,
-            navigationAction = ::popNavigation,
+            navigationAction = { findNavController().popBackStack() },
         ) {
             CommentsScreen(
                 uiState,
@@ -103,7 +103,7 @@ class CommentsFragment : BaseFragment(null) {
                         showError()
                         viewModel.resetUiState()
                     }
-                    state.commentsList != null && state.commentsList.isEmpty() -> popNavigation()
+                    state.commentsList != null && state.commentsList.isEmpty() -> findNavController().popBackStack()
                 }
             }
         }

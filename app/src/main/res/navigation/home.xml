@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/homeFragment"
-    android:id="@+id/home">
+    android:id="@+id/home"
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -43,11 +42,43 @@
             app:argType="string" />
     </fragment>
 
+    <fragment
+        android:id="@+id/immunizationSchedulesFragment"
+        android:name="ca.bc.gov.bchealth.ui.home.immunizationschedules.ImmunizationSchedulesFragment"
+        android:label="@string/immnz_schedules_title" />
+
+    <fragment
+        android:id="@+id/quickAccessManagementFragment"
+        android:name="ca.bc.gov.bchealth.ui.home.manage.QuickAccessManagementFragment"
+        android:label="@string/quick_access_management_title" />
+
+
     <include app:graph="@navigation/health_pass" />
     <include app:graph="@navigation/health_records" />
     <include app:graph="@navigation/resources" />
     <include app:graph="@navigation/recommendations" />
     <include app:graph="@navigation/services" />
     <include app:graph="@navigation/dependents" />
+
+    <dialog
+        android:id="@+id/removeQuickAccessTileBottomSheetFragment"
+        android:name="ca.bc.gov.bchealth.ui.home.RemoveQuickAccessTileBottomSheetFragment"
+        android:label="RemoveQuickAccessTileBottomSheetFragment" >
+        <argument
+            android:name="id"
+            app:argType="long" />
+        <argument
+            android:name="name"
+            app:argType="string" />
+    </dialog>
+    <action
+        android:id="@+id/action_global_removeQuickAccessTileBottomSheetFragment"
+        app:destination="@id/removeQuickAccessTileBottomSheetFragment" />
+    <action
+        android:id="@+id/action_home_self"
+        app:destination="@id/home"
+        app:popUpTo="@id/home"
+        app:popUpToInclusive="true"
+        app:launchSingleTop="true" />
 
 </navigation>

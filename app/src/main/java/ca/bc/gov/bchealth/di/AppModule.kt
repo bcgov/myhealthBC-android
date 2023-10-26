@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.di
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import androidx.work.WorkManager
 import ca.bc.gov.bchealth.MainActivity
 import ca.bc.gov.bchealth.workers.WorkerInvoker
 import dagger.Module
@@ -32,4 +33,8 @@ class AppModule {
     @Singleton
     fun provideWorkerInvoker(@ApplicationContext context: Context): WorkerInvoker =
         WorkerInvoker(context)
+
+    @Provides
+    @Singleton
+    fun provideWorkManager(@ApplicationContext context: Context): WorkManager = WorkManager.getInstance(context)
 }

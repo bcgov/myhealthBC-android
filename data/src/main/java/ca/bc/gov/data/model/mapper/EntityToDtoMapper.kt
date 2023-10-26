@@ -30,8 +30,10 @@ import ca.bc.gov.common.model.patient.PatientNameDto
 import ca.bc.gov.common.model.patient.PatientWithClinicalDocumentsDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
 import ca.bc.gov.common.model.patient.PatientWithDataDto
+import ca.bc.gov.common.model.patient.PatientWithDependentAndListOrderDto
 import ca.bc.gov.common.model.patient.PatientWithHealthVisitsDto
 import ca.bc.gov.common.model.patient.PatientWithHospitalVisitsDto
+import ca.bc.gov.common.model.patient.PatientWithImmunizationRecommendationsDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.patient.PatientWithSpecialAuthorityDto
@@ -41,6 +43,9 @@ import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.services.OrganDonorDto
+import ca.bc.gov.common.model.settings.AppFeatureDto
+import ca.bc.gov.common.model.settings.AppFeatureWithQuickAccessTilesDto
+import ca.bc.gov.common.model.settings.QuickAccessTileDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestAndPatientDto
@@ -75,12 +80,15 @@ import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntit
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
 import ca.bc.gov.data.datasource.local.entity.notification.NotificationEntity
+import ca.bc.gov.data.datasource.local.entity.relations.AppFeatureWithQuickAccessTiles
 import ca.bc.gov.data.datasource.local.entity.relations.MedicationWithSummaryAndPharmacy
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithClinicalDocuments
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithCovidOrderAndCovidTest
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithData
+import ca.bc.gov.data.datasource.local.entity.relations.PatientWithDependentAndListOder
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithHealthVisits
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithHospitalVisits
+import ca.bc.gov.data.datasource.local.entity.relations.PatientWithImmunizationRecommendations
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithImmunizationRecordAndForecast
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithLabOrdersAndLabTests
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithMedicationRecords
@@ -89,6 +97,8 @@ import ca.bc.gov.data.datasource.local.entity.relations.PatientWithVaccineAndDos
 import ca.bc.gov.data.datasource.local.entity.relations.VaccineRecordWithDose
 import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
+import ca.bc.gov.data.datasource.local.entity.settings.AppFeatureEntity
+import ca.bc.gov.data.datasource.local.entity.settings.QuickAccessTileEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 import java.time.Instant
@@ -391,6 +401,7 @@ fun HospitalVisitEntity.toDto() = HospitalVisitDto(
     visitType = visitType,
     visitDate = visitDate,
     dischargeDate = dischargeDate,
+    encounterId = encounterId
 )
 
 fun ClinicalDocumentEntity.toDto() = ClinicalDocumentDto(
@@ -474,4 +485,34 @@ fun NotificationEntity.toDto() = NotificationDto(
     actionUrl = actionUrl,
     actionType = NotificationActionTypeDto.getByValue(actionType),
     date = date,
+)
+
+fun AppFeatureEntity.toDto() = AppFeatureDto(
+    id,
+    name,
+    hasManageableQuickAccessLinks,
+    showAsQuickAccess
+)
+
+fun QuickAccessTileEntity.toDto() = QuickAccessTileDto(
+    id,
+    featureId,
+    tileName,
+    tilePayload,
+    showAsQuickAccess
+)
+
+fun AppFeatureWithQuickAccessTiles.toDto() = AppFeatureWithQuickAccessTilesDto(
+    appFeature.toDto(),
+    quickAccessTiles.map { it.toDto() }
+)
+
+fun PatientWithImmunizationRecommendations.toDto() = PatientWithImmunizationRecommendationsDto(
+    patient = patient.toDto(),
+    recommendations = recommendations.map { it.toDto() }.sortedByDescending { record -> record.agentDueDate }
+)
+
+fun PatientWithDependentAndListOder.toDto() = PatientWithDependentAndListOrderDto(
+    patient = patient.toDto(),
+    dependents = dependentAndListOrder.map { it.toDto() }
 )

@@ -12,6 +12,21 @@
     <string name="expand_content">Expand content</string>
     <string name="collapse_content">Collapse content</string>
 
+    <!--    App Features-->
+    <string name="feature_category_health_record">Health record</string>
+    <string name="feature_category_service">Service</string>
+    <string name="feature_category_dependents_records">Dependents’ records</string>
+    <string name="feature_quick_action_dependents">%s’s record</string>
+
+    <string name="feature_my_notes">My Notes</string>
+    <string name="feature_immunization">Immunization</string>
+    <string name="feature_medications">Medications</string>
+    <string name="feature_lab_results">Lab Results</string>
+    <string name="feature_special_authority">Special authority</string>
+    <string name="feature_health_visit">Health visit</string>
+    <string name="feature_clinic_documents">Clinic documents</string>
+    <string name="feature_organ_donor">Organ donor</string>
+
     <!--Informational screen for camera permission-->
     <string name="privacy_policy">Privacy Policy</string>
     <string name="allow">Allow camera access</string>
@@ -33,6 +48,9 @@
     <string name="recommendations_home_title">Recommended immunizations</string>
     <string name="recommendations_description">For more information on vaccines recommendation and eligibility, please visit immunizeBC or speak to your health care provider.</string>
     <string name="recommendations_description_clickable">immunizeBC</string>
+    <string name="recommendations_para1">Recommended immunization are suggestion for your health journey. This page will contains all of future immunization for you and your dependents. To add dependents to application, click on Dependent in the menu bar at the bottom.</string>
+    <string name="recommendations_para2">Vaccine recommendations for you and your dependents are based on the BC Immunization Schedule. For more information on immunizations, visit  ImmunizeBC  or speak to your health care provider.</string>
+    <string name="immunizeBC">ImmunizeBC</string>
 
     <!--Dependents-->
     <string name="dependent">Dependent</string>
@@ -141,7 +159,7 @@
     <string name="profile_address_empty_footer">To add an address, visit this page.</string>
     <string name="profile_address_empty_footer_click">this page</string>
     <string name="profile_communication_prefs_title">Communication Preferences</string>
-    <string name="profile_communication_prefs_body_1">Keep you updated on health record updates (vaccine availability, lab results and more).</string>
+    <string name="profile_communication_prefs_body_1">Stay updated on health record updates (vaccine recommendations, lab results and more).</string>
     <string name="profile_communication_prefs_body_2">To make changes to email address and phone number, please go to www.healthgateway.gov.bc.ca</string>
     <string name="profile_communication_prefs_click">www.healthgateway.gov.bc.ca</string>
     <string name="profile_communication_prefs_email">Email address</string>
@@ -484,6 +502,24 @@
     <string name="learn_more">Learn more</string>
     <string name="home_subtitle">What do you want to focus on today?</string>
     <string name="home_banner_toolbar_title">New updates</string>
+    <string name="quick_access">Quick access</string>
+    <string name="manage">Manage</string>
+    <string name="immunization_schedules">Immunization schedules</string>
+    <string name="log_in">Log in</string>
+    <string name="log_in_description">Gain full access to health records for you and your family.</string>
+    <string name="manage_hint">Set a folder to display \non your home page \nfor quick access.</string>
+
+    <!-- Immunization Schedules -->
+    <string name="immnz_schedules_title">Immunization Schedules</string>
+    <string name="immnz_schedules_body">Click on the tabs below to expand and view individual immunization schedules for different age groups and individuals at high risk.</string>
+    <string name="immnz_schedules_infant">Infant and children</string>
+    <string name="immnz_schedules_school_age">School age children</string>
+    <string name="immnz_schedules_adult_seniors">Adult, seniors and individual with high risk</string>
+
+    <!-- Quick Access Management -->
+    <string name="quick_access_management_title">Manage</string>
+    <string name="quick_access_management_body">Set a folder to display on your home page for quick and easy access.</string>
+    <string name="quick_access_management_save">Save</string>
 
     <!--Terms of service-->
     <string name="terms_of_service">Terms of service</string>
@@ -559,7 +595,7 @@
 
     <!--Clinical Documents-->
     <string name="clinical_documents_detail_button_download">Download Full Report</string>
-    <string name="clinical_documents_detail_discipline">Discipline:</string>
+    <string name="clinical_documents_detail_type">Type:</string>
     <string name="clinical_documents_detail_facility">Facility:</string>
 
     <!--Services-->
@@ -582,9 +618,23 @@
     <string name="organ_donor">Organ Donor</string>
 
     <!--Diagnostic Imaging-->
-    <string name="diagnostic_imaging_detail_subtitle">If you have questions, contact the doctor or care provider who ordered your imaging.</string>
+    <string name="diagnostic_imaging_detail_subtitle">If you have questions about your imaging report: Contact your primary care provider or call HealthlinkBC at 811.</string>
+    <string name="diagnostic_imaging_detail_subtitle2">You can learn more about medical imaging test on the following websites:</string>
     <string name="body_part">Body Part:</string>
     <string name="health_authority">Health Authority:</string>
     <string name="facility">Facility:</string>
+    <string name="di_status">Status:</string>
+    <string name="di_health_link">HealthLink BC</string>
+    <string name="di_health_link2_bullet">\u2022 BC Radiological Society -   Patient Resources</string>
+    <string name="di_health_link2">BC Radiological Society -   Patient Resources</string>
+    <string name="bullet_point">\u2022</string>
+    <string name="procedure_description">Procedure Description:</string>
 
+    <!--MENU-->
+    <string name="more_options">More Options</string>
+
+    <!--Bottom Sheet Dialog-->
+    <string name="remove_tile_confirmation_title">Remove %s</string>
+    <string name="remove_tile_confirmation_description">You can easily restore it by managing the settings.</string>
+    <string name="remove">Remove</string>
 </resources>

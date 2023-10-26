@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.URL_ADDRESS_CHANGE
 import ca.bc.gov.bchealth.utils.URL_COMMUNICATION_PREFS
@@ -19,7 +20,7 @@ class ProfileFragment : BaseFragment(null) {
     override fun GetComposableLayout() {
         ProfileUI(
             viewModel = viewModel,
-            navigationAction = ::popNavigation,
+            navigationAction = { findNavController().popBackStack() },
             onClickAddress = ::onClickAddressChange,
             onClickPrefs = ::onClickCommunicationPrefs,
         )
@@ -28,7 +29,7 @@ class ProfileFragment : BaseFragment(null) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.uiState.collectOnStart {
-            if (it.error != null) popNavigation()
+            if (it.error != null) findNavController().popBackStack()
         }
         viewModel.load()
     }

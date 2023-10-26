@@ -96,6 +96,7 @@ android {
     task getApkVersion {
         println defaultConfig.versionName + "-" + defaultConfig.versionCode
     }
+    namespace 'ca.bc.gov.bchealth'
 }
 
 dependencies {
@@ -107,16 +108,17 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swipe_refresh_layout"
     implementation "androidx.coordinatorlayout:coordinatorlayout:$versions.coordinator"
+    implementation 'androidx.core:core-splashscreen:1.0.1'
 
     //Compose
     def composeBom = platform("androidx.compose:compose-bom:$versions.compose_bom")
     implementation composeBom
     implementation 'androidx.compose.material:material'
     implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation 'androidx.compose.runtime:runtime-livedata'
     implementation "androidx.constraintlayout:constraintlayout-compose:$versions.constraint_compose"
 
     debugImplementation 'androidx.compose.ui:ui-tooling'
-
 
     //Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$versions.navigation"
@@ -125,6 +127,7 @@ dependencies {
 
     //JetPack LiveData ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$versions.lifecycle"
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:$versions.lifecycle"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle"

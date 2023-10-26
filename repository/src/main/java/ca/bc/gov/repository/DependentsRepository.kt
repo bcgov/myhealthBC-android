@@ -11,6 +11,7 @@ import ca.bc.gov.common.model.immunization.ImmunizationDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientWithClinicalDocumentsDto
 import ca.bc.gov.common.model.patient.PatientWithCovidOrderAndTestDto
+import ca.bc.gov.common.model.patient.PatientWithImmunizationRecommendationsDto
 import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDto
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
@@ -217,6 +218,10 @@ class DependentsRepository @Inject constructor(
 
     suspend fun getPatientWithClinicalDocuments(patientId: Long): PatientWithClinicalDocumentsDto =
         patientLocalDataSource.getPatientWithClinicalDocuments(patientId)
+            ?: throw getDatabaseException(patientId)
+
+    suspend fun getPatientWithImmunizationRecommendations(patientId: Long): PatientWithImmunizationRecommendationsDto =
+        patientLocalDataSource.getPatientWithImmunizationRecommendations(patientId)
             ?: throw getDatabaseException(patientId)
 
     suspend fun updateDependentListOrder(list: List<DependentDto>) {

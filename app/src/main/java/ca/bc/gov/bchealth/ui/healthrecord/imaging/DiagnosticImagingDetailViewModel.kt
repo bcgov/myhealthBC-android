@@ -33,9 +33,18 @@ class DiagnosticImagingDetailViewModel @Inject constructor(
             val details = listOf<HealthRecordDetailItem>(
 
                 HealthRecordDetailItem(
+                    title = R.string.procedure_description,
+                    description = data.procedureDescription ?: "--"
+                ),
+
+                HealthRecordDetailItem(
                     title = R.string.health_authority,
                     description = data.healthAuthority ?: "--"
                 ),
+                HealthRecordDetailItem(
+                    title = R.string.di_status,
+                    description = data.examStatus ?: "--"
+                )
             )
 
             _uiState.update {
@@ -43,7 +52,8 @@ class DiagnosticImagingDetailViewModel @Inject constructor(
                     onLoading = false,
                     toolbarTitle = data.modality ?: "",
                     details = details,
-                    fileId = data.fileId
+                    fileId = data.fileId,
+                    id = data.id
                 )
             }
         } catch (e: Exception) {
@@ -84,5 +94,6 @@ data class DiagnosticImagingDataDetailUiState(
     val toolbarTitle: String = "",
     val details: List<HealthRecordDetailItem> = emptyList(),
     val fileId: String? = null,
-    val pdfData: String? = null
+    val pdfData: String? = null,
+    val id: String? = null
 )

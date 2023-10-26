@@ -29,7 +29,7 @@ android {
         mock {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
-            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "false"
+            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "true"
             buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
@@ -46,7 +46,7 @@ android {
         dev {
             dimension "version"
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
-            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "false"
+            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "true"
             buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
@@ -102,6 +102,7 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+    namespace 'ca.bc.gov.common'
 }
 
 dependencies {

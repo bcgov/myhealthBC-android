@@ -25,4 +25,5 @@ class SharedViewModel @Inject constructor() : ViewModel() {
     var destinationId: Int = 0
     var isBCSCAuthShown = false
     var isBiometricAuthShown = false
+    var shouldFetchBanner = true
 }

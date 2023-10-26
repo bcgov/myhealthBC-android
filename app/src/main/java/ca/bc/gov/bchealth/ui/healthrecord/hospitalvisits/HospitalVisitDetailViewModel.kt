@@ -69,7 +69,8 @@ class HospitalVisitDetailViewModel @Inject constructor(
                 state.copy(
                     onLoading = false,
                     toolbarTitle = dto.location,
-                    uiList = uiList
+                    uiList = uiList,
+                    id = dto.encounterId
                 )
             }
         } catch (e: Exception) {
@@ -86,5 +87,6 @@ class HospitalVisitDetailViewModel @Inject constructor(
 data class HospitalVisitUiState(
     val onLoading: Boolean = false,
     val toolbarTitle: String? = "",
+    val id: String? = "",
     val uiList: List<HealthRecordDetailItem> = emptyList()
 )

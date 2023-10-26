@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.feeback
 
 import androidx.compose.runtime.Composable
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.showErrorSnackbar
@@ -18,7 +19,7 @@ class FeedbackFragment : BaseFragment(null) {
     override fun GetComposableLayout() {
         FeedbackUI(
             uiStateFlow = feedbackViewModel.uiState,
-            navigationAction = ::popNavigation,
+            navigationAction = { findNavController().popBackStack() },
             sendAction = ::onClickSend,
             onMessageSent = ::onMessageSent,
             onError = ::displayError,

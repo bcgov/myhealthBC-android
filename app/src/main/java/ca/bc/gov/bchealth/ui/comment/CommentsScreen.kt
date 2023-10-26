@@ -44,11 +44,11 @@ import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTypography
-import ca.bc.gov.bchealth.compose.grey
-import ca.bc.gov.bchealth.compose.greyBg
 import ca.bc.gov.bchealth.compose.minButtonSize
-import ca.bc.gov.bchealth.compose.primaryBlue
-import ca.bc.gov.bchealth.compose.red
+import ca.bc.gov.bchealth.compose.theme.grey
+import ca.bc.gov.bchealth.compose.theme.greyBg
+import ca.bc.gov.bchealth.compose.theme.primaryBlue
+import ca.bc.gov.bchealth.compose.theme.red
 import ca.bc.gov.bchealth.widget.CommentInputUI
 import ca.bc.gov.bchealth.widget.EditableCommentInputUI
 import ca.bc.gov.common.model.SyncStatus

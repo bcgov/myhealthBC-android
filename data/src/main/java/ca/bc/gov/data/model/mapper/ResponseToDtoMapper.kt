@@ -354,6 +354,7 @@ fun HospitalVisitInformation.toDto() = HospitalVisitDto(
     visitType = visitType.orEmpty(),
     visitDate = admitDateTime.toDateTime(),
     dischargeDate = endDateTime?.toDateTime(),
+    encounterId = encounterId
 )
 
 fun ClinicalDocumentResponse.toDto(): List<ClinicalDocumentDto> =
@@ -402,12 +403,23 @@ fun Recommendation.toDto(): ImmunizationRecommendationsDto {
     )
 }
 
-fun BannerPayload.toDto() = BannerDto(
-    title = this.title,
-    body = this.body,
-    startDate = this.startDate.toDateTimeZ(),
-    endDate = this.endDate.toDateTimeZ()
-)
+fun BannerPayload.toDto(): BannerDto? {
+    val startDate = this.startDate.toDateTimeZ()
+    val endDate = this.endDate.toDateTimeZ()
+    val currentTime = System.currentTimeMillis()
+    return if (startDate.toEpochMilli() <= currentTime &&
+        currentTime < endDate.toEpochMilli()
+    ) {
+        BannerDto(
+            title = this.title,
+            body = this.body,
+            startDate = this.startDate.toDateTimeZ(),
+            endDate = this.endDate.toDateTimeZ()
+        )
+    } else {
+        null
+    }
+}
 
 fun DependentPayload.toDto() = DependentDto(
     hdid = dependentInformation.hdid,

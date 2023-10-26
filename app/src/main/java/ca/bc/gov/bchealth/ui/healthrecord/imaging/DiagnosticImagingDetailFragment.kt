@@ -10,17 +10,22 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.compose.MyHealthTheme
+import ca.bc.gov.bchealth.compose.theme.HealthGatewayTheme
 import ca.bc.gov.bchealth.ui.BaseFragment
+import ca.bc.gov.bchealth.ui.comment.CommentsSummary
+import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolbar
 import ca.bc.gov.bchealth.utils.PdfHelper
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
+import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -30,6 +35,7 @@ class DiagnosticImagingDetailFragment : BaseFragment(null) {
     private val args: DiagnosticImagingDetailFragmentArgs by navArgs()
     private val viewModel: DiagnosticImagingDetailViewModel by viewModels()
     private val pdfDecoderViewModel: PdfDecoderViewModel by viewModels()
+    private val commentsViewModel: CommentsViewModel by viewModels()
     private var fileInMemory: File? = null
     private var resultListener = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -39,30 +45,37 @@ class DiagnosticImagingDetailFragment : BaseFragment(null) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.uiState.collectOnStart(::handlePdfDownload)
-        viewModel.getDiagnosticImagingDataDetails(args.diagnosticImagingDataId)
+        launchAndRepeatWithLifecycle {
+            viewModel.uiState.collect {
+                handlePdfDownload(it)
+            }
+        }
         observePdfData()
     }
 
     @Composable
     override fun GetComposableLayout() {
 
-        val state = viewModel.uiState.collectAsState().value
-        MyHealthTheme {
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+        HealthGatewayTheme {
             Scaffold(
                 topBar = {
                     MyHealthToolbar(
-                        title = state.toolbarTitle
+                        title = uiState.toolbarTitle
                     ) { findNavController().popBackStack() }
                 },
                 content = { it ->
                     DiagnosticImagingDetailScreen(
+                        onClickComments = ::onClickComments,
+                        onClickLink = ::onClickLink,
                         modifier = Modifier
                             .statusBarsPadding()
                             .navigationBarsPadding()
                             .padding(it),
-                        viewModel
+                        viewModel,
+                        commentsViewModel,
+                        args.diagnosticImagingDataId
                     )
                 },
                 contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.background)
@@ -71,20 +84,22 @@ class DiagnosticImagingDetailFragment : BaseFragment(null) {
     }
 
     private fun observePdfData() {
-        pdfDecoderViewModel.uiState.collectOnStart { uiState ->
-            uiState.pdf?.let {
-                val (base64Pdf, file) = it
-                if (file != null) {
-                    try {
-                        fileInMemory = file
-                        PdfHelper().showPDF(file, requireActivity(), resultListener)
-                    } catch (e: Exception) {
+        launchAndRepeatWithLifecycle {
+            pdfDecoderViewModel.uiState.collect { uiState ->
+                uiState.pdf?.let {
+                    val (base64Pdf, file) = it
+                    if (file != null) {
+                        try {
+                            fileInMemory = file
+                            PdfHelper().showPDF(file, requireActivity(), resultListener)
+                        } catch (e: Exception) {
+                            fallBackToPdfRenderer(base64Pdf)
+                        }
+                    } else {
                         fallBackToPdfRenderer(base64Pdf)
                     }
-                } else {
-                    fallBackToPdfRenderer(base64Pdf)
+                    pdfDecoderViewModel.resetUiState()
                 }
-                pdfDecoderViewModel.resetUiState()
             }
         }
     }
@@ -104,5 +119,19 @@ class DiagnosticImagingDetailFragment : BaseFragment(null) {
                 "title" to getString(R.string.lab_test)
             )
         )
+    }
+
+    private fun onClickComments(commentsSummary: CommentsSummary) {
+        findNavController().navigate(
+            R.id.commentsFragment,
+            bundleOf(
+                "parentEntryId" to commentsSummary.parentEntryId,
+                "recordType" to commentsSummary.entryTypeCode,
+            )
+        )
+    }
+
+    private fun onClickLink(url: String) {
+        requireContext().redirect(url)
     }
 }
