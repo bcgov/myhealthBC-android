@@ -34,6 +34,12 @@
 -keep class org.bouncycastle.** { *; }
 -keepnames class org.bouncycastle.** { *; }
 -dontwarn org.bouncycastle.**
+-dontwarn org.conscrypt.Conscrypt$Version
+-dontwarn org.conscrypt.Conscrypt
+-dontwarn org.conscrypt.ConscryptHostnameVerifier
+-dontwarn org.openjsse.javax.net.ssl.SSLParameters
+-dontwarn org.openjsse.javax.net.ssl.SSLSocket
+-dontwarn org.openjsse.net.ssl.OpenJSSE
 
 # SqlCipher
 -keep,includedescriptorclasses class net.sqlcipher.** { *; }
