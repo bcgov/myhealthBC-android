@@ -15,10 +15,9 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.ui.custom.MyHealthToolbar
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
-import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
-import kotlinx.coroutines.flow.StateFlow
 
 // todo: Create open fun to get contentLayoutId.
 // Hilt doesn't support default value for constructor
@@ -46,7 +45,12 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setToolBar(getAppBarConfiguration())
-        getBaseViewModel()?.baseUiState?.collectOnStart(::handleBaseUiState)
+
+        launchAndRepeatWithLifecycle {
+            getBaseViewModel()?.baseUiState?.collect {
+                handleBaseUiState(it)
+            }
+        }
     }
 
     private fun handleBaseUiState(baseUiState: BaseUiState) = baseUiState.apply {
@@ -60,20 +64,6 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
     }
 
     open fun setToolBar(appBarConfiguration: AppBarConfiguration) {}
-
-    @Deprecated(
-        "Should replace with extension mentioned in the FragmentExtensions" +
-            "as in compose we need to get rid of all the fragment",
-        replaceWith = ReplaceWith("launchAndRepeatWithLifecycle"),
-        level = DeprecationLevel.WARNING
-    )
-    fun <T> StateFlow<T>.collectOnStart(action: ((T) -> Unit)) {
-        launchOnStart {
-            this@collectOnStart.collect { state ->
-                action.invoke(state)
-            }
-        }
-    }
 
     fun showGenericError() {
         AlertDialogHelper.showAlertDialog(
@@ -116,7 +106,7 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
             R.id.homeFragment,
             R.id.healthPassFragment,
             R.id.healthRecordFragment,
-            R.id.dependentsFragment
+            R.id.dependentFragment
         ),
         null
     )

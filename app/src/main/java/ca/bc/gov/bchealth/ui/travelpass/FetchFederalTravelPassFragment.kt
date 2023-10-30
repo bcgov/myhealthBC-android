@@ -22,7 +22,7 @@ import ca.bc.gov.bchealth.utils.AlertDialogHelper
 import ca.bc.gov.bchealth.utils.PhnHelper
 import ca.bc.gov.bchealth.utils.hideKeyboard
 import ca.bc.gov.bchealth.utils.inflateHelpButton
-import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
@@ -64,7 +64,7 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
             findNavController().popBackStack()
         }
 
-        launchOnStart {
+        launchAndRepeatWithLifecycle {
             launch { collectPhnUi() }
             launch { collectUiState() }
             launch { collectCardUiState() }

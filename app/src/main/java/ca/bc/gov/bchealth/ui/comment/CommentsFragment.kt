@@ -13,7 +13,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
-import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.common.BuildConfig.FLAG_ADD_COMMENTS
 import ca.bc.gov.repository.SYNC_COMMENTS
@@ -96,7 +96,7 @@ class CommentsFragment : BaseFragment(null) {
     }
 
     private fun observeComments() {
-        launchOnStart {
+        launchAndRepeatWithLifecycle {
             viewModel.uiState.collect { state ->
                 when {
                     state.onError -> {

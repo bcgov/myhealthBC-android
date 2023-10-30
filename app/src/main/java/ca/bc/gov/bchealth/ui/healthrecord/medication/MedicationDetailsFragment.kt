@@ -13,6 +13,7 @@ import ca.bc.gov.bchealth.databinding.FragmentMedicationDetailsBinding
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordDetailFragment
 import ca.bc.gov.bchealth.utils.AlertDialogHelper
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -56,16 +57,18 @@ class MedicationDetailsFragment : BaseRecordDetailFragment(R.layout.fragment_med
     }
 
     private fun observeUiState() {
-        viewModel.uiState.collectOnStart { state ->
-            binding.progressBar.isVisible = state.onLoading
+        launchAndRepeatWithLifecycle {
+            viewModel.uiState.collect { state ->
+                binding.progressBar.isVisible = state.onLoading
 
-            if (state.medicationDetails?.isNotEmpty() == true) {
-                medicationDetailAdapter.submitList(state.medicationDetails)
-                setupComposeToolbar(binding.composeToolbar.root, state.toolbarTitle)
+                if (state.medicationDetails?.isNotEmpty() == true) {
+                    medicationDetailAdapter.submitList(state.medicationDetails)
+                    setupComposeToolbar(binding.composeToolbar.root, state.toolbarTitle)
+                }
+
+                handleError(state.onError)
+                getComments(state.parentEntryId)
             }
-
-            handleError(state.onError)
-            getComments(state.parentEntryId)
         }
     }
 

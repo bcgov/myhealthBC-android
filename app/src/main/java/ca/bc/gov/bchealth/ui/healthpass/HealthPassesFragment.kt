@@ -14,7 +14,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentHelathPassesBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.PdfHelper
-import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
@@ -87,7 +87,7 @@ class HealthPassesFragment : BaseFragment(R.layout.fragment_helath_passes) {
             }
         )
 
-        launchOnStart {
+        launchAndRepeatWithLifecycle {
             launch { collectHealthPasses() }
             launch { collectUiState() }
         }

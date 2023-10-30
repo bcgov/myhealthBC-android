@@ -11,7 +11,7 @@ import androidx.work.WorkInfo
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentDependentsBinding
 import ca.bc.gov.bchealth.ui.dependents.records.filter.DependentFilterViewModel
-import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.observeWork
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
@@ -56,7 +56,7 @@ class DependentsFragment : BaseDependentFragment(R.layout.fragment_dependents) {
                 )
             }
         }
-        launchOnStart {
+        launchAndRepeatWithLifecycle {
             observeUiState()
         }
         viewModel.loadAuthenticationState()
@@ -92,7 +92,7 @@ class DependentsFragment : BaseDependentFragment(R.layout.fragment_dependents) {
             }
 
             if (uiState.isSessionActive == true) {
-                launchOnStart { observeDependentList() }
+                launchAndRepeatWithLifecycle { observeDependentList() }
             }
 
             uiState.error?.let { handleError(it) }

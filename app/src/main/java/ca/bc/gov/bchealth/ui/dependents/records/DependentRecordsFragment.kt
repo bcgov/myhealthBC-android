@@ -17,7 +17,7 @@ import ca.bc.gov.bchealth.ui.dependents.records.filter.DependentFilterViewModel
 import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordFilterFragment
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordType
 import ca.bc.gov.bchealth.ui.healthrecord.individual.HealthRecordsAdapter
-import ca.bc.gov.bchealth.utils.launchOnStart
+import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
 import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.toggleVisibility
@@ -47,7 +47,7 @@ class DependentRecordsFragment : BaseRecordFilterFragment(R.layout.fragment_depe
         setUpRecyclerView()
         setupSearchView()
 
-        launchOnStart { observeUiState() }
+        launchAndRepeatWithLifecycle { observeUiState() }
         viewModel.loadRecords(patientId = args.patientId, hdid = args.hdid)
         clearFilterClickListener()
         observeFilterState()
