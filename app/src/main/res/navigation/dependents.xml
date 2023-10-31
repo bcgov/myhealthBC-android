@@ -3,19 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dependents"
-    app:startDestination="@id/dependentFragment">
-
-    <fragment
-        android:id="@+id/dependentFragment"
-        android:name="ca.bc.gov.bchealth.ui.dependents.DependentFragment"
-        android:label="@string/dependent"
-        tools:layout="@layout/fragment_dependents" />
+    app:startDestination="@id/dependentsFragment">
 
     <fragment
         android:id="@+id/dependentsFragment"
         android:name="ca.bc.gov.bchealth.ui.dependents.DependentsFragment"
         android:label="@string/dependent"
-        tools:layout="@layout/fragment_dependents" />
+        />
 
     <fragment
         android:id="@+id/addDependentFragment"

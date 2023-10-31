@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.healthPassFragment,
                 R.id.healthPassesFragment,
                 R.id.addCardOptionFragment,
-                R.id.dependentFragment,
+                R.id.dependentsFragment,
                 R.id.dependentRecordsFragment,
                 R.id.resourcesFragment,
                 R.id.healthRecordFragment,

@@ -1,117 +1,126 @@
 package ca.bc.gov.bchealth.ui.dependents
 
-import android.os.Bundle
-import android.view.View
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.work.WorkInfo
+import ca.bc.gov.bchealth.BcVaccineCardNavGraphDirections
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.databinding.FragmentDependentsBinding
-import ca.bc.gov.bchealth.ui.dependents.records.filter.DependentFilterViewModel
-import ca.bc.gov.bchealth.utils.launchAndRepeatWithLifecycle
-import ca.bc.gov.bchealth.utils.observeWork
-import ca.bc.gov.bchealth.utils.showNoInternetConnectionMessage
-import ca.bc.gov.bchealth.utils.toggleVisibility
-import ca.bc.gov.bchealth.utils.viewBindings
-import ca.bc.gov.common.exceptions.NetworkConnectionException
-import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
+import ca.bc.gov.bchealth.compose.component.HGTopAppBar
+import ca.bc.gov.bchealth.compose.component.menu.TopAppBarActionItem
+import ca.bc.gov.bchealth.compose.theme.HealthGatewayTheme
+import ca.bc.gov.bchealth.model.BcServiceCardLoginInfoType
+import ca.bc.gov.bchealth.model.BcServiceCardSessionInfoType
+import ca.bc.gov.bchealth.ui.BaseSecureFragment
+import ca.bc.gov.bchealth.ui.NavigationAction
+import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
+import ca.bc.gov.bchealth.ui.login.LoginStatus
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * @author pinakin.kansara
+ * Created 2023-10-10 at 1:04 p.m.
+ */
 @AndroidEntryPoint
-class DependentsFragment : BaseDependentFragment(R.layout.fragment_dependents) {
-    private val binding by viewBindings(FragmentDependentsBinding::bind)
+class DependentsFragment : BaseSecureFragment(null) {
+    private val bcscAuthViewModel: BcscAuthViewModel by viewModels()
     private val viewModel: DependentsViewModel by viewModels()
-    private val dependentAdapter = DependentAdapter(::onClickDependent, ::confirmDeletion)
-    private val filterSharedViewModel: DependentFilterViewModel by activityViewModels()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.apply {
-            btnAddDependent.setOnClickListener {
-                findNavController().navigate(
-                    R.id.addDependentFragment,
-                    null
-                )
-            }
-            btnLogIn.setOnClickListener {
-                findNavController().navigate(
-                    R.id.bcscAuthInfoFragment,
-                    null
-                )
-            }
-            btnManageDependent.setOnClickListener {
-                findNavController().navigate(
-                    R.id.manageDependentFragment,
-                    null
-                )
-            }
-            viewSessionExpired.btnLogin.setOnClickListener {
-                findNavController().navigate(
-                    R.id.bcscAuthInfoFragment,
-                    null
-                )
-            }
-        }
-        launchAndRepeatWithLifecycle {
-            observeUiState()
-        }
-        viewModel.loadAuthenticationState()
-
-        observeHealthRecordsSyncCompletion()
-        filterSharedViewModel.clearFilter()
-    }
-
-    private fun observeHealthRecordsSyncCompletion() {
-        observeWork(BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME) { state ->
-            if (state == WorkInfo.State.RUNNING) {
-                viewModel.displayLoadingState()
-            } else {
-                viewModel.hideLoadingState()
-            }
-        }
-    }
-
-    private suspend fun observeUiState() {
-        viewModel.uiState.collect { uiState ->
-
-            val isDataReadyToDisplay = uiState.isSessionActive == true && uiState.onLoading.not()
-            binding.apply {
-                progressBar.indicator.toggleVisibility(uiState.onLoading)
-                groupLogIn.toggleVisibility(uiState.isBcscAuthenticated == false)
-                viewSessionExpired.content.toggleVisibility(uiState.isSessionActive == false)
-                tvBody.toggleVisibility(uiState.isSessionActive != false)
-                btnAddDependent.toggleVisibility(isDataReadyToDisplay)
-                containerImageEmpty.toggleVisibility(isDataReadyToDisplay)
-                btnManageDependent.toggleVisibility(isDataReadyToDisplay)
-                dividerList.toggleVisibility(isDataReadyToDisplay)
-                listDependents.toggleVisibility(isDataReadyToDisplay)
-            }
-
-            if (uiState.isSessionActive == true) {
-                launchAndRepeatWithLifecycle { observeDependentList() }
-            }
-
-            uiState.error?.let { handleError(it) }
-        }
-    }
-
-    private suspend fun observeDependentList() {
-        viewModel.dependentsList.collect { list ->
-            if (viewModel.uiState.value.onLoading.not()) {
-                binding.apply {
-                    containerImageEmpty.toggleVisibility(list.isEmpty())
-                    btnManageDependent.toggleVisibility(list.isNotEmpty())
-                    dividerList.toggleVisibility(list.isNotEmpty())
-                    listDependents.toggleVisibility(list.isNotEmpty())
-                    listDependents.adapter = dependentAdapter
-                    dependentAdapter.submitList(list.toMutableList())
+    @Composable
+    override fun GetComposableLayout() {
+        val authState =
+            bcscAuthViewModel.authStatus.collectAsStateWithLifecycle(minActiveState = Lifecycle.State.RESUMED).value
+        val menuItems = mutableListOf<TopAppBarActionItem>(
+            TopAppBarActionItem.IconActionItem.AlwaysShown(
+                title = getString(R.string.settings),
+                onClick = { findNavController().navigate(R.id.settingsFragment) },
+                icon = R.drawable.ic_menu_settings,
+                contentDescription = getString(R.string.settings),
+            )
+        )
+        HealthGatewayTheme {
+            Scaffold(
+                topBar = {
+                    HGTopAppBar(
+                        title = "",
+                        actionItems = menuItems,
+                        elevation = 0.dp
+                    )
+                },
+                content = {
+                    DependentsScreen(
+                        onRequireAuthentication = ::onRequireAuthentication,
+                        onAddDependentClick = ::onAddDependentClick,
+                        onManageDependentClick = ::onManageDependentClick,
+                        onDependentClick = ::onClickDependent,
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .navigationBarsPadding()
+                            .padding(it),
+                        authViewModel = bcscAuthViewModel,
+                        viewModel = viewModel
+                    )
                 }
+            )
+        }
+    }
+
+    override fun handleNavigationAction(navigationAction: NavigationAction) {
+        when (navigationAction) {
+            NavigationAction.ACTION_BACK -> {
+                findNavController().popBackStack()
+            }
+
+            NavigationAction.ACTION_RE_CHECK -> {
+                bcscAuthViewModel.checkSession()
             }
         }
+    }
+
+    private fun onRequireAuthentication(loginStatus: LoginStatus) {
+        when (loginStatus) {
+            LoginStatus.ACTIVE -> {
+                // No operation
+            }
+
+            LoginStatus.EXPIRED -> {
+                val action =
+                    BcVaccineCardNavGraphDirections.actionGlobalBcServiceCardSessionFragment(
+                        BcServiceCardSessionInfoType.DEPENDENTS
+                    )
+                findNavController().navigate(action)
+            }
+
+            LoginStatus.NOT_AUTHENTICATED -> {
+                val action =
+                    BcVaccineCardNavGraphDirections.actionGlobalBcServicesCardLoginFragment(
+                        BcServiceCardLoginInfoType.DEPENDENTS
+                    )
+                findNavController().navigate(action)
+            }
+        }
+    }
+
+    private fun onAddDependentClick() {
+        findNavController().navigate(
+            R.id.addDependentFragment,
+            null
+        )
+    }
+
+    private fun onManageDependentClick() {
+        findNavController().navigate(
+            R.id.manageDependentFragment,
+            null
+        )
     }
 
     private fun onClickDependent(dependent: DependentDetailItem) {
@@ -123,38 +132,5 @@ class DependentsFragment : BaseDependentFragment(R.layout.fragment_dependents) {
                 "fullName" to dependent.fullName
             )
         )
-    }
-
-    override fun deleteDependent(patientId: Long) {
-        viewModel.removeDependent(patientId)
-    }
-
-    private fun handleError(e: Exception) {
-        viewModel.resetErrorState()
-        if (e is NetworkConnectionException) {
-            context?.let {
-                binding.root.showNoInternetConnectionMessage(it)
-            }
-        } else {
-            showGenericError()
-        }
-    }
-
-    override fun setToolBar(appBarConfiguration: AppBarConfiguration) {
-        with(binding.layoutToolbar.appbar) {
-            stateListAnimator = null
-            elevation = 0f
-        }
-        with(binding.layoutToolbar.topAppBar) {
-            inflateMenu(R.menu.settings_menu)
-            setOnMenuItemClickListener { menu ->
-                when (menu.itemId) {
-                    R.id.menu_settings -> {
-                        findNavController().navigate(R.id.settingsFragment)
-                    }
-                }
-                return@setOnMenuItemClickListener true
-            }
-        }
     }
 }
