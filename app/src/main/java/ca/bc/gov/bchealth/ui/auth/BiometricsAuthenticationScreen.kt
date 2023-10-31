@@ -1,5 +1,7 @@
 package ca.bc.gov.bchealth.ui.auth
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,10 +47,16 @@ private fun BiometricsAuthenticationScreenContent(
     modifier: Modifier = Modifier
 ) {
 
+    val biometricAuthenticator = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = {
+        }
+    )
+
     BoxWithConstraints {
         val constraints = when {
             maxWidth < 600.dp -> compactConstraint()
-            else -> constrains()
+            else -> largeScreenConstraints()
         }
         ConstraintLayout(
             constraintSet = constraints,
@@ -147,7 +155,8 @@ private fun compactConstraint(): ConstraintSet {
         }
     }
 }
-private fun constrains(): ConstraintSet {
+
+private fun largeScreenConstraints(): ConstraintSet {
     return ConstraintSet {
         val txtTitleId = createRefFor(TXT_TITLE_ID)
         val imgBiometricId = createRefFor(IMG_BIOMETRIC_ID)
