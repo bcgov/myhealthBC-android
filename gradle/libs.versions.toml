@@ -5,6 +5,7 @@ compose-activity = "1.7.2"
 navigation = "2.6.0"
 splash-screen = "1.0.1"
 lifecycle = "2.6.1"
+camerax = "1.2.2"
 
 [libraries]
 compose-activity = {group = "androidx.activity", name = "activity-compose", version.ref = "compose-activity"}
@@ -33,6 +34,12 @@ androidx-lifecycle-viewmodel-ktx = {group = "androidx.lifecycle",name = "lifecyc
 androidx-lifecycle-runtime-ktx = {group = "androidx.lifecycle",name = "lifecycle-runtime-ktx", version.ref = "lifecycle"}
 androidx-lifecycle-livedata-ktx = {group = "androidx.lifecycle",name = "lifecycle-livedata-ktx", version.ref = "lifecycle"}
 
+# CAMERA X
+camerax-camera2 = {group = "androidx.camera", name = "camera-camera2", version.ref = "camerax"}
+camerax-lifecycle = {group = "androidx.camera", name = "camera-lifecycle", version.ref = "camerax"}
+camerax-view = {group = "androidx.camera", name = "camera-view", version.ref = "camerax"}
+camerax-extensions = {group = "androidx.camera", name = "camera-extensions", version.ref = "camerax"}
+
 [bundles]
 
 compose = ["compose-material2", "compose-material3", "compose-ui-tooling-preview", "compose-live-data", "compose-window-size"]
@@ -44,5 +51,7 @@ androidx = ["androidx-splash-screen"]
 androidx-lifecycle = ["androidx-lifecycle-viewmodel-ktx", "androidx-lifecycle-livedata-ktx", "androidx-lifecycle-runtime-ktx"]
 
 androidx-lifecycle-compose = ["androidx-lifecycle-viewmodel-compose", "androidx-lifecycle-runtime-compose"]
+
+camerax = ["camerax-camera2", "camerax-extensions", "camerax-lifecycle", "camerax-view"]
 
 [plugins]

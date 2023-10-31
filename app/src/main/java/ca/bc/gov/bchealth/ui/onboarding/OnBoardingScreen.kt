@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.Visibility
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.DevicePreview
@@ -59,9 +60,9 @@ private fun OnBoardingScreenContent(
 
     BoxWithConstraints {
         val constraints = when {
-            maxWidth < 600.dp -> compactConstraint()
-            maxWidth < 840.dp -> mediumConstraint()
-            else -> largeConstraint()
+            maxWidth < 600.dp -> compactConstraint(uiState.isExistingUser)
+            maxWidth < 840.dp -> mediumConstraint(uiState.isExistingUser)
+            else -> largeConstraint(uiState.isExistingUser)
         }
         ConstraintLayout(
             modifier = modifier.fillMaxSize(),
@@ -120,7 +121,7 @@ private fun OnBoardingScreenContent(
     }
 }
 
-private fun compactConstraint(): ConstraintSet {
+private fun compactConstraint(isExistingUser: Boolean): ConstraintSet {
     return ConstraintSet {
         val pagerId = createRefFor(PAGER_ID)
         val btnNextId = createRefFor(BTN_NEXT_ID)
@@ -152,11 +153,14 @@ private fun compactConstraint(): ConstraintSet {
             start.linkTo(btnNextId.start)
             top.linkTo(btnNextId.bottom)
             end.linkTo(btnNextId.end)
+            visibility = if (isExistingUser) {
+                Visibility.Gone
+            } else { Visibility.Visible }
         }
     }
 }
 
-private fun mediumConstraint(): ConstraintSet {
+private fun mediumConstraint(isExistingUser: Boolean): ConstraintSet {
     return ConstraintSet {
         val pagerId = createRefFor(PAGER_ID)
         val btnNextId = createRefFor(BTN_NEXT_ID)
@@ -187,11 +191,14 @@ private fun mediumConstraint(): ConstraintSet {
             start.linkTo(btnNextId.start)
             top.linkTo(btnNextId.bottom)
             end.linkTo(btnNextId.end)
+            visibility = if (isExistingUser) {
+                Visibility.Gone
+            } else { Visibility.Visible }
         }
     }
 }
 
-private fun largeConstraint(): ConstraintSet {
+private fun largeConstraint(isExistingUser: Boolean): ConstraintSet {
     return ConstraintSet {
         val pagerId = createRefFor(PAGER_ID)
         val btnNextId = createRefFor(BTN_NEXT_ID)
@@ -227,6 +234,11 @@ private fun largeConstraint(): ConstraintSet {
             top.linkTo(bottomGuideline)
             end.linkTo(btnNextId.start)
             bottom.linkTo(parent.bottom)
+            visibility = if (isExistingUser) {
+                Visibility.Gone
+            } else {
+                Visibility.Visible
+            }
         }
         constrain(btnNextId) {
             start.linkTo(btnSkipIntroId.end)

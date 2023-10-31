@@ -111,6 +111,10 @@ dependencies {
 
     implementation libs.bundles.androidx
 
+    implementation project(path: ':repository')
+    implementation project(path: ':appauth')
+    implementation project(path: ':common')
+
     //Compose
     def composeBom = platform(libs.compose.bom)
     implementation composeBom
@@ -131,9 +135,6 @@ dependencies {
     //Dagger Hilt
     implementation "com.google.dagger:hilt-android:$versions.hilt"
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    implementation project(path: ':repository')
-    implementation project(path: ':appauth')
-    implementation project(path: ':common')
     kapt "com.google.dagger:hilt-compiler:$versions.hilt"
 
     //Biometric
@@ -143,10 +144,7 @@ dependencies {
     implementation "com.google.mlkit:barcode-scanning:$versions.barcode_scanning"
 
     //Camerax
-    implementation "androidx.camera:camera-camera2:$versions.camerax"
-    implementation "androidx.camera:camera-lifecycle:$versions.camerax"
-    implementation "androidx.camera:camera-view:$versions.camerax"
-    implementation "androidx.camera:camera-extensions:$versions.camerax"
+    implementation libs.bundles.camerax
 
     //Custom chrome tab
     implementation "androidx.browser:browser:$versions.browser"
