@@ -106,7 +106,7 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
             R.id.homeFragment,
             R.id.healthPassFragment,
             R.id.healthRecordFragment,
-            R.id.dependentFragment
+            R.id.dependentsFragment
         ),
         null
     )
