@@ -66,3 +66,7 @@ inline fun <reified T> NavController.removeActionFromPreviousBackStackEntry(key:
 inline fun <reified T> NavController.setActionToPreviousBackStackEntry(key: String, value: T) {
     previousBackStackEntry?.savedStateHandle?.set(key, value)
 }
+
+fun Fragment.composeEmail(address: String = HEALTH_GATEWAY_EMAIL_ADDRESS, subject: String = "") {
+    requireActivity().composeEmail(address, subject)
+}

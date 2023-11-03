@@ -5,6 +5,7 @@ import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.PatientAddressDto
+import ca.bc.gov.common.model.QuickAccessTileShowAsQuickLinkDto
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
@@ -22,6 +23,8 @@ import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientNameDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.services.OrganDonorDto
+import ca.bc.gov.common.model.settings.AppFeatureDto
+import ca.bc.gov.common.model.settings.QuickAccessTileDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidTestDto
@@ -50,6 +53,9 @@ import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
 import ca.bc.gov.data.datasource.local.entity.notification.NotificationEntity
 import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
+import ca.bc.gov.data.datasource.local.entity.settings.AppFeatureEntity
+import ca.bc.gov.data.datasource.local.entity.settings.QuickAccessTileEntity
+import ca.bc.gov.data.datasource.local.entity.settings.QuickAccessTileShowAsQuickLinkEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 
@@ -250,6 +256,7 @@ fun HospitalVisitDto.toEntity() = HospitalVisitEntity(
     visitType = visitType,
     visitDate = visitDate,
     dischargeDate = dischargeDate,
+    encounterId = encounterId
 )
 
 fun SpecialAuthorityDto.toEntity() = SpecialAuthorityEntity(
@@ -343,7 +350,8 @@ fun DiagnosticImagingDataDto.toEntity() = DiagnosticImagingDataEntity(
     organization = organization,
     modality = modality,
     bodyPart = bodyPart,
-    procedureDescription = procedureDescription
+    procedureDescription = procedureDescription,
+    isUpdated = isUpdated
 )
 
 fun NotificationDto.toEntity() = NotificationEntity(
@@ -354,4 +362,23 @@ fun NotificationDto.toEntity() = NotificationEntity(
     actionUrl = actionUrl,
     actionType = actionType.value,
     date = date,
+)
+
+fun AppFeatureDto.toEntity() = AppFeatureEntity(
+    id,
+    name,
+    hasManageableQuickAccessLinks,
+    showAsQuickAccess
+)
+
+fun QuickAccessTileDto.toEntity() = QuickAccessTileEntity(
+    id,
+    featureId,
+    tileName,
+    tilePayload,
+    showAsQuickAccess
+)
+
+fun QuickAccessTileShowAsQuickLinkDto.toEntity() = QuickAccessTileShowAsQuickLinkEntity(
+    id, showAsQuickAccess
 )

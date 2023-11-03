@@ -40,6 +40,7 @@ class EncryptedPreferenceStorage @Inject constructor(
         private const val APP_VERSION_CODE = "APP_VERSION_CODE"
         private const val RE_ON_BOARDING_REQUIRED = "RE_ON_BOARDING_REQUIRED"
         private const val PREVIOUS_ON_BOARDING_SCREEN_NAME = "PREVIOUS_ON_BOARDING_SCREEN_NAME"
+        private const val QUICK_ACCESS_TILE_MANAGEMENT_TUTORIAL = "QUICK_ACCESS_TILE_MANAGEMENT_TUTORIAL"
     }
 
     var cookies: MutableSet<String>?
@@ -194,6 +195,14 @@ class EncryptedPreferenceStorage @Inject constructor(
         get() = encryptedSharedPreferences.getBoolean(RE_ON_BOARDING_REQUIRED, false)
         set(value) {
             encryptedSharedPreferences.edit().putBoolean(RE_ON_BOARDING_REQUIRED, value)
+                .apply()
+        }
+
+    var isQuickAccessTileTutorialRequired: Boolean
+        get() = encryptedSharedPreferences.getBoolean(QUICK_ACCESS_TILE_MANAGEMENT_TUTORIAL, true)
+        set(value) {
+            encryptedSharedPreferences.edit()
+                .putBoolean(QUICK_ACCESS_TILE_MANAGEMENT_TUTORIAL, value)
                 .apply()
         }
 }

@@ -22,7 +22,7 @@ import androidx.navigation.fragment.findNavController
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
-import ca.bc.gov.bchealth.compose.primaryBlue
+import ca.bc.gov.bchealth.compose.theme.primaryBlue
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.bchealth.ui.auth.BCServicesCardSessionContent
@@ -105,7 +105,7 @@ class NotificationFragment : BaseFragment(null) {
     private fun NotificationToolbar(uiState: NotificationViewModel.NotificationsUIState) {
         MyHealthToolBar(
             title = if (uiState.sessionExpired) "" else stringResource(id = R.string.notifications),
-            navigationIcon = { MyHealthBackButton(::popNavigation) },
+            navigationIcon = { MyHealthBackButton({ findNavController().popBackStack() }) },
             actions = {
                 IconButton(onClick = {
                     if (isDeleteIconEnabled(uiState)) {

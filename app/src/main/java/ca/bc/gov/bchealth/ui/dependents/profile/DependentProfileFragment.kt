@@ -19,7 +19,7 @@ class DependentProfileFragment : BaseDependentFragment(null) {
 
     @Composable
     override fun GetComposableLayout() {
-        DependentProfileUI(viewModel, ::popNavigation) { dto ->
+        DependentProfileUI(viewModel, { findNavController().popBackStack() }) { dto ->
             dto?.let {
                 confirmDeletion(dto.patientId, dto.firstname)
             }

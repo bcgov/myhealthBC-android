@@ -44,4 +44,7 @@ data class HospitalVisitEntity(
 
     @ColumnInfo(name = "discharge_date")
     val dischargeDate: Instant?,
+
+    @ColumnInfo(name = "encounter_id", defaultValue = "@null")
+    val encounterId: String?
 )

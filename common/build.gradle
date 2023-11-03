@@ -28,8 +28,8 @@ android {
 
         mock {
             dimension "version"
-            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
-            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "false"
+            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
+            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "true"
             buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
@@ -40,13 +40,13 @@ android {
             buildConfigField "boolean", "FLAG_GUARDIAN_AUDIT", "false"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
             resValue "string", "base_url", "https://mock.healthgateway.gov.bc.ca/"
-            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "false"
+            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "true"
         }
 
         dev {
             dimension "version"
-            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
-            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "false"
+            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
+            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "true"
             buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
@@ -57,13 +57,13 @@ android {
             buildConfigField "boolean", "FLAG_GUARDIAN_AUDIT", "false"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
             resValue "string", "base_url", "https://dev.healthgateway.gov.bc.ca/"
-            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "false"
+            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "true"
         }
 
         stage {
             dimension "version"
-            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
-            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "false"
+            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
+            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "true"
             buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
@@ -74,13 +74,13 @@ android {
             buildConfigField "boolean", "FLAG_GUARDIAN_AUDIT", "false"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
             resValue "string", "base_url", "https://test.healthgateway.gov.bc.ca/"
-            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "false"
+            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "true"
         }
 
         prod {
             dimension "version"
-            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "false"
-            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "false"
+            buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
+            buildConfigField "boolean", "FLAG_VIEW_PROFILE", "true"
             buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
@@ -91,17 +91,18 @@ android {
             buildConfigField "boolean", "FLAG_GUARDIAN_AUDIT", "false"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
             resValue "string", "base_url", "https://healthgateway.gov.bc.ca/"
-            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "false"
+            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "true"
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
+    namespace 'ca.bc.gov.common'
 }
 
 dependencies {

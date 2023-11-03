@@ -41,14 +41,14 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
 import ca.bc.gov.bchealth.compose.MyHealthTypography
-import ca.bc.gov.bchealth.compose.blue
-import ca.bc.gov.bchealth.compose.darkText
-import ca.bc.gov.bchealth.compose.grey
-import ca.bc.gov.bchealth.compose.greyBg
 import ca.bc.gov.bchealth.compose.minButtonSize
-import ca.bc.gov.bchealth.compose.primaryBlue
-import ca.bc.gov.bchealth.compose.red
-import ca.bc.gov.bchealth.compose.white
+import ca.bc.gov.bchealth.compose.theme.blue
+import ca.bc.gov.bchealth.compose.theme.darkText
+import ca.bc.gov.bchealth.compose.theme.grey
+import ca.bc.gov.bchealth.compose.theme.greyBg
+import ca.bc.gov.bchealth.compose.theme.primaryBlue
+import ca.bc.gov.bchealth.compose.theme.red
+import ca.bc.gov.bchealth.compose.theme.white
 import ca.bc.gov.bchealth.ui.comment.Comment
 import ca.bc.gov.common.model.SyncStatus
 import java.time.Instant
@@ -80,7 +80,7 @@ fun CommentInputUI(onSubmitComment: (String) -> Unit) {
             value = comment,
             onValueChange = {
                 comment = it
-                validation = validateComment(comment)
+                validation = validateComment(content = comment)
             },
             label = {
                 Text(
@@ -133,7 +133,7 @@ fun EditableCommentInputUI(
 ) {
     var content by rememberSaveable { mutableStateOf(comment.text.orEmpty()) }
     var validation by rememberSaveable { mutableStateOf(CommentValidation.VALID) }
-
+    validation = validateComment(comment.text.orEmpty(), content)
     Column(
         modifier = Modifier.padding(vertical = 8.dp),
         horizontalAlignment = Alignment.End
@@ -142,7 +142,7 @@ fun EditableCommentInputUI(
             value = content,
             onValueChange = {
                 content = it
-                validation = validateComment(content)
+                validation = validateComment(comment.text.orEmpty(), content)
             },
             isError = validation != CommentValidation.VALID,
             modifier = Modifier
@@ -189,11 +189,13 @@ fun EditableCommentInputUI(
     }
 }
 
-private fun validateComment(content: String): CommentValidation =
+private fun validateComment(originalComment: String = "", content: String): CommentValidation =
     if (content.isBlank()) {
         CommentValidation.BLANK
     } else if (content.length > 1000) {
         CommentValidation.EXCEEDS_LENGTH
+    } else if (originalComment == content) {
+        CommentValidation.NO_CHANGE
     } else {
         CommentValidation.VALID
     }
@@ -277,6 +279,7 @@ private fun ShadowSpacer() {
 private enum class CommentValidation {
     VALID,
     EXCEEDS_LENGTH,
+    NO_CHANGE,
     BLANK,
 }
 

@@ -41,7 +41,7 @@ class HealthVisitDetailFragment : BaseFragment(null) {
         MyHealthScaffold(
             title = uiState.title,
             isLoading = uiState.onLoading,
-            navigationAction = ::popNavigation
+            navigationAction = { findNavController().popBackStack() }
         ) {
             HealthVisitDetailScreen(
                 uiState = uiState,
@@ -56,7 +56,7 @@ class HealthVisitDetailFragment : BaseFragment(null) {
             showGenericError()
             viewModel.resetUiState()
         }
-        if (commentState?.isBcscSessionActive == false) popNavigation()
+        if (commentState?.isBcscSessionActive == false) findNavController().popBackStack()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

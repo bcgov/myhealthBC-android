@@ -80,7 +80,7 @@ abstract class BaseRecordDetailFragment(@LayoutRes id: Int) : BaseFragment(id) {
         launchOnStart {
             commentsViewModel.uiState.collect { state ->
                 if (state.isBcscSessionActive == false) {
-                    findNavController().navigate(R.id.individualHealthRecordFragment)
+                    findNavController().navigate(R.id.healthRecordFragment)
                 } else {
                     val list = if (state.commentsSummary != null) {
                         listOf(state.commentsSummary)

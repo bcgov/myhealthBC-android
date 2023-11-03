@@ -17,6 +17,8 @@ class ImmunizationRecommendationLocalDataSource @Inject constructor(
             list.map { it.toDto() }
         }
 
+    suspend fun hasRecommendations() = dao.hasRecommendations()
+
     suspend fun insert(immunizationRecommendation: ImmunizationRecommendationsDto): Long =
         dao.insert(immunizationRecommendation.toEntity())
 

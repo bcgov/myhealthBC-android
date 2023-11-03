@@ -234,4 +234,7 @@ enum class CommentEntryTypeCode(val value: String) {
     COVID_TEST("Lab"),
     HEALTH_VISITS("Enc"),
     SPECIAL_AUTHORITY("SAR"),
+    HOSPITAL_VISIT("Hos"),
+    CLINICAL_DOCS("CDO"),
+    DIAGNOSTIC_IMAGING("DIA")
 }

@@ -43,9 +43,16 @@ class OnBoardingRepository @Inject constructor(
 
     fun checkIfReOnBoardingRequired(currentAppVersionCode: Int) {
         if (!onBoardingRequired && currentAppVersionCode > previousVersionCode &&
-            !BuildConfig.FLAG_NEW_ON_BOARDING_SCREEN.equals(previousOnBoardingScreenName, ignoreCase = true)
+            !BuildConfig.FLAG_NEW_ON_BOARDING_SCREEN.equals(
+                    previousOnBoardingScreenName,
+                    ignoreCase = true
+                )
         ) {
             isReOnBoardingRequired = true
         }
+    }
+
+    fun checkIfAppUpdated(currentAppVersionCode: Int): Boolean {
+        return currentAppVersionCode > previousVersionCode
     }
 }

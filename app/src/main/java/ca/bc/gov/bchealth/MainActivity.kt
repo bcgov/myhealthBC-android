@@ -81,11 +81,10 @@ class MainActivity : AppCompatActivity() {
                 R.id.healthPassFragment,
                 R.id.healthPassesFragment,
                 R.id.addCardOptionFragment,
-                R.id.healthRecordPlaceholderFragment,
                 R.id.dependentsFragment,
                 R.id.dependentRecordsFragment,
                 R.id.resourcesFragment,
-                R.id.individualHealthRecordFragment,
+                R.id.healthRecordFragment,
                 R.id.vaccineRecordDetailFragment,
                 R.id.addHealthRecordsFragment,
                 R.id.homeFragment,
@@ -143,7 +142,7 @@ class MainActivity : AppCompatActivity() {
                             false
                         )
                         if (started) {
-                            binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_while_fetching_data))
+                            binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_while_fetching_data), binding.bottomNav)
                         }
                     }
 
@@ -154,7 +153,7 @@ class MainActivity : AppCompatActivity() {
                     WorkInfo.State.SUCCEEDED -> {
                         if (isWorkerStarted) {
                             inAppUpdate.checkForUpdate(AppUpdateType.FLEXIBLE)
-                            binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_on_success))
+                            binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_on_success), binding.bottomNav)
                         }
                     }
 
@@ -190,7 +189,7 @@ class MainActivity : AppCompatActivity() {
                     false
                 )
             if (isRecordFetchFailed) {
-                binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_on_failed))
+                binding.navHostFragment.showErrorSnackbar(getString(R.string.notification_title_on_failed), binding.bottomNav)
             }
         }
     }

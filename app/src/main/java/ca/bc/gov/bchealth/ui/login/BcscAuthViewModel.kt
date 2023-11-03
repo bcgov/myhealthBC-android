@@ -12,6 +12,7 @@ import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.AuthenticationStatus
+import ca.bc.gov.common.model.UserAuthenticationStatus
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.utils.toUniquePatientName
 import ca.bc.gov.repository.CacheRepository
@@ -22,11 +23,15 @@ import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.bcsc.PostLoginCheck
 import ca.bc.gov.repository.patient.PatientRepository
+import ca.bc.gov.repository.settings.QuickAccessTileRepository
 import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -43,11 +48,19 @@ class BcscAuthViewModel @Inject constructor(
     private val patientRepository: PatientRepository,
     private val patientWithBCSCLoginRepository: PatientWithBCSCLoginRepository,
     private val mobileConfigRepository: MobileConfigRepository,
-    private val cacheRepository: CacheRepository
+    private val cacheRepository: CacheRepository,
+    private val quickAccessTileRepository: QuickAccessTileRepository
 ) : ViewModel() {
 
     private val _authStatus = MutableStateFlow(AuthStatus())
     val authStatus: StateFlow<AuthStatus> = _authStatus.asStateFlow()
+
+    val userAuthenticationState =
+        bcscAuthRepo.userAuthenticationStatus.catch { excepton -> emit(UserAuthenticationStatus.UN_AUTHENTICATED) }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(500),
+            initialValue = UserAuthenticationStatus.UN_AUTHENTICATED
+        )
 
     /*
     * Throttle calls to BCSC login
@@ -73,12 +86,14 @@ class BcscAuthViewModel @Inject constructor(
                         )
                     }
                 }
+
                 is ServiceDownException -> _authStatus.update {
                     it.copy(
                         showLoading = true,
                         canInitiateBcscLogin = false
                     )
                 }
+
                 else -> {
                     _authStatus.update {
                         it.copy(
@@ -227,8 +242,9 @@ class BcscAuthViewModel @Inject constructor(
         val isLoggedSuccess = bcscAuthRepo.checkSession()
         var userName: String? = null
         try {
-            userName =
-                patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).fullName
+            val patient =
+                patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED)
+            userName = patient.fullName
             val loginSessionStatus = if (isLoggedSuccess) {
                 LoginStatus.ACTIVE
             } else {
@@ -238,7 +254,8 @@ class BcscAuthViewModel @Inject constructor(
                 it.copy(
                     showLoading = false,
                     userName = userName,
-                    loginStatus = loginSessionStatus
+                    loginStatus = loginSessionStatus,
+                    patient = patient
                 )
             }
         } catch (e: Exception) {
@@ -263,10 +280,10 @@ class BcscAuthViewModel @Inject constructor(
                 isError = false,
                 userName = null,
                 queItTokenUpdated = false,
-                loginStatus = LoginStatus.NOT_AUTHENTICATED,
+                loginStatus = null,
                 ageLimitCheck = null,
                 canInitiateBcscLogin = null,
-                tosAccepted = null,
+                tosStatus = null,
                 queItUrl = null,
                 isConnected = true
             )
@@ -302,6 +319,7 @@ class BcscAuthViewModel @Inject constructor(
                         )
                     }
                 }
+
                 else -> {
                     _authStatus.update {
                         it.copy(
@@ -314,7 +332,7 @@ class BcscAuthViewModel @Inject constructor(
         }
     }
 
-    fun isTermsOfServiceAccepted() = viewModelScope.launch {
+    fun checkTermsOfServiceStatus() = viewModelScope.launch {
         _authStatus.update {
             it.copy(
                 showLoading = true
@@ -322,17 +340,23 @@ class BcscAuthViewModel @Inject constructor(
         }
         try {
             val authParameters = bcscAuthRepo.getAuthParametersDto()
-            val isTosAccepted = userProfileRepository.isTermsOfServiceAccepted(
+            val userProfileDto = userProfileRepository.checkForTermsOfServices(
                 authParameters.token,
                 authParameters.hdid
             )
+
+            val tosStatus = when {
+                userProfileDto.acceptedTermsOfService && !userProfileDto.hasTermsOfServiceUpdated -> TOSStatus.ACCEPTED
+                userProfileDto.acceptedTermsOfService && userProfileDto.hasTermsOfServiceUpdated -> TOSStatus.UPDATED
+                else -> TOSStatus.NOT_ACCEPTED
+            }
 
             performPatientDetailCheck(authParameters)
 
             _authStatus.update {
                 it.copy(
                     showLoading = true,
-                    tosAccepted = if (isTosAccepted) TOSAccepted.ACCEPTED else TOSAccepted.NOT_ACCEPTED
+                    tosStatus = tosStatus
                 )
             }
         } catch (e: Exception) {
@@ -345,6 +369,7 @@ class BcscAuthViewModel @Inject constructor(
                         )
                     }
                 }
+
                 else -> {
                     _authStatus.update {
                         it.copy(
@@ -378,6 +403,7 @@ class BcscAuthViewModel @Inject constructor(
             ) {
                 patientRepository.deleteByPatientId(patientFromLocalSource.id)
                 patientRepository.insertAuthenticatedPatient(patientFromRemoteSource)
+                quickAccessTileRepository.update(showAsQuickAccess = false)
             }
         } catch (e: java.lang.Exception) {
             /*
@@ -385,10 +411,11 @@ class BcscAuthViewModel @Inject constructor(
             * to show patient name soon after login
             * */
             patientFromRemoteSource?.let { patientRepository.insertAuthenticatedPatient(it) }
+            quickAccessTileRepository.update(showAsQuickAccess = false)
         }
     }
 
-    fun acceptTermsAndService(termsOfServiceId: String) = viewModelScope.launch {
+    fun acceptTermsAndService(termsOfServiceId: String, hasTOSUpdated: Boolean = false) = viewModelScope.launch {
         _authStatus.update {
             it.copy(
                 showLoading = true
@@ -400,14 +427,15 @@ class BcscAuthViewModel @Inject constructor(
             val isTosAccepted = userProfileRepository.acceptTermsOfService(
                 authParameters.token,
                 authParameters.hdid,
-                termsOfServiceId
+                termsOfServiceId,
+                hasTOSUpdated
             )
 
             if (isTosAccepted) {
                 _authStatus.update {
                     it.copy(
                         showLoading = true,
-                        tosAccepted = TOSAccepted.ACCEPTED
+                        tosStatus = TOSStatus.ACCEPTED
                     )
                 }
             } else {
@@ -423,6 +451,7 @@ class BcscAuthViewModel @Inject constructor(
                         )
                     }
                 }
+
                 else -> {
                     _authStatus.update {
                         it.copy(
@@ -450,11 +479,12 @@ data class AuthStatus(
     val userName: String? = null,
     val queItTokenUpdated: Boolean = false,
     val queItUrl: String? = null,
-    val loginStatus: LoginStatus = LoginStatus.NOT_AUTHENTICATED,
+    val loginStatus: LoginStatus? = null,
     val ageLimitCheck: AgeLimitCheck? = null,
     val canInitiateBcscLogin: Boolean? = null,
-    val tosAccepted: TOSAccepted? = null,
-    val isConnected: Boolean = true
+    val tosStatus: TOSStatus? = null,
+    val isConnected: Boolean = true,
+    val patient: PatientDto? = null
 )
 
 enum class LoginStatus {
@@ -468,8 +498,9 @@ enum class AgeLimitCheck {
     FAILED
 }
 
-enum class TOSAccepted {
+enum class TOSStatus {
     ACCEPTED,
+    UPDATED,
     NOT_ACCEPTED,
     USER_DECLINED
 }

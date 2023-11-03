@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTypography
-import ca.bc.gov.bchealth.compose.darkText
-import ca.bc.gov.bchealth.compose.primaryBlue
+import ca.bc.gov.bchealth.compose.theme.darkText
+import ca.bc.gov.bchealth.compose.theme.primaryBlue
 import ca.bc.gov.bchealth.ui.custom.DecorativeImage
 import ca.bc.gov.bchealth.ui.custom.MyHealthClickableText
 import ca.bc.gov.bchealth.ui.custom.MyHealthScaffold
