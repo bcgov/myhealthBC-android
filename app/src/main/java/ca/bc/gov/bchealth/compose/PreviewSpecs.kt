@@ -33,4 +33,4 @@ annotation class LandscapeTabletPreview
 @Preview(
     name = "Foldable", device = Devices.FOLDABLE, showBackground = true, showSystemUi = true,
 )
-annotation class DevicePreview
+annotation class MultiDevicePreview

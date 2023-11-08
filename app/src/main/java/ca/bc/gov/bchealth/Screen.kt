@@ -12,4 +12,6 @@ sealed class Screen(val route: String) {
     object Dependent : Screen("Dependent")
     object InAppUpdate : Screen("InAppUpdate")
     object BiometricAuthentication : Screen("BiometricAuthentication")
+    object BiometricSecurityTip : Screen("BiometricSecurityTip")
+    object BiometricSecurityTipDialog : Screen("BiometricSecurityTipDialog")
 }

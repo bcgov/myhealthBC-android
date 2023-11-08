@@ -20,7 +20,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.compose.DevicePreview
+import ca.bc.gov.bchealth.compose.MultiDevicePreview
 import ca.bc.gov.bchealth.compose.theme.m3.HealthGatewayTheme
 
 /**
@@ -132,9 +132,8 @@ private fun largeConstraint(): ConstraintSet {
         val guideline = createGuidelineFromStart(0.40f)
 
         constrain(imageId) {
-            top.linkTo(parent.top)
+            top.linkTo(titleId.top, (-32).dp)
             end.linkTo(guideline, 16.dp)
-            bottom.linkTo(parent.bottom)
         }
 
         constrain(txtNewId) {
@@ -144,19 +143,19 @@ private fun largeConstraint(): ConstraintSet {
 
         constrain(titleId) {
             start.linkTo(guideline, 16.dp)
-            top.linkTo(imageId.top, 32.dp)
+            bottom.linkTo(descriptionId.top, 32.dp)
         }
 
         constrain(descriptionId) {
-            start.linkTo(titleId.start)
-            top.linkTo(titleId.bottom, 16.dp)
+            start.linkTo(guideline, 16.dp)
             end.linkTo(endGuideline)
+            bottom.linkTo(parent.bottom)
             width = Dimension.fillToConstraints
         }
     }
 }
 
-@DevicePreview
+@MultiDevicePreview
 @Composable
 private fun OnBoardingSliderUIPreview(
     @PreviewParameter(OnBoardingItemProvider::class) item: OnBoardingSliderItem
