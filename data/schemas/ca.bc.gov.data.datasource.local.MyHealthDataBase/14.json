@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 14,
-    "identityHash": "276a9e926008aa206fc634d8899c0b77",
+    "identityHash": "cff70079a468f7fab21b2c8957aa411e",
     "entities": [
       {
         "tableName": "patient",
@@ -1997,82 +1997,12 @@
         },
         "indices": [],
         "foreignKeys": []
-      },
-      {
-        "tableName": "app_feature",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `feature_name` TEXT, `feature_name_id` INTEGER, `category_name_id` INTEGER NOT NULL, `feature_icon_id` INTEGER NOT NULL, `destination_id` INTEGER NOT NULL, `destination_param` TEXT, `is_management_enabled` INTEGER NOT NULL DEFAULT false, `quick_access_enabled` INTEGER NOT NULL DEFAULT false)",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "featureName",
-            "columnName": "feature_name",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "featureNameId",
-            "columnName": "feature_name_id",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "categoryNameId",
-            "columnName": "category_name_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "featureIconId",
-            "columnName": "feature_icon_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "destinationId",
-            "columnName": "destination_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "destinationParam",
-            "columnName": "destination_param",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "isManagementEnabled",
-            "columnName": "is_management_enabled",
-            "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "false"
-          },
-          {
-            "fieldPath": "isQuickAccessEnabled",
-            "columnName": "quick_access_enabled",
-            "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "false"
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": true,
-          "columnNames": [
-            "id"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '276a9e926008aa206fc634d8899c0b77')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cff70079a468f7fab21b2c8957aa411e')"
     ]
   }
 }
