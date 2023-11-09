@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 14,
-    "identityHash": "276a9e926008aa206fc634d8899c0b77",
+    "version": 16,
+    "identityHash": "e9958e74c59cba55f601fd0ea089ec1f",
     "entities": [
       {
         "tableName": "patient",
@@ -1475,7 +1475,7 @@
       },
       {
         "tableName": "hospital_visits",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hospital_visit_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `health_service` TEXT NOT NULL, `location` TEXT NOT NULL, `provider` TEXT NOT NULL, `visit_type` TEXT NOT NULL, `visit_date` INTEGER NOT NULL, `discharge_date` INTEGER, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hospital_visit_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `health_service` TEXT NOT NULL, `location` TEXT NOT NULL, `provider` TEXT NOT NULL, `visit_type` TEXT NOT NULL, `visit_date` INTEGER NOT NULL, `discharge_date` INTEGER, `encounter_id` TEXT DEFAULT '@null', FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "hospitalVisitId",
@@ -1524,6 +1524,13 @@
             "columnName": "discharge_date",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "encounterId",
+            "columnName": "encounter_id",
+            "affinity": "TEXT",
+            "notNull": false,
+            "defaultValue": "'@null'"
           }
         ],
         "primaryKey": {
@@ -1846,7 +1853,7 @@
       },
       {
         "tableName": "diagnostic_imaging",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `diagnostic_imaging_id` TEXT, `exam_date` INTEGER, `file_id` TEXT, `exam_status` TEXT NOT NULL, `health_authority` TEXT, `organization` TEXT, `modality` TEXT, `body_part` TEXT, `procedure_description` TEXT, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `diagnostic_imaging_id` TEXT, `exam_date` INTEGER, `file_id` TEXT, `exam_status` TEXT NOT NULL, `health_authority` TEXT, `organization` TEXT, `modality` TEXT, `body_part` TEXT, `procedure_description` TEXT, `updated` INTEGER NOT NULL DEFAULT false, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1913,6 +1920,13 @@
             "columnName": "procedure_description",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "isUpdated",
+            "columnName": "updated",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "false"
           }
         ],
         "primaryKey": {
@@ -2000,7 +2014,7 @@
       },
       {
         "tableName": "app_feature",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `feature_name` TEXT, `feature_name_id` INTEGER, `category_name_id` INTEGER NOT NULL, `feature_icon_id` INTEGER NOT NULL, `destination_id` INTEGER NOT NULL, `destination_param` TEXT, `is_management_enabled` INTEGER NOT NULL DEFAULT false, `quick_access_enabled` INTEGER NOT NULL DEFAULT false)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `feature_name` TEXT NOT NULL, `has_manageable_quick_access_links` INTEGER NOT NULL DEFAULT false, `show_as_quick_access` INTEGER NOT NULL DEFAULT false)",
         "fields": [
           {
             "fieldPath": "id",
@@ -2009,51 +2023,21 @@
             "notNull": true
           },
           {
-            "fieldPath": "featureName",
+            "fieldPath": "name",
             "columnName": "feature_name",
             "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "featureNameId",
-            "columnName": "feature_name_id",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "categoryNameId",
-            "columnName": "category_name_id",
-            "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "featureIconId",
-            "columnName": "feature_icon_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "destinationId",
-            "columnName": "destination_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "destinationParam",
-            "columnName": "destination_param",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "isManagementEnabled",
-            "columnName": "is_management_enabled",
+            "fieldPath": "hasManageableQuickAccessLinks",
+            "columnName": "has_manageable_quick_access_links",
             "affinity": "INTEGER",
             "notNull": true,
             "defaultValue": "false"
           },
           {
-            "fieldPath": "isQuickAccessEnabled",
-            "columnName": "quick_access_enabled",
+            "fieldPath": "showAsQuickAccess",
+            "columnName": "show_as_quick_access",
             "affinity": "INTEGER",
             "notNull": true,
             "defaultValue": "false"
@@ -2065,14 +2049,92 @@
             "id"
           ]
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_app_feature_feature_name",
+            "unique": true,
+            "columnNames": [
+              "feature_name"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_app_feature_feature_name` ON `${TABLE_NAME}` (`feature_name`)"
+          }
+        ],
         "foreignKeys": []
+      },
+      {
+        "tableName": "quick_access_tile",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `feature_id` INTEGER NOT NULL, `tile_name` TEXT NOT NULL, `tile_payload` TEXT DEFAULT null, `show_as_quick_access` INTEGER NOT NULL DEFAULT false, FOREIGN KEY(`feature_id`) REFERENCES `app_feature`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "featureId",
+            "columnName": "feature_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tileName",
+            "columnName": "tile_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tilePayload",
+            "columnName": "tile_payload",
+            "affinity": "TEXT",
+            "notNull": false,
+            "defaultValue": "null"
+          },
+          {
+            "fieldPath": "showAsQuickAccess",
+            "columnName": "show_as_quick_access",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "false"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_quick_access_tile_tile_name",
+            "unique": true,
+            "columnNames": [
+              "tile_name"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_quick_access_tile_tile_name` ON `${TABLE_NAME}` (`tile_name`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "app_feature",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "feature_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '276a9e926008aa206fc634d8899c0b77')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e9958e74c59cba55f601fd0ea089ec1f')"
     ]
   }
 }
