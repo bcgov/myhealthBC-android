@@ -50,6 +50,7 @@ class MyHealthDataBaseModule {
         ) {
             builder.openHelperFactory(supportFactory)
         }
+        builder.fallbackToDestructiveMigration()
         return builder.build()
     }
 }

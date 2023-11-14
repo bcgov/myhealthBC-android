@@ -2,8 +2,11 @@ package ca.bc.gov.data.datasource.local
 
 import androidx.room.AutoMigration
 import androidx.room.Database
+import androidx.room.DeleteColumn
+import androidx.room.RenameColumn
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.AutoMigrationSpec
 import ca.bc.gov.data.datasource.local.converter.AddressConverter
 import ca.bc.gov.data.datasource.local.converter.AppFeatureNameConverter
 import ca.bc.gov.data.datasource.local.converter.AuthenticationStatusTypeConverter
@@ -67,7 +70,7 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
  * @author Pinakin Kansara
  */
 @Database(
-    version = 17,
+    version = 18,
     entities = [
         PatientEntity::class,
         VaccineRecordEntity::class,
@@ -103,7 +106,10 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
         AutoMigration(from = 11, to = 12),
         AutoMigration(from = 12, to = 13),
         AutoMigration(from = 13, to = 14),
-        AutoMigration(from = 14, to = 17),
+        AutoMigration(from = 14, to = 15, spec = MyHealthDataBase.AppFeatureMigration::class),
+        AutoMigration(from = 15, to = 16),
+        AutoMigration(from = 16, to = 17),
+        AutoMigration(from = 17, to = 18)
     ],
     exportSchema = true
 )
@@ -117,6 +123,27 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
     QuickAccessLinkNameConverter::class
 )
 abstract class MyHealthDataBase : RoomDatabase() {
+
+    @DeleteColumn.Entries(
+        DeleteColumn(tableName = "app_feature", columnName = "feature_name_id"),
+        DeleteColumn(tableName = "app_feature", columnName = "feature_icon_id"),
+        DeleteColumn(tableName = "app_feature", columnName = "destination_id"),
+        DeleteColumn(tableName = "app_feature", columnName = "category_name_id"),
+        DeleteColumn(tableName = "app_feature", columnName = "destination_param")
+    )
+    @RenameColumn.Entries(
+        RenameColumn(
+            tableName = "app_feature",
+            fromColumnName = "quick_access_enabled",
+            toColumnName = "show_as_quick_access"
+        ),
+        RenameColumn(
+            tableName = "app_feature",
+            fromColumnName = "is_management_enabled",
+            toColumnName = "has_manageable_quick_access_links"
+        )
+    )
+    class AppFeatureMigration : AutoMigrationSpec
 
     abstract fun getPatientDao(): PatientDao
 
