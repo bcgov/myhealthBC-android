@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -56,24 +58,31 @@ fun BcServicesCardLoginContent(
     onLoginWithBCSCCard: () -> Unit
 ) {
 
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(start = 32.dp, end = 32.dp, bottom = 32.dp)
     ) {
+        Column(
+            modifier = Modifier
+                .weight(1f, true)
+                .verticalScroll(scrollState)
+        ) {
 
-        Text(text = title, style = MyHealthTypography.h2, color = MaterialTheme.colors.primary)
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = subtitle, style = MyHealthTypography.h4)
-        Spacer(modifier = Modifier.height(64.dp))
-        Image(
-            painter = icon,
-            contentDescription = "HealthRecord",
-            modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        Text(text = subtitle1, style = MyHealthTypography.h6, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.weight(1F))
+            Text(text = title, style = MyHealthTypography.h2, color = MaterialTheme.colors.primary)
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = subtitle, style = MyHealthTypography.h4)
+            Spacer(modifier = Modifier.height(64.dp))
+            Image(
+                painter = icon,
+                contentDescription = "HealthRecord",
+                modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(text = subtitle1, style = MyHealthTypography.h6, fontWeight = FontWeight.Bold)
+        }
         Button(
             onClick = { onLoginWithBCSCCard() },
             modifier = Modifier.fillMaxWidth()
