@@ -164,7 +164,7 @@ private fun HealthRecordScreenContent(
         } else {
             Column(
                 modifier = modifier
-                    .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+                    .padding(16.dp)
                     .fillMaxSize()
             ) {
                 SearchBarUI(modifier = Modifier.fillMaxWidth(), onFilterClicked = onFilterClicked, onSearchQuery = onSearchQuery)
