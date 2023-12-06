@@ -14,7 +14,7 @@ interface HealthGatewayMobileConfigApi {
         private const val MOBILE_CONFIGURATION = "MobileConfiguration"
     }
 
-    @GET("$MOBILE_CONFIGURATION")
+    @GET(MOBILE_CONFIGURATION)
     suspend fun getMobileConfiguration(
         @Query("api-version") apiVersion: String? = null
     ): Response<MobileConfigurationResponse>

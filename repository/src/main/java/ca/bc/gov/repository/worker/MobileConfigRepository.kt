@@ -1,6 +1,8 @@
 package ca.bc.gov.repository.worker
 
 import ca.bc.gov.common.exceptions.ServiceDownException
+import ca.bc.gov.common.model.config.DependentDataSetFeatureFLag
+import ca.bc.gov.common.model.config.PatientDataSetFeatureFLag
 import ca.bc.gov.data.datasource.remote.MobileConfigRemoteDataSource
 import ca.bc.gov.data.datasource.remote.model.response.MobileConfigurationResponse
 import ca.bc.gov.preference.EncryptedPreferenceStorage
@@ -24,6 +26,19 @@ class MobileConfigRepository @Inject constructor(
         fetchAndStoreMobileConfiguration()
     }
 
+    @Throws(ServiceDownException::class)
+    suspend fun syncFeatureFlag() {
+        val response = fetchAndStoreMobileConfiguration()
+    }
+
+    suspend fun getPatientDataSetFeatureFlags(): PatientDataSetFeatureFLag {
+        return PatientDataSetFeatureFLag(encryptedPreferenceStorage.patientDataFeatureFlag)
+    }
+
+    suspend fun getDependentDataSetFeatureFlags(): DependentDataSetFeatureFLag {
+        return DependentDataSetFeatureFLag(encryptedPreferenceStorage.dependentDataFeatureFlag)
+    }
+
     private suspend fun fetchAndStoreMobileConfiguration(): MobileConfigurationResponse {
         val response = mobileConfigRemoteDataSource.getMobileConfiguration()
         updatePreferenceStorage(response)
@@ -39,6 +54,9 @@ class MobileConfigRepository @Inject constructor(
             clientId = response.authentication.clientId
             identityProviderId = response.authentication.identityProviderId
             baseUrlIsOnline = response.online ?: false
+            patientDataFeatureFlag = response.patientDataSets.toSet()
+            dependentDataFeatureFlag = response.dependentDataSets.toSet()
+            servicesFeatureFlag = response.service.toSet()
         }
     }
 

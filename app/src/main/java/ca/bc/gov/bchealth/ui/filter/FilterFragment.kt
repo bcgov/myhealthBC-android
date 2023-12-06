@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.ui.filter
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.forEach
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -12,7 +11,6 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.databinding.FragmentFilterBinding
 import ca.bc.gov.bchealth.ui.BaseFragment
 import ca.bc.gov.bchealth.utils.DatePickerHelper
-import ca.bc.gov.bchealth.utils.toggleVisibility
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.common.utils.toDate
 import com.google.android.material.chip.Chip
@@ -20,18 +18,11 @@ import kotlinx.coroutines.launch
 
 abstract class FilterFragment : BaseFragment(R.layout.fragment_filter) {
 
-    private val binding by viewBindings(FragmentFilterBinding::bind)
+    val binding by viewBindings(FragmentFilterBinding::bind)
     abstract val filterSharedViewModel: FilterViewModel
-
-    abstract val availableFilters: List<Int>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.cgFilterByType.forEach { chip ->
-            chip.toggleVisibility(availableFilters.contains(chip.id))
-        }
-
         applyClickListener()
 
         clearClickListener()
