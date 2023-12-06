@@ -44,7 +44,7 @@ class HealthRecordViewModel @Inject constructor(
     fun showTimeLine(filterString: String) = viewModelScope.launch {
         val healthRecords = generateTimeline()
         val requiredProtectiveWordVerification =
-            !(healthRecords.any { record -> record.healthRecordType == HealthRecordType.MEDICATION_RECORD } && isShowMedicationRecords())
+            (healthRecords.any { record -> record.healthRecordType == HealthRecordType.MEDICATION_RECORD } && !isShowMedicationRecords())
 
         val timeLineFilters = mutableListOf<String>()
         val filteredResult = mutableListOf<HealthRecordItem>()

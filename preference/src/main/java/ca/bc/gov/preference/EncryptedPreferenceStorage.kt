@@ -40,7 +40,11 @@ class EncryptedPreferenceStorage @Inject constructor(
         private const val APP_VERSION_CODE = "APP_VERSION_CODE"
         private const val RE_ON_BOARDING_REQUIRED = "RE_ON_BOARDING_REQUIRED"
         private const val PREVIOUS_ON_BOARDING_SCREEN_NAME = "PREVIOUS_ON_BOARDING_SCREEN_NAME"
-        private const val QUICK_ACCESS_TILE_MANAGEMENT_TUTORIAL = "QUICK_ACCESS_TILE_MANAGEMENT_TUTORIAL"
+        private const val QUICK_ACCESS_TILE_MANAGEMENT_TUTORIAL =
+            "QUICK_ACCESS_TILE_MANAGEMENT_TUTORIAL"
+        private const val PATIENT_DATA_SET_FEATURE_FLAG = "PATIENT_DATA_SET_FEATURE_FLAG"
+        private const val DEPENDENT_DATA_SET_FEATURE_FLAG = "DEPENDENT_DATA_SET_FEATURE_FLAG"
+        private const val SERVICES_FEATURE_FLAG = "SERVICES_FEATURE_FLAG"
     }
 
     var cookies: MutableSet<String>?
@@ -203,6 +207,30 @@ class EncryptedPreferenceStorage @Inject constructor(
         set(value) {
             encryptedSharedPreferences.edit()
                 .putBoolean(QUICK_ACCESS_TILE_MANAGEMENT_TUTORIAL, value)
+                .apply()
+        }
+
+    var patientDataFeatureFlag: Set<String>
+        get() = encryptedSharedPreferences.getStringSet(PATIENT_DATA_SET_FEATURE_FLAG, emptySet())
+            ?: emptySet()
+        set(value) {
+            encryptedSharedPreferences.edit().putStringSet(PATIENT_DATA_SET_FEATURE_FLAG, value)
+                .apply()
+        }
+
+    var dependentDataFeatureFlag: Set<String>
+        get() = encryptedSharedPreferences.getStringSet(DEPENDENT_DATA_SET_FEATURE_FLAG, emptySet())
+            ?: emptySet()
+        set(value) {
+            encryptedSharedPreferences.edit().putStringSet(DEPENDENT_DATA_SET_FEATURE_FLAG, value)
+                .apply()
+        }
+
+    var servicesFeatureFlag: Set<String>
+        get() = encryptedSharedPreferences.getStringSet(SERVICES_FEATURE_FLAG, emptySet())
+            ?: emptySet()
+        set(value) {
+            encryptedSharedPreferences.edit().putStringSet(SERVICES_FEATURE_FLAG, value)
                 .apply()
         }
 }

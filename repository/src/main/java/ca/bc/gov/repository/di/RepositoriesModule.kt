@@ -345,8 +345,9 @@ class RepositoriesModule {
     @Provides
     @Singleton
     fun providePatientServicesRepository(
-        remoteDataSource: PatientServicesRemoteDataSource
-    ): PatientServicesRepository = PatientServicesRepository(remoteDataSource)
+        remoteDataSource: PatientServicesRemoteDataSource,
+        mobileConfigRepository: MobileConfigRepository
+    ): PatientServicesRepository = PatientServicesRepository(remoteDataSource, mobileConfigRepository)
 
     @Provides
     @Singleton
