@@ -3,10 +3,10 @@ package ca.bc.gov.bchealth
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -30,12 +30,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import ca.bc.gov.bchealth.compose.theme.m3.HealthGatewayTheme
+import ca.bc.gov.bchealth.ui.auth.BiometricSecurityTipDialogScreen
+import ca.bc.gov.bchealth.ui.auth.BiometricSecurityTipScreen
+import ca.bc.gov.bchealth.ui.auth.BiometricSecurityTipViewModel
 import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationScreen
 import ca.bc.gov.bchealth.ui.inappupdate.InAppUpdateScreen
 import ca.bc.gov.bchealth.ui.onboarding.OnBoardingScreen
@@ -47,7 +53,7 @@ import dagger.hilt.android.AndroidEntryPoint
  * Created 2023-10-12 at 1:22 p.m.
  */
 @AndroidEntryPoint
-class HealthGatewayActivity : ComponentActivity() {
+class HealthGatewayActivity : AppCompatActivity() {
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,7 +63,7 @@ class HealthGatewayActivity : ComponentActivity() {
 
             val windowSizeClass = calculateWindowSizeClass(activity = this)
             val widthSizeClass = windowSizeClass.widthSizeClass
-
+            val isExpanded = widthSizeClass != WindowWidthSizeClass.Compact
             // FIX orientation to portrait in condition if the device is MOBILE
             val activity = LocalContext.current as Activity
             if (widthSizeClass == WindowWidthSizeClass.Compact) {
@@ -83,7 +89,8 @@ class HealthGatewayActivity : ComponentActivity() {
                             .statusBarsPadding()
                             .navigationBarsPadding()
                             .padding(it),
-                        navHostController = navController
+                        navHostController = navController,
+                        isExpanded = isExpanded
                     )
                 })
             }
@@ -94,7 +101,8 @@ class HealthGatewayActivity : ComponentActivity() {
 @Composable
 private fun HealthGateWayApp(
     modifier: Modifier = Modifier,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    isExpanded: Boolean = false
 ) {
 
     NavHost(navController = navHostController, startDestination = Screen.OnBoarding.route) {
@@ -108,11 +116,44 @@ private fun HealthGateWayApp(
         }
         composable(Screen.InAppUpdate.route) {
             InAppUpdateScreen(
+                onNavigate = { navHostController.navigate(Screen.OnBoarding.route) },
                 modifier = modifier
             )
         }
+        biometricGraph(modifier, navHostController, isExpanded)
+    }
+}
+
+private fun NavGraphBuilder.biometricGraph(
+    modifier: Modifier,
+    navController: NavController,
+    isExpanded: Boolean = false
+) {
+    navigation(Screen.BiometricAuthentication.route, route = "biometric") {
         composable(Screen.BiometricAuthentication.route) {
-            BiometricsAuthenticationScreen(modifier = modifier)
+            BiometricsAuthenticationScreen(
+                onLearnMoreClick = {
+                    if (isExpanded) {
+                        navController.navigate(Screen.BiometricSecurityTipDialog.route)
+                    } else {
+                        navController.navigate(Screen.BiometricSecurityTip.route)
+                    }
+                },
+                modifier = modifier
+            )
+        }
+        composable(Screen.BiometricSecurityTip.route) {
+            val viewModel = hiltViewModel<BiometricSecurityTipViewModel>()
+            BiometricSecurityTipScreen(onBackPress = {
+                navController.popBackStack()
+            }, viewModel = viewModel)
+        }
+
+        dialog(Screen.BiometricSecurityTipDialog.route) {
+            val viewModel = hiltViewModel<BiometricSecurityTipViewModel>()
+            BiometricSecurityTipDialogScreen(onDismiss = {
+                navController.popBackStack()
+            }, viewModel = viewModel)
         }
     }
 }

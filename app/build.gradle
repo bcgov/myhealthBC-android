@@ -111,6 +111,8 @@ dependencies {
 
     implementation libs.bundles.androidx
 
+    implementation libs.bundles.androidx
+
     implementation project(path: ':repository')
     implementation project(path: ':appauth')
     implementation project(path: ':common')

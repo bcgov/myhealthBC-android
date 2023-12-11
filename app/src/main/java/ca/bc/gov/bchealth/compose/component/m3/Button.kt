@@ -1,5 +1,6 @@
 package ca.bc.gov.bchealth.compose.component.m3
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -59,6 +60,23 @@ fun HGTextButton(
             fontWeight = FontWeight.Bold
         )
     }
+}
+
+@Composable
+fun HGTextButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    minHeight: Dp = ButtonDefaults.MinHeight,
+    content: @Composable RowScope.() -> Unit
+) {
+    TextButton(
+        onClick = onClick,
+        modifier = modifier.defaultMinSize(minHeight = minHeight),
+        enabled = enabled,
+        shape = ShapeDefaults.Small,
+        content = content
+    )
 }
 
 @Preview

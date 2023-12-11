@@ -18,10 +18,11 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.bchealth.compose.DevicePreview
+import ca.bc.gov.bchealth.compose.MultiDevicePreview
 import ca.bc.gov.bchealth.compose.component.m3.HGButton
 import ca.bc.gov.bchealth.compose.component.m3.HGTextButton
 import ca.bc.gov.bchealth.compose.theme.m3.HealthGatewayTheme
@@ -95,7 +96,7 @@ private fun OnBoardingScreenContent(
             HGButton(
                 onClick = {
                     if (isLastPage) {
-                        onGetStartedClick
+                        onGetStartedClick()
                     } else {
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
@@ -134,6 +135,7 @@ private fun compactConstraint(isExistingUser: Boolean): ConstraintSet {
             top.linkTo(parent.top)
             end.linkTo(parent.end)
             bottom.linkTo(bottomGuideline)
+            height = Dimension.preferredWrapContent
         }
 
         constrain(pagerIndicatorId) {
@@ -144,14 +146,13 @@ private fun compactConstraint(isExistingUser: Boolean): ConstraintSet {
 
         constrain(btnNextId) {
             start.linkTo(parent.start)
-            top.linkTo(pagerIndicatorId.bottom)
+            top.linkTo(pagerIndicatorId.bottom, 32.dp)
             end.linkTo(parent.end)
-            bottom.linkTo(parent.bottom)
         }
 
         constrain(btnSkipIntroId) {
             start.linkTo(btnNextId.start)
-            top.linkTo(btnNextId.bottom)
+            top.linkTo(btnNextId.bottom, 16.dp)
             end.linkTo(btnNextId.end)
             visibility = if (isExistingUser) {
                 Visibility.Gone
@@ -166,12 +167,13 @@ private fun mediumConstraint(isExistingUser: Boolean): ConstraintSet {
         val btnNextId = createRefFor(BTN_NEXT_ID)
         val btnSkipIntroId = createRefFor(BTN_SKIP_INTRO_ID)
         val pagerIndicatorId = createRefFor(PAGER_INDICATOR_ID)
-        val bottomGuideline = createGuidelineFromBottom(0.4f)
+        val bottomGuideline = createGuidelineFromBottom(0.5f)
         constrain(pagerId) {
             start.linkTo(parent.start)
             top.linkTo(parent.top)
             end.linkTo(parent.end)
             bottom.linkTo(bottomGuideline)
+            height = Dimension.preferredWrapContent
         }
 
         constrain(pagerIndicatorId) {
@@ -182,14 +184,13 @@ private fun mediumConstraint(isExistingUser: Boolean): ConstraintSet {
 
         constrain(btnNextId) {
             start.linkTo(parent.start)
-            top.linkTo(pagerIndicatorId.bottom)
+            top.linkTo(pagerIndicatorId.bottom, 32.dp)
             end.linkTo(parent.end)
-            bottom.linkTo(parent.bottom)
         }
 
         constrain(btnSkipIntroId) {
             start.linkTo(btnNextId.start)
-            top.linkTo(btnNextId.bottom)
+            top.linkTo(btnNextId.bottom, 16.dp)
             end.linkTo(btnNextId.end)
             visibility = if (isExistingUser) {
                 Visibility.Gone
@@ -204,13 +205,14 @@ private fun largeConstraint(isExistingUser: Boolean): ConstraintSet {
         val btnNextId = createRefFor(BTN_NEXT_ID)
         val btnSkipIntroId = createRefFor(BTN_SKIP_INTRO_ID)
         val pagerIndicatorId = createRefFor(PAGER_INDICATOR_ID)
-        val bottomGuideline = createGuidelineFromBottom(0.4f)
+        val bottomGuideline = createGuidelineFromBottom(0.5f)
 
         constrain(pagerId) {
             start.linkTo(parent.start)
             top.linkTo(parent.top)
             end.linkTo(parent.end)
             bottom.linkTo(bottomGuideline)
+            height = Dimension.preferredWrapContent
         }
 
         constrain(pagerIndicatorId) {
@@ -231,9 +233,8 @@ private fun largeConstraint(isExistingUser: Boolean): ConstraintSet {
             end.linkTo(endGuideline)
         }
         constrain(btnSkipIntroId) {
-            top.linkTo(bottomGuideline)
+            top.linkTo(pagerIndicatorId.bottom, 64.dp)
             end.linkTo(btnNextId.start)
-            bottom.linkTo(parent.bottom)
             visibility = if (isExistingUser) {
                 Visibility.Gone
             } else {
@@ -248,7 +249,7 @@ private fun largeConstraint(isExistingUser: Boolean): ConstraintSet {
     }
 }
 
-@DevicePreview
+@MultiDevicePreview
 @Composable
 private fun OnBoardingScreenPreview(
     @PreviewParameter(OnBoardingUIStateProvider::class) uiState: OnBoardingUIState

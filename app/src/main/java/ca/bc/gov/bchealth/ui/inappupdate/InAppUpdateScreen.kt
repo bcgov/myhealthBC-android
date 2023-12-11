@@ -36,13 +36,13 @@ private const val IMG_BRAND_IMAGE_ID = "img_brand_image_id"
 private const val TXT_FOOTER_TEXT_ID = "txt_footer_text_id"
 
 @Composable
-fun InAppUpdateScreen(modifier: Modifier = Modifier) {
+fun InAppUpdateScreen(onNavigate: () -> Unit, modifier: Modifier = Modifier) {
 
-    InAppUpdateScreenContent(modifier)
+    InAppUpdateScreenContent(onNavigate, modifier)
 }
 
 @Composable
-private fun InAppUpdateScreenContent(modifier: Modifier = Modifier) {
+private fun InAppUpdateScreenContent(onUpdateNow: () -> Unit, modifier: Modifier = Modifier) {
     BoxWithConstraints {
         ConstraintLayout(
             modifier = modifier
@@ -65,8 +65,10 @@ private fun InAppUpdateScreenContent(modifier: Modifier = Modifier) {
             )
 
             HGButton(
-                onClick = { /*TODO*/ },
-                modifier = Modifier.layoutId(BTN_UPDATE_ID).padding(top = 32.dp),
+                onClick = onUpdateNow,
+                modifier = Modifier
+                    .layoutId(BTN_UPDATE_ID)
+                    .padding(top = 32.dp),
                 text = stringResource(id = R.string.in_app_update_button),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.background,
@@ -143,6 +145,6 @@ private fun constraint(): ConstraintSet {
 @Composable
 private fun InAppUpdateScreenPreview() {
     HealthGatewayTheme {
-        InAppUpdateScreenContent()
+        InAppUpdateScreenContent(onUpdateNow = {})
     }
 }
