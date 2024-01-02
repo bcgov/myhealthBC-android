@@ -1,7 +1,6 @@
 package ca.bc.gov.data.datasource.remote
 
 import android.util.Base64
-import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.common.const.MESSAGE_INVALID_RESPONSE
 import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
@@ -29,12 +28,7 @@ class PatientServicesRemoteDataSource @Inject constructor(
      * @see [PatientDataRequestType.ORGAN_DONOR] and [PatientDataRequestType.DIAGNOSTIC_IMAGING]
      * Uses API = v2
      */
-    suspend fun getPatientData(hdId: String): List<PatientDataDto> {
-        val dataTypes = mutableListOf(PatientDataRequestType.ORGAN_DONOR.value).apply {
-            if (BuildConfig.FLAG_DIAGNOSTIC_IMAGING) {
-                this.add(PatientDataRequestType.DIAGNOSTIC_IMAGING.value)
-            }
-        }
+    suspend fun getPatientData(hdId: String, dataTypes: List<String>): List<PatientDataDto> {
 
         val response = safeCall {
             healthGatewayPrivateApi.getPatientData(

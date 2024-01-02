@@ -1,28 +1,37 @@
 package ca.bc.gov.bchealth.ui.dependents.records.filter
 
+import android.os.Bundle
+import android.view.View
+import androidx.core.view.forEach
 import androidx.fragment.app.activityViewModels
-import ca.bc.gov.bchealth.R
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import ca.bc.gov.bchealth.ui.filter.FilterFragment
-import ca.bc.gov.common.BuildConfig
+import ca.bc.gov.bchealth.utils.toggleVisibility
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DependentFilterFragment : FilterFragment() {
 
     override val filterSharedViewModel: DependentFilterViewModel by activityViewModels()
 
-    override val availableFilters = mutableListOf(
-        R.id.chip_covid_test,
-        R.id.chip_immunizations,
-    ).apply {
-        if (BuildConfig.FLAG_GUARDIAN_MEDICATIONS) {
-            this.add(R.id.chip_medication,)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                filterSharedViewModel.uiState.collect { uiState ->
+                    if (uiState.availableFilters.isNotEmpty()) {
+                        binding.cgFilterByType.forEach { chip ->
+                            chip.toggleVisibility(uiState.availableFilters.contains(chip.id))
+                        }
+                    }
+                }
+            }
         }
-        if (BuildConfig.FLAG_GUARDIAN_CLINICAL_DOCS) {
-            this.add(R.id.chip_clinical_document)
-        }
-        if (BuildConfig.FLAG_GUARDIAN_LABS) {
-            this.add(R.id.chip_lab_results)
-        }
+
+        filterSharedViewModel.getAvailableFilters()
     }
 }

@@ -17,6 +17,15 @@ data class MobileConfigurationResponse(
 
     @SerializedName("version")
     val version: Int,
+
+    @SerializedName("datasets")
+    val patientDataSets: List<String>,
+
+    @SerializedName("dependentDatasets")
+    val dependentDataSets: List<String>,
+
+    @SerializedName("services")
+    val service: List<String>
 )
 
 data class AuthenticationResponse(
