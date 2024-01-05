@@ -173,7 +173,7 @@ private fun HealthRecordScreenContent(
                     HorizontalFilterGroupUI(
                         onFilterCleared = onFilterCleared,
                         modifier = Modifier.fillMaxWidth(),
-                        filtersApplied = uiState.filters.map { stringResource(id = it) }
+                        filtersApplied = uiState.filters
                     )
                 }
                 HealthRecordList(
