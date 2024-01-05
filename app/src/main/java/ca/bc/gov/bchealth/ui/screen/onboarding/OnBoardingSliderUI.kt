@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.onboarding
+package ca.bc.gov.bchealth.ui.screen.onboarding
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image

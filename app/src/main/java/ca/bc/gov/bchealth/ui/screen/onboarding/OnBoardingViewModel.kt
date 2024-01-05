@@ -1,15 +1,20 @@
-package ca.bc.gov.bchealth.ui.onboarding
+package ca.bc.gov.bchealth.ui.screen.onboarding
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.repository.OnBoardingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -69,6 +74,20 @@ class OnBoardingViewModel @Inject constructor(
             iconResId = R.drawable.ic_onboarding_services
         )
     )
+
+    fun setOnBoardingRequired(isRequired: Boolean) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            onBoardingRepository.onBoardingRequired = isRequired
+            onBoardingRepository.isReOnBoardingRequired = isRequired
+            onBoardingRepository.previousOnBoardingScreenName = BuildConfig.FLAG_NEW_ON_BOARDING_SCREEN
+        }
+    }
+
+    fun setAppVersionCode(versionCode: Int) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            onBoardingRepository.previousVersionCode = versionCode
+        }
+    }
 }
 
 data class OnBoardingUIState(

@@ -25,6 +25,7 @@ import ca.bc.gov.data.datasource.remote.FeedbackRemoteDataSource
 import ca.bc.gov.data.datasource.remote.ImmunizationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.LaboratoryRemoteDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
+import ca.bc.gov.data.datasource.remote.MobileConfigRemoteDataSource
 import ca.bc.gov.data.datasource.remote.NotificationRemoteDataSource
 import ca.bc.gov.data.datasource.remote.PatientServicesRemoteDataSource
 import ca.bc.gov.data.datasource.remote.TermsOfServiceRemoteDataSource
@@ -40,6 +41,7 @@ import ca.bc.gov.repository.NotificationRepository
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.PdfDecoderRepository
+import ca.bc.gov.repository.PreferenceRepository
 import ca.bc.gov.repository.QrCodeGeneratorRepository
 import ca.bc.gov.repository.RecentPhnDobRepository
 import ca.bc.gov.repository.RecordsRepository
@@ -373,4 +375,22 @@ class RepositoriesModule {
         preferenceStorage: EncryptedPreferenceStorage
     ): AppFeatureWithQuickAccessTilesRepository =
         AppFeatureWithQuickAccessTilesRepository(appFeatureRepository, preferenceStorage)
+
+    @Provides
+    @Singleton
+    fun providesPreferenceRepository(
+        encryptedPreferenceStorage: EncryptedPreferenceStorage
+    ): PreferenceRepository = PreferenceRepository(encryptedPreferenceStorage)
+
+    @Singleton
+    @Provides
+    fun providesMobileConfigRepository(
+        mobileConfigRemoteDataSource: MobileConfigRemoteDataSource,
+        encryptedPreferenceStorage: EncryptedPreferenceStorage,
+        preferenceRepository: PreferenceRepository
+    ): MobileConfigRepository = MobileConfigRepository(
+        mobileConfigRemoteDataSource,
+        encryptedPreferenceStorage,
+        preferenceRepository
+    )
 }

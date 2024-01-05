@@ -1,5 +1,6 @@
-package ca.bc.gov.bchealth.ui.onboarding
+package ca.bc.gov.bchealth.ui.screen.onboarding
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -11,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -20,7 +22,10 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
+import androidx.fragment.app.FragmentActivity
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ca.bc.gov.bchealth.BuildConfig
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MultiDevicePreview
 import ca.bc.gov.bchealth.compose.component.m3.HGButton
@@ -41,11 +46,21 @@ private const val BTN_SKIP_INTRO_ID = "btn_skip_intro_id"
 fun OnBoardingScreen(
     onGetStartedClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: OnBoardingViewModel
+    viewModel: OnBoardingViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    OnBoardingScreenContent(onGetStartedClick, modifier, uiState)
+    val context = LocalContext.current
+    BackHandler {
+        val activity = context as FragmentActivity
+        activity.finishAndRemoveTask()
+    }
+    OnBoardingScreenContent(onGetStartedClick = {
+        viewModel.setOnBoardingRequired(false).invokeOnCompletion {
+            viewModel.setAppVersionCode(BuildConfig.VERSION_CODE).invokeOnCompletion {
+                onGetStartedClick()
+            }
+        }
+    }, modifier, uiState)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -156,7 +171,9 @@ private fun compactConstraint(isExistingUser: Boolean): ConstraintSet {
             end.linkTo(btnNextId.end)
             visibility = if (isExistingUser) {
                 Visibility.Gone
-            } else { Visibility.Visible }
+            } else {
+                Visibility.Visible
+            }
         }
     }
 }
@@ -194,7 +211,9 @@ private fun mediumConstraint(isExistingUser: Boolean): ConstraintSet {
             end.linkTo(btnNextId.end)
             visibility = if (isExistingUser) {
                 Visibility.Gone
-            } else { Visibility.Visible }
+            } else {
+                Visibility.Visible
+            }
         }
     }
 }

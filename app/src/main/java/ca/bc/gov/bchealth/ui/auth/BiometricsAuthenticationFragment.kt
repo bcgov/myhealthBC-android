@@ -198,5 +198,6 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
 
 enum class BioMetricState {
     FAILED,
-    SUCCESS
+    SUCCESS,
+    NULL
 }

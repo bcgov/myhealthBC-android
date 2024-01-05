@@ -4,16 +4,13 @@ import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -23,30 +20,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.dialog
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navigation
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import ca.bc.gov.bchealth.compose.theme.m3.HealthGatewayTheme
-import ca.bc.gov.bchealth.ui.auth.BiometricSecurityTipDialogScreen
-import ca.bc.gov.bchealth.ui.auth.BiometricSecurityTipScreen
-import ca.bc.gov.bchealth.ui.auth.BiometricSecurityTipViewModel
-import ca.bc.gov.bchealth.ui.auth.BiometricsAuthenticationScreen
-import ca.bc.gov.bchealth.ui.inappupdate.InAppUpdateScreen
-import ca.bc.gov.bchealth.ui.onboarding.OnBoardingScreen
-import ca.bc.gov.bchealth.ui.onboarding.OnBoardingViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 /**
  * @author pinakin.kansara
@@ -55,10 +40,26 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HealthGatewayActivity : AppCompatActivity() {
 
+    private val viewModel: HealthGateWayViewModel by viewModels()
+    private var keepScreenOn: Boolean = true
+
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    keepScreenOn = state.keepSplashScreen
+                }
+            }
+        }
+
+        splashScreen.setKeepOnScreenCondition {
+            keepScreenOn
+        }
+
         setContent {
 
             val windowSizeClass = calculateWindowSizeClass(activity = this)
@@ -73,93 +74,16 @@ class HealthGatewayActivity : AppCompatActivity() {
             }
 
             HealthGatewayTheme {
-                val navController = rememberNavController()
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-
-                when (navBackStackEntry?.destination?.route) {
-                    Screen.InAppUpdate.route -> {
-                    }
-                }
-
-                Scaffold(bottomBar = {
-                    // BottomMenu(navController = navHostController)
-                }, content = {
-                    HealthGateWayApp(
-                        modifier = Modifier
-                            .statusBarsPadding()
-                            .navigationBarsPadding()
-                            .padding(it),
-                        navHostController = navController,
-                        isExpanded = isExpanded
-                    )
-                })
+                HealthGateWayApp(
+                    isExpanded = isExpanded
+                )
             }
         }
     }
 }
 
 @Composable
-private fun HealthGateWayApp(
-    modifier: Modifier = Modifier,
-    navHostController: NavHostController,
-    isExpanded: Boolean = false
-) {
-
-    NavHost(navController = navHostController, startDestination = Screen.OnBoarding.route) {
-        composable(Screen.OnBoarding.route) {
-            val viewModel = hiltViewModel<OnBoardingViewModel>()
-            OnBoardingScreen(
-                onGetStartedClick = { navHostController.navigate(Screen.BiometricAuthentication.route) },
-                modifier = modifier,
-                viewModel
-            )
-        }
-        composable(Screen.InAppUpdate.route) {
-            InAppUpdateScreen(
-                onNavigate = { navHostController.navigate(Screen.OnBoarding.route) },
-                modifier = modifier
-            )
-        }
-        biometricGraph(modifier, navHostController, isExpanded)
-    }
-}
-
-private fun NavGraphBuilder.biometricGraph(
-    modifier: Modifier,
-    navController: NavController,
-    isExpanded: Boolean = false
-) {
-    navigation(Screen.BiometricAuthentication.route, route = "biometric") {
-        composable(Screen.BiometricAuthentication.route) {
-            BiometricsAuthenticationScreen(
-                onLearnMoreClick = {
-                    if (isExpanded) {
-                        navController.navigate(Screen.BiometricSecurityTipDialog.route)
-                    } else {
-                        navController.navigate(Screen.BiometricSecurityTip.route)
-                    }
-                },
-                modifier = modifier
-            )
-        }
-        composable(Screen.BiometricSecurityTip.route) {
-            val viewModel = hiltViewModel<BiometricSecurityTipViewModel>()
-            BiometricSecurityTipScreen(onBackPress = {
-                navController.popBackStack()
-            }, viewModel = viewModel)
-        }
-
-        dialog(Screen.BiometricSecurityTipDialog.route) {
-            val viewModel = hiltViewModel<BiometricSecurityTipViewModel>()
-            BiometricSecurityTipDialogScreen(onDismiss = {
-                navController.popBackStack()
-            }, viewModel = viewModel)
-        }
-    }
-}
-
-@Composable
-private fun BottomMenu(navController: NavController) {
+fun BottomMenu(navController: NavController) {
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.HealthRecord,
@@ -179,7 +103,16 @@ private fun BottomMenu(navController: NavController) {
                 },
                 label = { Text(text = stringResource(id = item.title)) },
                 selected = selectedItem == index,
-                onClick = { selectedItem = index }
+                onClick = {
+                    selectedItem = index
+                    navController.navigate(item.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
             )
         }
     }

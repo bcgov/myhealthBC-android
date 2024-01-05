@@ -13,6 +13,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MultiDevicePreview
 import ca.bc.gov.bchealth.compose.theme.HealthGatewayTheme
+import ca.bc.gov.bchealth.ui.screen.biometric.securitytip.BiometricSecurityTipScreenContent
 
 /**
  * @author pinakin.kansara

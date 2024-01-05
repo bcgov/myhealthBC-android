@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.auth
+package ca.bc.gov.bchealth.ui.screen.biometric.securitytip
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
