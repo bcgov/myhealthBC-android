@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.ui.healthrecord
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
@@ -86,17 +85,17 @@ class HealthRecordViewModel @Inject constructor(
                 healthRecords = filteredResult,
                 filters = timeLineFilters.map { filter ->
                     when (filter) {
-                        HealthRecordType.MEDICATION_RECORD.name -> R.string.medications
-                        HealthRecordType.COVID_TEST_RECORD.name -> R.string.covid_19_test_result
-                        HealthRecordType.LAB_RESULT_RECORD.name -> R.string.lab_results
-                        HealthRecordType.IMMUNIZATION_RECORD.name -> R.string.immunization
-                        HealthRecordType.HEALTH_VISIT_RECORD.name -> R.string.health_visits
-                        HealthRecordType.SPECIAL_AUTHORITY_RECORD.name -> R.string.special_authorities
-                        HealthRecordType.HOSPITAL_VISITS_RECORD.name -> R.string.hospital_visits
-                        HealthRecordType.CLINICAL_DOCUMENT_RECORD.name -> R.string.clinical_documents
-                        HealthRecordType.DIAGNOSTIC_IMAGING.name -> R.string.imaging_reports
+                        HealthRecordType.MEDICATION_RECORD.name -> "Medications"
+                        HealthRecordType.COVID_TEST_RECORD.name -> "COVID-19 test result"
+                        HealthRecordType.LAB_RESULT_RECORD.name -> "Lab Results"
+                        HealthRecordType.IMMUNIZATION_RECORD.name -> "Immunization"
+                        HealthRecordType.HEALTH_VISIT_RECORD.name -> "Health Visits"
+                        HealthRecordType.SPECIAL_AUTHORITY_RECORD.name -> "Special Authorities"
+                        HealthRecordType.HOSPITAL_VISITS_RECORD.name -> "Hospital Visits"
+                        HealthRecordType.CLINICAL_DOCUMENT_RECORD.name -> "Clinical Docs"
+                        HealthRecordType.DIAGNOSTIC_IMAGING.name -> "Imaging Reports"
                         else -> {
-                            0
+                            filter
                         }
                     }
                 },
@@ -265,7 +264,7 @@ data class HealthRecordUiState(
     val isLoading: Boolean = true,
     val healthRecords: List<HealthRecordItem> = emptyList(),
     val requiredProtectiveWordVerification: Boolean = true,
-    val filters: List<Int> = emptyList(),
+    val filters: List<String> = emptyList(),
     val isHgServicesUp: Boolean = true,
     val isConnected: Boolean = true,
 )
