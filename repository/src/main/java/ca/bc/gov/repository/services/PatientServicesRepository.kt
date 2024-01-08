@@ -15,9 +15,16 @@ class PatientServicesRepository @Inject constructor(
 ) {
     suspend fun fetchPatientData(hdId: String): List<PatientDataDto> {
         val dataSetFeatureFlag = mobileConfigRepository.getPatientDataSetFeatureFlags()
-        val dataTypes = mutableListOf(PatientDataRequestType.ORGAN_DONOR.value)
+        val organDonorFeatureFlag = mobileConfigRepository.getServicesFeatureFlag()
+        val dataTypes = mutableListOf<String>()
         if (dataSetFeatureFlag.isDiagnosticImagingEnabled()) {
             dataTypes.add(PatientDataRequestType.DIAGNOSTIC_IMAGING.value)
+        }
+        if (organDonorFeatureFlag.isOrganDonorRegistrationEnabled()) {
+            dataTypes.add(PatientDataRequestType.ORGAN_DONOR.value)
+        }
+        if (dataTypes.isEmpty()) {
+            return emptyList()
         }
         return patientServicesRemoteDataSource.getPatientData(hdId, dataTypes)
     }

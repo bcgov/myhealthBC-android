@@ -2,6 +2,7 @@ package ca.bc.gov.bchealth.ui.services
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,7 +21,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -28,9 +29,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTheme
@@ -47,30 +50,28 @@ fun ServicesScreen(
     openPdfFile: (String?) -> Unit,
     onError: () -> Unit
 ) {
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     ServiceScreenContent(
         modifier = modifier,
-        onLoading = uiState.value.onLoading,
-        organDonorRegistrationDetail = uiState.value.organDonorRegistrationDetail,
-        organDonorFileStatus = uiState.value.organDonorFileStatus,
+        uiState,
         onRegisterOnUpdateDecisionClicked = { url ->
             onRegisterOnUpdateDecisionClicked(url)
         },
         onDownloadButtonClicked = {
-            uiState.value.organDonorRegistrationDetail?.fileId?.let { fileId ->
+            uiState.organDonorRegistrationDetail?.fileId?.let { fileId ->
                 onDownloadButtonClicked(
                     fileId
                 )
             }
         },
         openPdfFile = {
-            openPdfFile(uiState.value.organDonorRegistrationDetail?.file)
+            openPdfFile(uiState.organDonorRegistrationDetail?.file)
         },
         onError = onError
     )
-    if (uiState.value.organDonorFileStatus == OrganDonorFileStatus.DOWNLOADED) {
-        openPdfFile(uiState.value.organDonorRegistrationDetail?.file)
+    if (uiState.organDonorFileStatus == OrganDonorFileStatus.DOWNLOADED) {
+        openPdfFile(uiState.organDonorRegistrationDetail?.file)
         viewModel.onPdfViewed()
     }
 }
@@ -78,9 +79,7 @@ fun ServicesScreen(
 @Composable
 private fun ServiceScreenContent(
     modifier: Modifier = Modifier,
-    onLoading: Boolean,
-    organDonorRegistrationDetail: OrganDonorRegistrationDetail?,
-    organDonorFileStatus: OrganDonorFileStatus,
+    uiState: ServicesUiState,
     onRegisterOnUpdateDecisionClicked: (String) -> Unit,
     onDownloadButtonClicked: () -> Unit,
     openPdfFile: (String?) -> Unit,
@@ -99,22 +98,55 @@ private fun ServiceScreenContent(
             color = MaterialTheme.colors.primary
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.services_subtitle),
-            style = MyHealthTypography.h4
+        if (!uiState.isServicesEnabled) {
+            ServicesUnavailableUi()
+        } else {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.services_subtitle),
+                style = MyHealthTypography.h4
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (uiState.onLoading || uiState.organDonorRegistrationDetail == null) {
+                HGCircularProgressIndicator(modifier)
+            } else {
+                OrganDonor(
+                    uiState.organDonorRegistrationDetail,
+                    uiState.organDonorFileStatus,
+                    onRegisterOnUpdateDecisionClicked = { url ->
+                        onRegisterOnUpdateDecisionClicked(url)
+                    },
+                    onDownloadButtonClicked = { onDownloadButtonClicked() },
+                    openPdfFile = { file ->
+                        file?.let { pdf -> openPdfFile(pdf) }
+                    },
+                    onError = onError
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ServicesUnavailableUi() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_service_down),
+            contentDescription = stringResource(id = R.string.organ_donor),
         )
         Spacer(modifier = Modifier.height(16.dp))
-
-        if (onLoading || organDonorRegistrationDetail == null) {
-            HGCircularProgressIndicator(modifier)
-        } else {
-            OrganDonor(organDonorRegistrationDetail, organDonorFileStatus, onRegisterOnUpdateDecisionClicked = { url ->
-                onRegisterOnUpdateDecisionClicked(url)
-            }, onDownloadButtonClicked = { onDownloadButtonClicked() }, openPdfFile = { file ->
-                file?.let { pdf -> openPdfFile(pdf) }
-            }, onError = onError)
-        }
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.services_unavailable),
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            style = MyHealthTypography.h4
+        )
     }
 }
 
@@ -203,7 +235,8 @@ private fun OrganDonor(
                             border = BorderStroke(1.dp, color = MaterialTheme.colors.primary)
                         ) {
 
-                            var buttonText = stringResource(id = R.string.organ_donor_decision_download)
+                            var buttonText =
+                                stringResource(id = R.string.organ_donor_decision_download)
                             when (organDonorFileStatus) {
                                 OrganDonorFileStatus.ERROR -> {
                                     onError()
@@ -213,6 +246,7 @@ private fun OrganDonor(
                                         contentDescription = stringResource(id = R.string.download)
                                     )
                                 }
+
                                 OrganDonorFileStatus.REQUIRE_DOWNLOAD,
                                 OrganDonorFileStatus.DOWNLOADED -> {
                                     Icon(
@@ -220,9 +254,13 @@ private fun OrganDonor(
                                         contentDescription = stringResource(id = R.string.download)
                                     )
                                 }
+
                                 OrganDonorFileStatus.DOWNLOAD_IN_PROGRESS -> {
                                     buttonText = stringResource(id = R.string.downloading)
-                                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colors.primary)
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(24.dp),
+                                        color = MaterialTheme.colors.primary
+                                    )
                                 }
                             }
 
@@ -280,11 +318,7 @@ private fun RegisterOrUpdateDecision(onRegisterOnUpdateDecisionClicked: (String)
 private fun ServiceScreenContentPreview() {
     MyHealthTheme {
         ServiceScreenContent(
-            onLoading = false,
-            organDonorRegistrationDetail = OrganDonorRegistrationDetail(
-                status = OrganDonorStatusDto.REGISTERED
-            ),
-            organDonorFileStatus = OrganDonorFileStatus.DOWNLOAD_IN_PROGRESS,
+            uiState = ServicesUiState(isServicesEnabled = false),
             onRegisterOnUpdateDecisionClicked = {},
             onDownloadButtonClicked = {},
             openPdfFile = {},

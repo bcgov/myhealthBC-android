@@ -1,6 +1,5 @@
 package ca.bc.gov.bchealth.usecases.records
 
-import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.services.OrganDonorDto
@@ -28,9 +27,11 @@ class FetchPatientDataUseCase @Inject constructor(
 
         val dataSetFeatureFlag = mobileConfigRepository.getPatientDataSetFeatureFlags()
 
+        val serviceFeatureFlag = mobileConfigRepository.getServicesFeatureFlag()
+
         val patientDataList = patientServicesRepository.fetchPatientData(authParameters.hdid)
 
-        if (BuildConfig.FLAG_SERVICE_TAB) {
+        if (serviceFeatureFlag.isOrganDonorRegistrationEnabled()) {
             val data = patientDataList.firstOrNull { it.type == PatientDataTypeDto.ORGAN_DONOR_REGISTRATION }
             data?.let {
                 val organDonorDto = it as OrganDonorDto

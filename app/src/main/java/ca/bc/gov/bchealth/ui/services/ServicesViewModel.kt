@@ -43,7 +43,8 @@ class ServicesViewModel @Inject constructor(
                 it.copy(
                     onLoading = false,
                     organDonorRegistrationDetail = organDonation.toUIModel(),
-                    organDonorFileStatus = OrganDonorFileStatus.REQUIRE_DOWNLOAD
+                    organDonorFileStatus = OrganDonorFileStatus.REQUIRE_DOWNLOAD,
+                    isServicesEnabled = mobileConfigRepository.getServicesFeatureFlag().isOrganDonorRegistrationEnabled()
                 )
             }
         } catch (e: Exception) {
@@ -53,7 +54,8 @@ class ServicesViewModel @Inject constructor(
                         it.copy(
                             onLoading = false,
                             organDonorRegistrationDetail = OrganDonorRegistrationDetail(status = OrganDonorStatusDto.ERROR),
-                            organDonorFileStatus = OrganDonorFileStatus.ERROR
+                            organDonorFileStatus = OrganDonorFileStatus.ERROR,
+                            isServicesEnabled = mobileConfigRepository.getServicesFeatureFlag().isOrganDonorRegistrationEnabled()
                         )
                     }
                 }
@@ -93,7 +95,8 @@ class ServicesViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     onLoading = false,
-                    organDonorFileStatus = OrganDonorFileStatus.ERROR
+                    organDonorFileStatus = OrganDonorFileStatus.ERROR,
+                    isServicesEnabled = mobileConfigRepository.getServicesFeatureFlag().isOrganDonorRegistrationEnabled()
                 )
             }
         }
@@ -122,7 +125,8 @@ class ServicesViewModel @Inject constructor(
 data class ServicesUiState(
     val onLoading: Boolean = false,
     val organDonorRegistrationDetail: OrganDonorRegistrationDetail? = null,
-    val organDonorFileStatus: OrganDonorFileStatus = OrganDonorFileStatus.REQUIRE_DOWNLOAD
+    val organDonorFileStatus: OrganDonorFileStatus = OrganDonorFileStatus.REQUIRE_DOWNLOAD,
+    val isServicesEnabled: Boolean = true
 )
 
 enum class OrganDonorFileStatus {
