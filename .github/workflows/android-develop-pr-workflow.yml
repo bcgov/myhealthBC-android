@@ -55,13 +55,14 @@ jobs:
       #DEV
       - name: sign dev apk
         id: sign_app_dev
-        uses: r0adkll/sign-android-release@v1.0.4
+        uses: r0adkll/sign-android-release@v1
         with:
           releaseDirectory: app/build/outputs/apk/dev/debug
           signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
           alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
+          zipAlign: true
         env:
           BUILD_TOOLS_VERSION: "34.0.0"
 
@@ -74,13 +75,14 @@ jobs:
       #STAGE
       - name: sign stage apk
         id: sign_app_stage
-        uses: r0adkll/sign-android-release@v1.0.4
+        uses: r0adkll/sign-android-release@v1
         with:
           releaseDirectory: app/build/outputs/apk/stage/debug
           signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
           alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
+          zipAlign: true
         env:
           BUILD_TOOLS_VERSION: "34.0.0"
 
@@ -93,13 +95,14 @@ jobs:
       #PROD
       - name: sign prod apk
         id: sign_app_prod
-        uses: r0adkll/sign-android-release@v1.0.4
+        uses: r0adkll/sign-android-release@v1
         with:
           releaseDirectory: app/build/outputs/apk/prod/debug
           signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
           alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
+          zipAlign: true
         env:
           BUILD_TOOLS_VERSION: "34.0.0"
 
