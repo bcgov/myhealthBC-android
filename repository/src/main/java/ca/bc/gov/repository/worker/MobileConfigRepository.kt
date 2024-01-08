@@ -3,6 +3,7 @@ package ca.bc.gov.repository.worker
 import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.config.DependentDataSetFeatureFLag
 import ca.bc.gov.common.model.config.PatientDataSetFeatureFLag
+import ca.bc.gov.common.model.config.ServicesFeatureFlag
 import ca.bc.gov.data.datasource.remote.MobileConfigRemoteDataSource
 import ca.bc.gov.data.datasource.remote.model.response.MobileConfigurationResponse
 import ca.bc.gov.preference.EncryptedPreferenceStorage
@@ -37,6 +38,10 @@ class MobileConfigRepository @Inject constructor(
 
     suspend fun getDependentDataSetFeatureFlags(): DependentDataSetFeatureFLag {
         return DependentDataSetFeatureFLag(encryptedPreferenceStorage.dependentDataFeatureFlag)
+    }
+
+    suspend fun getServicesFeatureFlag(): ServicesFeatureFlag {
+        return ServicesFeatureFlag(encryptedPreferenceStorage.servicesFeatureFlag)
     }
 
     private suspend fun fetchAndStoreMobileConfiguration(): MobileConfigurationResponse {
