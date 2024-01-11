@@ -76,7 +76,6 @@ jobs:
           alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
-          zipAlign: true
         env:
           BUILD_TOOLS_VERSION: "34.0.0"
 
@@ -96,7 +95,6 @@ jobs:
           alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
-          zipAlign: true
         env:
           BUILD_TOOLS_VERSION: "34.0.0"
 
@@ -116,7 +114,6 @@ jobs:
           alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
-          zipAlign: true
         env:
           BUILD_TOOLS_VERSION: "34.0.0"
 
