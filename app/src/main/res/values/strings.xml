@@ -603,6 +603,7 @@
     <string name="services_subtitle">You can check and update your Organ Donor Registry information here. More health services will be added in future.</string>
     <string name="services_subtitle_1">The BC Services Card app is a secure way to prove who you are.</string>
     <string name="services_session_expired">Log in again to access all services.</string>
+    <string name="services_unavailable">The services are currently unavailable, please check back later.</string>
 
     <!--Organ Donor-->
     <string name="organ_donor_registration_title">Organ Donor Registration</string>

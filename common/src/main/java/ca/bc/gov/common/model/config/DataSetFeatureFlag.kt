@@ -17,7 +17,10 @@ sealed class DataSetFeatureFlag(private val flags: Set<String>) {
     fun isNoteEnabled(): Boolean = flags.contains("note")
     fun isSpecialAuthorityRequestEnabled(): Boolean = flags.contains("specialAuthorityRequest")
     fun isBcCancerScreeningEnabled(): Boolean = flags.contains("bcCancerScreening")
+    fun isOrganDonorRegistrationEnabled(): Boolean = flags.contains("organDonorRegistration")
+    fun isHealthConnectRegistryEnabled(): Boolean = flags.contains("healthConnectRegistry")
 }
 
 data class PatientDataSetFeatureFLag(private val flags: Set<String>) : DataSetFeatureFlag(flags)
 data class DependentDataSetFeatureFLag(private val flags: Set<String>) : DataSetFeatureFlag(flags)
+data class ServicesFeatureFlag(private val flags: Set<String>) : DataSetFeatureFlag(flags)
