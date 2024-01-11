@@ -38,6 +38,20 @@ jobs:
         with:
           java-version: 17
 
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-caches-
+
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
 
@@ -55,14 +69,13 @@ jobs:
       #DEV
       - name: sign dev apk
         id: sign_app_dev
-        uses: kevin-david/zipalign-sign-android-release@v1.1
+        uses: r0adkll/sign-android-release@v1
         with:
           releaseDirectory: app/build/outputs/apk/dev/debug
           signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
           alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
-          zipAlign: true
         env:
           BUILD_TOOLS_VERSION: "34.0.0"
 
@@ -75,14 +88,13 @@ jobs:
       #STAGE
       - name: sign stage apk
         id: sign_app_stage
-        uses: kevin-david/zipalign-sign-android-release@v1.1
+        uses: r0adkll/sign-android-release@v1
         with:
           releaseDirectory: app/build/outputs/apk/stage/debug
           signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
           alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
-          zipAlign: true
         env:
           BUILD_TOOLS_VERSION: "34.0.0"
 
@@ -95,14 +107,13 @@ jobs:
       #PROD
       - name: sign prod apk
         id: sign_app_prod
-        uses: kevin-david/zipalign-sign-android-release@v1.1
+        uses: r0adkll/sign-android-release@v1
         with:
           releaseDirectory: app/build/outputs/apk/prod/debug
           signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
           alias: ${{ secrets.KEYSTORE_ALIAS_DEBUG }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
-          zipAlign: true
         env:
           BUILD_TOOLS_VERSION: "34.0.0"
 
