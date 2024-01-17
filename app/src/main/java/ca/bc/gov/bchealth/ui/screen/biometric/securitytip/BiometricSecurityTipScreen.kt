@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.auth
+package ca.bc.gov.bchealth.ui.screen.biometric.securitytip
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,6 +20,9 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MultiDevicePreview
 import ca.bc.gov.bchealth.compose.component.m3.HealthGatewayScaffold
 import ca.bc.gov.bchealth.compose.theme.m3.HealthGatewayTheme
+import ca.bc.gov.bchealth.ui.auth.BiometricSecurityTipUIState
+import ca.bc.gov.bchealth.ui.auth.BiometricSecurityTipUIStatePreview
+import ca.bc.gov.bchealth.ui.auth.BiometricSecurityTipViewModel
 
 /**
  * @author pinakin.kansara

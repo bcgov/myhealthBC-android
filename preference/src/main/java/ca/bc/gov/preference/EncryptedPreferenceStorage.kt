@@ -205,4 +205,8 @@ class EncryptedPreferenceStorage @Inject constructor(
                 .putBoolean(QUICK_ACCESS_TILE_MANAGEMENT_TUTORIAL, value)
                 .apply()
         }
+
+    suspend fun clearAuthState() {
+        encryptedSharedPreferences.edit().remove(AUTH_STATE).apply()
+    }
 }

@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.auth
+package ca.bc.gov.bchealth.ui.screen.biometric.securitytip
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,6 +23,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.MultiDevicePreview
 import ca.bc.gov.bchealth.compose.theme.m3.HealthGatewayTheme
 import ca.bc.gov.bchealth.compose.theme.statusBlue30
+import ca.bc.gov.bchealth.ui.auth.SecurityTipItem
 
 /**
  * @author pinakin.kansara

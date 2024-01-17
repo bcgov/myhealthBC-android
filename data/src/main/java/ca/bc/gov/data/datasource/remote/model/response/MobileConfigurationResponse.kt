@@ -10,7 +10,7 @@ data class MobileConfigurationResponse(
     val online: Boolean?,
 
     @SerializedName("baseUrl")
-    val baseUrl: String?,
+    val baseUrl: String,
 
     @SerializedName("authentication")
     val authentication: AuthenticationResponse,

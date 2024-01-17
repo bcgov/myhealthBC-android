@@ -1,4 +1,4 @@
-package ca.bc.gov.bchealth.ui.auth
+package ca.bc.gov.bchealth.ui.screen.biometric
 
 import android.content.Intent
 import android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG
@@ -7,6 +7,7 @@ import android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDEN
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.biometric.BiometricManager
@@ -40,6 +41,7 @@ import ca.bc.gov.bchealth.compose.component.m3.HGButton
 import ca.bc.gov.bchealth.compose.component.m3.HGErrorDialog
 import ca.bc.gov.bchealth.compose.component.m3.HGTextButton
 import ca.bc.gov.bchealth.compose.theme.m3.HealthGatewayTheme
+import ca.bc.gov.bchealth.ui.auth.BioMetricState
 import java.util.concurrent.Executor
 
 /**
@@ -57,14 +59,26 @@ private const val AUTHENTICATORS = BIOMETRIC_STRONG or BIOMETRIC_WEAK or DEVICE_
 private const val BIOMETRIC_TAG = "Biometric"
 
 @Composable
-fun BiometricsAuthenticationScreen(onLearnMoreClick: () -> Unit, modifier: Modifier = Modifier) {
+fun BiometricsAuthenticationScreen(
+    onBiometricResult: (BioMetricState) -> Unit,
+    onLearnMoreClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
 
     val context = LocalContext.current
-
+    BackHandler {
+        val activity = context as FragmentActivity
+        activity.finishAndRemoveTask()
+    }
     val executor = remember { ContextCompat.getMainExecutor(context) }
 
     val biometricPrompt = getBioMetricPrompt(
-        onError = { },
+        onError = {
+            onBiometricResult(BioMetricState.FAILED)
+        },
+        onSuccess = {
+            onBiometricResult(BioMetricState.SUCCESS)
+        },
         context as FragmentActivity,
         executor
     )
@@ -130,12 +144,15 @@ fun BiometricsAuthenticationScreen(onLearnMoreClick: () -> Unit, modifier: Modif
                 BiometricManager.BIOMETRIC_SUCCESS -> {
                     biometricPrompt.authenticate(promptInfo)
                 }
+
                 BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
                     showUserNotEnrolledDialog.value = true
                 }
+
                 BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
                     showNoHardwareDialog.value = true
                 }
+
                 else -> {
                     showAuthenticationErrorDialog.value = true
                 }
@@ -176,6 +193,7 @@ private fun getPromptInfo(title: String, subTitle: String) = BiometricPrompt.Pro
 
 private fun getBioMetricPrompt(
     onError: () -> Unit,
+    onSuccess: () -> Unit,
     activity: FragmentActivity,
     executor: Executor
 ): BiometricPrompt {
@@ -203,6 +221,7 @@ private fun getBioMetricPrompt(
 
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 super.onAuthenticationSucceeded(result)
+                onSuccess()
             }
         }
     )
