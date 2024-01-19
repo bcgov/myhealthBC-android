@@ -181,7 +181,11 @@ class HealthRecordFragment : BaseSecureFragment(null) {
                 findNavController().navigate(action)
             }
 
-            HealthRecordType.BC_CANCER_SCREENING -> {}
+            HealthRecordType.BC_CANCER_SCREENING -> {
+                val action = HealthRecordFragmentDirections
+                    .actionHealthRecordFragmentToBcCancerScreeningDetailFragment(healthRecordItem.recordId)
+                findNavController().navigate(action)
+            }
         }
     }
 
