@@ -536,6 +536,7 @@
     <string name="hospital_visits">Hospital Visits</string>
     <string name="clinical_documents">Clinical Docs</string>
     <string name="imaging_reports">Imaging Reports</string>
+    <string name="bc_cancer_screening">BC Cancer screening</string>
     <string name="filter">Filter</string>
     <string name="apply">Apply</string>
     <string name="no_records_found">No records found</string>

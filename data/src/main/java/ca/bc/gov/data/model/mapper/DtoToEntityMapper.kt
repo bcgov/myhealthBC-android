@@ -21,6 +21,7 @@ import ca.bc.gov.common.model.labtest.LabTestDto
 import ca.bc.gov.common.model.notification.NotificationDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientNameDto
+import ca.bc.gov.common.model.services.BcCancerScreeningDataDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.common.model.settings.AppFeatureDto
@@ -51,6 +52,7 @@ import ca.bc.gov.data.datasource.local.entity.medication.DispensingPharmacyEntit
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationRecordEntity
 import ca.bc.gov.data.datasource.local.entity.medication.MedicationSummaryEntity
 import ca.bc.gov.data.datasource.local.entity.notification.NotificationEntity
+import ca.bc.gov.data.datasource.local.entity.services.BcCancerScreeningDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
 import ca.bc.gov.data.datasource.local.entity.settings.AppFeatureEntity
@@ -381,4 +383,15 @@ fun QuickAccessTileDto.toEntity() = QuickAccessTileEntity(
 
 fun QuickAccessTileShowAsQuickLinkDto.toEntity() = QuickAccessTileShowAsQuickLinkEntity(
     id, showAsQuickAccess
+)
+
+fun BcCancerScreeningDataDto.toEntity() = BcCancerScreeningDataEntity(
+    id = _id,
+    patientId = patientId,
+    bcCancerScreeningId = id,
+    resultDateTime = resultDateTime,
+    eventDateTime = eventDateTime,
+    fileId = fileId,
+    programName = programName,
+    eventType = eventType
 )

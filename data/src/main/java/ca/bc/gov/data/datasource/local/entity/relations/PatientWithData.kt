@@ -3,6 +3,7 @@ package ca.bc.gov.data.datasource.local.entity.relations
 import androidx.room.Embedded
 import androidx.room.Relation
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
+import ca.bc.gov.data.datasource.local.entity.services.BcCancerScreeningDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEntity
 
 /**
@@ -16,5 +17,11 @@ data class PatientWithData(
         parentColumn = "id",
         entityColumn = "patient_id"
     )
-    val diagnosticImagingDataList: List<DiagnosticImagingDataEntity> = emptyList()
+    val diagnosticImagingDataList: List<DiagnosticImagingDataEntity> = emptyList(),
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "patient_id"
+    )
+    val bcCancerScreeningDataList: List<BcCancerScreeningDataEntity> = emptyList()
 )

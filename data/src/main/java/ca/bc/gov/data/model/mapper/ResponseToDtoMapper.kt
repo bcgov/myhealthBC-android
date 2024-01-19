@@ -30,6 +30,7 @@ import ca.bc.gov.common.model.notification.NotificationDto
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.patient.PatientNameDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
+import ca.bc.gov.common.model.services.BcCancerScreeningDataDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.common.model.services.OrganDonorStatusDto
@@ -61,6 +62,7 @@ import ca.bc.gov.data.datasource.remote.model.base.medication.DispensingPharmacy
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationStatementPayload
 import ca.bc.gov.data.datasource.remote.model.base.medication.MedicationSummary
 import ca.bc.gov.data.datasource.remote.model.base.patient.PatientName
+import ca.bc.gov.data.datasource.remote.model.base.patientdata.BcCancerScreeningData
 import ca.bc.gov.data.datasource.remote.model.base.patientdata.DiagnosticImagingData
 import ca.bc.gov.data.datasource.remote.model.base.patientdata.OrganDonorData
 import ca.bc.gov.data.datasource.remote.model.base.patientdata.PatientDataType
@@ -509,6 +511,15 @@ private fun DiagnosticImagingData.toDto() = DiagnosticImagingDataDto(
     procedureDescription = procedureDescription
 )
 
+private fun BcCancerScreeningData.toDto() = BcCancerScreeningDataDto(
+    id = id,
+    resultDateTime = resultDateTime?.toDateTimeZ(),
+    eventDateTime = eventDateTime?.toDateTimeZ(),
+    fileId = fileId,
+    programName = programName,
+    eventType = eventType
+)
+
 fun PatientDataResponse.toDto() = items.map { data ->
     when (data.type) {
         PatientDataType.ORGAN_DONOR_REGISTRATION -> {
@@ -517,6 +528,10 @@ fun PatientDataResponse.toDto() = items.map { data ->
 
         PatientDataType.DIAGNOSTIC_IMAGING_EXAM -> {
             (data as DiagnosticImagingData).toDto()
+        }
+
+        PatientDataType.BC_CANCER_SCREENING -> {
+            (data as BcCancerScreeningData).toDto()
         }
     }
 }

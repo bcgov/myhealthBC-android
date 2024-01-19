@@ -10,5 +10,8 @@ enum class PatientDataType(val value: String) {
     DIAGNOSTIC_IMAGING_EXAM("DiagnosticImagingExam"),
 
     @SerializedName("OrganDonorRegistration")
-    ORGAN_DONOR_REGISTRATION("OrganDonorRegistration")
+    ORGAN_DONOR_REGISTRATION("OrganDonorRegistration"),
+
+    @SerializedName("BcCancerScreening")
+    BC_CANCER_SCREENING("BcCancerScreening")
 }

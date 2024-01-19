@@ -22,7 +22,8 @@ enum class TimelineTypeFilter(@IdRes val id: Int?, val recordType: HealthRecordT
     SPECIAL_AUTHORITY(R.id.chip_special_authority, SPECIAL_AUTHORITY_RECORD),
     HOSPITAL_VISITS(R.id.chip_hospital_visits, HOSPITAL_VISITS_RECORD),
     CLINICAL_DOCUMENT(R.id.chip_clinical_document, CLINICAL_DOCUMENT_RECORD),
-    DIAGNOSTIC_IMAGING(R.id.chip_diagnostic_imaging, HealthRecordType.DIAGNOSTIC_IMAGING);
+    DIAGNOSTIC_IMAGING(R.id.chip_diagnostic_imaging, HealthRecordType.DIAGNOSTIC_IMAGING),
+    BC_CANCER_SCREENING(R.id.chip_bc_cancer_screening, HealthRecordType.BC_CANCER_SCREENING);
 
     companion object {
         fun findByName(name: String): TimelineTypeFilter? = values().find {
@@ -40,6 +41,7 @@ enum class TimelineTypeFilter(@IdRes val id: Int?, val recordType: HealthRecordT
             "ClinicalDocument" -> CLINICAL_DOCUMENT
             "DiExam",
             "ImagingReports" -> DIAGNOSTIC_IMAGING
+            "BcCancerScreening" -> BC_CANCER_SCREENING
             else -> ALL
         }
     }

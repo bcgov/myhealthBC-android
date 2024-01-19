@@ -14,6 +14,7 @@ import ca.bc.gov.data.datasource.remote.interceptor.NetworkConnectionInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.ReceivedCookieInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.RetryInterceptor
 import ca.bc.gov.data.datasource.remote.interceptor.UserAgentInterceptor
+import ca.bc.gov.data.datasource.remote.model.base.patientdata.BcCancerScreeningData
 import ca.bc.gov.data.datasource.remote.model.base.patientdata.DiagnosticImagingData
 import ca.bc.gov.data.datasource.remote.model.base.patientdata.OrganDonorData
 import ca.bc.gov.data.datasource.remote.model.base.patientdata.PatientData
@@ -178,5 +179,6 @@ class HealthGateWayApiModule {
         return RuntimeTypeAdapterFactory.of(PatientData::class.java, "type", true)
             .registerSubtype(OrganDonorData::class.java, PatientDataType.ORGAN_DONOR_REGISTRATION.value)
             .registerSubtype(DiagnosticImagingData::class.java, PatientDataType.DIAGNOSTIC_IMAGING_EXAM.value)
+            .registerSubtype(BcCancerScreeningData::class.java, PatientDataType.BC_CANCER_SCREENING.value)
     }
 }
