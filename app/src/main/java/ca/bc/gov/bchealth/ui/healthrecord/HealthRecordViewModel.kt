@@ -94,6 +94,7 @@ class HealthRecordViewModel @Inject constructor(
                         HealthRecordType.HOSPITAL_VISITS_RECORD.name -> "Hospital Visits"
                         HealthRecordType.CLINICAL_DOCUMENT_RECORD.name -> "Clinical Docs"
                         HealthRecordType.DIAGNOSTIC_IMAGING.name -> "Imaging Reports"
+                        HealthRecordType.BC_CANCER_SCREENING.name -> "Bc Cancer Screening"
                         else -> {
                             filter
                         }
@@ -194,6 +195,8 @@ class HealthRecordViewModel @Inject constructor(
 
             val diagnosticImaging = patientWithData.toUiModel()
 
+            val bcCancerScreening = patientWithData.bcCancerScreeningDataList.map { it.toUiModel() }
+
             val records = covidOrders +
                 labTestRecords +
                 immunizationRecords +
@@ -202,6 +205,7 @@ class HealthRecordViewModel @Inject constructor(
                 hospitalVisits +
                 clinicalDocuments +
                 diagnosticImaging +
+                bcCancerScreening +
                 if (isShowMedicationRecords() && medicationRecords != null) {
                     medicationRecords
                 } else {
@@ -289,5 +293,6 @@ enum class HealthRecordType {
     SPECIAL_AUTHORITY_RECORD,
     HOSPITAL_VISITS_RECORD,
     CLINICAL_DOCUMENT_RECORD,
-    DIAGNOSTIC_IMAGING
+    DIAGNOSTIC_IMAGING,
+    BC_CANCER_SCREENING
 }

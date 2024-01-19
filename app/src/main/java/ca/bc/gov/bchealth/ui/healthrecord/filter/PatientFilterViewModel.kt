@@ -61,6 +61,10 @@ class PatientFilterViewModel @Inject constructor(
             filter.add(R.id.chip_special_authority)
         }
 
+        if (dataSetFeatureFlag.isBcCancerScreeningEnabled()) {
+            filter.add(R.id.chip_bc_cancer_screening)
+        }
+
         _uiState.update { it.copy(availableFilters = filter) }
     }
 }
