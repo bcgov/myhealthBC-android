@@ -23,6 +23,11 @@ class PatientServicesRepository @Inject constructor(
         if (organDonorFeatureFlag.isOrganDonorRegistrationEnabled()) {
             dataTypes.add(PatientDataRequestType.ORGAN_DONOR.value)
         }
+
+        if (dataSetFeatureFlag.isBcCancerScreeningEnabled()) {
+            dataTypes.add(PatientDataRequestType.BC_CANCER_SCREENING.value)
+        }
+
         if (dataTypes.isEmpty()) {
             return emptyList()
         }

@@ -28,6 +28,7 @@ import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.patient.PatientWithDataDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
+import ca.bc.gov.common.model.services.BcCancerScreeningDataDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
@@ -313,3 +314,14 @@ private fun DiagnosticImagingDataDto.toUiModel() = HealthRecordItem(
 fun PatientWithDataDto.toUiModel(): List<HealthRecordItem> {
     return diagnosticImagingDataList.map { it.toUiModel() }
 }
+
+fun BcCancerScreeningDataDto.toUiModel() = HealthRecordItem(
+    recordId = _id,
+    patientId = patientId,
+    icon = R.drawable.ic_health_record_bc_cancer_screening,
+    title = type.name,
+    description = programName + " • " + resultDateTime?.toDate(),
+    date = eventDateTime!!,
+    healthRecordType = HealthRecordType.BC_CANCER_SCREENING,
+    dataSource = null
+)

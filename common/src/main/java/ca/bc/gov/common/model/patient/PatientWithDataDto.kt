@@ -1,5 +1,6 @@
 package ca.bc.gov.common.model.patient
 
+import ca.bc.gov.common.model.services.BcCancerScreeningDataDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 
 /**
@@ -7,5 +8,6 @@ import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
  */
 data class PatientWithDataDto(
     val patient: PatientDto,
-    val diagnosticImagingDataList: List<DiagnosticImagingDataDto>
+    val diagnosticImagingDataList: List<DiagnosticImagingDataDto>,
+    val bcCancerScreeningDataList: List<BcCancerScreeningDataDto>
 )
