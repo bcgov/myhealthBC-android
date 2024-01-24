@@ -207,7 +207,7 @@ fun HGTextButton(
         enabled,
         defaultHeight,
         contentPadding = if (leadingIcon != null) {
-            ButtonDefaults.ButtonWithIconContentPadding
+            ButtonDefaults.TextButtonContentPadding
         } else {
             ButtonDefaults.TextButtonContentPadding
         }

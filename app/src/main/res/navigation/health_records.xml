@@ -41,6 +41,9 @@
         <action
             android:id="@+id/action_healthRecordFragment_to_diagnosticImagingDetailFragment"
             app:destination="@id/diagnosticImagingDetailFragment" />
+        <action
+            android:id="@+id/action_healthRecordFragment_to_bcCancerScreeningDetailFragment"
+            app:destination="@id/bcCancerScreeningDetailFragment" />
 
     </fragment>
 
@@ -179,6 +182,20 @@
         android:label="DiagnosticImagingDetailFragment" >
         <argument
             android:name="diagnosticImagingDataId"
+            app:argType="long" />
+        <argument
+            android:name="hdid"
+            app:argType="string"
+            android:defaultValue="@null"
+            app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/bcCancerScreeningDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.cancer.BcCancerScreeningDetailFragment"
+        android:label="BcCancerScreeningDetailFragment" >
+        <argument
+            android:name="bcCancerScreeningDataId"
             app:argType="long" />
         <argument
             android:name="hdid"
