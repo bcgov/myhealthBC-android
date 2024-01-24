@@ -41,7 +41,7 @@ enum class TimelineTypeFilter(@IdRes val id: Int?, val recordType: HealthRecordT
             "ClinicalDocument" -> CLINICAL_DOCUMENT
             "DiExam",
             "ImagingReports" -> DIAGNOSTIC_IMAGING
-            "BcCancerScreening" -> BC_CANCER_SCREENING
+            "CancerScreening" -> BC_CANCER_SCREENING
             else -> ALL
         }
     }

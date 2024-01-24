@@ -43,7 +43,7 @@ class BcCancerScreeningDetailViewModel @Inject constructor(
                     toolbarTitle = if (data.eventType == "Result") { "BC Cancer screening result" } else { "BC Cancer screening" },
                     fileId = data.fileId,
                     links = if (data.eventType == "Result") {
-                        listOf(ExternalLink(name = "Bc Cancer", link = URL_BC_CANCER_SCREENING))
+                        listOf(ExternalLink(name = "BC Cancer", link = URL_BC_CANCER_SCREENING))
                     } else {
                         listOf(
                             ExternalLink(name = "What is Cervix screening", link = URL_BC_CERVIX_SCREENING),
@@ -51,7 +51,8 @@ class BcCancerScreeningDetailViewModel @Inject constructor(
                         )
                     },
                     description = if (data.eventType == "Result") { R.string.bc_cancer_screening_result_description } else { R.string.bc_cancer_screening_recall_desc },
-                    id = data.id
+                    id = data.id,
+                    pdfButtonTitle = if (data.eventType == "Result") { "View PDF" } else { "View letter" }
                 )
             }
         } catch (e: Exception) {
@@ -94,7 +95,8 @@ data class BcCancerScreeningDataDetailUiState(
     @StringRes val description: Int = R.string.bc_cancer_screening_result_description,
     val fileId: String? = null,
     val pdfData: String? = null,
-    val id: String? = null
+    val id: String? = null,
+    val pdfButtonTitle: String = ""
 )
 
 data class ExternalLink(
