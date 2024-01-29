@@ -5,6 +5,6 @@ package ca.bc.gov.data.model
  */
 data class VaccineStatus(
     val phn: String? = null,
-    val qrCode: MediaMetaData,
-    val federalVaccineProof: MediaMetaData
+    val qrCode: MediaMetaData?,
+    val federalVaccineProof: MediaMetaData?
 )
