@@ -38,10 +38,13 @@ class FetchVaccineRecordRepository @Inject constructor(
     }
 
     private suspend fun processResponse(vaccineStatus: VaccineStatus): Pair<VaccineRecordState, PatientVaccineRecord?> {
-        val image = base64ToInputImageConverter.convert(vaccineStatus.qrCode.data)
+        if (vaccineStatus.qrCode?.data.isNullOrEmpty()) {
+            return Pair(VaccineRecordState.INVALID, null)
+        }
+        val image = base64ToInputImageConverter.convert(vaccineStatus.qrCode?.data!!)
         val patientVaccineRecord = processQrRepository.processQrCode(image)
         val (status, record) = patientVaccineRecord
-        record?.vaccineRecordDto?.federalPass = vaccineStatus.federalVaccineProof.data
+        record?.vaccineRecordDto?.federalPass = vaccineStatus.federalVaccineProof?.data
         record?.patientDto?.phn = vaccineStatus.phn
         return Pair(status, record)
     }

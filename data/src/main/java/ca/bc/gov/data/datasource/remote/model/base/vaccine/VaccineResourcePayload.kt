@@ -19,6 +19,6 @@ data class VaccineResourcePayload(
     val vaccineDate: String?,
     val doses: Int,
     val state: Int,
-    val qrCode: Media,
-    val federalVaccineProof: Media
+    val qrCode: Media?,
+    val federalVaccineProof: Media?
 )
