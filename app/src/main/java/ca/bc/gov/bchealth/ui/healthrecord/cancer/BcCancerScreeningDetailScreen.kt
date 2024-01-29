@@ -1,14 +1,15 @@
 package ca.bc.gov.bchealth.ui.healthrecord.cancer
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.work.WorkManager
@@ -27,7 +30,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.component.HGTextButton
-import ca.bc.gov.bchealth.compose.theme.descriptionGrey
+import ca.bc.gov.bchealth.compose.theme.blue
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.comment.CommentsSummary
 import ca.bc.gov.bchealth.ui.comment.CommentsSummaryUI
@@ -117,39 +120,50 @@ private fun BcCancerScreeningDetailScreenContent(
         }
 
         Column(modifier = modifier.fillMaxSize()) {
-            LazyColumn(
+            Column(
                 modifier
                     .weight(1F)
-                    .fillMaxWidth(),
-                contentPadding = PaddingValues(32.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                    .fillMaxWidth()
+                    .padding(32.dp)
             ) {
 
                 if (!uiState.fileId.isNullOrBlank()) {
-                    item {
-                        HGLargeOutlinedButton(
-                            onClick = onClickDownload,
-                            modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(id = R.string.clinical_documents_detail_button_download)
-                        )
-                    }
-                }
-
-                item {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        text = stringResource(id = uiState.description),
-                        style = MyHealthTypography.h4,
-                        color = descriptionGrey
+                    HGLargeOutlinedButton(
+                        onClick = onClickDownload,
+                        modifier = Modifier.fillMaxWidth(),
+                        text = uiState.pdfButtonTitle
                     )
                 }
 
-                items(uiState.links) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    text = stringResource(id = uiState.description),
+                    style = MyHealthTypography.h4
+                )
+
+                uiState.links.forEach {
                     HGTextButton(
+                        defaultHeight = 8.dp,
+                        contentPadding = PaddingValues(0.dp),
                         onClick = { onClickLink(it.link) },
-                        text = it.name,
-                        leadingIcon = painterResource(id = R.drawable.ic_external_link)
+                        content = {
+                            Text(
+                                text = it.name,
+                                style = MaterialTheme.typography.subtitle2,
+                                fontWeight = FontWeight.Bold,
+                                color = blue,
+                                textDecoration = TextDecoration.Underline
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_external_link),
+                                contentDescription = it.name,
+                                tint = blue
+                            )
+                        }
                     )
                 }
             }
