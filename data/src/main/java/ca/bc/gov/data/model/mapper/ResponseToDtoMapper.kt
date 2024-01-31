@@ -167,8 +167,8 @@ fun Media.toMediaMetaData(): MediaMetaData = MediaMetaData(
 
 fun VaccineResourcePayload.toVaccineStatus(): VaccineStatus = VaccineStatus(
     phn = phn,
-    qrCode = qrCode.toMediaMetaData(),
-    federalVaccineProof = federalVaccineProof.toMediaMetaData()
+    qrCode = qrCode?.toMediaMetaData(),
+    federalVaccineProof = federalVaccineProof?.toMediaMetaData()
 )
 
 fun LabTestResponse.toDto(): List<LabOrderWithLabTestDto> {
