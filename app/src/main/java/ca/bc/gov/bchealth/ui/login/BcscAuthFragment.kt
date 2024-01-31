@@ -71,7 +71,9 @@ class BcscAuthFragment : BaseSecureFragment(R.layout.fragment_bcsc_auth) {
         super.onViewCreated(view, savedInstanceState)
 
         observeCurrentBackStackForAction<TermsOfServiceStatus>(TermsOfServiceFragment.TERMS_OF_SERVICE_STATUS) {
-            findNavController().removeActionFromCurrentBackStackEntry<TermsOfServiceStatus>(TermsOfServiceFragment.TERMS_OF_SERVICE_STATUS)
+            findNavController().removeActionFromCurrentBackStackEntry<TermsOfServiceStatus>(
+                TermsOfServiceFragment.TERMS_OF_SERVICE_STATUS
+            )
             when (it) {
                 TermsOfServiceStatus.ACCEPTED -> {
                     if (termsOfServiceViewModel.tosUiState.value.termsOfServiceId != null) {
@@ -223,20 +225,8 @@ class BcscAuthFragment : BaseSecureFragment(R.layout.fragment_bcsc_auth) {
 
     private fun respondToSuccess() {
         viewModel.setPostLoginCheck(PostLoginCheck.COMPLETE)
-        showLoginSuccessDialog()
-    }
-
-    private fun showLoginSuccessDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.login_success_title))
-            .setCancelable(false)
-            .setMessage(getString(R.string.login_success_message))
-            .setPositiveButton(getString(R.string.ok_camel_case)) { dialog, _ ->
-                findNavController().setActionToPreviousBackStackEntry(BCSC_AUTH, BcscAuthState.SUCCESS)
-                findNavController().popBackStack()
-                dialog.dismiss()
-            }
-            .show()
+        findNavController().setActionToPreviousBackStackEntry(BCSC_AUTH, BcscAuthState.SUCCESS)
+        findNavController().popBackStack()
     }
 
     private fun showAgeLimitRestrictionDialog() {
