@@ -6,11 +6,11 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordItem
-import ca.bc.gov.common.BuildConfig.FLAG_GUARDIAN_CLINICAL_DOCS
 import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.ErrorData
 import ca.bc.gov.repository.DependentsRepository
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DependentRecordsViewModel @Inject constructor(
     private val dependentsRepository: DependentsRepository,
+    private val mobileConfigRepository: MobileConfigRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DependentRecordsUiState())
@@ -37,7 +38,7 @@ class DependentRecordsViewModel @Inject constructor(
     private suspend fun getRecords(patientId: Long, hdid: String) {
         try {
             dependentsRepository.requestRecordsIfNeeded(patientId, hdid)
-
+            val dataSetFeatureFlag = mobileConfigRepository.getDependentDataSetFeatureFlags()
             val patientWithCovidOrderAndTests =
                 dependentsRepository.getPatientWithCovidOrdersAndCovidTests(patientId)
 
@@ -58,7 +59,7 @@ class DependentRecordsViewModel @Inject constructor(
                 it.toUiModel()
             }
 
-            val clinicalDocs = if (FLAG_GUARDIAN_CLINICAL_DOCS) {
+            val clinicalDocs = if (dataSetFeatureFlag.isClinicalDocumentEnabled()) {
                 patientWithClinicalDocuments.clinicalDocuments.map {
                     it.toUiModel()
                 }
