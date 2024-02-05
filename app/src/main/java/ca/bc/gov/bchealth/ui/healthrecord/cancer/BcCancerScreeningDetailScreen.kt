@@ -2,16 +2,13 @@ package ca.bc.gov.bchealth.ui.healthrecord.cancer
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,24 +16,20 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.work.WorkManager
-import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTypography
-import ca.bc.gov.bchealth.compose.component.HGTextButton
-import ca.bc.gov.bchealth.compose.theme.blue
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.comment.CommentsSummary
 import ca.bc.gov.bchealth.ui.comment.CommentsSummaryUI
 import ca.bc.gov.bchealth.ui.comment.CommentsUiState
 import ca.bc.gov.bchealth.ui.comment.CommentsViewModel
 import ca.bc.gov.bchealth.ui.component.HGLargeOutlinedButton
+import ca.bc.gov.bchealth.ui.custom.MyHealthClickableText
 import ca.bc.gov.bchealth.widget.CommentInputUI
 import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.repository.SYNC_COMMENTS
@@ -136,36 +129,14 @@ private fun BcCancerScreeningDetailScreenContent(
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(
+                MyHealthClickableText(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    text = stringResource(id = uiState.description),
-                    style = MyHealthTypography.h4
+                    style = MyHealthTypography.h4.copy(textAlign = TextAlign.Start),
+                    fullText = stringResource(uiState.description),
+                    clickableText = uiState.links?.name ?: "",
+                    action = { onClickLink(uiState.links?.link ?: "") }
                 )
-
-                uiState.links.forEach {
-                    HGTextButton(
-                        defaultHeight = 8.dp,
-                        contentPadding = PaddingValues(0.dp),
-                        onClick = { onClickLink(it.link) },
-                        content = {
-                            Text(
-                                text = it.name,
-                                style = MaterialTheme.typography.subtitle2,
-                                fontWeight = FontWeight.Bold,
-                                color = blue,
-                                textDecoration = TextDecoration.Underline
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_external_link),
-                                contentDescription = it.name,
-                                tint = blue
-                            )
-                        }
-                    )
-                }
             }
 
             if (BuildConfig.FLAG_ADD_COMMENTS) {
