@@ -257,7 +257,7 @@
     <string name="onboarding_health_passes_title">Proof of vaccination</string>
     <string name="onboarding_health_passes_desc">Save proof of vaccination documents for you and your family. Have them ready for travel or to access events and services that require it.</string>
     <string name="onboarding_health_records_title">Health records</string>
-    <string name="onboarding_health_records_desc">Access your lab test results, medication history, immunization records, health visits and more. Keep track of what\'s important to you and your health.</string>
+    <string name="onboarding_health_records_desc">View and manage all your available health records, including dispensed medications, health visits, lab results, immunizations, BC Cancer cervix screenings and more.</string>
     <string name="onboarding_health_resources_title">Health resources</string>
     <string name="onboarding_health_resources_desc">Connect with HealthLink BC for health advice and get the latest information about COVID-19.</string>
     <string name="onboarding_news_feed_title">News feed</string>
