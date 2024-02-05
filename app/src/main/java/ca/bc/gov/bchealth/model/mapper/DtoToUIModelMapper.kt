@@ -319,7 +319,7 @@ fun BcCancerScreeningDataDto.toUiModel() = HealthRecordItem(
     recordId = _id,
     patientId = patientId,
     icon = R.drawable.ic_health_record_bc_cancer_screening,
-    title = if (eventType == "Recall") { "BC Cancer Screening" } else { "BC Cancer Result" },
+    title = if (eventType == "Recall") { "BC Cancer Screening Reminder Letter" } else { "BC Cancer Screening Result Letter" },
     description = programName + " • " + if (eventType == "Recall") { eventDateTime } else { resultDateTime }?.toDate(),
     date = if (eventType == "Recall") { eventDateTime !! } else { resultDateTime!! },
     healthRecordType = HealthRecordType.BC_CANCER_SCREENING,
