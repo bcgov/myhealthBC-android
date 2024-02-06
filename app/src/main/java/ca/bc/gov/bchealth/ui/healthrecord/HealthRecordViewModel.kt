@@ -77,6 +77,7 @@ class HealthRecordViewModel @Inject constructor(
             }
         }
 
+        val showBCCancerBanner = timeLineFilters.size == 1 && !timeLineFilters.find { filter -> filter == HealthRecordType.BC_CANCER_SCREENING.name }.isNullOrBlank()
         _uiState.update { it ->
             it.copy(
                 isLoading = false,
@@ -98,7 +99,8 @@ class HealthRecordViewModel @Inject constructor(
                         }
                     }
                 },
-                requiredProtectiveWordVerification = !isShowMedicationRecords()
+                requiredProtectiveWordVerification = !isShowMedicationRecords(),
+                showBCCancerBanner = showBCCancerBanner
             )
         }
     }
@@ -269,6 +271,7 @@ data class HealthRecordUiState(
     val filters: List<String> = emptyList(),
     val isHgServicesUp: Boolean = true,
     val isConnected: Boolean = true,
+    val showBCCancerBanner: Boolean = false
 )
 
 data class HealthRecordItem(

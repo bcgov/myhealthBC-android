@@ -10,3 +10,4 @@ const val URL_BC_RADIOLOGICAL_SOCIETY = "https://bcradiology.ca/patient-resource
 const val URL_BC_CANCER_SCREENING = "http://www.bccancer.bc.ca/contact"
 const val URL_BC_CERVIX_SCREENING = "http://www.bccancer.bc.ca/screening/cervix"
 const val URL_BC_CLINICAL_OFFERS_SCREENING = "http://www.bccancer.bc.ca/screening/cervix/clinic-locator"
+const val URL_BC_CANCER_BANNER = "http://www.bccancer.bc.ca/screening"
