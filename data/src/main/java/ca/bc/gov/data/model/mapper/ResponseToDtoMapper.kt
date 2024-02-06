@@ -39,6 +39,7 @@ import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.model.userprofile.UserProfileDto
+import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.common.utils.toDateTimeZ
 import ca.bc.gov.common.utils.toOffsetDateTime
@@ -428,7 +429,7 @@ fun DependentPayload.toDto() = DependentDto(
     firstname = dependentInformation.firstname,
     lastname = dependentInformation.lastname,
     phn = dependentInformation.phn,
-    dateOfBirth = dependentInformation.dateOfBirth.toDateTime(),
+    dateOfBirth = dependentInformation.dateOfBirth.toDate(),
     gender = dependentInformation.gender,
     ownerId = ownerId,
     delegateId = delegateId,
@@ -471,7 +472,7 @@ fun PatientResponse.toDto(): PatientDto {
         fullName = fullNameBuilder.toString(),
         firstName = patientName.givenName,
         lastName = patientName.surName,
-        dateOfBirth = date.toDateTime(),
+        dateOfBirth = date.toDate(),
         legalName = legalName?.toDto(),
         preferredName = preferredName.toDto(),
         commonName = commonName?.toDto(),
