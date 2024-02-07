@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import ca.bc.gov.common.model.AppFeatureName
 import ca.bc.gov.data.datasource.local.entity.relations.AppFeatureWithQuickAccessTiles
 import ca.bc.gov.data.datasource.local.entity.settings.AppFeatureEntity
 
@@ -17,4 +18,7 @@ interface AppFeatureDao {
 
     @Query("SELECT * FROM app_feature")
     suspend fun getAllFeatureWithQuickAccessTiles(): List<AppFeatureWithQuickAccessTiles>
+
+    @Query("SELECT * FROM app_feature WHERE feature_name = :name")
+    suspend fun getAppFeature(name: AppFeatureName): AppFeatureEntity?
 }
