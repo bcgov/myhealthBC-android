@@ -5,6 +5,9 @@ import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.bchealth.utils.URL_BC_CERVIX_SCREENING
+import ca.bc.gov.common.model.analytics.AnalyticsAction
+import ca.bc.gov.common.model.analytics.AnalyticsActionData
+import ca.bc.gov.repository.analytics.AnalyticsRepository
 import ca.bc.gov.repository.bcsc.BcscAuthRepo
 import ca.bc.gov.repository.services.BcCancerScreeningRepository
 import ca.bc.gov.repository.services.PatientServicesRepository
@@ -26,6 +29,7 @@ class BcCancerScreeningDetailViewModel @Inject constructor(
     private val mobileConfigRepository: MobileConfigRepository,
     private val patientServicesRepository: PatientServicesRepository,
     private val bcCancerScreeningRepository: BcCancerScreeningRepository,
+    private val analyticsRepository: AnalyticsRepository,
     private val bcscAuthRepo: BcscAuthRepo
 ) : BaseViewModel() {
     private val _uiState = MutableStateFlow(BcCancerScreeningDataDetailUiState())
@@ -40,6 +44,7 @@ class BcCancerScreeningDetailViewModel @Inject constructor(
                     onLoading = false,
                     toolbarTitle = if (data.eventType == "Result") { "BC Cancer Screening Result Letter" } else { "BC Cancer Screening Reminder Letter" },
                     fileId = data.fileId,
+                    eventType = data.eventType ?: "",
                     links = if (data.eventType == "Result") {
                         ExternalLink(name = "check the BC Cancer website", link = URL_BC_CERVIX_SCREENING)
                     } else {
@@ -67,6 +72,16 @@ class BcCancerScreeningDetailViewModel @Inject constructor(
             val authParams = bcscAuthRepo.getAuthParametersDto()
             mobileConfigRepository.refreshMobileConfiguration()
             _uiState.value.fileId?.let { id ->
+                analyticsRepository.track(
+                    action = AnalyticsAction.DOWNLOAD,
+                    text = AnalyticsActionData.DOCUMENT,
+                    data = mapOf(
+                        "dataset" to "BC Cancer",
+                        "type" to _uiState.value.eventType,
+                        "format" to "PDF",
+                        "actor" to "User"
+                    )
+                )
                 val fileString =
                     patientServicesRepository.fetchPatientDataFile(authParams.hdid, id)
 
@@ -91,7 +106,8 @@ data class BcCancerScreeningDataDetailUiState(
     val fileId: String? = null,
     val pdfData: String? = null,
     val id: String? = null,
-    val pdfButtonTitle: String = ""
+    val pdfButtonTitle: String = "",
+    val eventType: String = ""
 )
 
 data class ExternalLink(
