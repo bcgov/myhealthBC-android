@@ -17,7 +17,7 @@ class AnalyticsRepository @Inject constructor(
 ) {
 
     companion object {
-        private const val schema = "iglu:ca.bc.gov.gateway/action/jsonschema/1-0-0"
+        private const val schema = "iglu:ca.bc.gov.gateway/action/jsonschema/2-0-0"
     }
 
     val analyticsFeature = preferenceStorage.analyticsFeature
@@ -33,6 +33,10 @@ class AnalyticsRepository @Inject constructor(
         Snowplow.getDefaultTracker()?.track(getEvent(action = action.value, text = data))
     }
 
+    suspend fun track(action: AnalyticsAction, text: AnalyticsActionData, data: Map<String, String>) {
+        Snowplow.getDefaultTracker()?.track(getEvent(action, text, data))
+    }
+
     private fun getEvent(action: String, text: String?): SelfDescribing {
 
         val properties: MutableMap<String, String?> = HashMap()
@@ -44,6 +48,20 @@ class AnalyticsRepository @Inject constructor(
             properties
         )
 
+        return SelfDescribing(sdj)
+    }
+
+    private fun getEvent(action: AnalyticsAction, text: AnalyticsActionData, data: Map<String, String?>): SelfDescribing {
+        val properties: MutableMap<String, String?> = HashMap()
+        properties["action"] = action.value
+        properties["text"] = text.value
+
+        properties.putAll(data)
+
+        val sdj = SelfDescribingJson(
+            schema,
+            properties
+        )
         return SelfDescribing(sdj)
     }
 }
