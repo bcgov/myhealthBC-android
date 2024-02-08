@@ -108,7 +108,8 @@ class HomeViewModel @Inject constructor(
         if (!flags.isDiagnosticImagingEnabled()) {
             quickAccessTileItems.removeIf { it.name == QuickAccessLinkName.IMAGING_REPORTS.value }
         }
-        if (!flags.isOrganDonorRegistrationEnabled()) {
+        val serviceFlags = mobileConfigRepository.getServicesFeatureFlag()
+        if (!serviceFlags.isOrganDonorRegistrationEnabled()) {
             quickAccessTileItems.removeIf { it.name == QuickAccessLinkName.ORGAN_DONOR.value }
         }
         _uiState.update { it.copy(isLoading = false, quickAccessTileItems = quickAccessTileItems) }
