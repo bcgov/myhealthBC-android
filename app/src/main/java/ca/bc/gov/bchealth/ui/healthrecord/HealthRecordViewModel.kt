@@ -95,7 +95,7 @@ class HealthRecordViewModel @Inject constructor(
                         HealthRecordType.HOSPITAL_VISITS_RECORD.name -> "Hospital Visits"
                         HealthRecordType.CLINICAL_DOCUMENT_RECORD.name -> "Clinical Docs"
                         HealthRecordType.DIAGNOSTIC_IMAGING.name -> "Imaging Reports"
-                        HealthRecordType.BC_CANCER_SCREENING.name -> "Bc Cancer Screening"
+                        HealthRecordType.BC_CANCER_SCREENING.name -> "BC Cancer Screening"
                         else -> {
                             filter
                         }
