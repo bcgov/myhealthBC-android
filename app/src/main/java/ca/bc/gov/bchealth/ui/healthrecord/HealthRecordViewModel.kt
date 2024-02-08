@@ -45,6 +45,7 @@ class HealthRecordViewModel @Inject constructor(
 
         val timeLineFilters = mutableListOf<String>()
         val filteredResult = mutableListOf<HealthRecordItem>()
+        var showBCCancerBanner = false
         if (filterString.isNotBlank()) {
             val filterQuery = filterString.split(",")
 
@@ -65,6 +66,8 @@ class HealthRecordViewModel @Inject constructor(
             timeLineFilters +=
                 filterQuery.mapNotNull { query -> TimelineTypeFilter.findByName(query)?.recordType?.name }
 
+            showBCCancerBanner = timeLineFilters.size == 1 && !timeLineFilters.find { filter -> filter == HealthRecordType.BC_CANCER_SCREENING.name }.isNullOrBlank()
+
             filteredResult += if (timeLineFilters.isNotEmpty()) {
                 listFilteredBySearch.filter { recordType -> timeLineFilters.contains(recordType.healthRecordType.name) }
             } else {
@@ -77,7 +80,6 @@ class HealthRecordViewModel @Inject constructor(
             }
         }
 
-        val showBCCancerBanner = timeLineFilters.size == 1 && !timeLineFilters.find { filter -> filter == HealthRecordType.BC_CANCER_SCREENING.name }.isNullOrBlank()
         _uiState.update { it ->
             it.copy(
                 isLoading = false,

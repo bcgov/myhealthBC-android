@@ -36,6 +36,7 @@ class SplashViewModel @Inject constructor(
     init {
         onBoardingRepository.checkIfReOnBoardingRequired(BuildConfig.VERSION_CODE)
         initializeAppData()
+        addBCCancerQuickLink()
     }
 
     fun checkAppVersion() {
@@ -113,6 +114,21 @@ class SplashViewModel @Inject constructor(
         }
     }
 
+    private fun addBCCancerQuickLink() = viewModelScope.launch {
+        try {
+            val appFeature = appFeatureRepository.getAppFeature(AppFeatureName.HEALTH_RECORDS)
+            val tile = QuickAccessTileDto(
+                featureId = appFeature.id,
+                tileName = QuickAccessLinkName.BC_CANCER_SCREENING,
+                tilePayload = "CancerScreening",
+                showAsQuickAccess = false
+            )
+            quickAccessTileRepository.insert(tile)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     private fun serviceQuickLinkTilesItem(id: Long): List<QuickAccessTileDto> {
         return listOf(
             QuickAccessTileDto(
@@ -179,7 +195,14 @@ class SplashViewModel @Inject constructor(
                 tileName = QuickAccessLinkName.IMAGING_REPORTS,
                 tilePayload = "ImagingReports",
                 showAsQuickAccess = false
+            ),
+            QuickAccessTileDto(
+                featureId = id,
+                tileName = QuickAccessLinkName.BC_CANCER_SCREENING,
+                tilePayload = "CancerScreening",
+                showAsQuickAccess = false
             )
+
         )
     }
 
