@@ -78,12 +78,14 @@ private fun QuickAccessManagementContent(
             item { Spacer(modifier = Modifier.size(16.dp)) }
 
             featureWithQuickAccessItems.forEach {
-                item {
-                    Text(
-                        text = it.name,
-                        style = MyHealthTypography.body1.bold(),
-                        color = statusBlue
-                    )
+                if (it.quickAccessItems.isNotEmpty()) {
+                    item {
+                        Text(
+                            text = it.name,
+                            style = MyHealthTypography.body1.bold(),
+                            color = statusBlue
+                        )
+                    }
                 }
                 item { Spacer(modifier = Modifier.size(12.dp)) }
                 items(it.quickAccessItems) { tile ->

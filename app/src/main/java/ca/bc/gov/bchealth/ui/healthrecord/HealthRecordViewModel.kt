@@ -45,6 +45,7 @@ class HealthRecordViewModel @Inject constructor(
 
         val timeLineFilters = mutableListOf<String>()
         val filteredResult = mutableListOf<HealthRecordItem>()
+        var showBCCancerBanner = false
         if (filterString.isNotBlank()) {
             val filterQuery = filterString.split(",")
 
@@ -64,6 +65,8 @@ class HealthRecordViewModel @Inject constructor(
 
             timeLineFilters +=
                 filterQuery.mapNotNull { query -> TimelineTypeFilter.findByName(query)?.recordType?.name }
+
+            showBCCancerBanner = timeLineFilters.size == 1 && !timeLineFilters.find { filter -> filter == HealthRecordType.BC_CANCER_SCREENING.name }.isNullOrBlank()
 
             filteredResult += if (timeLineFilters.isNotEmpty()) {
                 listFilteredBySearch.filter { recordType -> timeLineFilters.contains(recordType.healthRecordType.name) }
@@ -92,13 +95,14 @@ class HealthRecordViewModel @Inject constructor(
                         HealthRecordType.HOSPITAL_VISITS_RECORD.name -> "Hospital Visits"
                         HealthRecordType.CLINICAL_DOCUMENT_RECORD.name -> "Clinical Docs"
                         HealthRecordType.DIAGNOSTIC_IMAGING.name -> "Imaging Reports"
-                        HealthRecordType.BC_CANCER_SCREENING.name -> "Bc Cancer Screening"
+                        HealthRecordType.BC_CANCER_SCREENING.name -> "BC Cancer Screening"
                         else -> {
                             filter
                         }
                     }
                 },
-                requiredProtectiveWordVerification = !isShowMedicationRecords()
+                requiredProtectiveWordVerification = !isShowMedicationRecords(),
+                showBCCancerBanner = showBCCancerBanner
             )
         }
     }
@@ -269,6 +273,7 @@ data class HealthRecordUiState(
     val filters: List<String> = emptyList(),
     val isHgServicesUp: Boolean = true,
     val isConnected: Boolean = true,
+    val showBCCancerBanner: Boolean = false
 )
 
 data class HealthRecordItem(

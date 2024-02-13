@@ -39,6 +39,7 @@ import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.model.userprofile.UserProfileDto
+import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.common.utils.toDateTimeZ
 import ca.bc.gov.common.utils.toOffsetDateTime
@@ -500,7 +501,7 @@ private fun OrganDonorData.toDto() = OrganDonorDto(
 
 private fun DiagnosticImagingData.toDto() = DiagnosticImagingDataDto(
     id = id,
-    examDate = examDate?.toDateTime(),
+    examDate = examDate?.toDate(),
     isUpdated = isUpdated,
     fileId = fileId,
     examStatus = examStatus ?: "Unknown",

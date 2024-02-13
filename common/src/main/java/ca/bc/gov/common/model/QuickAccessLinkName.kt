@@ -11,7 +11,8 @@ enum class QuickAccessLinkName(val value: String) {
     CLINICAL_DOCUMENTS("Clinical Documents"),
     HOSPITAL_VISITS("Hospital Visits"),
     IMAGING_REPORTS("Imaging Reports"),
-    ORGAN_DONOR("Organ Donor");
+    ORGAN_DONOR("Organ Donor"),
+    BC_CANCER_SCREENING("BC Cancer Screening");
 
     companion object {
         private val map = QuickAccessLinkName.values().associateBy(QuickAccessLinkName::value)
