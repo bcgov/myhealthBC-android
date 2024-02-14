@@ -11,7 +11,7 @@ import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
-import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.dateToInstant
 import ca.bc.gov.common.utils.toStartOfDayInstant
 import ca.bc.gov.repository.CacheRepository
 import ca.bc.gov.repository.MedicationRecordRepository
@@ -128,13 +128,13 @@ class HealthRecordViewModel @Inject constructor(
 
     private fun getFilterByDate(healthRecords: List<HealthRecordItem>, fromDate: String?, toDate: String?): MutableList<HealthRecordItem> {
         return if (!fromDate.isNullOrBlank() && !toDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
+            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.dateToInstant().toStartOfDayInstant() && it.date.toStartOfDayInstant() <= toDate.dateToInstant().toStartOfDayInstant() }
                 .toMutableList()
         } else if (!fromDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
+            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.dateToInstant().toStartOfDayInstant() }
                 .toMutableList()
         } else if (!toDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }.toMutableList()
+            healthRecords.filter { it.date.toStartOfDayInstant() <= toDate.dateToInstant().toStartOfDayInstant() }.toMutableList()
         } else {
             healthRecords.toMutableList()
         }
