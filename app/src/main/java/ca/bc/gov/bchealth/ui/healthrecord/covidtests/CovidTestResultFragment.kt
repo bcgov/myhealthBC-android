@@ -22,7 +22,7 @@ import ca.bc.gov.bchealth.widget.AddCommentLayout
 import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidTestDto
-import ca.bc.gov.common.utils.toDateTimeString
+import ca.bc.gov.common.utils.dateTimeString
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val COVID_ORDER_ID = "COVID_ORDER_ID"
@@ -99,10 +99,10 @@ class CovidTestResultFragment(private val itemClickListener: ItemClickListener) 
                 getString(R.string.tested_on)
                     .plus(" ")
                     .plus(
-                        covidTest?.collectedDateTime?.toDateTimeString()
+                        covidTest?.collectedDateTime?.dateTimeString()
                     )
             tvDot.text =
-                covidTest?.collectedDateTime?.toDateTimeString().showIfNullOrBlank(requireContext())
+                covidTest?.collectedDateTime?.dateTimeString().showIfNullOrBlank(requireContext())
             tvTestStatus.text = covidTest?.testStatus.showIfNullOrBlank(requireContext())
             tvTypeName.text = covidTest?.testType.showIfNullOrBlank(requireContext())
             tvProviderClinic.text = covidOrder.reportingLab.showIfNullOrBlank(requireContext())

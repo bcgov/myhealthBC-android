@@ -32,9 +32,11 @@ import ca.bc.gov.common.model.services.BcCancerScreeningDataDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
+import ca.bc.gov.common.utils.dateString
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
 import ca.bc.gov.common.utils.toLocalDateTimeInstant
+import ca.bc.gov.common.utils.toPST
 import java.time.Instant
 import java.time.LocalDate
 
@@ -101,7 +103,7 @@ fun ClinicalDocumentDto.toUiModel() =
 fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
     var description = ""
     description = mapOrderStatus(labOrder.orderStatus ?: "").plus(" • ")
-        .plus(labOrder.timelineDateTime.toDate())
+        .plus(labOrder.timelineDateTime.dateString())
     return HealthRecordItem(
         patientId = labOrder.patientId,
         title = labOrder.commonName ?: "",
@@ -168,9 +170,9 @@ fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem {
         patientId = covidOrder.patientId,
         recordId = covidOrder.id,
         title = "COVID-19 test result",
-        description = "$testOutcome • ${date.toDate()}",
+        description = "$testOutcome • ${date.dateString()}",
         icon = R.drawable.ic_health_record_covid_test,
-        date = date,
+        date = date.toPST(),
         healthRecordType = HealthRecordType.COVID_TEST_RECORD,
         dataSource = covidOrder.dataSource.name
     )
@@ -182,7 +184,7 @@ fun ImmunizationRecordWithForecastDto.toUiModel(): HealthRecordItem {
         patientId = immunizationRecord.patientId,
         recordId = immunizationRecord.id,
         title = immunizationRecord.immunizationName ?: "",
-        description = immunizationRecord.dateOfImmunization.toDate(),
+        description = immunizationRecord.dateOfImmunization.dateString(),
         icon = R.drawable.ic_health_record_vaccine,
         date = immunizationRecord.dateOfImmunization,
         healthRecordType = HealthRecordType.IMMUNIZATION_RECORD,
@@ -207,12 +209,12 @@ fun ImmunizationRecordWithForecastAndPatientDto.toUiModel(): ImmunizationRecordD
     return ImmunizationRecordDetailItem(
         id = immunizationRecordWithForecast.immunizationRecord.id,
         status = immunizationRecordWithForecast.immunizationRecord.status,
-        dueDate = immunizationRecordWithForecast.immunizationForecast?.dueDate?.toDate(),
+        dueDate = immunizationRecordWithForecast.immunizationForecast?.dueDate?.dateString(),
         name = immunizationRecordWithForecast.immunizationRecord.immunizationName,
         doseDetails = listOf(
             ImmunizationDoseDetailItem(
                 id = immunizationRecordWithForecast.immunizationRecord.id,
-                date = immunizationRecordWithForecast.immunizationRecord.dateOfImmunization.toDate(),
+                date = immunizationRecordWithForecast.immunizationRecord.dateOfImmunization.dateString(),
                 productName = immunizationRecordWithForecast.immunizationRecord.productName,
                 immunizingAgent = immunizationRecordWithForecast.immunizationRecord.agentName,
                 providerOrClinicName = immunizationRecordWithForecast.immunizationRecord.provideOrClinic,
@@ -228,7 +230,7 @@ fun HealthVisitsDto.toUiModel() =
         patientId = patientId,
         recordId = healthVisitId,
         title = specialtyDescription.orEmpty(),
-        description = practitionerName.orEmpty() + " • " + encounterDate.toDate(),
+        description = practitionerName.orEmpty() + " • " + encounterDate.dateString(),
         icon = R.drawable.ic_health_record_health_visit,
         date = encounterDate,
         healthRecordType = HealthRecordType.HEALTH_VISIT_RECORD,
@@ -239,7 +241,7 @@ fun SpecialAuthorityDto.toUiModel() = HealthRecordItem(
     patientId = patientId,
     recordId = specialAuthorityId,
     title = drugName.orEmpty(),
-    description = requestStatus.orEmpty() + " • " + requestedDate?.toDate(),
+    description = requestStatus.orEmpty() + " • " + requestedDate?.dateString(),
     icon = R.drawable.ic_health_record_special_authority,
     date = requestedDate!!,
     healthRecordType = HealthRecordType.SPECIAL_AUTHORITY_RECORD,
@@ -261,7 +263,7 @@ fun HospitalVisitDto.toUiModel() =
 fun ImmunizationRecommendationsDto.toUiModel() = RecommendationDetailItem(
     title = this.recommendedVaccinations.orPlaceholder(),
     status = this.status,
-    date = this.agentDueDate?.toDate().orPlaceholder(),
+    date = this.agentDueDate?.dateString().orPlaceholder(),
 )
 
 fun DependentDto.toUiModel(currentDate: LocalDate) = DependentDetailItem(
@@ -288,7 +290,7 @@ fun CommentDto.toUiModel() = Comment(
 private fun ImmunizationForecastDto.toUiModel() = ForecastDetailItem(
     name = this.displayName.orPlaceholder(),
     status = this.status,
-    date = this.dueDate.toDate(),
+    date = this.dueDate.dateString(),
 )
 
 enum class CovidTestResultStatus {
@@ -305,7 +307,7 @@ private fun DiagnosticImagingDataDto.toUiModel() = HealthRecordItem(
     patientId = patientId,
     icon = R.drawable.ic_health_record_diagnostic_imaging,
     title = modality.orEmpty(),
-    description = if (isUpdated) { "Updated" } else { examStatus } + " • " + examDate?.toDate(),
+    description = if (isUpdated) { "Updated" } else { examStatus } + " • " + examDate?.dateString(),
     date = examDate!!,
     healthRecordType = HealthRecordType.DIAGNOSTIC_IMAGING,
     dataSource = null
@@ -320,7 +322,7 @@ fun BcCancerScreeningDataDto.toUiModel() = HealthRecordItem(
     patientId = patientId,
     icon = R.drawable.ic_health_record_bc_cancer_screening,
     title = if (eventType == "Recall") { "BC Cancer Screening Reminder Letter" } else { "BC Cancer Screening Result Letter" },
-    description = programName + " • " + if (eventType == "Recall") { eventDateTime } else { resultDateTime }?.toDate(),
+    description = programName + " • " + if (eventType == "Recall") { eventDateTime } else { resultDateTime }?.dateString(),
     date = if (eventType == "Recall") { eventDateTime !! } else { resultDateTime!! },
     healthRecordType = HealthRecordType.BC_CANCER_SCREENING,
     dataSource = null

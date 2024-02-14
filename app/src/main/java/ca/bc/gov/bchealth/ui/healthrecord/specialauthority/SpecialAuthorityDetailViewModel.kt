@@ -3,7 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.specialauthority
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
-import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.dateString
 import ca.bc.gov.repository.specialauthority.SpecialAuthorityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,13 +50,13 @@ class SpecialAuthorityDetailViewModel @Inject constructor(
             specialAuthorityDetailItems.add(
                 SpecialAuthorityDetailItem(
                     R.string.effective_date,
-                    specialAuthorityDto?.effectiveDate?.toDate() ?: "--"
+                    specialAuthorityDto?.effectiveDate?.dateString() ?: "--"
                 )
             )
             specialAuthorityDetailItems.add(
                 SpecialAuthorityDetailItem(
                     R.string.expiry_date,
-                    specialAuthorityDto?.expiryDate?.toDate() ?: "--"
+                    specialAuthorityDto?.expiryDate?.dateString() ?: "--"
                 )
             )
             specialAuthorityDetailItems.add(

@@ -39,10 +39,10 @@ import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.model.userprofile.UserProfileDto
-import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.dateTimeToInstant
+import ca.bc.gov.common.utils.dateToInstant
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.common.utils.toDateTimeZ
-import ca.bc.gov.common.utils.toOffsetDateTime
 import ca.bc.gov.common.utils.toPstFromIsoZoned
 import ca.bc.gov.data.datasource.remote.model.base.CovidLabResult
 import ca.bc.gov.data.datasource.remote.model.base.CovidOrder
@@ -126,7 +126,7 @@ fun MedicationStatementPayload.toMedicationRecordDto() = MedicationRecordDto(
     prescriptionIdentifier = prescriptionIdentifier,
     prescriptionStatus = prescriptionStatus.toString(),
     practitionerSurname = practitionerSurname,
-    dispenseDate = dispensedDate.toDateTime(),
+    dispenseDate = dispensedDate.dateToInstant(),
     directions = directions,
     dateEntered = dateEntered?.toDateTime() ?: Instant.EPOCH,
     dataSource = DataSource.BCSC
@@ -138,7 +138,7 @@ fun MedicationSummary.toMedicationSummaryDto() = MedicationSummaryDto(
     genericName = genericName,
     quantity = quantity,
     maxDailyDosage = maxDailyDosage,
-    drugDiscontinueDate = drugDiscontinuedDate?.toDateTime() ?: Instant.EPOCH,
+    drugDiscontinueDate = drugDiscontinuedDate?.dateTimeToInstant() ?: Instant.EPOCH,
     form = form,
     manufacturer = manufacturer,
     strength = strength,
@@ -187,8 +187,8 @@ fun LabTestResponse.toDto(): List<LabOrderWithLabTestDto> {
             LabOrderDto(
                 labPdfId = order.labPdfId,
                 reportId = order.reportId,
-                collectionDateTime = order.collectionDateTime?.toDateTime(),
-                timelineDateTime = order.timelineDateTime.toDateTime(),
+                collectionDateTime = order.collectionDateTime?.dateTimeToInstant(),
+                timelineDateTime = order.timelineDateTime.dateTimeToInstant(),
                 reportingSource = order.reportingSource,
                 commonName = order.commonName,
                 orderingProvider = order.orderingProvider,
@@ -292,7 +292,7 @@ fun ImmunizationRecord.toDto(): ImmunizationRecordDto {
 
     return ImmunizationRecordDto(
         immunizationId = id,
-        dateOfImmunization = dateOfImmunization.toDateTime(),
+        dateOfImmunization = dateOfImmunization.dateTimeToInstant(),
         status = status,
         isValid = valid,
         provideOrClinic = providerOrClinic,
@@ -307,11 +307,11 @@ fun ImmunizationRecord.toDto(): ImmunizationRecordDto {
 
 fun Forecast.toDto() = ImmunizationForecastDto(
     recommendationId = recommendationId,
-    createDate = createDate.toDateTime(),
+    createDate = createDate.dateToInstant(),
     status = ForecastStatus.getByText(status),
     displayName = displayName,
-    eligibleDate = eligibleDate.toDateTime(),
-    dueDate = dueDate.toDateTime()
+    eligibleDate = eligibleDate.dateToInstant(),
+    dueDate = dueDate.dateToInstant()
 )
 
 fun ImmunizationResponse.toDto() = ImmunizationDto(
@@ -338,7 +338,7 @@ fun HealthVisitsPayload.toDto() = HealthVisitsDto(
     healthVisitId = 0,
     patientId = 0,
     id,
-    encounterDate.toDateTime(),
+    encounterDate.dateToInstant(),
     specialtyDescription,
     practitionerName,
     clinic.toDto(),
@@ -355,8 +355,8 @@ fun HospitalVisitInformation.toDto() = HospitalVisitDto(
     location = facility,
     provider = provider.orEmpty(),
     visitType = visitType.orEmpty(),
-    visitDate = admitDateTime.toDateTime(),
-    dischargeDate = endDateTime?.toDateTime(),
+    visitDate = admitDateTime.dateTimeToInstant(),
+    dischargeDate = endDateTime?.dateTimeToInstant(),
     encounterId = encounterId
 )
 
@@ -367,7 +367,7 @@ fun ClinicalDocumentResponse.toDto(): List<ClinicalDocumentDto> =
             type = it.type,
             facilityName = it.facilityName,
             discipline = it.discipline,
-            serviceDate = it.serviceDate.toOffsetDateTime(),
+            serviceDate = it.serviceDate.dateToInstant(),
             fileId = it.fileId,
         )
     }
@@ -388,9 +388,9 @@ fun SpecialAuthorityPayload.toDto() = SpecialAuthorityDto(
     requestStatus,
     prescriberFirstName,
     prescriberLastName,
-    requestedDate?.toDateTime(),
-    effectiveDate?.toDateTime(),
-    expiryDate?.toDateTime(),
+    requestedDate?.dateToInstant(),
+    effectiveDate?.dateToInstant(),
+    expiryDate?.dateToInstant(),
     dataSource = DataSource.BCSC
 )
 
@@ -401,7 +401,7 @@ fun Recommendation.toDto(): ImmunizationRecommendationsDto {
         recommendationSetId = this.recommendationSetId,
         immunizationName = agent?.name,
         status = ForecastStatus.getByText(status),
-        agentDueDate = this.agentDueDate?.toDateTime(),
+        agentDueDate = this.agentDueDate?.dateToInstant(),
         recommendedVaccinations = this.recommendedVaccinations
     )
 }
@@ -429,7 +429,7 @@ fun DependentPayload.toDto() = DependentDto(
     firstname = dependentInformation.firstname,
     lastname = dependentInformation.lastname,
     phn = dependentInformation.phn,
-    dateOfBirth = dependentInformation.dateOfBirth.toDateTime(),
+    dateOfBirth = dependentInformation.dateOfBirth.dateToInstant(),
     gender = dependentInformation.gender,
     ownerId = ownerId,
     delegateId = delegateId,
@@ -472,7 +472,7 @@ fun PatientResponse.toDto(): PatientDto {
         fullName = fullNameBuilder.toString(),
         firstName = patientName.givenName,
         lastName = patientName.surName,
-        dateOfBirth = date.toDateTime(),
+        dateOfBirth = date.dateToInstant(),
         legalName = legalName?.toDto(),
         preferredName = preferredName.toDto(),
         commonName = commonName?.toDto(),
@@ -501,7 +501,7 @@ private fun OrganDonorData.toDto() = OrganDonorDto(
 
 private fun DiagnosticImagingData.toDto() = DiagnosticImagingDataDto(
     id = id,
-    examDate = examDate?.toDate(),
+    examDate = examDate?.dateToInstant(),
     isUpdated = isUpdated,
     fileId = fileId,
     examStatus = examStatus ?: "Unknown",
@@ -514,8 +514,8 @@ private fun DiagnosticImagingData.toDto() = DiagnosticImagingDataDto(
 
 private fun BcCancerScreeningData.toDto() = BcCancerScreeningDataDto(
     id = id,
-    resultDateTime = resultDateTime?.toDateTimeZ(),
-    eventDateTime = eventDateTime?.toDateTimeZ(),
+    resultDateTime = resultDateTime?.dateTimeToInstant(),
+    eventDateTime = eventDateTime?.dateTimeToInstant(),
     fileId = fileId,
     programName = programName,
     eventType = eventType

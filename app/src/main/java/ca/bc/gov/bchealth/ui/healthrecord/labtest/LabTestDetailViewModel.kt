@@ -8,8 +8,8 @@ import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestsAndPatientDto
-import ca.bc.gov.common.utils.toDate
-import ca.bc.gov.common.utils.toDateTimeString
+import ca.bc.gov.common.utils.dateString
+import ca.bc.gov.common.utils.dateTimeString
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -71,8 +71,8 @@ class LabTestDetailViewModel @Inject constructor(
         labTestDetails.add(
             LabTestDetail(
                 title1 = R.string.collection_date,
-                collectionDateTime = labOrderWithLabTestDto.labOrder.collectionDateTime?.toDate(),
-                timelineDateTime = labOrderWithLabTestDto.labOrder.timelineDateTime.toDateTimeString(),
+                collectionDateTime = labOrderWithLabTestDto.labOrder.collectionDateTime?.dateString(),
+                timelineDateTime = labOrderWithLabTestDto.labOrder.timelineDateTime.dateTimeString(),
                 title2 = R.string.ordering_provider,
                 orderingProvider = labOrderWithLabTestDto.labOrder.orderingProvider,
                 title3 = R.string.reporting_lab,

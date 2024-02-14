@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.common.model.dependents.DependentDto
-import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.dateString
 import ca.bc.gov.repository.DependentsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,7 +43,7 @@ class DependentProfileViewModel @Inject constructor(
                     ),
                     DependentProfileItem(
                         label = R.string.dependents_profile_dob,
-                        value = dependentDto.dateOfBirth.toDate()
+                        value = dependentDto.dateOfBirth.dateString()
                     ),
                 )
 
