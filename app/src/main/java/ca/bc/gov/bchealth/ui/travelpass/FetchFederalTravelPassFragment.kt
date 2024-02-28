@@ -32,7 +32,7 @@ import ca.bc.gov.bchealth.viewmodel.RecentPhnDobViewModel
 import ca.bc.gov.common.model.analytics.AnalyticsAction
 import ca.bc.gov.common.model.analytics.AnalyticsActionData
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
-import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.dateString
 import ca.bc.gov.common.utils.yyyy_MM_dd
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import dagger.hilt.android.AndroidEntryPoint
@@ -168,8 +168,8 @@ class FetchFederalTravelPassFragment : BaseFragment(R.layout.fragment_fetch_trav
             patientDataDto.vaccineWithDoses?.doses?.let { doses ->
                 viewModel.fetchVaccineRecord(
                     phn,
-                    patientDataDto.patient.dateOfBirth.toDate(yyyy_MM_dd),
-                    doses.last().date.toDate(yyyy_MM_dd)
+                    patientDataDto.patient.dateOfBirth.dateString(yyyy_MM_dd),
+                    doses.last().date.dateString(yyyy_MM_dd)
                 )
             }
         }

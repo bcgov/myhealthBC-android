@@ -4,6 +4,7 @@ import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.model.VaccineDoseDto
 import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.patient.PatientDto
+import ca.bc.gov.common.utils.dateToInstant
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.repository.model.PatientVaccineRecord
 import ca.bc.gov.shcdecoder.model.SHCData
@@ -25,7 +26,7 @@ fun SHCData.toPatient(): PatientDto {
     }
     return PatientDto(
         fullName = fullNameBuilder.toString(),
-        dateOfBirth = patient.dateOfBirth?.toDate()!!,
+        dateOfBirth = patient.dateOfBirth?.dateToInstant()!!,
         firstName = patient.firstName.orEmpty(),
         lastName = patient.lastName.orEmpty(),
         physicalAddress = null,
