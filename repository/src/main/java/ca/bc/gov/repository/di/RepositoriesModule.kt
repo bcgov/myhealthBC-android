@@ -2,6 +2,7 @@ package ca.bc.gov.repository.di
 
 import android.content.Context
 import ca.bc.gov.data.datasource.local.AppFeatureLocalDataSource
+import ca.bc.gov.data.datasource.local.BcCancerScreeningLocalDataSource
 import ca.bc.gov.data.datasource.local.CommentLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidOrderLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidTestLocalDataSource
@@ -55,6 +56,7 @@ import ca.bc.gov.repository.labtest.LabTestRepository
 import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.ProcessQrRepository
 import ca.bc.gov.repository.scanner.QrScanner
+import ca.bc.gov.repository.services.BcCancerScreeningRepository
 import ca.bc.gov.repository.services.DiagnosticImagingRepository
 import ca.bc.gov.repository.services.OrganDonorRepository
 import ca.bc.gov.repository.services.PatientServicesRepository
@@ -345,8 +347,9 @@ class RepositoriesModule {
     @Provides
     @Singleton
     fun providePatientServicesRepository(
-        remoteDataSource: PatientServicesRemoteDataSource
-    ): PatientServicesRepository = PatientServicesRepository(remoteDataSource)
+        remoteDataSource: PatientServicesRemoteDataSource,
+        mobileConfigRepository: MobileConfigRepository
+    ): PatientServicesRepository = PatientServicesRepository(remoteDataSource, mobileConfigRepository)
 
     @Provides
     @Singleton
@@ -373,4 +376,10 @@ class RepositoriesModule {
         preferenceStorage: EncryptedPreferenceStorage
     ): AppFeatureWithQuickAccessTilesRepository =
         AppFeatureWithQuickAccessTilesRepository(appFeatureRepository, preferenceStorage)
+
+    @Provides
+    @Singleton
+    fun providesBcCancerScreeningRepository(
+        bcCancerScreeningLocalDataSource: BcCancerScreeningLocalDataSource
+    ): BcCancerScreeningRepository = BcCancerScreeningRepository(bcCancerScreeningLocalDataSource)
 }

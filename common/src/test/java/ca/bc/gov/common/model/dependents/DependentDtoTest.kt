@@ -49,6 +49,9 @@ internal class DependentDtoTest {
         ownerId = "",
         delegateId = "",
         reasonCode = 0L,
+        totalDelegateCount = 0,
         version = 0L,
+        patientId = 0,
+        isCacheValid = false
     )
 }

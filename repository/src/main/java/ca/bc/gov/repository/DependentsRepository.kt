@@ -1,8 +1,6 @@
 package ca.bc.gov.repository
 
 import android.util.Log
-import ca.bc.gov.common.BuildConfig
-import ca.bc.gov.common.BuildConfig.FLAG_GUARDIAN_CLINICAL_DOCS
 import ca.bc.gov.common.const.DATABASE_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
@@ -112,20 +110,25 @@ class DependentsRepository @Inject constructor(
             val token = bcscAuthRepo.getAuthParametersDto().token
 
             vaccineRecords = fetchVaccineRecords(token, hdid)
+            val dataSetFeatureFlag = mobileConfigRepository.getDependentDataSetFeatureFlags()
 
-            try {
-                covidOrders = covidOrderRepository.fetchCovidOrders(token, hdid)
-            } catch (e: Exception) {
-                handleException(e)
+            if (dataSetFeatureFlag.isCovid19TestResultEnabled()) {
+                try {
+                    covidOrders = covidOrderRepository.fetchCovidOrders(token, hdid)
+                } catch (e: Exception) {
+                    handleException(e)
+                }
             }
 
-            try {
-                immunizationDto = immunizationRecordRepository.fetchImmunization(token, hdid)
-            } catch (e: Exception) {
-                handleException(e)
+            if (dataSetFeatureFlag.isImmunizationEnabled()) {
+                try {
+                    immunizationDto = immunizationRecordRepository.fetchImmunization(token, hdid)
+                } catch (e: Exception) {
+                    handleException(e)
+                }
             }
 
-            if (BuildConfig.FLAG_GUARDIAN_LABS) {
+            if (dataSetFeatureFlag.isLabResultEnabled()) {
                 try {
                     labOrders = labOrderRepository.fetchLabOrders(token, hdid)
                 } catch (e: Exception) {
@@ -133,7 +136,7 @@ class DependentsRepository @Inject constructor(
                 }
             }
 
-            if (FLAG_GUARDIAN_CLINICAL_DOCS) {
+            if (dataSetFeatureFlag.isClinicalDocumentEnabled()) {
                 try {
                     clinicalDocs = clinicalDocumentRepository.getClinicalDocuments(token, hdid)
                 } catch (e: Exception) {

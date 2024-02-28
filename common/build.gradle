@@ -31,16 +31,11 @@ android {
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
             buildConfigField "boolean", "FLAG_VIEW_PROFILE", "true"
             buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
-            buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "false"
-            buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
             buildConfigField "boolean", "FLAG_MANUAL_REFRESH", "true"
-            buildConfigField "boolean", "FLAG_SERVICE_TAB", "true"
             buildConfigField "boolean", "FLAG_SEARCH_RECORDS", "true"
-            buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_AUDIT", "false"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
             resValue "string", "base_url", "https://mock.healthgateway.gov.bc.ca/"
-            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "true"
         }
 
         dev {
@@ -48,16 +43,11 @@ android {
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
             buildConfigField "boolean", "FLAG_VIEW_PROFILE", "true"
             buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
-            buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "false"
-            buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
             buildConfigField "boolean", "FLAG_MANUAL_REFRESH", "true"
-            buildConfigField "boolean", "FLAG_SERVICE_TAB", "true"
             buildConfigField "boolean", "FLAG_SEARCH_RECORDS", "true"
-            buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_AUDIT", "false"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
             resValue "string", "base_url", "https://dev.healthgateway.gov.bc.ca/"
-            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "true"
         }
 
         stage {
@@ -65,16 +55,11 @@ android {
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
             buildConfigField "boolean", "FLAG_VIEW_PROFILE", "true"
             buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
-            buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "false"
-            buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
             buildConfigField "boolean", "FLAG_MANUAL_REFRESH", "true"
-            buildConfigField "boolean", "FLAG_SERVICE_TAB", "true"
             buildConfigField "boolean", "FLAG_SEARCH_RECORDS", "true"
-            buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_AUDIT", "false"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
             resValue "string", "base_url", "https://test.healthgateway.gov.bc.ca/"
-            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "true"
         }
 
         prod {
@@ -82,16 +67,11 @@ android {
             buildConfigField "boolean", "FLAG_ADD_COMMENTS", "true"
             buildConfigField "boolean", "FLAG_VIEW_PROFILE", "true"
             buildConfigField "boolean", "FLAG_IMMZ_BANNER", "false"
-            buildConfigField "boolean", "FLAG_GUARDIAN_CLINICAL_DOCS", "false"
-            buildConfigField "boolean", "FLAG_GUARDIAN_LABS", "false"
             buildConfigField "boolean", "FLAG_MANUAL_REFRESH", "true"
-            buildConfigField "boolean", "FLAG_SERVICE_TAB", "true"
             buildConfigField "boolean", "FLAG_SEARCH_RECORDS", "true"
-            buildConfigField "boolean", "FLAG_GUARDIAN_MEDICATIONS", "false"
             buildConfigField "boolean", "FLAG_GUARDIAN_AUDIT", "false"
             buildConfigField "String", "FLAG_NEW_ON_BOARDING_SCREEN", "\"Services\""
             resValue "string", "base_url", "https://healthgateway.gov.bc.ca/"
-            buildConfigField "boolean", "FLAG_DIAGNOSTIC_IMAGING", "true"
         }
     }
 

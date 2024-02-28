@@ -17,6 +17,7 @@ import ca.bc.gov.common.model.settings.QuickAccessTileDto
 import ca.bc.gov.repository.BannerRepository
 import ca.bc.gov.repository.OnBoardingRepository
 import ca.bc.gov.repository.settings.AppFeatureWithQuickAccessTilesRepository
+import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +31,7 @@ class HomeViewModel @Inject constructor(
     private val appFeatureWithQuickAccessTilesRepository: AppFeatureWithQuickAccessTilesRepository,
     private val onBoardingRepository: OnBoardingRepository,
     private val bannerRepository: BannerRepository,
+    private val mobileConfigRepository: MobileConfigRepository,
     private val workerInvoker: WorkerInvoker,
 ) : ViewModel() {
     private val _uiState =
@@ -75,6 +77,41 @@ class HomeViewModel @Inject constructor(
             (it.name == AppFeatureName.RECOMMENDED_IMMUNIZATIONS.value && (loginStatus != LoginStatus.ACTIVE))
         }
 
+        val flags = mobileConfigRepository.getPatientDataSetFeatureFlags()
+        if (!flags.isBcCancerScreeningEnabled()) {
+            quickAccessTileItems.removeIf { it.name == QuickAccessLinkName.BC_CANCER_SCREENING.value }
+        }
+        if (!flags.isImmunizationEnabled()) {
+            quickAccessTileItems.removeIf { it.name == QuickAccessLinkName.IMMUNIZATIONS.value }
+        }
+        if (!flags.isMedicationEnabled()) {
+            quickAccessTileItems.removeIf { it.name == QuickAccessLinkName.MEDICATIONS.value }
+        }
+        if (!flags.isLabResultEnabled()) {
+            quickAccessTileItems.removeIf { it.name == QuickAccessLinkName.LAB_RESULTS.value }
+        }
+        if (!flags.isCovid19TestResultEnabled()) {
+            quickAccessTileItems.removeIf { it.name == QuickAccessLinkName.COVID_19_TESTS.value }
+        }
+        if (!flags.isHealthVisitEnabled()) {
+            quickAccessTileItems.removeIf { it.name == QuickAccessLinkName.HEALTH_VISITS.value }
+        }
+        if (!flags.isSpecialAuthorityRequestEnabled()) {
+            quickAccessTileItems.removeIf { it.name == QuickAccessLinkName.SPECIAL_AUTHORITY.value }
+        }
+        if (!flags.isClinicalDocumentEnabled()) {
+            quickAccessTileItems.removeIf { it.name == QuickAccessLinkName.CLINICAL_DOCUMENTS.value }
+        }
+        if (!flags.isHospitalVisitEnabled()) {
+            quickAccessTileItems.removeIf { it.name == QuickAccessLinkName.HOSPITAL_VISITS.value }
+        }
+        if (!flags.isDiagnosticImagingEnabled()) {
+            quickAccessTileItems.removeIf { it.name == QuickAccessLinkName.IMAGING_REPORTS.value }
+        }
+        val serviceFlags = mobileConfigRepository.getServicesFeatureFlag()
+        if (!serviceFlags.isOrganDonorRegistrationEnabled()) {
+            quickAccessTileItems.removeIf { it.name == QuickAccessLinkName.ORGAN_DONOR.value }
+        }
         _uiState.update { it.copy(isLoading = false, quickAccessTileItems = quickAccessTileItems) }
     }
 
@@ -328,6 +365,10 @@ sealed class QuickAccessTileItem(
 
                     QuickAccessLinkName.IMAGING_REPORTS -> {
                         Pair(R.drawable.ic_health_record_diagnostic_imaging, R.id.health_records)
+                    }
+
+                    QuickAccessLinkName.BC_CANCER_SCREENING -> {
+                        Pair(R.drawable.ic_health_record_bc_cancer_screening, R.id.health_records)
                     }
 
                     QuickAccessLinkName.ORGAN_DONOR -> {

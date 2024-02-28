@@ -41,6 +41,7 @@ import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.relation.VaccineWithDosesDto
+import ca.bc.gov.common.model.services.BcCancerScreeningDataDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.services.OrganDonorDto
 import ca.bc.gov.common.model.settings.AppFeatureDto
@@ -95,6 +96,7 @@ import ca.bc.gov.data.datasource.local.entity.relations.PatientWithMedicationRec
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithSpecialAuthorities
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithVaccineAndDoses
 import ca.bc.gov.data.datasource.local.entity.relations.VaccineRecordWithDose
+import ca.bc.gov.data.datasource.local.entity.services.BcCancerScreeningDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
 import ca.bc.gov.data.datasource.local.entity.settings.AppFeatureEntity
@@ -252,7 +254,8 @@ fun PatientWithSpecialAuthorities.toDto() = PatientWithSpecialAuthorityDto(
 
 fun PatientWithData.toDto() = PatientWithDataDto(
     patient = patient.toDto(),
-    diagnosticImagingDataList = diagnosticImagingDataList.map { it.toDto() }
+    diagnosticImagingDataList = diagnosticImagingDataList.map { it.toDto() },
+    bcCancerScreeningDataList = bcCancerScreeningDataList.map { it.toDto() }
 )
 
 fun List<PatientEntity>.toDto() = PatientListDto(
@@ -515,4 +518,15 @@ fun PatientWithImmunizationRecommendations.toDto() = PatientWithImmunizationReco
 fun PatientWithDependentAndListOder.toDto() = PatientWithDependentAndListOrderDto(
     patient = patient.toDto(),
     dependents = dependentAndListOrder.map { it.toDto() }
+)
+
+fun BcCancerScreeningDataEntity.toDto() = BcCancerScreeningDataDto(
+    _id = id,
+    id = bcCancerScreeningId,
+    patientId = patientId,
+    resultDateTime = resultDateTime,
+    eventDateTime = eventDateTime,
+    fileId = fileId,
+    eventType = eventType,
+    programName = programName
 )

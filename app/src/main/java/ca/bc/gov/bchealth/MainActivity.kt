@@ -22,7 +22,6 @@ import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
 import ca.bc.gov.bchealth.workers.FetchAuthenticatedHealthRecordsWorker
-import ca.bc.gov.common.BuildConfig.FLAG_SERVICE_TAB
 import ca.bc.gov.common.model.settings.AnalyticsFeature
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
 import com.google.android.material.snackbar.Snackbar
@@ -63,11 +62,7 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         binding.bottomNav.inflateMenu(
-            if (FLAG_SERVICE_TAB) {
-                R.menu.bottom_nav_services_menu
-            } else {
-                R.menu.bottom_nav_menu
-            }
+            R.menu.bottom_nav_menu
         )
         binding.bottomNav.setupWithNavController(navController)
         binding.bottomNav.setOnItemSelectedListener {

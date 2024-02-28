@@ -257,7 +257,7 @@
     <string name="onboarding_health_passes_title">Proof of vaccination</string>
     <string name="onboarding_health_passes_desc">Save proof of vaccination documents for you and your family. Have them ready for travel or to access events and services that require it.</string>
     <string name="onboarding_health_records_title">Health records</string>
-    <string name="onboarding_health_records_desc">Access your lab test results, medication history, immunization records, health visits and more. Keep track of what\'s important to you and your health.</string>
+    <string name="onboarding_health_records_desc">View and manage all your available health records, including dispensed medications, health visits, lab results, immunizations, BC Cancer cervix screenings and more.</string>
     <string name="onboarding_health_resources_title">Health resources</string>
     <string name="onboarding_health_resources_desc">Connect with HealthLink BC for health advice and get the latest information about COVID-19.</string>
     <string name="onboarding_news_feed_title">News feed</string>
@@ -536,6 +536,7 @@
     <string name="hospital_visits">Hospital Visits</string>
     <string name="clinical_documents">Clinical Docs</string>
     <string name="imaging_reports">Imaging Reports</string>
+    <string name="bc_cancer_screening">BC Cancer Screening</string>
     <string name="filter">Filter</string>
     <string name="apply">Apply</string>
     <string name="no_records_found">No records found</string>
@@ -603,6 +604,7 @@
     <string name="services_subtitle">You can check and update your Organ Donor Registry information here. More health services will be added in future.</string>
     <string name="services_subtitle_1">The BC Services Card app is a secure way to prove who you are.</string>
     <string name="services_session_expired">Log in again to access all services.</string>
+    <string name="services_unavailable">The services are currently unavailable, please check back later.</string>
 
     <!--Organ Donor-->
     <string name="organ_donor_registration_title">Organ Donor Registration</string>
@@ -637,4 +639,10 @@
     <string name="remove_tile_confirmation_title">Remove %s</string>
     <string name="remove_tile_confirmation_description">You can easily restore it by managing the settings.</string>
     <string name="remove">Remove</string>
+
+    <!--BC Cancer Screening-->
+    <string name="bc_cancer_screening_result_description">Download your cervix screening result letter. It may include important information about next steps. If you have questions, check the BC Cancer website or talk to your care provider.</string>
+    <string name="bc_cancer_screening_recall_desc">Find out about your cervix screening next steps. You will also get this letter in the mail. Learn more about cervix screening.</string>
+    <string name = "bc_cancer_banner">Only BC Cancer cervix screening letters are available here. Your Health Gateway timeline may include these and other screening test results in lab or imaging reports.</string>
+    <string name="bc_cancer_learn_more">Learn more</string>
 </resources>

@@ -180,6 +180,12 @@ class HealthRecordFragment : BaseSecureFragment(null) {
                     .actionHealthRecordFragmentToDiagnosticImagingDetailFragment(healthRecordItem.recordId)
                 findNavController().navigate(action)
             }
+
+            HealthRecordType.BC_CANCER_SCREENING -> {
+                val action = HealthRecordFragmentDirections
+                    .actionHealthRecordFragmentToBcCancerScreeningDetailFragment(healthRecordItem.recordId)
+                findNavController().navigate(action)
+            }
         }
     }
 

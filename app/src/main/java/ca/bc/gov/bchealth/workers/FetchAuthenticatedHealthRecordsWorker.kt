@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
+import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import ca.bc.gov.bchealth.usecases.FetchCommentsUseCase
@@ -126,24 +127,65 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
         val isApiFailed: Boolean
         setProgress(workDataOf(RECORD_FETCH_STARTED to true))
         withContext(dispatcher) {
-            val taskResults = listOf(
-                async { fetchMedicationsUseCase.execute(patientId, authParameters) },
+            val tasks = mutableListOf<Deferred<ListenableWorker.Result>>()
+            val dataSetFlag = mobileConfigRepository.getPatientDataSetFeatureFlags()
+
+            if (dataSetFlag.isMedicationEnabled()) { tasks.add(async { fetchMedicationsUseCase.execute(patientId, authParameters) }) }
+
+            if (dataSetFlag.isClinicalDocumentEnabled()) {
+                tasks.add(
+                    runTaskAsync {
+                        fetchClinicalDocumentsUseCase.execute(
+                            patientId,
+                            authParameters
+                        )
+                    }
+                )
+            }
+
+            if (dataSetFlag.isCovid19TestResultEnabled()) {
+                tasks.add(
+                    runTaskAsync {
+                        fetchCovidOrdersUseCase.execute(
+                            patientId,
+                            authParameters
+                        )
+                    }
+                )
+            }
+
+            if (dataSetFlag.isHealthVisitEnabled()) { tasks.add(runTaskAsync { fetchHealthVisitsUseCase.execute(patientId, authParameters) }) }
+
+            if (dataSetFlag.isHospitalVisitEnabled()) { tasks.add(runTaskAsync { fetchHospitalVisitsUseCase.execute(patientId, authParameters) }) }
+
+            if (dataSetFlag.isImmunizationEnabled()) {
+                tasks.add(
+                    runTaskAsync {
+                        fetchImmunizationsUseCase.execute(
+                            patientId,
+                            authParameters
+                        )
+                    }
+                )
+            }
+
+            if (dataSetFlag.isLabResultEnabled()) { tasks.add(runTaskAsync { fetchLabOrdersUseCase.execute(patientId, authParameters) }) }
+
+            if (dataSetFlag.isSpecialAuthorityRequestEnabled()) { tasks.add(runTaskAsync { fetchSpecialAuthoritiesUseCase.execute(patientId, authParameters) }) }
+
+            tasks.add(
                 runTaskAsync {
                     fetchVaccinesUseCase.execute(patientId, authParameters, dependents)
-                },
-                runTaskAsync { fetchLabOrdersUseCase.execute(patientId, authParameters) },
-                runTaskAsync { fetchCovidOrdersUseCase.execute(patientId, authParameters) },
-                runTaskAsync { fetchImmunizationsUseCase.execute(patientId, authParameters) },
-                runTaskAsync { fetchHealthVisitsUseCase.execute(patientId, authParameters) },
-                runTaskAsync { fetchClinicalDocumentsUseCase.execute(patientId, authParameters) },
-                runTaskAsync { fetchHospitalVisitsUseCase.execute(patientId, authParameters) },
-                runTaskAsync { fetchCommentsUseCase.execute(authParameters) },
-                runTaskAsync { fetchSpecialAuthoritiesUseCase.execute(patientId, authParameters) },
-                runTaskAsync { userProfileRepository.deleteUserProfileCache(patientId) },
-                runTaskAsync { patientDataUseCase.execute(patientId, authParameters) }
-            ).awaitAll()
+                }
+            )
 
-            isApiFailed = taskResults.contains(Result.failure())
+            tasks.add(runTaskAsync { fetchCommentsUseCase.execute(authParameters) })
+            tasks.add(runTaskAsync { userProfileRepository.deleteUserProfileCache(patientId) })
+            tasks.add(runTaskAsync { patientDataUseCase.execute(patientId, authParameters) })
+
+            val taskResult = tasks.awaitAll()
+
+            isApiFailed = taskResult.contains(Result.failure())
         }
         return isApiFailed
     }

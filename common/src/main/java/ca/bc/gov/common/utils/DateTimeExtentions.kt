@@ -17,6 +17,7 @@ const val eee_dd_mmm_yyyy_hh_mm_ss_z = "EEE, dd MMM yyyy HH:mm:ss XXXX"
 private const val full_date_time_plus_time = "yyyy-MM-dd'T'HH:mm:ssXXX"
 private const val yyyy_MMM_dd_HH_mm_sss_long = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 private const val yyyy_MMM_dd_HH_mm_short = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+private const val PST_ZONE_ID = "America/Los_Angeles"
 
 fun Instant.toDateTimeString(dateFormat: String = yyyy_MMM_dd_HH_mm): String {
     val dateTime = LocalDateTime.ofInstant(this, ZoneOffset.UTC)
@@ -93,9 +94,24 @@ fun Instant.toStartOfDayInstant(): Instant {
 * provides the date time in UTC+00:00
 *  */
 fun Instant.toLocalDateTimeInstant(): Instant? {
-    return this.atZone(ZoneId.of("America/Los_Angeles"))
+    return this.atZone(ZoneId.of(PST_ZONE_ID))
         ?.toLocalDateTime()?.toInstant(ZoneOffset.UTC)
+}
+
+fun Instant.toPST(): Instant {
+    return this.atZone(ZoneId.of(PST_ZONE_ID))
+        .toLocalDateTime().toInstant(ZoneOffset.UTC)
 }
 
 fun Instant.toLocalDate(): LocalDate =
     this.atZone(ZoneOffset.UTC).toLocalDate()
+
+fun String.dateTimeToInstant(): Instant = Instant.parse(this)
+
+fun String.dateToInstant(): Instant = LocalDate.parse(this).atStartOfDay(ZoneId.of(PST_ZONE_ID)).toInstant()
+
+fun Instant.dateTimeString(pattern: String = yyyy_MMM_dd_HH_mm): String {
+    return atZone(ZoneId.of(PST_ZONE_ID)).format(DateTimeFormatter.ofPattern(pattern))
+}
+
+fun Instant.dateString(pattern: String = yyyy_MMM_dd) = dateTimeString(pattern = pattern)

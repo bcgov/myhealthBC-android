@@ -32,7 +32,6 @@ import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.PdfDecoderViewModel
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.bchealth.widget.RecyclerView
-import ca.bc.gov.common.BuildConfig
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.Snackbar
@@ -212,11 +211,9 @@ class HealthPassFragment : BaseSecureFragment(R.layout.fragment_helath_pass) {
             elevation = 0f
         }
         with(binding.layoutToolbar.topAppBar) {
-            if (BuildConfig.FLAG_SERVICE_TAB) {
-                setNavigationIcon(R.drawable.ic_toolbar_back)
-                setNavigationOnClickListener {
-                    findNavController().popBackStack()
-                }
+            setNavigationIcon(R.drawable.ic_toolbar_back)
+            setNavigationOnClickListener {
+                findNavController().popBackStack()
             }
             inflateMenu(R.menu.settings_menu)
             setOnMenuItemClickListener { menu ->

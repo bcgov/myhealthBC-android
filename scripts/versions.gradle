@@ -6,9 +6,9 @@ versions.targetSdkVersion = 33
 versions.compileSdkVersion = 33
 
 //App
-versions.versionName = '2.0.4'
-versions.versionCode = 230
-versions.localApiVersion = 2
+versions.versionName = '2.1.0'
+versions.versionCode = 235
+versions.localApiVersion = 3
 
 //Tools & Libs
 versions.kotlin_gradle_plugin = "1.8.20"

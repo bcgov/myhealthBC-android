@@ -1,6 +1,7 @@
 package ca.bc.gov.data.di
 
 import ca.bc.gov.data.datasource.local.AppFeatureLocalDataSource
+import ca.bc.gov.data.datasource.local.BcCancerScreeningLocalDataSource
 import ca.bc.gov.data.datasource.local.ClinicalDocumentLocalDataSource
 import ca.bc.gov.data.datasource.local.CommentLocalDataSource
 import ca.bc.gov.data.datasource.local.CovidOrderLocalDataSource
@@ -165,4 +166,9 @@ class LocalDataSourceModule {
     @Singleton
     fun provideQuickAccessLocalDataSource(db: MyHealthDataBase): QuickActionTileLocalDataSource =
         QuickActionTileLocalDataSource(db.getQuickAccessTileDao())
+
+    @Provides
+    @Singleton
+    fun provideBcCancerScreeningLocalDataSource(db: MyHealthDataBase): BcCancerScreeningLocalDataSource =
+        BcCancerScreeningLocalDataSource(db.getBcCancerScreeningDataDao())
 }

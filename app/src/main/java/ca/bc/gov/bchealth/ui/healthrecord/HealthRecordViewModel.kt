@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.ui.healthrecord
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
@@ -12,7 +11,7 @@ import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ProtectiveWordState
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
-import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.dateToInstant
 import ca.bc.gov.common.utils.toStartOfDayInstant
 import ca.bc.gov.repository.CacheRepository
 import ca.bc.gov.repository.MedicationRecordRepository
@@ -43,11 +42,10 @@ class HealthRecordViewModel @Inject constructor(
 
     fun showTimeLine(filterString: String) = viewModelScope.launch {
         val healthRecords = generateTimeline()
-        val requiredProtectiveWordVerification =
-            !(healthRecords.any { record -> record.healthRecordType == HealthRecordType.MEDICATION_RECORD } && isShowMedicationRecords())
 
         val timeLineFilters = mutableListOf<String>()
         val filteredResult = mutableListOf<HealthRecordItem>()
+        var showBCCancerBanner = false
         if (filterString.isNotBlank()) {
             val filterQuery = filterString.split(",")
 
@@ -68,6 +66,8 @@ class HealthRecordViewModel @Inject constructor(
             timeLineFilters +=
                 filterQuery.mapNotNull { query -> TimelineTypeFilter.findByName(query)?.recordType?.name }
 
+            showBCCancerBanner = timeLineFilters.size == 1 && !timeLineFilters.find { filter -> filter == HealthRecordType.BC_CANCER_SCREENING.name }.isNullOrBlank()
+
             filteredResult += if (timeLineFilters.isNotEmpty()) {
                 listFilteredBySearch.filter { recordType -> timeLineFilters.contains(recordType.healthRecordType.name) }
             } else {
@@ -86,21 +86,23 @@ class HealthRecordViewModel @Inject constructor(
                 healthRecords = filteredResult,
                 filters = timeLineFilters.map { filter ->
                     when (filter) {
-                        HealthRecordType.MEDICATION_RECORD.name -> R.string.medications
-                        HealthRecordType.COVID_TEST_RECORD.name -> R.string.covid_19_test_result
-                        HealthRecordType.LAB_RESULT_RECORD.name -> R.string.lab_results
-                        HealthRecordType.IMMUNIZATION_RECORD.name -> R.string.immunization
-                        HealthRecordType.HEALTH_VISIT_RECORD.name -> R.string.health_visits
-                        HealthRecordType.SPECIAL_AUTHORITY_RECORD.name -> R.string.special_authorities
-                        HealthRecordType.HOSPITAL_VISITS_RECORD.name -> R.string.hospital_visits
-                        HealthRecordType.CLINICAL_DOCUMENT_RECORD.name -> R.string.clinical_documents
-                        HealthRecordType.DIAGNOSTIC_IMAGING.name -> R.string.imaging_reports
+                        HealthRecordType.MEDICATION_RECORD.name -> "Medications"
+                        HealthRecordType.COVID_TEST_RECORD.name -> "COVID-19 test result"
+                        HealthRecordType.LAB_RESULT_RECORD.name -> "Lab Results"
+                        HealthRecordType.IMMUNIZATION_RECORD.name -> "Immunization"
+                        HealthRecordType.HEALTH_VISIT_RECORD.name -> "Health Visits"
+                        HealthRecordType.SPECIAL_AUTHORITY_RECORD.name -> "Special Authorities"
+                        HealthRecordType.HOSPITAL_VISITS_RECORD.name -> "Hospital Visits"
+                        HealthRecordType.CLINICAL_DOCUMENT_RECORD.name -> "Clinical Docs"
+                        HealthRecordType.DIAGNOSTIC_IMAGING.name -> "Imaging Reports"
+                        HealthRecordType.BC_CANCER_SCREENING.name -> "BC Cancer Screening"
                         else -> {
-                            0
+                            filter
                         }
                     }
                 },
-                requiredProtectiveWordVerification = requiredProtectiveWordVerification
+                requiredProtectiveWordVerification = !isShowMedicationRecords(),
+                showBCCancerBanner = showBCCancerBanner
             )
         }
     }
@@ -126,13 +128,13 @@ class HealthRecordViewModel @Inject constructor(
 
     private fun getFilterByDate(healthRecords: List<HealthRecordItem>, fromDate: String?, toDate: String?): MutableList<HealthRecordItem> {
         return if (!fromDate.isNullOrBlank() && !toDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() && it.date <= toDate.toDate() }
+            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.dateToInstant().toStartOfDayInstant() && it.date.toStartOfDayInstant() <= toDate.dateToInstant().toStartOfDayInstant() }
                 .toMutableList()
         } else if (!fromDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.toDate() }
+            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.dateToInstant().toStartOfDayInstant() }
                 .toMutableList()
         } else if (!toDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() <= toDate.toDate() }.toMutableList()
+            healthRecords.filter { it.date.toStartOfDayInstant() <= toDate.dateToInstant().toStartOfDayInstant() }.toMutableList()
         } else {
             healthRecords.toMutableList()
         }
@@ -195,6 +197,8 @@ class HealthRecordViewModel @Inject constructor(
 
             val diagnosticImaging = patientWithData.toUiModel()
 
+            val bcCancerScreening = patientWithData.bcCancerScreeningDataList.map { it.toUiModel() }
+
             val records = covidOrders +
                 labTestRecords +
                 immunizationRecords +
@@ -203,6 +207,7 @@ class HealthRecordViewModel @Inject constructor(
                 hospitalVisits +
                 clinicalDocuments +
                 diagnosticImaging +
+                bcCancerScreening +
                 if (isShowMedicationRecords() && medicationRecords != null) {
                     medicationRecords
                 } else {
@@ -265,9 +270,10 @@ data class HealthRecordUiState(
     val isLoading: Boolean = true,
     val healthRecords: List<HealthRecordItem> = emptyList(),
     val requiredProtectiveWordVerification: Boolean = true,
-    val filters: List<Int> = emptyList(),
+    val filters: List<String> = emptyList(),
     val isHgServicesUp: Boolean = true,
     val isConnected: Boolean = true,
+    val showBCCancerBanner: Boolean = false
 )
 
 data class HealthRecordItem(
@@ -290,5 +296,6 @@ enum class HealthRecordType {
     SPECIAL_AUTHORITY_RECORD,
     HOSPITAL_VISITS_RECORD,
     CLINICAL_DOCUMENT_RECORD,
-    DIAGNOSTIC_IMAGING
+    DIAGNOSTIC_IMAGING,
+    BC_CANCER_SCREENING
 }

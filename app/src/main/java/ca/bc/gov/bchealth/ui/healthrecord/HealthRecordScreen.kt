@@ -27,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
+import ca.bc.gov.bchealth.compose.component.BCCancerBannerUi
 import ca.bc.gov.bchealth.compose.component.EmptyStateUI
 import ca.bc.gov.bchealth.compose.component.HGCircularProgressIndicator
 import ca.bc.gov.bchealth.compose.component.HealthRecordItemUI
@@ -38,6 +39,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
 import ca.bc.gov.bchealth.ui.login.AuthStatus
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
+import ca.bc.gov.bchealth.utils.URL_BC_CANCER_BANNER
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
@@ -173,7 +175,7 @@ private fun HealthRecordScreenContent(
                     HorizontalFilterGroupUI(
                         onFilterCleared = onFilterCleared,
                         modifier = Modifier.fillMaxWidth(),
-                        filtersApplied = uiState.filters.map { stringResource(id = it) }
+                        filtersApplied = uiState.filters
                     )
                 }
                 HealthRecordList(
@@ -204,45 +206,59 @@ private fun HealthRecordList(
     uiState: HealthRecordUiState,
     displayImmunizationBanner: Boolean
 ) {
-    if (uiState.healthRecords.isEmpty()) {
-        EmptyStateUI(
-            image = R.drawable.ic_no_record,
-            title = R.string.no_records_found,
-            description = R.string.refresh
-        )
-    } else {
-        LazyColumn(
-            modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
 
-            if (BuildConfig.FLAG_IMMZ_BANNER && displayImmunizationBanner) {
-                item {
-                    ImmunizationBannerUI(
-                        onDismissClick = onDismissClick,
-                        onLinkClick = onLinkClick,
-                        body1 = stringResource(id = R.string.records_immunization_banner_top),
-                        clickableText = stringResource(id = R.string.records_immunization_banner_click),
-                        body2 = stringResource(id = R.string.records_immunization_banner_bottom)
-                    )
-                }
-            }
+    LazyColumn(
+        modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
 
-            if (uiState.requiredProtectiveWordVerification) {
-                item {
-                    HiddenMedicationRecordUI(onUnlockMedicationRecords = onUnlockMedicationRecords)
-                }
-            }
-
-            items(uiState.healthRecords) { record ->
-                HealthRecordItemUI(
-                    onClick = { onHealthRecordItemClicked(record) },
-                    image = record.icon,
-                    title = record.title,
-                    description = record.description
+        if (BuildConfig.FLAG_IMMZ_BANNER && displayImmunizationBanner) {
+            item {
+                ImmunizationBannerUI(
+                    onDismissClick = onDismissClick,
+                    onLinkClick = onLinkClick,
+                    body1 = stringResource(id = R.string.records_immunization_banner_top),
+                    clickableText = stringResource(id = R.string.records_immunization_banner_click),
+                    body2 = stringResource(id = R.string.records_immunization_banner_bottom)
                 )
             }
+        }
+
+        if (uiState.requiredProtectiveWordVerification) {
+            item {
+                HiddenMedicationRecordUI(onUnlockMedicationRecords = onUnlockMedicationRecords)
+            }
+        }
+
+        if (uiState.showBCCancerBanner) {
+            item {
+                BCCancerBannerUi(
+                    onLinkClick = { onLinkClick(URL_BC_CANCER_BANNER) },
+                    body1 = stringResource(id = R.string.bc_cancer_banner),
+                    clickableText = stringResource(id = R.string.bc_cancer_learn_more),
+                    body2 = stringResource(id = R.string.bc_cancer_learn_more)
+                )
+            }
+        }
+
+        if (uiState.healthRecords.isEmpty()) {
+            item {
+                EmptyStateUI(
+                    image = R.drawable.ic_no_record,
+                    title = R.string.no_records_found,
+                    description = R.string.refresh
+                )
+            }
+        }
+
+        items(uiState.healthRecords) { record ->
+            HealthRecordItemUI(
+                onClick = { onHealthRecordItemClicked(record) },
+                image = record.icon,
+                title = record.title,
+                description = record.description
+            )
         }
     }
 }

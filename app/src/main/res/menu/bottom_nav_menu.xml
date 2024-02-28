@@ -4,7 +4,7 @@
     <item
         android:id="@+id/home"
         android:enabled="true"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/home_selector"
         android:title="@string/home" />
 
     <item
@@ -14,10 +14,10 @@
         android:title="@string/records" />
 
     <item
-        android:id="@+id/health_pass"
+        android:id="@+id/services"
         android:enabled="true"
-        android:icon="@drawable/pass_selector"
-        android:title="@string/passes" />
+        android:icon="@drawable/services_selector"
+        android:title="@string/services" />
 
     <item
         android:id="@+id/dependents"
