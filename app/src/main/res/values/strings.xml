@@ -453,6 +453,7 @@
     <string name="error_biometric_no_hardware">Unable to find supported hardware to perform biometric authentication.</string>
     <string name="error_biometric_unknown">Unable to perform authentication at the moment try again later.</string>
     <string name="service_down">Maintenance is underway. Please try later.</string>
+    <string name="date_format_error_message">Not all records were fetched successfully</string>
     <string name="dismiss">Dismiss</string>
     <string name="no_internet_connection">Unable to refresh your data. Please check your internet connection.</string>
     <string name="partial_records_error_message">Some partial records were not displayed.</string>

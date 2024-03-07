@@ -41,7 +41,9 @@ class HealthRecordViewModel @Inject constructor(
     val uiState: StateFlow<HealthRecordUiState> = _uiState.asStateFlow()
 
     fun showTimeLine(filterString: String) = viewModelScope.launch {
-        val healthRecords = generateTimeline()
+        val timeLineInfo = generateTimeline()
+        val healthRecords = timeLineInfo.first
+        val success = timeLineInfo.second
 
         val timeLineFilters = mutableListOf<String>()
         val filteredResult = mutableListOf<HealthRecordItem>()
@@ -66,7 +68,9 @@ class HealthRecordViewModel @Inject constructor(
             timeLineFilters +=
                 filterQuery.mapNotNull { query -> TimelineTypeFilter.findByName(query)?.recordType?.name }
 
-            showBCCancerBanner = timeLineFilters.size == 1 && !timeLineFilters.find { filter -> filter == HealthRecordType.BC_CANCER_SCREENING.name }.isNullOrBlank()
+            showBCCancerBanner =
+                timeLineFilters.size == 1 && !timeLineFilters.find { filter -> filter == HealthRecordType.BC_CANCER_SCREENING.name }
+                .isNullOrBlank()
 
             filteredResult += if (timeLineFilters.isNotEmpty()) {
                 listFilteredBySearch.filter { recordType -> timeLineFilters.contains(recordType.healthRecordType.name) }
@@ -80,10 +84,11 @@ class HealthRecordViewModel @Inject constructor(
             }
         }
 
-        _uiState.update { it ->
+        _uiState.update {
             it.copy(
                 isLoading = false,
                 healthRecords = filteredResult,
+                dateError = success.not(),
                 filters = timeLineFilters.map { filter ->
                     when (filter) {
                         HealthRecordType.MEDICATION_RECORD.name -> "Medications"
@@ -126,15 +131,27 @@ class HealthRecordViewModel @Inject constructor(
         }
     }
 
-    private fun getFilterByDate(healthRecords: List<HealthRecordItem>, fromDate: String?, toDate: String?): MutableList<HealthRecordItem> {
+    private fun getFilterByDate(
+        healthRecords: List<HealthRecordItem>,
+        fromDate: String?,
+        toDate: String?
+    ): MutableList<HealthRecordItem> {
         return if (!fromDate.isNullOrBlank() && !toDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.dateToInstant().toStartOfDayInstant() && it.date.toStartOfDayInstant() <= toDate.dateToInstant().toStartOfDayInstant() }
+            healthRecords.filter {
+                it.date.toStartOfDayInstant() >= fromDate.dateToInstant()
+                    .toStartOfDayInstant() && it.date.toStartOfDayInstant() <= toDate.dateToInstant()
+                    .toStartOfDayInstant()
+            }
                 .toMutableList()
         } else if (!fromDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.dateToInstant().toStartOfDayInstant() }
+            healthRecords.filter {
+                it.date.toStartOfDayInstant() >= fromDate.dateToInstant().toStartOfDayInstant()
+            }
                 .toMutableList()
         } else if (!toDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() <= toDate.dateToInstant().toStartOfDayInstant() }.toMutableList()
+            healthRecords.filter {
+                it.date.toStartOfDayInstant() <= toDate.dateToInstant().toStartOfDayInstant()
+            }.toMutableList()
         } else {
             healthRecords.toMutableList()
         }
@@ -146,7 +163,7 @@ class HealthRecordViewModel @Inject constructor(
         }
     }
 
-    private suspend fun generateTimeline(): List<HealthRecordItem> {
+    private suspend fun generateTimeline(): Pair<List<HealthRecordItem>, Boolean> {
         try {
             val patientId =
                 patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).id
@@ -184,6 +201,7 @@ class HealthRecordViewModel @Inject constructor(
             }
             val covidOrders =
                 patientWithCovidOrderAndTests.covidOrderAndTests.map { it.toUiModel() }
+            val nonNullCovidOrders = covidOrders.filterNotNull()
 
             val immunizationRecords =
                 patientWithImmunizationRecordAndForecast.immunizationRecords.map { it.toUiModel() }
@@ -199,7 +217,7 @@ class HealthRecordViewModel @Inject constructor(
 
             val bcCancerScreening = patientWithData.bcCancerScreeningDataList.map { it.toUiModel() }
 
-            val records = covidOrders +
+            val records = nonNullCovidOrders +
                 labTestRecords +
                 immunizationRecords +
                 healthVisits +
@@ -213,10 +231,11 @@ class HealthRecordViewModel @Inject constructor(
                 } else {
                     emptyList()
                 }
-            return records.sortedByDescending { it.date }
+            val result: Boolean = nonNullCovidOrders.size == covidOrders.size
+            return records.sortedByDescending { it.date } to result
         } catch (e: Exception) {
             Log.d("Timeline", "Error in generating timeline ${e.message}")
-            return emptyList()
+            return listOf<HealthRecordItem>() to true
         }
     }
 
@@ -261,13 +280,14 @@ class HealthRecordViewModel @Inject constructor(
 
     fun resetErrorState() {
         _uiState.update { state ->
-            state.copy(isHgServicesUp = true, isConnected = true)
+            state.copy(isHgServicesUp = true, isConnected = true, dateError = false)
         }
     }
 }
 
 data class HealthRecordUiState(
     val isLoading: Boolean = true,
+    val dateError: Boolean = false,
     val healthRecords: List<HealthRecordItem> = emptyList(),
     val requiredProtectiveWordVerification: Boolean = true,
     val filters: List<String> = emptyList(),

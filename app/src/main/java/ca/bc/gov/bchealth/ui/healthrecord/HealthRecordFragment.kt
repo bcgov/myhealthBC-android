@@ -26,6 +26,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showErrorSnackbar
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -46,7 +47,8 @@ class HealthRecordFragment : BaseSecureFragment(null) {
     @Composable
     override fun GetComposableLayout() {
 
-        val authState = bcscAuthViewModel.authStatus.collectAsStateWithLifecycle(minActiveState = Lifecycle.State.RESUMED).value
+        val authState =
+            bcscAuthViewModel.authStatus.collectAsStateWithLifecycle(minActiveState = Lifecycle.State.RESUMED).value
         val menuItems = mutableListOf<TopAppBarActionItem>(
             TopAppBarActionItem.IconActionItem.ShowIfRoom(
                 title = getString(R.string.settings),
@@ -78,6 +80,7 @@ class HealthRecordFragment : BaseSecureFragment(null) {
                         onLinkClick = ::onLinkClick,
                         onNetworkError = ::onNetworkError,
                         onServiceDownError = ::onServiceDownError,
+                        onDateError = ::onDateError,
                         Modifier
                             .statusBarsPadding()
                             .navigationBarsPadding()
@@ -109,12 +112,15 @@ class HealthRecordFragment : BaseSecureFragment(null) {
             LoginStatus.ACTIVE -> {
                 // No operation
             }
+
             LoginStatus.EXPIRED -> {
-                val action = BcVaccineCardNavGraphDirections.actionGlobalBcServiceCardSessionFragment(
-                    BcServiceCardSessionInfoType.RECORDS
-                )
+                val action =
+                    BcVaccineCardNavGraphDirections.actionGlobalBcServiceCardSessionFragment(
+                        BcServiceCardSessionInfoType.RECORDS
+                    )
                 findNavController().navigate(action)
             }
+
             LoginStatus.NOT_AUTHENTICATED -> {
                 val action =
                     BcVaccineCardNavGraphDirections.actionGlobalBcServicesCardLoginFragment(
@@ -207,6 +213,12 @@ class HealthRecordFragment : BaseSecureFragment(null) {
 
     private fun onServiceDownError() {
         showServiceDownMessage()
+    }
+
+    private fun onDateError() {
+        view?.let {
+            it.showErrorSnackbar(requireContext().getString(R.string.service_down))
+        }
     }
 
     private fun onLinkClick(link: String) {

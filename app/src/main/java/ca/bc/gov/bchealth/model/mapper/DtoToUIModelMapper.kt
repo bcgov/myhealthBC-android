@@ -37,7 +37,6 @@ import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
 import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.common.utils.toPST
-import java.time.Instant
 import java.time.LocalDate
 
 fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
@@ -121,25 +120,30 @@ fun mapOrderStatus(orderStatus: String): String {
         orderStatus.equals("Held", true) -> {
             "Pending"
         }
+
         orderStatus.equals("Pending", true) -> {
             "Pending"
         }
+
         orderStatus.equals("Partial", true) -> {
             "Pending"
         }
+
         orderStatus.equals("Completed", true) -> {
             "Completed"
         }
+
         orderStatus.equals("Cancelled", true) -> {
             "Cancelled"
         }
+
         else -> {
             orderStatus
         }
     }
 }
 
-fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem {
+fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem? {
 
     val covidTestResult = covidTests.maxByOrNull { it.collectedDateTime }
     val testOutcome = if (covidTestResult?.testStatus.equals("Pending")) {
@@ -150,21 +154,25 @@ fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem {
             CovidTestResultStatus.IndeterminateResult.name -> {
                 CovidTestResultStatus.Indeterminate.name
             }
+
             CovidTestResultStatus.Cancelled.name -> {
                 CovidTestResultStatus.Cancelled.name
             }
+
             CovidTestResultStatus.Negative.name -> {
                 CovidTestResultStatus.Negative.name
             }
+
             CovidTestResultStatus.Positive.name -> {
                 CovidTestResultStatus.Positive.name
             }
+
             else -> {
                 CovidTestResultStatus.Indeterminate.name
             }
         }
     }
-    val date = covidTestResult?.collectedDateTime ?: Instant.now()
+    val date = covidTestResult?.collectedDateTime ?: return null
 
     return HealthRecordItem(
         patientId = covidOrder.patientId,
@@ -196,9 +204,11 @@ fun getHealthPassStateResources(state: ImmunizationStatus?): PassState = when (s
     ImmunizationStatus.FULLY_IMMUNIZED -> {
         PassState(R.color.status_green, R.string.vaccinated, R.drawable.ic_check_mark)
     }
+
     ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
         PassState(R.color.blue, R.string.partially_vaccinated, 0)
     }
+
     else -> {
         PassState(R.color.grey, R.string.no_record, 0)
     }
@@ -307,7 +317,11 @@ private fun DiagnosticImagingDataDto.toUiModel() = HealthRecordItem(
     patientId = patientId,
     icon = R.drawable.ic_health_record_diagnostic_imaging,
     title = modality.orEmpty(),
-    description = if (isUpdated) { "Updated" } else { examStatus } + " • " + examDate?.dateString(),
+    description = if (isUpdated) {
+        "Updated"
+    } else {
+        examStatus
+    } + " • " + examDate?.dateString(),
     date = examDate!!,
     healthRecordType = HealthRecordType.DIAGNOSTIC_IMAGING,
     dataSource = null
@@ -321,9 +335,21 @@ fun BcCancerScreeningDataDto.toUiModel() = HealthRecordItem(
     recordId = _id,
     patientId = patientId,
     icon = R.drawable.ic_health_record_bc_cancer_screening,
-    title = if (eventType == "Recall") { "BC Cancer Screening Reminder Letter" } else { "BC Cancer Screening Result Letter" },
-    description = programName + " • " + if (eventType == "Recall") { eventDateTime } else { resultDateTime }?.dateString(),
-    date = if (eventType == "Recall") { eventDateTime !! } else { resultDateTime!! },
+    title = if (eventType == "Recall") {
+        "BC Cancer Screening Reminder Letter"
+    } else {
+        "BC Cancer Screening Result Letter"
+    },
+    description = programName + " • " + if (eventType == "Recall") {
+        eventDateTime
+    } else {
+        resultDateTime
+    }?.dateString(),
+    date = if (eventType == "Recall") {
+        eventDateTime!!
+    } else {
+        resultDateTime!!
+    },
     healthRecordType = HealthRecordType.BC_CANCER_SCREENING,
     dataSource = null
 )

@@ -56,11 +56,12 @@ fun HealthRecordScreen(
     onLinkClick: (String) -> Unit,
     onNetworkError: () -> Unit,
     onServiceDownError: () -> Unit,
+    onDateError: () -> Unit,
     modifier: Modifier = Modifier,
     authViewModel: BcscAuthViewModel,
     healthRecordViewModel: HealthRecordViewModel,
     filterViewModel: PatientFilterViewModel,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
 ) {
 
     val uiState by healthRecordViewModel.uiState.collectAsStateWithLifecycle()
@@ -111,6 +112,13 @@ fun HealthRecordScreen(
     if (!uiState.isHgServicesUp) {
         LaunchedEffect(key1 = Unit) {
             onServiceDownError()
+            healthRecordViewModel.resetErrorState()
+        }
+    }
+
+    if (uiState.dateError) {
+        LaunchedEffect(key1 = Unit) {
+            onDateError()
             healthRecordViewModel.resetErrorState()
         }
     }
