@@ -488,6 +488,17 @@
     <string name="lab_test_banner_pending_message_1">It can take between 1 and 7 days to complete. Find resources to learn about your lab test and what the results mean. Learn more</string>
     <string name="lab_test_banner_pending_message_2">It can take between 1 and 7 days to complete.</string>
     <string name="lab_test_banner_pending_clickable_text">Learn more</string>
+    <string name="lab_test_help_title">Understand lab test result</string>
+    <string name="lab_test_help_body">Follow the instructions from your health care provider. When needed, they can explain what your results mean. Remember:</string>
+    <string name="lab_test_help_body_item_1_bold">• Ranges</string>
+    <string name="lab_test_help_body_item_1">are different between laboratories</string>
+    <string name="lab_test_help_body_item_2_bold">• Out of range</string>
+    <string name="lab_test_help_body_item_2">results may be normal for you</string>
+    <string name="lab_test_help_related_info">Related Information</string>
+    <string name="lab_test_help_link_healthlink">• HealthLink BC</string>
+    <string name="lab_test_help_link_mayo_clinic">• Mayo Clinic Laboratories</string>
+    <string name="lab_test_help_link_pathology">• For pathology tests (like a biopsy)</string>
+    <string name="lab_test_help_link_get_checked_online">• Get checked online</string>
 
     <!-- Home screen -->
     <string name="hello">Hello</string>
@@ -644,6 +655,6 @@
     <!--BC Cancer Screening-->
     <string name="bc_cancer_screening_result_description">Download your cervix screening result letter. It may include important information about next steps. If you have questions, check the BC Cancer website or talk to your care provider.</string>
     <string name="bc_cancer_screening_recall_desc">Find out about your cervix screening next steps. You will also get this letter in the mail. Learn more about cervix screening.</string>
-    <string name = "bc_cancer_banner">Only BC Cancer cervix screening letters are available here. Your Health Gateway timeline may include these and other screening test results in lab or imaging reports.</string>
+    <string name="bc_cancer_banner">Only BC Cancer cervix screening letters are available here. Your Health Gateway timeline may include these and other screening test results in lab or imaging reports.</string>
     <string name="bc_cancer_learn_more">Learn more</string>
 </resources>
