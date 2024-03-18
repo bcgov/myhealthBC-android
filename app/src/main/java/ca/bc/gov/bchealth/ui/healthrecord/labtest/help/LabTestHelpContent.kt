@@ -24,7 +24,7 @@ import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.bold
 import ca.bc.gov.bchealth.compose.theme.primaryBlue
-import ca.bc.gov.bchealth.utils.URL_GET_CHECKED
+import ca.bc.gov.bchealth.utils.URL_SMART_SEX_RESOURCE
 import ca.bc.gov.bchealth.utils.URL_HEALTHLINK
 import ca.bc.gov.bchealth.utils.URL_MAYO_CLINIC
 import ca.bc.gov.bchealth.utils.URL_PATHOLOGY_TESTS
@@ -35,7 +35,7 @@ fun LabTestHelpContent(onClickLink: (String) -> Unit) {
         stringResource(R.string.lab_test_help_link_healthlink) to URL_HEALTHLINK,
         stringResource(R.string.lab_test_help_link_mayo_clinic) to URL_MAYO_CLINIC,
         stringResource(R.string.lab_test_help_link_pathology) to URL_PATHOLOGY_TESTS,
-        stringResource(R.string.lab_test_help_link_get_checked_online) to URL_GET_CHECKED,
+        stringResource(R.string.lab_test_help_link_smart_sex_resource) to URL_SMART_SEX_RESOURCE,
     )
     Column(
         modifier = Modifier
