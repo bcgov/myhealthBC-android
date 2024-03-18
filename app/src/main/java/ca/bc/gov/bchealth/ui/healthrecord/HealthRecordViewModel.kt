@@ -48,6 +48,7 @@ class HealthRecordViewModel @Inject constructor(
         val timeLineFilters = mutableListOf<String>()
         val filteredResult = mutableListOf<HealthRecordItem>()
         var showBCCancerBanner = false
+        var showDiagnosticImagingBanner = false
         if (filterString.isNotBlank()) {
             val filterQuery = filterString.split(",")
 
@@ -68,9 +69,9 @@ class HealthRecordViewModel @Inject constructor(
             timeLineFilters +=
                 filterQuery.mapNotNull { query -> TimelineTypeFilter.findByName(query)?.recordType?.name }
 
-            showBCCancerBanner =
-                timeLineFilters.size == 1 && !timeLineFilters.find { filter -> filter == HealthRecordType.BC_CANCER_SCREENING.name }
-                .isNullOrBlank()
+            showBCCancerBanner = showRecordBanner(timeLineFilters, HealthRecordType.BC_CANCER_SCREENING.name)
+
+            showDiagnosticImagingBanner = showRecordBanner(timeLineFilters, HealthRecordType.DIAGNOSTIC_IMAGING.name)
 
             filteredResult += if (timeLineFilters.isNotEmpty()) {
                 listFilteredBySearch.filter { recordType -> timeLineFilters.contains(recordType.healthRecordType.name) }
@@ -107,10 +108,16 @@ class HealthRecordViewModel @Inject constructor(
                     }
                 },
                 requiredProtectiveWordVerification = !isShowMedicationRecords(),
-                showBCCancerBanner = showBCCancerBanner
+                showBCCancerBanner = showBCCancerBanner,
+                showDiagnosticImagingBanner = showDiagnosticImagingBanner,
             )
         }
     }
+
+    private fun showRecordBanner(timeLineFilters: List<String>, recordName: String) =
+        timeLineFilters.size == 1 && !timeLineFilters.find { filter ->
+            filter == recordName
+        }.isNullOrBlank()
 
     private fun getDateFilter(fromDate: String?, toDate: String?): String? {
         if (fromDate.isNullOrBlank() && toDate.isNullOrBlank()) {
@@ -293,7 +300,8 @@ data class HealthRecordUiState(
     val filters: List<String> = emptyList(),
     val isHgServicesUp: Boolean = true,
     val isConnected: Boolean = true,
-    val showBCCancerBanner: Boolean = false
+    val showBCCancerBanner: Boolean = false,
+    val showDiagnosticImagingBanner: Boolean = false,
 )
 
 data class HealthRecordItem(

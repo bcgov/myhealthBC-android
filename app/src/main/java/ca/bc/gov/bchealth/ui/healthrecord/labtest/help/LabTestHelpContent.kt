@@ -24,10 +24,10 @@ import ca.bc.gov.bchealth.compose.BasePreview
 import ca.bc.gov.bchealth.compose.MyHealthTypography
 import ca.bc.gov.bchealth.compose.bold
 import ca.bc.gov.bchealth.compose.theme.primaryBlue
-import ca.bc.gov.bchealth.utils.URL_SMART_SEX_RESOURCE
 import ca.bc.gov.bchealth.utils.URL_HEALTHLINK
 import ca.bc.gov.bchealth.utils.URL_MAYO_CLINIC
 import ca.bc.gov.bchealth.utils.URL_PATHOLOGY_TESTS
+import ca.bc.gov.bchealth.utils.URL_SMART_SEX_RESOURCE
 
 @Composable
 fun LabTestHelpContent(onClickLink: (String) -> Unit) {

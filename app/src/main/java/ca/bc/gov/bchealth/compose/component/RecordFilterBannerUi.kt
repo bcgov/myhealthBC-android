@@ -28,7 +28,7 @@ private const val BANNER_BODY_1_ID = "banner_body_1_id"
 private const val BANNER_BODY_2_ID = "banner_body_2_id"
 
 @Composable
-fun BCCancerBannerUi(
+fun RecordFilterBannerUi(
     onLinkClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     body1: String,
@@ -106,7 +106,7 @@ private fun immunizationBannerConstraints(): ConstraintSet {
 @Composable
 private fun ImmunizationBannerUIPreview() {
     HealthGatewayTheme {
-        BCCancerBannerUi(
+        RecordFilterBannerUi(
             onLinkClick = {},
             body1 = stringResource(id = R.string.records_immunization_banner_top),
             clickableText = stringResource(id = R.string.records_immunization_banner_click),

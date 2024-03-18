@@ -645,6 +645,9 @@
     <string name="bullet_point">\u2022</string>
     <string name="procedure_description">Procedure Description:</string>
 
+    <string name="diagnostic_imaging_banner">Most reports are available 10–14 days after your procedure.</string>
+    <string name="diagnostic_imaging_learn_more">Learn more</string>
+
     <!--MENU-->
     <string name="more_options">More Options</string>
 
