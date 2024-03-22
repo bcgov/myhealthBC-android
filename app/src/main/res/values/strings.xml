@@ -351,8 +351,6 @@
     <string name="downloading">Downloading..</string>
     <string name="retry">Retry</string>
     <string name="try_again">Try again</string>
-    <string name="test_summary">Test summary</string>
-    <string name="summary_desc">Find resources to learn about your lab test and what the results mean. Learn more</string>
     <string name="test_name">Test name:</string>
     <string name="result">Result:</string>
     <string name="lab_test_status">Test status:</string>

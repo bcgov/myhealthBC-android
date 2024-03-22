@@ -9,27 +9,6 @@
     android:filterTouchesWhenObscured="true">
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_header"
-        style="?textAppearanceHeadline3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_2_x"
-        app:layout_constraintBottom_toTopOf="@+id/tv_summary"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_summary"
-        style="?textAppearanceCaption"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@+id/tv_title1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_header"
-        tools:text="@string/date" />
-
-    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_title1"
         style="?textAppearanceHeadline3"
         android:layout_width="0dp"
@@ -37,7 +16,7 @@
         android:layout_marginTop="@dimen/space_2_x"
         app:layout_constraintBottom_toTopOf="@+id/tv_desc1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_summary"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/date" />
 
     <com.google.android.material.textview.MaterialTextView
