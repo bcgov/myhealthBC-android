@@ -224,8 +224,8 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             val failedTasks = taskResult.filter { it != Result.success() }
             failedTasks.forEach {
                 val data = it.outputData
-                data.getBoolean(FailureReason.PARTIAL_RECORDS_ERROR.value, true)
-                throw PartialRecordsException()
+                val throwError = data.getBoolean(FailureReason.PARTIAL_RECORDS_ERROR.value, false)
+                if (throwError) throw PartialRecordsException()
             }
 
             isApiFailed = failedTasks.isNotEmpty()

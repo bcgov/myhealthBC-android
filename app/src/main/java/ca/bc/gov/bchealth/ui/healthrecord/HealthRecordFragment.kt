@@ -217,7 +217,7 @@ class HealthRecordFragment : BaseSecureFragment(null) {
 
     private fun onDateError() {
         view?.let {
-            it.showErrorSnackbar(requireContext().getString(R.string.service_down))
+            it.showErrorSnackbar(requireContext().getString(R.string.date_format_error_message))
         }
     }
 
