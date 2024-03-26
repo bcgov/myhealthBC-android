@@ -1,9 +1,13 @@
 package ca.bc.gov.bchealth.usecases.records
 
 import androidx.work.ListenableWorker
+import ca.bc.gov.bchealth.workers.FailureReason
+import ca.bc.gov.bchealth.workers.getOutputData
 import ca.bc.gov.common.exceptions.ProtectiveWordException
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.ProtectiveWordState
+import ca.bc.gov.common.model.ResultStatus
+import ca.bc.gov.common.model.ResultStatusType
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.di.IoDispatcher
@@ -21,15 +25,23 @@ class FetchMedicationsUseCase @Inject constructor(
         authParameters: AuthParametersDto
     ): ListenableWorker.Result {
         return try {
-            val medications = fetchMedicationResponse(authParameters)
-            insertMedicationRecords(patientId, medications)
-            ListenableWorker.Result.success()
+            val result = fetchMedicationResponse(authParameters)
+            insertMedicationRecords(patientId, result.data)
+
+            if (result.type == ResultStatusType.DATE_ERROR) {
+                ListenableWorker.Result.failure(
+                    FailureReason.PARTIAL_RECORDS_ERROR.getOutputData(true)
+                )
+            } else {
+                ListenableWorker.Result.success()
+            }
         } catch (e: Exception) {
             when (e) {
                 is ProtectiveWordException -> {
                     medicationRecordRepository.updateProtectiveWordState(ProtectiveWordState.PROTECTIVE_WORD_REQUIRED.value)
                     ListenableWorker.Result.success()
                 }
+
                 else -> {
                     e.printStackTrace()
                     ListenableWorker.Result.failure()
@@ -38,8 +50,8 @@ class FetchMedicationsUseCase @Inject constructor(
         }
     }
 
-    private suspend fun fetchMedicationResponse(authParameters: AuthParametersDto): List<MedicationWithSummaryAndPharmacyDto> {
-        var medications: List<MedicationWithSummaryAndPharmacyDto>
+    private suspend fun fetchMedicationResponse(authParameters: AuthParametersDto): ResultStatus<List<MedicationWithSummaryAndPharmacyDto>> {
+        var medications: ResultStatus<List<MedicationWithSummaryAndPharmacyDto>>
         withContext(dispatcher) {
             medications = medicationRecordRepository.fetchMedicationStatement(
                 token = authParameters.token,

@@ -271,11 +271,14 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     companion object {
         const val RECORD_FETCH_STARTED = "started"
     }
-
-    enum class FailureReason(val value: String) {
-        APP_UPDATE_REQUIRED("appUpdateRequired"),
-        IS_HG_SERVICES_UP("isHgServicesUp"),
-        IS_RECORD_FETCH_FAILED("IS_RECORD_FETCH_FAILED"),
-        PARTIAL_RECORDS_ERROR("PARTIAL_RECORDS_ERROR")
-    }
 }
+
+enum class FailureReason(val value: String) {
+    APP_UPDATE_REQUIRED("appUpdateRequired"),
+    IS_HG_SERVICES_UP("isHgServicesUp"),
+    IS_RECORD_FETCH_FAILED("IS_RECORD_FETCH_FAILED"),
+    PARTIAL_RECORDS_ERROR("PARTIAL_RECORDS_ERROR")
+}
+
+fun FailureReason.getOutputData(result: Boolean): Data =
+    Data.Builder().putBoolean(this.value, result).build()

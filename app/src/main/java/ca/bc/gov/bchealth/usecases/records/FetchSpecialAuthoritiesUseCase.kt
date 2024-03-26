@@ -32,7 +32,7 @@ class FetchSpecialAuthoritiesUseCase @Inject constructor(
 
         insertSpecialAuthority(patientId, filteredList)
         if (filteredOut) {
-            throw PartialRecordsException()
+            throw PartialRecordsException.TitleError()
         }
     }
 

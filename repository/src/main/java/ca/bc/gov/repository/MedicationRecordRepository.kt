@@ -5,6 +5,7 @@ import ca.bc.gov.common.exceptions.MyHealthException
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
+import ca.bc.gov.common.model.ResultStatus
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.data.datasource.local.MedicationRecordLocalDataSource
 import ca.bc.gov.data.datasource.remote.MedicationRemoteDataSource
@@ -27,7 +28,7 @@ class MedicationRecordRepository @Inject constructor(
     suspend fun fetchMedicationStatement(
         token: String,
         hdid: String,
-    ): List<MedicationWithSummaryAndPharmacyDto> {
+    ): ResultStatus<List<MedicationWithSummaryAndPharmacyDto>> {
         val protectiveWord: String? = getProtectiveWord()
 
         return medicationRemoteDataSource.getMedicationStatement(
@@ -41,11 +42,11 @@ class MedicationRecordRepository @Inject constructor(
         hdid: String,
         protectiveWord: String?
     ) {
-        val medications = medicationRemoteDataSource.getMedicationStatement(
+        val result = medicationRemoteDataSource.getMedicationStatement(
             accessToken, hdid, protectiveWord
         ).toListOfMedicationDto()
 
-        updateMedicationRecords(medications, patientId)
+        updateMedicationRecords(result.data, patientId)
     }
 
     suspend fun updateMedicationRecords(

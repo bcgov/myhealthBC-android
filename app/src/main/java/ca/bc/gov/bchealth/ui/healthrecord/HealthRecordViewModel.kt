@@ -7,6 +7,7 @@ import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.workers.WorkerInvoker
 import ca.bc.gov.common.exceptions.NetworkConnectionException
+import ca.bc.gov.common.exceptions.PartialRecordsException
 import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ProtectiveWordState
@@ -171,6 +172,8 @@ class HealthRecordViewModel @Inject constructor(
     }
 
     private suspend fun generateTimeline(): Pair<List<HealthRecordItem>, Boolean> {
+        var dateException = false
+
         try {
             val patientId =
                 patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).id
@@ -200,8 +203,13 @@ class HealthRecordViewModel @Inject constructor(
             val clinicalDocuments = patientRepository.getPatientWithClinicalDocuments(patientId)
                 .map { it.toUiModel() }
 
-            val medicationRecords = patientAndMedicationRecords?.medicationRecord?.map {
-                it.toUiModel()
+            val medicationRecords = patientAndMedicationRecords?.medicationRecord?.mapNotNull {
+                try {
+                    it.toUiModel()
+                }catch (e : PartialRecordsException.DateError){
+                    dateException = true
+                    null
+                }
             }
             val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
                 it.toUiModel()
