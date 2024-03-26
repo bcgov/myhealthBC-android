@@ -7,6 +7,7 @@ import ca.bc.gov.bchealth.ui.BaseViewModel
 import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.workers.WorkerInvoker
 import ca.bc.gov.common.exceptions.NetworkConnectionException
+import ca.bc.gov.common.exceptions.PartialRecordsException
 import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ProtectiveWordState
@@ -41,11 +42,14 @@ class HealthRecordViewModel @Inject constructor(
     val uiState: StateFlow<HealthRecordUiState> = _uiState.asStateFlow()
 
     fun showTimeLine(filterString: String) = viewModelScope.launch {
-        val healthRecords = generateTimeline()
+        val timeLineInfo = generateTimeline()
+        val healthRecords = timeLineInfo.first
+        val success = timeLineInfo.second
 
         val timeLineFilters = mutableListOf<String>()
         val filteredResult = mutableListOf<HealthRecordItem>()
         var showBCCancerBanner = false
+        var showDiagnosticImagingBanner = false
         if (filterString.isNotBlank()) {
             val filterQuery = filterString.split(",")
 
@@ -66,7 +70,9 @@ class HealthRecordViewModel @Inject constructor(
             timeLineFilters +=
                 filterQuery.mapNotNull { query -> TimelineTypeFilter.findByName(query)?.recordType?.name }
 
-            showBCCancerBanner = timeLineFilters.size == 1 && !timeLineFilters.find { filter -> filter == HealthRecordType.BC_CANCER_SCREENING.name }.isNullOrBlank()
+            showBCCancerBanner = showRecordBanner(timeLineFilters, HealthRecordType.BC_CANCER_SCREENING.name)
+
+            showDiagnosticImagingBanner = showRecordBanner(timeLineFilters, HealthRecordType.DIAGNOSTIC_IMAGING.name)
 
             filteredResult += if (timeLineFilters.isNotEmpty()) {
                 listFilteredBySearch.filter { recordType -> timeLineFilters.contains(recordType.healthRecordType.name) }
@@ -80,10 +86,11 @@ class HealthRecordViewModel @Inject constructor(
             }
         }
 
-        _uiState.update { it ->
+        _uiState.update {
             it.copy(
                 isLoading = false,
                 healthRecords = filteredResult,
+                dateError = success.not(),
                 filters = timeLineFilters.map { filter ->
                     when (filter) {
                         HealthRecordType.MEDICATION_RECORD.name -> "Medications"
@@ -102,10 +109,16 @@ class HealthRecordViewModel @Inject constructor(
                     }
                 },
                 requiredProtectiveWordVerification = !isShowMedicationRecords(),
-                showBCCancerBanner = showBCCancerBanner
+                showBCCancerBanner = showBCCancerBanner,
+                showDiagnosticImagingBanner = showDiagnosticImagingBanner,
             )
         }
     }
+
+    private fun showRecordBanner(timeLineFilters: List<String>, recordName: String) =
+        timeLineFilters.size == 1 && !timeLineFilters.find { filter ->
+            filter == recordName
+        }.isNullOrBlank()
 
     private fun getDateFilter(fromDate: String?, toDate: String?): String? {
         if (fromDate.isNullOrBlank() && toDate.isNullOrBlank()) {
@@ -126,15 +139,27 @@ class HealthRecordViewModel @Inject constructor(
         }
     }
 
-    private fun getFilterByDate(healthRecords: List<HealthRecordItem>, fromDate: String?, toDate: String?): MutableList<HealthRecordItem> {
+    private fun getFilterByDate(
+        healthRecords: List<HealthRecordItem>,
+        fromDate: String?,
+        toDate: String?
+    ): MutableList<HealthRecordItem> {
         return if (!fromDate.isNullOrBlank() && !toDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.dateToInstant().toStartOfDayInstant() && it.date.toStartOfDayInstant() <= toDate.dateToInstant().toStartOfDayInstant() }
+            healthRecords.filter {
+                it.date.toStartOfDayInstant() >= fromDate.dateToInstant()
+                    .toStartOfDayInstant() && it.date.toStartOfDayInstant() <= toDate.dateToInstant()
+                    .toStartOfDayInstant()
+            }
                 .toMutableList()
         } else if (!fromDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.dateToInstant().toStartOfDayInstant() }
+            healthRecords.filter {
+                it.date.toStartOfDayInstant() >= fromDate.dateToInstant().toStartOfDayInstant()
+            }
                 .toMutableList()
         } else if (!toDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() <= toDate.dateToInstant().toStartOfDayInstant() }.toMutableList()
+            healthRecords.filter {
+                it.date.toStartOfDayInstant() <= toDate.dateToInstant().toStartOfDayInstant()
+            }.toMutableList()
         } else {
             healthRecords.toMutableList()
         }
@@ -146,7 +171,9 @@ class HealthRecordViewModel @Inject constructor(
         }
     }
 
-    private suspend fun generateTimeline(): List<HealthRecordItem> {
+    private suspend fun generateTimeline(): Pair<List<HealthRecordItem>, Boolean> {
+        var dateException = false
+
         try {
             val patientId =
                 patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).id
@@ -176,14 +203,20 @@ class HealthRecordViewModel @Inject constructor(
             val clinicalDocuments = patientRepository.getPatientWithClinicalDocuments(patientId)
                 .map { it.toUiModel() }
 
-            val medicationRecords = patientAndMedicationRecords?.medicationRecord?.map {
-                it.toUiModel()
+            val medicationRecords = patientAndMedicationRecords?.medicationRecord?.mapNotNull {
+                try {
+                    it.toUiModel()
+                }catch (e : PartialRecordsException.DateError){
+                    dateException = true
+                    null
+                }
             }
             val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
                 it.toUiModel()
             }
             val covidOrders =
                 patientWithCovidOrderAndTests.covidOrderAndTests.map { it.toUiModel() }
+            val nonNullCovidOrders = covidOrders.filterNotNull()
 
             val immunizationRecords =
                 patientWithImmunizationRecordAndForecast.immunizationRecords.map { it.toUiModel() }
@@ -199,7 +232,7 @@ class HealthRecordViewModel @Inject constructor(
 
             val bcCancerScreening = patientWithData.bcCancerScreeningDataList.map { it.toUiModel() }
 
-            val records = covidOrders +
+            val records = nonNullCovidOrders +
                 labTestRecords +
                 immunizationRecords +
                 healthVisits +
@@ -213,10 +246,11 @@ class HealthRecordViewModel @Inject constructor(
                 } else {
                     emptyList()
                 }
-            return records.sortedByDescending { it.date }
+            val result: Boolean = nonNullCovidOrders.size == covidOrders.size
+            return records.sortedByDescending { it.date } to result
         } catch (e: Exception) {
             Log.d("Timeline", "Error in generating timeline ${e.message}")
-            return emptyList()
+            return listOf<HealthRecordItem>() to true
         }
     }
 
@@ -261,19 +295,21 @@ class HealthRecordViewModel @Inject constructor(
 
     fun resetErrorState() {
         _uiState.update { state ->
-            state.copy(isHgServicesUp = true, isConnected = true)
+            state.copy(isHgServicesUp = true, isConnected = true, dateError = false)
         }
     }
 }
 
 data class HealthRecordUiState(
     val isLoading: Boolean = true,
+    val dateError: Boolean = false,
     val healthRecords: List<HealthRecordItem> = emptyList(),
     val requiredProtectiveWordVerification: Boolean = true,
     val filters: List<String> = emptyList(),
     val isHgServicesUp: Boolean = true,
     val isConnected: Boolean = true,
-    val showBCCancerBanner: Boolean = false
+    val showBCCancerBanner: Boolean = false,
+    val showDiagnosticImagingBanner: Boolean = false,
 )
 
 data class HealthRecordItem(

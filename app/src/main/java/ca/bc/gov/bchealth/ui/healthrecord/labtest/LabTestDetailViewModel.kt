@@ -99,8 +99,6 @@ class LabTestDetailViewModel @Inject constructor(
             labTestDetails.add(
                 LabTestDetail(
                     id = labTest.id,
-                    header = if (index == 0) R.string.test_summary else null,
-                    summary = if (index == 0) R.string.summary_desc else null,
                     title1 = R.string.test_name,
                     testName = labTest.batteryType,
                     title2 = R.string.result,
@@ -227,8 +225,6 @@ data class LabTestDetailUiState(
 
 data class LabTestDetail(
     var id: Long = -1L,
-    @StringRes var header: Int? = null,
-    @StringRes var summary: Int? = null,
     @StringRes val title1: Int? = null,
     @StringRes val title2: Int? = null,
     @StringRes val title3: Int? = null,

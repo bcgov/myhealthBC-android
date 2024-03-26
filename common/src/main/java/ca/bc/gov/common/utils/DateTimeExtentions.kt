@@ -1,6 +1,7 @@
 package ca.bc.gov.common.utils
 
 import ca.bc.gov.common.exceptions.InvalidResponseException
+import ca.bc.gov.common.exceptions.PartialRecordsException
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -27,38 +28,51 @@ fun Instant.toDateTimeString(dateFormat: String = yyyy_MMM_dd_HH_mm): String {
 }
 
 fun Instant.toDate(dateFormat: String = yyyy_MMM_dd): String {
-    val dateTime = LocalDateTime.ofInstant(this, ZoneOffset.UTC)
-    val formatter = DateTimeFormatter.ofPattern(dateFormat)
-    val formattedString = formatter.format(dateTime)
-    return formattedString.replace(".", "")
+    try {
+        val dateTime = LocalDateTime.ofInstant(this, ZoneOffset.UTC)
+        val formatter = DateTimeFormatter.ofPattern(dateFormat)
+        val formattedString = formatter.format(dateTime)
+        return formattedString.replace(".", "")
+    } catch (e: Exception) {
+        throw PartialRecordsException.DateError()
+    }
 }
 
-fun String.toOffsetDateTime(): Instant =
-    this.toDateTime(full_date_time_plus_time).toLocalDateTimeInstant()
-        ?: throw InvalidResponseException()
+//ok
+fun String.toDate(): Instant {
+    try {
+        return LocalDate.parse(this).atStartOfDay().toInstant(ZoneOffset.UTC)
+    } catch (e: Exception) {
+        throw PartialRecordsException.DateError()
+    }
+}
 
-fun String.toDate(): Instant = LocalDate.parse(this).atStartOfDay().toInstant(ZoneOffset.UTC)
-
-fun String.toDateTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): Instant =
-    LocalDateTime.parse(this, formatter).toInstant(ZoneOffset.UTC)
+fun String.toDateTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): Instant {
+    try {
+        return LocalDateTime.parse(this, formatter).toInstant(ZoneOffset.UTC)
+    } catch (e: Exception) {
+        throw PartialRecordsException.DateError()
+    }
+}
 
 fun String.toPstFromIsoZoned(): Instant {
-    val formatter: DateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
-    val dateWithoutZ = this.replace("Z", "+00:00")
+    try {
+        val formatter: DateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+        val dateWithoutZ = this.replace("Z", "+00:00")
 
-    val dateStr = if (dateWithoutZ.endsWith("+00:00")) {
-        dateWithoutZ
-    } else {
-        "$dateWithoutZ+00:00"
+        val dateStr = if (dateWithoutZ.endsWith("+00:00")) {
+            dateWithoutZ
+        } else {
+            "$dateWithoutZ+00:00"
+        }
+
+        return LocalDateTime.parse(dateStr, formatter)
+            .toInstant(ZoneOffset.UTC)
+            .toLocalDateTimeInstant() ?: Instant.now()
+    } catch (e: Exception) {
+        throw PartialRecordsException.DateError()
     }
-
-    return LocalDateTime.parse(dateStr, formatter)
-        .toInstant(ZoneOffset.UTC)
-        .toLocalDateTimeInstant() ?: Instant.now()
 }
-
-fun String.toDateTime(datePattern: String): Instant =
-    this.toDateTime(DateTimeFormatter.ofPattern(datePattern))
 
 /**
  * Parse dates in the following formats:
@@ -68,25 +82,33 @@ fun String.toDateTime(datePattern: String): Instant =
  * Eg.: 1234Z, 12345Z, 123456Z an so on
  */
 fun String.toDateTimeZ(): Instant {
-    val patternLengthMin = 20
-    val patternLengthMax = 24
-    var datePattern = yyyy_MMM_dd_HH_mm_sss_long
+    try {
+        val patternLengthMin = 20
+        val patternLengthMax = 24
+        var datePattern = yyyy_MMM_dd_HH_mm_sss_long
 
-    val dateStr = if (this.length > patternLengthMax) {
-        this.substring(0, patternLengthMax - 1).plus("Z")
-    } else {
-        if (this.length <= patternLengthMin) {
-            datePattern = yyyy_MMM_dd_HH_mm_short
+        val dateStr = if (this.length > patternLengthMax) {
+            this.substring(0, patternLengthMax - 1).plus("Z")
+        } else {
+            if (this.length <= patternLengthMin) {
+                datePattern = yyyy_MMM_dd_HH_mm_short
+            }
+            this
         }
-        this
-    }
 
-    return LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern(datePattern))
-        .toInstant(ZoneOffset.UTC)
+        return LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern(datePattern))
+            .toInstant(ZoneOffset.UTC)
+    } catch (e: Exception) {
+        throw PartialRecordsException.DateError()
+    }
 }
 
 fun Instant.toStartOfDayInstant(): Instant {
-    return this.truncatedTo(ChronoUnit.DAYS)
+    try {
+        return this.truncatedTo(ChronoUnit.DAYS)
+    } catch (e: Exception) {
+        throw PartialRecordsException.DateError()
+    }
 }
 
 /*
@@ -94,24 +116,59 @@ fun Instant.toStartOfDayInstant(): Instant {
 * provides the date time in UTC+00:00
 *  */
 fun Instant.toLocalDateTimeInstant(): Instant? {
-    return this.atZone(ZoneId.of(PST_ZONE_ID))
-        ?.toLocalDateTime()?.toInstant(ZoneOffset.UTC)
+    try {
+        return this.atZone(ZoneId.of(PST_ZONE_ID))
+            ?.toLocalDateTime()?.toInstant(ZoneOffset.UTC)
+    } catch (e: Exception) {
+        throw PartialRecordsException.DateError()
+    }
 }
 
 fun Instant.toPST(): Instant {
-    return this.atZone(ZoneId.of(PST_ZONE_ID))
-        .toLocalDateTime().toInstant(ZoneOffset.UTC)
+    try {
+        return this.atZone(ZoneId.of(PST_ZONE_ID))
+            .toLocalDateTime().toInstant(ZoneOffset.UTC)
+    } catch (e: Exception) {
+        throw PartialRecordsException.DateError()
+    }
 }
 
-fun Instant.toLocalDate(): LocalDate =
-    this.atZone(ZoneOffset.UTC).toLocalDate()
+fun Instant.toLocalDate(): LocalDate {
+    try {
+        return this.atZone(ZoneOffset.UTC).toLocalDate()
+    } catch (e: Exception) {
+        throw PartialRecordsException.DateError()
+    }
+}
 
-fun String.dateTimeToInstant(): Instant = Instant.parse(this)
+fun String.dateTimeToInstant(): Instant {
+    try {
+        return Instant.parse(this)
+    } catch (e: Exception) {
+        throw PartialRecordsException.DateError()
+    }
+}
 
-fun String.dateToInstant(): Instant = LocalDate.parse(this).atStartOfDay(ZoneId.of(PST_ZONE_ID)).toInstant()
+fun String.dateToInstant(): Instant {
+    try {
+        return LocalDate.parse(this).atStartOfDay(ZoneId.of(PST_ZONE_ID)).toInstant()
+    } catch (e: Exception) {
+        throw PartialRecordsException.DateError()
+    }
+}
 
 fun Instant.dateTimeString(pattern: String = yyyy_MMM_dd_HH_mm): String {
-    return atZone(ZoneId.of(PST_ZONE_ID)).format(DateTimeFormatter.ofPattern(pattern))
+    try {
+        return atZone(ZoneId.of(PST_ZONE_ID)).format(DateTimeFormatter.ofPattern(pattern))
+    } catch (e: Exception) {
+        throw PartialRecordsException.DateError()
+    }
 }
 
-fun Instant.dateString(pattern: String = yyyy_MMM_dd) = dateTimeString(pattern = pattern)
+fun Instant.dateString(pattern: String = yyyy_MMM_dd): String {
+    try {
+        return dateTimeString(pattern = pattern)
+    } catch (e: Exception) {
+        throw PartialRecordsException.DateError()
+    }
+}

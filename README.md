@@ -129,6 +129,9 @@ Build variants used in the app
 ## Deployment
 
 
+### Before pushing your code
+Run the spotless plugin: `./gradlew :spotlessApply`
+
 ### Versioning
 
 In version name 1.2.3, 1 stands for major change and 2 stands for backend change, 3 stands for minor change or patch fix.

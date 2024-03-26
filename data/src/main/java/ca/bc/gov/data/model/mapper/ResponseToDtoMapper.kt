@@ -2,12 +2,15 @@ package ca.bc.gov.data.model.mapper
 
 import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.exceptions.PartialRecordsException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.PatientAddressDto
+import ca.bc.gov.common.model.ResultStatus
+import ca.bc.gov.common.model.ResultStatusType
 import ca.bc.gov.common.model.TermsOfServiceDto
 import ca.bc.gov.common.model.banner.BannerDto
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
@@ -106,21 +109,31 @@ fun UserProfilePayload.toDto(patientId: Long) = UserProfileDto(
     hasTermsOfServiceUpdated = hasTermsOfServiceUpdated
 )
 
-fun MedicationStatementResponse.toListOfMedicationDto(): List<MedicationWithSummaryAndPharmacyDto> =
-    this.payload?.mapNotNull {
-        val summaryDto = it.medicationSummary?.toMedicationSummaryDto()
-        val dispensingPharmacyDto = it.dispensingPharmacy?.toDispensingPharmacyDto()
+fun MedicationStatementResponse.toListOfMedicationDto(): ResultStatus<List<MedicationWithSummaryAndPharmacyDto>> {
+    var resultStatus = ResultStatusType.SUCCESS
+    if (this.payload == null) return ResultStatus(listOf())
 
-        if (summaryDto == null || dispensingPharmacyDto == null) {
+    val list = this.payload.mapNotNull {
+        try {
+            val summaryDto = it.medicationSummary?.toMedicationSummaryDto()
+            val dispensingPharmacyDto = it.dispensingPharmacy?.toDispensingPharmacyDto()
+
+            if (summaryDto == null || dispensingPharmacyDto == null) {
+                null
+            } else {
+                MedicationWithSummaryAndPharmacyDto(
+                    it.toMedicationRecordDto(),
+                    summaryDto,
+                    dispensingPharmacyDto
+                )
+            }
+        } catch (e: PartialRecordsException.DateError) {
+            resultStatus = ResultStatusType.DATE_ERROR
             null
-        } else {
-            MedicationWithSummaryAndPharmacyDto(
-                it.toMedicationRecordDto(),
-                summaryDto,
-                dispensingPharmacyDto
-            )
         }
-    } ?: listOf()
+    }
+    return ResultStatus(list, resultStatus)
+}
 
 fun MedicationStatementPayload.toMedicationRecordDto() = MedicationRecordDto(
     prescriptionIdentifier = prescriptionIdentifier,
@@ -453,9 +466,9 @@ fun PatientResponse.toDto(): PatientDto {
     val fullNameBuilder = StringBuilder()
     fullNameBuilder.append(
         "${
-        patientName.givenName ?: throw MyHealthException(
-            SERVER_ERROR, INVALID_RESPONSE
-        )
+            patientName.givenName ?: throw MyHealthException(
+                SERVER_ERROR, INVALID_RESPONSE
+            )
         } "
     )
     fullNameBuilder.append(

@@ -3,6 +3,8 @@ package ca.bc.gov.bchealth.ui.healthrecord.labtest
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.stringResource
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -13,6 +15,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
 import ca.bc.gov.bchealth.R
+import ca.bc.gov.bchealth.compose.MyHealthTheme
+import ca.bc.gov.bchealth.compose.component.HGCenterAlignedTopAppBar
+import ca.bc.gov.bchealth.compose.component.menu.TopAppBarActionItem
 import ca.bc.gov.bchealth.databinding.FragmentLabTestDetailBinding
 import ca.bc.gov.bchealth.ui.comment.CommentEntryTypeCode
 import ca.bc.gov.bchealth.ui.healthrecord.BaseRecordDetailFragment
@@ -44,12 +49,38 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupComposeToolbar(binding.composeToolbar.root)
+        setupToolbar(getString(R.string.help))
         setUpRecyclerView(args.hdid)
         viewModel.getLabTestDetails(args.labOrderId)
         observeUiState()
         observePdfData()
         initComments()
+    }
+
+    private fun setupToolbar(title: String?) {
+        val menuItems = mutableListOf<TopAppBarActionItem>(
+            TopAppBarActionItem.IconActionItem.AlwaysShown(
+                title = getString(R.string.help),
+                onClick = { findNavController().navigate(R.id.labTestHelpFragment) },
+                icon = R.drawable.ic_menu_help,
+                contentDescription = title.orEmpty(),
+            )
+        )
+
+        binding.composeToolbar.root.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MyHealthTheme {
+                    HGCenterAlignedTopAppBar(
+                        title = stringResource(id = R.string.lab_test),
+                        actionItems = menuItems,
+                        onNavigationAction = {
+                            findNavController().popBackStack()
+                        }
+                    )
+                }
+            }
+        }
     }
 
     override fun getCommentView(): AddCommentLayout = binding.comment
@@ -80,7 +111,7 @@ class LabTestDetailFragment : BaseRecordDetailFragment(R.layout.fragment_lab_tes
 
             if (state.labTestDetails?.isNotEmpty() == true) {
                 labTestDetailAdapter.submitList(state.labTestDetails)
-                setupComposeToolbar(binding.composeToolbar.root, state.toolbarTitle)
+                setupToolbar(state.toolbarTitle)
             }
 
             if (state.onError) {

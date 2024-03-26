@@ -99,6 +99,11 @@
             android:id="@+id/action_labTestDetailFragment_to_commentsFragment"
             app:destination="@id/commentsFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/labTestHelpFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.labtest.help.LabTestHelpFragment" />
+
     <fragment
         android:id="@+id/protectiveWordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.protectiveword.ProtectiveWordFragment"

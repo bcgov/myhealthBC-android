@@ -99,8 +99,6 @@ class LabTestDetailAdapter(private val viewPdfClickListener: ViewPdfClickListene
 
     private fun displayLabOrder(holder: LabOrderViewHolder, labTestDetail: LabTestDetail) {
         holder.binding.apply {
-            tvHeader.visibility = View.GONE
-            tvSummary.visibility = View.GONE
             tvDesc1.text =
                 labTestDetail.timelineDateTime.showIfNullOrBlank(holder.itemView.context)
             tvDesc2.text =
@@ -117,28 +115,6 @@ class LabTestDetailAdapter(private val viewPdfClickListener: ViewPdfClickListene
 
     private fun displayLabTest(holder: LabTestViewHolder, labTestDetail: LabTestDetail) {
         holder.binding.apply {
-            labTestDetail.header?.let {
-                tvHeader.text = holder.itemView.context.getString(it)
-                tvHeader.visibility = View.VISIBLE
-            } ?: run {
-                tvHeader.visibility = View.GONE
-            }
-            labTestDetail.summary?.let {
-                holder.itemView.context.apply {
-                    tvSummary.text = getString(it)
-                    tvSummary.makeLinks(
-                        Pair(
-                            getString(R.string.learn_more),
-                            View.OnClickListener {
-                                redirect(getString(R.string.faq_link))
-                            }
-                        )
-                    )
-                }
-                tvSummary.visibility = View.VISIBLE
-            } ?: run {
-                tvSummary.visibility = View.GONE
-            }
             holder.itemView.context.apply {
                 tvTitle1.text = labTestDetail.title1?.let { getString(it) }
                 tvTitle2.text = labTestDetail.title2?.let { getString(it) }

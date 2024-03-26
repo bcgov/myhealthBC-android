@@ -55,7 +55,7 @@ class DependentRecordsViewModel @Inject constructor(
                 it.toUiModel()
             }
 
-            val covidOrders = patientWithCovidOrderAndTests.covidOrderAndTests.map {
+            val covidOrders = patientWithCovidOrderAndTests.covidOrderAndTests.mapNotNull {
                 it.toUiModel()
             }
 

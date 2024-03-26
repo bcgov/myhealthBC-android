@@ -223,6 +223,10 @@ fun View.showNoInternetConnectionMessage(context: Context) {
     showErrorSnackbar(context.getString(R.string.no_internet_connection))
 }
 
+fun View.showPartialRecordsErrorMessage(context: Context) {
+    showErrorSnackbar(context.getString(R.string.partial_records_error_message))
+}
+
 fun View?.showErrorSnackbar(message: String, anchor: View? = null) {
     this ?: return
 
