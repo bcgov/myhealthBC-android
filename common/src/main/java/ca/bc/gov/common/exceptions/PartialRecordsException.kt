@@ -1,5 +1,7 @@
 package ca.bc.gov.common.exceptions
 
-class PartialRecordsException(
-    message: String? = null
-) : Exception(message)
+//check handlers
+sealed class PartialRecordsException : Exception() {
+    class DateError : PartialRecordsException()
+    class TitleError : PartialRecordsException()
+}
