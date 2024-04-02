@@ -55,7 +55,7 @@ class HospitalVisitDetailViewModel @Inject constructor(
 
                 HealthRecordDetailItem(
                     title = R.string.hospital_visits_detail_visit_date_title,
-                    description = dto.visitDate.dateTimeString()
+                    description = dto.visitDate?.dateTimeString()
                 ),
 
                 HealthRecordDetailItem(

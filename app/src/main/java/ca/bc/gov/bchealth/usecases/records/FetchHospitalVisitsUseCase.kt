@@ -1,6 +1,7 @@
 package ca.bc.gov.bchealth.usecases.records
 
 import ca.bc.gov.common.model.AuthParametersDto
+import ca.bc.gov.common.model.ResultStatusType
 import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.di.IoDispatcher
@@ -17,13 +18,15 @@ class FetchHospitalVisitsUseCase @Inject constructor(
     suspend fun execute(
         patientId: Long,
         authParameters: AuthParametersDto
-    ) {
-        val hospitalVisits: List<HospitalVisitDto>? = fetchRecord(
+    ): ResultStatusType? {
+        val result = fetchRecord(
             authParameters, hospitalVisitRepository::getHospitalVisits
         )
 
-        hospitalVisits?.let {
+        result?.data.let {
             recordsRepository.storeHospitalVisits(patientId, it)
         }
+
+        return result?.status
     }
 }

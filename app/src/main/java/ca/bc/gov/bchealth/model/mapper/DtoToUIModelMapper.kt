@@ -25,7 +25,6 @@ import ca.bc.gov.common.model.immunization.ImmunizationRecommendationsDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPatientDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
-import ca.bc.gov.common.model.patient.PatientWithDataDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.services.BcCancerScreeningDataDto
@@ -62,8 +61,8 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
         vaccineRecordId = vaccineWithDoses?.vaccine?.id!!,
         name = patient.fullName,
         qrIssuedDate = "Issued on ${
-        vaccineWithDoses?.vaccine?.qrIssueDate
-            ?.toDateTimeString()
+            vaccineWithDoses?.vaccine?.qrIssueDate
+                ?.toDateTimeString()
         }",
         shcUri = vaccineWithDoses?.vaccine?.shcUri!!,
         qrCode = vaccineWithDoses?.vaccine?.qrCodeImage,
@@ -258,17 +257,20 @@ fun SpecialAuthorityDto.toUiModel() = HealthRecordItem(
     dataSource = dataSource.name
 )
 
-fun HospitalVisitDto.toUiModel() =
-    HealthRecordItem(
+fun HospitalVisitDto.toUiModel(): HealthRecordItem? {
+    if(visitDate == null) return null
+
+    return HealthRecordItem(
         patientId = patientId,
         recordId = id,
         icon = R.drawable.ic_health_record_hospital_visit,
         title = location,
         description = visitType,
-        date = visitDate,
+        date = visitDate!!,
         healthRecordType = HealthRecordType.HOSPITAL_VISITS_RECORD,
         dataSource = null
     )
+}
 
 fun ImmunizationRecommendationsDto.toUiModel() = RecommendationDetailItem(
     title = this.recommendedVaccinations.orPlaceholder(),
@@ -312,7 +314,7 @@ enum class CovidTestResultStatus {
     Pending
 }
 
-private fun DiagnosticImagingDataDto.toUiModel() = HealthRecordItem(
+fun DiagnosticImagingDataDto.toUiModel() = HealthRecordItem(
     recordId = _id,
     patientId = patientId,
     icon = R.drawable.ic_health_record_diagnostic_imaging,
@@ -326,10 +328,6 @@ private fun DiagnosticImagingDataDto.toUiModel() = HealthRecordItem(
     healthRecordType = HealthRecordType.DIAGNOSTIC_IMAGING,
     dataSource = null
 )
-
-fun PatientWithDataDto.toUiModel(): List<HealthRecordItem> {
-    return diagnosticImagingDataList.map { it.toUiModel() }
-}
 
 fun BcCancerScreeningDataDto.toUiModel() = HealthRecordItem(
     recordId = _id,

@@ -10,6 +10,8 @@ import ca.bc.gov.common.exceptions.NetworkConnectionException
 import ca.bc.gov.common.exceptions.ServiceDownException
 import ca.bc.gov.common.model.AuthenticationStatus
 import ca.bc.gov.common.model.ProtectiveWordState
+import ca.bc.gov.common.model.ResultStatus
+import ca.bc.gov.common.model.ResultStatusType
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
 import ca.bc.gov.common.utils.dateToInstant
 import ca.bc.gov.common.utils.toStartOfDayInstant
@@ -41,9 +43,8 @@ class HealthRecordViewModel @Inject constructor(
     val uiState: StateFlow<HealthRecordUiState> = _uiState.asStateFlow()
 
     fun showTimeLine(filterString: String) = viewModelScope.launch {
-        val timeLineInfo = generateTimeline()
-        val healthRecords = timeLineInfo.first
-        val success = timeLineInfo.second
+        val timeLineResult = generateTimeline()
+        val healthRecords = timeLineResult.data
 
         val timeLineFilters = mutableListOf<String>()
         val filteredResult = mutableListOf<HealthRecordItem>()
@@ -69,9 +70,11 @@ class HealthRecordViewModel @Inject constructor(
             timeLineFilters +=
                 filterQuery.mapNotNull { query -> TimelineTypeFilter.findByName(query)?.recordType?.name }
 
-            showBCCancerBanner = showRecordBanner(timeLineFilters, HealthRecordType.BC_CANCER_SCREENING.name)
+            showBCCancerBanner =
+                showRecordBanner(timeLineFilters, HealthRecordType.BC_CANCER_SCREENING.name)
 
-            showDiagnosticImagingBanner = showRecordBanner(timeLineFilters, HealthRecordType.DIAGNOSTIC_IMAGING.name)
+            showDiagnosticImagingBanner =
+                showRecordBanner(timeLineFilters, HealthRecordType.DIAGNOSTIC_IMAGING.name)
 
             filteredResult += if (timeLineFilters.isNotEmpty()) {
                 listFilteredBySearch.filter { recordType -> timeLineFilters.contains(recordType.healthRecordType.name) }
@@ -89,7 +92,7 @@ class HealthRecordViewModel @Inject constructor(
             it.copy(
                 isLoading = false,
                 healthRecords = filteredResult,
-                dateError = success.not(),
+                dateError = timeLineResult.status == ResultStatusType.DATE_ERROR,
                 filters = timeLineFilters.map { filter ->
                     when (filter) {
                         HealthRecordType.MEDICATION_RECORD.name -> "Medications"
@@ -170,7 +173,9 @@ class HealthRecordViewModel @Inject constructor(
         }
     }
 
-    private suspend fun generateTimeline(): Pair<List<HealthRecordItem>, Boolean> {
+    private suspend fun generateTimeline(): ResultStatus<List<HealthRecordItem>> {
+        var resultStatus = ResultStatusType.SUCCESS
+
         try {
             val patientId =
                 patientRepository.findPatientByAuthStatus(AuthenticationStatus.AUTHENTICATED).id
@@ -194,37 +199,73 @@ class HealthRecordViewModel @Inject constructor(
 
             val patientWithData = patientRepository.getPatientWithData(patientId)
 
-            val hospitalVisits = patientRepository.getPatientWithHospitalVisits(patientId).map {
-                it.toUiModel()
-            }
-            val clinicalDocuments = patientRepository.getPatientWithClinicalDocuments(patientId)
-                .map { it.toUiModel() }
+            val hospitalVisits =
+                patientRepository.getPatientWithHospitalVisits(patientId).mapNotNull {
+                    val uiModel = it.toUiModel()
+                    if (uiModel == null) resultStatus = ResultStatusType.DATE_ERROR
+                    uiModel
+                }
 
-            val medicationRecords = patientAndMedicationRecords?.medicationRecord?.map {
-                it.toUiModel()
+            val clinicalDocuments =
+                patientRepository.getPatientWithClinicalDocuments(patientId).mapNotNull {
+                    val uiModel = it.toUiModel()
+                    if (uiModel == null) resultStatus = ResultStatusType.DATE_ERROR
+                    uiModel
+                }
+
+            val medicationRecords = patientAndMedicationRecords?.medicationRecord?.mapNotNull {
+                val uiModel = it.toUiModel()
+                if (uiModel == null) resultStatus = ResultStatusType.DATE_ERROR
+                uiModel
             }
-            val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
-                it.toUiModel()
+
+            val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.mapNotNull {
+                val uiModel = it.toUiModel()
+                if (uiModel == null) resultStatus = ResultStatusType.DATE_ERROR
+                uiModel
             }
-            val covidOrders =
-                patientWithCovidOrderAndTests.covidOrderAndTests.map { it.toUiModel() }
-            val nonNullCovidOrders = covidOrders.filterNotNull()
+
+            val covidOrders = patientWithCovidOrderAndTests.covidOrderAndTests.mapNotNull {
+                val uiModel = it.toUiModel()
+                if (uiModel == null) resultStatus = ResultStatusType.DATE_ERROR
+                uiModel
+            }
 
             val immunizationRecords =
-                patientWithImmunizationRecordAndForecast.immunizationRecords.map { it.toUiModel() }
+                patientWithImmunizationRecordAndForecast.immunizationRecords.mapNotNull {
+                    val uiModel = it.toUiModel()
+                    if (uiModel == null) resultStatus = ResultStatusType.DATE_ERROR
+                    uiModel
+                }
 
-            val healthVisits = patientWithHealthVisits.healthVisits.map {
-                it.toUiModel()
+            val healthVisits = patientWithHealthVisits.healthVisits.mapNotNull {
+                val uiModel = it.toUiModel()
+                if (uiModel == null) resultStatus = ResultStatusType.DATE_ERROR
+                uiModel
             }
+
             val specialAuthorities = patientWithSpecialAuthorities.specialAuthorities.filter {
                 it.requestedDate != null
-            }.map { it.toUiModel() }
+            }.mapNotNull {
+                val uiModel = it.toUiModel()
+                if (uiModel == null) resultStatus = ResultStatusType.DATE_ERROR
+                uiModel
+            }
 
-            val diagnosticImaging = patientWithData.toUiModel()
+            val diagnosticImaging =
+                patientWithData.diagnosticImagingDataList.mapNotNull {
+                    val uiModel = it.toUiModel()
+                    if (uiModel == null) resultStatus = ResultStatusType.DATE_ERROR
+                    uiModel
+                }
 
-            val bcCancerScreening = patientWithData.bcCancerScreeningDataList.map { it.toUiModel() }
+            val bcCancerScreening = patientWithData.bcCancerScreeningDataList.mapNotNull {
+                val uiModel = it.toUiModel()
+                if (uiModel == null) resultStatus = ResultStatusType.DATE_ERROR
+                uiModel
+            }
 
-            val records = nonNullCovidOrders +
+            val records = covidOrders +
                 labTestRecords +
                 immunizationRecords +
                 healthVisits +
@@ -238,11 +279,11 @@ class HealthRecordViewModel @Inject constructor(
                 } else {
                     emptyList()
                 }
-            val result: Boolean = nonNullCovidOrders.size == covidOrders.size
-            return records.sortedByDescending { it.date } to result
+
+            return ResultStatus(records.sortedByDescending { it.date }, resultStatus)
         } catch (e: Exception) {
             Log.d("Timeline", "Error in generating timeline ${e.message}")
-            return listOf<HealthRecordItem>() to true
+            return ResultStatus(listOf(), ResultStatusType.GENERIC_FAILURE)
         }
     }
 

@@ -9,7 +9,7 @@ data class HospitalVisitDto(
     val location: String,
     val provider: String,
     val visitType: String,
-    val visitDate: Instant,
+    val visitDate: Instant?,
     val dischargeDate: Instant?,
     val encounterId: String?
 )

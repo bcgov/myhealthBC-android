@@ -256,7 +256,7 @@ fun HospitalVisitDto.toEntity() = HospitalVisitEntity(
     location = location,
     provider = provider,
     visitType = visitType,
-    visitDate = visitDate,
+    visitDate = visitDate!!,
     dischargeDate = dischargeDate,
     encounterId = encounterId
 )

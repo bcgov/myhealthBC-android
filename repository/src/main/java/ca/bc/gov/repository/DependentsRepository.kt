@@ -122,7 +122,7 @@ class DependentsRepository @Inject constructor(
 
             if (dataSetFeatureFlag.isImmunizationEnabled()) {
                 try {
-                    immunizationDto = immunizationRecordRepository.fetchImmunization(token, hdid)
+                    immunizationDto = immunizationRecordRepository.fetchImmunization(token, hdid).data
                 } catch (e: Exception) {
                     handleException(e)
                 }
@@ -130,7 +130,7 @@ class DependentsRepository @Inject constructor(
 
             if (dataSetFeatureFlag.isLabResultEnabled()) {
                 try {
-                    labOrders = labOrderRepository.fetchLabOrders(token, hdid)
+                    labOrders = labOrderRepository.fetchLabOrders(token, hdid).data
                 } catch (e: Exception) {
                     handleException(e)
                 }

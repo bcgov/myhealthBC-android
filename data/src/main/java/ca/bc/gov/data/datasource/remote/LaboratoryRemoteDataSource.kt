@@ -3,6 +3,7 @@ package ca.bc.gov.data.datasource.remote
 import ca.bc.gov.common.const.MESSAGE_INVALID_RESPONSE
 import ca.bc.gov.common.const.SERVER_ERROR
 import ca.bc.gov.common.exceptions.MyHealthException
+import ca.bc.gov.common.model.ResultStatus
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.data.datasource.remote.api.HealthGatewayPrivateApi
@@ -35,7 +36,7 @@ class LaboratoryRemoteDataSource @Inject constructor(
     suspend fun getLabTests(
         token: String,
         hdid: String
-    ): List<LabOrderWithLabTestDto> {
+    ): ResultStatus<List<LabOrderWithLabTestDto>> {
 
         val response = safeCall { healthGatewayPrivateApi.getLabTests(token, hdid) }
             ?: throw MyHealthException(SERVER_ERROR, MESSAGE_INVALID_RESPONSE)

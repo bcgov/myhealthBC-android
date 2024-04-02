@@ -106,7 +106,7 @@ fun Instant.toPST(): Instant {
 fun Instant.toLocalDate(): LocalDate =
     this.atZone(ZoneOffset.UTC).toLocalDate()
 
-fun String.dateTimeToInstant(): Instant = Instant.parse(this)
+fun String.dateTimeToInstant(): Instant? = runCatching { Instant.parse(this) }.getOrNull()
 
 fun String.dateToInstant(): Instant = LocalDate.parse(this).atStartOfDay(ZoneId.of(PST_ZONE_ID)).toInstant()
 

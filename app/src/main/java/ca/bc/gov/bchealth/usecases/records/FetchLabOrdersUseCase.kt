@@ -1,6 +1,7 @@
 package ca.bc.gov.bchealth.usecases.records
 
 import ca.bc.gov.common.model.AuthParametersDto
+import ca.bc.gov.common.model.ResultStatusType
 import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.labtest.LabOrderRepository
@@ -16,8 +17,9 @@ class FetchLabOrdersUseCase @Inject constructor(
     suspend fun execute(
         patientId: Long,
         authParameters: AuthParametersDto
-    ) {
-        val labOrders = fetchRecord(authParameters, labOrderRepository::fetchLabOrders)
-        recordsRepository.storeLabOrders(patientId, labOrders)
+    ) : ResultStatusType? {
+        val labOrdersResult = fetchRecord(authParameters, labOrderRepository::fetchLabOrders)
+        recordsRepository.storeLabOrders(patientId, labOrdersResult?.data)
+        return labOrdersResult?.status
     }
 }

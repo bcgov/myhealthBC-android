@@ -22,6 +22,7 @@ import ca.bc.gov.bchealth.usecases.records.FetchVaccinesUseCase
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.common.exceptions.PartialRecordsException
 import ca.bc.gov.common.model.AuthParametersDto
+import ca.bc.gov.common.model.ResultStatusType
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.repository.DependentsRepository
 import ca.bc.gov.repository.PatientWithBCSCLoginRepository
@@ -175,10 +176,12 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             if (dataSetFlag.isHospitalVisitEnabled()) {
                 tasks.add(
                     runTaskAsync {
-                        fetchHospitalVisitsUseCase.execute(
+                        val status =  fetchHospitalVisitsUseCase.execute(
                             patientId,
                             authParameters
                         )
+                        if (status == ResultStatusType.DATE_ERROR) {
+                        }
                     }
                 )
             }
@@ -186,16 +189,19 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             if (dataSetFlag.isImmunizationEnabled()) {
                 tasks.add(
                     runTaskAsync {
-                        fetchImmunizationsUseCase.execute(
-                            patientId,
-                            authParameters
-                        )
+                        val status = fetchImmunizationsUseCase.execute(patientId, authParameters)
+                        if (status == ResultStatusType.DATE_ERROR) {
+                        }
                     }
                 )
             }
 
             if (dataSetFlag.isLabResultEnabled()) {
-                tasks.add(runTaskAsync { fetchLabOrdersUseCase.execute(patientId, authParameters) })
+                tasks.add(runTaskAsync {
+                    val status = fetchLabOrdersUseCase.execute(patientId, authParameters)
+                    if (status == ResultStatusType.DATE_ERROR) {
+                    }
+                })
             }
 
             if (dataSetFlag.isSpecialAuthorityRequestEnabled()) {

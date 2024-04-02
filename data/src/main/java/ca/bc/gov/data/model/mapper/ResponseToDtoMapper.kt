@@ -8,6 +8,8 @@ import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.PatientAddressDto
+import ca.bc.gov.common.model.ResultStatus
+import ca.bc.gov.common.model.ResultStatusType
 import ca.bc.gov.common.model.TermsOfServiceDto
 import ca.bc.gov.common.model.banner.BannerDto
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
@@ -138,7 +140,7 @@ fun MedicationSummary.toMedicationSummaryDto() = MedicationSummaryDto(
     genericName = genericName,
     quantity = quantity,
     maxDailyDosage = maxDailyDosage,
-    drugDiscontinueDate = drugDiscontinuedDate?.dateTimeToInstant() ?: Instant.EPOCH,
+    drugDiscontinueDate = drugDiscontinuedDate?.dateTimeToInstant(),
     form = form,
     manufacturer = manufacturer,
     strength = strength,
@@ -172,8 +174,9 @@ fun VaccineResourcePayload.toVaccineStatus(): VaccineStatus = VaccineStatus(
     federalVaccineProof = federalVaccineProof?.toMediaMetaData()
 )
 
-fun LabTestResponse.toDto(): List<LabOrderWithLabTestDto> {
-    return payload.orders.map { order ->
+fun LabTestResponse.toDto(): ResultStatus<List<LabOrderWithLabTestDto>> {
+    var result = ResultStatusType.SUCCESS
+    return ResultStatus(payload.orders.mapNotNull { order ->
         val tests = order.laboratoryTests.map { test ->
             LabTestDto(
                 obxId = test.obxId,
@@ -183,22 +186,29 @@ fun LabTestResponse.toDto(): List<LabOrderWithLabTestDto> {
                 testStatus = test.testStatus
             )
         }
-        LabOrderWithLabTestDto(
-            LabOrderDto(
-                labPdfId = order.labPdfId,
-                reportId = order.reportId,
-                collectionDateTime = order.collectionDateTime?.dateTimeToInstant(),
-                timelineDateTime = order.timelineDateTime.dateTimeToInstant(),
-                reportingSource = order.reportingSource,
-                commonName = order.commonName,
-                orderingProvider = order.orderingProvider,
-                testStatus = order.testStatus,
-                orderStatus = order.orderStatus,
-                reportingAvailable = order.reportAvailable
-            ),
-            tests
-        )
-    }
+
+        val timelineDateTime = order.timelineDateTime.dateTimeToInstant()
+        if (timelineDateTime == null) {
+            result = ResultStatusType.DATE_ERROR
+            null
+        } else {
+            LabOrderWithLabTestDto(
+                LabOrderDto(
+                    labPdfId = order.labPdfId,
+                    reportId = order.reportId,
+                    collectionDateTime = order.collectionDateTime?.dateTimeToInstant(),
+                    timelineDateTime = timelineDateTime,
+                    reportingSource = order.reportingSource,
+                    commonName = order.commonName,
+                    orderingProvider = order.orderingProvider,
+                    testStatus = order.testStatus,
+                    orderStatus = order.orderStatus,
+                    reportingAvailable = order.reportAvailable
+                ),
+                tests
+            )
+        }
+    }, result)
 }
 
 fun CommentPayload.toDto() = CommentDto(
@@ -286,13 +296,14 @@ fun TermsOfServicePayload.toDto() = TermsOfServiceDto(
     effectiveDate
 )
 
-fun ImmunizationRecord.toDto(): ImmunizationRecordDto {
+fun ImmunizationRecord.toDto(): ImmunizationRecordDto? {
 
     val agent = immunization.immunizationAgents.firstOrNull()
+    val dateOfImmunization = dateOfImmunization.dateTimeToInstant() ?: return null
 
     return ImmunizationRecordDto(
         immunizationId = id,
-        dateOfImmunization = dateOfImmunization.dateTimeToInstant(),
+        dateOfImmunization = dateOfImmunization,
         status = status,
         isValid = valid,
         provideOrClinic = providerOrClinic,
@@ -314,21 +325,32 @@ fun Forecast.toDto() = ImmunizationForecastDto(
     dueDate = dueDate.dateToInstant()
 )
 
-fun ImmunizationResponse.toDto() = ImmunizationDto(
-    records = this.payload.immunizations.map {
-        ImmunizationRecordWithForecastDto(
-            it.toDto(),
-            it.forecast?.toDto()
-        )
-    },
-    recommendations = this.payload.recommendations.mapNotNull {
-        if (it.recommendedVaccinations.isNullOrBlank()) {
-            null
-        } else {
-            it.toDto()
+fun ImmunizationResponse.toDto(): ResultStatus<ImmunizationDto> {
+    var resultStatusType = ResultStatusType.SUCCESS
+
+    return ResultStatus(ImmunizationDto(
+        records = this.payload.immunizations.mapNotNull {
+            val immunizationRecord = it.toDto()
+
+            if (immunizationRecord == null) {
+                resultStatusType = ResultStatusType.DATE_ERROR
+                null
+            } else {
+                ImmunizationRecordWithForecastDto(
+                    immunizationRecord,
+                    it.forecast?.toDto()
+                )
+            }
+        },
+        recommendations = this.payload.recommendations.mapNotNull {
+            if (it.recommendedVaccinations.isNullOrBlank()) {
+                null
+            } else {
+                it.toDto()
+            }
         }
-    }
-)
+    ), resultStatusType)
+}
 
 fun HealthVisitsResponse.toDto(): List<HealthVisitsDto> {
     return payload.map { it.toDto() }
@@ -345,20 +367,33 @@ fun HealthVisitsPayload.toDto() = HealthVisitsDto(
     dataSource = DataSource.BCSC
 )
 
-fun HospitalVisitPayload?.toDto(): List<HospitalVisitDto> {
-    if (this == null) return emptyList()
-    return this.list.map { it.toDto() }
+fun HospitalVisitPayload?.toDto(): ResultStatus<List<HospitalVisitDto>> {
+    if (this == null) return ResultStatus(listOf(), ResultStatusType.SUCCESS)
+
+    var status = ResultStatusType.SUCCESS
+    return ResultStatus(this.list.mapNotNull {
+        val dto = it.toDto()
+        if (dto == null) {
+            status = ResultStatusType.DATE_ERROR
+            null
+        } else {
+            dto
+        }
+    }, status)
 }
 
-fun HospitalVisitInformation.toDto() = HospitalVisitDto(
-    healthService = healthService.orEmpty(),
-    location = facility,
-    provider = provider.orEmpty(),
-    visitType = visitType.orEmpty(),
-    visitDate = admitDateTime.dateTimeToInstant(),
-    dischargeDate = endDateTime?.dateTimeToInstant(),
-    encounterId = encounterId
-)
+fun HospitalVisitInformation.toDto(): HospitalVisitDto? {
+    val visitDate = admitDateTime.dateTimeToInstant() ?: return null
+    return HospitalVisitDto(
+        healthService = healthService.orEmpty(),
+        location = facility,
+        provider = provider.orEmpty(),
+        visitType = visitType.orEmpty(),
+        visitDate = visitDate,
+        dischargeDate = endDateTime?.dateTimeToInstant(),
+        encounterId = encounterId
+    )
+}
 
 fun ClinicalDocumentResponse.toDto(): List<ClinicalDocumentDto> =
     this.payload.map {
@@ -453,9 +488,9 @@ fun PatientResponse.toDto(): PatientDto {
     val fullNameBuilder = StringBuilder()
     fullNameBuilder.append(
         "${
-        patientName.givenName ?: throw MyHealthException(
-            SERVER_ERROR, INVALID_RESPONSE
-        )
+            patientName.givenName ?: throw MyHealthException(
+                SERVER_ERROR, INVALID_RESPONSE
+            )
         } "
     )
     fullNameBuilder.append(
