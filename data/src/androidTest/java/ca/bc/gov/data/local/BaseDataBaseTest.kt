@@ -139,7 +139,7 @@ abstract class BaseDataBaseTest {
             lastName = "",
             physicalAddress = null,
             mailingAddress = null,
-            legalName =  null,
+            legalName = null,
             commonName = null,
             preferredName = null,
         )
@@ -156,7 +156,7 @@ abstract class BaseDataBaseTest {
             lastName = "",
             physicalAddress = null,
             mailingAddress = null,
-            legalName =  null,
+            legalName = null,
             commonName = null,
             preferredName = null,
         )

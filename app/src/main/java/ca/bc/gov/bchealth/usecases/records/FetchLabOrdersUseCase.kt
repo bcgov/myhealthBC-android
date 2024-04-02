@@ -17,7 +17,7 @@ class FetchLabOrdersUseCase @Inject constructor(
     suspend fun execute(
         patientId: Long,
         authParameters: AuthParametersDto
-    ) : ResultStatusType? {
+    ): ResultStatusType? {
         val labOrdersResult = fetchRecord(authParameters, labOrderRepository::fetchLabOrders)
         recordsRepository.storeLabOrders(patientId, labOrdersResult?.data)
         return labOrdersResult?.status

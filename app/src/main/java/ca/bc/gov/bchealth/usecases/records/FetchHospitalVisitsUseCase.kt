@@ -2,7 +2,6 @@ package ca.bc.gov.bchealth.usecases.records
 
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.ResultStatusType
-import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.di.IoDispatcher
 import ca.bc.gov.repository.hospitalvisit.HospitalVisitRepository

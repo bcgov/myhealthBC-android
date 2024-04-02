@@ -176,7 +176,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             if (dataSetFlag.isHospitalVisitEnabled()) {
                 tasks.add(
                     runTaskAsync {
-                        val status =  fetchHospitalVisitsUseCase.execute(
+                        val status = fetchHospitalVisitsUseCase.execute(
                             patientId,
                             authParameters
                         )
@@ -197,11 +197,13 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             }
 
             if (dataSetFlag.isLabResultEnabled()) {
-                tasks.add(runTaskAsync {
-                    val status = fetchLabOrdersUseCase.execute(patientId, authParameters)
-                    if (status == ResultStatusType.DATE_ERROR) {
+                tasks.add(
+                    runTaskAsync {
+                        val status = fetchLabOrdersUseCase.execute(patientId, authParameters)
+                        if (status == ResultStatusType.DATE_ERROR) {
+                        }
                     }
-                })
+                )
             }
 
             if (dataSetFlag.isSpecialAuthorityRequestEnabled()) {

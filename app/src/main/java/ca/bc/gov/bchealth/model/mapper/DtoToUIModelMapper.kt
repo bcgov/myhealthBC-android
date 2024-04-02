@@ -61,8 +61,8 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
         vaccineRecordId = vaccineWithDoses?.vaccine?.id!!,
         name = patient.fullName,
         qrIssuedDate = "Issued on ${
-            vaccineWithDoses?.vaccine?.qrIssueDate
-                ?.toDateTimeString()
+        vaccineWithDoses?.vaccine?.qrIssueDate
+            ?.toDateTimeString()
         }",
         shcUri = vaccineWithDoses?.vaccine?.shcUri!!,
         qrCode = vaccineWithDoses?.vaccine?.qrCodeImage,
@@ -258,7 +258,7 @@ fun SpecialAuthorityDto.toUiModel() = HealthRecordItem(
 )
 
 fun HospitalVisitDto.toUiModel(): HealthRecordItem? {
-    if(visitDate == null) return null
+    if (visitDate == null) return null
 
     return HealthRecordItem(
         patientId = patientId,

@@ -176,39 +176,42 @@ fun VaccineResourcePayload.toVaccineStatus(): VaccineStatus = VaccineStatus(
 
 fun LabTestResponse.toDto(): ResultStatus<List<LabOrderWithLabTestDto>> {
     var result = ResultStatusType.SUCCESS
-    return ResultStatus(payload.orders.mapNotNull { order ->
-        val tests = order.laboratoryTests.map { test ->
-            LabTestDto(
-                obxId = test.obxId,
-                batteryType = test.batteryType,
-                outOfRange = test.outOfRange,
-                loinc = test.loinc,
-                testStatus = test.testStatus
-            )
-        }
+    return ResultStatus(
+        payload.orders.mapNotNull { order ->
+            val tests = order.laboratoryTests.map { test ->
+                LabTestDto(
+                    obxId = test.obxId,
+                    batteryType = test.batteryType,
+                    outOfRange = test.outOfRange,
+                    loinc = test.loinc,
+                    testStatus = test.testStatus
+                )
+            }
 
-        val timelineDateTime = order.timelineDateTime.dateTimeToInstant()
-        if (timelineDateTime == null) {
-            result = ResultStatusType.DATE_ERROR
-            null
-        } else {
-            LabOrderWithLabTestDto(
-                LabOrderDto(
-                    labPdfId = order.labPdfId,
-                    reportId = order.reportId,
-                    collectionDateTime = order.collectionDateTime?.dateTimeToInstant(),
-                    timelineDateTime = timelineDateTime,
-                    reportingSource = order.reportingSource,
-                    commonName = order.commonName,
-                    orderingProvider = order.orderingProvider,
-                    testStatus = order.testStatus,
-                    orderStatus = order.orderStatus,
-                    reportingAvailable = order.reportAvailable
-                ),
-                tests
-            )
-        }
-    }, result)
+            val timelineDateTime = order.timelineDateTime.dateTimeToInstant()
+            if (timelineDateTime == null) {
+                result = ResultStatusType.DATE_ERROR
+                null
+            } else {
+                LabOrderWithLabTestDto(
+                    LabOrderDto(
+                        labPdfId = order.labPdfId,
+                        reportId = order.reportId,
+                        collectionDateTime = order.collectionDateTime?.dateTimeToInstant(),
+                        timelineDateTime = timelineDateTime,
+                        reportingSource = order.reportingSource,
+                        commonName = order.commonName,
+                        orderingProvider = order.orderingProvider,
+                        testStatus = order.testStatus,
+                        orderStatus = order.orderStatus,
+                        reportingAvailable = order.reportAvailable
+                    ),
+                    tests
+                )
+            }
+        },
+        result
+    )
 }
 
 fun CommentPayload.toDto() = CommentDto(
@@ -328,28 +331,31 @@ fun Forecast.toDto() = ImmunizationForecastDto(
 fun ImmunizationResponse.toDto(): ResultStatus<ImmunizationDto> {
     var resultStatusType = ResultStatusType.SUCCESS
 
-    return ResultStatus(ImmunizationDto(
-        records = this.payload.immunizations.mapNotNull {
-            val immunizationRecord = it.toDto()
+    return ResultStatus(
+        ImmunizationDto(
+            records = this.payload.immunizations.mapNotNull {
+                val immunizationRecord = it.toDto()
 
-            if (immunizationRecord == null) {
-                resultStatusType = ResultStatusType.DATE_ERROR
-                null
-            } else {
-                ImmunizationRecordWithForecastDto(
-                    immunizationRecord,
-                    it.forecast?.toDto()
-                )
+                if (immunizationRecord == null) {
+                    resultStatusType = ResultStatusType.DATE_ERROR
+                    null
+                } else {
+                    ImmunizationRecordWithForecastDto(
+                        immunizationRecord,
+                        it.forecast?.toDto()
+                    )
+                }
+            },
+            recommendations = this.payload.recommendations.mapNotNull {
+                if (it.recommendedVaccinations.isNullOrBlank()) {
+                    null
+                } else {
+                    it.toDto()
+                }
             }
-        },
-        recommendations = this.payload.recommendations.mapNotNull {
-            if (it.recommendedVaccinations.isNullOrBlank()) {
-                null
-            } else {
-                it.toDto()
-            }
-        }
-    ), resultStatusType)
+        ),
+        resultStatusType
+    )
 }
 
 fun HealthVisitsResponse.toDto(): List<HealthVisitsDto> {
@@ -371,15 +377,18 @@ fun HospitalVisitPayload?.toDto(): ResultStatus<List<HospitalVisitDto>> {
     if (this == null) return ResultStatus(listOf(), ResultStatusType.SUCCESS)
 
     var status = ResultStatusType.SUCCESS
-    return ResultStatus(this.list.mapNotNull {
-        val dto = it.toDto()
-        if (dto == null) {
-            status = ResultStatusType.DATE_ERROR
-            null
-        } else {
-            dto
-        }
-    }, status)
+    return ResultStatus(
+        this.list.mapNotNull {
+            val dto = it.toDto()
+            if (dto == null) {
+                status = ResultStatusType.DATE_ERROR
+                null
+            } else {
+                dto
+            }
+        },
+        status
+    )
 }
 
 fun HospitalVisitInformation.toDto(): HospitalVisitDto? {
@@ -488,9 +497,9 @@ fun PatientResponse.toDto(): PatientDto {
     val fullNameBuilder = StringBuilder()
     fullNameBuilder.append(
         "${
-            patientName.givenName ?: throw MyHealthException(
-                SERVER_ERROR, INVALID_RESPONSE
-            )
+        patientName.givenName ?: throw MyHealthException(
+            SERVER_ERROR, INVALID_RESPONSE
+        )
         } "
     )
     fullNameBuilder.append(

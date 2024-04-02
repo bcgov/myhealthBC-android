@@ -16,11 +16,13 @@ class HospitalVisitLocalDataSource @Inject constructor(
         hospitalVisitDao.delete(patientId)
 
     suspend fun insertHospitalVisits(list: List<HospitalVisitDto>) =
-        hospitalVisitDao.insert(list.mapNotNull {
-            if(it.visitDate != null) {
-                it.toEntity()
-            }else{
-                null
+        hospitalVisitDao.insert(
+            list.mapNotNull {
+                if (it.visitDate != null) {
+                    it.toEntity()
+                } else {
+                    null
+                }
             }
-        })
+        )
 }
