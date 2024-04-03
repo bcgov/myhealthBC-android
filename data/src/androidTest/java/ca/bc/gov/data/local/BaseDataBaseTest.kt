@@ -138,7 +138,10 @@ abstract class BaseDataBaseTest {
             firstName = "",
             lastName = "",
             physicalAddress = null,
-            mailingAddress = null
+            mailingAddress = null,
+            preferredName = null,
+            commonName = null,
+            legalName = null,
         )
 
     protected fun getPatient2() =
@@ -152,7 +155,10 @@ abstract class BaseDataBaseTest {
             firstName = "",
             lastName = "",
             physicalAddress = null,
-            mailingAddress = null
+            mailingAddress = null,
+            preferredName = null,
+            commonName = null,
+            legalName = null,
         )
 
     protected fun getVaccineRecord1() = VaccineRecordEntity(
