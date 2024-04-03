@@ -181,6 +181,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                             authParameters
                         )
                         if (status == ResultStatusType.DATE_ERROR) {
+                            // todo: set task bundle value
                         }
                     }
                 )
@@ -191,6 +192,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                     runTaskAsync {
                         val status = fetchImmunizationsUseCase.execute(patientId, authParameters)
                         if (status == ResultStatusType.DATE_ERROR) {
+                            // todo: set task bundle value
                         }
                     }
                 )
@@ -201,6 +203,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                     runTaskAsync {
                         val status = fetchLabOrdersUseCase.execute(patientId, authParameters)
                         if (status == ResultStatusType.DATE_ERROR) {
+                            // todo: set task bundle value
                         }
                     }
                 )
