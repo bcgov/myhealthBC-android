@@ -59,8 +59,11 @@ class DependentRecordsViewModel @Inject constructor(
                 }
             }
 
-            val covidOrders = patientWithCovidOrderAndTests.covidOrderAndTests.map {
-                it.toUiModel()
+            val covidOrders = patientWithCovidOrderAndTests.covidOrderAndTests.mapNotNull {
+                it.toUiModel() ?: run {
+                    dateError = true
+                    null
+                }
             }
 
             val clinicalDocs = if (dataSetFeatureFlag.isClinicalDocumentEnabled()) {

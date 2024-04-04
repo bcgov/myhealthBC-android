@@ -311,7 +311,6 @@ fun CovidOrderEntity.toDto() = CovidOrderDto(
     reportingLab,
     location,
     ormOrOru,
-    messageDateTime,
     messageId,
     additionalData,
     reportAvailable,
@@ -328,8 +327,6 @@ fun CovidTestEntity.toDto() = CovidTestDto(
     labResultOutcome,
     resultDescription?.split("|") ?: emptyList(),
     resultLink,
-    receivedDateTime,
-    resultDateTime,
     loinc,
     loincName,
 )

@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import java.time.Instant
 
 /**
  * @author Pinakin Kansara
@@ -32,7 +31,7 @@ data class CovidTestEntity(
     @ColumnInfo(name = "out_of_range")
     val outOfRange: Boolean,
     @ColumnInfo(name = "collected_date_time")
-    val collectedDateTime: Instant,
+    val collectedDateTime: String,
     @ColumnInfo(name = "test_status")
     val testStatus: String?,
     @ColumnInfo(name = "lab_result_outcome")
@@ -41,10 +40,6 @@ data class CovidTestEntity(
     val resultDescription: String?,
     @ColumnInfo(name = "result_link")
     val resultLink: String?,
-    @ColumnInfo(name = "received_date_time")
-    val receivedDateTime: Instant,
-    @ColumnInfo(name = "result_date_time")
-    val resultDateTime: Instant,
     val loinc: String?,
     @ColumnInfo(name = "loinc_name")
     val loincName: String?

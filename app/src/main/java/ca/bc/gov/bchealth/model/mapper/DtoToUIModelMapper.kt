@@ -32,15 +32,18 @@ import ca.bc.gov.common.model.services.BcCancerScreeningDataDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
+import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.utils.dateString
 import ca.bc.gov.common.utils.dateTimeToInstant
 import ca.bc.gov.common.utils.dateToInstant
 import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.common.utils.toDateTimeString
 import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.common.utils.toPST
 import java.time.Instant
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
 
@@ -172,13 +175,27 @@ fun mapOrderStatus(orderStatus: String): String {
     }
 }
 
-fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem {
+fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem? {
+    val covidTestResult: CovidTestDto
+    val dateStr: String
+    val datePST: Instant
+    try {
+        covidTestResult = covidTests.maxByOrNull {
+            it.collectedDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+        } ?: return null
 
-    val covidTestResult = covidTests.maxByOrNull { it.collectedDateTime }
-    val testOutcome = if (covidTestResult?.testStatus.equals("Pending")) {
-        covidTestResult?.testStatus
+        val date =
+            covidTestResult.collectedDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+        dateStr = date.dateString()
+        datePST = date.toPST()
+    } catch (e: Exception) {
+        return null
+    }
+
+    val testOutcome = if (covidTestResult.testStatus.equals("Pending")) {
+        covidTestResult.testStatus
     } else {
-        when (covidTestResult?.labResultOutcome) {
+        when (covidTestResult.labResultOutcome) {
             CovidTestResultStatus.Indeterminate.name,
             CovidTestResultStatus.IndeterminateResult.name -> {
                 CovidTestResultStatus.Indeterminate.name
@@ -201,15 +218,14 @@ fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem {
             }
         }
     }
-    val date = covidTestResult?.collectedDateTime ?: Instant.now()
 
     return HealthRecordItem(
         patientId = covidOrder.patientId,
         recordId = covidOrder.id,
         title = "COVID-19 test result",
-        description = "$testOutcome • ${date.dateString()}",
+        description = "$testOutcome • $dateStr",
         icon = R.drawable.ic_health_record_covid_test,
-        date = date.toPST(),
+        date = datePST,
         healthRecordType = HealthRecordType.COVID_TEST_RECORD,
         dataSource = covidOrder.dataSource.name
     )

@@ -198,7 +198,6 @@ fun CovidOrderDto.toEntity() = CovidOrderEntity(
     reportingLab = reportingLab,
     location = location,
     ormOrOru = ormOrOru,
-    messageDateTime = messageDateTime,
     messageId = messageId,
     additionalData = additionalData,
     reportAvailable = reportAvailable
@@ -214,8 +213,6 @@ fun CovidTestDto.toEntity(orderId: Long) = CovidTestEntity(
     labResultOutcome,
     resultDescription = resultDescription.joinToString("|"),
     resultLink,
-    receivedDateTime,
-    resultDateTime,
     loInc,
     loIncName
 )

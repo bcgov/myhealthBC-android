@@ -248,7 +248,6 @@ fun CovidOrder.toDto() = CovidOrderDto(
     reportingLab = reportingLab,
     location = location,
     ormOrOru = ormOrOru,
-    messageDateTime = messageDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
     messageId = messageId,
     additionalData = additionalData,
     reportAvailable = reportAvailable
@@ -258,13 +257,11 @@ fun CovidLabResult.toDto() = CovidTestDto(
     id,
     testType,
     outOfRange,
-    collectedDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+    collectedDateTime,
     testStatus,
     labResultOutcome,
     resultDescription,
     resultLink,
-    receivedDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-    resultDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
     loInc,
     loIncName
 )
