@@ -25,7 +25,6 @@ import ca.bc.gov.common.model.immunization.ImmunizationRecommendationsDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPatientDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
-import ca.bc.gov.common.model.patient.PatientWithDataDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.services.BcCancerScreeningDataDto
@@ -401,23 +400,29 @@ enum class CovidTestResultStatus {
     Pending
 }
 
-private fun DiagnosticImagingDataDto.toUiModel() = HealthRecordItem(
-    recordId = _id,
-    patientId = patientId,
-    icon = R.drawable.ic_health_record_diagnostic_imaging,
-    title = modality.orEmpty(),
-    description = if (isUpdated) {
-        "Updated"
-    } else {
-        examStatus
-    } + " • " + examDate?.dateString(),
-    date = examDate!!,
-    healthRecordType = HealthRecordType.DIAGNOSTIC_IMAGING,
-    dataSource = null
-)
-
-fun PatientWithDataDto.toUiModel(): List<HealthRecordItem> {
-    return diagnosticImagingDataList.map { it.toUiModel() }
+fun DiagnosticImagingDataDto.toUiModel(): HealthRecordItem? {
+    val date: Instant
+    val dateStr: String
+    try {
+        date = examDate?.dateToInstant() ?: return null
+        dateStr = date.dateString()
+    } catch (e: Exception) {
+        return null
+    }
+    return HealthRecordItem(
+        recordId = _id,
+        patientId = patientId,
+        icon = R.drawable.ic_health_record_diagnostic_imaging,
+        title = modality.orEmpty(),
+        description = if (isUpdated) {
+            "Updated"
+        } else {
+            examStatus
+        } + " • " + dateStr,
+        date = date,
+        healthRecordType = HealthRecordType.DIAGNOSTIC_IMAGING,
+        dataSource = null
+    )
 }
 
 fun BcCancerScreeningDataDto.toUiModel() = HealthRecordItem(

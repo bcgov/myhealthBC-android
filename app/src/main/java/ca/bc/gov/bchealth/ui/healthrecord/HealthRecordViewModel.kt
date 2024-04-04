@@ -255,7 +255,12 @@ class HealthRecordViewModel @Inject constructor(
                 }
             }
 
-            val diagnosticImaging = patientWithData.toUiModel()
+            val diagnosticImaging = patientWithData.diagnosticImagingDataList.mapNotNull {
+                it.toUiModel() ?: run {
+                    dateError = true
+                    null
+                }
+            }
 
             val bcCancerScreening = patientWithData.bcCancerScreeningDataList.map { it.toUiModel() }
 
