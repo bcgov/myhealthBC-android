@@ -83,9 +83,10 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
 
 fun MedicationWithSummaryAndPharmacyDto.toUiModel(): HealthRecordItem? {
     val date: Instant
+    val dateStr: String
     try {
         date = medicationRecord.dispenseDate.dateToInstant()
-        medicationRecord.dispenseDate.dateToInstant().toDate()
+        dateStr = date.toDate()
     } catch (e: Exception) {
         return null
     }
@@ -94,7 +95,7 @@ fun MedicationWithSummaryAndPharmacyDto.toUiModel(): HealthRecordItem? {
         recordId = medicationRecord.id,
         title = medicationSummary.brandName ?: "",
         icon = R.drawable.ic_health_record_medication,
-        description = medicationSummary.genericName.orEmpty() + " • " + date,
+        description = medicationSummary.genericName.orEmpty() + " • " + dateStr,
         date = date,
         healthRecordType = HealthRecordType.MEDICATION_RECORD,
         dataSource = medicationRecord.dataSource.name
