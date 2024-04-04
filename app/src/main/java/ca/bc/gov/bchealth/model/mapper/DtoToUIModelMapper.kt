@@ -311,16 +311,31 @@ fun HealthVisitsDto.toUiModel(): HealthRecordItem? {
     )
 }
 
-fun SpecialAuthorityDto.toUiModel() = HealthRecordItem(
-    patientId = patientId,
-    recordId = specialAuthorityId,
-    title = drugName.orEmpty(),
-    description = requestStatus.orEmpty() + " • " + requestedDate?.dateString(),
-    icon = R.drawable.ic_health_record_special_authority,
-    date = requestedDate!!,
-    healthRecordType = HealthRecordType.SPECIAL_AUTHORITY_RECORD,
-    dataSource = dataSource.name
-)
+fun SpecialAuthorityDto.toUiModel(): HealthRecordItem? {
+    val date: Instant
+    val dateStr: String
+
+    try {
+        date = requestedDate?.dateToInstant() ?: return null
+        dateStr = date.dateString()
+
+        effectiveDate?.dateToInstant()?.dateString()
+        expiryDate?.dateToInstant()?.dateString()
+    } catch (e: Exception) {
+        return null
+    }
+
+    return HealthRecordItem(
+        patientId = patientId,
+        recordId = specialAuthorityId,
+        title = drugName.orEmpty(),
+        description = requestStatus.orEmpty() + " • " + dateStr,
+        icon = R.drawable.ic_health_record_special_authority,
+        date = date,
+        healthRecordType = HealthRecordType.SPECIAL_AUTHORITY_RECORD,
+        dataSource = dataSource.name
+    )
+}
 
 fun HospitalVisitDto.toUiModel(): HealthRecordItem? {
 

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 21,
-    "identityHash": "18ba2eaa51cc00ca744f74805620ad52",
+    "identityHash": "2330cf96f4432bdf3ee3705252265a43",
     "entities": [
       {
         "tableName": "patient",
@@ -1514,7 +1514,7 @@
       },
       {
         "tableName": "special_authority",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`special_authority_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `reference_number` TEXT, `drug_name` TEXT, `request_status` TEXT, `prescriber_first_name` TEXT, `prescriber_last_name` TEXT, `requested_date` INTEGER, `effective_date` INTEGER, `expiry_date` INTEGER, `data_source` TEXT NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`special_authority_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `reference_number` TEXT, `drug_name` TEXT, `request_status` TEXT, `prescriber_first_name` TEXT, `prescriber_last_name` TEXT, `requested_date` TEXT, `effective_date` TEXT, `expiry_date` TEXT, `data_source` TEXT NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "specialAuthorityId",
@@ -1561,19 +1561,19 @@
           {
             "fieldPath": "requestedDate",
             "columnName": "requested_date",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "effectiveDate",
             "columnName": "effective_date",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "expiryDate",
             "columnName": "expiry_date",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": false
           },
           {
@@ -2166,7 +2166,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '18ba2eaa51cc00ca744f74805620ad52')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2330cf96f4432bdf3ee3705252265a43')"
     ]
   }
 }

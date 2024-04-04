@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.common.utils.dateString
+import ca.bc.gov.common.utils.dateToInstant
 import ca.bc.gov.repository.specialauthority.SpecialAuthorityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,13 +51,13 @@ class SpecialAuthorityDetailViewModel @Inject constructor(
             specialAuthorityDetailItems.add(
                 SpecialAuthorityDetailItem(
                     R.string.effective_date,
-                    specialAuthorityDto?.effectiveDate?.dateString() ?: "--"
+                    specialAuthorityDto?.effectiveDate?.dateToInstant()?.dateString() ?: "--"
                 )
             )
             specialAuthorityDetailItems.add(
                 SpecialAuthorityDetailItem(
                     R.string.expiry_date,
-                    specialAuthorityDto?.expiryDate?.dateString() ?: "--"
+                    specialAuthorityDto?.expiryDate?.dateToInstant()?.dateString() ?: "--"
                 )
             )
             specialAuthorityDetailItems.add(

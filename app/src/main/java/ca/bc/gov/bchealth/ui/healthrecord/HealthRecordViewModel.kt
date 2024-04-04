@@ -248,9 +248,12 @@ class HealthRecordViewModel @Inject constructor(
                 }
             }
 
-            val specialAuthorities = patientWithSpecialAuthorities.specialAuthorities.filter {
-                it.requestedDate != null
-            }.map { it.toUiModel() }
+            val specialAuthorities = patientWithSpecialAuthorities.specialAuthorities.mapNotNull {
+                it.toUiModel() ?: run {
+                    dateError = true
+                    null
+                }
+            }
 
             val diagnosticImaging = patientWithData.toUiModel()
 
