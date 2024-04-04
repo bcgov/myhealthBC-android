@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 21,
-    "identityHash": "7936900f6057b7f67e7ce0dd3ee664e5",
+    "identityHash": "89376a5b4e9b697ecc968fdd49fc80c0",
     "entities": [
       {
         "tableName": "patient",
@@ -1119,7 +1119,7 @@
       },
       {
         "tableName": "immunization_record",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `immunization_id` TEXT, `date_of_immunization` INTEGER NOT NULL, `status` TEXT, `valid` INTEGER NOT NULL, `provider_clinic` TEXT, `targeted_disease` TEXT, `immunization_name` TEXT, `agent_code` TEXT, `agent_name` TEXT, `lotNumber` TEXT, `productName` TEXT, `data_source` TEXT NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `immunization_id` TEXT, `date_of_immunization` TEXT NOT NULL, `status` TEXT, `valid` INTEGER NOT NULL, `provider_clinic` TEXT, `targeted_disease` TEXT, `immunization_name` TEXT, `agent_code` TEXT, `agent_name` TEXT, `lotNumber` TEXT, `productName` TEXT, `data_source` TEXT NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1142,7 +1142,7 @@
           {
             "fieldPath": "dateOfImmunization",
             "columnName": "date_of_immunization",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -1297,7 +1297,7 @@
       },
       {
         "tableName": "immunization_forecast",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `immunization_record_id` INTEGER NOT NULL, `recommendation_id` TEXT, `create_date` INTEGER NOT NULL, `status` TEXT, `display_name` TEXT, `eligible_date` INTEGER NOT NULL, `due_date` INTEGER NOT NULL, FOREIGN KEY(`immunization_record_id`) REFERENCES `immunization_record`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `immunization_record_id` INTEGER NOT NULL, `recommendation_id` TEXT, `status` TEXT, `display_name` TEXT, `due_date` TEXT NOT NULL, FOREIGN KEY(`immunization_record_id`) REFERENCES `immunization_record`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1318,12 +1318,6 @@
             "notNull": false
           },
           {
-            "fieldPath": "createDate",
-            "columnName": "create_date",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
             "fieldPath": "status",
             "columnName": "status",
             "affinity": "TEXT",
@@ -1336,15 +1330,9 @@
             "notNull": false
           },
           {
-            "fieldPath": "eligibleDate",
-            "columnName": "eligible_date",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
             "fieldPath": "dueDate",
             "columnName": "due_date",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -2178,7 +2166,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7936900f6057b7f67e7ce0dd3ee664e5')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '89376a5b4e9b697ecc968fdd49fc80c0')"
     ]
   }
 }

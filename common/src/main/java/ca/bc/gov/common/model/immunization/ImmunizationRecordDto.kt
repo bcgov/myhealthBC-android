@@ -1,8 +1,6 @@
 package ca.bc.gov.common.model.immunization
 
 import ca.bc.gov.common.model.DataSource
-import java.time.Instant
-
 /**
  * @author Pinakin Kansara
  */
@@ -10,7 +8,7 @@ data class ImmunizationRecordDto(
     val id: Long = 0,
     var patientId: Long = 0,
     val immunizationId: String? = null,
-    val dateOfImmunization: Instant,
+    val dateOfImmunization: String,
     val status: String? = null,
     val isValid: Boolean,
     val provideOrClinic: String? = null,

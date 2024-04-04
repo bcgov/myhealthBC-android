@@ -286,7 +286,7 @@ fun ImmunizationRecord.toDto(): ImmunizationRecordDto {
 
     return ImmunizationRecordDto(
         immunizationId = id,
-        dateOfImmunization = dateOfImmunization.dateTimeToInstant(),
+        dateOfImmunization = dateOfImmunization,
         status = status,
         isValid = valid,
         provideOrClinic = providerOrClinic,
@@ -301,11 +301,9 @@ fun ImmunizationRecord.toDto(): ImmunizationRecordDto {
 
 fun Forecast.toDto() = ImmunizationForecastDto(
     recommendationId = recommendationId,
-    createDate = createDate.dateToInstant(),
     status = ForecastStatus.getByText(status),
     displayName = displayName,
-    eligibleDate = eligibleDate.dateToInstant(),
-    dueDate = dueDate.dateToInstant()
+    dueDate = dueDate,
 )
 
 fun ImmunizationResponse.toDto() = ImmunizationDto(

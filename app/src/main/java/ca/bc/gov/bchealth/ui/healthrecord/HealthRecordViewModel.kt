@@ -234,7 +234,12 @@ class HealthRecordViewModel @Inject constructor(
                 }
 
             val immunizationRecords =
-                patientWithImmunizationRecordAndForecast.immunizationRecords.map { it.toUiModel() }
+                patientWithImmunizationRecordAndForecast.immunizationRecords.mapNotNull {
+                    it.toUiModel() ?: run {
+                        dateError = true
+                        null
+                    }
+                }
 
             val healthVisits = patientWithHealthVisits.healthVisits.map {
                 it.toUiModel()

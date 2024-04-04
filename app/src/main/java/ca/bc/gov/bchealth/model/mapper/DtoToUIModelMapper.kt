@@ -231,15 +231,24 @@ fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem? {
     )
 }
 
-fun ImmunizationRecordWithForecastDto.toUiModel(): HealthRecordItem {
+fun ImmunizationRecordWithForecastDto.toUiModel(): HealthRecordItem? {
+    val dateOfImmunization: Instant
+    val dateStr: String
+    try {
+        dateOfImmunization = immunizationRecord.dateOfImmunization.dateTimeToInstant()
+        dateStr = dateOfImmunization.dateString()
+        immunizationForecast?.dueDate?.dateToInstant()?.dateString()
+    } catch (e: Exception) {
+        return null
+    }
 
     return HealthRecordItem(
         patientId = immunizationRecord.patientId,
         recordId = immunizationRecord.id,
         title = immunizationRecord.immunizationName ?: "",
-        description = immunizationRecord.dateOfImmunization.dateString(),
+        description = dateStr,
         icon = R.drawable.ic_health_record_vaccine,
-        date = immunizationRecord.dateOfImmunization,
+        date = dateOfImmunization,
         healthRecordType = HealthRecordType.IMMUNIZATION_RECORD,
         dataSource = immunizationRecord.dataSorce.name
     )
@@ -264,12 +273,12 @@ fun ImmunizationRecordWithForecastAndPatientDto.toUiModel(): ImmunizationRecordD
     return ImmunizationRecordDetailItem(
         id = immunizationRecordWithForecast.immunizationRecord.id,
         status = immunizationRecordWithForecast.immunizationRecord.status,
-        dueDate = immunizationRecordWithForecast.immunizationForecast?.dueDate?.dateString(),
+        dueDate = immunizationRecordWithForecast.immunizationForecast?.dueDate?.dateToInstant()?.dateString(),
         name = immunizationRecordWithForecast.immunizationRecord.immunizationName,
         doseDetails = listOf(
             ImmunizationDoseDetailItem(
                 id = immunizationRecordWithForecast.immunizationRecord.id,
-                date = immunizationRecordWithForecast.immunizationRecord.dateOfImmunization.dateString(),
+                date = immunizationRecordWithForecast.immunizationRecord.dateOfImmunization.dateTimeToInstant().dateString(),
                 productName = immunizationRecordWithForecast.immunizationRecord.productName,
                 immunizingAgent = immunizationRecordWithForecast.immunizationRecord.agentName,
                 providerOrClinicName = immunizationRecordWithForecast.immunizationRecord.provideOrClinic,
@@ -355,7 +364,7 @@ fun CommentDto.toUiModel() = Comment(
 private fun ImmunizationForecastDto.toUiModel() = ForecastDetailItem(
     name = this.displayName.orPlaceholder(),
     status = this.status,
-    date = this.dueDate.dateString(),
+    date = this.dueDate.dateToInstant().dateString(),
 )
 
 enum class CovidTestResultStatus {

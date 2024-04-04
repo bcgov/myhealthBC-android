@@ -79,7 +79,7 @@ abstract class BaseDataBaseTest {
     protected fun getLabOrder(
         id: Long = 99999L,
         patientId: Long = 1,
-        collectionDateTime: Instant = Instant.now(),
+        collectionDateTime: String = "",
         reportAvailable: Boolean = false,
         commonName: String? = "Test Name",
         orderingProvider: String? = "Ordering Provider",
