@@ -330,7 +330,7 @@ fun HealthVisitsPayload.toDto() = HealthVisitsDto(
     healthVisitId = 0,
     patientId = 0,
     id,
-    encounterDate.dateToInstant(),
+    encounterDate,
     specialtyDescription,
     practitionerName,
     clinic.toDto(),

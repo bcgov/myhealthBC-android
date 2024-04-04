@@ -7,7 +7,6 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
-import java.time.Instant
 
 /*
 * Created by amit_metri on 21,June,2022
@@ -34,7 +33,7 @@ data class HealthVisitEntity(
     @ColumnInfo(name = "id")
     val id: String? = null,
     @ColumnInfo(name = "encounter_date")
-    val encounterDate: Instant,
+    val encounterDate: String,
     @ColumnInfo(name = "specialty_description")
     val specialtyDescription: String? = null,
     @ColumnInfo(name = "practitioner_name")

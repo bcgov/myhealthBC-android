@@ -76,7 +76,12 @@ class DependentRecordsViewModel @Inject constructor(
             } else emptyList()
 
             val immunizationRecords =
-                patientWithImmunizationRecordAndForecast.immunizationRecords.map { it.toUiModel() }
+                patientWithImmunizationRecordAndForecast.immunizationRecords.mapNotNull {
+                    it.toUiModel() ?: run {
+                        dateError = true
+                        null
+                    }
+                }
 
             val result = (covidOrders + immunizationRecords + labTestRecords + clinicalDocs)
                 .sortedByDescending { it.date }

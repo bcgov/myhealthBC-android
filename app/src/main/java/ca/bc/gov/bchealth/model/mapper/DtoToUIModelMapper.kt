@@ -289,17 +289,27 @@ fun ImmunizationRecordWithForecastAndPatientDto.toUiModel(): ImmunizationRecordD
     )
 }
 
-fun HealthVisitsDto.toUiModel() =
-    HealthRecordItem(
+fun HealthVisitsDto.toUiModel(): HealthRecordItem? {
+    val date: Instant
+    val dateStr: String
+
+    try {
+        date = encounterDate.dateToInstant()
+        dateStr = date.dateString()
+    } catch (e: Exception) {
+        return null
+    }
+    return HealthRecordItem(
         patientId = patientId,
         recordId = healthVisitId,
         title = specialtyDescription.orEmpty(),
-        description = practitionerName.orEmpty() + " • " + encounterDate.dateString(),
+        description = practitionerName.orEmpty() + " • " + dateStr,
         icon = R.drawable.ic_health_record_health_visit,
-        date = encounterDate,
+        date = date,
         healthRecordType = HealthRecordType.HEALTH_VISIT_RECORD,
         dataSource = dataSource.name
     )
+}
 
 fun SpecialAuthorityDto.toUiModel() = HealthRecordItem(
     patientId = patientId,

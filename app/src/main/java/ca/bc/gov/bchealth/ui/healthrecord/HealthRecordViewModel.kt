@@ -241,9 +241,13 @@ class HealthRecordViewModel @Inject constructor(
                     }
                 }
 
-            val healthVisits = patientWithHealthVisits.healthVisits.map {
-                it.toUiModel()
+            val healthVisits = patientWithHealthVisits.healthVisits.mapNotNull {
+                it.toUiModel() ?: run {
+                    dateError = true
+                    null
+                }
             }
+
             val specialAuthorities = patientWithSpecialAuthorities.specialAuthorities.filter {
                 it.requestedDate != null
             }.map { it.toUiModel() }
