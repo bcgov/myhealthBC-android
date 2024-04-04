@@ -1,6 +1,8 @@
 package ca.bc.gov.bchealth.ui.healthrecord
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.bchealth.ui.BaseViewModel
@@ -39,6 +41,10 @@ class HealthRecordViewModel @Inject constructor(
 ) : BaseViewModel() {
     private val _uiState = MutableStateFlow(HealthRecordUiState())
     val uiState: StateFlow<HealthRecordUiState> = _uiState.asStateFlow()
+
+    private val dateErrorMutableLiveData = MutableLiveData<Boolean>()
+    val dateErrorLiveData: LiveData<Boolean>
+        get() = dateErrorMutableLiveData
 
     fun showTimeLine(filterString: String) = viewModelScope.launch {
         val healthRecords = generateTimeline()
@@ -85,7 +91,7 @@ class HealthRecordViewModel @Inject constructor(
             }
         }
 
-        _uiState.update { it ->
+        _uiState.update {
             it.copy(
                 isLoading = false,
                 healthRecords = filteredResult,
@@ -283,6 +289,9 @@ class HealthRecordViewModel @Inject constructor(
                 } else {
                     emptyList()
                 }
+
+            dateErrorMutableLiveData.postValue(dateError)
+
             return records.sortedByDescending { it.date }
         } catch (e: Exception) {
             Log.d("Timeline", "Error in generating timeline ${e.message}")

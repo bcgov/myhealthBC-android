@@ -57,6 +57,7 @@ fun HealthRecordScreen(
     onLinkClick: (String) -> Unit,
     onNetworkError: () -> Unit,
     onServiceDownError: () -> Unit,
+    onShowDateError: () -> Unit,
     modifier: Modifier = Modifier,
     authViewModel: BcscAuthViewModel,
     healthRecordViewModel: HealthRecordViewModel,
@@ -64,6 +65,7 @@ fun HealthRecordScreen(
     sharedViewModel: SharedViewModel
 ) {
 
+    val showDateError by healthRecordViewModel.dateErrorLiveData.observeAsState()
     val uiState by healthRecordViewModel.uiState.collectAsStateWithLifecycle()
     val authState: AuthStatus by authViewModel.authStatus.collectAsStateWithLifecycle()
 
@@ -109,6 +111,13 @@ fun HealthRecordScreen(
         }
     }
 
+    if (showDateError == true && sharedViewModel.hasDisplayedDateError.not()) {
+        LaunchedEffect(key1 = Unit) {
+            onShowDateError()
+            sharedViewModel.hasDisplayedDateError = true
+        }
+    }
+
     if (!uiState.isHgServicesUp) {
         LaunchedEffect(key1 = Unit) {
             onServiceDownError()
@@ -117,7 +126,10 @@ fun HealthRecordScreen(
     }
 
     HealthRecordScreenContent(
-        onPullToRefresh = healthRecordViewModel::executeOneTimeDataFetch,
+        onPullToRefresh = {
+            healthRecordViewModel.executeOneTimeDataFetch()
+            sharedViewModel.hasDisplayedDateError = false
+        },
         onHealthRecordItemClicked = onHealthRecordItemClicked,
         onFilterClicked = onFilterClicked,
         onFilterCleared = {
