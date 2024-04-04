@@ -6,6 +6,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordDetailItem
 import ca.bc.gov.common.model.hospitalvisits.HospitalVisitDto
 import ca.bc.gov.common.utils.dateTimeString
+import ca.bc.gov.common.utils.dateTimeToInstant
 import ca.bc.gov.repository.hospitalvisit.HospitalVisitRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +27,7 @@ class HospitalVisitDetailViewModel @Inject constructor(
         try {
             val dto: HospitalVisitDto = repository.getHospitalVisit(hospitalVisitId)
 
-            val dischargeDate = dto.dischargeDate?.dateTimeString().orEmpty()
+            val dischargeDate = dto.dischargeDate?.dateTimeToInstant()?.dateTimeString().orEmpty()
 
             val uiList: List<HealthRecordDetailItem> = listOf(
                 HealthRecordDetailItem(
@@ -55,7 +56,7 @@ class HospitalVisitDetailViewModel @Inject constructor(
 
                 HealthRecordDetailItem(
                     title = R.string.hospital_visits_detail_visit_date_title,
-                    description = dto.visitDate.dateTimeString()
+                    description = dto.visitDate.dateTimeToInstant().dateTimeString()
                 ),
 
                 HealthRecordDetailItem(

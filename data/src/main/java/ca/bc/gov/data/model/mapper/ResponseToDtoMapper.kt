@@ -355,8 +355,8 @@ fun HospitalVisitInformation.toDto() = HospitalVisitDto(
     location = facility,
     provider = provider.orEmpty(),
     visitType = visitType.orEmpty(),
-    visitDate = admitDateTime.dateTimeToInstant(),
-    dischargeDate = endDateTime?.dateTimeToInstant(),
+    visitDate = admitDateTime,
+    dischargeDate = endDateTime,
     encounterId = encounterId
 )
 

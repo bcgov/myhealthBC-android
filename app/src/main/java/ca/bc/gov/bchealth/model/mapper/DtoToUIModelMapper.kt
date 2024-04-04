@@ -33,6 +33,7 @@ import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.utils.dateString
+import ca.bc.gov.common.utils.dateTimeToInstant
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
 import ca.bc.gov.common.utils.toLocalDateTimeInstant
@@ -121,18 +122,23 @@ fun mapOrderStatus(orderStatus: String): String {
         orderStatus.equals("Held", true) -> {
             "Pending"
         }
+
         orderStatus.equals("Pending", true) -> {
             "Pending"
         }
+
         orderStatus.equals("Partial", true) -> {
             "Pending"
         }
+
         orderStatus.equals("Completed", true) -> {
             "Completed"
         }
+
         orderStatus.equals("Cancelled", true) -> {
             "Cancelled"
         }
+
         else -> {
             orderStatus
         }
@@ -150,15 +156,19 @@ fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem {
             CovidTestResultStatus.IndeterminateResult.name -> {
                 CovidTestResultStatus.Indeterminate.name
             }
+
             CovidTestResultStatus.Cancelled.name -> {
                 CovidTestResultStatus.Cancelled.name
             }
+
             CovidTestResultStatus.Negative.name -> {
                 CovidTestResultStatus.Negative.name
             }
+
             CovidTestResultStatus.Positive.name -> {
                 CovidTestResultStatus.Positive.name
             }
+
             else -> {
                 CovidTestResultStatus.Indeterminate.name
             }
@@ -196,9 +206,11 @@ fun getHealthPassStateResources(state: ImmunizationStatus?): PassState = when (s
     ImmunizationStatus.FULLY_IMMUNIZED -> {
         PassState(R.color.status_green, R.string.vaccinated, R.drawable.ic_check_mark)
     }
+
     ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
         PassState(R.color.blue, R.string.partially_vaccinated, 0)
     }
+
     else -> {
         PassState(R.color.grey, R.string.no_record, 0)
     }
@@ -248,17 +260,27 @@ fun SpecialAuthorityDto.toUiModel() = HealthRecordItem(
     dataSource = dataSource.name
 )
 
-fun HospitalVisitDto.toUiModel() =
-    HealthRecordItem(
+fun HospitalVisitDto.toUiModel(): HealthRecordItem? {
+
+    val date: Instant
+    try {
+        date = visitDate.dateTimeToInstant()
+        dischargeDate?.dateTimeToInstant()
+    } catch (e: Exception) {
+        return null
+    }
+
+    return HealthRecordItem(
         patientId = patientId,
         recordId = id,
         icon = R.drawable.ic_health_record_hospital_visit,
         title = location,
         description = visitType,
-        date = visitDate,
+        date = date,
         healthRecordType = HealthRecordType.HOSPITAL_VISITS_RECORD,
         dataSource = null
     )
+}
 
 fun ImmunizationRecommendationsDto.toUiModel() = RecommendationDetailItem(
     title = this.recommendedVaccinations.orPlaceholder(),
@@ -307,7 +329,11 @@ private fun DiagnosticImagingDataDto.toUiModel() = HealthRecordItem(
     patientId = patientId,
     icon = R.drawable.ic_health_record_diagnostic_imaging,
     title = modality.orEmpty(),
-    description = if (isUpdated) { "Updated" } else { examStatus } + " • " + examDate?.dateString(),
+    description = if (isUpdated) {
+        "Updated"
+    } else {
+        examStatus
+    } + " • " + examDate?.dateString(),
     date = examDate!!,
     healthRecordType = HealthRecordType.DIAGNOSTIC_IMAGING,
     dataSource = null
@@ -321,9 +347,21 @@ fun BcCancerScreeningDataDto.toUiModel() = HealthRecordItem(
     recordId = _id,
     patientId = patientId,
     icon = R.drawable.ic_health_record_bc_cancer_screening,
-    title = if (eventType == "Recall") { "BC Cancer Screening Reminder Letter" } else { "BC Cancer Screening Result Letter" },
-    description = programName + " • " + if (eventType == "Recall") { eventDateTime } else { resultDateTime }?.dateString(),
-    date = if (eventType == "Recall") { eventDateTime !! } else { resultDateTime!! },
+    title = if (eventType == "Recall") {
+        "BC Cancer Screening Reminder Letter"
+    } else {
+        "BC Cancer Screening Result Letter"
+    },
+    description = programName + " • " + if (eventType == "Recall") {
+        eventDateTime
+    } else {
+        resultDateTime
+    }?.dateString(),
+    date = if (eventType == "Recall") {
+        eventDateTime!!
+    } else {
+        resultDateTime!!
+    },
     healthRecordType = HealthRecordType.BC_CANCER_SCREENING,
     dataSource = null
 )

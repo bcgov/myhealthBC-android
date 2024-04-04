@@ -69,7 +69,7 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
  * @author Pinakin Kansara
  */
 @Database(
-    version = 20,
+    version = 21,
     entities = [
         PatientEntity::class,
         VaccineRecordEntity::class,

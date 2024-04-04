@@ -67,10 +67,11 @@ class HealthRecordViewModel @Inject constructor(
             timeLineFilters +=
                 filterQuery.mapNotNull { query -> TimelineTypeFilter.findByName(query)?.recordType?.name }
 
+            showBCCancerBanner =
+                showRecordBanner(timeLineFilters, HealthRecordType.BC_CANCER_SCREENING.name)
 
-            showBCCancerBanner = showRecordBanner(timeLineFilters, HealthRecordType.BC_CANCER_SCREENING.name)
-
-            showDiagnosticImagingBanner = showRecordBanner(timeLineFilters, HealthRecordType.DIAGNOSTIC_IMAGING.name)
+            showDiagnosticImagingBanner =
+                showRecordBanner(timeLineFilters, HealthRecordType.DIAGNOSTIC_IMAGING.name)
 
             filteredResult += if (timeLineFilters.isNotEmpty()) {
                 listFilteredBySearch.filter { recordType -> timeLineFilters.contains(recordType.healthRecordType.name) }
@@ -136,15 +137,27 @@ class HealthRecordViewModel @Inject constructor(
         }
     }
 
-    private fun getFilterByDate(healthRecords: List<HealthRecordItem>, fromDate: String?, toDate: String?): MutableList<HealthRecordItem> {
+    private fun getFilterByDate(
+        healthRecords: List<HealthRecordItem>,
+        fromDate: String?,
+        toDate: String?
+    ): MutableList<HealthRecordItem> {
         return if (!fromDate.isNullOrBlank() && !toDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.dateToInstant().toStartOfDayInstant() && it.date.toStartOfDayInstant() <= toDate.dateToInstant().toStartOfDayInstant() }
+            healthRecords.filter {
+                it.date.toStartOfDayInstant() >= fromDate.dateToInstant()
+                    .toStartOfDayInstant() && it.date.toStartOfDayInstant() <= toDate.dateToInstant()
+                    .toStartOfDayInstant()
+            }
                 .toMutableList()
         } else if (!fromDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.dateToInstant().toStartOfDayInstant() }
+            healthRecords.filter {
+                it.date.toStartOfDayInstant() >= fromDate.dateToInstant().toStartOfDayInstant()
+            }
                 .toMutableList()
         } else if (!toDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() <= toDate.dateToInstant().toStartOfDayInstant() }.toMutableList()
+            healthRecords.filter {
+                it.date.toStartOfDayInstant() <= toDate.dateToInstant().toStartOfDayInstant()
+            }.toMutableList()
         } else {
             healthRecords.toMutableList()
         }
@@ -180,9 +193,16 @@ class HealthRecordViewModel @Inject constructor(
 
             val patientWithData = patientRepository.getPatientWithData(patientId)
 
-            val hospitalVisits = patientRepository.getPatientWithHospitalVisits(patientId).map {
-                it.toUiModel()
-            }
+            var dateError = false
+
+            val hospitalVisits =
+                patientRepository.getPatientWithHospitalVisits(patientId).mapNotNull {
+                    it.toUiModel() ?: run {
+                        dateError = true
+                        null
+                    }
+                }
+
             val clinicalDocuments = patientRepository.getPatientWithClinicalDocuments(patientId)
                 .map { it.toUiModel() }
 
