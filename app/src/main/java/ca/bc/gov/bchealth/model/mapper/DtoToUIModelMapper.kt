@@ -119,16 +119,25 @@ fun ClinicalDocumentDto.toUiModel(): HealthRecordItem? {
     )
 }
 
-fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
+fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem? {
+    val timelineDateTime: Instant
+    try {
+        timelineDateTime = labOrder.timelineDateTime.dateTimeToInstant()
+        timelineDateTime.dateString()
+        labOrder.collectionDateTime?.dateTimeToInstant()
+    } catch (e: Exception) {
+        return null
+    }
+
     var description = ""
     description = mapOrderStatus(labOrder.orderStatus ?: "").plus(" • ")
-        .plus(labOrder.timelineDateTime.dateString())
+        .plus(timelineDateTime.dateString())
     return HealthRecordItem(
         patientId = labOrder.patientId,
         title = labOrder.commonName ?: "",
         recordId = labOrder.id,
         icon = R.drawable.ic_lab_test,
-        date = labOrder.timelineDateTime,
+        date = timelineDateTime,
         description = description,
         healthRecordType = HealthRecordType.LAB_RESULT_RECORD,
         dataSource = labOrder.dataSorce.name

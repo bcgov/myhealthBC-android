@@ -6,7 +6,6 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
-import java.time.Instant
 
 /**
  * @author Pinakin Kansara
@@ -33,9 +32,9 @@ data class LabOrderEntity(
     @ColumnInfo(name = "report_id")
     val reportId: String? = null,
     @ColumnInfo(name = "collection_date_time")
-    val collectionDateTime: Instant?,
+    val collectionDateTime: String?,
     @ColumnInfo(name = "timeline_date_time")
-    val timelineDateTime: Instant,
+    val timelineDateTime: String,
     @ColumnInfo(name = "reporting_source")
     val reportingSource: String? = null,
     @ColumnInfo(name = "common_name")

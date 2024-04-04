@@ -218,9 +218,13 @@ class HealthRecordViewModel @Inject constructor(
                 }
             }
 
-            val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
-                it.toUiModel()
+            val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.mapNotNull {
+                it.toUiModel() ?: run {
+                    dateError = true
+                    null
+                }
             }
+
             val covidOrders =
                 patientWithCovidOrderAndTests.covidOrderAndTests.map { it.toUiModel() }
 
