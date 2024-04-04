@@ -18,7 +18,6 @@ import androidx.work.WorkManager
 import ca.bc.gov.bchealth.databinding.ActivityMainBinding
 import ca.bc.gov.bchealth.ui.inappupdate.InAppUpdateActivity
 import ca.bc.gov.bchealth.utils.InAppUpdateHelper
-import ca.bc.gov.bchealth.utils.showPartialRecordsErrorMessage
 import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.utils.viewBindings
 import ca.bc.gov.bchealth.viewmodel.AnalyticsFeatureViewModel
@@ -169,14 +168,6 @@ class MainActivity : AppCompatActivity() {
             if (!isHgServicesUp) {
                 binding.navHostFragment.showServiceDownMessage(this)
                 return
-            }
-
-            if (workData.getBoolean(
-                    FetchAuthenticatedHealthRecordsWorker.FailureReason.PARTIAL_RECORDS_ERROR.value,
-                    false
-                )
-            ) {
-                binding.navHostFragment.showPartialRecordsErrorMessage(this)
             }
         }
     }

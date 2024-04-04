@@ -1,6 +1,5 @@
 package ca.bc.gov.bchealth.usecases.records
 
-import ca.bc.gov.common.exceptions.PartialRecordsException
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.repository.di.IoDispatcher
@@ -21,19 +20,7 @@ class FetchSpecialAuthoritiesUseCase @Inject constructor(
             authParameters, specialAuthorityRepository::getSpecialAuthority
         )
 
-        var filteredOut = false
-        val filteredList = specialAuthorities?.filter {
-            val hasTitle = it.drugName.isNullOrBlank().not()
-            if (hasTitle.not()) {
-                filteredOut = true
-            }
-            hasTitle
-        }
-
-        insertSpecialAuthority(patientId, filteredList)
-        if (filteredOut) {
-            throw PartialRecordsException()
-        }
+        insertSpecialAuthority(patientId, specialAuthorities)
     }
 
     private suspend fun insertSpecialAuthority(

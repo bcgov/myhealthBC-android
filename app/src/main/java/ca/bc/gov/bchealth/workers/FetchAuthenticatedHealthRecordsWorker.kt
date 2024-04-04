@@ -20,7 +20,6 @@ import ca.bc.gov.bchealth.usecases.records.FetchPatientDataUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchSpecialAuthoritiesUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchVaccinesUseCase
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
-import ca.bc.gov.common.exceptions.PartialRecordsException
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.dependents.DependentDto
 import ca.bc.gov.repository.DependentsRepository
@@ -111,11 +110,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             return Result.failure()
         }
 
-        val isApiFailed = try {
-            loadRecords(patientId, authParameters, dependents)
-        } catch (e: PartialRecordsException) {
-            return respondToFailure(FailureReason.PARTIAL_RECORDS_ERROR, true)
-        }
+        val isApiFailed = loadRecords(patientId, authParameters, dependents)
 
         return if (isApiFailed) {
             return respondToFailure(FailureReason.IS_RECORD_FETCH_FAILED, true)
@@ -135,9 +130,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             val tasks = mutableListOf<Deferred<ListenableWorker.Result>>()
             val dataSetFlag = mobileConfigRepository.getPatientDataSetFeatureFlags()
 
-            if (dataSetFlag.isMedicationEnabled()) {
-                tasks.add(async { fetchMedicationsUseCase.execute(patientId, authParameters) })
-            }
+            if (dataSetFlag.isMedicationEnabled()) { tasks.add(async { fetchMedicationsUseCase.execute(patientId, authParameters) }) }
 
             if (dataSetFlag.isClinicalDocumentEnabled()) {
                 tasks.add(
@@ -161,27 +154,9 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 )
             }
 
-            if (dataSetFlag.isHealthVisitEnabled()) {
-                tasks.add(
-                    runTaskAsync {
-                        fetchHealthVisitsUseCase.execute(
-                            patientId,
-                            authParameters
-                        )
-                    }
-                )
-            }
+            if (dataSetFlag.isHealthVisitEnabled()) { tasks.add(runTaskAsync { fetchHealthVisitsUseCase.execute(patientId, authParameters) }) }
 
-            if (dataSetFlag.isHospitalVisitEnabled()) {
-                tasks.add(
-                    runTaskAsync {
-                        fetchHospitalVisitsUseCase.execute(
-                            patientId,
-                            authParameters
-                        )
-                    }
-                )
-            }
+            if (dataSetFlag.isHospitalVisitEnabled()) { tasks.add(runTaskAsync { fetchHospitalVisitsUseCase.execute(patientId, authParameters) }) }
 
             if (dataSetFlag.isImmunizationEnabled()) {
                 tasks.add(
@@ -194,20 +169,9 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
                 )
             }
 
-            if (dataSetFlag.isLabResultEnabled()) {
-                tasks.add(runTaskAsync { fetchLabOrdersUseCase.execute(patientId, authParameters) })
-            }
+            if (dataSetFlag.isLabResultEnabled()) { tasks.add(runTaskAsync { fetchLabOrdersUseCase.execute(patientId, authParameters) }) }
 
-            if (dataSetFlag.isSpecialAuthorityRequestEnabled()) {
-                tasks.add(
-                    runTaskAsync {
-                        fetchSpecialAuthoritiesUseCase.execute(
-                            patientId,
-                            authParameters
-                        )
-                    }
-                )
-            }
+            if (dataSetFlag.isSpecialAuthorityRequestEnabled()) { tasks.add(runTaskAsync { fetchSpecialAuthoritiesUseCase.execute(patientId, authParameters) }) }
 
             tasks.add(
                 runTaskAsync {
@@ -221,14 +185,7 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
 
             val taskResult = tasks.awaitAll()
 
-            val failedTasks = taskResult.filter { it != Result.success() }
-            failedTasks.forEach {
-                val data = it.outputData
-                data.getBoolean(FailureReason.PARTIAL_RECORDS_ERROR.value, true)
-                throw PartialRecordsException()
-            }
-
-            isApiFailed = failedTasks.isNotEmpty()
+            isApiFailed = taskResult.contains(Result.failure())
         }
         return isApiFailed
     }
@@ -257,10 +214,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             try {
                 task.invoke()
                 Result.success()
-            } catch (e: PartialRecordsException) {
-                Log.e("RecordsWorker", "Handling Exception:")
-                e.printStackTrace()
-                respondToFailure(FailureReason.PARTIAL_RECORDS_ERROR, true)
             } catch (e: Exception) {
                 Log.e("RecordsWorker", "Handling Exception:")
                 e.printStackTrace()
@@ -275,7 +228,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     enum class FailureReason(val value: String) {
         APP_UPDATE_REQUIRED("appUpdateRequired"),
         IS_HG_SERVICES_UP("isHgServicesUp"),
-        IS_RECORD_FETCH_FAILED("IS_RECORD_FETCH_FAILED"),
-        PARTIAL_RECORDS_ERROR("PARTIAL_RECORDS_ERROR")
+        IS_RECORD_FETCH_FAILED("IS_RECORD_FETCH_FAILED")
     }
 }
