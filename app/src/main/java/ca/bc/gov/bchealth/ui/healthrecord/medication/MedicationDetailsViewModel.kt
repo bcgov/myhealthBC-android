@@ -6,6 +6,7 @@ import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsViewModel.Companion.ITEM_VIEW_TYPE_RECORD
 import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
+import ca.bc.gov.common.utils.dateToInstant
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.repository.MedicationRecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -105,7 +106,7 @@ class MedicationDetailsViewModel @Inject constructor(
         medicationDetails.add(
             MedicationDetail(
                 R.string.filled_date,
-                medicationWithSummaryAndPharmacyDto.medicationRecord.dispenseDate.toDate()
+                medicationWithSummaryAndPharmacyDto.medicationRecord.dispenseDate.dateToInstant().toDate()
             )
         )
         medicationDetails.add(

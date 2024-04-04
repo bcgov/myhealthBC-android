@@ -103,7 +103,6 @@ import ca.bc.gov.data.datasource.local.entity.settings.AppFeatureEntity
 import ca.bc.gov.data.datasource.local.entity.settings.QuickAccessTileEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
-import java.time.Instant
 
 fun PatientEntity.toDto() = PatientDto(
     id = id,
@@ -176,7 +175,6 @@ fun MedicationRecordEntity.toDto() = MedicationRecordDto(
     practitionerSurname,
     dispenseDate,
     directions,
-    dateEntered,
     dataSource
 )
 
@@ -188,7 +186,6 @@ fun MedicationSummaryEntity.toDto() = MedicationSummaryDto(
     genericName,
     quantity,
     maxDailyDosage,
-    drugDiscontinueDate ?: Instant.EPOCH,
     form,
     manufacturer,
     strength,

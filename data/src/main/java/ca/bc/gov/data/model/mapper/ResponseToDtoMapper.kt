@@ -86,7 +86,6 @@ import ca.bc.gov.data.datasource.remote.model.response.PatientDataResponse
 import ca.bc.gov.data.datasource.remote.model.response.PatientResponse
 import ca.bc.gov.data.model.MediaMetaData
 import ca.bc.gov.data.model.VaccineStatus
-import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 fun PatientAddress.toDto() = PatientAddressDto(
@@ -126,9 +125,8 @@ fun MedicationStatementPayload.toMedicationRecordDto() = MedicationRecordDto(
     prescriptionIdentifier = prescriptionIdentifier,
     prescriptionStatus = prescriptionStatus.toString(),
     practitionerSurname = practitionerSurname,
-    dispenseDate = dispensedDate.dateToInstant(),
+    dispenseDate = dispensedDate,
     directions = directions,
-    dateEntered = dateEntered?.toDateTime() ?: Instant.EPOCH,
     dataSource = DataSource.BCSC
 )
 
@@ -138,7 +136,6 @@ fun MedicationSummary.toMedicationSummaryDto() = MedicationSummaryDto(
     genericName = genericName,
     quantity = quantity,
     maxDailyDosage = maxDailyDosage,
-    drugDiscontinueDate = drugDiscontinuedDate?.dateTimeToInstant() ?: Instant.EPOCH,
     form = form,
     manufacturer = manufacturer,
     strength = strength,

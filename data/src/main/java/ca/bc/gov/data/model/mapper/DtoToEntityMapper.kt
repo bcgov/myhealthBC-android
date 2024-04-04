@@ -123,7 +123,6 @@ fun MedicationRecordDto.toEntity() = MedicationRecordEntity(
     practitionerSurname,
     dispenseDate,
     directions,
-    dateEntered,
     dataSource
 )
 
@@ -135,7 +134,6 @@ fun MedicationSummaryDto.toEntity() = MedicationSummaryEntity(
     genericName,
     quantity,
     maxDailyDosage,
-    drugDiscontinueDate,
     form,
     manufacturer,
     strength,

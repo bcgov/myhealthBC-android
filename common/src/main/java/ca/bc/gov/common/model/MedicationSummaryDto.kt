@@ -1,7 +1,5 @@
 package ca.bc.gov.common.model
 
-import java.time.Instant
-
 /**
  * @author Pinakin Kansara
  */
@@ -13,7 +11,6 @@ data class MedicationSummaryDto(
     val genericName: String?,
     val quantity: Float,
     val maxDailyDosage: Float,
-    val drugDiscontinueDate: Instant,
     val form: String?,
     val manufacturer: String?,
     val strength: String?,

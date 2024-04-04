@@ -187,9 +187,8 @@ abstract class BaseDataBaseTest {
         prescriptionIdentifier = "Practitioner",
         prescriptionStatus = "Status",
         practitionerSurname = "Practitioner Surname",
-        dispenseDate = Instant.now(),
+        dispenseDate = "",
         directions = "Directions",
-        dateEntered = Instant.now(),
         dataSource = DataSource.BCSC
     )
 

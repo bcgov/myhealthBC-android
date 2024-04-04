@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 21,
-    "identityHash": "577e9c1f0f7abd2316c98fdbb695dd8f",
+    "identityHash": "5e7e8469b5b88dade99c8a262792fe13",
     "entities": [
       {
         "tableName": "patient",
@@ -247,7 +247,7 @@
       },
       {
         "tableName": "medication_record",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `prescription_identifier` TEXT, `prescription_status` TEXT, `practitioner_surname` TEXT, `dispense_date` INTEGER NOT NULL, `directions` TEXT, `date_entered` INTEGER NOT NULL, `data_source` TEXT NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `prescription_identifier` TEXT, `prescription_status` TEXT, `practitioner_surname` TEXT, `dispense_date` TEXT NOT NULL, `directions` TEXT, `data_source` TEXT NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -282,7 +282,7 @@
           {
             "fieldPath": "dispenseDate",
             "columnName": "dispense_date",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -290,12 +290,6 @@
             "columnName": "directions",
             "affinity": "TEXT",
             "notNull": false
-          },
-          {
-            "fieldPath": "dateEntered",
-            "columnName": "date_entered",
-            "affinity": "INTEGER",
-            "notNull": true
           },
           {
             "fieldPath": "dataSource",
@@ -327,7 +321,7 @@
       },
       {
         "tableName": "medication_summary",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `medication_record_id` INTEGER NOT NULL, `din` TEXT, `brand_name` TEXT, `generic_name` TEXT, `quantity` REAL NOT NULL, `max_daily_dosage` REAL NOT NULL, `drug_discontinue_date` INTEGER, `form` TEXT, `manufacturer` TEXT, `strength` TEXT, `strength_unit` TEXT, `is_pin` INTEGER, FOREIGN KEY(`medication_record_id`) REFERENCES `medication_record`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `medication_record_id` INTEGER NOT NULL, `din` TEXT, `brand_name` TEXT, `generic_name` TEXT, `quantity` REAL NOT NULL, `max_daily_dosage` REAL NOT NULL, `form` TEXT, `manufacturer` TEXT, `strength` TEXT, `strength_unit` TEXT, `is_pin` INTEGER, FOREIGN KEY(`medication_record_id`) REFERENCES `medication_record`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -370,12 +364,6 @@
             "columnName": "max_daily_dosage",
             "affinity": "REAL",
             "notNull": true
-          },
-          {
-            "fieldPath": "drugDiscontinueDate",
-            "columnName": "drug_discontinue_date",
-            "affinity": "INTEGER",
-            "notNull": false
           },
           {
             "fieldPath": "form",
@@ -1648,7 +1636,7 @@
       },
       {
         "tableName": "clinical_documents",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`clinical_document_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `fileId` TEXT NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `facilityName` TEXT NOT NULL, `discipline` TEXT NOT NULL, `serviceDate` INTEGER NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`clinical_document_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `fileId` TEXT NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `facilityName` TEXT NOT NULL, `discipline` TEXT NOT NULL, `serviceDate` TEXT NOT NULL, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "clinicalDocumentId",
@@ -1695,7 +1683,7 @@
           {
             "fieldPath": "serviceDate",
             "columnName": "serviceDate",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -2208,7 +2196,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '577e9c1f0f7abd2316c98fdbb695dd8f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5e7e8469b5b88dade99c8a262792fe13')"
     ]
   }
 }

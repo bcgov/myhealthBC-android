@@ -211,9 +211,13 @@ class HealthRecordViewModel @Inject constructor(
                     }
                 }
 
-            val medicationRecords = patientAndMedicationRecords?.medicationRecord?.map {
-                it.toUiModel()
+            val medicationRecords = patientAndMedicationRecords?.medicationRecord?.mapNotNull {
+                it.toUiModel() ?: run {
+                    dateError = true
+                    null
+                }
             }
+
             val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
                 it.toUiModel()
             }
