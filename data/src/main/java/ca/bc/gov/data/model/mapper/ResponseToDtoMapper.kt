@@ -39,7 +39,6 @@ import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.model.userprofile.UserProfileDto
-import ca.bc.gov.common.utils.dateTimeToInstant
 import ca.bc.gov.common.utils.dateToInstant
 import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.common.utils.toDateTimeZ
@@ -506,8 +505,8 @@ private fun DiagnosticImagingData.toDto() = DiagnosticImagingDataDto(
 
 private fun BcCancerScreeningData.toDto() = BcCancerScreeningDataDto(
     id = id,
-    resultDateTime = resultDateTime?.dateTimeToInstant(),
-    eventDateTime = eventDateTime?.dateTimeToInstant(),
+    resultDateTime = resultDateTime,
+    eventDateTime = eventDateTime,
     fileId = fileId,
     programName = programName,
     eventType = eventType

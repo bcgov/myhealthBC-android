@@ -262,7 +262,12 @@ class HealthRecordViewModel @Inject constructor(
                 }
             }
 
-            val bcCancerScreening = patientWithData.bcCancerScreeningDataList.map { it.toUiModel() }
+            val bcCancerScreening = patientWithData.bcCancerScreeningDataList.mapNotNull {
+                it.toUiModel() ?: run {
+                    dateError = true
+                    null
+                }
+            }
 
             val records = covidOrders +
                 labTestRecords +

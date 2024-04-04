@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 21,
-    "identityHash": "3b4829d7ed2cee5849224454d6109561",
+    "identityHash": "f92ee64b4ae5eff4155963cb63b1d6bd",
     "entities": [
       {
         "tableName": "patient",
@@ -2090,7 +2090,7 @@
       },
       {
         "tableName": "bc_cancer_screening",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `bc_cancer_screening_id` TEXT, `result_date` INTEGER, `exam_date` INTEGER, `file_id` TEXT, `program_name` TEXT, `event_type` TEXT, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `patient_id` INTEGER NOT NULL, `bc_cancer_screening_id` TEXT, `result_date` TEXT, `exam_date` TEXT, `file_id` TEXT, `program_name` TEXT, `event_type` TEXT, FOREIGN KEY(`patient_id`) REFERENCES `patient`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -2113,13 +2113,13 @@
           {
             "fieldPath": "resultDateTime",
             "columnName": "result_date",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "eventDateTime",
             "columnName": "exam_date",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": false
           },
           {
@@ -2166,7 +2166,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3b4829d7ed2cee5849224454d6109561')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f92ee64b4ae5eff4155963cb63b1d6bd')"
     ]
   }
 }

@@ -272,12 +272,14 @@ fun ImmunizationRecordWithForecastAndPatientDto.toUiModel(): ImmunizationRecordD
     return ImmunizationRecordDetailItem(
         id = immunizationRecordWithForecast.immunizationRecord.id,
         status = immunizationRecordWithForecast.immunizationRecord.status,
-        dueDate = immunizationRecordWithForecast.immunizationForecast?.dueDate?.dateToInstant()?.dateString(),
+        dueDate = immunizationRecordWithForecast.immunizationForecast?.dueDate?.dateToInstant()
+            ?.dateString(),
         name = immunizationRecordWithForecast.immunizationRecord.immunizationName,
         doseDetails = listOf(
             ImmunizationDoseDetailItem(
                 id = immunizationRecordWithForecast.immunizationRecord.id,
-                date = immunizationRecordWithForecast.immunizationRecord.dateOfImmunization.dateTimeToInstant().dateString(),
+                date = immunizationRecordWithForecast.immunizationRecord.dateOfImmunization.dateTimeToInstant()
+                    .dateString(),
                 productName = immunizationRecordWithForecast.immunizationRecord.productName,
                 immunizingAgent = immunizationRecordWithForecast.immunizationRecord.agentName,
                 providerOrClinicName = immunizationRecordWithForecast.immunizationRecord.provideOrClinic,
@@ -425,25 +427,32 @@ fun DiagnosticImagingDataDto.toUiModel(): HealthRecordItem? {
     )
 }
 
-fun BcCancerScreeningDataDto.toUiModel() = HealthRecordItem(
-    recordId = _id,
-    patientId = patientId,
-    icon = R.drawable.ic_health_record_bc_cancer_screening,
-    title = if (eventType == "Recall") {
-        "BC Cancer Screening Reminder Letter"
-    } else {
-        "BC Cancer Screening Result Letter"
-    },
-    description = programName + " • " + if (eventType == "Recall") {
-        eventDateTime
-    } else {
-        resultDateTime
-    }?.dateString(),
-    date = if (eventType == "Recall") {
-        eventDateTime!!
-    } else {
-        resultDateTime!!
-    },
-    healthRecordType = HealthRecordType.BC_CANCER_SCREENING,
-    dataSource = null
-)
+fun BcCancerScreeningDataDto.toUiModel(): HealthRecordItem? {
+    val date: Instant
+    val dateStr: String
+    val title: String
+    try {
+        date = if (eventType == "Recall") {
+            title = "BC Cancer Screening Reminder Letter"
+            eventDateTime!!.dateTimeToInstant()
+        } else {
+            title = "BC Cancer Screening Result Letter"
+            resultDateTime!!.dateTimeToInstant()
+        }
+
+        dateStr = date.dateString()
+    } catch (e: Exception) {
+        return null
+    }
+
+    return HealthRecordItem(
+        recordId = _id,
+        patientId = patientId,
+        icon = R.drawable.ic_health_record_bc_cancer_screening,
+        title = title,
+        description = "$programName • $dateStr",
+        date = date,
+        healthRecordType = HealthRecordType.BC_CANCER_SCREENING,
+        dataSource = null
+    )
+}
