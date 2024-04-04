@@ -14,6 +14,7 @@ class SharedViewModel @Inject constructor() : ViewModel() {
 
     var displayImmunizationBanner = true
     var hasDisplayedDateError = false
+    var hasDisplayedTitleError = false
 
     private val _modifiedRecordId: MutableLiveData<Long> = MutableLiveData()
     val modifiedRecordId: LiveData<Long>

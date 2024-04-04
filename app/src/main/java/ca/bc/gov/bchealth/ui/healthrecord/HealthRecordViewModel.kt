@@ -46,6 +46,10 @@ class HealthRecordViewModel @Inject constructor(
     val dateErrorLiveData: LiveData<Boolean>
         get() = dateErrorMutableLiveData
 
+    private val titleErrorMutableLiveData = MutableLiveData<Boolean>()
+    val titleErrorLiveData: LiveData<Boolean>
+        get() = titleErrorMutableLiveData
+
     fun showTimeLine(filterString: String) = viewModelScope.launch {
         val healthRecords = generateTimeline()
 
@@ -254,9 +258,24 @@ class HealthRecordViewModel @Inject constructor(
                 }
             }
 
+            var titleError = false
             val specialAuthorities = patientWithSpecialAuthorities.specialAuthorities.mapNotNull {
-                it.toUiModel() ?: run {
+                var validMapper = true
+
+                if (it.drugName.isNullOrBlank()) {
+                    titleError = true
+                    validMapper = false
+                }
+
+                val uiModel = it.toUiModel()
+                if (uiModel == null) {
                     dateError = true
+                    validMapper = false
+                }
+
+                if (validMapper) {
+                    uiModel
+                } else {
                     null
                 }
             }
@@ -291,6 +310,7 @@ class HealthRecordViewModel @Inject constructor(
                 }
 
             dateErrorMutableLiveData.postValue(dateError)
+            titleErrorMutableLiveData.postValue(titleError)
 
             return records.sortedByDescending { it.date }
         } catch (e: Exception) {

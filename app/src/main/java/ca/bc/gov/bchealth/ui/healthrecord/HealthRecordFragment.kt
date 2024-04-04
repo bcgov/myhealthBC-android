@@ -84,6 +84,7 @@ class HealthRecordFragment : BaseSecureFragment(null) {
                         onNetworkError = ::onNetworkError,
                         onServiceDownError = ::onServiceDownError,
                         onShowDateError = ::onShowDateError,
+                        onShowTitleError = ::onShowTitleError,
                         Modifier
                             .statusBarsPadding()
                             .navigationBarsPadding()
@@ -218,6 +219,12 @@ class HealthRecordFragment : BaseSecureFragment(null) {
     private fun onShowDateError() {
         view?.let {
             it.showErrorSnackbar(getString(R.string.date_format_error_message))
+        }
+    }
+
+    private fun onShowTitleError() {
+        view?.let {
+            it.showErrorSnackbar(getString(R.string.partial_records_error_message))
         }
     }
 

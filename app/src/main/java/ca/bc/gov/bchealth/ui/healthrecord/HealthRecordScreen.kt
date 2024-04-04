@@ -58,6 +58,7 @@ fun HealthRecordScreen(
     onNetworkError: () -> Unit,
     onServiceDownError: () -> Unit,
     onShowDateError: () -> Unit,
+    onShowTitleError: () -> Unit,
     modifier: Modifier = Modifier,
     authViewModel: BcscAuthViewModel,
     healthRecordViewModel: HealthRecordViewModel,
@@ -66,6 +67,7 @@ fun HealthRecordScreen(
 ) {
 
     val showDateError by healthRecordViewModel.dateErrorLiveData.observeAsState()
+    val showTitleError by healthRecordViewModel.titleErrorLiveData.observeAsState()
     val uiState by healthRecordViewModel.uiState.collectAsStateWithLifecycle()
     val authState: AuthStatus by authViewModel.authStatus.collectAsStateWithLifecycle()
 
@@ -115,6 +117,13 @@ fun HealthRecordScreen(
         LaunchedEffect(key1 = Unit) {
             onShowDateError()
             sharedViewModel.hasDisplayedDateError = true
+        }
+    }
+
+    if (showTitleError == true && sharedViewModel.hasDisplayedTitleError.not()) {
+        LaunchedEffect(key1 = Unit) {
+            onShowTitleError()
+            sharedViewModel.hasDisplayedTitleError = true
         }
     }
 
