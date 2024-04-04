@@ -34,6 +34,7 @@ import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
 import ca.bc.gov.common.utils.dateString
 import ca.bc.gov.common.utils.dateTimeToInstant
+import ca.bc.gov.common.utils.dateToInstant
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTimeString
 import ca.bc.gov.common.utils.toLocalDateTimeInstant
@@ -89,17 +90,25 @@ fun MedicationWithSummaryAndPharmacyDto.toUiModel() = HealthRecordItem(
     dataSource = medicationRecord.dataSource.name
 )
 
-fun ClinicalDocumentDto.toUiModel() =
-    HealthRecordItem(
+fun ClinicalDocumentDto.toUiModel(): HealthRecordItem? {
+    val date: Instant
+    try {
+        date = serviceDate.dateToInstant()
+    } catch (e: Exception) {
+        return null
+    }
+
+    return HealthRecordItem(
         patientId = patientId,
         recordId = id,
         title = name,
         description = type,
         icon = R.drawable.ic_health_record_clinical_document,
-        date = serviceDate,
+        date = date,
         healthRecordType = HealthRecordType.CLINICAL_DOCUMENT_RECORD,
         dataSource = null
     )
+}
 
 fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
     var description = ""

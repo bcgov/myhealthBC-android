@@ -367,7 +367,7 @@ fun ClinicalDocumentResponse.toDto(): List<ClinicalDocumentDto> =
             type = it.type,
             facilityName = it.facilityName,
             discipline = it.discipline,
-            serviceDate = it.serviceDate.dateToInstant(),
+            serviceDate = it.serviceDate,
             fileId = it.fileId,
         )
     }

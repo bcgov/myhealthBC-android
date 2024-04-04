@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
-import java.time.Instant
 
 @Entity(
     tableName = "clinical_documents",
@@ -43,5 +42,5 @@ data class ClinicalDocumentEntity(
     val discipline: String,
 
     @ColumnInfo(name = "serviceDate")
-    val serviceDate: Instant,
+    val serviceDate: String,
 )
