@@ -65,9 +65,7 @@ fun HealthRecordScreen(
     filterViewModel: PatientFilterViewModel,
     sharedViewModel: SharedViewModel
 ) {
-
-    val showDateError by healthRecordViewModel.dateErrorLiveData.observeAsState()
-    val showTitleError by healthRecordViewModel.titleErrorLiveData.observeAsState()
+    val showValidationError by healthRecordViewModel.validationErrorLiveData.observeAsState()
     val uiState by healthRecordViewModel.uiState.collectAsStateWithLifecycle()
     val authState: AuthStatus by authViewModel.authStatus.collectAsStateWithLifecycle()
 
@@ -113,17 +111,17 @@ fun HealthRecordScreen(
         }
     }
 
-    if (showDateError == true && sharedViewModel.hasDisplayedDateError.not()) {
+    if (showValidationError == ValidationErrorType.DATE && sharedViewModel.hasDisplayedValidationError.not()) {
         LaunchedEffect(key1 = Unit) {
             onShowDateError()
-            sharedViewModel.hasDisplayedDateError = true
+            sharedViewModel.hasDisplayedValidationError = true
         }
     }
 
-    if (showTitleError == true && sharedViewModel.hasDisplayedTitleError.not()) {
+    if (showValidationError == ValidationErrorType.TITLE && sharedViewModel.hasDisplayedValidationError.not()) {
         LaunchedEffect(key1 = Unit) {
             onShowTitleError()
-            sharedViewModel.hasDisplayedTitleError = true
+            sharedViewModel.hasDisplayedValidationError = true
         }
     }
 
@@ -137,7 +135,7 @@ fun HealthRecordScreen(
     HealthRecordScreenContent(
         onPullToRefresh = {
             healthRecordViewModel.executeOneTimeDataFetch()
-            sharedViewModel.hasDisplayedDateError = false
+            sharedViewModel.hasDisplayedValidationError = false
         },
         onHealthRecordItemClicked = onHealthRecordItemClicked,
         onFilterClicked = onFilterClicked,

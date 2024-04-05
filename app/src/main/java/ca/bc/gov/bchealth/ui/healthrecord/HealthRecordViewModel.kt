@@ -42,13 +42,9 @@ class HealthRecordViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HealthRecordUiState())
     val uiState: StateFlow<HealthRecordUiState> = _uiState.asStateFlow()
 
-    private val dateErrorMutableLiveData = MutableLiveData<Boolean>()
-    val dateErrorLiveData: LiveData<Boolean>
-        get() = dateErrorMutableLiveData
-
-    private val titleErrorMutableLiveData = MutableLiveData<Boolean>()
-    val titleErrorLiveData: LiveData<Boolean>
-        get() = titleErrorMutableLiveData
+    private val _validationErrorMutableLiveData = MutableLiveData<ValidationErrorType>()
+    val validationErrorLiveData: LiveData<ValidationErrorType>
+        get() = _validationErrorMutableLiveData
 
     fun showTimeLine(filterString: String) = viewModelScope.launch {
         val healthRecords = generateTimeline()
@@ -309,8 +305,14 @@ class HealthRecordViewModel @Inject constructor(
                     emptyList()
                 }
 
-            dateErrorMutableLiveData.postValue(dateError)
-            titleErrorMutableLiveData.postValue(titleError)
+            val validationType = if (dateError) {
+                ValidationErrorType.DATE
+            } else if (titleError) {
+                ValidationErrorType.TITLE
+            } else {
+                ValidationErrorType.NONE
+            }
+            _validationErrorMutableLiveData.postValue(validationType)
 
             return records.sortedByDescending { it.date }
         } catch (e: Exception) {
@@ -398,4 +400,8 @@ enum class HealthRecordType {
     CLINICAL_DOCUMENT_RECORD,
     DIAGNOSTIC_IMAGING,
     BC_CANCER_SCREENING
+}
+
+enum class ValidationErrorType {
+    DATE, TITLE, NONE
 }

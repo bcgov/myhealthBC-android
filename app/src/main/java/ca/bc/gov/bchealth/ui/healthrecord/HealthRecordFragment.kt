@@ -27,7 +27,6 @@ import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.redirect
 import ca.bc.gov.bchealth.utils.showErrorSnackbar
-import ca.bc.gov.bchealth.utils.showServiceDownMessage
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -54,7 +53,7 @@ class HealthRecordFragment : BaseSecureFragment(null) {
                 title = getString(R.string.settings),
                 onClick = {
                     healthRecordViewModel.executeOneTimeDataFetch()
-                    sharedViewModel.hasDisplayedDateError = false
+                    sharedViewModel.hasDisplayedValidationError = false
                 },
                 icon = R.drawable.ic_refresh,
                 contentDescription = getString(R.string.refresh),
