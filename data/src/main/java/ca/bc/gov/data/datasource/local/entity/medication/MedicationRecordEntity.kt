@@ -6,7 +6,6 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
-import java.time.Instant
 
 /**
  * @author Pinakin Kansara
@@ -35,10 +34,8 @@ data class MedicationRecordEntity(
     @ColumnInfo(name = "practitioner_surname")
     val practitionerSurname: String?,
     @ColumnInfo(name = "dispense_date")
-    val dispenseDate: Instant,
+    val dispenseDate: String,
     val directions: String?,
-    @ColumnInfo(name = "date_entered")
-    val dateEntered: Instant,
     @ColumnInfo(name = "data_source")
     val dataSource: DataSource
 )

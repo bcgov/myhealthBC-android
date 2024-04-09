@@ -36,6 +36,7 @@ class DependentRecordsViewModel @Inject constructor(
     }
 
     private suspend fun getRecords(patientId: Long, hdid: String) {
+        var dateError = false
         try {
             dependentsRepository.requestRecordsIfNeeded(patientId, hdid)
             val dataSetFeatureFlag = mobileConfigRepository.getDependentDataSetFeatureFlags()
@@ -51,22 +52,36 @@ class DependentRecordsViewModel @Inject constructor(
             val patientWithClinicalDocuments =
                 dependentsRepository.getPatientWithClinicalDocuments(patientId)
 
-            val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
-                it.toUiModel()
+            val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.mapNotNull {
+                it.toUiModel() ?: run {
+                    dateError = true
+                    null
+                }
             }
 
-            val covidOrders = patientWithCovidOrderAndTests.covidOrderAndTests.map {
-                it.toUiModel()
+            val covidOrders = patientWithCovidOrderAndTests.covidOrderAndTests.mapNotNull {
+                it.toUiModel() ?: run {
+                    dateError = true
+                    null
+                }
             }
 
             val clinicalDocs = if (dataSetFeatureFlag.isClinicalDocumentEnabled()) {
-                patientWithClinicalDocuments.clinicalDocuments.map {
-                    it.toUiModel()
+                patientWithClinicalDocuments.clinicalDocuments.mapNotNull {
+                    it.toUiModel() ?: run {
+                        dateError = true
+                        null
+                    }
                 }
             } else emptyList()
 
             val immunizationRecords =
-                patientWithImmunizationRecordAndForecast.immunizationRecords.map { it.toUiModel() }
+                patientWithImmunizationRecordAndForecast.immunizationRecords.mapNotNull {
+                    it.toUiModel() ?: run {
+                        dateError = true
+                        null
+                    }
+                }
 
             val result = (covidOrders + immunizationRecords + labTestRecords + clinicalDocs)
                 .sortedByDescending { it.date }

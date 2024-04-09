@@ -6,7 +6,6 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
-import java.time.Instant
 
 /*
 * Created by amit_metri on 27,June,2022
@@ -48,13 +47,13 @@ data class SpecialAuthorityEntity(
     val prescriberLastName: String? = null,
 
     @ColumnInfo(name = "requested_date")
-    val requestedDate: Instant? = null,
+    val requestedDate: String? = null,
 
     @ColumnInfo(name = "effective_date")
-    val effectiveDate: Instant? = null,
+    val effectiveDate: String? = null,
 
     @ColumnInfo(name = "expiry_date")
-    val expiryDate: Instant? = null,
+    val expiryDate: String? = null,
 
     @ColumnInfo(name = "data_source")
     val dataSource: DataSource = DataSource.BCSC

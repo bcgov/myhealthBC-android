@@ -6,7 +6,6 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
-import java.time.Instant
 
 /**
  * @author Pinakin Kansara
@@ -31,7 +30,7 @@ data class ImmunizationRecordEntity(
     @ColumnInfo(name = "immunization_id")
     val immunizationId: String? = null,
     @ColumnInfo(name = "date_of_immunization")
-    val dateOfImmunization: Instant,
+    val dateOfImmunization: String,
     val status: String? = null,
     @ColumnInfo(name = "valid")
     val isValid: Boolean,

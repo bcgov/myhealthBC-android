@@ -13,6 +13,7 @@ import javax.inject.Inject
 class SharedViewModel @Inject constructor() : ViewModel() {
 
     var displayImmunizationBanner = true
+    var hasDisplayedValidationError = false
 
     private val _modifiedRecordId: MutableLiveData<Long> = MutableLiveData()
     val modifiedRecordId: LiveData<Long>

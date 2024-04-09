@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
-import java.time.Instant
 
 @Entity(
     tableName = "diagnostic_imaging",
@@ -26,7 +25,7 @@ data class DiagnosticImagingDataEntity(
     @ColumnInfo(name = "diagnostic_imaging_id")
     val diagnosticImagingId: String?,
     @ColumnInfo(name = "exam_date")
-    val examDate: Instant?,
+    val examDate: String?,
     @ColumnInfo(name = "file_id")
     val fileId: String?,
     @ColumnInfo(name = "exam_status")

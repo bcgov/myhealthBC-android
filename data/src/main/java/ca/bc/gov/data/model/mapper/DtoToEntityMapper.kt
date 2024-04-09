@@ -123,7 +123,6 @@ fun MedicationRecordDto.toEntity() = MedicationRecordEntity(
     practitionerSurname,
     dispenseDate,
     directions,
-    dateEntered,
     dataSource
 )
 
@@ -135,7 +134,6 @@ fun MedicationSummaryDto.toEntity() = MedicationSummaryEntity(
     genericName,
     quantity,
     maxDailyDosage,
-    drugDiscontinueDate,
     form,
     manufacturer,
     strength,
@@ -200,7 +198,6 @@ fun CovidOrderDto.toEntity() = CovidOrderEntity(
     reportingLab = reportingLab,
     location = location,
     ormOrOru = ormOrOru,
-    messageDateTime = messageDateTime,
     messageId = messageId,
     additionalData = additionalData,
     reportAvailable = reportAvailable
@@ -216,8 +213,6 @@ fun CovidTestDto.toEntity(orderId: Long) = CovidTestEntity(
     labResultOutcome,
     resultDescription = resultDescription.joinToString("|"),
     resultLink,
-    receivedDateTime,
-    resultDateTime,
     loInc,
     loIncName
 )
@@ -231,10 +226,8 @@ fun ImmunizationForecastDto.toEntity() = ImmunizationForecastEntity(
     id,
     immunizationRecordId,
     recommendationId,
-    createDate,
     status?.text,
     displayName,
-    eligibleDate,
     dueDate
 )
 

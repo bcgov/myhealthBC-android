@@ -79,7 +79,7 @@ abstract class BaseDataBaseTest {
     protected fun getLabOrder(
         id: Long = 99999L,
         patientId: Long = 1,
-        collectionDateTime: Instant = Instant.now(),
+        collectionDateTime: String = "",
         reportAvailable: Boolean = false,
         commonName: String? = "Test Name",
         orderingProvider: String? = "Ordering Provider",
@@ -138,7 +138,10 @@ abstract class BaseDataBaseTest {
             firstName = "",
             lastName = "",
             physicalAddress = null,
-            mailingAddress = null
+            mailingAddress = null,
+            preferredName = null,
+            commonName = null,
+            legalName = null,
         )
 
     protected fun getPatient2() =
@@ -152,7 +155,10 @@ abstract class BaseDataBaseTest {
             firstName = "",
             lastName = "",
             physicalAddress = null,
-            mailingAddress = null
+            mailingAddress = null,
+            preferredName = null,
+            commonName = null,
+            legalName = null,
         )
 
     protected fun getVaccineRecord1() = VaccineRecordEntity(
@@ -181,9 +187,8 @@ abstract class BaseDataBaseTest {
         prescriptionIdentifier = "Practitioner",
         prescriptionStatus = "Status",
         practitionerSurname = "Practitioner Surname",
-        dispenseDate = Instant.now(),
+        dispenseDate = "",
         directions = "Directions",
-        dateEntered = Instant.now(),
         dataSource = DataSource.BCSC
     )
 

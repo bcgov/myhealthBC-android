@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
-import java.time.Instant
 
 /**
  * @author pinakin.kansara
@@ -30,9 +29,9 @@ data class BcCancerScreeningDataEntity(
     @ColumnInfo(name = "bc_cancer_screening_id")
     val bcCancerScreeningId: String?,
     @ColumnInfo(name = "result_date")
-    val resultDateTime: Instant?,
+    val resultDateTime: String?,
     @ColumnInfo("exam_date")
-    val eventDateTime: Instant?,
+    val eventDateTime: String?,
     @ColumnInfo("file_id")
     val fileId: String?,
     @ColumnInfo("program_name")

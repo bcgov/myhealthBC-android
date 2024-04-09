@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import java.time.Instant
 
 /**
  * @author Pinakin Kansara
@@ -35,8 +34,6 @@ data class MedicationSummaryEntity(
     val quantity: Float,
     @ColumnInfo(name = "max_daily_dosage")
     val maxDailyDosage: Float,
-    @ColumnInfo(name = "drug_discontinue_date")
-    val drugDiscontinueDate: Instant?,
     val form: String?,
     val manufacturer: String?,
     val strength: String?,

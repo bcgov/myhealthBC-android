@@ -1,6 +1,8 @@
 package ca.bc.gov.bchealth.ui.healthrecord
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.bchealth.model.mapper.toUiModel
 import ca.bc.gov.bchealth.ui.BaseViewModel
@@ -40,12 +42,17 @@ class HealthRecordViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HealthRecordUiState())
     val uiState: StateFlow<HealthRecordUiState> = _uiState.asStateFlow()
 
+    private val _validationErrorMutableLiveData = MutableLiveData<ValidationErrorType>()
+    val validationErrorLiveData: LiveData<ValidationErrorType>
+        get() = _validationErrorMutableLiveData
+
     fun showTimeLine(filterString: String) = viewModelScope.launch {
         val healthRecords = generateTimeline()
 
         val timeLineFilters = mutableListOf<String>()
         val filteredResult = mutableListOf<HealthRecordItem>()
         var showBCCancerBanner = false
+        var showDiagnosticImagingBanner = false
         if (filterString.isNotBlank()) {
             val filterQuery = filterString.split(",")
 
@@ -66,7 +73,11 @@ class HealthRecordViewModel @Inject constructor(
             timeLineFilters +=
                 filterQuery.mapNotNull { query -> TimelineTypeFilter.findByName(query)?.recordType?.name }
 
-            showBCCancerBanner = timeLineFilters.size == 1 && !timeLineFilters.find { filter -> filter == HealthRecordType.BC_CANCER_SCREENING.name }.isNullOrBlank()
+            showBCCancerBanner =
+                showRecordBanner(timeLineFilters, HealthRecordType.BC_CANCER_SCREENING.name)
+
+            showDiagnosticImagingBanner =
+                showRecordBanner(timeLineFilters, HealthRecordType.DIAGNOSTIC_IMAGING.name)
 
             filteredResult += if (timeLineFilters.isNotEmpty()) {
                 listFilteredBySearch.filter { recordType -> timeLineFilters.contains(recordType.healthRecordType.name) }
@@ -80,7 +91,7 @@ class HealthRecordViewModel @Inject constructor(
             }
         }
 
-        _uiState.update { it ->
+        _uiState.update {
             it.copy(
                 isLoading = false,
                 healthRecords = filteredResult,
@@ -102,10 +113,16 @@ class HealthRecordViewModel @Inject constructor(
                     }
                 },
                 requiredProtectiveWordVerification = !isShowMedicationRecords(),
-                showBCCancerBanner = showBCCancerBanner
+                showBCCancerBanner = showBCCancerBanner,
+                showDiagnosticImagingBanner = showDiagnosticImagingBanner,
             )
         }
     }
+
+    private fun showRecordBanner(timeLineFilters: List<String>, recordName: String) =
+        timeLineFilters.size == 1 && !timeLineFilters.find { filter ->
+            filter == recordName
+        }.isNullOrBlank()
 
     private fun getDateFilter(fromDate: String?, toDate: String?): String? {
         if (fromDate.isNullOrBlank() && toDate.isNullOrBlank()) {
@@ -126,15 +143,27 @@ class HealthRecordViewModel @Inject constructor(
         }
     }
 
-    private fun getFilterByDate(healthRecords: List<HealthRecordItem>, fromDate: String?, toDate: String?): MutableList<HealthRecordItem> {
+    private fun getFilterByDate(
+        healthRecords: List<HealthRecordItem>,
+        fromDate: String?,
+        toDate: String?
+    ): MutableList<HealthRecordItem> {
         return if (!fromDate.isNullOrBlank() && !toDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.dateToInstant().toStartOfDayInstant() && it.date.toStartOfDayInstant() <= toDate.dateToInstant().toStartOfDayInstant() }
+            healthRecords.filter {
+                it.date.toStartOfDayInstant() >= fromDate.dateToInstant()
+                    .toStartOfDayInstant() && it.date.toStartOfDayInstant() <= toDate.dateToInstant()
+                    .toStartOfDayInstant()
+            }
                 .toMutableList()
         } else if (!fromDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() >= fromDate.dateToInstant().toStartOfDayInstant() }
+            healthRecords.filter {
+                it.date.toStartOfDayInstant() >= fromDate.dateToInstant().toStartOfDayInstant()
+            }
                 .toMutableList()
         } else if (!toDate.isNullOrBlank()) {
-            healthRecords.filter { it.date.toStartOfDayInstant() <= toDate.dateToInstant().toStartOfDayInstant() }.toMutableList()
+            healthRecords.filter {
+                it.date.toStartOfDayInstant() <= toDate.dateToInstant().toStartOfDayInstant()
+            }.toMutableList()
         } else {
             healthRecords.toMutableList()
         }
@@ -170,34 +199,96 @@ class HealthRecordViewModel @Inject constructor(
 
             val patientWithData = patientRepository.getPatientWithData(patientId)
 
-            val hospitalVisits = patientRepository.getPatientWithHospitalVisits(patientId).map {
-                it.toUiModel()
-            }
-            val clinicalDocuments = patientRepository.getPatientWithClinicalDocuments(patientId)
-                .map { it.toUiModel() }
+            var dateError = false
 
-            val medicationRecords = patientAndMedicationRecords?.medicationRecord?.map {
-                it.toUiModel()
+            val hospitalVisits =
+                patientRepository.getPatientWithHospitalVisits(patientId).mapNotNull {
+                    it.toUiModel() ?: run {
+                        dateError = true
+                        null
+                    }
+                }
+
+            val clinicalDocuments = patientRepository.getPatientWithClinicalDocuments(patientId)
+                .mapNotNull {
+                    it.toUiModel() ?: run {
+                        dateError = true
+                        null
+                    }
+                }
+
+            val medicationRecords = patientAndMedicationRecords?.medicationRecord?.mapNotNull {
+                it.toUiModel() ?: run {
+                    dateError = true
+                    null
+                }
             }
-            val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.map {
-                it.toUiModel()
+
+            val labTestRecords = patientWithLabOrdersAndLabTests.labOrdersWithLabTests.mapNotNull {
+                it.toUiModel() ?: run {
+                    dateError = true
+                    null
+                }
             }
-            val covidOrders =
-                patientWithCovidOrderAndTests.covidOrderAndTests.map { it.toUiModel() }
+
+            val covidOrders = patientWithCovidOrderAndTests.covidOrderAndTests
+                .mapNotNull {
+                    it.toUiModel() ?: run {
+                        dateError = true
+                        null
+                    }
+                }
 
             val immunizationRecords =
-                patientWithImmunizationRecordAndForecast.immunizationRecords.map { it.toUiModel() }
+                patientWithImmunizationRecordAndForecast.immunizationRecords.mapNotNull {
+                    it.toUiModel() ?: run {
+                        dateError = true
+                        null
+                    }
+                }
 
-            val healthVisits = patientWithHealthVisits.healthVisits.map {
-                it.toUiModel()
+            val healthVisits = patientWithHealthVisits.healthVisits.mapNotNull {
+                it.toUiModel() ?: run {
+                    dateError = true
+                    null
+                }
             }
-            val specialAuthorities = patientWithSpecialAuthorities.specialAuthorities.filter {
-                it.requestedDate != null
-            }.map { it.toUiModel() }
 
-            val diagnosticImaging = patientWithData.toUiModel()
+            var titleError = false
+            val specialAuthorities = patientWithSpecialAuthorities.specialAuthorities.mapNotNull {
+                var validMapper = true
 
-            val bcCancerScreening = patientWithData.bcCancerScreeningDataList.map { it.toUiModel() }
+                if (it.drugName.isNullOrBlank()) {
+                    titleError = true
+                    validMapper = false
+                }
+
+                val uiModel = it.toUiModel()
+                if (uiModel == null) {
+                    dateError = true
+                    validMapper = false
+                }
+
+                if (validMapper) {
+                    uiModel
+                } else {
+                    null
+                }
+            }
+
+            val diagnosticImaging = patientWithData.diagnosticImagingDataList.mapNotNull {
+                it.toUiModel() ?: run {
+                    dateError = true
+                    null
+                }
+            }
+
+            val bcCancerScreening = patientWithData.bcCancerScreeningDataList.mapNotNull {
+                it.toUiModel() ?: run {
+                    dateError = true
+                    null
+                }
+            }
 
             val records = covidOrders +
                 labTestRecords +
@@ -213,6 +304,16 @@ class HealthRecordViewModel @Inject constructor(
                 } else {
                     emptyList()
                 }
+
+            val validationType = if (dateError) {
+                ValidationErrorType.DATE
+            } else if (titleError) {
+                ValidationErrorType.TITLE
+            } else {
+                ValidationErrorType.NONE
+            }
+            _validationErrorMutableLiveData.postValue(validationType)
+
             return records.sortedByDescending { it.date }
         } catch (e: Exception) {
             Log.d("Timeline", "Error in generating timeline ${e.message}")
@@ -273,7 +374,8 @@ data class HealthRecordUiState(
     val filters: List<String> = emptyList(),
     val isHgServicesUp: Boolean = true,
     val isConnected: Boolean = true,
-    val showBCCancerBanner: Boolean = false
+    val showBCCancerBanner: Boolean = false,
+    val showDiagnosticImagingBanner: Boolean = false,
 )
 
 data class HealthRecordItem(
@@ -298,4 +400,8 @@ enum class HealthRecordType {
     CLINICAL_DOCUMENT_RECORD,
     DIAGNOSTIC_IMAGING,
     BC_CANCER_SCREENING
+}
+
+enum class ValidationErrorType {
+    DATE, TITLE, NONE
 }

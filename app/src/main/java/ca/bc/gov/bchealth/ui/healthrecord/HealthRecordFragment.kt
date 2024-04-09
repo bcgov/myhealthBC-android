@@ -26,6 +26,7 @@ import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.redirect
+import ca.bc.gov.bchealth.utils.showErrorSnackbar
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -50,7 +51,10 @@ class HealthRecordFragment : BaseSecureFragment(null) {
         val menuItems = mutableListOf<TopAppBarActionItem>(
             TopAppBarActionItem.IconActionItem.ShowIfRoom(
                 title = getString(R.string.settings),
-                onClick = { healthRecordViewModel.executeOneTimeDataFetch() },
+                onClick = {
+                    healthRecordViewModel.executeOneTimeDataFetch()
+                    sharedViewModel.hasDisplayedValidationError = false
+                },
                 icon = R.drawable.ic_refresh,
                 contentDescription = getString(R.string.refresh),
             ),
@@ -78,6 +82,8 @@ class HealthRecordFragment : BaseSecureFragment(null) {
                         onLinkClick = ::onLinkClick,
                         onNetworkError = ::onNetworkError,
                         onServiceDownError = ::onServiceDownError,
+                        onShowDateError = ::onShowDateError,
+                        onShowTitleError = ::onShowTitleError,
                         Modifier
                             .statusBarsPadding()
                             .navigationBarsPadding()
@@ -207,6 +213,18 @@ class HealthRecordFragment : BaseSecureFragment(null) {
 
     private fun onServiceDownError() {
         showServiceDownMessage()
+    }
+
+    private fun onShowDateError() {
+        view?.let {
+            it.showErrorSnackbar(getString(R.string.date_format_error_message))
+        }
+    }
+
+    private fun onShowTitleError() {
+        view?.let {
+            it.showErrorSnackbar(getString(R.string.partial_records_error_message))
+        }
     }
 
     private fun onLinkClick(link: String) {

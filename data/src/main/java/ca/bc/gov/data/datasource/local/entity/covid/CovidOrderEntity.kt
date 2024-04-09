@@ -6,7 +6,6 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.bc.gov.common.model.DataSource
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
-import java.time.Instant
 
 /**
  * @author Pinakin Kansara
@@ -40,8 +39,6 @@ data class CovidOrderEntity(
     val location: String?,
     @ColumnInfo(name = "orm_or_oru")
     val ormOrOru: String?,
-    @ColumnInfo(name = "message_date_time")
-    val messageDateTime: Instant,
     @ColumnInfo(name = "message_id")
     val messageId: String?,
     @ColumnInfo(name = "additional_data")

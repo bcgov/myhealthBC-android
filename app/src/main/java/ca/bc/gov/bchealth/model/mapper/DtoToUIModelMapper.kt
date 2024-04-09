@@ -25,20 +25,24 @@ import ca.bc.gov.common.model.immunization.ImmunizationRecommendationsDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPatientDto
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
-import ca.bc.gov.common.model.patient.PatientWithDataDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.services.BcCancerScreeningDataDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
 import ca.bc.gov.common.model.test.CovidOrderWithCovidTestDto
+import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.utils.dateString
+import ca.bc.gov.common.utils.dateTimeToInstant
+import ca.bc.gov.common.utils.dateToInstant
 import ca.bc.gov.common.utils.toDate
+import ca.bc.gov.common.utils.toDateTime
 import ca.bc.gov.common.utils.toDateTimeString
 import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.common.utils.toPST
 import java.time.Instant
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
 
@@ -77,39 +81,66 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
     )
 }
 
-fun MedicationWithSummaryAndPharmacyDto.toUiModel() = HealthRecordItem(
-    patientId = medicationRecord.patientId,
-    recordId = medicationRecord.id,
-    title = medicationSummary.brandName ?: "",
-    icon = R.drawable.ic_health_record_medication,
-    description = medicationSummary.genericName.orEmpty() + " • " + medicationRecord.dispenseDate.toDate(),
-    date = medicationRecord.dispenseDate,
-    healthRecordType = HealthRecordType.MEDICATION_RECORD,
-    dataSource = medicationRecord.dataSource.name
-)
+fun MedicationWithSummaryAndPharmacyDto.toUiModel(): HealthRecordItem? {
+    val date: Instant
+    val dateStr: String
+    try {
+        date = medicationRecord.dispenseDate.dateToInstant()
+        dateStr = date.toDate()
+    } catch (e: Exception) {
+        return null
+    }
+    return HealthRecordItem(
+        patientId = medicationRecord.patientId,
+        recordId = medicationRecord.id,
+        title = medicationSummary.brandName ?: "",
+        icon = R.drawable.ic_health_record_medication,
+        description = medicationSummary.genericName.orEmpty() + " • " + dateStr,
+        date = date,
+        healthRecordType = HealthRecordType.MEDICATION_RECORD,
+        dataSource = medicationRecord.dataSource.name
+    )
+}
 
-fun ClinicalDocumentDto.toUiModel() =
-    HealthRecordItem(
+fun ClinicalDocumentDto.toUiModel(): HealthRecordItem? {
+    val date: Instant
+    try {
+        date = serviceDate.dateToInstant()
+    } catch (e: Exception) {
+        return null
+    }
+
+    return HealthRecordItem(
         patientId = patientId,
         recordId = id,
         title = name,
         description = type,
         icon = R.drawable.ic_health_record_clinical_document,
-        date = serviceDate,
+        date = date,
         healthRecordType = HealthRecordType.CLINICAL_DOCUMENT_RECORD,
         dataSource = null
     )
+}
 
-fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem {
+fun LabOrderWithLabTestDto.toUiModel(): HealthRecordItem? {
+    val timelineDateTime: Instant
+    try {
+        timelineDateTime = labOrder.timelineDateTime.dateTimeToInstant()
+        timelineDateTime.dateString()
+        labOrder.collectionDateTime?.dateTimeToInstant()
+    } catch (e: Exception) {
+        return null
+    }
+
     var description = ""
     description = mapOrderStatus(labOrder.orderStatus ?: "").plus(" • ")
-        .plus(labOrder.timelineDateTime.dateString())
+        .plus(timelineDateTime.dateString())
     return HealthRecordItem(
         patientId = labOrder.patientId,
         title = labOrder.commonName ?: "",
         recordId = labOrder.id,
         icon = R.drawable.ic_lab_test,
-        date = labOrder.timelineDateTime,
+        date = timelineDateTime,
         description = description,
         healthRecordType = HealthRecordType.LAB_RESULT_RECORD,
         dataSource = labOrder.dataSorce.name
@@ -121,72 +152,103 @@ fun mapOrderStatus(orderStatus: String): String {
         orderStatus.equals("Held", true) -> {
             "Pending"
         }
+
         orderStatus.equals("Pending", true) -> {
             "Pending"
         }
+
         orderStatus.equals("Partial", true) -> {
             "Pending"
         }
+
         orderStatus.equals("Completed", true) -> {
             "Completed"
         }
+
         orderStatus.equals("Cancelled", true) -> {
             "Cancelled"
         }
+
         else -> {
             orderStatus
         }
     }
 }
 
-fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem {
+fun CovidOrderWithCovidTestDto.toUiModel(): HealthRecordItem? {
+    val covidTestResult: CovidTestDto
+    val dateStr: String
+    val datePST: Instant
+    try {
+        covidTestResult = covidTests.maxByOrNull {
+            it.collectedDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+        } ?: return null
 
-    val covidTestResult = covidTests.maxByOrNull { it.collectedDateTime }
-    val testOutcome = if (covidTestResult?.testStatus.equals("Pending")) {
-        covidTestResult?.testStatus
+        val date =
+            covidTestResult.collectedDateTime.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+        dateStr = date.dateString()
+        datePST = date.toPST()
+    } catch (e: Exception) {
+        return null
+    }
+
+    val testOutcome = if (covidTestResult.testStatus.equals("Pending")) {
+        covidTestResult.testStatus
     } else {
-        when (covidTestResult?.labResultOutcome) {
+        when (covidTestResult.labResultOutcome) {
             CovidTestResultStatus.Indeterminate.name,
             CovidTestResultStatus.IndeterminateResult.name -> {
                 CovidTestResultStatus.Indeterminate.name
             }
+
             CovidTestResultStatus.Cancelled.name -> {
                 CovidTestResultStatus.Cancelled.name
             }
+
             CovidTestResultStatus.Negative.name -> {
                 CovidTestResultStatus.Negative.name
             }
+
             CovidTestResultStatus.Positive.name -> {
                 CovidTestResultStatus.Positive.name
             }
+
             else -> {
                 CovidTestResultStatus.Indeterminate.name
             }
         }
     }
-    val date = covidTestResult?.collectedDateTime ?: Instant.now()
 
     return HealthRecordItem(
         patientId = covidOrder.patientId,
         recordId = covidOrder.id,
         title = "COVID-19 test result",
-        description = "$testOutcome • ${date.dateString()}",
+        description = "$testOutcome • $dateStr",
         icon = R.drawable.ic_health_record_covid_test,
-        date = date.toPST(),
+        date = datePST,
         healthRecordType = HealthRecordType.COVID_TEST_RECORD,
         dataSource = covidOrder.dataSource.name
     )
 }
 
-fun ImmunizationRecordWithForecastDto.toUiModel(): HealthRecordItem {
+fun ImmunizationRecordWithForecastDto.toUiModel(): HealthRecordItem? {
+    val dateOfImmunization: Instant
+    val dateStr: String
+    try {
+        dateOfImmunization = immunizationRecord.dateOfImmunization.dateTimeToInstant()
+        dateStr = dateOfImmunization.dateString()
+        immunizationForecast?.dueDate?.dateToInstant()?.dateString()
+    } catch (e: Exception) {
+        return null
+    }
 
     return HealthRecordItem(
         patientId = immunizationRecord.patientId,
         recordId = immunizationRecord.id,
         title = immunizationRecord.immunizationName ?: "",
-        description = immunizationRecord.dateOfImmunization.dateString(),
+        description = dateStr,
         icon = R.drawable.ic_health_record_vaccine,
-        date = immunizationRecord.dateOfImmunization,
+        date = dateOfImmunization,
         healthRecordType = HealthRecordType.IMMUNIZATION_RECORD,
         dataSource = immunizationRecord.dataSorce.name
     )
@@ -196,9 +258,11 @@ fun getHealthPassStateResources(state: ImmunizationStatus?): PassState = when (s
     ImmunizationStatus.FULLY_IMMUNIZED -> {
         PassState(R.color.status_green, R.string.vaccinated, R.drawable.ic_check_mark)
     }
+
     ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
         PassState(R.color.blue, R.string.partially_vaccinated, 0)
     }
+
     else -> {
         PassState(R.color.grey, R.string.no_record, 0)
     }
@@ -209,12 +273,14 @@ fun ImmunizationRecordWithForecastAndPatientDto.toUiModel(): ImmunizationRecordD
     return ImmunizationRecordDetailItem(
         id = immunizationRecordWithForecast.immunizationRecord.id,
         status = immunizationRecordWithForecast.immunizationRecord.status,
-        dueDate = immunizationRecordWithForecast.immunizationForecast?.dueDate?.dateString(),
+        dueDate = immunizationRecordWithForecast.immunizationForecast?.dueDate?.dateToInstant()
+            ?.dateString(),
         name = immunizationRecordWithForecast.immunizationRecord.immunizationName,
         doseDetails = listOf(
             ImmunizationDoseDetailItem(
                 id = immunizationRecordWithForecast.immunizationRecord.id,
-                date = immunizationRecordWithForecast.immunizationRecord.dateOfImmunization.dateString(),
+                date = immunizationRecordWithForecast.immunizationRecord.dateOfImmunization.dateTimeToInstant()
+                    .dateString(),
                 productName = immunizationRecordWithForecast.immunizationRecord.productName,
                 immunizingAgent = immunizationRecordWithForecast.immunizationRecord.agentName,
                 providerOrClinicName = immunizationRecordWithForecast.immunizationRecord.provideOrClinic,
@@ -225,40 +291,75 @@ fun ImmunizationRecordWithForecastAndPatientDto.toUiModel(): ImmunizationRecordD
     )
 }
 
-fun HealthVisitsDto.toUiModel() =
-    HealthRecordItem(
+fun HealthVisitsDto.toUiModel(): HealthRecordItem? {
+    val date: Instant
+    val dateStr: String
+
+    try {
+        date = encounterDate.dateToInstant()
+        dateStr = date.dateString()
+    } catch (e: Exception) {
+        return null
+    }
+    return HealthRecordItem(
         patientId = patientId,
         recordId = healthVisitId,
         title = specialtyDescription.orEmpty(),
-        description = practitionerName.orEmpty() + " • " + encounterDate.dateString(),
+        description = practitionerName.orEmpty() + " • " + dateStr,
         icon = R.drawable.ic_health_record_health_visit,
-        date = encounterDate,
+        date = date,
         healthRecordType = HealthRecordType.HEALTH_VISIT_RECORD,
         dataSource = dataSource.name
     )
+}
 
-fun SpecialAuthorityDto.toUiModel() = HealthRecordItem(
-    patientId = patientId,
-    recordId = specialAuthorityId,
-    title = drugName.orEmpty(),
-    description = requestStatus.orEmpty() + " • " + requestedDate?.dateString(),
-    icon = R.drawable.ic_health_record_special_authority,
-    date = requestedDate!!,
-    healthRecordType = HealthRecordType.SPECIAL_AUTHORITY_RECORD,
-    dataSource = dataSource.name
-)
+fun SpecialAuthorityDto.toUiModel(): HealthRecordItem? {
+    val date: Instant
+    val dateStr: String
 
-fun HospitalVisitDto.toUiModel() =
-    HealthRecordItem(
+    try {
+        date = requestedDate?.dateToInstant() ?: return null
+        dateStr = date.dateString()
+
+        effectiveDate?.dateToInstant()?.dateString()
+        expiryDate?.dateToInstant()?.dateString()
+    } catch (e: Exception) {
+        return null
+    }
+
+    return HealthRecordItem(
+        patientId = patientId,
+        recordId = specialAuthorityId,
+        title = drugName.orEmpty(),
+        description = requestStatus.orEmpty() + " • " + dateStr,
+        icon = R.drawable.ic_health_record_special_authority,
+        date = date,
+        healthRecordType = HealthRecordType.SPECIAL_AUTHORITY_RECORD,
+        dataSource = dataSource.name
+    )
+}
+
+fun HospitalVisitDto.toUiModel(): HealthRecordItem? {
+
+    val date: Instant
+    try {
+        date = visitDate.dateTimeToInstant()
+        dischargeDate?.dateTimeToInstant()
+    } catch (e: Exception) {
+        return null
+    }
+
+    return HealthRecordItem(
         patientId = patientId,
         recordId = id,
         icon = R.drawable.ic_health_record_hospital_visit,
         title = location,
         description = visitType,
-        date = visitDate,
+        date = date,
         healthRecordType = HealthRecordType.HOSPITAL_VISITS_RECORD,
         dataSource = null
     )
+}
 
 fun ImmunizationRecommendationsDto.toUiModel() = RecommendationDetailItem(
     title = this.recommendedVaccinations.orPlaceholder(),
@@ -290,7 +391,7 @@ fun CommentDto.toUiModel() = Comment(
 private fun ImmunizationForecastDto.toUiModel() = ForecastDetailItem(
     name = this.displayName.orPlaceholder(),
     status = this.status,
-    date = this.dueDate.dateString(),
+    date = this.dueDate.dateToInstant().dateString(),
 )
 
 enum class CovidTestResultStatus {
@@ -302,28 +403,57 @@ enum class CovidTestResultStatus {
     Pending
 }
 
-private fun DiagnosticImagingDataDto.toUiModel() = HealthRecordItem(
-    recordId = _id,
-    patientId = patientId,
-    icon = R.drawable.ic_health_record_diagnostic_imaging,
-    title = modality.orEmpty(),
-    description = if (isUpdated) { "Updated" } else { examStatus } + " • " + examDate?.dateString(),
-    date = examDate!!,
-    healthRecordType = HealthRecordType.DIAGNOSTIC_IMAGING,
-    dataSource = null
-)
-
-fun PatientWithDataDto.toUiModel(): List<HealthRecordItem> {
-    return diagnosticImagingDataList.map { it.toUiModel() }
+fun DiagnosticImagingDataDto.toUiModel(): HealthRecordItem? {
+    val date: Instant
+    val dateStr: String
+    try {
+        date = examDate?.dateToInstant() ?: return null
+        dateStr = date.dateString()
+    } catch (e: Exception) {
+        return null
+    }
+    return HealthRecordItem(
+        recordId = _id,
+        patientId = patientId,
+        icon = R.drawable.ic_health_record_diagnostic_imaging,
+        title = modality.orEmpty(),
+        description = if (isUpdated) {
+            "Updated"
+        } else {
+            examStatus
+        } + " • " + dateStr,
+        date = date,
+        healthRecordType = HealthRecordType.DIAGNOSTIC_IMAGING,
+        dataSource = null
+    )
 }
 
-fun BcCancerScreeningDataDto.toUiModel() = HealthRecordItem(
-    recordId = _id,
-    patientId = patientId,
-    icon = R.drawable.ic_health_record_bc_cancer_screening,
-    title = if (eventType == "Recall") { "BC Cancer Screening Reminder Letter" } else { "BC Cancer Screening Result Letter" },
-    description = programName + " • " + if (eventType == "Recall") { eventDateTime } else { resultDateTime }?.dateString(),
-    date = if (eventType == "Recall") { eventDateTime !! } else { resultDateTime!! },
-    healthRecordType = HealthRecordType.BC_CANCER_SCREENING,
-    dataSource = null
-)
+fun BcCancerScreeningDataDto.toUiModel(): HealthRecordItem? {
+    val date: Instant
+    val dateStr: String
+    val title: String
+    try {
+        date = if (eventType == "Recall") {
+            title = "BC Cancer Screening Reminder Letter"
+            eventDateTime!!.dateTimeToInstant()
+        } else {
+            title = "BC Cancer Screening Result Letter"
+            resultDateTime!!.dateTimeToInstant()
+        }
+
+        dateStr = date.dateString()
+    } catch (e: Exception) {
+        return null
+    }
+
+    return HealthRecordItem(
+        recordId = _id,
+        patientId = patientId,
+        icon = R.drawable.ic_health_record_bc_cancer_screening,
+        title = title,
+        description = "$programName • $dateStr",
+        date = date,
+        healthRecordType = HealthRecordType.BC_CANCER_SCREENING,
+        dataSource = null
+    )
+}

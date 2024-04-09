@@ -23,7 +23,9 @@ import ca.bc.gov.common.model.patient.PatientDto
 import ca.bc.gov.common.model.test.CovidOrderDto
 import ca.bc.gov.common.model.test.CovidTestDto
 import ca.bc.gov.common.utils.dateTimeString
+import ca.bc.gov.common.utils.toDateTime
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.format.DateTimeFormatter
 
 private const val COVID_ORDER_ID = "COVID_ORDER_ID"
 private const val COVID_TEST_ID = "COVID_TEST_ID"
@@ -99,10 +101,9 @@ class CovidTestResultFragment(private val itemClickListener: ItemClickListener) 
                 getString(R.string.tested_on)
                     .plus(" ")
                     .plus(
-                        covidTest?.collectedDateTime?.dateTimeString()
+                        covidTest?.collectedDateTime?.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME)?.dateTimeString()
                     )
-            tvDot.text =
-                covidTest?.collectedDateTime?.dateTimeString().showIfNullOrBlank(requireContext())
+            tvDot.text = covidTest?.collectedDateTime?.toDateTime(DateTimeFormatter.ISO_OFFSET_DATE_TIME)?.dateTimeString().showIfNullOrBlank(requireContext())
             tvTestStatus.text = covidTest?.testStatus.showIfNullOrBlank(requireContext())
             tvTypeName.text = covidTest?.testType.showIfNullOrBlank(requireContext())
             tvProviderClinic.text = covidOrder.reportingLab.showIfNullOrBlank(requireContext())

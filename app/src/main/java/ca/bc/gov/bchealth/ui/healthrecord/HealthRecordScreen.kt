@@ -27,12 +27,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.work.WorkManager
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.compose.BasePreview
-import ca.bc.gov.bchealth.compose.component.BCCancerBannerUi
 import ca.bc.gov.bchealth.compose.component.EmptyStateUI
 import ca.bc.gov.bchealth.compose.component.HGCircularProgressIndicator
 import ca.bc.gov.bchealth.compose.component.HealthRecordItemUI
 import ca.bc.gov.bchealth.compose.component.HorizontalFilterGroupUI
 import ca.bc.gov.bchealth.compose.component.ImmunizationBannerUI
+import ca.bc.gov.bchealth.compose.component.RecordFilterBannerUi
 import ca.bc.gov.bchealth.compose.component.SearchBarUI
 import ca.bc.gov.bchealth.compose.theme.HealthGatewayTheme
 import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
@@ -40,6 +40,7 @@ import ca.bc.gov.bchealth.ui.login.AuthStatus
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.ui.login.LoginStatus
 import ca.bc.gov.bchealth.utils.URL_BC_CANCER_BANNER
+import ca.bc.gov.bchealth.utils.URL_DIAGNOSTIC_IMAGING_BANNER
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.repository.bcsc.BACKGROUND_AUTH_RECORD_FETCH_WORK_NAME
@@ -56,13 +57,15 @@ fun HealthRecordScreen(
     onLinkClick: (String) -> Unit,
     onNetworkError: () -> Unit,
     onServiceDownError: () -> Unit,
+    onShowDateError: () -> Unit,
+    onShowTitleError: () -> Unit,
     modifier: Modifier = Modifier,
     authViewModel: BcscAuthViewModel,
     healthRecordViewModel: HealthRecordViewModel,
     filterViewModel: PatientFilterViewModel,
     sharedViewModel: SharedViewModel
 ) {
-
+    val showValidationError by healthRecordViewModel.validationErrorLiveData.observeAsState()
     val uiState by healthRecordViewModel.uiState.collectAsStateWithLifecycle()
     val authState: AuthStatus by authViewModel.authStatus.collectAsStateWithLifecycle()
 
@@ -108,6 +111,20 @@ fun HealthRecordScreen(
         }
     }
 
+    if (showValidationError == ValidationErrorType.DATE && sharedViewModel.hasDisplayedValidationError.not()) {
+        LaunchedEffect(key1 = Unit) {
+            onShowDateError()
+            sharedViewModel.hasDisplayedValidationError = true
+        }
+    }
+
+    if (showValidationError == ValidationErrorType.TITLE && sharedViewModel.hasDisplayedValidationError.not()) {
+        LaunchedEffect(key1 = Unit) {
+            onShowTitleError()
+            sharedViewModel.hasDisplayedValidationError = true
+        }
+    }
+
     if (!uiState.isHgServicesUp) {
         LaunchedEffect(key1 = Unit) {
             onServiceDownError()
@@ -116,7 +133,10 @@ fun HealthRecordScreen(
     }
 
     HealthRecordScreenContent(
-        onPullToRefresh = healthRecordViewModel::executeOneTimeDataFetch,
+        onPullToRefresh = {
+            healthRecordViewModel.executeOneTimeDataFetch()
+            sharedViewModel.hasDisplayedValidationError = false
+        },
         onHealthRecordItemClicked = onHealthRecordItemClicked,
         onFilterClicked = onFilterClicked,
         onFilterCleared = {
@@ -233,11 +253,22 @@ private fun HealthRecordList(
 
         if (uiState.showBCCancerBanner) {
             item {
-                BCCancerBannerUi(
+                RecordFilterBannerUi(
                     onLinkClick = { onLinkClick(URL_BC_CANCER_BANNER) },
                     body1 = stringResource(id = R.string.bc_cancer_banner),
                     clickableText = stringResource(id = R.string.bc_cancer_learn_more),
                     body2 = stringResource(id = R.string.bc_cancer_learn_more)
+                )
+            }
+        }
+
+        if (uiState.showDiagnosticImagingBanner) {
+            item {
+                RecordFilterBannerUi(
+                    onLinkClick = { onLinkClick(URL_DIAGNOSTIC_IMAGING_BANNER) },
+                    body1 = stringResource(id = R.string.diagnostic_imaging_banner),
+                    clickableText = stringResource(id = R.string.diagnostic_imaging_learn_more),
+                    body2 = stringResource(id = R.string.diagnostic_imaging_learn_more)
                 )
             }
         }

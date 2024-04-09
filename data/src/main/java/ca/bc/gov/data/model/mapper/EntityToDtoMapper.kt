@@ -103,7 +103,6 @@ import ca.bc.gov.data.datasource.local.entity.settings.AppFeatureEntity
 import ca.bc.gov.data.datasource.local.entity.settings.QuickAccessTileEntity
 import ca.bc.gov.data.datasource.local.entity.specialauthority.SpecialAuthorityEntity
 import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
-import java.time.Instant
 
 fun PatientEntity.toDto() = PatientDto(
     id = id,
@@ -176,7 +175,6 @@ fun MedicationRecordEntity.toDto() = MedicationRecordDto(
     practitionerSurname,
     dispenseDate,
     directions,
-    dateEntered,
     dataSource
 )
 
@@ -188,7 +186,6 @@ fun MedicationSummaryEntity.toDto() = MedicationSummaryDto(
     genericName,
     quantity,
     maxDailyDosage,
-    drugDiscontinueDate ?: Instant.EPOCH,
     form,
     manufacturer,
     strength,
@@ -314,7 +311,6 @@ fun CovidOrderEntity.toDto() = CovidOrderDto(
     reportingLab,
     location,
     ormOrOru,
-    messageDateTime,
     messageId,
     additionalData,
     reportAvailable,
@@ -331,8 +327,6 @@ fun CovidTestEntity.toDto() = CovidTestDto(
     labResultOutcome,
     resultDescription?.split("|") ?: emptyList(),
     resultLink,
-    receivedDateTime,
-    resultDateTime,
     loinc,
     loincName,
 )
@@ -367,10 +361,8 @@ fun ImmunizationForecastEntity.toDto() = ImmunizationForecastDto(
     id,
     immunizationRecordId,
     recommendationId,
-    createDate,
     ForecastStatus.getByText(status),
     displayName,
-    eligibleDate,
     dueDate
 )
 

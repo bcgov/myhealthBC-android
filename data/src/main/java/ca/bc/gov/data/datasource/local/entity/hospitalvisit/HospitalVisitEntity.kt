@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
-import java.time.Instant
 
 @Entity(
     tableName = "hospital_visits",
@@ -40,10 +39,10 @@ data class HospitalVisitEntity(
     val visitType: String,
 
     @ColumnInfo(name = "visit_date")
-    val visitDate: Instant,
+    val visitDate: String,
 
     @ColumnInfo(name = "discharge_date")
-    val dischargeDate: Instant?,
+    val dischargeDate: String?,
 
     @ColumnInfo(name = "encounter_id", defaultValue = "@null")
     val encounterId: String?
