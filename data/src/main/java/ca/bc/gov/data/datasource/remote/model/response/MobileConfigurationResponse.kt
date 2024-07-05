@@ -37,4 +37,10 @@ data class AuthenticationResponse(
 
     @SerializedName("clientId")
     val clientId: String,
+
+    @SerializedName("androidClientId")
+    val androidClientId: String,
+
+    @SerializedName("iosClientId")
+    val iosClientId: String
 )

@@ -53,6 +53,8 @@ captures/
 .idea/androidTestResultsUserPreferences.xml
 .idea/kotlinc.xml
 .idea/migrations.xml
+.idea/deploymentTargetSelector.xml
+.idea/other.xml
 # Android Studio 3 in .gitignore file.
 .idea/caches
 .idea/modules.xml

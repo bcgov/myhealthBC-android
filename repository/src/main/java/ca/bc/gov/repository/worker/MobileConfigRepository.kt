@@ -56,7 +56,7 @@ class MobileConfigRepository @Inject constructor(
         encryptedPreferenceStorage.apply {
             baseUrl = response.baseUrl
             authenticationEndpoint = response.authentication.endpoint
-            clientId = response.authentication.clientId
+            clientId = response.authentication.androidClientId
             identityProviderId = response.authentication.identityProviderId
             baseUrlIsOnline = response.online ?: false
             patientDataFeatureFlag = response.patientDataSets.toSet()
