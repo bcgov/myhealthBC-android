@@ -11,7 +11,7 @@ import retrofit2.http.Query
 interface HealthGatewayMobileConfigApi {
 
     companion object {
-        private const val MOBILE_CONFIGURATION = "MobileConfiguration"
+        private const val MOBILE_CONFIGURATION = "mobileconfiguration"
     }
 
     @GET(MOBILE_CONFIGURATION)
