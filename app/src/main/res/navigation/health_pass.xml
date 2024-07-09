@@ -57,10 +57,29 @@
         <action
             android:id="@+id/action_addCardOptionFragment_to_onBoardingFragment"
             app:destination="@id/onBoardingFragment" />
-
+        <action
+            android:id="@+id/action_addCardOptionFragment_to_fetchVaccineRecord"
+            app:destination="@id/fetchVaccineRecordFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/fetchVaccineRecordFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment"
+        tools:layout="@layout/fragment_fetch_vaccine_record">
+        <action
+            android:id="@+id/action_fetchVaccineRecordFragment_to_vaccineRecordDetailFragment"
+            app:destination="@id/vaccineRecordDetailFragment" />
+    </fragment>
 
+    <fragment
+        android:id="@+id/vaccineRecordDetailFragment"
+        android:name="ca.bc.gov.bchealth.ui.healthrecord.vaccine.VaccineRecordDetailFragment"
+        android:label="fragment_vaccine_record_detail"
+        tools:layout="@layout/fragment_vaccine_record_detail">
+        <argument
+            android:name="patientId"
+            app:argType="long" />
+    </fragment>
     <dialog
         android:id="@+id/expandQRFragment"
         android:name="ca.bc.gov.bchealth.ui.healthpass.ExpandQRFragment"

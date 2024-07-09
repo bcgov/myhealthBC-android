@@ -8,9 +8,7 @@
         android:id="@+id/healthRecordFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.HealthRecordFragment"
         android:label="HealthRecordFragment" >
-        <action
-            android:id="@+id/action_healthRecordFragment_to_vaccineRecordDetailFragment"
-            app:destination="@id/vaccineRecordDetailFragment" />
+
         <action
             android:id="@+id/action_healthRecordFragment_to_medicationDetailFragment"
             app:destination="@id/medicationDetailsFragment" />
@@ -53,24 +51,6 @@
         android:label="AddHealthRecordsFragment"
         tools:layout="@layout/scene_health_records_add" />
 
-    <fragment
-        android:id="@+id/fetchVaccineRecordFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthpass.add.FetchVaccineRecordFragment"
-        tools:layout="@layout/fragment_fetch_vaccine_record">
-        <action
-            android:id="@+id/action_fetchVaccineRecordFragment_to_vaccineRecordDetailFragment"
-            app:destination="@id/vaccineRecordDetailFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/vaccineRecordDetailFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.vaccine.VaccineRecordDetailFragment"
-        android:label="fragment_vaccine_record_detail"
-        tools:layout="@layout/fragment_vaccine_record_detail">
-        <argument
-            android:name="patientId"
-            app:argType="long" />
-    </fragment>
     <fragment
         android:id="@+id/medicationDetailsFragment"
         android:name="ca.bc.gov.bchealth.ui.healthrecord.medication.MedicationDetailsFragment"
