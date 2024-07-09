@@ -429,7 +429,7 @@
 
     <!-- Error -->
     <string name="bcsc_auth_error_title">Problem with log in</string>
-    <string name="bcsc_auth_error_body">We are unable to retrive your health record at this moment because of problem with BC Service Card log in, please contact Health Gateway team: healthgateway@gov.bc.ca for more information</string>
+    <string name="bcsc_auth_error_body">We are unable to retrieve your health record at this moment because of a problem with the BC Services Card login. Please contact the Health Gateway team at healthgateway@gov.bc.ca for more information.</string>
     <string name="bcsc_auth_error_click_email">healthgateway@gov.bc.ca</string>
     <string name="bcsc_auth_error_button">Email us</string>
 
