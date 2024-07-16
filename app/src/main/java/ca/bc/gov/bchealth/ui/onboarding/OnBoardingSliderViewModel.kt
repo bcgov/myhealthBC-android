@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bc.gov.common.BuildConfig
 import ca.bc.gov.repository.OnBoardingRepository
+import ca.bc.gov.repository.settings.AppFeatureRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,10 +16,18 @@ import javax.inject.Inject
 */
 @HiltViewModel
 class OnBoardingSliderViewModel @Inject constructor(
-    private val onBoardingRepository: OnBoardingRepository
+    private val onBoardingRepository: OnBoardingRepository,
+    private val appFeatureRepository: AppFeatureRepository,
 ) : ViewModel() {
 
     val isReOnBoardingRequired = onBoardingRepository.isReOnBoardingRequired
+
+    init {
+        viewModelScope.launch {
+            appFeatureRepository.initializeAppData()
+            appFeatureRepository.addBCCancerQuickLink()
+        }
+    }
 
     fun setOnBoardingRequired(isRequired: Boolean) = viewModelScope.launch {
         withContext(Dispatchers.IO) {

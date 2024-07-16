@@ -2,8 +2,8 @@ def versions = [:]
 
 //Android
 versions.minSdkVersion = 27
-versions.targetSdkVersion = 33
-versions.compileSdkVersion = 33
+versions.targetSdkVersion = 34
+versions.compileSdkVersion = 34
 
 //App
 versions.versionName = '2.2.1'
@@ -16,7 +16,7 @@ versions.gradle = '8.1.0'
 
 versions.annotation = '1.6.0'
 versions.appcompat = '1.6.1'
-versions.core_ktx = "1.10.1"
+versions.core_ktx = "1.13.1"
 versions.constraint_layout = "2.1.4"
 versions.constraint_compose = "1.0.1"
 versions.coroutines = "1.6.4"
@@ -45,9 +45,9 @@ versions.gson = "2.9.0"
 versions.jjwt = "0.11.1"
 versions.bouncycastle = "1.69"
 
-versions.browser = "1.5.0"
+versions.browser = "1.8.0"
 
-versions.app_update = "2.0.1"
+versions.app_update = "2.1.0"
 versions.queue_it = "2.0.34"
 versions.datastore = "1.0.0"
 
