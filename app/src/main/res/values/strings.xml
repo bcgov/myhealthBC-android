@@ -655,8 +655,8 @@
     <string name="remove">Remove</string>
 
     <!--BC Cancer Screening-->
-    <string name="bc_cancer_screening_result_description">Download your cervix screening result letter. It may include important information about next steps. If you have questions, check the BC Cancer website or talk to your care provider.</string>
-    <string name="bc_cancer_screening_recall_desc">Find out about your cervix screening next steps. You will also get this letter in the mail. Learn more about cervix screening.</string>
-    <string name="bc_cancer_banner">Only BC Cancer cervix screening letters are available here. Your Health Gateway timeline may include these and other screening test results in lab or imaging reports.</string>
+    <string name="bc_cancer_screening_result_description">Download your %1$s screening result letter. It may include important information about next steps. If you have questions, check the BC Cancer website or talk to your care provider.</string>
+    <string name="bc_cancer_screening_recall_desc">Find out about your %1$s screening next steps. You will also get this letter in the mail. Learn more about %2$s screening.</string>
+    <string name="bc_cancer_banner">BC Cancer screening letters for Breast, Colon, Lung, and Cervix are available here. Your Health Gateway timeline may include these and other screening test results in lab or imaging reports.</string>
     <string name="bc_cancer_learn_more">Learn more</string>
 </resources>

@@ -133,7 +133,7 @@ private fun BcCancerScreeningDetailScreenContent(
                     modifier = Modifier
                         .fillMaxWidth(),
                     style = MyHealthTypography.h4.copy(textAlign = TextAlign.Start),
-                    fullText = stringResource(uiState.description),
+                    fullText = stringResource(uiState.description, uiState.programName ?: "", uiState.programName ?: ""),
                     clickableText = uiState.links?.name ?: "",
                     action = { onClickLink(uiState.links?.link ?: "") }
                 )
