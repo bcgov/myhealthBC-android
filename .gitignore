@@ -55,6 +55,8 @@ captures/
 .idea/migrations.xml
 .idea/deploymentTargetSelector.xml
 .idea/other.xml
+.idea/runConfigurations.xml
+.idea/studiobot.xml
 # Android Studio 3 in .gitignore file.
 .idea/caches
 .idea/modules.xml
