@@ -82,18 +82,6 @@ class HealthPassFragment : BaseSecureFragment(R.layout.fragment_helath_pass) {
                     HealthPassFragmentDirections.actionHealthPassFragmentToExpandQRFragment(it)
                 findNavController().navigate(action)
             },
-            federalPassClickListener = { patientId, federalPass ->
-                if (federalPass.isNullOrBlank()) {
-                    val action =
-                        HealthPassFragmentDirections
-                            .actionHealthPassFragmentToFetchFederalTravelPass(
-                                patientId
-                            )
-                    findNavController().navigate(action)
-                } else {
-                    pdfDecoderViewModel.base64ToPDFFile(federalPass)
-                }
-            },
             itemClickListener = { healthPass ->
                 healthPassAdapter.currentList.forEachIndexed { index, pass ->
                     if (healthPass.patientId == pass.patientId) {

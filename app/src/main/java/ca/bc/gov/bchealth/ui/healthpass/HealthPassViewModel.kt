@@ -60,7 +60,6 @@ data class HealthPass(
     val qrIssuedDate: String?,
     val shcUri: String,
     val qrCode: Bitmap?,
-    val federalTravelPassState: FederalTravelPassState,
     val state: PassState,
     val isRemovable: Boolean = false,
 )
@@ -69,10 +68,4 @@ data class PassState(
     val color: Int,
     val status: Int,
     val icon: Int
-)
-
-data class FederalTravelPassState(
-    val title: Int,
-    val icon: Int,
-    val pdf: String?
 )

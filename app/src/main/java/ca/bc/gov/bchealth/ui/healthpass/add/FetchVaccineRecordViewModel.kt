@@ -12,7 +12,6 @@ import ca.bc.gov.common.model.ErrorData
 import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.model.PatientVaccineRecord
-import ca.bc.gov.repository.patient.PatientRepository
 import ca.bc.gov.repository.qr.VaccineRecordState
 import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +27,6 @@ import javax.inject.Inject
 @HiltViewModel
 class FetchVaccineRecordViewModel @Inject constructor(
     private val fetchVaccineRecordRepository: FetchVaccineRecordRepository,
-    private val patientRepository: PatientRepository,
     private val mobileConfigRepository: MobileConfigRepository
 ) : ViewModel() {
 
@@ -99,13 +97,6 @@ class FetchVaccineRecordViewModel @Inject constructor(
                 }
             }
         }
-
-    fun getPatientWithVaccineRecord(patientId: Long) = viewModelScope.launch {
-        val record = patientRepository.getPatientWithVaccineAndDoses(patientId)
-        _uiState.tryEmit(
-            FetchVaccineRecordUiState(onLoading = false, patientDataDto = record)
-        )
-    }
 
     fun resetUiState() {
         _uiState.tryEmit(

@@ -3,7 +3,6 @@ package ca.bc.gov.bchealth.model.mapper
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.comment.Comment
 import ca.bc.gov.bchealth.ui.dependents.DependentDetailItem
-import ca.bc.gov.bchealth.ui.healthpass.FederalTravelPassState
 import ca.bc.gov.bchealth.ui.healthpass.HealthPass
 import ca.bc.gov.bchealth.ui.healthpass.PassState
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordItem
@@ -48,20 +47,6 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
 
     val passState = getHealthPassStateResources(vaccineWithDoses?.vaccine?.status)
 
-    val federalTravelPassState = if (vaccineWithDoses?.vaccine?.federalPass.isNullOrBlank()) {
-        FederalTravelPassState(
-            title = R.string.get_federal_proof_of_vaccination,
-            icon = R.drawable.ic_federal_pass_add,
-            null
-        )
-    } else {
-        FederalTravelPassState(
-            title = R.string.show_federal_proof_of_vaccination,
-            icon = R.drawable.ic_federal_pass_forward_arrow,
-            vaccineWithDoses?.vaccine?.federalPass
-        )
-    }
-
     return HealthPass(
         patientId = patient.id,
         vaccineRecordId = vaccineWithDoses?.vaccine?.id!!,
@@ -74,7 +59,6 @@ fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
         qrCode = vaccineWithDoses?.vaccine?.qrCodeImage,
         state = passState,
         isExpanded = false,
-        federalTravelPassState = federalTravelPassState,
         isRemovable = with(patient.authenticationStatus) {
             this != AuthenticationStatus.AUTHENTICATED && this != AuthenticationStatus.DEPENDENT
         }

@@ -13,7 +13,6 @@ import ca.bc.gov.bchealth.databinding.ItemHealthPassCardBinding
  */
 class HealthPassAdapter(
     private val qrCodeClickListener: QrCodeClickListener,
-    private val federalPassClickListener: FederalPassClickListener,
     private val itemClickListener: ItemClickListener
 ) : ListAdapter<HealthPass, HealthPassAdapter.ViewHolder>(HealthPassDiffCallBack()) {
 
@@ -23,10 +22,6 @@ class HealthPassAdapter(
 
     fun interface ItemClickListener {
         fun onItemClicked(pass: HealthPass)
-    }
-
-    fun interface FederalPassClickListener {
-        fun onFederalPassClicked(patientId: Long, federalPass: String?)
     }
 
     class ViewHolder(val binding: ItemHealthPassCardBinding) :
@@ -66,16 +61,6 @@ class HealthPassAdapter(
             txtVaccineStatus.setCompoundDrawablesWithIntrinsicBounds(
                 healthPass.state.icon, 0, 0, 0
             )
-
-            tvFederalPassTitle.setText(healthPass.federalTravelPassState.title)
-            ivFederalPassAction.setImageResource(healthPass.federalTravelPassState.icon)
-
-            viewFederalProof.setOnClickListener {
-                federalPassClickListener.onFederalPassClicked(
-                    healthPass.patientId,
-                    healthPass.federalTravelPassState.pdf
-                )
-            }
         }
     }
 
