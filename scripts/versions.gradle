@@ -2,8 +2,8 @@ def versions = [:]
 
 //Android
 versions.minSdkVersion = 27
-versions.targetSdkVersion = 34
-versions.compileSdkVersion = 34
+versions.targetSdkVersion = 35
+versions.compileSdkVersion = 35
 
 //App
 versions.versionName = '2.2.4'
@@ -12,7 +12,7 @@ versions.localApiVersion = 3
 
 //Tools & Libs
 versions.kotlin_gradle_plugin = "1.8.20"
-versions.gradle = '8.1.0'
+versions.gradle = '8.6.0'
 
 versions.annotation = '1.6.0'
 versions.appcompat = '1.6.1'

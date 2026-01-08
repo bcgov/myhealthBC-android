@@ -48,11 +48,13 @@ class QrCodeGeneratorRepository {
     }
 
     private fun addWhiteBorder(bmp: Bitmap, borderSize: Int): Bitmap? {
+        if(bmp.config == null) return null
+
         val bmpWithBorder = Bitmap
             .createBitmap(
                 bmp.width + borderSize * 2,
                 bmp.height + borderSize * 2,
-                bmp.config
+                bmp.config!!
             )
         val canvas = Canvas(bmpWithBorder)
         canvas.drawColor(Color.WHITE)
