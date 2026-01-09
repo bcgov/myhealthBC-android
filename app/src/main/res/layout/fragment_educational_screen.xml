@@ -103,7 +103,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.650"
-                tools:text="@string/onboarding_health_passes_title" />
+                tools:text="@string/onboarding_health_records_desc" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_slider_description"

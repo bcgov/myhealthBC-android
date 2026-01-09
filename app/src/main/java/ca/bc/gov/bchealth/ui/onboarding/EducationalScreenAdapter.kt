@@ -9,7 +9,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 class EducationalScreenAdapter(fragment: Fragment, private val isReOnBoardingRequired: Boolean) :
     FragmentStateAdapter(fragment) {
 
-    override fun getItemCount(): Int = if (isReOnBoardingRequired) 1 else 5
+    override fun getItemCount(): Int = if (isReOnBoardingRequired) 1 else 4
 
     override fun createFragment(position: Int): Fragment {
         return EducationalScreenFragment.newInstance(position, isReOnBoardingRequired)
