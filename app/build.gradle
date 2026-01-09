@@ -139,15 +139,6 @@ dependencies {
     //Biometric
     implementation "androidx.biometric:biometric-ktx:$versions.biometric"
 
-    //Google BarcodeScanner
-    implementation "com.google.mlkit:barcode-scanning:$versions.barcode_scanning"
-
-    //Camerax
-    implementation "androidx.camera:camera-camera2:$versions.camerax"
-    implementation "androidx.camera:camera-lifecycle:$versions.camerax"
-    implementation "androidx.camera:camera-view:$versions.camerax"
-    implementation "androidx.camera:camera-extensions:$versions.camerax"
-
     //Custom chrome tab
     implementation "androidx.browser:browser:$versions.browser"
 

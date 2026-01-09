@@ -58,7 +58,6 @@ import ca.bc.gov.repository.settings.AppFeatureWithQuickAccessTilesRepository
 import ca.bc.gov.repository.settings.QuickAccessTileRepository
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.testrecord.CovidTestRepository
-import ca.bc.gov.repository.utils.Base64ToInputImageConverter
 import ca.bc.gov.repository.worker.MobileConfigRepository
 import dagger.Module
 import dagger.Provides
@@ -74,9 +73,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 class RepositoriesModule {
-
-    @Provides
-    fun providesBase64ToImageConverter() = Base64ToInputImageConverter()
 
     @Provides
     @Singleton

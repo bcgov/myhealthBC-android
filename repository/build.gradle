@@ -92,11 +92,6 @@ dependencies {
     //GSOn
     implementation "com.google.code.gson:gson:$versions.gson"
 
-    //Google BarcodeScanner
-    //TODO:- we may replace it with dynamic model download library
-    //implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:16.2.1'
-    implementation "com.google.mlkit:barcode-scanning:$versions.barcode_scanning"
-
     //dagger hilt
     implementation "com.google.dagger:hilt-android:$versions.hilt"
     kapt "com.google.dagger:hilt-compiler:$versions.hilt"
