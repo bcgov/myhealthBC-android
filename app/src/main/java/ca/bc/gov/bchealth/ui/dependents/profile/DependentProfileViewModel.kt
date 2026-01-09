@@ -39,7 +39,7 @@ class DependentProfileViewModel @Inject constructor(
                     ),
                     DependentProfileItem(
                         label = R.string.dependents_profile_phn,
-                        value = dependentDto.phn
+                        value = dependentDto.phn ?: ""
                     ),
                     DependentProfileItem(
                         label = R.string.dependents_profile_dob,
