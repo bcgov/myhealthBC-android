@@ -62,8 +62,6 @@ versions.spotless = "5.14.3"
 
 versions.crypto = "1.1.0-alpha06"
 
-versions.shcdecoder = "1.2.5"
-
 versions.sqlcipher = "4.5.0"
 versions.sqlite = "2.3.1"
 versions.biometric = "1.2.0-alpha05"
