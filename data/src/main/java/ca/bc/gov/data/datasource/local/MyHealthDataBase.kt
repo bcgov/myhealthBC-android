@@ -36,14 +36,11 @@ import ca.bc.gov.data.datasource.local.dao.PatientDao
 import ca.bc.gov.data.datasource.local.dao.QuickAccessTileDao
 import ca.bc.gov.data.datasource.local.dao.SpecialAuthorityDao
 import ca.bc.gov.data.datasource.local.dao.UserProfileDao
-import ca.bc.gov.data.datasource.local.dao.VaccineRecordDao
 import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.clinicaldocument.ClinicalDocumentEntity
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidTestEntity
-import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
-import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
 import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
 import ca.bc.gov.data.datasource.local.entity.dependent.DependentListOrder
 import ca.bc.gov.data.datasource.local.entity.healthvisits.HealthVisitEntity
@@ -69,11 +66,9 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
  * @author Pinakin Kansara
  */
 @Database(
-    version = 21,
+    version = 22,
     entities = [
         PatientEntity::class,
-        VaccineRecordEntity::class,
-        VaccineDoseEntity::class,
         MedicationRecordEntity::class,
         MedicationSummaryEntity::class,
         DispensingPharmacyEntity::class,
@@ -127,8 +122,6 @@ import ca.bc.gov.data.datasource.local.entity.userprofile.UserProfileEntity
 abstract class MyHealthDataBase : RoomDatabase() {
 
     abstract fun getPatientDao(): PatientDao
-
-    abstract fun getVaccineRecordDao(): VaccineRecordDao
 
     abstract fun getMedicationRecordDao(): MedicationRecordDao
 

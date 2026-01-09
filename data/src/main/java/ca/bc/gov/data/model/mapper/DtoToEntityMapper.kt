@@ -6,8 +6,6 @@ import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.PatientAddressDto
 import ca.bc.gov.common.model.QuickAccessTileShowAsQuickLinkDto
-import ca.bc.gov.common.model.VaccineDoseDto
-import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
@@ -37,8 +35,6 @@ import ca.bc.gov.data.datasource.local.entity.clinicaldocument.ClinicalDocumentE
 import ca.bc.gov.data.datasource.local.entity.comment.CommentEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidTestEntity
-import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
-import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
 import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
 import ca.bc.gov.data.datasource.local.entity.healthvisits.Clinic
 import ca.bc.gov.data.datasource.local.entity.healthvisits.HealthVisitEntity
@@ -95,24 +91,6 @@ fun UserProfileDto.toEntity() = UserProfileEntity(
     isEmailVerified = isEmailVerified,
     smsNumber = smsNumber,
     isPhoneVerified = isPhoneVerified
-)
-
-fun VaccineDoseDto.toEntity() = VaccineDoseEntity(
-    vaccineRecordId = vaccineRecordId,
-    productName = productName,
-    providerName = providerName,
-    lotNumber = lotNumber,
-    date = date
-)
-
-fun VaccineRecordDto.toEntity() = VaccineRecordEntity(
-    id,
-    patientId,
-    qrIssueDate,
-    status,
-    shcUri,
-    federalPass,
-    mode
 )
 
 fun MedicationRecordDto.toEntity() = MedicationRecordEntity(

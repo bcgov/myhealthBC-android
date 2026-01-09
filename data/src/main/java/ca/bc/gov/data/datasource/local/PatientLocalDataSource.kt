@@ -11,15 +11,11 @@ import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDt
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.patient.PatientWithSpecialAuthorityDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
-import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.utils.toUniquePatientName
 import ca.bc.gov.data.datasource.local.dao.PatientDao
-import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.PatientOrderUpdate
 import ca.bc.gov.data.model.mapper.toDto
 import ca.bc.gov.data.model.mapper.toEntity
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 /**
@@ -28,14 +24,6 @@ import javax.inject.Inject
 class PatientLocalDataSource @Inject constructor(
     private val patientDao: PatientDao
 ) {
-
-    val patientWithVaccineAndDoses: Flow<List<PatientWithVaccineAndDosesDto>> =
-        patientDao.getPatientWithVaccineAndDosesFlow().map { patientWithVaccineAndDoses ->
-            patientWithVaccineAndDoses.map { patient ->
-                patient.toDto()
-            }
-        }
-
     /**
      * Inserts [patient] records to the database
      * @param patient
@@ -85,13 +73,6 @@ class PatientLocalDataSource @Inject constructor(
 
     suspend fun updatePatientsOrder(patientOrderUpdates: List<PatientOrderUpdate>) =
         patientDao.updatePatientsOrder(patientOrderUpdates)
-
-    suspend fun getPatientWithVaccineAndDoses(patientId: Long): PatientWithVaccineAndDosesDto? =
-        patientDao.getPatientWithVaccineAndDoses(patientId)?.toDto()
-
-    suspend fun getPatientWithVaccineAndDoses(patient: PatientEntity): List<PatientWithVaccineAndDosesDto> =
-        patientDao.getPatientWithVaccineAndDoses(patient.fullName, patient.dateOfBirth)
-            .map { it.toDto() }
 
     suspend fun getPatientWithMedicationRecords(patientId: Long): PatientWithMedicationRecordDto? =
         patientDao.getPatientWithMedicationRecords(patientId)?.toDto()

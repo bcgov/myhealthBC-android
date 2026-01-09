@@ -4,8 +4,6 @@ import ca.bc.gov.common.model.DispensingPharmacyDto
 import ca.bc.gov.common.model.MedicationRecordDto
 import ca.bc.gov.common.model.MedicationSummaryDto
 import ca.bc.gov.common.model.PatientAddressDto
-import ca.bc.gov.common.model.VaccineDoseDto
-import ca.bc.gov.common.model.VaccineRecordDto
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
@@ -39,8 +37,6 @@ import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.patient.PatientWithSpecialAuthorityDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
-import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
-import ca.bc.gov.common.model.relation.VaccineWithDosesDto
 import ca.bc.gov.common.model.services.BcCancerScreeningDataDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.services.OrganDonorDto
@@ -63,8 +59,6 @@ import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderEntity
 import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderWithCovidTests
 import ca.bc.gov.data.datasource.local.entity.covid.CovidOrderWithCovidTestsAndPatient
 import ca.bc.gov.data.datasource.local.entity.covid.CovidTestEntity
-import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineDoseEntity
-import ca.bc.gov.data.datasource.local.entity.covid.vaccine.VaccineRecordEntity
 import ca.bc.gov.data.datasource.local.entity.dependent.DependentEntity
 import ca.bc.gov.data.datasource.local.entity.healthvisits.HealthVisitEntity
 import ca.bc.gov.data.datasource.local.entity.hospitalvisit.HospitalVisitEntity
@@ -94,8 +88,6 @@ import ca.bc.gov.data.datasource.local.entity.relations.PatientWithImmunizationR
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithLabOrdersAndLabTests
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithMedicationRecords
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithSpecialAuthorities
-import ca.bc.gov.data.datasource.local.entity.relations.PatientWithVaccineAndDoses
-import ca.bc.gov.data.datasource.local.entity.relations.VaccineRecordWithDose
 import ca.bc.gov.data.datasource.local.entity.services.BcCancerScreeningDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.DiagnosticImagingDataEntity
 import ca.bc.gov.data.datasource.local.entity.services.OrganDonorEntity
@@ -138,33 +130,6 @@ fun UserProfileEntity.toDto() = UserProfileDto(
     smsNumber = smsNumber,
     isPhoneVerified = isPhoneVerified,
     hasTermsOfServiceUpdated = false
-)
-
-fun VaccineDoseEntity.toDto() = VaccineDoseDto(
-    id,
-    vaccineRecordId,
-    productName, providerName, lotNumber, date
-)
-
-fun VaccineRecordEntity.toDto() = VaccineRecordDto(
-    id,
-    patientId,
-    qrIssueDate,
-    status,
-    qrCodeImage = null,
-    shcUri,
-    federalPass,
-    dataSource
-)
-
-fun VaccineRecordWithDose.toDto() = VaccineWithDosesDto(
-    vaccineRecordEntity.toDto(),
-    doses = vaccineDoses.map { it.toDto() }
-)
-
-fun PatientWithVaccineAndDoses.toDto() = PatientWithVaccineAndDosesDto(
-    patient = patient.toDto(),
-    vaccineWithDoses = vaccineRecordWithDose?.toDto()
 )
 
 fun MedicationRecordEntity.toDto() = MedicationRecordDto(
