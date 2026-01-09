@@ -18,7 +18,6 @@ import ca.bc.gov.bchealth.usecases.records.FetchLabOrdersUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchMedicationsUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchPatientDataUseCase
 import ca.bc.gov.bchealth.usecases.records.FetchSpecialAuthoritiesUseCase
-import ca.bc.gov.bchealth.usecases.records.FetchVaccinesUseCase
 import ca.bc.gov.common.BuildConfig.LOCAL_API_VERSION
 import ca.bc.gov.common.model.AuthParametersDto
 import ca.bc.gov.common.model.dependents.DependentDto
@@ -62,7 +61,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
     private val fetchHospitalVisitsUseCase: FetchHospitalVisitsUseCase,
     private val fetchSpecialAuthoritiesUseCase: FetchSpecialAuthoritiesUseCase,
     private val fetchClinicalDocumentsUseCase: FetchClinicalDocumentsUseCase,
-    private val fetchVaccinesUseCase: FetchVaccinesUseCase,
     private val patientDataUseCase: FetchPatientDataUseCase
 ) : CoroutineWorker(context, workerParams) {
 
@@ -172,12 +170,6 @@ class FetchAuthenticatedHealthRecordsWorker @AssistedInject constructor(
             if (dataSetFlag.isLabResultEnabled()) { tasks.add(runTaskAsync { fetchLabOrdersUseCase.execute(patientId, authParameters) }) }
 
             if (dataSetFlag.isSpecialAuthorityRequestEnabled()) { tasks.add(runTaskAsync { fetchSpecialAuthoritiesUseCase.execute(patientId, authParameters) }) }
-
-            tasks.add(
-                runTaskAsync {
-                    fetchVaccinesUseCase.execute(patientId, authParameters, dependents)
-                }
-            )
 
             tasks.add(runTaskAsync { fetchCommentsUseCase.execute(authParameters) })
             tasks.add(runTaskAsync { userProfileRepository.deleteUserProfileCache(patientId) })

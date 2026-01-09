@@ -37,8 +37,8 @@ class PdfDecoderViewModel @Inject constructor(
     }
 
     fun resetUiState() {
-        _uiState.update { federalTravelPassDecoderUiState ->
-            federalTravelPassDecoderUiState.copy(pdf = null)
+        _uiState.update { pdfDecoderUiState ->
+            pdfDecoderUiState.copy(pdf = null)
         }
     }
 }
