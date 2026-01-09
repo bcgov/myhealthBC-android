@@ -72,14 +72,10 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.healthPassFragment,
-                R.id.healthPassesFragment,
-                R.id.addCardOptionFragment,
                 R.id.dependentsFragment,
                 R.id.dependentRecordsFragment,
                 R.id.resourcesFragment,
                 R.id.healthRecordFragment,
-                R.id.vaccineRecordDetailFragment,
                 R.id.addHealthRecordsFragment,
                 R.id.homeFragment,
                 R.id.bannerDetailFragment,

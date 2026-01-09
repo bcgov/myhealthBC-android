@@ -13,9 +13,7 @@
         <action
             android:id="@+id/action_homeFragment_to_health_records"
             app:destination="@id/health_records" />
-        <action
-            android:id="@+id/action_homeFragment_to_health_pass"
-            app:destination="@id/health_pass" />
+
         <action
             android:id="@+id/action_homeFragment_to_resources"
             app:destination="@id/resources" />
@@ -52,8 +50,6 @@
         android:name="ca.bc.gov.bchealth.ui.home.manage.QuickAccessManagementFragment"
         android:label="@string/quick_access_management_title" />
 
-
-    <include app:graph="@navigation/health_pass" />
     <include app:graph="@navigation/health_records" />
     <include app:graph="@navigation/resources" />
     <include app:graph="@navigation/recommendations" />

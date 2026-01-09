@@ -3,8 +3,6 @@ package ca.bc.gov.bchealth.model.mapper
 import ca.bc.gov.bchealth.R
 import ca.bc.gov.bchealth.ui.comment.Comment
 import ca.bc.gov.bchealth.ui.dependents.DependentDetailItem
-import ca.bc.gov.bchealth.ui.healthpass.HealthPass
-import ca.bc.gov.bchealth.ui.healthpass.PassState
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordItem
 import ca.bc.gov.bchealth.ui.healthrecord.HealthRecordType
 import ca.bc.gov.bchealth.ui.healthrecord.immunization.ForecastDetailItem
@@ -12,8 +10,6 @@ import ca.bc.gov.bchealth.ui.healthrecord.immunization.ImmunizationDoseDetailIte
 import ca.bc.gov.bchealth.ui.healthrecord.immunization.ImmunizationRecordDetailItem
 import ca.bc.gov.bchealth.ui.recommendations.RecommendationDetailItem
 import ca.bc.gov.bchealth.utils.orPlaceholder
-import ca.bc.gov.common.model.AuthenticationStatus
-import ca.bc.gov.common.model.ImmunizationStatus
 import ca.bc.gov.common.model.clinicaldocument.ClinicalDocumentDto
 import ca.bc.gov.common.model.comment.CommentDto
 import ca.bc.gov.common.model.dependents.DependentDto
@@ -25,7 +21,6 @@ import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastAndPati
 import ca.bc.gov.common.model.immunization.ImmunizationRecordWithForecastDto
 import ca.bc.gov.common.model.labtest.LabOrderWithLabTestDto
 import ca.bc.gov.common.model.relation.MedicationWithSummaryAndPharmacyDto
-import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.common.model.services.BcCancerScreeningDataDto
 import ca.bc.gov.common.model.services.DiagnosticImagingDataDto
 import ca.bc.gov.common.model.specialauthority.SpecialAuthorityDto
@@ -36,34 +31,11 @@ import ca.bc.gov.common.utils.dateTimeToInstant
 import ca.bc.gov.common.utils.dateToInstant
 import ca.bc.gov.common.utils.toDate
 import ca.bc.gov.common.utils.toDateTime
-import ca.bc.gov.common.utils.toDateTimeString
 import ca.bc.gov.common.utils.toLocalDateTimeInstant
 import ca.bc.gov.common.utils.toPST
 import java.time.Instant
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
-fun PatientWithVaccineAndDosesDto.toUiModel(): HealthPass {
-
-    val passState = getHealthPassStateResources(vaccineWithDoses?.vaccine?.status)
-
-    return HealthPass(
-        patientId = patient.id,
-        vaccineRecordId = vaccineWithDoses?.vaccine?.id!!,
-        name = patient.fullName,
-        qrIssuedDate = "Issued on ${
-        vaccineWithDoses?.vaccine?.qrIssueDate
-            ?.toDateTimeString()
-        }",
-        shcUri = vaccineWithDoses?.vaccine?.shcUri!!,
-        qrCode = vaccineWithDoses?.vaccine?.qrCodeImage,
-        state = passState,
-        isExpanded = false,
-        isRemovable = with(patient.authenticationStatus) {
-            this != AuthenticationStatus.AUTHENTICATED && this != AuthenticationStatus.DEPENDENT
-        }
-    )
-}
 
 fun MedicationWithSummaryAndPharmacyDto.toUiModel(): HealthRecordItem? {
     val date: Instant
@@ -236,20 +208,6 @@ fun ImmunizationRecordWithForecastDto.toUiModel(): HealthRecordItem? {
         healthRecordType = HealthRecordType.IMMUNIZATION_RECORD,
         dataSource = immunizationRecord.dataSorce.name
     )
-}
-
-fun getHealthPassStateResources(state: ImmunizationStatus?): PassState = when (state) {
-    ImmunizationStatus.FULLY_IMMUNIZED -> {
-        PassState(R.color.status_green, R.string.vaccinated, R.drawable.ic_check_mark)
-    }
-
-    ImmunizationStatus.PARTIALLY_IMMUNIZED -> {
-        PassState(R.color.blue, R.string.partially_vaccinated, 0)
-    }
-
-    else -> {
-        PassState(R.color.grey, R.string.no_record, 0)
-    }
 }
 
 fun ImmunizationRecordWithForecastAndPatientDto.toUiModel(): ImmunizationRecordDetailItem {

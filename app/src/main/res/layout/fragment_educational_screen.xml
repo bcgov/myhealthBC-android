@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:filterTouchesWhenObscured="true"
-    tools:context=".ui.onboarding.CameraPermissionFragment">
+    android:filterTouchesWhenObscured="true">
 
     <ScrollView
         android:layout_width="0dp"
