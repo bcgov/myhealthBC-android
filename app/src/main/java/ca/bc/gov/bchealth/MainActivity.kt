@@ -61,12 +61,18 @@ class MainActivity : AppCompatActivity() {
         // Android 15: Handle window insets for the root view
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            var bottomPadding = 0
+            if (binding.bottomNav.visibility == View.GONE) {
+                bottomPadding = insets.bottom
+            }
+
             // Apply top padding only to the nav host fragment
             binding.navHostFragment.setPadding(
                 binding.navHostFragment.paddingLeft,
                 insets.top,
                 binding.navHostFragment.paddingRight,
-                binding.navHostFragment.paddingBottom
+                bottomPadding
             )
             // Apply bottom padding only to the bottom navigation
             binding.bottomNav.setPadding(
@@ -135,10 +141,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun showBottomNav() {
         binding.bottomNav.visibility = View.VISIBLE
+        ViewCompat.requestApplyInsets(binding.root)
     }
 
     private fun hideBottomNav() {
         binding.bottomNav.visibility = View.GONE
+        ViewCompat.requestApplyInsets(binding.root)
     }
 
     private fun observeExceptionFromWorker() {
