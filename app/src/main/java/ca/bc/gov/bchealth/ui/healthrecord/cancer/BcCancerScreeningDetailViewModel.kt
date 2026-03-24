@@ -38,7 +38,7 @@ class BcCancerScreeningDetailViewModel @Inject constructor(
     fun getBcCancerScreeningData(id: Long) = viewModelScope.launch {
         try {
             val data = bcCancerScreeningRepository.getBcCancerScreeningDataDetails(id)
-
+            val programName = data.programName?.split(" ")?.first()?.lowercase()?.replace("cervical", "cervix")
             _uiState.update {
                 it.copy(
                     onLoading = false,
@@ -46,13 +46,14 @@ class BcCancerScreeningDetailViewModel @Inject constructor(
                     fileId = data.fileId,
                     eventType = data.eventType ?: "",
                     links = if (data.eventType == "Result") {
-                        ExternalLink(name = "check the BC Cancer website", link = URL_BC_CERVIX_SCREENING)
+                        ExternalLink(name = "check the BC Cancer website", link = URL_BC_CERVIX_SCREENING + programName)
                     } else {
-                        ExternalLink(name = "Learn more about cervix screening", link = URL_BC_CERVIX_SCREENING)
+                        ExternalLink(name = "Learn more about $programName screening", link = URL_BC_CERVIX_SCREENING + programName)
                     },
                     description = if (data.eventType == "Result") { R.string.bc_cancer_screening_result_description } else { R.string.bc_cancer_screening_recall_desc },
                     id = data.id,
-                    pdfButtonTitle = "View Letter"
+                    pdfButtonTitle = "View Letter",
+                    programName = programName
                 )
             }
         } catch (e: Exception) {
@@ -107,7 +108,8 @@ data class BcCancerScreeningDataDetailUiState(
     val pdfData: String? = null,
     val id: String? = null,
     val pdfButtonTitle: String = "",
-    val eventType: String = ""
+    val eventType: String = "",
+    val programName: String? = null
 )
 
 data class ExternalLink(

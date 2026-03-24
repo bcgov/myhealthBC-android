@@ -1,4 +1,4 @@
-name: Android CICD deployment
+name: Android CICD Prod deployment
 
 on:
   push:
@@ -63,7 +63,7 @@ jobs:
           BUILD_TOOLS_VERSION: "34.0.0"
 
       - name: upload mock apk
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: myhealth_mock_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
           path: ${{steps.sign_app_mock.outputs.signedReleaseFile}}
@@ -82,7 +82,7 @@ jobs:
           BUILD_TOOLS_VERSION: "34.0.0"
 
       - name: upload dev apk
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: myhealth_dev_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
           path: ${{steps.sign_app_dev.outputs.signedReleaseFile}}
@@ -101,7 +101,7 @@ jobs:
           BUILD_TOOLS_VERSION: "34.0.0"
 
       - name: upload stage apk
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: myhealth_stage_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
           path: ${{steps.sign_app_stage.outputs.signedReleaseFile}}
@@ -120,7 +120,7 @@ jobs:
           BUILD_TOOLS_VERSION: "34.0.0"
 
       - name: upload prod apk
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: myhealth_prod_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
           path: ${{steps.sign_app_prod.outputs.signedReleaseFile}}
