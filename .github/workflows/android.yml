@@ -60,7 +60,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
         env:
-          BUILD_TOOLS_VERSION: "34.0.0"
+          BUILD_TOOLS_VERSION: "35.0.0"
 
       - name: upload mock apk
         uses: actions/upload-artifact@v4
@@ -79,7 +79,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
         env:
-          BUILD_TOOLS_VERSION: "34.0.0"
+          BUILD_TOOLS_VERSION: "35.0.0"
 
       - name: upload dev apk
         uses: actions/upload-artifact@v4
@@ -98,7 +98,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
         env:
-          BUILD_TOOLS_VERSION: "34.0.0"
+          BUILD_TOOLS_VERSION: "35.0.0"
 
       - name: upload stage apk
         uses: actions/upload-artifact@v4
@@ -117,34 +117,12 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
         env:
-          BUILD_TOOLS_VERSION: "34.0.0"
+          BUILD_TOOLS_VERSION: "35.0.0"
 
       - name: upload prod apk
         uses: actions/upload-artifact@v4
         with:
           name: myhealth_prod_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
           path: ${{steps.sign_app_prod.outputs.signedReleaseFile}}
-
-      - name: Saucelabs delete and upload
-        env:
-          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
-          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-        run: |
-          curl -u "$SAUCE_USERNAME:$SAUCE_ACCESS_KEY" --location \
-          --request DELETE 'https://api.us-west-1.saucelabs.com/v1/storage/groups/1696366' | json_pp
-
-          curl -u "$SAUCE_USERNAME:$SAUCE_ACCESS_KEY" --location \
-          --request POST 'https://api.us-west-1.saucelabs.com/v1/storage/upload' \
-          --form 'payload=@"app/build/outputs/apk/stage/debug/app-stage-debug.apk"' \
-          --form 'name="app-stage-debug.apk"' \
-          --form 'description="android stage app"'
-
-      - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          repository: ADPandian/HGAndroidmobileapp
-          event-type: my-event
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'  
           
           
