@@ -24,7 +24,6 @@ import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.QuickActionTileLocalDataSource
 import ca.bc.gov.data.datasource.local.SpecialAuthorityLocalDataSource
 import ca.bc.gov.data.datasource.local.UserProfileLocalDataSource
-import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,11 +41,6 @@ class LocalDataSourceModule {
     @Singleton
     fun providesPatientLocalDataSource(db: MyHealthDataBase) =
         PatientLocalDataSource(db.getPatientDao())
-
-    @Provides
-    @Singleton
-    fun providesVaccineRecordLocalDataSource(db: MyHealthDataBase) =
-        VaccineRecordLocalDataSource(db.getVaccineRecordDao())
 
     @Provides
     @Singleton

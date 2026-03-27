@@ -20,8 +20,6 @@ import ca.bc.gov.data.datasource.local.entity.relations.PatientWithImmunizationR
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithLabOrdersAndLabTests
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithMedicationRecords
 import ca.bc.gov.data.datasource.local.entity.relations.PatientWithSpecialAuthorities
-import ca.bc.gov.data.datasource.local.entity.relations.PatientWithVaccineAndDoses
-import kotlinx.coroutines.flow.Flow
 import java.time.Instant
 
 /**
@@ -41,22 +39,7 @@ interface PatientDao {
 
     @Transaction
     @Query("SELECT * FROM patient WHERE id = :patientId")
-    suspend fun getPatientWithVaccineAndDoses(patientId: Long): PatientWithVaccineAndDoses?
-
-    @Transaction
-    @Query("SELECT * FROM patient WHERE full_name = :fullName AND dob = :dateOfBirth ")
-    suspend fun getPatientWithVaccineAndDoses(
-        fullName: String,
-        dateOfBirth: Instant
-    ): List<PatientWithVaccineAndDoses>
-
-    @Transaction
-    @Query("SELECT * FROM patient WHERE id = :patientId")
     suspend fun getPatientWithMedicationRecords(patientId: Long): PatientWithMedicationRecords?
-
-    @Transaction
-    @Query("SELECT * FROM patient ORDER BY patient_order ASC")
-    fun getPatientWithVaccineAndDosesFlow(): Flow<List<PatientWithVaccineAndDoses>>
 
     @Query("DELETE FROM patient WHERE id = :patientId")
     suspend fun deletePatientById(patientId: Long): Int

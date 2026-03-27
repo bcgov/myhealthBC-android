@@ -114,7 +114,6 @@ abstract class BaseFragment(@LayoutRes private val contentLayoutId: Int?) : Frag
     private fun getAppBarConfiguration() = AppBarConfiguration(
         setOf(
             R.id.homeFragment,
-            R.id.healthPassFragment,
             R.id.healthRecordFragment,
             R.id.dependentsFragment
         ),

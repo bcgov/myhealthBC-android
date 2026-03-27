@@ -66,8 +66,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_number_of_passes"
-                tools:itemCount="10"
-                tools:listitem="@layout/item_health_pass_card" />
+                tools:itemCount="10" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_view_all"

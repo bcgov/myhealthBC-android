@@ -38,3 +38,5 @@
 # SqlCipher
 -keep,includedescriptorclasses class net.sqlcipher.** { *; }
 -keep,includedescriptorclasses interface net.sqlcipher.** { *; }
+-keep,includedescriptorclasses class net.zetetic.database.sqlcipher.** { *; }
+-keep,includedescriptorclasses interface net.zetetic.database.sqlcipher.** { *; }

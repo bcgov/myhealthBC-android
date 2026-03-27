@@ -5,7 +5,6 @@ enum class AppFeatureName(val value: String) {
     IMMUNIZATION_SCHEDULES("Immunization schedules"),
     RECOMMENDED_IMMUNIZATIONS("Recommended immunizations"),
     HEALTH_RESOURCES("Health resources"),
-    PROOF_OF_VACCINE("Proof of vaccination"),
     SERVICES("Services");
 
     companion object {

@@ -12,13 +12,11 @@ import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.labtest.LabTestRepository
-import ca.bc.gov.repository.model.PatientVaccineRecordsState
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.testrecord.CovidTestRepository
 import javax.inject.Inject
 
 class RecordsRepository @Inject constructor(
-    private val patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
     private val covidOrderRepository: CovidOrderRepository,
     private val covidTestRepository: CovidTestRepository,
     private val labOrderRepository: LabOrderRepository,
@@ -29,22 +27,6 @@ class RecordsRepository @Inject constructor(
     private val hospitalVisitRepository: HospitalVisitRepository,
     private val clinicalDocumentRepository: ClinicalDocumentRepository,
 ) {
-
-    suspend fun storeVaccineRecords(
-        vaccineRecords: List<PatientVaccineRecordsState?>,
-    ) {
-        vaccineRecords.forEach { response ->
-            response?.patientVaccineRecord?.let {
-                try {
-                    patientWithVaccineRecordRepository.insertAuthenticatedPatientsVaccineRecord(
-                        response.patientId, it
-                    )
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
-    }
 
     suspend fun storeCovidOrders(
         patientId: Long,

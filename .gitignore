@@ -99,3 +99,5 @@ lint/tmp/
 
 # OS files
 .DS_Store
+.idea/AndroidProjectSystem.xml
+.idea/deviceManager.xml

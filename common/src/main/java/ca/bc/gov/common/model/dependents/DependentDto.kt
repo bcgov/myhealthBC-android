@@ -11,7 +11,7 @@ data class DependentDto(
     val hdid: String,
     val firstname: String,
     val lastname: String,
-    val phn: String,
+    val phn: String?,
     val dateOfBirth: Instant,
     val gender: String,
     val ownerId: String,

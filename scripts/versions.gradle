@@ -2,17 +2,17 @@ def versions = [:]
 
 //Android
 versions.minSdkVersion = 27
-versions.targetSdkVersion = 34
-versions.compileSdkVersion = 34
+versions.targetSdkVersion = 35
+versions.compileSdkVersion = 35
 
 //App
-versions.versionName = '2.2.4'
-versions.versionCode = 244
+versions.versionName = '2.3.0'
+versions.versionCode = 248
 versions.localApiVersion = 3
 
 //Tools & Libs
 versions.kotlin_gradle_plugin = "1.8.20"
-versions.gradle = '8.1.0'
+versions.gradle = '8.6.0'
 
 versions.annotation = '1.6.0'
 versions.appcompat = '1.6.1'
@@ -36,10 +36,6 @@ versions.compose_bom = "2023.06.01"
 
 versions.hilt = "2.45"
 
-versions.barcode_scanning = "17.1.0"
-
-versions.camerax = "1.2.2"
-
 versions.gson = "2.9.0"
 
 versions.jjwt = "0.11.1"
@@ -62,10 +58,8 @@ versions.spotless = "5.14.3"
 
 versions.crypto = "1.1.0-alpha06"
 
-versions.shcdecoder = "1.2.5"
-
-versions.sqlcipher = "4.5.0"
-versions.sqlite = "2.3.1"
+versions.sqlcipher = "4.12.0"
+versions.sqlite = "2.4.0"
 versions.biometric = "1.2.0-alpha05"
 
 versions.appauth = "0.11.0"

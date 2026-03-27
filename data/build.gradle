@@ -94,7 +94,7 @@ dependencies {
     implementation "androidx.security:security-crypto:$versions.crypto"
 
     //sql cipher
-    implementation "net.zetetic:android-database-sqlcipher:$versions.sqlcipher"
+    implementation "net.zetetic:sqlcipher-android:$versions.sqlcipher"
     implementation "androidx.sqlite:sqlite-ktx:$versions.sqlite"
 
     testImplementation "junit:junit:$versions.junit"

@@ -12,7 +12,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import net.sqlcipher.database.SupportFactory
+import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 import javax.inject.Singleton
 
 /**
@@ -29,13 +29,13 @@ class MyHealthDataBaseModule {
 
     @Provides
     fun providesSupportHelperFactory(randomBytesGenerator: RandomBytesGenerator) =
-        SupportFactory(randomBytesGenerator.getSecureRandom())
+        SupportOpenHelperFactory(randomBytesGenerator.getSecureRandom())
 
     @Provides
     @Singleton
     fun providesMyHealthDataBase(
         @ApplicationContext context: Context,
-        supportFactory: SupportFactory
+        supportFactory: SupportOpenHelperFactory
     ): MyHealthDataBase {
 
         val builder = Room.databaseBuilder(

@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:filterTouchesWhenObscured="true"
-    tools:context=".ui.onboarding.CameraPermissionFragment">
+    android:filterTouchesWhenObscured="true">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewpager_on_boarding_slides"

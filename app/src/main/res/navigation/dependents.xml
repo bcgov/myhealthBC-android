@@ -41,9 +41,6 @@
             app:argType="string" />
 
         <action
-            android:id="@+id/action_dependentRecordsFragment_to_vaccineRecordDetailFragment"
-            app:destination="@id/dependentVaccineRecordDetailFragment" />
-        <action
             android:id="@+id/action_dependentRecordsFragment_to_medicationDetailFragment"
             app:destination="@id/dependentMedicationDetailsFragment" />
         <action
@@ -92,16 +89,6 @@
             android:id="@+id/action_dependentProfile_to_dependentList"
             app:popUpTo="@+id/dependentsFragment" />
 
-    </fragment>
-
-    <fragment
-        android:id="@+id/dependentVaccineRecordDetailFragment"
-        android:name="ca.bc.gov.bchealth.ui.healthrecord.vaccine.VaccineRecordDetailFragment"
-        android:label="fragment_vaccine_record_detail"
-        tools:layout="@layout/fragment_vaccine_record_detail">
-        <argument
-            android:name="patientId"
-            app:argType="long" />
     </fragment>
 
     <fragment
