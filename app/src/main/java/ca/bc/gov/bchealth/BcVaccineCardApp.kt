@@ -40,7 +40,8 @@ class BcVaccineCardApp : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-
+        // https://www.zetetic.net/sqlcipher/sqlcipher-for-android-migration/
+        System.loadLibrary("sqlcipher")
         initSnowplow()
     }
 

@@ -60,13 +60,6 @@ class AppFeatureRepository @Inject constructor(
         )
         insert(healthResources)
 
-        val proofOfVaccine = AppFeatureDto(
-            name = AppFeatureName.PROOF_OF_VACCINE,
-            hasManageableQuickAccessLinks = false,
-            showAsQuickAccess = true
-        )
-        insert(proofOfVaccine)
-
         val services = AppFeatureDto(
             name = AppFeatureName.SERVICES,
             hasManageableQuickAccessLinks = true,

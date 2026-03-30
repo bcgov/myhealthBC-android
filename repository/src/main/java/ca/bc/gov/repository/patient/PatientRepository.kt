@@ -13,12 +13,8 @@ import ca.bc.gov.common.model.patient.PatientWithImmunizationRecordAndForecastDt
 import ca.bc.gov.common.model.patient.PatientWithLabOrderAndLatTestsDto
 import ca.bc.gov.common.model.patient.PatientWithSpecialAuthorityDto
 import ca.bc.gov.common.model.relation.PatientWithMedicationRecordDto
-import ca.bc.gov.common.model.relation.PatientWithVaccineAndDosesDto
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
-import ca.bc.gov.data.datasource.local.entity.PatientEntity
 import ca.bc.gov.data.datasource.local.entity.PatientOrderUpdate
-import ca.bc.gov.repository.QrCodeGeneratorRepository
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 /**
@@ -26,23 +22,7 @@ import javax.inject.Inject
  */
 class PatientRepository @Inject constructor(
     private val patientLocalDataSource: PatientLocalDataSource,
-    private val qrCodeGeneratorRepository: QrCodeGeneratorRepository
 ) {
-
-    val patientWithVaccineAndDoses =
-        patientLocalDataSource.patientWithVaccineAndDoses.map { patientWithVaccineAndDoses ->
-            patientWithVaccineAndDoses.filter { record ->
-                record.vaccineWithDoses != null
-            }.map { record ->
-
-                record.vaccineWithDoses?.let { vaccineWithDosesDto ->
-                    vaccineWithDosesDto.vaccine
-                        .qrCodeImage =
-                        qrCodeGeneratorRepository.generateQRCode(vaccineWithDosesDto.vaccine.shcUri)
-                }
-                record
-            }
-        }
 
     suspend fun insert(patientDto: PatientDto): Long =
         patientLocalDataSource.insert(patientDto)
@@ -57,14 +37,6 @@ class PatientRepository @Inject constructor(
             }
         )
     }
-
-    suspend fun getPatientWithVaccineAndDoses(patientId: Long): PatientWithVaccineAndDosesDto =
-        patientLocalDataSource.getPatientWithVaccineAndDoses(patientId) ?: throw MyHealthException(
-            DATABASE_ERROR, "No record found for patient id=  $patientId"
-        )
-
-    suspend fun getPatientWithVaccineAndDoses(patient: PatientEntity): List<PatientWithVaccineAndDosesDto> =
-        patientLocalDataSource.getPatientWithVaccineAndDoses(patient)
 
     suspend fun getPatientWithMedicationRecords(patientId: Long): PatientWithMedicationRecordDto =
         patientLocalDataSource.getPatientWithMedicationRecords(patientId)

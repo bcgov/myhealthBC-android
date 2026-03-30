@@ -6,27 +6,9 @@
     app:startDestination="@id/home">
 
     <fragment
-        android:id="@+id/onBoardingFragment"
-        android:name="ca.bc.gov.bchealth.ui.onboarding.CameraPermissionFragment"
-        android:label="fragment_onboarding"
-        tools:layout="@layout/fragment_camera_permission">
-        <action
-            android:id="@+id/action_onBoardingFragment_to_barcodeScannerFragment"
-            app:destination="@id/barcodeScannerFragment" />
-    </fragment>
-
-    <fragment
         android:id="@+id/securityAndDataFragment"
         android:name="ca.bc.gov.bchealth.ui.setting.SecurityAndDataFragment"
         tools:layout="@layout/fragment_security_and_data" />
-    <fragment
-        android:id="@+id/barcodeScannerFragment"
-        android:name="ca.bc.gov.bchealth.ui.scanner.BarcodeScannerFragment"
-        android:label="BarcodeScannerFragment">
-        <action
-            android:id="@+id/action_barcodeScannerFragment_to_healthPassFragment"
-            app:popUpTo="@id/healthPassFragment" />
-    </fragment>
 
     <fragment
         android:id="@+id/onBoardingSliderFragment"
@@ -39,7 +21,6 @@
 
 
     <include app:graph="@navigation/home" />
-    <include app:graph="@navigation/health_pass" />
     <include app:graph="@navigation/health_records" />
     <include app:graph="@navigation/news_feed" />
     <include app:graph="@navigation/dependents" />

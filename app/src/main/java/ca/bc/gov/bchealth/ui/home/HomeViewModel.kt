@@ -286,13 +286,6 @@ sealed class QuickAccessTileItem(
                         )
                     }
 
-                    AppFeatureName.PROOF_OF_VACCINE -> {
-                        Pair(
-                            R.drawable.ic_tile_proof_of_vaccine,
-                            R.id.action_homeFragment_to_health_pass
-                        )
-                    }
-
                     AppFeatureName.SERVICES -> {
                         Pair(R.drawable.ic_organ_donor, R.id.services)
                     }

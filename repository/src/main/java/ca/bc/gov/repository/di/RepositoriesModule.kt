@@ -18,7 +18,6 @@ import ca.bc.gov.data.datasource.local.NotificationLocalDataSource
 import ca.bc.gov.data.datasource.local.OrganDonorLocalDataSource
 import ca.bc.gov.data.datasource.local.PatientLocalDataSource
 import ca.bc.gov.data.datasource.local.QuickActionTileLocalDataSource
-import ca.bc.gov.data.datasource.local.VaccineRecordLocalDataSource
 import ca.bc.gov.data.datasource.remote.BannerRemoteDataSource
 import ca.bc.gov.data.datasource.remote.CommentRemoteDataSource
 import ca.bc.gov.data.datasource.remote.DependentsRemoteDataSource
@@ -35,13 +34,10 @@ import ca.bc.gov.repository.ClearStorageRepository
 import ca.bc.gov.repository.CommentRepository
 import ca.bc.gov.repository.DependentsRepository
 import ca.bc.gov.repository.FeedbackRepository
-import ca.bc.gov.repository.FetchVaccineRecordRepository
 import ca.bc.gov.repository.MedicationRecordRepository
 import ca.bc.gov.repository.NotificationRepository
 import ca.bc.gov.repository.OnBoardingRepository
-import ca.bc.gov.repository.PatientWithVaccineRecordRepository
 import ca.bc.gov.repository.PdfDecoderRepository
-import ca.bc.gov.repository.QrCodeGeneratorRepository
 import ca.bc.gov.repository.RecentPhnDobRepository
 import ca.bc.gov.repository.RecordsRepository
 import ca.bc.gov.repository.TermsOfServiceRepository
@@ -53,9 +49,6 @@ import ca.bc.gov.repository.immunization.ImmunizationRecommendationRepository
 import ca.bc.gov.repository.immunization.ImmunizationRecordRepository
 import ca.bc.gov.repository.labtest.LabOrderRepository
 import ca.bc.gov.repository.labtest.LabTestRepository
-import ca.bc.gov.repository.patient.PatientRepository
-import ca.bc.gov.repository.qr.ProcessQrRepository
-import ca.bc.gov.repository.scanner.QrScanner
 import ca.bc.gov.repository.services.BcCancerScreeningRepository
 import ca.bc.gov.repository.services.DiagnosticImagingRepository
 import ca.bc.gov.repository.services.OrganDonorRepository
@@ -65,11 +58,7 @@ import ca.bc.gov.repository.settings.AppFeatureWithQuickAccessTilesRepository
 import ca.bc.gov.repository.settings.QuickAccessTileRepository
 import ca.bc.gov.repository.testrecord.CovidOrderRepository
 import ca.bc.gov.repository.testrecord.CovidTestRepository
-import ca.bc.gov.repository.utils.Base64ToInputImageConverter
-import ca.bc.gov.repository.utils.UriToImage
-import ca.bc.gov.repository.vaccine.VaccineRecordRepository
 import ca.bc.gov.repository.worker.MobileConfigRepository
-import ca.bc.gov.shcdecoder.SHCVerifier
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -84,57 +73,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 class RepositoriesModule {
-
-    @Provides
-    fun providesBase64ToImageConverter() = Base64ToInputImageConverter()
-
-    @Provides
-    @Singleton
-    fun provideProcessQrRepository(
-        qrScanner: QrScanner,
-        uriToImage: UriToImage,
-        shcVerifier: SHCVerifier,
-        patientRepository: PatientRepository
-    ) = ProcessQrRepository(
-        qrScanner, uriToImage, shcVerifier, patientRepository
-    )
-
-    @Provides
-    @Singleton
-    fun providesFetchVaccineRecordRepository(
-        base64ToInputImageConverter: Base64ToInputImageConverter,
-        immunizationRemoteDataSource: ImmunizationRemoteDataSource,
-        processQrRepository: ProcessQrRepository
-    ) = FetchVaccineRecordRepository(
-        base64ToInputImageConverter, immunizationRemoteDataSource, processQrRepository
-    )
-
-    @Provides
-    @Singleton
-    fun providesPatientRepository(
-        localDataSource: PatientLocalDataSource,
-        qrCodeGeneratorRepository: QrCodeGeneratorRepository
-    ) =
-        PatientRepository(localDataSource, qrCodeGeneratorRepository)
-
-    @Provides
-    @Singleton
-    fun providesVaccineRecordRepository(localDataSource: VaccineRecordLocalDataSource) =
-        VaccineRecordRepository(localDataSource)
-
-    @Provides
-    @Singleton
-    fun providesQrCodeGeneratorRepository() = QrCodeGeneratorRepository()
-
-    @Provides
-    @Singleton
-    fun providesPatientWithVaccineRepository(
-        patientRepository: PatientRepository,
-        vaccineRecordRepository: VaccineRecordRepository
-    ) = PatientWithVaccineRecordRepository(
-        patientRepository,
-        vaccineRecordRepository
-    )
 
     @Provides
     @Singleton
@@ -217,7 +155,6 @@ class RepositoriesModule {
     @Provides
     @Singleton
     fun provideRecordsRepository(
-        patientWithVaccineRecordRepository: PatientWithVaccineRecordRepository,
         covidOrderRepository: CovidOrderRepository,
         covidTestRepository: CovidTestRepository,
         labOrderRepository: LabOrderRepository,
@@ -228,7 +165,6 @@ class RepositoriesModule {
         hospitalVisitRepository: HospitalVisitRepository,
         clinicalDocumentRepository: ClinicalDocumentRepository
     ): RecordsRepository = RecordsRepository(
-        patientWithVaccineRecordRepository,
         covidOrderRepository,
         covidTestRepository,
         labOrderRepository,
@@ -248,7 +184,6 @@ class RepositoriesModule {
         patientLocalDataSource: PatientLocalDataSource,
         bcscAuthRepo: BcscAuthRepo,
         covidOrderRepository: CovidOrderRepository,
-        fetchVaccineRecordRepository: FetchVaccineRecordRepository,
         immunizationRecordRepository: ImmunizationRecordRepository,
         labOrderRepository: LabOrderRepository,
         recordsRepository: RecordsRepository,
@@ -260,7 +195,6 @@ class RepositoriesModule {
         patientLocalDataSource,
         bcscAuthRepo,
         covidOrderRepository,
-        fetchVaccineRecordRepository,
         immunizationRecordRepository,
         labOrderRepository,
         recordsRepository,

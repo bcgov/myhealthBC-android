@@ -254,8 +254,6 @@
     <!--Educational screens text at on-boarding experience-->
     <string name="next">Next</string>
     <string name="get_started">Get started</string>
-    <string name="onboarding_health_passes_title">Proof of vaccination</string>
-    <string name="onboarding_health_passes_desc">Save proof of vaccination documents for you and your family. Have them ready for travel or to access events and services that require it.</string>
     <string name="onboarding_health_records_title">Health records</string>
     <string name="onboarding_health_records_desc">View and manage all your available health records, including dispensed medications, health visits, lab results, immunizations, BC Cancer cervix screenings and more.</string>
     <string name="onboarding_health_resources_title">Health resources</string>
@@ -429,7 +427,7 @@
 
     <!-- Error -->
     <string name="bcsc_auth_error_title">Problem with log in</string>
-    <string name="bcsc_auth_error_body">We are unable to retrieve your health record at this moment because of a problem with the BC Services Card login. Please contact the Health Gateway team at healthgateway@gov.bc.ca for more information.</string>
+    <string name="bcsc_auth_error_body">We are unable to retrieve your health records at this time. For more information, contact healthgateway@gov.bc.ca.</string>
     <string name="bcsc_auth_error_click_email">healthgateway@gov.bc.ca</string>
     <string name="bcsc_auth_error_button">Email us</string>
 
@@ -505,7 +503,6 @@
     <string name="health_records_home">Health Records</string>
     <string name="view_records">View records</string>
     <string name="health_records_desc">Access your lab test results, medication history, immunization records, health visits and more</string>
-    <string name="proof_of_vaccination_desc">Save proof of vaccination documents for you and your family</string>
     <string name="add_proofs">Add proofs</string>
     <string name="resources_desc">Find trusted health information and resources</string>
     <string name="home_recommendations_title">Recommended immunizations</string>

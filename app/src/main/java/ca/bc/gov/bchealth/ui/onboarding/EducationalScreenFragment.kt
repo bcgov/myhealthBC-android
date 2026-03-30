@@ -28,7 +28,7 @@ class EducationalScreenFragment : Fragment(R.layout.fragment_educational_screen)
         super.onViewCreated(view, savedInstanceState)
 
         if (arguments?.getBoolean(ARG_PARAM_RE_ON_BOARDING) == true) {
-            setIntroScreen(4)
+            setIntroScreen(3)
         } else {
             position?.let {
                 setIntroScreen(it)
@@ -62,15 +62,15 @@ class EducationalScreenFragment : Fragment(R.layout.fragment_educational_screen)
                 }
 
                 2 -> {
-                    title = getString(R.string.onboarding_health_passes_title)
-                    description = getString(R.string.onboarding_health_passes_desc)
-                    ivRightIcon.apply {
-                        setImageResource(R.drawable.ic_onboarding_health_passes)
+                    title = getString(R.string.onboarding_health_resources_title)
+                    description = getString(R.string.onboarding_health_resources_desc)
+                    ivLeftIcon.apply {
+                        setImageResource(R.drawable.ic_onboarding_health_recources)
                         visibility = View.VISIBLE
                     }
                 }
 
-                4 -> {
+                3 -> {
                     title = getString(R.string.onboarding_services_title)
                     description = getString(R.string.onboarding_services_desc)
                     ivRightIcon.apply {
@@ -79,15 +79,6 @@ class EducationalScreenFragment : Fragment(R.layout.fragment_educational_screen)
                     }
                     if (arguments?.getBoolean(ARG_PARAM_RE_ON_BOARDING) == true) {
                         binding.tvNew.isVisible = true
-                    }
-                }
-
-                3 -> {
-                    title = getString(R.string.onboarding_health_resources_title)
-                    description = getString(R.string.onboarding_health_resources_desc)
-                    ivLeftIcon.apply {
-                        setImageResource(R.drawable.ic_onboarding_health_recources)
-                        visibility = View.VISIBLE
                     }
                 }
             }

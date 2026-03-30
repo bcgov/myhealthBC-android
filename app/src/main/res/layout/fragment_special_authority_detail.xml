@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:filterTouchesWhenObscured="true"
     app:layoutDescription="@xml/fragment_vaccine_details_scene"
-    tools:context="ca.bc.gov.bchealth.ui.healthrecord.vaccine.VaccineRecordDetailFragment">
+    >
 
     <include
         android:id="@+id/compose_toolbar"

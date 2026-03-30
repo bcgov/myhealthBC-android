@@ -13,7 +13,7 @@ data class DependentInformation(
     val lastname: String,
 
     @SerializedName("PHN")
-    val phn: String,
+    val phn: String?,
 
     @SerializedName("dateOfBirth")
     val dateOfBirth: String,

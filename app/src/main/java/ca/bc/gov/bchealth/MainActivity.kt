@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -50,7 +53,36 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Android 15: Enable edge-to-edge display
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContentView(R.layout.activity_main)
+
+        // Android 15: Handle window insets for the root view
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            var bottomPadding = 0
+            if (binding.bottomNav.visibility == View.GONE) {
+                bottomPadding = insets.bottom
+            }
+
+            // Apply top padding only to the nav host fragment
+            binding.navHostFragment.setPadding(
+                binding.navHostFragment.paddingLeft,
+                insets.top,
+                binding.navHostFragment.paddingRight,
+                bottomPadding
+            )
+            // Apply bottom padding only to the bottom navigation
+            binding.bottomNav.setPadding(
+                binding.bottomNav.paddingLeft,
+                binding.bottomNav.paddingTop,
+                binding.bottomNav.paddingRight,
+                insets.bottom
+            )
+            WindowInsetsCompat.CONSUMED
+        }
 
         inAppUpdate = InAppUpdateHelper(this, lifecycle) {
             showUpdateDownloaded()
@@ -72,14 +104,10 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.healthPassFragment,
-                R.id.healthPassesFragment,
-                R.id.addCardOptionFragment,
                 R.id.dependentsFragment,
                 R.id.dependentRecordsFragment,
                 R.id.resourcesFragment,
                 R.id.healthRecordFragment,
-                R.id.vaccineRecordDetailFragment,
                 R.id.addHealthRecordsFragment,
                 R.id.homeFragment,
                 R.id.bannerDetailFragment,
@@ -113,10 +141,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun showBottomNav() {
         binding.bottomNav.visibility = View.VISIBLE
+        ViewCompat.requestApplyInsets(binding.root)
     }
 
     private fun hideBottomNav() {
         binding.bottomNav.visibility = View.GONE
+        ViewCompat.requestApplyInsets(binding.root)
     }
 
     private fun observeExceptionFromWorker() {
