@@ -7,7 +7,7 @@ versions.compileSdkVersion = 36
 
 //App
 versions.versionName = '2.3.1'
-versions.versionCode = 249
+versions.versionCode = 250
 versions.localApiVersion = 3
 
 //Tools & Libs
