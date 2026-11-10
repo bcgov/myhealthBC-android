@@ -1,10 +1,10 @@
-# My Health BC 
+# My Health BC
 #### [![branch: develop](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/myhealthBC-android/tree/develop)
 <a href='https://play.google.com/store/apps/details?id=ca.bc.gov.myhealth&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
 <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width="150" height="50"/>
 </a>
 
-#### Health Gateway is used to retrieve and store your proof of vaccination, access your health records, view COVID-19 test results, access official resources to navigate your way around Covid-19 and stay up to date with important alerts and official announcements
+#### Health Gateway is used to retrieve and store your proof of vaccination, access your health records, view COVID-19 test results, access official resources to navigate your way around Covid-19 and stay up to date with important alerts and official announcements.
 
 ## Table of Contents
 
