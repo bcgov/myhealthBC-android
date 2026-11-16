@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import ca.bc.gov.bchealth.ui.auth.BioMetricState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -25,6 +26,14 @@ class SharedViewModel @Inject constructor() : ViewModel() {
 
     var destinationId: Int = 0
     var isBCSCAuthShown = false
-    var isBiometricAuthShown = false
     var shouldFetchBanner = true
+
+    var isBiometricAuthenticated = false
+        private set
+
+    fun onBiometricResult(state: BioMetricState?) {
+        if (state == BioMetricState.SUCCESS) {
+            isBiometricAuthenticated = true
+        }
+    }
 }
