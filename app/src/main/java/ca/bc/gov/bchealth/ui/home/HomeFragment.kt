@@ -30,6 +30,7 @@ import ca.bc.gov.bchealth.ui.filter.TimelineTypeFilter
 import ca.bc.gov.bchealth.ui.healthrecord.filter.PatientFilterViewModel
 import ca.bc.gov.bchealth.ui.login.BcscAuthViewModel
 import ca.bc.gov.bchealth.utils.observeCurrentBackStackForAction
+import ca.bc.gov.bchealth.utils.removeActionFromCurrentBackStackEntry
 import ca.bc.gov.bchealth.viewmodel.SharedViewModel
 import ca.bc.gov.common.model.UserAuthenticationStatus
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,22 +46,21 @@ class HomeFragment : BaseSecureFragment(null) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        observeCurrentBackStackForAction<BioMetricState>(BiometricsAuthenticationFragment.BIOMETRIC_STATE) {
-            viewModel.onBiometricAuthenticationCompleted()
-            when (it) {
-                BioMetricState.SUCCESS -> {
-                    sharedViewModel.shouldFetchBanner = true
-                    findNavController().currentBackStackEntry?.savedStateHandle?.remove<BioMetricState>(
-                        BiometricsAuthenticationFragment.BIOMETRIC_STATE
-                    )
-                    viewModel.executeOneTimeDataFetch()
-                }
-
-                else -> {
-                    findNavController().popBackStack()
-                }
+        observeCurrentBackStackForAction<BioMetricState>(BiometricsAuthenticationFragment.BIOMETRIC_STATE) { state ->
+            sharedViewModel.onBiometricResult(state)
+            if (state == BioMetricState.SUCCESS) {
+                onBiometricAuthenticationSucceeded()
             }
         }
+    }
+
+    private fun onBiometricAuthenticationSucceeded() {
+        findNavController().removeActionFromCurrentBackStackEntry<BioMetricState>(
+            BiometricsAuthenticationFragment.BIOMETRIC_STATE,
+        )
+        sharedViewModel.shouldFetchBanner = true
+        viewModel.onBiometricAuthenticationSucceeded()
+        viewModel.executeOneTimeDataFetch()
     }
 
     @Composable
@@ -152,11 +152,15 @@ class HomeFragment : BaseSecureFragment(null) {
     }
 
     private fun onBiometricAuthenticationRequired() {
-        if (!sharedViewModel.isBiometricAuthShown) {
-            findNavController().navigate(R.id.biometricsAuthenticationFragment)
-            sharedViewModel.isBiometricAuthShown = true
+        viewModel.resetUIState()
+        if (sharedViewModel.isBiometricAuthenticated) {
+            viewModel.onBiometricAuthenticationSucceeded()
+            return
         }
-        viewModel.onBiometricAuthenticationCompleted()
+        val navController = findNavController()
+        if (navController.currentDestination?.id != R.id.biometricsAuthenticationFragment) {
+            navController.navigate(R.id.biometricsAuthenticationFragment)
+        }
     }
 
     private fun onOnBoardingRequired(isReOnBoarding: Boolean) {

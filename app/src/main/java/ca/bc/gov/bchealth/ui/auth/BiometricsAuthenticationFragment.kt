@@ -104,39 +104,21 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
         return BiometricPrompt(
             requireActivity(),
             executor,
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                    super.onAuthenticationError(errorCode, errString)
-                    when (errorCode) {
-                        BiometricPrompt.ERROR_USER_CANCELED -> {
-                            // no implementation required
-                        }
-
-                        else -> {
-                            val errorMessage = "$errorCode, $errString"
-                            showAuthenticationErrorDialog(errorMessage)
-                        }
-                    }
-                }
-
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
-                    findNavController().setActionToPreviousBackStackEntry(
-                        BIOMETRIC_STATE,
-                        BioMetricState.FAILED
-                    )
-                }
-
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    super.onAuthenticationSucceeded(result)
-                    findNavController().setActionToPreviousBackStackEntry(
-                        BIOMETRIC_STATE,
-                        BioMetricState.SUCCESS
-                    )
-                    findNavController().popBackStack()
-                }
-            }
+            BiometricAuthCallback(
+                onSuccess = ::onAuthenticationSucceeded,
+                onError = { errorCode, errString ->
+                    showAuthenticationErrorDialog("$errorCode, $errString")
+                },
+            )
         )
+    }
+
+    private fun onAuthenticationSucceeded() {
+        findNavController().setActionToPreviousBackStackEntry(
+            BIOMETRIC_STATE,
+            BioMetricState.SUCCESS
+        )
+        findNavController().popBackStack()
     }
 
     private fun showNoHardwareDialog() {
@@ -197,6 +179,5 @@ class BiometricsAuthenticationFragment : Fragment(R.layout.fragment_biometric_au
 }
 
 enum class BioMetricState {
-    FAILED,
     SUCCESS
 }
