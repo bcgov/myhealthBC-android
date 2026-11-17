@@ -60,7 +60,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
         env:
-          BUILD_TOOLS_VERSION: "35.0.0"
+          BUILD_TOOLS_VERSION: "36.0.0"
 
       - name: upload mock apk
         uses: actions/upload-artifact@v4
@@ -79,7 +79,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
         env:
-          BUILD_TOOLS_VERSION: "35.0.0"
+          BUILD_TOOLS_VERSION: "36.0.0"
 
       - name: upload dev apk
         uses: actions/upload-artifact@v4
@@ -98,7 +98,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
         env:
-          BUILD_TOOLS_VERSION: "35.0.0"
+          BUILD_TOOLS_VERSION: "36.0.0"
 
       - name: upload stage apk
         uses: actions/upload-artifact@v4
@@ -117,7 +117,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD_DEBUG }}
           keyPassword: ${{ secrets.KEYSTORE_KEY_PASSWORD_DEBUG }}
         env:
-          BUILD_TOOLS_VERSION: "35.0.0"
+          BUILD_TOOLS_VERSION: "36.0.0"
 
       - name: upload prod apk
         uses: actions/upload-artifact@v4
