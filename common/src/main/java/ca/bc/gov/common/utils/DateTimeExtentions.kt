@@ -1,6 +1,5 @@
 package ca.bc.gov.common.utils
 
-import ca.bc.gov.common.exceptions.InvalidResponseException
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -15,8 +14,7 @@ const val yyyy_MM_dd = "yyyy-MM-dd"
 const val eee_dd_mmm_yyyy_hh_mm_ss_z = "EEE, dd MMM yyyy HH:mm:ss XXXX"
 
 private const val full_date_time_plus_time = "yyyy-MM-dd'T'HH:mm:ssXXX"
-private const val yyyy_MMM_dd_HH_mm_sss_long = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-private const val yyyy_MMM_dd_HH_mm_short = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+
 private const val PST_ZONE_ID = "America/Los_Angeles"
 
 fun Instant.toDateTimeString(dateFormat: String = yyyy_MMM_dd_HH_mm): String {
@@ -32,10 +30,6 @@ fun Instant.toDate(dateFormat: String = yyyy_MMM_dd): String {
     val formattedString = formatter.format(dateTime)
     return formattedString.replace(".", "")
 }
-
-fun String.toOffsetDateTime(): Instant =
-    this.toDateTime(full_date_time_plus_time).toLocalDateTimeInstant()
-        ?: throw InvalidResponseException()
 
 fun String.toDate(): Instant = LocalDate.parse(this).atStartOfDay().toInstant(ZoneOffset.UTC)
 
@@ -61,28 +55,18 @@ fun String.toDateTime(datePattern: String): Instant =
     this.toDateTime(DateTimeFormatter.ofPattern(datePattern))
 
 /**
- * Parse dates in the following formats:
- * > 2022-09-20T21:00:00.123Z
- * > 2022-09-20T21:00:00Z
- * This method limits input length so it won't break if a longer dates are received:
- * Eg.: 1234Z, 12345Z, 123456Z an so on
+ * Parses UTC dates with any number of fraction digits, keeping millisecond precision:
+ * > 2022-09-20T21:00:00Z         -> 21:00:00.000
+ * > 2022-09-20T21:00:00.1Z       -> 21:00:00.100
+ * > 2022-09-20T21:00:00.123456Z  -> 21:00:00.123
  */
 fun String.toDateTimeZ(): Instant {
-    val patternLengthMin = 20
-    val patternLengthMax = 24
-    var datePattern = yyyy_MMM_dd_HH_mm_sss_long
-
-    val dateStr = if (this.length > patternLengthMax) {
-        this.substring(0, patternLengthMax - 1).plus("Z")
-    } else {
-        if (this.length <= patternLengthMin) {
-            datePattern = yyyy_MMM_dd_HH_mm_short
-        }
-        this
-    }
-
-    return LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern(datePattern))
-        .toInstant(ZoneOffset.UTC)
+    val millisDigits = 3
+    val dateWithoutZone = this.removeSuffix("Z")
+    val dateTime = dateWithoutZone.substringBefore('.')
+    val fraction = dateWithoutZone.substringAfter('.', missingDelimiterValue = "")
+    val millis = fraction.take(millisDigits).padEnd(millisDigits, '0')
+    return Instant.parse("$dateTime.${millis}Z")
 }
 
 fun Instant.toStartOfDayInstant(): Instant {
