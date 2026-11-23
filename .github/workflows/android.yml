@@ -17,7 +17,7 @@ jobs:
 
       - name: Teams notification
         if: ${{ vars.ENABLE_TEAMS_NOTIFICATION == 'true' }}
-        uses: toko-bifrost/ms-teams-deploy-card@master
+        uses: toko-bifrost/ms-teams-deploy-card@dcc94e4ce4088b1e6b6de5c9a3cda4ddcbe97d2e # 3.1.2, committed 2020-07-01, pinned 2026-11-22
         with:
           github-token: ${{ github.token }}
           webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
@@ -52,7 +52,7 @@ jobs:
       #MOCK
       - name: sign mock apk
         id: sign_app_mock
-        uses: r0adkll/sign-android-release@v1
+        uses: r0adkll/sign-android-release@349ebdef58775b1e0d8099458af0816dc79b6407 # v1, committed 2021-08-13, pinned 2026-11-22
         with:
           releaseDirectory: app/build/outputs/apk/mock/debug
           signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
@@ -71,7 +71,7 @@ jobs:
       #DEV
       - name: sign dev apk
         id: sign_app_dev
-        uses: r0adkll/sign-android-release@v1
+        uses: r0adkll/sign-android-release@349ebdef58775b1e0d8099458af0816dc79b6407 # v1, committed 2021-08-13, pinned 2026-11-22
         with:
           releaseDirectory: app/build/outputs/apk/dev/debug
           signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
@@ -90,7 +90,7 @@ jobs:
       #STAGE
       - name: sign stage apk
         id: sign_app_stage
-        uses: r0adkll/sign-android-release@v1
+        uses: r0adkll/sign-android-release@349ebdef58775b1e0d8099458af0816dc79b6407 # v1, committed 2021-08-13, pinned 2026-11-22
         with:
           releaseDirectory: app/build/outputs/apk/stage/debug
           signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
@@ -109,7 +109,7 @@ jobs:
       #PROD
       - name: sign prod apk
         id: sign_app_prod
-        uses: r0adkll/sign-android-release@v1
+        uses: r0adkll/sign-android-release@349ebdef58775b1e0d8099458af0816dc79b6407 # v1, committed 2021-08-13, pinned 2026-11-22
         with:
           releaseDirectory: app/build/outputs/apk/prod/debug
           signingKeyBase64: ${{ secrets.KEYSTORE_SIGNING_KEY_DEBUG }}
@@ -124,5 +124,9 @@ jobs:
         with:
           name: myhealth_prod_${{steps.retrieve_apk_version.outputs.APK_VERSION}}.apk
           path: ${{steps.sign_app_prod.outputs.signedReleaseFile}}
+
+      - name: remove decoded keystore
+        if: always()
+        run: rm -f app/build/outputs/apk/*/debug/signingKey.jks
           
           
