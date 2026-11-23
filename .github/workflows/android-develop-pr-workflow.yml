@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: check out
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: Teams notification
         if: ${{ vars.ENABLE_TEAMS_NOTIFICATION == 'true' }}
