@@ -3,6 +3,7 @@ package ca.bc.gov.bchealth.ui.healthrecord.healthvisits
 import android.os.Bundle
 import android.view.View
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
@@ -34,7 +35,9 @@ class HealthVisitDetailFragment : BaseFragment(null) {
         var commentState: CommentsUiState? = null
 
         if (BuildConfig.FLAG_ADD_COMMENTS) {
-            uiState.parentEntryId?.let { commentsViewModel.getComments(it) }
+            LaunchedEffect(uiState.parentEntryId) {
+                uiState.parentEntryId?.let { commentsViewModel.getComments(it) }
+            }
             commentState = commentsViewModel.uiState.collectAsState().value
         }
 
