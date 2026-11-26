@@ -152,7 +152,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onBiometricAuthenticationCompleted() {
+    fun onBiometricAuthenticationSucceeded() {
         isBiometricAuthenticationRequired = false
         resetUIState()
         launchCheck()
